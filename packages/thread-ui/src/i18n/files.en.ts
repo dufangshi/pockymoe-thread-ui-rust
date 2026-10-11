@@ -65,6 +65,7 @@ export const filesEn = {
   "files.safeReason.unsupportedFilesystem": "This filesystem is not supported for safe replacement",
   "files.safeReason.unsupportedPlatform": "Safe replacement on this platform is not yet supported",
   "files.safeReason.safeUnavailable": "Update this device to enable safe editing",
+  "files.safeReason.symbolicLink": "This is a symbolic link. Open the file it points to instead.",
 
   "files.closeNavigation": "Close Navigation",
   "files.openNavigation": "Open Navigation",

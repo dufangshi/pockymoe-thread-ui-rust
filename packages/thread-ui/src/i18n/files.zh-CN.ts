@@ -65,6 +65,7 @@ export const filesZhCN = {
   "files.safeReason.unsupportedFilesystem": "此文件系统暂不支持安全替换",
   "files.safeReason.unsupportedPlatform": "此平台暂不支持安全替换",
   "files.safeReason.safeUnavailable": "升级此设备以启用安全编辑",
+  "files.safeReason.symbolicLink": "这是一个符号链接，请打开它指向的文件。",
 
   "files.closeNavigation": "关闭导航",
   "files.openNavigation": "打开导航",

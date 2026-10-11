@@ -699,7 +699,7 @@ export function GraphWorkspacePreviewPane({
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {error ? (
           <div className="border-b border-rose-200 bg-rose-50 px-5 py-3 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200">
-            {error}
+            {translateReadOnly(error)}
           </div>
         ) : null}
         {!selectedTarget ? (

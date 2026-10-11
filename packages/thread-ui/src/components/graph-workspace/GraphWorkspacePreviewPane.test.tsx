@@ -122,6 +122,13 @@ describe('GraphWorkspacePreviewPane', () => {
     act(() => element.querySelector('a')!.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })));
     expect(onOpenWorkspaceFile).toHaveBeenCalledWith('README.zh-CN.md');
   });
+  it('explains a refused symbolic link instead of showing the error code', () => {
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
+      selectedTarget={{ kind: 'workspace-file', node: { id: 'link', path: 'link', name: 'link', kind: 'file', children: [] } }}
+      error="symbolicLink" />);
+    expect(element.textContent).toContain('This is a symbolic link. Open the file it points to instead.');
+    expect(element.textContent).not.toContain('symbolicLink');
+  });
   const markdownNode: WorkspaceTreeNode = {
     id: 'workspace:docs/architecture.md',
     name: 'architecture.md',

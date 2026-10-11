@@ -53,6 +53,7 @@ describe('ComposerFrame', () => {
   });
 
   afterEach(() => {
+    delete document.documentElement.dataset.themePreset;
     cleanup?.();
     cleanup = null;
     vi.restoreAllMocks();
@@ -87,5 +88,24 @@ describe('ComposerFrame', () => {
     expect(container.textContent).toContain('failed');
     expect(container.querySelector('[data-slot="goal"]')).toBeTruthy();
     expect(container.querySelector('[data-slot="shell-prompt"]')).toBeTruthy();
+  });
+
+  it('sews the usage meter into the shell only for Plum Pocket', () => {
+    const subscriptionUsage = {
+      provider: 'claude' as const,
+      authKind: 'subscription' as const,
+      observedAt: new Date().toISOString(),
+      stale: false,
+      windows: [{ id: '5h', durationMinutes: 300, label: '5h', usedPercent: 10, resetsAt: null }],
+    };
+    let container = renderFrame({ ...baseProps(), subscriptionUsage });
+    expect(container.querySelector('.thread-composer-usage-footer .thread-subscription-usage')).toBeTruthy();
+    expect(container.querySelector('.thread-composer-usage-tag')).toBeNull();
+    cleanup?.();
+
+    document.documentElement.dataset.themePreset = 'plum-pocket';
+    container = renderFrame({ ...baseProps(), subscriptionUsage });
+    expect(container.querySelector('.shell .thread-composer-usage-tag .thread-subscription-usage')).toBeTruthy();
+    expect(container.querySelector('.thread-composer-usage-footer')).toBeNull();
   });
 });

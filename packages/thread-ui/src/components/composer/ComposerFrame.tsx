@@ -10,6 +10,7 @@ import { InputGroup } from '../graph-ui/InputGroup';
 import { ComposerHiddenAttachmentInputs } from './ComposerHiddenAttachmentInputs';
 import { ComposerJumpLatestButton } from './ComposerJumpLatestButton';
 import { ComposerSubscriptionUsage, visibleSubscriptionWindows } from './ComposerSubscriptionUsage';
+import { useDocumentThemePreset } from '../themeHooks';
 
 export interface ComposerFrameProps {
   activeView: 'chat' | 'shell';
@@ -71,6 +72,12 @@ export function ComposerFrame({
   shellPromptSlot,
 }: ComposerFrameProps) {
   const { expanded, focusOwner, ...focusEvents } = useCompactComposer(formRef, activeView === 'chat');
+  // Plum Pocket sews the usage meter onto the composer's bottom seam instead of
+  // giving it a row of its own below.
+  const usageInShell = useDocumentThemePreset() === 'plum-pocket';
+  const usage = activeView === 'chat' && visibleSubscriptionWindows(subscriptionUsage).length > 0
+    ? <ComposerSubscriptionUsage usage={subscriptionUsage} />
+    : null;
   return (
     <div className={layerClassName}>
       <ComposerHiddenAttachmentInputs
@@ -111,10 +118,11 @@ export function ComposerFrame({
 
           {goalSlot}
           {shellPromptSlot}
+          {usage && usageInShell ? <div className="thread-composer-usage-tag">{usage}</div> : null}
         </div>
-        {activeView === 'chat' && visibleSubscriptionWindows(subscriptionUsage).length > 0 ? (
+        {usage && !usageInShell ? (
           <div className="thread-composer-usage-footer relative mt-0.5 h-3 sm:h-4">
-            <ComposerSubscriptionUsage usage={subscriptionUsage} />
+            {usage}
           </div>
         ) : null}
         {error ? (

@@ -17756,6 +17756,7 @@ function useShellSocketLifecycle({
 
 // src/components/shell/ShellPane.tsx
 import { jsx as jsx62 } from "react/jsx-runtime";
+var SHELL_RESIZE_SETTLE_MS = 160;
 function refValue2(ref) {
   return ref.current;
 }
@@ -17795,6 +17796,7 @@ var ShellPane = forwardRef(
     const lastCommandOutputRef = useRef25("");
     const resizeObserverRef = useRef25(null);
     const lastSentSizeRef = useRef25(null);
+    const backendResizeTimerRef = useRef25(null);
     const snapshotCursorRef = useRef25({
       cursorX: void 0,
       cursorY: void 0,
@@ -17885,6 +17887,23 @@ var ShellPane = forwardRef(
       const rect = terminalHostNode.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0;
     }, [isVisible, terminalHostNode]);
+    const sendBackendSize = useCallback18(() => {
+      const terminal = terminalRef.current;
+      if (!terminal || terminal.cols <= 0 || terminal.rows <= 0) {
+        return;
+      }
+      const resizeDecision = deriveShellResizeDecision({
+        size: { cols: terminal.cols, rows: terminal.rows },
+        previousSize: lastSentSizeRef.current,
+        shellId: shellIdRef.current,
+        viewerId: viewerIdRef.current,
+        syncBackendSize: true
+      });
+      lastSentSizeRef.current = resizeDecision.nextLastSentSize;
+      if (resizeDecision.message && socketRef.current) {
+        socketRef.current.send(resizeDecision.message);
+      }
+    }, []);
     const syncTerminalSize = useCallback18(
       (options) => {
         const terminal = terminalRef.current;
@@ -17892,31 +17911,32 @@ var ShellPane = forwardRef(
         if (!terminal || !fitAddon || !isTerminalVisible()) {
           return null;
         }
-        fitAddon.fit();
+        const dimensions = fitAddon.proposeDimensions();
+        if (dimensions && dimensions.cols > 0 && dimensions.rows > 0 && (dimensions.cols !== terminal.cols || dimensions.rows !== terminal.rows)) {
+          terminal.resize(dimensions.cols, dimensions.rows);
+        }
         if (terminal.cols <= 0 || terminal.rows <= 0) {
           return null;
         }
         const size = { cols: terminal.cols, rows: terminal.rows };
-        const resizeDecision = deriveShellResizeDecision({
-          size,
-          previousSize: lastSentSizeRef.current,
-          shellId: shellIdRef.current,
-          viewerId: viewerIdRef.current,
-          syncBackendSize: options?.syncBackendSize !== false
-        });
         if (options?.syncBackendSize === false) {
           return size;
         }
-        lastSentSizeRef.current = resizeDecision.nextLastSentSize;
-        if (!resizeDecision.message) {
-          return size;
+        if (backendResizeTimerRef.current) {
+          clearTimeout(backendResizeTimerRef.current);
+          backendResizeTimerRef.current = null;
         }
-        if (socketRef.current) {
-          socketRef.current.send(resizeDecision.message);
+        if (options?.deferBackendSize) {
+          backendResizeTimerRef.current = setTimeout(() => {
+            backendResizeTimerRef.current = null;
+            sendBackendSize();
+          }, SHELL_RESIZE_SETTLE_MS);
+        } else {
+          sendBackendSize();
         }
         return size;
       },
-      [isTerminalVisible]
+      [isTerminalVisible, sendBackendSize]
     );
     useEffect31(() => {
       syncTerminalSizeRef.current = syncTerminalSize;
@@ -18033,8 +18053,13 @@ var ShellPane = forwardRef(
         });
         setTerminalReady(true);
         terminalInitializingRef.current = false;
+        let resizeFrame = 0;
         resizeObserverRef.current = new ResizeObserver(() => {
-          refreshTerminalLayoutRef.current();
+          if (resizeFrame) return;
+          resizeFrame = requestAnimationFrame(() => {
+            resizeFrame = 0;
+            syncTerminalSizeRef.current({ deferBackendSize: true });
+          });
         });
         resizeObserverRef.current.observe(terminalHostNode);
         terminalInputSubscriptionRef.current = terminal.onData((data) => {
@@ -18052,6 +18077,8 @@ var ShellPane = forwardRef(
         terminalInputSubscriptionRef.current = null;
         resizeObserverRef.current?.disconnect();
         resizeObserverRef.current = null;
+        if (backendResizeTimerRef.current) clearTimeout(backendResizeTimerRef.current);
+        backendResizeTimerRef.current = null;
         setTerminalReady(false);
         terminalRef.current?.dispose();
         terminalRef.current = null;
@@ -18116,7 +18143,7 @@ var ShellPane = forwardRef(
         if (disposed || frame) return;
         frame = requestAnimationFrame(() => {
           frame = 0;
-          syncTerminalSizeRef.current();
+          syncTerminalSizeRef.current({ deferBackendSize: true });
         });
       };
       const rendered = terminal.onRender(fit);

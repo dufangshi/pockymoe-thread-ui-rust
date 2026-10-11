@@ -91,6 +91,7 @@ export function ComposerReasoningSlider({
   return (
     <section
       className="composer-reasoning"
+      data-effort={option.reasoningEffort}
       data-interacting={interacting}
       style={{ '--effort-color': color } as CSSProperties}
     >

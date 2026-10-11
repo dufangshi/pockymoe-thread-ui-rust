@@ -391,6 +391,16 @@ export function formatReasoningEffortLabel(
   }
 }
 
+/** The `data-agent` key a theme uses for the harness avatar ("Claude Code" -> "claude"). */
+export function composerAgentKey(label: string | null | undefined) {
+  const value = (label ?? '').trim().toLowerCase();
+  if (!value || value === 'acp') return undefined;
+  if (value.includes('claude')) return 'claude';
+  if (value.includes('codex')) return 'codex';
+  if (value.includes('deepseek') || value === 'dsh') return 'deepseek';
+  return value.split(/[^a-z0-9]+/).find(Boolean);
+}
+
 export function parseGoalTokenBudgetThousands(value: string) {
   const normalized = value.trim();
   if (!normalized) {

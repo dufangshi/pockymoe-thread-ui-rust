@@ -13,6 +13,9 @@ import { ComposerSubscriptionUsage, visibleSubscriptionWindows } from './Compose
 
 export interface ComposerFrameProps {
   activeView: 'chat' | 'shell';
+  /** Theme avatar key of the thread's harness; presentation only. */
+  agent?: string | undefined;
+  busy?: boolean;
   layerClassName: string;
   formClassName: string;
   shellClassName: string;
@@ -42,6 +45,8 @@ export interface ComposerFrameProps {
 
 export function ComposerFrame({
   activeView,
+  agent,
+  busy = false,
   layerClassName,
   formClassName,
   shellClassName,
@@ -89,6 +94,8 @@ export function ComposerFrame({
         ref={formRef}
         {...focusEvents}
         data-composer-focus-owner={focusOwner}
+        data-agent={agent}
+        data-composer-busy={busy ? 'true' : undefined}
         data-composer-layout={activeView === 'chat' ? (expanded ? 'expanded' : 'collapsed') : undefined}
         data-testid={activeView === 'chat' ? 'chat-composer' : undefined}
         onSubmit={onSubmit}

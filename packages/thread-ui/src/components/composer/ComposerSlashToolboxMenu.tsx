@@ -14,7 +14,21 @@ import type {
   UpdateThreadGoalInput,
   UpdateThreadSettingsInput,
 } from '@pockymoe/shared';
-import type { MouseEvent } from 'react';
+import type { ComponentType, MouseEvent, SVGProps } from 'react';
+import {
+  CircleSlash,
+  GitFork,
+  ListChecks,
+  MessageSquarePlus,
+  Plug,
+  Shrink,
+  SlidersHorizontal,
+  Sparkles,
+  Target,
+  Webhook,
+  Zap,
+} from 'lucide-react';
+import { useDocumentThemePreset } from '../themeHooks';
 
 import { InputGroupButton } from '../graph-ui/InputGroup';
 import { SlashIcon } from './composerPresentation';
@@ -33,6 +47,40 @@ import type {
   SlashPanelState,
   SlashPanelView,
 } from './types';
+
+// Plum Pocket gives every toolbox row an icon tile and its description.
+const toolboxIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+  plan: ListChecks,
+  goal: Target,
+  fast: Zap,
+  compact: Shrink,
+  fork: GitFork,
+  skills: Sparkles,
+  mcp: Plug,
+  hooks: Webhook,
+  harness: SlidersHorizontal,
+  prompt: MessageSquarePlus,
+  unsupported: CircleSlash,
+};
+
+function ToolboxLabel({ plum, action, command, description }: {
+  plum: boolean;
+  action: string;
+  command: string;
+  description?: string | null | undefined;
+}) {
+  if (!plum) return <span>{command}</span>;
+  const Icon = toolboxIcons[action] ?? MessageSquarePlus;
+  return (
+    <>
+      <span className="composer-toolbox-icon" aria-hidden="true"><Icon /></span>
+      <span className="composer-toolbox-text">
+        <span className="composer-toolbox-command">{command}</span>
+        {description ? <span className="composer-toolbox-description">{description}</span> : null}
+      </span>
+    </>
+  );
+}
 
 export function ComposerSlashToolboxMenu({
   open,
@@ -203,6 +251,7 @@ export function ComposerSlashToolboxMenu({
   onSaveRawMcpBlock: () => Promise<void> | void;
 }) {
   useI18n();
+  const plum = useDocumentThemePreset() === 'plum-pocket';
   return (
     <div className="relative">
       <InputGroupButton
@@ -215,7 +264,7 @@ export function ComposerSlashToolboxMenu({
         onClick={onToggle}
         className={`${iconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`}
       >
-        <SlashIcon />
+        {plum ? <span aria-hidden="true" className="composer-slash-glyph">/</span> : <SlashIcon />}
       </InputGroupButton>
 
       {open && (
@@ -240,6 +289,7 @@ export function ComposerSlashToolboxMenu({
               {planModeAvailable ? (
                 <button
                   type="button"
+                  data-toolbox-action="plan"
                   aria-pressed={displayedCollaborationMode === 'plan'}
                   disabled={settingsBusy}
                   onClick={() =>
@@ -258,8 +308,8 @@ export function ComposerSlashToolboxMenu({
                   title={translate("chat.togglePlanMode")}
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <span>/plan</span>
-                    <span className="text-[11px] uppercase tracking-[0.16em] text-stone-400">
+                    <ToolboxLabel plum={plum} action="plan" command="/plan" />
+                    <span className="composer-toolbox-status text-[11px] uppercase tracking-[0.16em] text-stone-400">
                       {displayedCollaborationMode === 'plan' ? translate("chat.on") : translate("chat.off")}
                     </span>
                   </div>
@@ -269,7 +319,8 @@ export function ComposerSlashToolboxMenu({
                 item.action === 'goal' ? (
                   <div
                     key={`${item.action}:${item.command}`}
-                    className={`mt-1 flex min-h-11 overflow-hidden rounded-xl border border-[var(--theme-border)] ${index === 0 && !planModeAvailable ? 'mt-0' : ''}`}
+                    data-toolbox-action={item.action}
+                    className={`composer-toolbox-split mt-1 flex min-h-11 overflow-hidden rounded-xl border border-[var(--theme-border)] ${index === 0 && !planModeAvailable ? 'mt-0' : ''}`}
                     title={item.description ?? item.label}
                   >
                     <button
@@ -282,7 +333,13 @@ export function ComposerSlashToolboxMenu({
                       className="min-w-0 flex-1 px-3 py-2.5 text-left text-sm text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
                       aria-label={translate("chat.viewGoals")}
                     >
-                      <span>{item.command}</span>
+                      {plum ? (
+                        <span className="flex items-center gap-3">
+                          <ToolboxLabel plum action={item.action} command={item.command} description={item.description} />
+                        </span>
+                      ) : (
+                        <span>{item.command}</span>
+                      )}
                     </button>
                     <button
                       type="button"
@@ -297,14 +354,15 @@ export function ComposerSlashToolboxMenu({
                   <button
                     key={`${item.action}:${item.command}`}
                     type="button"
+                    data-toolbox-action={item.action}
                     disabled={toolboxItemDisabled(item)}
                     onClick={(event) => onToolboxItemClick(item, event)}
                     className={`${toolboxItemClassName(item)} ${index === 0 && !planModeAvailable ? 'mt-0' : ''}`}
                     title={item.description ?? item.label}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span>{item.command}</span>
-                      <span className="text-[11px] uppercase tracking-[0.16em] text-stone-400">
+                      <ToolboxLabel plum={plum} action={item.action} command={item.command} description={item.description} />
+                      <span className="composer-toolbox-status text-[11px] uppercase tracking-[0.16em] text-stone-400">
                         {toolboxItemStatus(item)}
                       </span>
                     </div>

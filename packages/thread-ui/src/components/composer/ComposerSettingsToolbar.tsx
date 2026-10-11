@@ -13,12 +13,15 @@ import type { SettingsMenu } from './types';
 import { formatReasoningEffortLabel } from './composerUtils';
 import { ContextProgressBar } from './composerPresentation';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
-import { Check } from 'lucide-react';
+import { Check, ChevronDown, ListPlus, Send, Target } from 'lucide-react';
+import { useDocumentThemePreset } from '../themeHooks';
 import { ComposerReasoningSlider } from './ComposerReasoningSlider';
 
 export function ComposerSettingsToolbar({
   openMenu,
   model,
+  agent,
+  queueing = false,
   modelOptions,
   modelContextTitle,
   contextUsage,
@@ -41,6 +44,9 @@ export function ComposerSettingsToolbar({
   beforeSend?: ReactNode;
   openMenu: SettingsMenu;
   model: string | null | undefined;
+  agent?: string | undefined;
+  /** A turn is running, so sending adds the prompt to its queue. */
+  queueing?: boolean;
   modelOptions: ModelOptionDto[];
   modelContextTitle: string;
   contextUsage: ThreadContextUsageDto | null | undefined;
@@ -66,6 +72,8 @@ export function ComposerSettingsToolbar({
   onUpdateSettings: (input: UpdateThreadSettingsInput) => void;
 }) {
   useI18n();
+  // Plum Pocket shows the harness mascot, a menu chevron and per-intent send icons.
+  const plum = useDocumentThemePreset() === 'plum-pocket';
   const selectedModelLabel =
     modelOptions.find((entry) => entry.model === model)?.displayName ||
     model ||
@@ -99,10 +107,14 @@ export function ComposerSettingsToolbar({
           title={`${selectedModelLabel}${supportsEffort ? ` · ${effortLabel}` : ''}\n${modelContextTitle}`}
           className="composer-model-label flex flex-col items-center justify-center whitespace-nowrap px-1 text-xs text-stone-400"
         >
+          {plum && agent ? (
+            <span className="matter-thread-avatar composer-model-avatar" data-agent={agent} aria-hidden="true" />
+          ) : null}
           <span className="composer-model-name">{selectedModelLabel}</span>
           {supportsEffort && (
             <span className="composer-model-effort">{effortLabel}</span>
           )}
+          {plum ? <ChevronDown aria-hidden="true" className="composer-model-chevron" /> : null}
         </button>
         {model ? <ContextProgressBar contextUsage={contextUsage} /> : null}
         {openMenu === 'model' && (
@@ -167,17 +179,27 @@ export function ComposerSettingsToolbar({
         disabled={goalBusy || (activeView === 'chat' ? disabled : false)}
         className={`${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
       >
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 16 16"
-          className="h-4 w-4 fill-none stroke-current"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M8 13V3" />
-          <path d="m4 7 4-4 4 4" />
-        </svg>
+        {plum ? (
+          goalComposeMode ? (
+            <Target aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
+          ) : queueing && activeView === 'chat' ? (
+            <ListPlus aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
+          ) : (
+            <Send aria-hidden="true" className="composer-send-plane h-[17px] w-[17px]" strokeWidth={2.2} />
+          )
+        ) : (
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 16 16"
+            className="h-4 w-4 fill-none stroke-current"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M8 13V3" />
+            <path d="m4 7 4-4 4 4" />
+          </svg>
+        )}
       </InputGroupButton>
     </>
   );

@@ -51,6 +51,7 @@ import {
   derivePromptPasteAction,
   extractFilesFromTransfer,
   formatModelContextTitle,
+  composerAgentKey,
   hasTransferFiles,
   normalizePromptText,
   tokenizePrompt,
@@ -215,6 +216,7 @@ export function ThreadComposer({
   compactBusy = false,
   error,
   model = null,
+  agentLabel = null,
   reasoningEffort = null,
   fastMode = false,
   collaborationMode = 'default',
@@ -503,6 +505,7 @@ export function ThreadComposer({
     [model, modelOptions],
   );
   const modelContextTitle = formatModelContextTitle(model, contextUsage);
+  const agent = composerAgentKey(agentLabel);
   const supportedEfforts = currentModel?.supportedReasoningEfforts ?? [];
   const promptSegments = useMemo(
     () => tokenizePrompt(prompt, attachments),
@@ -939,6 +942,7 @@ export function ThreadComposer({
     activeView,
     disabled,
     model,
+    agent,
     modelOptions,
     modelContextTitle,
     contextUsage,
@@ -1090,6 +1094,8 @@ export function ThreadComposer({
   return (
     <ComposerFrame
       activeView={activeView}
+      agent={agent}
+      busy={busy}
       layerClassName={composerLayerClassName}
       formClassName={formClassName}
       shellClassName={composerShellClassName}

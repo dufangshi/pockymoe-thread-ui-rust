@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  composerAgentKey,
   attachmentDisplayLabel,
   buildAttachmentInsertionText,
   buildAttachmentInsertionDraft,
@@ -47,6 +48,16 @@ function attachment(
 }
 
 describe('composer utilities', () => {
+  it('maps harness labels to theme avatar keys', () => {
+    expect(composerAgentKey('Claude Code')).toBe('claude');
+    expect(composerAgentKey('codex')).toBe('codex');
+    expect(composerAgentKey('DeepSeek Harness')).toBe('deepseek');
+    expect(composerAgentKey('dsh')).toBe('deepseek');
+    expect(composerAgentKey('Gemini CLI')).toBe('gemini');
+    expect(composerAgentKey('acp')).toBeUndefined();
+    expect(composerAgentKey(null)).toBeUndefined();
+  });
+
   it('normalizes non-breaking spaces in prompt text', () => {
     expect(normalizePromptText('hello\u00a0world')).toBe('hello world');
   });

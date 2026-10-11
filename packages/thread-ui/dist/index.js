@@ -23,7 +23,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-MWJREQ72.js";
+} from "./chunk-2VRX2M6G.js";
 import {
   cssHexVariable,
   useDocumentThemePreset
@@ -11154,7 +11154,9 @@ var GraphChatUserMessageBody = memo3(
         return /* @__PURE__ */ jsx45("span", { children: segment.text }, segment.key);
       }
       if (segment.type === "photo") {
-        const imageUrl = attachmentPreviewUrls?.[segment.path] ?? (threadId ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? null : null);
+        const localPreviewUrl = attachmentPreviewUrls?.[segment.path];
+        const imageUrl = localPreviewUrl ?? (threadId ? getImageAssetUrl?.({ threadId, path: segment.path, variant: "thumbnail" }) ?? null : null);
+        const fullImageUrl = localPreviewUrl ?? (threadId ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? void 0 : void 0);
         const label = basenameFromAssetPath(segment.path) || translate("chat.attachedImage");
         return /* @__PURE__ */ jsx45(
           "span",
@@ -11165,6 +11167,7 @@ var GraphChatUserMessageBody = memo3(
                 ZoomableImage,
                 {
                   src: imageUrl,
+                  fullSrc: fullImageUrl,
                   alt: label,
                   className: "h-[4.5rem] w-[6rem] rounded-[0.75rem] bg-stone-950 object-contain",
                   loading: "lazy"
@@ -13256,8 +13259,10 @@ var GraphChatImageItem = memo5(function GraphChatImageItem2({
   timeMeta
 }) {
   const { locale: i18nLocale } = useI18n();
+  const [lightboxOpen, setLightboxOpen] = useState35(false);
   const assetPath = item.assetPath ?? item.detailText ?? null;
-  const imageUrl = threadId && assetPath ? getImageAssetUrl?.({ threadId, path: assetPath }) ?? null : null;
+  const imageUrl = threadId && assetPath ? getImageAssetUrl?.({ threadId, path: assetPath, variant: "thumbnail" }) ?? null : null;
+  const fullImageUrl = lightboxOpen && threadId && assetPath ? getImageAssetUrl?.({ threadId, path: assetPath }) ?? imageUrl : null;
   return /* @__PURE__ */ jsxs42(
     GraphChatHistoryEventFrame,
     {
@@ -13272,8 +13277,9 @@ var GraphChatImageItem = memo5(function GraphChatImageItem2({
           "button",
           {
             type: "button",
-            onClick: () => onOpen(translate("chat.imagePath"), assetPath ?? item.text),
+            onClick: () => setLightboxOpen(true),
             className: "block w-full text-left",
+            title: translate("files.openImagePreview"),
             children: /* @__PURE__ */ jsx52(
               "img",
               {
@@ -13285,6 +13291,14 @@ var GraphChatImageItem = memo5(function GraphChatImageItem2({
             )
           }
         ) : /* @__PURE__ */ jsx52("div", { className: "thread-graph-history-event-summary", children: item.text }),
+        fullImageUrl ? /* @__PURE__ */ jsx52(
+          GraphWorkspaceImageLightbox,
+          {
+            src: fullImageUrl,
+            alt: item.text || translate("chat.imagePreview"),
+            onClose: () => setLightboxOpen(false)
+          }
+        ) : null,
         assetPath ? /* @__PURE__ */ jsx52(
           "button",
           {
@@ -13632,13 +13646,12 @@ var GraphChatSearchGroupItem = memo5(function GraphChatSearchGroupItem2({
       children: items.map((item, index) => {
         const previewText = item.previewText?.trim() || item.text || translate("chat.webSearch");
         const summary = summarizeInlinePreviewText(previewText);
-        const detailText = item.detailText?.trim() || item.text || translate("chat.webSearch");
         return /* @__PURE__ */ jsxs42(
           "button",
           {
             type: "button",
             "aria-label": translate("chat.openGroupedWebSearch", { value1: index + 1 }),
-            onClick: () => onOpen(`Web Search ${index + 1}`, detailText),
+            onClick: () => onOpen(item, `Web Search ${index + 1}`),
             className: "thread-graph-history-detail-row block w-full rounded-md border px-3 py-2 text-left transition",
             children: [
               /* @__PURE__ */ jsxs42("div", { className: "flex flex-wrap items-center gap-2", children: [
@@ -15065,7 +15078,7 @@ function TimelineHistoryEntries({
           items: entry.items,
           expanded,
           onToggleExpanded,
-          onOpen: onOpenExpandedText,
+          onOpen: (item, title) => onOpenDeferredHistoryItemDetail(item, title, item.detailText?.trim() || item.text || translate("chat.webSearch"), translate("chat.loadingFullWebSearchDetails"), translate("chat.unableToLoadFullWebSearchDetails")),
           timeMeta: relativeTimeMeta(firstHistoryEntryTimestamp(entry), lastHistoryEntryTimestamp(entry))
         },
         entry.key
@@ -20524,7 +20537,7 @@ function ThreadDetailSurface({
   const timelineAdapter = useMemo15(
     () => ({
       ...getImageAssetUrl ? {
-        getImageAssetUrl: (input) => getImageAssetUrl(input.path)
+        getImageAssetUrl: (input) => input.variant ? getImageAssetUrl(input.path, input.variant) : getImageAssetUrl(input.path)
       } : {},
       resolveHref: (href) => {
         const path = localFileHref(href, typeof window === "undefined" ? void 0 : window.location.origin);

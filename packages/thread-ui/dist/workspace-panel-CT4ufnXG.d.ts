@@ -27,12 +27,18 @@ interface ThreadShellControlState {
     error: string | null;
 }
 
+/**
+ * `thumbnail` asks for a small preview for inline chips. Supervisors without
+ * the variant answer with the original, so callers must not rely on its size.
+ */
+type ThreadImageAssetVariant = 'thumbnail';
 interface ThreadTimelineAdapter {
     resolveWorkspacePath?: (path: string) => Promise<boolean>;
     workspaceRootPath?: string | undefined;
     getImageAssetUrl?: (input: {
         threadId: string;
         path: string;
+        variant?: ThreadImageAssetVariant;
     }) => string;
     resolveHref?: (href: string) => string;
     onOpenLinkedThread?: (threadId: string) => void;
@@ -212,7 +218,7 @@ interface ThreadDetailUiAdapter {
     updateSettings?: (input: UpdateThreadSettingsInput) => Promise<void> | void;
     loadHistoryItemDetail?: (itemId: string) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
     loadTurnDetail?: (turnId: string) => Promise<ThreadTurnDto> | ThreadTurnDto;
-    getImageAssetUrl?: (path: string) => string;
+    getImageAssetUrl?: (path: string, variant?: ThreadImageAssetVariant) => string;
     openWorkspaceFile?: (input: {
         path: string;
         line?: number;
@@ -307,4 +313,4 @@ interface ThreadGraphWorkspaceFeatures {
 declare function ThreadGraphWorkspacePanel({ detail, status, plugins, workspaceAdapter, metaContent, settingsContent, activeView, features: featureConfig, focusPathRequest, }: ThreadGraphWorkspacePanelProps): react.JSX.Element | null;
 declare const MemoizedThreadGraphWorkspacePanel: react.MemoExoticComponent<typeof ThreadGraphWorkspacePanel>;
 
-export { MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SendPromptInput as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, type ThreadWorkspaceAdapter as g, PluginContext as h, type ShellSocketConnection as i, type ShellSocketHandlers as j, type WorkspaceDocumentSnapshot as k, type WorkspaceSaveReceipt as l, type WorkspaceTab as m, createDefaultPluginContextValue as n, mergePluginState as o, ThreadGraphWorkspacePanel as p };
+export { MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SendPromptInput as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, type ThreadWorkspaceAdapter as g, PluginContext as h, type ShellSocketConnection as i, type ShellSocketHandlers as j, type ThreadImageAssetVariant as k, type WorkspaceDocumentSnapshot as l, type WorkspaceSaveReceipt as m, type WorkspaceTab as n, createDefaultPluginContextValue as o, mergePluginState as p, ThreadGraphWorkspacePanel as q };

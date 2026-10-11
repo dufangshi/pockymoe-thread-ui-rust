@@ -1146,6 +1146,7 @@ function GraphWorkspaceImageLightbox({
 function ZoomableImage({
   alt,
   className,
+  fullSrc,
   loading,
   src,
   width,
@@ -1180,7 +1181,7 @@ function ZoomableImage({
     open ? /* @__PURE__ */ jsx6(
       GraphWorkspaceImageLightbox,
       {
-        src,
+        src: fullSrc || src,
         alt,
         onClose: closeLightbox
       }

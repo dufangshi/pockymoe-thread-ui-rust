@@ -1452,7 +1452,8 @@ export const GraphChatSearchGroupItem = memo(function GraphChatSearchGroupItem({
   items: SearchHistoryItem[];
   expanded: boolean;
   onToggleExpanded: () => void;
-  onOpen: (title: string, text: string) => void;
+  // Receives the item so compact histories can load its deferred detail.
+  onOpen: (item: SearchHistoryItem, title: string) => void;
   timeMeta?: ReactNode;
 }) {
   const { locale: i18nLocale } = useI18n();
@@ -1482,14 +1483,13 @@ export const GraphChatSearchGroupItem = memo(function GraphChatSearchGroupItem({
         const previewText =
           item.previewText?.trim() || item.text || translate("chat.webSearch");
         const summary = summarizeInlinePreviewText(previewText);
-        const detailText = item.detailText?.trim() || item.text || translate("chat.webSearch");
 
         return (
           <button
             key={item.id}
             type="button"
             aria-label={translate("chat.openGroupedWebSearch", { value1: index + 1 })}
-            onClick={() => onOpen(`Web Search ${index + 1}`, detailText)}
+            onClick={() => onOpen(item, `Web Search ${index + 1}`)}
             className="thread-graph-history-detail-row block w-full rounded-md border px-3 py-2 text-left transition"
           >
             <div className="flex flex-wrap items-center gap-2">

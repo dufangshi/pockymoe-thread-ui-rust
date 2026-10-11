@@ -994,7 +994,7 @@ function TimelineHistoryEntries({
           items={entry.items}
           expanded={expanded}
           onToggleExpanded={onToggleExpanded}
-          onOpen={onOpenExpandedText}
+          onOpen={(item, title) => onOpenDeferredHistoryItemDetail(item, title, item.detailText?.trim() || item.text || translate("chat.webSearch"), translate("chat.loadingFullWebSearchDetails"), translate("chat.unableToLoadFullWebSearchDetails"))}
           timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry), lastHistoryEntryTimestamp(entry))}
         />
       )}

@@ -74,14 +74,15 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate }: {
           }}>{children.length}<ChevronDown size={12} /></button>}
       </div>;
     })}
-    {menu && activeMenu && createPortal(<div ref={popup} id="matter-agent-threads" role="region" aria-label={translate("workbench.agentThreads_187f89", { value1: activeMenu.root.title })}
+    {menu && activeMenu && createPortal(<div ref={popup} id="matter-agent-threads" className="matter-agent-threads-menu" role="region" aria-label={translate("workbench.agentThreads_187f89", { value1: activeMenu.root.title })}
       style={{ position: 'fixed', left: menu.left, top: menu.top, zIndex: 1000, width: 'min(280px, calc(100vw - 16px))', maxHeight: 'min(420px, 65dvh)', overflowY: 'auto', background: 'var(--theme-surface)', color: 'var(--theme-fg)', border: '1px solid var(--theme-border)', borderRadius: 8, padding: 6, boxShadow: '0 8px 24px #0004' }}>
       {[activeMenu.root, ...activeMenu.children].map(thread => {
         const activity = threadGroupActivity(thread, thread.key === activeMenu.root.key ? activeMenu.children : []);
-        return <a key={thread.key} href={thread.href}
+        return <a key={thread.key} href={thread.href} className="matter-agent-threads-item"
         aria-current={thread.key === currentKey ? 'page' : undefined}
         style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 4, background: thread.key === currentKey ? 'var(--theme-hover)' : undefined, color: 'inherit' }}
         onClick={event => { event.preventDefault(); setMenu(null); onNavigate(thread.href); }}>
+        {thread.agent && <span className="matter-thread-avatar" data-agent={thread.agent} aria-hidden="true" />}
         <span className="matter-status-dot" role="img" aria-label={activity.label} data-status={activity.status} />
         <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{thread.title}</span>
       </a>; })}

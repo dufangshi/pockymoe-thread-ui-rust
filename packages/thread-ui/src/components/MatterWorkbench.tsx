@@ -23,6 +23,7 @@ import { useTabScrollEdges } from './useTabScrollEdges';
 import { WorkbenchContext } from './WorkbenchContext';
 import { WorkbenchPath } from './WorkbenchPath';
 import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
+import { useDocumentThemePreset } from './themeHooks';
 
 export interface WorkbenchThread {
   key: string;
@@ -127,6 +128,9 @@ export function MatterWorkbench({
     query.addEventListener('change', change);
     return () => query.removeEventListener('change', change);
   }, []);
+  // Plum Pocket keeps the phone top bar to touch-sized essentials and moves
+  // Home, Chat and the device monitor into the drawer.
+  const drawerTools = useDocumentThemePreset() === 'plum-pocket' && mobile;
   const toolPanel = useWorkbenchToolPanel();
   // With the bottom panel the conversation stays visible beside the terminal:
   // Chat is "pressed" unless a maximized terminal covers it.
@@ -212,8 +216,8 @@ export function MatterWorkbench({
   const renderThreadGroups = (threads: WorkbenchThread[]) => groupThreads(threads).map(({ root, children }) => (
     <div key={root.key}>
       {renderThread(root, threadGroupActivity(root, children))}
-      {children.length > 0 && <details open={children.some(child => child.key === o.currentKey) || undefined} style={{ margin: '0 0 6px 14px' }}>
-        <summary style={{ padding: '4px 8px', fontSize: 12, cursor: 'pointer', color: 'var(--theme-fg-soft)' }}>{children.length} {translate("workbench.agentThreads_655dcc")}</summary>
+      {children.length > 0 && <details className="matter-agent-threads" open={children.some(child => child.key === o.currentKey) || undefined} style={{ margin: '0 0 6px 14px' }}>
+        <summary className="matter-agent-threads-summary" style={{ padding: '4px 8px', fontSize: 12, cursor: 'pointer', color: 'var(--theme-fg-soft)' }}>{children.length} {translate("workbench.agentThreads_655dcc")}</summary>
         {children.map(child => renderThread(child))}
       </details>}
     </div>
@@ -293,9 +297,9 @@ export function MatterWorkbench({
         <button data-action="go-forward" aria-label={translate("workbench.goForward")} onClick={() => history.forward()}>
           <ArrowRight />
         </button>
-        <a href={homeHref} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}>
+        {!drawerTools && <a href={homeHref} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}>
           <Home />
-        </a>
+        </a>}
         <div className="matter-topbar-search">{o.search ?? <button
           className="matter-search-trigger"
           aria-label={translate("workbench.searchConversation")}
@@ -306,9 +310,9 @@ export function MatterWorkbench({
           <span>{translate("workbench.searchConversation")}</span>
         </button>}</div>
         <div className="matter-topbar-end">
-          {mobile && deviceMonitor}
+          {mobile && !drawerTools && deviceMonitor}
           {mobile && <>
-            <button aria-label={translate("workbench.chat")} aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={showChat}><MessageSquare /></button>
+            {!drawerTools && <button aria-label={translate("workbench.chat")} aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={showChat}><MessageSquare /></button>}
             {o.terminalEnabled && <button aria-label={translate("workbench.terminal")} aria-pressed={o.activeView === 'shell'} onClick={() => o.onViewChange('shell')}><Terminal /></button>}
             {o.toolPanels?.map(panel => <button key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
             <button aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen /></button>
@@ -350,6 +354,13 @@ export function MatterWorkbench({
             <X />
           </button>
         </div>
+        {drawerTools && (
+          <div className="matter-drawer-tools" role="group" aria-label={translate("workbench.workspaceTools")}>
+            <a href={homeHref}><Home /><span>{translate("workbench.workspaces")}</span></a>
+            <button aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={() => { showChat(); setSidebarOpen(false); }}><MessageSquare /><span>{translate("workbench.chat")}</span></button>
+            {deviceMonitor}
+          </div>
+        )}
         {o.error && (
           <p className="matter-sidebar-error" role="alert">
             {o.error}

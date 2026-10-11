@@ -1,5 +1,7 @@
 export const devicesEn = {
   "devices.unavailable": "Unavailable",
+  "devices.secondsAgo": "{{value1}}s ago",
+  "devices.swap": "Swap",
   "devices.sensorAccessSetup": "Sensor access setup",
   "devices.cPUTemperature": "CPU temperature",
   "devices.updateThisDeviceSSupervisorToCollect": "Update this device’s Supervisor to collect temperature sensors",

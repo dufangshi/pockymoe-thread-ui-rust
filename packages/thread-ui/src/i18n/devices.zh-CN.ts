@@ -1,5 +1,7 @@
 export const devicesZhCN = {
   "devices.unavailable": "不可用",
+  "devices.secondsAgo": "{{value1}} 秒前",
+  "devices.swap": "交换",
   "devices.sensorAccessSetup": "传感器访问设置",
   "devices.cPUTemperature": "CPU 温度",
   "devices.updateThisDeviceSSupervisorToCollect": "更新此设备的 Supervisor 以采集温度传感器",

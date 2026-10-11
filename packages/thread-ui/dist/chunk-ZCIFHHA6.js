@@ -941,6 +941,8 @@ var commonEn = {
 // src/i18n/devices.en.ts
 var devicesEn = {
   "devices.unavailable": "Unavailable",
+  "devices.secondsAgo": "{{value1}}s ago",
+  "devices.swap": "Swap",
   "devices.sensorAccessSetup": "Sensor access setup",
   "devices.cPUTemperature": "CPU temperature",
   "devices.updateThisDeviceSSupervisorToCollect": "Update this device\u2019s Supervisor to collect temperature sensors",
@@ -3767,6 +3769,8 @@ var commonZhCN = {
 // src/i18n/devices.zh-CN.ts
 var devicesZhCN = {
   "devices.unavailable": "\u4E0D\u53EF\u7528",
+  "devices.secondsAgo": "{{value1}} \u79D2\u524D",
+  "devices.swap": "\u4EA4\u6362",
   "devices.sensorAccessSetup": "\u4F20\u611F\u5668\u8BBF\u95EE\u8BBE\u7F6E",
   "devices.cPUTemperature": "CPU \u6E29\u5EA6",
   "devices.updateThisDeviceSSupervisorToCollect": "\u66F4\u65B0\u6B64\u8BBE\u5907\u7684 Supervisor \u4EE5\u91C7\u96C6\u6E29\u5EA6\u4F20\u611F\u5668",

@@ -1628,6 +1628,8 @@ declare const en: {
     readonly "files.loadingDiagram": "Loading diagram…";
     readonly "files.hidePreview": "Hide preview";
     readonly "devices.unavailable": "Unavailable";
+    readonly "devices.secondsAgo": "{{value1}}s ago";
+    readonly "devices.swap": "Swap";
     readonly "devices.sensorAccessSetup": "Sensor access setup";
     readonly "devices.cPUTemperature": "CPU temperature";
     readonly "devices.updateThisDeviceSSupervisorToCollect": "Update this device’s Supervisor to collect temperature sensors";
@@ -4419,6 +4421,8 @@ declare const zhCN: {
     "files.loadingDiagram": "正在加载图表…";
     "files.hidePreview": "收起预览";
     "devices.unavailable": "不可用";
+    "devices.secondsAgo": "{{value1}} 秒前";
+    "devices.swap": "交换";
     "devices.sensorAccessSetup": "传感器访问设置";
     "devices.cPUTemperature": "CPU 温度";
     "devices.updateThisDeviceSSupervisorToCollect": "更新此设备的 Supervisor 以采集温度传感器";
@@ -7232,6 +7236,8 @@ declare const resources: {
         readonly "files.loadingDiagram": "Loading diagram…";
         readonly "files.hidePreview": "Hide preview";
         readonly "devices.unavailable": "Unavailable";
+        readonly "devices.secondsAgo": "{{value1}}s ago";
+        readonly "devices.swap": "Swap";
         readonly "devices.sensorAccessSetup": "Sensor access setup";
         readonly "devices.cPUTemperature": "CPU temperature";
         readonly "devices.updateThisDeviceSSupervisorToCollect": "Update this device’s Supervisor to collect temperature sensors";
@@ -10022,6 +10028,8 @@ declare const resources: {
         "files.loadingDiagram": "正在加载图表…";
         "files.hidePreview": "收起预览";
         "devices.unavailable": "不可用";
+        "devices.secondsAgo": "{{value1}} 秒前";
+        "devices.swap": "交换";
         "devices.sensorAccessSetup": "传感器访问设置";
         "devices.cPUTemperature": "CPU 温度";
         "devices.updateThisDeviceSSupervisorToCollect": "更新此设备的 Supervisor 以采集温度传感器";

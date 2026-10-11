@@ -47,4 +47,16 @@ describe('shell presentation helpers', () => {
     expect(theme.foreground).toBe('#d6dde6');
     container.remove();
   });
+
+  it('lets a theme preset override ANSI colors by kebab-case name', () => {
+    const container = document.createElement('div');
+    container.style.setProperty('--terminal-red', '#ff8fa3');
+    container.style.setProperty('--terminal-bright-black', '#9a88a3');
+    document.body.append(container);
+    const theme = terminalThemeFor('dark', container);
+    expect(theme.red).toBe('#ff8fa3');
+    expect(theme.brightBlack).toBe('#9a88a3');
+    expect(theme.green).toBe('#4ade80');
+    container.remove();
+  });
 });

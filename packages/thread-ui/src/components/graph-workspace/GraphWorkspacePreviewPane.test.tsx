@@ -13,6 +13,7 @@ import type { WorkspaceTreeNode } from './workspaceTree';
 
 vi.mock('../graph-chat/graphChatShiki', () => ({
   getGraphChatHighlighter: () => new Promise(() => undefined),
+  syntaxThemeFor: () => 'github-light-default',
 }));
 
 let root: Root | null = null;

@@ -99,9 +99,26 @@ const editorColorVariables: Record<string, string> = {
   'editorCursor.foreground': '--editor-cursor',
   'editorIndentGuide.background1': '--editor-indent',
   'editorIndentGuide.activeBackground1': '--editor-indent-active',
+  'diffEditor.insertedTextBackground': '--editor-diff-inserted',
+  'diffEditor.removedTextBackground': '--editor-diff-removed',
+  'diffEditor.insertedLineBackground': '--editor-diff-inserted-line',
+  'diffEditor.removedLineBackground': '--editor-diff-removed-line',
+  'editorBracketHighlight.foreground1': '--editor-bracket-1',
+  'editorBracketHighlight.foreground2': '--editor-bracket-2',
+  'editorBracketHighlight.foreground3': '--editor-bracket-3',
+};
+/** Monarch token scopes colored by the optional `--editor-token-*` palette. */
+const editorTokenVariables: Record<string, string[]> = {
+  '--editor-token-keyword': ['keyword', 'keyword.json', 'storage'],
+  '--editor-token-string': ['string', 'string.value', 'attribute.value', 'regexp', 'string.escape'],
+  '--editor-token-constant': ['number', 'constant', 'predefined'],
+  '--editor-token-comment': ['comment', 'comment.doc'],
+  '--editor-token-type': ['type', 'type.identifier', 'tag', 'key', 'attribute.name', 'metatag'],
+  '--editor-token-punctuation': ['delimiter', 'delimiter.bracket', 'delimiter.parenthesis', 'operator'],
 };
 /** The Monaco theme for a container. A theme preset may set `--editor-*` hex colors
- *  (at least `--editor-bg`) on an ancestor; otherwise the built-in theme is used.
+ *  (at least `--editor-bg`) on an ancestor, and optionally a syntax palette
+ *  (`--editor-token-*`); otherwise the built-in theme is used.
  *  Monaco themes are global, so all editors switch together. */
 export function editorThemeFor(dark: boolean, container: Element | null | undefined) {
   const base = dark ? 'pockymoe-dark' : 'pockymoe-light';
@@ -109,8 +126,13 @@ export function editorThemeFor(dark: boolean, container: Element | null | undefi
     .map(([key, variable]) => [key, cssHexVariable(container, variable)])
     .filter((entry): entry is [string, string] => Boolean(entry[1])));
   if (!colors['editor.background']) return base;
+  const rules = Object.entries(editorTokenVariables).flatMap(([variable, tokens]) => {
+    const color = cssHexVariable(container, variable);
+    const fontStyle = variable === '--editor-token-comment' ? 'italic' : undefined;
+    return color ? tokens.map((token) => ({ token, foreground: color.slice(1), ...(fontStyle ? { fontStyle } : {}) })) : [];
+  });
   const name = `${base}-preset`;
-  monaco.editor.defineTheme(name, { base: dark ? 'vs-dark' : 'vs', inherit: true, rules: [], colors });
+  monaco.editor.defineTheme(name, { base: dark ? 'vs-dark' : 'vs', inherit: true, rules, colors });
   return name;
 }
 

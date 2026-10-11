@@ -423,7 +423,11 @@ export function GraphWorkspaceExplorer({
       initialLoading={Boolean(workspaceAdapter && !adapterModel && loadingTree)}
       rootError={workspaceAdapter && !adapterModel ? workspaceError : null}
       {...(collapsedPanel === 'viewer'
-        ? { onExpandViewer: () => { if (!isMobileViewport || activeNode?.kind === 'file') setCollapsedPanel(isMobileViewport ? 'explorer' : null); } }
+        ? {
+            onExpandViewer: () => { if (!isMobileViewport || activeNode?.kind === 'file') setCollapsedPanel(isMobileViewport ? 'explorer' : null); },
+            // On phones the editor can only be shown for an open file.
+            expandViewerAvailable: !isMobileViewport || activeNode?.kind === 'file',
+          }
         : {
             onCollapse: () => {
               rememberExplorerScroll();

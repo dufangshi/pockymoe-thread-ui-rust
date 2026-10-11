@@ -83,9 +83,12 @@ export function GraphChatMessageFrame({
   timeLabel,
   timeTitle,
   messageId,
+  variant,
 }: {
   children: ReactNode;
   messageId?: string;
+  /** Neutral styling hook for messages that are not replies, such as reasoning. */
+  variant?: 'reasoning' | undefined;
   copyButton?: ReactNode;
   kind: GraphChatMessageKind;
   metaControl?: ReactNode;
@@ -126,6 +129,7 @@ export function GraphChatMessageFrame({
       data-testid="chat-message"
       data-message-id={messageId}
       data-role={isUser ? 'user' : 'assistant'}
+      data-variant={variant}
       className={`thread-graph-message flex ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       <div

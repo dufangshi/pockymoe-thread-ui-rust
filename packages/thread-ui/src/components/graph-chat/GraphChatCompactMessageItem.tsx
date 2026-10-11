@@ -76,7 +76,9 @@ export const GraphChatCompactMessageItem = memo(
     timeLabel,
     timeTitle,
     onBeforeMessageResize,
+    variant,
   }: {
+    variant?: 'reasoning';
     threadId?: string | undefined;
     item: GraphChatCompactMessage;
     scrollRootRef: RefObject<HTMLDivElement | null>;
@@ -219,6 +221,7 @@ export const GraphChatCompactMessageItem = memo(
       <GraphChatMessageFrame
         messageId={item.id}
         kind={item.kind}
+        variant={variant}
         // Execution status belongs to the turn summary, not every emitted reply.
         status={queuedLikeStatus ? item.status : null}
         copyButton={copyButton}

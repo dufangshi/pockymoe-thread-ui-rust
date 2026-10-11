@@ -51,6 +51,7 @@ export function WorkspaceExplorerPanel({
   onDelete,
   onEmptyGarbage,
   onExpandViewer,
+  expandViewerAvailable = true,
   onFilterModeChange,
   onFilterQueryChange,
   onPreview,
@@ -85,6 +86,7 @@ export function WorkspaceExplorerPanel({
   onDownload?: (node: WorkspaceTreeNode) => void;
   onEmptyGarbage?: () => void;
   onExpandViewer?: () => void;
+  expandViewerAvailable?: boolean;
   onFilterModeChange: (mode: 'highlight' | 'filter') => void;
   onFilterQueryChange: (query: string) => void;
   onPreview?: (node: WorkspaceTreeNode) => void;
@@ -211,7 +213,7 @@ export function WorkspaceExplorerPanel({
               </div>
             </details>
           ) : null}
-          {onExpandViewer ? (
+          {onExpandViewer ? (expandViewerAvailable ? (
             <button
               type="button"
               data-testid="expand-viewer"
@@ -222,7 +224,7 @@ export function WorkspaceExplorerPanel({
             >
               <PanelRightOpen className="h-4 w-4" />
             </button>
-          ) : onCollapse ? (
+          ) : null) : onCollapse ? (
             <button
               type="button"
               data-testid="collapse-explorer"

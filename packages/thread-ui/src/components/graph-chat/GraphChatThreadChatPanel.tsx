@@ -22,6 +22,7 @@ import {
   ThreadTimeline,
   type ThreadTimelineProps,
 } from '../ThreadTimeline';
+import { TranscriptAgentProvider, transcriptAgentFor } from './TranscriptAgent';
 
 export interface GraphChatThreadUsageSummary {
   input: number;
@@ -354,6 +355,10 @@ export function GraphChatThreadChatPanel({
             'max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))',
         }
       : undefined;
+  const transcriptAgent = useMemo(
+    () => transcriptAgentFor(detail.thread),
+    [detail.thread],
+  );
   const timelineElement = useMemo(() => {
     const threadRunning =
       detail.thread.status === 'running' || detail.thread.activeTurnId !== null;
@@ -400,7 +405,9 @@ export function GraphChatThreadChatPanel({
       style={panelStyle}
     >
       {beforeTimelineContent}
-      {timelineElement}
+      <TranscriptAgentProvider agent={transcriptAgent}>
+        {timelineElement}
+      </TranscriptAgentProvider>
       <div className="thread-chat-usage-footer hidden shrink-0 items-center px-4 py-1 text-[10px] leading-4 sm:flex">
         <span className="min-w-0">
           {detail.turns.length} {translate("chat.turn_b09c73")}{detail.turns.length !== 1 ? translate("chat.s") : ''}

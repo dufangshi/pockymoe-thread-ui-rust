@@ -47,6 +47,7 @@ import { GraphChatCompactMessageItem as CompactMessageItem } from '../graph-chat
 import { MessageExpansionScope } from '../graph-chat/MessageExpansionScope';
 import { GraphChatTurnBody } from '../graph-chat/GraphChatTurnBody';
 import { GraphChatTurnFrame } from '../graph-chat/GraphChatTurnFrame';
+import { TranscriptAgentByline, useTranscriptAgentIdentity } from '../graph-chat/TranscriptAgent';
 import {
   countTurnSteps,
   getLiveOutputTailForTurn,
@@ -589,6 +590,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
 }: ThreadTurnRowProps) {
   const { locale: i18nLocale } = useI18n();
   const showReasoningSummaries = useAppShellNav()?.showReasoningSummaries ?? false;
+  const agentIdentity = useTranscriptAgentIdentity();
   const hasLiveActivity =
     Boolean(livePlan) ||
     Boolean(liveOutput) ||
@@ -762,6 +764,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const terminalWorkedNode =
     isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems ? (
       <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
+        <TranscriptAgentByline />
         <span className="thread-graph-worked-label shrink-0">
           {workedLabel}
         </span>
@@ -797,6 +800,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           />
         ))}
         <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
+          <TranscriptAgentByline />
           <button
             type="button"
             className="group flex shrink-0 items-center gap-2 text-left transition"
@@ -853,10 +857,23 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
         /> : null}
       </div>
     ) : null;
+  const leadingUserCount = groupedItems.findIndex(
+    (entry) => !(entry.kind === 'item' && entry.item.kind === 'userMessage'),
+  );
+  const terminalHistoryNode =
+    agentIdentity && terminalWorkedNode && leadingUserCount > 0 ? (
+      <>
+        {renderHistoryEntries(groupedItems.slice(0, leadingUserCount))}
+        {terminalWorkedNode}
+        {renderHistoryEntries(groupedItems.slice(leadingUserCount))}
+      </>
+    ) : (
+      <>{historyNode}{terminalWorkedNode}</>
+    );
   const turnBody = (
     <GraphChatTurnBody
       footer={footerNode}
-      history={<>{historyNode}{terminalWorkedNode}</>}
+      history={terminalHistoryNode}
       liveHookPrompt={liveHookPromptNode}
       liveOutput={liveOutputNode}
       livePlan={displayedLivePlan}
@@ -873,6 +890,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       error={turn.error}
       headerStatus={<TurnStatusBar turn={turn} />}
       isActive={activeForRendering}
+      status={turn.status}
       refCallback={articleRef}
       startedAt={turn.startedAt}
       timeLabel={turnTimeLabel}

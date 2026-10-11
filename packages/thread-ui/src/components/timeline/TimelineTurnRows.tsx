@@ -530,7 +530,6 @@ function collapsedSummaryMessages(entries: TimelineHistoryEntry[], active: boole
       (item): item is ThreadHistoryItemDto & { kind: 'userMessage' } =>
         item.kind === 'userMessage',
     );
-  const last = entries.at(-1);
   const latestAgent = itemEntries
     .map((entry) => entry.item)
     .reverse()
@@ -540,26 +539,26 @@ function collapsedSummaryMessages(entries: TimelineHistoryEntry[], active: boole
     );
   const hasBackground = itemEntries.some(({ item }) =>
     item.origin === 'nativeBackgroundWait' || item.origin === 'nativeTaskNotification');
-  // Background notifications and progress share one turn. Only a native-confirmed
-  // final reply may sit outside its folded execution history; legacy rows are
-  // deliberately conservative because completed text is not proof of a final reply.
-  const finalAgent = hasBackground
-    ? (!active && latestAgent?.responsePhase === 'final' ? latestAgent : undefined)
-    : (active && !(last?.kind === 'item' && last.item.kind === 'agentMessage') ? undefined : latestAgent);
+  // Keep the latest narration visible while working, including during tools or
+  // a background wait. Completed background turns require a confirmed final
+  // reply; a completed progress item alone is not proof that the turn finished.
+  const summaryAgent = active || !hasBackground
+    ? latestAgent
+    : (latestAgent?.responsePhase === 'final' ? latestAgent : undefined);
   const hiddenEntries = entries.filter((entry) => {
     if (entry.kind !== 'item') {
       return true;
     }
 
     return (
-      entry.item.kind !== 'userMessage' && entry.item.id !== finalAgent?.id
+      entry.item.kind !== 'userMessage' && entry.item.id !== summaryAgent?.id
     );
   });
 
   return {
     users,
     latestAgent,
-    finalAgent,
+    summaryAgent,
     hiddenEntries,
   };
 }
@@ -758,7 +757,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const hasCollapsedHiddenItems =
     collapsedSummary.hiddenEntries.length > 0 || Boolean(turn.hasDeferredItems);
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
-  const visibleSummaryAgent = collapsedSummary.finalAgent;
+  const visibleSummaryAgent = collapsedSummary.summaryAgent;
 
   const canToggleWorkedSummary =
     hasCollapsedHiddenItems;
@@ -832,6 +831,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           <CompactMessageItem
             threadId={threadId}
             item={visibleSummaryAgent}
+            streaming={activeForRendering && isRunningHistoryStatus(visibleSummaryAgent.status)}
             scrollRootRef={scrollRootRef}
             timeLabel={
               visibleSummaryAgent.createdAt

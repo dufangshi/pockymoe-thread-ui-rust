@@ -264,6 +264,30 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain('Final checkpoint');
   });
 
+  it.each([false, true])('keeps the latest live narration outside folded history with background=%s', (background) => {
+    const prompt = { id: 'prompt', kind: 'userMessage' as const, text: 'Check progress' };
+    const first = { id: 'first', kind: 'agentMessage' as const, text: 'First checkpoint', responsePhase: 'commentary' as const };
+    const command = { id: 'command', kind: 'commandExecution' as const, text: 'hidden-operation', status: 'completed' };
+    const wait = { id: 'wait', kind: 'other' as const, origin: 'nativeBackgroundWait' as const, text: '', status: 'waiting' };
+    const turn = { ...completedTurn([prompt, first, command, ...(background ? [wait] : [])]), status: 'inProgress' as const };
+    const props = { onLoadTurnDetail: vi.fn(), liveOutput: '', threadRunning: true, activeTurnId: turn.id };
+    const element = render(<ThreadTimeline {...props} turns={[turn]} />);
+    const update = (items: ThreadTurnDto['items']) => flushSync(() => root?.render(<ThreadTimeline {...props} turns={[{ ...turn, items }]} />));
+    expect(element.textContent).toContain(first.text);
+    expect(element.textContent).not.toContain(command.text);
+    const next = { id: 'next', kind: 'agentMessage' as const, text: '', status: 'inProgress', responsePhase: 'commentary' as const };
+    update([...turn.items, next]);
+    expect(element.textContent).toContain(first.text);
+    const progress = { ...next, text: 'Checking the next result' };
+    update([...turn.items, progress]);
+    expect(element.textContent).not.toContain(first.text);
+    expect(element.textContent).toContain(progress.text);
+    update([...turn.items, { ...progress, text: 'Checking the next result now' }, { ...command, id: 'later-command', status: 'running' }]);
+    expect(element.textContent).toContain('Checking the next result now');
+    expect(element.querySelector('.thread-execution-timeline')).toBeNull();
+    expect(props.onLoadTurnDetail).not.toHaveBeenCalled();
+  });
+
   it('keeps the final status when a collapsed turn has cached running details', async () => {
     const summary: ThreadTurnDto = {
       ...completedTurn([

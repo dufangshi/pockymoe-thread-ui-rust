@@ -3095,6 +3095,16 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:hover,html
   border-top: 0;
   border-left: 1px solid var(--theme-border);
 }
+/* A step batch owns its nested tools and subgroups. Keep this level visibly
+   indented and avoid utility spacing between the compact child rows. */
+.thread-ui-shell .thread-graph-history-group-activity > .thread-graph-history-group-card > .thread-graph-history-group-list {
+  margin: 0 0 2px 6px;
+  padding: 0 0 0 12px;
+  border-left: 1px solid var(--theme-border-strong);
+}
+.thread-ui-shell .thread-graph-history-group-activity > .thread-graph-history-group-card > .thread-graph-history-group-list > * {
+  margin-block: 0;
+}
 .matter-step-file-summary { display: flex; flex: 1; min-width: 0; align-items: center; gap: 6px; }
 .matter-command-step > .thread-graph-relative-time { max-width: 6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; }
 .is-running-batch .thread-graph-history-group-verb,.is-running-batch .thread-graph-history-group-description { background-image:linear-gradient(105deg,var(--theme-fg-muted) 35%,var(--theme-fg) 50%,var(--theme-fg-muted) 65%); background-size:250% 100%; background-clip:text; -webkit-background-clip:text; color:transparent; animation:thread-operation-sheen 2.4s linear infinite; }

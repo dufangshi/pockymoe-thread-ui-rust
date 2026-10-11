@@ -15,6 +15,7 @@ import {
   formatLongTimestamp,
   turnStatusLabel,
 } from '../threadPresentation';
+import { TranscriptAgentByline } from '../graph-chat/TranscriptAgent';
 
 function RunningDots({
   tone = 'amber',
@@ -333,6 +334,7 @@ export function TurnStatusBar({
     return (
       <div className="thread-graph-turn-footer flex w-full items-center justify-between gap-3 text-xs">
         <div className="thread-graph-turn-footer-runtime flex min-w-0 flex-wrap items-center gap-2">
+          {active && turn.status !== 'recovering' ? <TranscriptAgentByline size="small" /> : null}
           {active && turn.status !== 'recovering' && waitingForWake ? (
             <span className="inline-flex items-center gap-1.5 text-[var(--theme-fg-muted)]" role="status">
               <Hourglass className="h-3 w-3" aria-hidden="true" />{translate('chat.waitingForWake')}

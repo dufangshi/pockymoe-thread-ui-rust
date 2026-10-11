@@ -41,6 +41,7 @@ import {
 import { GraphChatHistoryGroupFrame } from './GraphChatHistoryGroupFrame';
 import { Badge } from '../graph-ui/Badge';
 import { WorkbenchContext } from '../WorkbenchContext';
+import { useDocumentThemePreset } from '../themeHooks';
 
 interface ContextCompactionHistoryItem extends ThreadHistoryItemDto {
   kind: 'contextCompaction';
@@ -514,6 +515,8 @@ function GraphChatHistoryToolFrame({
   const status = graphHistoryStatusConfig(item.status);
   const [pathExpanded, setPathExpanded] = useState(false);
   const isRead = tone === 'fileRead';
+  // Paths are clipped from the start (rtl); isolating them keeps the leading slash in place.
+  const isolatePath = useDocumentThemePreset() === 'plum-pocket';
   return (
     <div className={`thread-graph-event thread-graph-history-tool ${graphHistoryToneClassName(tone)} ${className ?? ''}`}>
       <div className="thread-history-direct-row">
@@ -524,7 +527,7 @@ function GraphChatHistoryToolFrame({
           <span className="thread-graph-history-tool-icon">{icon}</span>
           <span className="thread-graph-history-tool-label">{title}</span>
           <span title={preview.firstLine} className={`thread-history-direct-preview ${isRead ? 'is-path' : ''} ${pathExpanded ? 'is-expanded' : ''}`}>
-            {preview.firstLine}
+            {isRead && isolatePath ? <bdi>{preview.firstLine}</bdi> : preview.firstLine}
           </span>
           <span className={`matter-step-status ${status.className}`} aria-label={status.label}>{status.icon}</span>
         </button>

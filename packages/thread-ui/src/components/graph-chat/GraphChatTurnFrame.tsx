@@ -12,6 +12,7 @@ export interface GraphChatTurnFrameProps {
   isActive?: boolean;
   refCallback?: RefCallback<HTMLElement> | undefined;
   startedAt?: string | null;
+  status?: string | null | undefined;
   timeLabel: string;
   timeTitle: string;
   tokenSummary?: ReactNode;
@@ -28,6 +29,7 @@ export function GraphChatTurnFrame({
   isActive = false,
   refCallback,
   startedAt,
+  status,
   timeLabel,
   timeTitle,
   tokenSummary,
@@ -38,6 +40,7 @@ export function GraphChatTurnFrame({
       ref={refCallback}
       data-testid="chat-turn"
       data-turn-active={isActive ? 'true' : 'false'}
+      data-turn-status={status ?? undefined}
       className="thread-graph-turn px-3 py-2 sm:px-5 sm:py-3"
     >
       <div className="thread-graph-turn-header flex items-start justify-between gap-2">

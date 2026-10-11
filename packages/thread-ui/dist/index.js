@@ -11852,6 +11852,10 @@ function groupAgentActivitySequences(entries) {
       (total, entry) => total + entryItemCount(entry),
       0
     );
+    if (activityEntries.length === 1 && activityEntries[0].kind !== "item") {
+      grouped.push(activityEntries[0]);
+      continue;
+    }
     if (containsReasoningEntry(activityEntries) || itemCount >= 2) {
       grouped.push({
         kind: "agentActivityGroup",

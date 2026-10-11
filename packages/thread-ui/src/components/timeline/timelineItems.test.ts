@@ -269,7 +269,7 @@ describe("timeline item utilities", () => {
     expect(updated[2]?.key).not.toBe(updated[0]?.key);
   });
 
-  it("wraps a command batch in the unified operation summary", () => {
+  it("uses a command batch directly without a redundant activity wrapper", () => {
     const entries = groupTimelineHistoryItems([
       item("cmd-1", "commandExecution"),
       item("cmd-2", "commandExecution"),
@@ -281,14 +281,30 @@ describe("timeline item utilities", () => {
     ]);
 
     expect(entries.map((entry) => entry.kind)).toEqual([
-      "agentActivityGroup",
+      "commandGroup",
       "item",
     ]);
     expect(entries[0]).toMatchObject({
-      kind: "agentActivityGroup",
-      itemCount: 3,
-      entries: [{ kind: "commandGroup", items: [{ id: "cmd-1" }, { id: "cmd-2" }, { id: "cmd-3" }] }],
+      kind: "commandGroup",
+      items: [{ id: "cmd-1" }, { id: "cmd-2" }, { id: "cmd-3" }],
     });
+  });
+
+  it.each([
+    ["commandExecution", "commandGroup"],
+    ["fileRead", "fileReadGroup"],
+    ["fileChange", "fileChangeGroup"],
+    ["webSearch", "searchGroup"],
+    ["toolCall", "toolCallGroup"],
+    ["agentToolCall", "agentToolCallGroup"],
+    ["skillToolCall", "skillToolCallGroup"],
+  ] as const)("keeps homogeneous %s batches at one disclosure level", (kind, groupKind) => {
+    const entries = groupTimelineHistoryItems(Array.from({ length: 14 }, (_, i) => item(`op-${i}`, kind)));
+    expect(entries).toHaveLength(1);
+    expect(entries[0]).toMatchObject({ kind: groupKind, items: expect.any(Array) });
+    if (entries[0]?.kind !== "item" && entries[0]?.kind !== "agentActivityGroup") {
+      expect(entries[0]?.items).toHaveLength(14);
+    }
   });
 
   it("groups operations while keeping a streaming narrative visible", () => {
@@ -302,7 +318,7 @@ describe("timeline item utilities", () => {
     ]);
 
     expect(entries.map((entry) => entry.kind)).toEqual([
-      "agentActivityGroup",
+      "toolCallGroup",
       "item",
     ]);
   });
@@ -313,7 +329,7 @@ describe("timeline item utilities", () => {
       item("tool-2", "toolCall"),
     ]);
 
-    expect(entries.map((entry) => entry.kind)).toEqual(["agentActivityGroup"]);
+    expect(entries.map((entry) => entry.kind)).toEqual(["toolCallGroup"]);
   });
 
   it("folds imported reasoning summaries and operations into one activity batch", () => {

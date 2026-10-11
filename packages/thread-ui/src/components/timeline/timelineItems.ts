@@ -625,6 +625,13 @@ function groupAgentActivitySequences(entries: TimelineHistoryEntry[]) {
       0,
     );
 
+    // A single typed batch already has its own disclosure and count. An
+    // activity wrapper only helps when there are multiple children or reasoning.
+    if (activityEntries.length === 1 && activityEntries[0]!.kind !== "item") {
+      grouped.push(activityEntries[0]!);
+      continue;
+    }
+
     if (
       containsReasoningEntry(activityEntries) ||
       itemCount >= 2

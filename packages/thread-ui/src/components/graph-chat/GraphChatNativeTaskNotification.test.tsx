@@ -100,9 +100,14 @@ it.each([['final', true], ['commentary', false], [undefined, false]] as const)('
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
     expect(container.textContent).toContain('Waiting for the build');
     expect(container.textContent).toContain('Checking intermediate results');
-    expect(container.textContent).toContain('verify command');
     expect(container.textContent).toContain('Verified report');
+    expect(container.querySelectorAll('.thread-graph-task-notice')).toHaveLength(0);
+    const groups = Array.from(container.querySelectorAll<HTMLButtonElement>('.thread-graph-history-group-activity > .thread-graph-history-group-card > button'));
+    expect(groups).toHaveLength(2);
+    for (const group of groups) await act(async () => group.click());
     expect(container.querySelectorAll('.thread-graph-task-notice')).toHaveLength(2);
+    expect(container.textContent).toContain('verify command');
+    for (const group of groups) await act(async () => group.click());
     await act(async () => toggle.click());
     expect(container.textContent).not.toContain('Waiting for the build');
     expect(container.textContent).not.toContain('Checking intermediate results');

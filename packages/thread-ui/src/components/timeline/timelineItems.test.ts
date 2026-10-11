@@ -151,6 +151,24 @@ describe("timeline item utilities", () => {
     });
   });
 
+  it('folds wakes with adjacent work but keeps pending waits separate', () => {
+    const wait = item('wait', 'other', { origin: 'nativeBackgroundWait', status: 'waiting', text: '' });
+    const wake = item('wake', 'other', { origin: 'nativeTaskNotification', taskStatus: 'completed' });
+    const rows = groupTimelineHistoryItems([
+      item('cmd-before', 'commandExecution'), wait, wake,
+      item('cmd-after', 'commandExecution'), item('final', 'agentMessage'),
+    ]);
+    expect(rows.map(row => row.kind)).toEqual(['item', 'item', 'agentActivityGroup', 'item']);
+    expect(rows[1]).toMatchObject({ item: { id: 'wait' } });
+    expect(rows[2]).toMatchObject({ itemCount: 2, entries: [{ item: { id: 'wake' } }, { item: { id: 'cmd-after' } }] });
+    expect(countTurnSteps({}, [wait, wake, item('cmd', 'commandExecution'), item('final', 'agentMessage')])).toBe(2);
+  });
+
+  it.each(['completed', 'failed', 'cancelled', 'running'])('folds a standalone %s wake into one step', taskStatus => {
+    const entries = groupTimelineHistoryItems([item('wake', 'other', { origin: 'nativeTaskNotification', taskStatus })]);
+    expect(entries).toMatchObject([{ kind: 'agentActivityGroup', itemCount: 1, entries: [{ item: { id: 'wake' } }] }]);
+  });
+
   it("groups consecutive tool-like history items and folds reasoning into activity", () => {
     const entries = groupTimelineHistoryItems([
       item("reason-before", "reasoning"),

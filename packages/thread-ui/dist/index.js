@@ -11504,7 +11504,7 @@ function renderableHistoryItems(items) {
 function countTurnSteps(turn, items, summaryItems = items) {
   const recorded = renderableHistoryItems([...new Map(items.map((item) => [item.id, item])).values()]);
   const latestReply = recorded.findLast((item) => item.kind === "agentMessage");
-  const count = (entries) => entries.filter((item) => item.kind !== "userMessage" && item.id !== latestReply?.id && item.origin !== "nativeBackgroundWait" && item.origin !== "nativeTaskNotification").length;
+  const count = (entries) => entries.filter((item) => item.kind !== "userMessage" && item.id !== latestReply?.id && item.origin !== "nativeBackgroundWait").length;
   const loaded = count(recorded);
   if (!turn.hasDeferredItems) return loaded;
   const snapshot = renderableHistoryItems([...new Map(summaryItems.map((item) => [item.id, item])).values()]);
@@ -11818,7 +11818,7 @@ function isAgentActivityEntry(entry) {
   if (entry.kind !== "item") {
     return entry.kind !== "agentActivityGroup";
   }
-  return entry.item.kind === "commandExecution" || entry.item.kind === "fileChange" || entry.item.kind === "webSearch" || entry.item.kind === "fileRead" || entry.item.kind === "toolCall" || entry.item.kind === "agentToolCall" || entry.item.kind === "skillToolCall" || entry.item.kind === "reasoning";
+  return entry.item.origin === "nativeTaskNotification" || entry.item.kind === "commandExecution" || entry.item.kind === "fileChange" || entry.item.kind === "webSearch" || entry.item.kind === "fileRead" || entry.item.kind === "toolCall" || entry.item.kind === "agentToolCall" || entry.item.kind === "skillToolCall" || entry.item.kind === "reasoning";
 }
 function containsReasoningEntry(entries) {
   return entries.some(
@@ -11856,7 +11856,7 @@ function groupAgentActivitySequences(entries) {
       grouped.push(activityEntries[0]);
       continue;
     }
-    if (containsReasoningEntry(activityEntries) || itemCount >= 2) {
+    if (containsReasoningEntry(activityEntries) || activityEntries.some((entry) => entry.kind === "item" && entry.item.origin === "nativeTaskNotification") || itemCount >= 2) {
       grouped.push({
         kind: "agentActivityGroup",
         key: `agent-activity:${activityEntries[0].key}`,
@@ -14653,7 +14653,7 @@ function historyEntryRunning(entry) {
 }
 function firstHistoryEntryTimestamp(entry) {
   if (entry.kind === "item") {
-    return entry.item.createdAt ?? null;
+    return (entry.item.origin === "nativeTaskNotification" ? entry.item.awakenedAt : null) ?? entry.item.createdAt ?? null;
   }
   if (entry.kind === "agentActivityGroup") {
     return entry.entries[0] ? firstHistoryEntryTimestamp(entry.entries[0]) : null;
@@ -14661,7 +14661,7 @@ function firstHistoryEntryTimestamp(entry) {
   return entry.items.find((item) => item.createdAt)?.createdAt ?? null;
 }
 function lastHistoryEntryTimestamp(entry) {
-  if (entry.kind === "item") return entry.item.updatedAt ?? entry.item.createdAt ?? null;
+  if (entry.kind === "item") return (entry.item.origin === "nativeTaskNotification" ? entry.item.awakenedAt : null) ?? entry.item.updatedAt ?? entry.item.createdAt ?? null;
   if (entry.kind === "agentActivityGroup") {
     const timestamps = entry.entries.map(lastHistoryEntryTimestamp).filter((value) => Boolean(value));
     return timestamps.sort((a, b) => Date.parse(a) - Date.parse(b)).at(-1) ?? null;
@@ -14678,7 +14678,11 @@ function collapsedSummaryMessages(entries, active) {
   const latestAgent = itemEntries.map((entry) => entry.item).reverse().find(
     (item) => item.kind === "agentMessage" && item.text.trim().length > 0
   );
-  const hasBackground = itemEntries.some(({ item }) => item.origin === "nativeBackgroundWait" || item.origin === "nativeTaskNotification");
+  const hasBackgroundOrigin = (entry) => {
+    if (entry.kind === "agentActivityGroup") return entry.entries.some(hasBackgroundOrigin);
+    return entry.kind === "item" && (entry.item.origin === "nativeBackgroundWait" || entry.item.origin === "nativeTaskNotification");
+  };
+  const hasBackground = entries.some(hasBackgroundOrigin);
   const summaryAgent = active || !hasBackground ? latestAgent : latestAgent?.responsePhase === "final" ? latestAgent : void 0;
   const hiddenEntries = entries.filter((entry) => {
     if (entry.kind !== "item") {

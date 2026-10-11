@@ -500,7 +500,7 @@ function firstHistoryEntryTimestamp(
   entry: TimelineHistoryEntry,
 ): string | null {
   if (entry.kind === 'item') {
-    return entry.item.createdAt ?? null;
+    return (entry.item.origin === 'nativeTaskNotification' ? entry.item.awakenedAt : null) ?? entry.item.createdAt ?? null;
   }
   if (entry.kind === 'agentActivityGroup') {
     return entry.entries[0]
@@ -511,7 +511,7 @@ function firstHistoryEntryTimestamp(
 }
 
 function lastHistoryEntryTimestamp(entry: TimelineHistoryEntry): string | null {
-  if (entry.kind === 'item') return entry.item.updatedAt ?? entry.item.createdAt ?? null;
+  if (entry.kind === 'item') return (entry.item.origin === 'nativeTaskNotification' ? entry.item.awakenedAt : null) ?? entry.item.updatedAt ?? entry.item.createdAt ?? null;
   if (entry.kind === 'agentActivityGroup') {
     const timestamps = entry.entries.map(lastHistoryEntryTimestamp).filter((value): value is string => Boolean(value));
     return timestamps.sort((a,b)=>Date.parse(a)-Date.parse(b)).at(-1) ?? null;
@@ -537,8 +537,12 @@ function collapsedSummaryMessages(entries: TimelineHistoryEntry[], active: boole
       (item): item is ThreadHistoryItemDto & { kind: 'agentMessage' } =>
         item.kind === 'agentMessage' && item.text.trim().length > 0,
     );
-  const hasBackground = itemEntries.some(({ item }) =>
-    item.origin === 'nativeBackgroundWait' || item.origin === 'nativeTaskNotification');
+  const hasBackgroundOrigin = (entry: TimelineHistoryEntry): boolean => {
+    if (entry.kind === 'agentActivityGroup') return entry.entries.some(hasBackgroundOrigin);
+    return entry.kind === 'item' &&
+      (entry.item.origin === 'nativeBackgroundWait' || entry.item.origin === 'nativeTaskNotification');
+  };
+  const hasBackground = entries.some(hasBackgroundOrigin);
   // Keep the latest narration visible while working, including during tools or
   // a background wait. Completed background turns require a confirmed final
   // reply; a completed progress item alone is not proof that the turn finished.

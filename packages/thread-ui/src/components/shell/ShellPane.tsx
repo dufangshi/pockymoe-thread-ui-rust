@@ -94,6 +94,9 @@ interface ShellPaneProps {
   onFeedback?: (tone: ToolboxFeedbackState, text: string) => void;
 }
 
+/** Quiet time after the last host resize before the PTY gets the new size. */
+const SHELL_RESIZE_SETTLE_MS = 160;
+
 function refValue<T>(ref: { current: T }) {
   return ref.current;
 }
@@ -140,6 +143,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
     const lastCommandOutputRef = useRef('');
     const resizeObserverRef = useRef<ResizeObserver | null>(null);
     const lastSentSizeRef = useRef<{ cols: number; rows: number } | null>(null);
+    const backendResizeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const snapshotCursorRef = useRef<{
       cursorX: number | undefined;
       cursorY: number | undefined;
@@ -157,7 +161,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
     const isMobileShellRef = useRef(isMobileShell);
     const sendShellInputRef = useRef<(data: string) => boolean>(() => false);
     const syncTerminalSizeRef = useRef<
-      () => { cols: number; rows: number } | null
+      (options?: { syncBackendSize?: boolean; deferBackendSize?: boolean }) => { cols: number; rows: number } | null
     >(() => null);
     const refreshTerminalLayoutRef = useRef<() => void>(() => {});
     const attachPromiseControllerRef = useRef(
@@ -250,42 +254,69 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
       return rect.width > 0 && rect.height > 0;
     }, [isVisible, terminalHostNode]);
 
+    const sendBackendSize = useCallback(() => {
+      const terminal = terminalRef.current;
+      if (!terminal || terminal.cols <= 0 || terminal.rows <= 0) {
+        return;
+      }
+      const resizeDecision = deriveShellResizeDecision({
+        size: { cols: terminal.cols, rows: terminal.rows },
+        previousSize: lastSentSizeRef.current,
+        shellId: shellIdRef.current,
+        viewerId: viewerIdRef.current,
+        syncBackendSize: true,
+      });
+      lastSentSizeRef.current = resizeDecision.nextLastSentSize;
+      if (resizeDecision.message && socketRef.current) {
+        socketRef.current.send(resizeDecision.message);
+      }
+    }, []);
+
     const syncTerminalSize = useCallback(
-      (options?: { syncBackendSize?: boolean }) => {
+      (options?: { syncBackendSize?: boolean; deferBackendSize?: boolean }) => {
         const terminal = terminalRef.current;
         const fitAddon = fitAddonRef.current;
         if (!terminal || !fitAddon || !isTerminalVisible()) {
           return null;
         }
 
-        fitAddon.fit();
+        // FitAddon.fit() clears the screen before resizing and xterm repaints on
+        // the next frame, so every step of a panel drag flashed a blank terminal.
+        // Resizing directly keeps the old rows on screen until they repaint.
+        const dimensions = fitAddon.proposeDimensions();
+        if (
+          dimensions &&
+          dimensions.cols > 0 &&
+          dimensions.rows > 0 &&
+          (dimensions.cols !== terminal.cols || dimensions.rows !== terminal.rows)
+        ) {
+          terminal.resize(dimensions.cols, dimensions.rows);
+        }
         if (terminal.cols <= 0 || terminal.rows <= 0) {
           return null;
         }
 
         const size = { cols: terminal.cols, rows: terminal.rows };
-        const resizeDecision = deriveShellResizeDecision({
-          size,
-          previousSize: lastSentSizeRef.current,
-          shellId: shellIdRef.current,
-          viewerId: viewerIdRef.current,
-          syncBackendSize: options?.syncBackendSize !== false,
-        });
         if (options?.syncBackendSize === false) {
           return size;
         }
-
-        lastSentSizeRef.current = resizeDecision.nextLastSentSize;
-        if (!resizeDecision.message) {
-          return size;
+        // Every PTY resize makes the shell redraw its prompt, so while a panel is
+        // being dragged only the size it settles on is sent.
+        if (backendResizeTimerRef.current) {
+          clearTimeout(backendResizeTimerRef.current);
+          backendResizeTimerRef.current = null;
         }
-
-        if (socketRef.current) {
-          socketRef.current.send(resizeDecision.message);
+        if (options?.deferBackendSize) {
+          backendResizeTimerRef.current = setTimeout(() => {
+            backendResizeTimerRef.current = null;
+            sendBackendSize();
+          }, SHELL_RESIZE_SETTLE_MS);
+        } else {
+          sendBackendSize();
         }
         return size;
       },
-      [isTerminalVisible],
+      [isTerminalVisible, sendBackendSize],
     );
 
     useEffect(() => {
@@ -438,8 +469,15 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
         setTerminalReady(true);
         terminalInitializingRef.current = false;
 
+        let resizeFrame = 0;
         resizeObserverRef.current = new ResizeObserver(() => {
-          refreshTerminalLayoutRef.current();
+          // Follow the host at most once a frame and keep the buffer as it is:
+          // redrawing the snapshot here made the terminal flash while dragging.
+          if (resizeFrame) return;
+          resizeFrame = requestAnimationFrame(() => {
+            resizeFrame = 0;
+            syncTerminalSizeRef.current({ deferBackendSize: true });
+          });
         });
         resizeObserverRef.current.observe(terminalHostNode);
 
@@ -459,6 +497,8 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
         terminalInputSubscriptionRef.current = null;
         resizeObserverRef.current?.disconnect();
         resizeObserverRef.current = null;
+        if (backendResizeTimerRef.current) clearTimeout(backendResizeTimerRef.current);
+        backendResizeTimerRef.current = null;
         setTerminalReady(false);
         terminalRef.current?.dispose();
         terminalRef.current = null;
@@ -539,7 +579,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
         if (disposed || frame) return;
         frame = requestAnimationFrame(() => {
           frame = 0;
-          syncTerminalSizeRef.current();
+          syncTerminalSizeRef.current({ deferBackendSize: true });
         });
       };
       const rendered = terminal.onRender(fit);

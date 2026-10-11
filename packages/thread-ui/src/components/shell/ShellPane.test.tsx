@@ -63,6 +63,11 @@ class FakeTerminal {
 
   scrollToBottom() {}
 
+  resize(cols: number, rows: number) {
+    this.cols = cols;
+    this.rows = rows;
+  }
+
   focus() {}
 
   dispose() {
@@ -72,6 +77,8 @@ class FakeTerminal {
 
 class FakeFitAddon {
   fit() {}
+  // Tests set the terminal size directly.
+  proposeDimensions() { return undefined; }
 }
 
 vi.mock('xterm', () => ({

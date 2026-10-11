@@ -14,6 +14,7 @@ export type {
   ShellSocketConnection,
   ShellSocketHandlers,
   ThreadDetailUiAdapter,
+  ThreadImageAssetVariant,
   ThreadShellAdapter,
   ThreadTimelineAdapter,
   ThreadWorkspaceAdapter,

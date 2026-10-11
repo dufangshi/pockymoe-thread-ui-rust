@@ -18,7 +18,7 @@ import type {
   ThreadHistoryItemDto,
   ThreadDto,
 } from "@pockymoe/shared";
-import type { ThreadDetailUiAdapter } from "./adapters";
+import type { ThreadDetailUiAdapter, ThreadImageAssetVariant } from "./adapters";
 import type { ThemeMode } from "./app-shell/AppShellNavContext";
 import {
   createDefaultPluginContextValue,
@@ -315,8 +315,14 @@ export function ThreadDetailSurface({
     () => ({
       ...(getImageAssetUrl
         ? {
-            getImageAssetUrl: (input: { threadId: string; path: string }) =>
-              getImageAssetUrl(input.path),
+            getImageAssetUrl: (input: {
+              threadId: string;
+              path: string;
+              variant?: ThreadImageAssetVariant;
+            }) =>
+              input.variant
+                ? getImageAssetUrl(input.path, input.variant)
+                : getImageAssetUrl(input.path),
           }
         : {}),
       resolveHref: (href: string) => {

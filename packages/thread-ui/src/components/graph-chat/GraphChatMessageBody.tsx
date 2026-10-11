@@ -342,11 +342,18 @@ export const GraphChatUserMessageBody = memo(
           }
 
           if (segment.type === 'photo') {
+            // Local previews of just-sent photos are already in memory.
+            const localPreviewUrl = attachmentPreviewUrls?.[segment.path];
             const imageUrl =
-              attachmentPreviewUrls?.[segment.path] ??
+              localPreviewUrl ??
               (threadId
-                ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? null
+                ? getImageAssetUrl?.({ threadId, path: segment.path, variant: 'thumbnail' }) ?? null
                 : null);
+            const fullImageUrl =
+              localPreviewUrl ??
+              (threadId
+                ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? undefined
+                : undefined);
             const label = basenameFromAssetPath(segment.path) || translate("chat.attachedImage");
 
             return (
@@ -358,6 +365,7 @@ export const GraphChatUserMessageBody = memo(
                   {imageUrl ? (
                     <ZoomableImage
                       src={imageUrl}
+                      fullSrc={fullImageUrl}
                       alt={label}
                       className="h-[4.5rem] w-[6rem] rounded-[0.75rem] bg-stone-950 object-contain"
                       loading="lazy"

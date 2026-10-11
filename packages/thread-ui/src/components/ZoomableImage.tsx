@@ -129,6 +129,7 @@ export function GraphWorkspaceImageLightbox({
 export function ZoomableImage({
   alt,
   className,
+  fullSrc,
   loading,
   src,
   width,
@@ -136,6 +137,8 @@ export function ZoomableImage({
 }: {
   alt: string;
   className?: string;
+  /** Loaded only when the lightbox opens, e.g. the original of a thumbnail. */
+  fullSrc?: string | undefined;
   width?: string | number;
   height?: string | number;
   loading?: 'eager' | 'lazy';
@@ -174,7 +177,7 @@ export function ZoomableImage({
       </button>
       {open ? (
         <GraphWorkspaceImageLightbox
-          src={src}
+          src={fullSrc || src}
           alt={alt}
           onClose={closeLightbox}
         />

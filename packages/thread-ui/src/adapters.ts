@@ -11,10 +11,20 @@ import type {
 import type { ReactNode } from 'react';
 import type { SendPromptInput } from './types';
 
+/**
+ * `thumbnail` asks for a small preview for inline chips. Supervisors without
+ * the variant answer with the original, so callers must not rely on its size.
+ */
+export type ThreadImageAssetVariant = 'thumbnail';
+
 export interface ThreadTimelineAdapter {
   resolveWorkspacePath?: (path: string) => Promise<boolean>;
   workspaceRootPath?: string | undefined;
-  getImageAssetUrl?: (input: { threadId: string; path: string }) => string;
+  getImageAssetUrl?: (input: {
+    threadId: string;
+    path: string;
+    variant?: ThreadImageAssetVariant;
+  }) => string;
   resolveHref?: (href: string) => string;
   onOpenLinkedThread?: (threadId: string) => void;
   onOpenWorkspaceFile?: (input: { path: string; line?: number }) => void;
@@ -192,7 +202,7 @@ export interface ThreadDetailUiAdapter {
   loadTurnDetail?: (
     turnId: string,
   ) => Promise<ThreadTurnDto> | ThreadTurnDto;
-  getImageAssetUrl?: (path: string) => string;
+  getImageAssetUrl?: (path: string, variant?: ThreadImageAssetVariant) => string;
   openWorkspaceFile?: (input: { path: string; line?: number }) => void;
   workspace?: ThreadWorkspaceAdapter | null;
   shell?: ThreadShellAdapter | null;

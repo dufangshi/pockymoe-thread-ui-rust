@@ -34,6 +34,8 @@ import {
 
 import type { ThreadHistoryItemDto } from '@pockymoe/shared';
 import { usePlugins } from '../../plugins/usePlugins';
+import type { ThreadTimelineAdapter } from '../../adapters';
+import { GraphWorkspaceImageLightbox } from '../ZoomableImage';
 import {
   GraphChatLinkifiedPlainText,
   GraphChatMarkdownAwareBody,
@@ -47,7 +49,7 @@ interface ContextCompactionHistoryItem extends ThreadHistoryItemDto {
   kind: 'contextCompaction';
 }
 
-type GetImageAssetUrl = (input: { threadId: string; path: string }) => string;
+type GetImageAssetUrl = NonNullable<ThreadTimelineAdapter['getImageAssetUrl']>;
 
 interface CommandHistoryItem extends ThreadHistoryItemDto {
   kind: 'commandExecution';
@@ -927,10 +929,16 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
   timeMeta?: ReactNode;
 }) {
   const { locale: i18nLocale } = useI18n();
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const assetPath = item.assetPath ?? item.detailText ?? null;
   const imageUrl =
     threadId && assetPath
-      ? (getImageAssetUrl?.({ threadId, path: assetPath }) ?? null)
+      ? (getImageAssetUrl?.({ threadId, path: assetPath, variant: 'thumbnail' }) ?? null)
+      : null;
+  // The original is requested only when the lightbox opens.
+  const fullImageUrl =
+    lightboxOpen && threadId && assetPath
+      ? (getImageAssetUrl?.({ threadId, path: assetPath }) ?? imageUrl)
       : null;
 
   return (
@@ -945,8 +953,9 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
       {imageUrl ? (
         <button
           type="button"
-          onClick={() => onOpen(translate("chat.imagePath"), assetPath ?? item.text)}
+          onClick={() => setLightboxOpen(true)}
           className="block w-full text-left"
+          title={translate("files.openImagePreview")}
         >
           <img
             src={imageUrl}
@@ -958,6 +967,13 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
       ) : (
         <div className="thread-graph-history-event-summary">{item.text}</div>
       )}
+      {fullImageUrl ? (
+        <GraphWorkspaceImageLightbox
+          src={fullImageUrl}
+          alt={item.text || translate("chat.imagePreview")}
+          onClose={() => setLightboxOpen(false)}
+        />
+      ) : null}
       {assetPath ? (
         <button
           type="button"

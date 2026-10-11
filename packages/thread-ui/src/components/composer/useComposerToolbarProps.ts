@@ -72,6 +72,7 @@ export interface UseComposerToolbarPropsInput {
   activeView: 'chat' | 'shell';
   disabled: boolean;
   model: string | null | undefined;
+  agent?: string | undefined;
   modelOptions: ModelOptionDto[];
   modelContextTitle: string;
   contextUsage: ThreadContextUsageDto | null | undefined;
@@ -182,6 +183,7 @@ export function useComposerToolbarProps({
   activeView,
   disabled,
   model,
+  agent,
   modelOptions,
   modelContextTitle,
   contextUsage,
@@ -390,6 +392,7 @@ export function useComposerToolbarProps({
     : {
         openMenu,
         model,
+        agent,
         modelOptions,
         modelContextTitle,
         contextUsage,

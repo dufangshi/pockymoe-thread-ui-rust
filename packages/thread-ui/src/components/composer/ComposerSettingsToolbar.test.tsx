@@ -72,6 +72,8 @@ function renderToolbar({
   onUpdateSettings = vi.fn(),
   model = 'gpt-5',
   availableModels = modelOptions,
+  agent,
+  queueing = false,
 }: {
   initialOpenMenu?: SettingsMenu;
   reasoningEffort?: ReasoningEffortDto | null;
@@ -86,6 +88,8 @@ function renderToolbar({
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => void;
   model?: string;
   availableModels?: ModelOptionDto[];
+  agent?: string;
+  queueing?: boolean;
 } = {}) {
   function Harness() {
     const [openMenu, setOpenMenu] = useState<SettingsMenu>(initialOpenMenu);
@@ -99,6 +103,8 @@ function renderToolbar({
         <ComposerSettingsToolbar
           openMenu={openMenu}
           model={model}
+          agent={agent}
+          queueing={queueing}
           modelOptions={availableModels}
           modelContextTitle="1k / 8k tokens"
           contextUsage={null}
@@ -137,6 +143,27 @@ function buttonByText(view: HTMLElement, text: string) {
 }
 
 describe('ComposerSettingsToolbar', () => {
+  it('adds the mascot, chevron and per-intent send icon only for Plum Pocket', () => {
+    const classic = renderToolbar({ agent: 'claude', queueing: true });
+    expect(classic.querySelector('.composer-model-avatar')).toBeNull();
+    expect(classic.querySelector('.composer-model-chevron')).toBeNull();
+    expect(classic.querySelector('.send-base path')?.getAttribute('d')).toBe('M8 13V3');
+    act(() => root?.unmount());
+    container?.remove();
+
+    document.documentElement.dataset.themePreset = 'plum-pocket';
+    const plum = renderToolbar({ agent: 'claude', queueing: true });
+    expect(plum.querySelector('.composer-model-avatar')?.getAttribute('data-agent')).toBe('claude');
+    expect(plum.querySelector('.composer-model-chevron')).not.toBeNull();
+    expect(plum.querySelector('.send-base svg')?.getAttribute('class')).toContain('lucide-list-plus');
+    act(() => root?.unmount());
+    container?.remove();
+
+    const idle = renderToolbar({ agent: 'claude' });
+    expect(idle.querySelector('.send-base .composer-send-plane')).not.toBeNull();
+  });
+
+
   beforeEach(() => {
     vi.stubGlobal(
       'ResizeObserver',
@@ -152,6 +179,7 @@ describe('ComposerSettingsToolbar', () => {
   });
 
   afterEach(() => {
+    delete document.documentElement.dataset.themePreset;
     if (root) act(() => root?.unmount());
     container?.remove();
     root = null;

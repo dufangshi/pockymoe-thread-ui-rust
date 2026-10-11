@@ -104,7 +104,7 @@ export function ComposerToolbar({
 
       <div className="composer-settings flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5">
         {!isShellView && settingsToolbarProps ? (
-          <ComposerSettingsToolbar {...settingsToolbarProps} beforeSend={canInterrupt ? (
+          <ComposerSettingsToolbar {...settingsToolbarProps} queueing={canInterrupt} beforeSend={canInterrupt ? (
             <InputGroupButton
               type="button" variant="ghost" size="icon-xs"
               aria-label={interruptLabel} title={interruptLabel}

@@ -1107,6 +1107,7 @@ declare const en: {
     readonly "files.safeReason.unsupportedFilesystem": "This filesystem is not supported for safe replacement";
     readonly "files.safeReason.unsupportedPlatform": "Safe replacement on this platform is not yet supported";
     readonly "files.safeReason.safeUnavailable": "Update this device to enable safe editing";
+    readonly "files.safeReason.symbolicLink": "This is a symbolic link. Open the file it points to instead.";
     readonly "files.closeNavigation": "Close Navigation";
     readonly "files.openNavigation": "Open Navigation";
     readonly "files.supervisorNavigation": "Supervisor navigation";
@@ -1515,6 +1516,8 @@ declare const en: {
     readonly "files.fileOperationFailed": "File operation failed.";
     readonly "files.copyRelativePathFor": "Copy relative path for {{value1}}";
     readonly "files.copyAbsolutePathFor": "Copy absolute path for {{value1}}";
+    readonly "files.copyRelativePath": "Copy relative path";
+    readonly "files.copyAbsolutePath": "Copy absolute path";
     readonly "files.delete": "Delete";
     readonly "files.name": "Name";
     readonly "files.delete_c93ae0": "Delete {{value1}}?";
@@ -2150,6 +2153,7 @@ declare const en: {
     readonly "chat.sandbox": "Sandbox: {{value1}}";
     readonly "chat.setGoal": "Set goal";
     readonly "chat.sendPrompt": "Send Prompt";
+    readonly "chat.sendAfterTurn": "Send after this turn";
     readonly "chat.sendShellInput": "Send Shell Input";
     readonly "chat.paste": "Paste";
     readonly "chat.copy": "Copy";
@@ -3894,6 +3898,7 @@ declare const zhCN: {
     "files.safeReason.unsupportedFilesystem": "此文件系统暂不支持安全替换";
     "files.safeReason.unsupportedPlatform": "此平台暂不支持安全替换";
     "files.safeReason.safeUnavailable": "升级此设备以启用安全编辑";
+    "files.safeReason.symbolicLink": "这是一个符号链接，请打开它指向的文件。";
     "files.closeNavigation": "关闭导航";
     "files.openNavigation": "打开导航";
     "files.supervisorNavigation": "Supervisor 导航";
@@ -4302,6 +4307,8 @@ declare const zhCN: {
     "files.fileOperationFailed": "文件操作失败。";
     "files.copyRelativePathFor": "复制 {{value1}} 的相对路径";
     "files.copyAbsolutePathFor": "复制 {{value1}} 的绝对路径";
+    "files.copyRelativePath": "复制相对路径";
+    "files.copyAbsolutePath": "复制绝对路径";
     "files.delete": "删除";
     "files.name": "名称";
     "files.delete_c93ae0": "删除 {{value1}}？";
@@ -4937,6 +4944,7 @@ declare const zhCN: {
     "chat.sandbox": "沙箱：{{value1}}";
     "chat.setGoal": "设置目标";
     "chat.sendPrompt": "发送提示词";
+    "chat.sendAfterTurn": "本轮结束后发送";
     "chat.sendShellInput": "发送 Shell 输入";
     "chat.paste": "粘贴";
     "chat.copy": "复制";
@@ -6703,6 +6711,7 @@ declare const resources: {
         readonly "files.safeReason.unsupportedFilesystem": "This filesystem is not supported for safe replacement";
         readonly "files.safeReason.unsupportedPlatform": "Safe replacement on this platform is not yet supported";
         readonly "files.safeReason.safeUnavailable": "Update this device to enable safe editing";
+        readonly "files.safeReason.symbolicLink": "This is a symbolic link. Open the file it points to instead.";
         readonly "files.closeNavigation": "Close Navigation";
         readonly "files.openNavigation": "Open Navigation";
         readonly "files.supervisorNavigation": "Supervisor navigation";
@@ -7111,6 +7120,8 @@ declare const resources: {
         readonly "files.fileOperationFailed": "File operation failed.";
         readonly "files.copyRelativePathFor": "Copy relative path for {{value1}}";
         readonly "files.copyAbsolutePathFor": "Copy absolute path for {{value1}}";
+        readonly "files.copyRelativePath": "Copy relative path";
+        readonly "files.copyAbsolutePath": "Copy absolute path";
         readonly "files.delete": "Delete";
         readonly "files.name": "Name";
         readonly "files.delete_c93ae0": "Delete {{value1}}?";
@@ -7746,6 +7757,7 @@ declare const resources: {
         readonly "chat.sandbox": "Sandbox: {{value1}}";
         readonly "chat.setGoal": "Set goal";
         readonly "chat.sendPrompt": "Send Prompt";
+        readonly "chat.sendAfterTurn": "Send after this turn";
         readonly "chat.sendShellInput": "Send Shell Input";
         readonly "chat.paste": "Paste";
         readonly "chat.copy": "Copy";
@@ -9489,6 +9501,7 @@ declare const resources: {
         "files.safeReason.unsupportedFilesystem": "此文件系统暂不支持安全替换";
         "files.safeReason.unsupportedPlatform": "此平台暂不支持安全替换";
         "files.safeReason.safeUnavailable": "升级此设备以启用安全编辑";
+        "files.safeReason.symbolicLink": "这是一个符号链接，请打开它指向的文件。";
         "files.closeNavigation": "关闭导航";
         "files.openNavigation": "打开导航";
         "files.supervisorNavigation": "Supervisor 导航";
@@ -9897,6 +9910,8 @@ declare const resources: {
         "files.fileOperationFailed": "文件操作失败。";
         "files.copyRelativePathFor": "复制 {{value1}} 的相对路径";
         "files.copyAbsolutePathFor": "复制 {{value1}} 的绝对路径";
+        "files.copyRelativePath": "复制相对路径";
+        "files.copyAbsolutePath": "复制绝对路径";
         "files.delete": "删除";
         "files.name": "名称";
         "files.delete_c93ae0": "删除 {{value1}}？";
@@ -10532,6 +10547,7 @@ declare const resources: {
         "chat.sandbox": "沙箱：{{value1}}";
         "chat.setGoal": "设置目标";
         "chat.sendPrompt": "发送提示词";
+        "chat.sendAfterTurn": "本轮结束后发送";
         "chat.sendShellInput": "发送 Shell 输入";
         "chat.paste": "粘贴";
         "chat.copy": "复制";

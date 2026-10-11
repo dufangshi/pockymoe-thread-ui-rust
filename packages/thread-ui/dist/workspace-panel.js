@@ -40,17 +40,21 @@ import {
   normalizeFileSystemPath,
   relativeWorkspacePath,
   settleSave,
+  syntaxThemeFor,
   useFilePanel,
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-MSTH7QMJ.js";
+} from "./chunk-U2GYMEBQ.js";
+import {
+  useDocumentThemePreset
+} from "./chunk-ZN6LCQTY.js";
 import {
   en,
   getLocale,
   translate,
   useI18n
-} from "./chunk-GQH7RSL7.js";
+} from "./chunk-LGM75OL4.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect12, useMemo as useMemo11, useState as useState12 } from "react";
@@ -1639,6 +1643,7 @@ function WorkspaceNodeActions({
   onDelete
 }) {
   useI18n();
+  const shortLabels = useDocumentThemePreset() === "plum-pocket";
   const [menu, setMenu] = useState4(null);
   const [dialog, setDialog] = useState4(null);
   const [name, setName] = useState4(node.name);
@@ -1661,12 +1666,12 @@ function WorkspaceNodeActions({
     };
     const resize = () => setMenu(null);
     document.addEventListener("pointerdown", outside);
-    document.addEventListener("keydown", escape);
+    document.addEventListener("keydown", escape, true);
     window.addEventListener("resize", resize);
     popup.current?.querySelector("button")?.focus();
     return () => {
       document.removeEventListener("pointerdown", outside);
-      document.removeEventListener("keydown", escape);
+      document.removeEventListener("keydown", escape, true);
       window.removeEventListener("resize", resize);
     };
   }, [menu]);
@@ -1777,19 +1782,19 @@ function WorkspaceNodeActions({
                   translate("files.downloadFile")
                 ] }),
                 onCopyPath && /* @__PURE__ */ jsxs(Fragment, { children: [
-                  /* @__PURE__ */ jsxs("button", { role: "menuitem", type: "button", onClick: () => {
+                  /* @__PURE__ */ jsxs("button", { role: "menuitem", type: "button", "aria-label": shortLabels ? translate("files.copyRelativePathFor", { value1: node.name }) : void 0, onClick: () => {
                     onCopyPath(node, "relative");
                     close();
                   }, children: [
                     /* @__PURE__ */ jsx(Copy, { size: 16 }),
-                    translate("files.copyRelativePathFor", { value1: node.name })
+                    shortLabels ? translate("files.copyRelativePath") : translate("files.copyRelativePathFor", { value1: node.name })
                   ] }),
-                  /* @__PURE__ */ jsxs("button", { role: "menuitem", type: "button", onClick: () => {
+                  /* @__PURE__ */ jsxs("button", { role: "menuitem", type: "button", "aria-label": shortLabels ? translate("files.copyAbsolutePathFor", { value1: node.name }) : void 0, onClick: () => {
                     onCopyPath(node, "absolute");
                     close();
                   }, children: [
                     /* @__PURE__ */ jsx(ClipboardCopy, { size: 16 }),
-                    translate("files.copyAbsolutePathFor", { value1: node.name })
+                    shortLabels ? translate("files.copyAbsolutePath") : translate("files.copyAbsolutePathFor", { value1: node.name })
                   ] })
                 ] }),
                 onRename && /* @__PURE__ */ jsxs(
@@ -1867,14 +1872,14 @@ function WorkspaceNodeActions({
 import { Fragment as Fragment2, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function iconForNode(node, expanded) {
   if (node.kind === "directory") {
-    return expanded ? /* @__PURE__ */ jsx2(FolderOpen, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" }) : /* @__PURE__ */ jsx2(Folder, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" });
+    return expanded ? /* @__PURE__ */ jsx2(FolderOpen, { className: "workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" }) : /* @__PURE__ */ jsx2(Folder, { className: "workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" });
   }
   const extension = extensionOf(node.name);
   if (extension === "zip") {
-    return /* @__PURE__ */ jsx2(FileArchive, { className: "h-4 w-4 text-amber-600" });
+    return /* @__PURE__ */ jsx2(FileArchive, { className: "workspace-node-icon is-archive h-4 w-4 text-amber-600" });
   }
   if (node.kind === "file" && ["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(extension)) {
-    return /* @__PURE__ */ jsx2(FileImage, { className: "h-4 w-4 text-sky-500" });
+    return /* @__PURE__ */ jsx2(FileImage, { className: "workspace-node-icon is-image h-4 w-4 text-sky-500" });
   }
   if (node.kind === "artifact" || [
     "xyz",
@@ -1891,9 +1896,9 @@ function iconForNode(node, expanded) {
     "yml",
     "py"
   ].includes(extension)) {
-    return /* @__PURE__ */ jsx2(FileCode2, { className: "h-4 w-4 text-emerald-600" });
+    return /* @__PURE__ */ jsx2(FileCode2, { className: "workspace-node-icon is-code h-4 w-4 text-emerald-600" });
   }
-  return /* @__PURE__ */ jsx2(File, { className: "h-4 w-4 text-slate-400 dark:text-slate-500" });
+  return /* @__PURE__ */ jsx2(File, { className: "workspace-node-icon is-file h-4 w-4 text-slate-400 dark:text-slate-500" });
 }
 function WorkspaceExplorerRow({
   row,
@@ -2012,7 +2017,7 @@ function WorkspaceExplorerRow({
               if (canToggleDirectory && window.matchMedia?.("(max-width: 639px)").matches) onToggle(node.path);
             },
             children: [
-              linkedDirectory ? /* @__PURE__ */ jsx2(FolderSymlink, { className: "h-4 w-4 text-slate-500 dark:text-slate-400", "aria-hidden": "true" }) : iconForNode(node, expanded),
+              linkedDirectory ? /* @__PURE__ */ jsx2(FolderSymlink, { className: "workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400", "aria-hidden": "true" }) : iconForNode(node, expanded),
               linkedDirectory ? (
                 // Long host paths keep their meaningful tail visible.
                 /* @__PURE__ */ jsx2("span", { className: "workspace-linked-directory-label min-w-0 flex-1", title: `${displayName}
@@ -2323,6 +2328,7 @@ function WorkspaceExplorerPanel({
   onDelete,
   onEmptyGarbage,
   onExpandViewer,
+  expandViewerAvailable = true,
   onFilterModeChange,
   onFilterQueryChange,
   onPreview,
@@ -2464,7 +2470,7 @@ function WorkspaceExplorerPanel({
             ) : null
           ] })
         ] }) : null,
-        onExpandViewer ? /* @__PURE__ */ jsx4(
+        onExpandViewer ? expandViewerAvailable ? /* @__PURE__ */ jsx4(
           "button",
           {
             type: "button",
@@ -2475,7 +2481,7 @@ function WorkspaceExplorerPanel({
             "aria-label": translate("files.showEditor"),
             children: /* @__PURE__ */ jsx4(PanelRightOpen, { className: "h-4 w-4" })
           }
-        ) : onCollapse ? /* @__PURE__ */ jsx4(
+        ) : null : onCollapse ? /* @__PURE__ */ jsx4(
           "button",
           {
             type: "button",
@@ -3954,7 +3960,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment4, jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-AIODTVLN.js")
+  () => import("./GraphWorkspaceMonacoEditor-JYE5L4Z3.js")
 );
 function DownloadFilePreview({ node, onDownload, readOnlyReason }) {
   const { locale: i18nLocale } = useI18n();
@@ -3998,7 +4004,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-E4TES25F.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-YV64GSAR.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -4088,6 +4094,7 @@ var GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview2({
     });
     return () => observer.disconnect();
   }, []);
+  const syntaxTheme = syntaxThemeFor(dark, useDocumentThemePreset());
   const highlightedHtml = useMemo8(() => {
     if (!highlighter) {
       return "";
@@ -4099,18 +4106,18 @@ var GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview2({
       return transparentHighlightBackground(
         highlighter.codeToHtml(content, {
           lang: resolvedLanguage,
-          theme: dark ? "ayu-dark" : "github-light-default"
+          theme: syntaxTheme
         })
       );
     } catch {
       return transparentHighlightBackground(
         highlighter.codeToHtml(content, {
           lang: "text",
-          theme: dark ? "ayu-dark" : "github-light-default"
+          theme: syntaxTheme
         })
       );
     }
-  }, [content, dark, highlighter, language]);
+  }, [content, highlighter, language, syntaxTheme]);
   useEffect9(() => {
     const root = rootRef.current;
     root?.querySelectorAll(".is-focused-line").forEach((element) => element.classList.remove("is-focused-line"));
@@ -4493,7 +4500,7 @@ function GraphWorkspacePreviewPane({
         ) : null,
         actionsOpen && fileActions,
         /* @__PURE__ */ jsxs12("div", { className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: [
-          error ? /* @__PURE__ */ jsx16("div", { className: "border-b border-rose-200 bg-rose-50 px-5 py-3 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200", children: error }) : null,
+          error ? /* @__PURE__ */ jsx16("div", { role: "alert", className: "workspace-file-alert border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-5 py-3", children: translateReadOnly(error) }) : null,
           !selectedTarget ? /* @__PURE__ */ jsx16("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: translate("files.pickALiveMoleculeWorkspaceFileArtifact") }) : selectedTarget.kind === "workspace-file" && previewLoading ? /* @__PURE__ */ jsx16("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: translate("files.loadingFilePreview") }) : selectedTarget.kind === "workspace-file" && downloadOnly ? /* @__PURE__ */ jsx16(DownloadFilePreview, { node: selectedTarget.node, onDownload: onDownloadFile, ...activeFilePath && documents?.documents.get(activeFilePath)?.snapshot.readOnlyReason ? { readOnlyReason: documents.documents.get(activeFilePath).snapshot.readOnlyReason } : {} }, selectedTarget.node.path) : selectedTarget.kind === "workspace-file" && moleculeSnapshot ? /* @__PURE__ */ jsx16("div", { className: "thread-graph-molecule-preview min-h-0 flex-1 overflow-hidden", children: /* @__PURE__ */ jsx16(
             GraphMoleculeViewer,
             {
@@ -4569,7 +4576,7 @@ function GraphWorkspacePreviewPane({
                 ] })
               ] }) : /* @__PURE__ */ jsx16("p", { children: translate("files.safeMissing") })
             ] }) : null,
-            saveError ? /* @__PURE__ */ jsx16("div", { className: "border-b border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200", children: saveError }) : null,
+            saveError ? /* @__PURE__ */ jsx16("div", { role: "alert", className: "workspace-file-alert border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-4 py-2", children: saveError }) : null,
             editing && compactViewer ? /* @__PURE__ */ jsx16(
               "textarea",
               {
@@ -5077,9 +5084,13 @@ function GraphWorkspaceExplorer({
       filterQuery,
       initialLoading: Boolean(workspaceAdapter && !adapterModel && loadingTree),
       rootError: workspaceAdapter && !adapterModel ? workspaceError : null,
-      ...collapsedPanel === "viewer" ? { onExpandViewer: () => {
-        if (!isMobileViewport || activeNode?.kind === "file") setCollapsedPanel(isMobileViewport ? "explorer" : null);
-      } } : {
+      ...collapsedPanel === "viewer" ? {
+        onExpandViewer: () => {
+          if (!isMobileViewport || activeNode?.kind === "file") setCollapsedPanel(isMobileViewport ? "explorer" : null);
+        },
+        // On phones the editor can only be shown for an open file.
+        expandViewerAvailable: !isMobileViewport || activeNode?.kind === "file"
+      } : {
         onCollapse: () => {
           rememberExplorerScroll();
           setCollapsedPanel("explorer");

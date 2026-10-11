@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-GQH7RSL7.js";
+} from "./chunk-LGM75OL4.js";
 import {
   KeyCode,
   KeyMod,
@@ -249,14 +249,34 @@ var editorColorVariables = {
   "editor.inactiveSelectionBackground": "--editor-selection-inactive",
   "editorCursor.foreground": "--editor-cursor",
   "editorIndentGuide.background1": "--editor-indent",
-  "editorIndentGuide.activeBackground1": "--editor-indent-active"
+  "editorIndentGuide.activeBackground1": "--editor-indent-active",
+  "diffEditor.insertedTextBackground": "--editor-diff-inserted",
+  "diffEditor.removedTextBackground": "--editor-diff-removed",
+  "diffEditor.insertedLineBackground": "--editor-diff-inserted-line",
+  "diffEditor.removedLineBackground": "--editor-diff-removed-line",
+  "editorBracketHighlight.foreground1": "--editor-bracket-1",
+  "editorBracketHighlight.foreground2": "--editor-bracket-2",
+  "editorBracketHighlight.foreground3": "--editor-bracket-3"
+};
+var editorTokenVariables = {
+  "--editor-token-keyword": ["keyword", "keyword.json", "storage"],
+  "--editor-token-string": ["string", "string.value", "attribute.value", "regexp", "string.escape"],
+  "--editor-token-constant": ["number", "constant", "predefined"],
+  "--editor-token-comment": ["comment", "comment.doc"],
+  "--editor-token-type": ["type", "type.identifier", "tag", "key", "attribute.name", "metatag"],
+  "--editor-token-punctuation": ["delimiter", "delimiter.bracket", "delimiter.parenthesis", "operator"]
 };
 function editorThemeFor(dark, container) {
   const base = dark ? "pockymoe-dark" : "pockymoe-light";
   const colors = Object.fromEntries(Object.entries(editorColorVariables).map(([key, variable]) => [key, cssHexVariable(container, variable)]).filter((entry) => Boolean(entry[1])));
   if (!colors["editor.background"]) return base;
+  const rules = Object.entries(editorTokenVariables).flatMap(([variable, tokens]) => {
+    const color = cssHexVariable(container, variable);
+    const fontStyle = variable === "--editor-token-comment" ? "italic" : void 0;
+    return color ? tokens.map((token) => ({ token, foreground: color.slice(1), ...fontStyle ? { fontStyle } : {} })) : [];
+  });
   const name = `${base}-preset`;
-  editor.defineTheme(name, { base: dark ? "vs-dark" : "vs", inherit: true, rules: [], colors });
+  editor.defineTheme(name, { base: dark ? "vs-dark" : "vs", inherit: true, rules, colors });
   return name;
 }
 var releasedKeys = /* @__PURE__ */ new Set();

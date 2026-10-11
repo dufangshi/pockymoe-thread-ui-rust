@@ -1,8 +1,4 @@
 import {
-  cssHexVariable,
-  useDocumentThemePreset
-} from "./chunk-ZN6LCQTY.js";
-import {
   Button,
   ConfirmDialog,
   FilePanelContext,
@@ -25,8 +21,13 @@ import {
   localFileHref,
   markdownHtmlPlugins,
   relativeWorkspacePath,
+  syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-MSTH7QMJ.js";
+} from "./chunk-U2GYMEBQ.js";
+import {
+  cssHexVariable,
+  useDocumentThemePreset
+} from "./chunk-ZN6LCQTY.js";
 import {
   DEFAULT_LOCALE,
   I18nProvider,
@@ -44,7 +45,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-GQH7RSL7.js";
+} from "./chunk-LGM75OL4.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -1651,6 +1652,8 @@ function ComposerFrame({
   shellPromptSlot
 }) {
   const { expanded, focusOwner, ...focusEvents } = useCompactComposer(formRef, activeView === "chat");
+  const usageInShell = useDocumentThemePreset() === "plum-pocket";
+  const usage = activeView === "chat" && visibleSubscriptionWindows(subscriptionUsage).length > 0 ? /* @__PURE__ */ jsx7(ComposerSubscriptionUsage, { usage: subscriptionUsage }) : null;
   return /* @__PURE__ */ jsxs6("div", { className: layerClassName, children: [
     /* @__PURE__ */ jsx7(
       ComposerHiddenAttachmentInputs,
@@ -1696,11 +1699,12 @@ function ComposerFrame({
                   toolbarSlot
                 ] }),
                 goalSlot,
-                shellPromptSlot
+                shellPromptSlot,
+                usage && usageInShell ? /* @__PURE__ */ jsx7("div", { className: "thread-composer-usage-tag", children: usage }) : null
               ]
             }
           ),
-          activeView === "chat" && visibleSubscriptionWindows(subscriptionUsage).length > 0 ? /* @__PURE__ */ jsx7("div", { className: "thread-composer-usage-footer relative mt-0.5 h-3 sm:h-4", children: /* @__PURE__ */ jsx7(ComposerSubscriptionUsage, { usage: subscriptionUsage }) }) : null,
+          usage && !usageInShell ? /* @__PURE__ */ jsx7("div", { className: "thread-composer-usage-footer relative mt-0.5 h-3 sm:h-4", children: usage }) : null,
           error ? /* @__PURE__ */ jsx7("div", { className: "mt-2 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200", children: error }) : null
         ]
       }
@@ -1972,7 +1976,7 @@ function ComposerAttachmentMenu({
 }
 
 // src/components/composer/ComposerSettingsToolbar.tsx
-import { Check, ChevronDown, ListPlus, Send, Target } from "lucide-react";
+import { Check, ChevronDown, Send, Target } from "lucide-react";
 
 // src/components/composer/ComposerReasoningSlider.tsx
 import * as Slider from "@radix-ui/react-slider";
@@ -2110,6 +2114,14 @@ function ComposerReasoningSlider({
 
 // src/components/composer/ComposerSettingsToolbar.tsx
 import { Fragment as Fragment3, jsx as jsx12, jsxs as jsxs10 } from "react/jsx-runtime";
+function SendLaterIcon() {
+  return /* @__PURE__ */ jsxs10("svg", { "aria-hidden": "true", viewBox: "0 0 24 24", className: "composer-send-later h-[18px] w-[18px] fill-none stroke-current", strokeWidth: "2.2", strokeLinecap: "round", strokeLinejoin: "round", children: [
+    /* @__PURE__ */ jsx12("path", { d: "M9 19V5" }),
+    /* @__PURE__ */ jsx12("path", { d: "m4 10 5-5 5 5" }),
+    /* @__PURE__ */ jsx12("circle", { cx: "17.5", cy: "16.5", r: "4.5" }),
+    /* @__PURE__ */ jsx12("path", { d: "M17.5 14.5v2l1.3 1" })
+  ] });
+}
 function ComposerSettingsToolbar({
   openMenu,
   model,
@@ -2136,6 +2148,7 @@ function ComposerSettingsToolbar({
 }) {
   useI18n();
   const plum = useDocumentThemePreset() === "plum-pocket";
+  const sendLater = queueing && activeView === "chat" && !goalComposeMode;
   const selectedModelLabel = modelOptions.find((entry) => entry.model === model)?.displayName || model || translate("chat.selectModel");
   const supportsEffort = supportedEfforts.length > 0;
   const effortLabel = formatReasoningEffortLabel(reasoningEffort);
@@ -2215,11 +2228,12 @@ ${modelContextTitle}`,
         type: "submit",
         variant: "default",
         size: "icon-xs",
-        "aria-label": goalComposeMode ? translate("chat.setGoal") : translate("chat.sendPrompt"),
-        title: sendButtonLabel,
+        "data-send-intent": goalComposeMode ? "goal" : sendLater ? "queue" : "send",
+        "aria-label": goalComposeMode ? translate("chat.setGoal") : plum && sendLater ? translate("chat.sendAfterTurn") : translate("chat.sendPrompt"),
+        title: plum && sendLater ? translate("chat.sendAfterTurn") : sendButtonLabel,
         disabled: goalBusy || (activeView === "chat" ? disabled : false),
         className: `${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`,
-        children: plum ? goalComposeMode ? /* @__PURE__ */ jsx12(Target, { "aria-hidden": "true", className: "h-[18px] w-[18px]", strokeWidth: 2.2 }) : queueing && activeView === "chat" ? /* @__PURE__ */ jsx12(ListPlus, { "aria-hidden": "true", className: "h-[18px] w-[18px]", strokeWidth: 2.2 }) : /* @__PURE__ */ jsx12(Send, { "aria-hidden": "true", className: "composer-send-plane h-[17px] w-[17px]", strokeWidth: 2.2 }) : /* @__PURE__ */ jsxs10(
+        children: plum ? goalComposeMode ? /* @__PURE__ */ jsx12(Target, { "aria-hidden": "true", className: "h-[18px] w-[18px]", strokeWidth: 2.2 }) : sendLater ? /* @__PURE__ */ jsx12(SendLaterIcon, {}) : /* @__PURE__ */ jsx12(Send, { "aria-hidden": "true", className: "composer-send-plane h-[17px] w-[17px]", strokeWidth: 2.2 }) : /* @__PURE__ */ jsxs10(
           "svg",
           {
             "aria-hidden": "true",
@@ -8133,7 +8147,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
             }
           ) }),
           /* @__PURE__ */ jsxs29("div", { className: "matter-topbar-end", children: [
-            mobile && !drawerTools && deviceMonitor,
+            mobile && deviceMonitor,
             mobile && /* @__PURE__ */ jsxs29(Fragment7, { children: [
               !drawerTools && /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.chat"), "aria-pressed": o.panels ? !chatCovered : o.activeView === "chat", onClick: showChat, children: /* @__PURE__ */ jsx34(MessageSquare, {}) }),
               o.terminalEnabled && /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.terminal"), "aria-pressed": o.activeView === "shell", onClick: () => o.onViewChange("shell"), children: /* @__PURE__ */ jsx34(Terminal, {}) }),
@@ -8200,8 +8214,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                 }, children: [
                   /* @__PURE__ */ jsx34(MessageSquare, {}),
                   /* @__PURE__ */ jsx34("span", { children: translate("workbench.chat") })
-                ] }),
-                deviceMonitor
+                ] })
               ] }),
               o.error && /* @__PURE__ */ jsx34("p", { className: "matter-sidebar-error", role: "alert", children: o.error }),
               /* @__PURE__ */ jsxs29(
@@ -10640,6 +10653,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
   const [copyState, setCopyState] = useState30({});
   const [touchCode, setTouchCode] = useState30(null);
   const [dark, setDark] = useState30(false);
+  const themePreset = useDocumentThemePreset();
   const { processedContent, resultMap } = useMemo7(
     () => readOnly ? { processedContent: content, resultMap: /* @__PURE__ */ new Map() } : preprocessGraphChatToolBlocks(content),
     [content, readOnly]
@@ -10782,7 +10796,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
     if (isFencedOrBlockCode) {
       const loadedLanguages = highlighter?.getLoadedLanguages?.() ?? [];
       const lang = loadedLanguages.includes(language) ? language : "text";
-      const theme = dark ? "ayu-dark" : "github-light-default";
+      const theme = syntaxThemeFor(dark, themePreset);
       const id = `${language || "text"}:${textContent.length}:${textContent.slice(0, 32)}`;
       let html = "";
       if (highlighter) {
@@ -11242,7 +11256,8 @@ function GraphChatMessageFrame({
   status,
   timeLabel,
   timeTitle,
-  messageId
+  messageId,
+  variant
 }) {
   const { locale: i18nLocale } = useI18n();
   const isUser = kind === "userMessage";
@@ -11271,6 +11286,7 @@ function GraphChatMessageFrame({
       "data-testid": "chat-message",
       "data-message-id": messageId,
       "data-role": isUser ? "user" : "assistant",
+      "data-variant": variant,
       className: `thread-graph-message flex ${isUser ? "justify-end" : "justify-start"}`,
       children: /* @__PURE__ */ jsxs38(
         "div",
@@ -11342,7 +11358,8 @@ var GraphChatCompactMessageItem = memo4(
     adapter,
     timeLabel,
     timeTitle,
-    onBeforeMessageResize
+    onBeforeMessageResize,
+    variant
   }) {
     const { locale: i18nLocale } = useI18n();
     const [copyState, setCopyState] = useState33(
@@ -11438,6 +11455,7 @@ var GraphChatCompactMessageItem = memo4(
       {
         messageId: item.id,
         kind: item.kind,
+        variant,
         status: queuedLikeStatus ? item.status : null,
         copyButton,
         metaControl: reasoningToggle,
@@ -14412,6 +14430,7 @@ var HistoryItemRow = memo6(function HistoryItemRow2({
           kind: "agentMessage",
           status: item.status ?? null
         },
+        variant: "reasoning",
         scrollRootRef,
         timeLabel,
         timeTitle,
@@ -16577,12 +16596,7 @@ function terminalThemeFor(effectiveTheme, container) {
   const light = effectiveTheme === "light";
   const background = cssHexVariable(container, "--terminal-bg") ?? (light ? "#ebeeeb" : "#0f1317");
   const foreground = cssHexVariable(container, "--terminal-fg") ?? (light ? "#22282b" : "#d6dde6");
-  return {
-    background,
-    foreground,
-    cursor: cssHexVariable(container, "--terminal-cursor") ?? foreground,
-    cursorAccent: background,
-    selectionBackground: cssHexVariable(container, "--terminal-selection") ?? (light ? "rgba(0, 139, 83, 0.24)" : "rgba(0, 204, 118, 0.28)"),
+  const ansi = {
     black: light ? "#c4c9c4" : "#1c242a",
     brightBlack: light ? "#6b736e" : "#5b6770",
     red: light ? "#c62f3a" : "#f87171",
@@ -16599,6 +16613,17 @@ function terminalThemeFor(effectiveTheme, container) {
     brightCyan: light ? "#0891b2" : "#22d3ee",
     white: light ? "#4b5258" : "#e2e8f0",
     brightWhite: light ? "#121416" : "#f8fafc"
+  };
+  return {
+    background,
+    foreground,
+    cursor: cssHexVariable(container, "--terminal-cursor") ?? foreground,
+    cursorAccent: background,
+    selectionBackground: cssHexVariable(container, "--terminal-selection") ?? (light ? "rgba(0, 139, 83, 0.24)" : "rgba(0, 204, 118, 0.28)"),
+    ...Object.fromEntries(Object.entries(ansi).map(([name, color]) => [
+      name,
+      cssHexVariable(container, `--terminal-${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`) ?? color
+    ]))
   };
 }
 function statusLabel2(status) {

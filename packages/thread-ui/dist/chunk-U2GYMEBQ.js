@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-GQH7RSL7.js";
+} from "./chunk-LGM75OL4.js";
 
 // src/components/graph-workspace/explorer/workspaceDocuments.ts
 var storeKey = /* @__PURE__ */ Symbol.for("remote-codex.workspace-documents");
@@ -1212,6 +1212,11 @@ var FilePanelContext = createContext2(null);
 var useFilePanel = () => useContext2(FilePanelContext);
 
 // src/components/graph-chat/graphChatShiki.ts
+var CSS_VARIABLES_SYNTAX_THEME = "pockymoe-css-variables";
+function syntaxThemeFor(dark, themePreset) {
+  if (themePreset === "plum-pocket") return CSS_VARIABLES_SYNTAX_THEME;
+  return dark ? "ayu-dark" : "github-light-default";
+}
 var graphChatHighlighterPromise = null;
 function getGraphChatHighlighter() {
   graphChatHighlighterPromise ??= Promise.all([
@@ -1244,7 +1249,7 @@ function getGraphChatHighlighter() {
     import("shiki/langs/xml.mjs")
   ]).then(
     ([
-      { createHighlighterCore },
+      { createHighlighterCore, createCssVariablesTheme },
       { createJavaScriptRegexEngine },
       ayuLight,
       ayuDark,
@@ -1273,7 +1278,11 @@ function getGraphChatHighlighter() {
       xml
     ]) => createHighlighterCore({
       engine: createJavaScriptRegexEngine(),
-      themes: [ayuLight.default, ayuDark.default],
+      themes: [
+        ayuLight.default,
+        ayuDark.default,
+        createCssVariablesTheme({ name: CSS_VARIABLES_SYNTAX_THEME, variablePrefix: "--shiki-", fontStyle: true })
+      ],
       langs: [
         javascript.default,
         typescript.default,
@@ -1418,6 +1427,7 @@ export {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
+  syntaxThemeFor,
   getGraphChatHighlighter,
   normalizeFileSystemPath,
   localFileHref,

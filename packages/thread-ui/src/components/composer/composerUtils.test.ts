@@ -51,6 +51,9 @@ describe('composer utilities', () => {
   it('maps harness labels to theme avatar keys', () => {
     expect(composerAgentKey('Claude Code')).toBe('claude');
     expect(composerAgentKey('codex')).toBe('codex');
+    expect(composerAgentKey('GitHub Copilot CLI')).toBe('copilot');
+    expect(composerAgentKey('Gemini CLI')).toBe('gemini');
+    expect(composerAgentKey('Grok Build')).toBe('grok');
     expect(composerAgentKey('DeepSeek Harness')).toBe('deepseek');
     expect(composerAgentKey('dsh')).toBe('deepseek');
     expect(composerAgentKey('Gemini CLI')).toBe('gemini');

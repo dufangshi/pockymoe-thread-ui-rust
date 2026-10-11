@@ -398,6 +398,7 @@ export function composerAgentKey(label: string | null | undefined) {
   if (value.includes('claude')) return 'claude';
   if (value.includes('codex')) return 'codex';
   if (value.includes('deepseek') || value === 'dsh') return 'deepseek';
+  if (value.includes('copilot')) return 'copilot';
   return value.split(/[^a-z0-9]+/).find(Boolean);
 }
 

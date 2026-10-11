@@ -557,6 +557,7 @@
 .matter-breadcrumb {
   order: 10;
   flex: 0 0 100%;
+  min-width: 0;
   background: var(--theme-surface);
   border-top: 1px solid var(--theme-border);
   display: flex;

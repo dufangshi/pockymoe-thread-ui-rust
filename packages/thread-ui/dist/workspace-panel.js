@@ -44,7 +44,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-TRXVBHW5.js";
+} from "./chunk-MSTH7QMJ.js";
 import {
   en,
   getLocale,
@@ -4099,14 +4099,14 @@ var GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview2({
       return transparentHighlightBackground(
         highlighter.codeToHtml(content, {
           lang: resolvedLanguage,
-          theme: dark ? "ayu-dark" : "ayu-light"
+          theme: dark ? "ayu-dark" : "github-light-default"
         })
       );
     } catch {
       return transparentHighlightBackground(
         highlighter.codeToHtml(content, {
           lang: "text",
-          theme: dark ? "ayu-dark" : "ayu-light"
+          theme: dark ? "ayu-dark" : "github-light-default"
         })
       );
     }

@@ -246,14 +246,14 @@ const GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview({
       return transparentHighlightBackground(
         highlighter.codeToHtml(content, {
           lang: resolvedLanguage,
-          theme: dark ? 'ayu-dark' : 'ayu-light',
+          theme: dark ? 'ayu-dark' : 'github-light-default',
         }),
       );
     } catch {
       return transparentHighlightBackground(
         highlighter.codeToHtml(content, {
           lang: 'text',
-          theme: dark ? 'ayu-dark' : 'ayu-light',
+          theme: dark ? 'ayu-dark' : 'github-light-default',
         }),
       );
     }

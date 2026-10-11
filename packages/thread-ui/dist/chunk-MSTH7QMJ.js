@@ -1217,7 +1217,7 @@ function getGraphChatHighlighter() {
   graphChatHighlighterPromise ??= Promise.all([
     import("shiki/core"),
     import("shiki/engine/javascript"),
-    import("shiki/themes/ayu-light.mjs"),
+    import("shiki/themes/github-light-default.mjs"),
     import("shiki/themes/ayu-dark.mjs"),
     import("shiki/langs/javascript.mjs"),
     import("shiki/langs/typescript.mjs"),

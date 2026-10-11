@@ -27,7 +27,7 @@ export function DiffDetail({ text }: { text: string }) {
       const newNumber = kind === 'add' || kind === 'context' ? newLine++ : null;
       const language = languageForPath(path);
       const lang = language && highlighter?.getLoadedLanguages().includes(language) ? language : 'text';
-      const tokens = kind !== 'meta' ? highlighter?.codeToTokens(code, { lang, theme: theme === 'light' ? 'ayu-light' : 'ayu-dark' }).tokens[0] : undefined;
+      const tokens = kind !== 'meta' ? highlighter?.codeToTokens(code, { lang, theme: theme === 'light' ? 'github-light-default' : 'ayu-dark' }).tokens[0] : undefined;
       return { line, kind, code, oldNumber, newNumber, tokens };
     });
   }, [text, highlighter, theme]);

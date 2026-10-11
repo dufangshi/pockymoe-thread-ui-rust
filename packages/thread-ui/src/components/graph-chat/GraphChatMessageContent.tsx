@@ -352,7 +352,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
     if (isFencedOrBlockCode) {
       const loadedLanguages = highlighter?.getLoadedLanguages?.() ?? [];
       const lang = loadedLanguages.includes(language) ? language : 'text';
-      const theme = dark ? 'ayu-dark' : 'ayu-light';
+      const theme = dark ? 'ayu-dark' : 'github-light-default';
       const id = `${language || 'text'}:${textContent.length}:${textContent.slice(0, 32)}`;
       let html = '';
 

@@ -168,6 +168,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
           kind: 'agentMessage',
           status: item.status ?? null,
         }}
+        variant="reasoning"
         scrollRootRef={scrollRootRef}
         timeLabel={timeLabel}
         timeTitle={timeTitle}

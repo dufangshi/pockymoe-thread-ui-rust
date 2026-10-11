@@ -474,6 +474,8 @@ export const filesEn = {
   "files.fileOperationFailed": "File operation failed.",
   "files.copyRelativePathFor": "Copy relative path for {{value1}}",
   "files.copyAbsolutePathFor": "Copy absolute path for {{value1}}",
+  "files.copyRelativePath": "Copy relative path",
+  "files.copyAbsolutePath": "Copy absolute path",
   "files.delete": "Delete",
   "files.name": "Name",
   "files.delete_c93ae0": "Delete {{value1}}?",

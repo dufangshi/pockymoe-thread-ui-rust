@@ -41,7 +41,8 @@ import type { HighlighterCore } from 'shiki/core';
 
 import type { ThreadWorkspaceFilePreview } from '../../adapters';
 import type { PluginContextValue } from '../../plugins/plugin-context';
-import { getGraphChatHighlighter } from '../graph-chat/graphChatShiki';
+import { getGraphChatHighlighter, syntaxThemeFor } from '../graph-chat/graphChatShiki';
+import { useDocumentThemePreset } from '../themeHooks';
 import {
   MOLECULAR_EXTENSIONS,
   buildMoleculePreviewSnapshot,
@@ -233,6 +234,7 @@ const GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview({
     return () => observer.disconnect();
   }, []);
 
+  const syntaxTheme = syntaxThemeFor(dark, useDocumentThemePreset());
   const highlightedHtml = useMemo(() => {
     if (!highlighter) {
       return '';
@@ -246,18 +248,18 @@ const GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview({
       return transparentHighlightBackground(
         highlighter.codeToHtml(content, {
           lang: resolvedLanguage,
-          theme: dark ? 'ayu-dark' : 'github-light-default',
+          theme: syntaxTheme,
         }),
       );
     } catch {
       return transparentHighlightBackground(
         highlighter.codeToHtml(content, {
           lang: 'text',
-          theme: dark ? 'ayu-dark' : 'github-light-default',
+          theme: syntaxTheme,
         }),
       );
     }
-  }, [content, dark, highlighter, language]);
+  }, [content, highlighter, language, syntaxTheme]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -698,7 +700,7 @@ export function GraphWorkspacePreviewPane({
       {actionsOpen && fileActions}
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {error ? (
-          <div className="border-b border-rose-200 bg-rose-50 px-5 py-3 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200">
+          <div role="alert" className="workspace-file-alert border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-5 py-3">
             {error}
           </div>
         ) : null}
@@ -763,7 +765,7 @@ export function GraphWorkspacePreviewPane({
               </div>
             ) : null}
             {saveError ? (
-              <div className="border-b border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200">
+              <div role="alert" className="workspace-file-alert border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-4 py-2">
                 {saveError}
               </div>
             ) : null}

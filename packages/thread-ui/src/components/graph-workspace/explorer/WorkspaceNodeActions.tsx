@@ -12,6 +12,7 @@ import { createPortal } from 'react-dom';
 import { RenameDialog } from '../../RenameDialog';
 import { ConfirmDialog } from '../../ConfirmDialog';
 import type { WorkspaceTreeNode } from '../workspaceTree';
+import { useDocumentThemePreset } from '../../themeHooks';
 
 export interface WorkspaceNodeActionProps {
   onCopyPath?: (
@@ -31,6 +32,8 @@ export function WorkspaceNodeActions({
   onDelete,
 }: WorkspaceNodeActionProps & { node: WorkspaceTreeNode }) {
   useI18n();
+  // Plum Pocket keeps menu labels short; the node name stays in the accessible name.
+  const shortLabels = useDocumentThemePreset() === 'plum-pocket';
   const [menu, setMenu] = useState<{ left: number; top: number } | null>(null);
   const [dialog, setDialog] = useState<'rename' | 'delete' | null>(null);
   const [name, setName] = useState(node.name);
@@ -56,12 +59,13 @@ export function WorkspaceNodeActions({
     };
     const resize = () => setMenu(null);
     document.addEventListener('pointerdown', outside);
-    document.addEventListener('keydown', escape);
+    // Capture: the row stops key events from bubbling past the actions.
+    document.addEventListener('keydown', escape, true);
     window.addEventListener('resize', resize);
     popup.current?.querySelector<HTMLButtonElement>('button')?.focus();
     return () => {
       document.removeEventListener('pointerdown', outside);
-      document.removeEventListener('keydown', escape);
+      document.removeEventListener('keydown', escape, true);
       window.removeEventListener('resize', resize);
     };
   }, [menu]);
@@ -165,8 +169,8 @@ export function WorkspaceNodeActions({
           >
             {onDownload && <button role="menuitem" type="button" onClick={() => { onDownload(node); close(); }}><Download size={16} />{translate('files.downloadFile')}</button>}
             {onCopyPath && <>
-              <button role="menuitem" type="button" onClick={() => { onCopyPath(node, 'relative'); close(); }}><Copy size={16} />{translate('files.copyRelativePathFor', { value1: node.name })}</button>
-              <button role="menuitem" type="button" onClick={() => { onCopyPath(node, 'absolute'); close(); }}><ClipboardCopy size={16} />{translate('files.copyAbsolutePathFor', { value1: node.name })}</button>
+              <button role="menuitem" type="button" aria-label={shortLabels ? translate('files.copyRelativePathFor', { value1: node.name }) : undefined} onClick={() => { onCopyPath(node, 'relative'); close(); }}><Copy size={16} />{shortLabels ? translate('files.copyRelativePath') : translate('files.copyRelativePathFor', { value1: node.name })}</button>
+              <button role="menuitem" type="button" aria-label={shortLabels ? translate('files.copyAbsolutePathFor', { value1: node.name }) : undefined} onClick={() => { onCopyPath(node, 'absolute'); close(); }}><ClipboardCopy size={16} />{shortLabels ? translate('files.copyAbsolutePath') : translate('files.copyAbsolutePathFor', { value1: node.name })}</button>
             </>}
             {onRename && (
               <button

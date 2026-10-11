@@ -474,6 +474,8 @@ export const filesZhCN = {
   "files.fileOperationFailed": "文件操作失败。",
   "files.copyRelativePathFor": "复制 {{value1}} 的相对路径",
   "files.copyAbsolutePathFor": "复制 {{value1}} 的绝对路径",
+  "files.copyRelativePath": "复制相对路径",
+  "files.copyAbsolutePath": "复制绝对路径",
   "files.delete": "删除",
   "files.name": "名称",
   "files.delete_c93ae0": "删除 {{value1}}？",

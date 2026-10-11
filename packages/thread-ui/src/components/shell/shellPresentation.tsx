@@ -4,17 +4,14 @@ import { cssHexVariable } from '../themeHooks';
 
 /** Matches the workbench panel surfaces so the terminal reads as part of the panel.
  *  A theme preset may override the surface colors with `--terminal-bg`, `--terminal-fg`,
- *  `--terminal-cursor` and `--terminal-selection` (hex) on the terminal's container. */
+ *  `--terminal-cursor` and `--terminal-selection`, and any ANSI color with
+ *  `--terminal-<name>` (`--terminal-red`, `--terminal-bright-black`, …), all hex, on the
+ *  terminal's container. */
 export function terminalThemeFor(effectiveTheme: 'light' | 'dark', container?: Element | null) {
   const light = effectiveTheme === 'light';
   const background = cssHexVariable(container, '--terminal-bg') ?? (light ? '#ebeeeb' : '#0f1317');
   const foreground = cssHexVariable(container, '--terminal-fg') ?? (light ? '#22282b' : '#d6dde6');
-  return {
-    background,
-    foreground,
-    cursor: cssHexVariable(container, '--terminal-cursor') ?? foreground,
-    cursorAccent: background,
-    selectionBackground: cssHexVariable(container, '--terminal-selection') ?? (light ? 'rgba(0, 139, 83, 0.24)' : 'rgba(0, 204, 118, 0.28)'),
+  const ansi = {
     black: light ? '#c4c9c4' : '#1c242a',
     brightBlack: light ? '#6b736e' : '#5b6770',
     red: light ? '#c62f3a' : '#f87171',
@@ -31,6 +28,17 @@ export function terminalThemeFor(effectiveTheme: 'light' | 'dark', container?: E
     brightCyan: light ? '#0891b2' : '#22d3ee',
     white: light ? '#4b5258' : '#e2e8f0',
     brightWhite: light ? '#121416' : '#f8fafc',
+  };
+  return {
+    background,
+    foreground,
+    cursor: cssHexVariable(container, '--terminal-cursor') ?? foreground,
+    cursorAccent: background,
+    selectionBackground: cssHexVariable(container, '--terminal-selection') ?? (light ? 'rgba(0, 139, 83, 0.24)' : 'rgba(0, 204, 118, 0.28)'),
+    ...Object.fromEntries(Object.entries(ansi).map(([name, color]) => [
+      name,
+      cssHexVariable(container, `--terminal-${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`) ?? color,
+    ])) as typeof ansi,
   };
 }
 

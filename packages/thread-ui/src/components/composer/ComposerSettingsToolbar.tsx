@@ -13,9 +13,21 @@ import type { SettingsMenu } from './types';
 import { formatReasoningEffortLabel } from './composerUtils';
 import { ContextProgressBar } from './composerPresentation';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
-import { Check, ChevronDown, ListPlus, Send, Target } from 'lucide-react';
+import { Check, ChevronDown, Send, Target } from 'lucide-react';
 import { useDocumentThemePreset } from '../themeHooks';
 import { ComposerReasoningSlider } from './ComposerReasoningSlider';
+
+/** Send, but later: an up arrow with a small clock. */
+function SendLaterIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="composer-send-later h-[18px] w-[18px] fill-none stroke-current" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 19V5" />
+      <path d="m4 10 5-5 5 5" />
+      <circle cx="17.5" cy="16.5" r="4.5" />
+      <path d="M17.5 14.5v2l1.3 1" />
+    </svg>
+  );
+}
 
 export function ComposerSettingsToolbar({
   openMenu,
@@ -74,6 +86,8 @@ export function ComposerSettingsToolbar({
   useI18n();
   // Plum Pocket shows the harness mascot, a menu chevron and per-intent send icons.
   const plum = useDocumentThemePreset() === 'plum-pocket';
+  // A turn is running: sending now adds the prompt to run after it.
+  const sendLater = queueing && activeView === 'chat' && !goalComposeMode;
   const selectedModelLabel =
     modelOptions.find((entry) => entry.model === model)?.displayName ||
     model ||
@@ -170,20 +184,23 @@ export function ComposerSettingsToolbar({
         type="submit"
         variant="default"
         size="icon-xs"
+        data-send-intent={goalComposeMode ? 'goal' : sendLater ? 'queue' : 'send'}
         aria-label={
           goalComposeMode
             ? translate('chat.setGoal')
-            : translate('chat.sendPrompt')
+            : plum && sendLater
+              ? translate('chat.sendAfterTurn')
+              : translate('chat.sendPrompt')
         }
-        title={sendButtonLabel}
+        title={plum && sendLater ? translate('chat.sendAfterTurn') : sendButtonLabel}
         disabled={goalBusy || (activeView === 'chat' ? disabled : false)}
         className={`${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
       >
         {plum ? (
           goalComposeMode ? (
             <Target aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
-          ) : queueing && activeView === 'chat' ? (
-            <ListPlus aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
+          ) : sendLater ? (
+            <SendLaterIcon />
           ) : (
             <Send aria-hidden="true" className="composer-send-plane h-[17px] w-[17px]" strokeWidth={2.2} />
           )

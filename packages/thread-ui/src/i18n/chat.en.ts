@@ -126,6 +126,7 @@ export const chatEn = {
   "chat.sandbox": "Sandbox: {{value1}}",
   "chat.setGoal": "Set goal",
   "chat.sendPrompt": "Send Prompt",
+  "chat.sendAfterTurn": "Send after this turn",
   "chat.sendShellInput": "Send Shell Input",
   "chat.paste": "Paste",
   "chat.copy": "Copy",

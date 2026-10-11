@@ -148,6 +148,8 @@ describe('ComposerSettingsToolbar', () => {
     expect(classic.querySelector('.composer-model-avatar')).toBeNull();
     expect(classic.querySelector('.composer-model-chevron')).toBeNull();
     expect(classic.querySelector('.send-base path')?.getAttribute('d')).toBe('M8 13V3');
+    // Classic keeps its label while a turn runs.
+    expect(classic.querySelector('.send-base')?.getAttribute('aria-label')).toBe('Send Prompt');
     act(() => root?.unmount());
     container?.remove();
 
@@ -155,7 +157,11 @@ describe('ComposerSettingsToolbar', () => {
     const plum = renderToolbar({ agent: 'claude', queueing: true });
     expect(plum.querySelector('.composer-model-avatar')?.getAttribute('data-agent')).toBe('claude');
     expect(plum.querySelector('.composer-model-chevron')).not.toBeNull();
-    expect(plum.querySelector('.send-base svg')?.getAttribute('class')).toContain('lucide-list-plus');
+    const sendLater = plum.querySelector('.send-base');
+    expect(sendLater?.querySelector('.composer-send-later')).not.toBeNull();
+    expect(sendLater?.getAttribute('data-send-intent')).toBe('queue');
+    expect(sendLater?.getAttribute('aria-label')).toBe('Send after this turn');
+    expect(sendLater?.getAttribute('title')).toBe('Send after this turn');
     act(() => root?.unmount());
     container?.remove();
 

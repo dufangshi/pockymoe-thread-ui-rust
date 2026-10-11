@@ -126,6 +126,7 @@ export const chatZhCN = {
   "chat.sandbox": "沙箱：{{value1}}",
   "chat.setGoal": "设置目标",
   "chat.sendPrompt": "发送提示词",
+  "chat.sendAfterTurn": "本轮结束后发送",
   "chat.sendShellInput": "发送 Shell 输入",
   "chat.paste": "粘贴",
   "chat.copy": "复制",

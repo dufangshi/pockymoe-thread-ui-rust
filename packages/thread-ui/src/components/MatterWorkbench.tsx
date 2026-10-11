@@ -129,7 +129,7 @@ export function MatterWorkbench({
     return () => query.removeEventListener('change', change);
   }, []);
   // Plum Pocket keeps the phone top bar to touch-sized essentials and moves
-  // Home, Chat and the device monitor into the drawer.
+  // Home and Chat into the drawer; the device monitor stays in the top bar.
   const drawerTools = useDocumentThemePreset() === 'plum-pocket' && mobile;
   const toolPanel = useWorkbenchToolPanel();
   // With the bottom panel the conversation stays visible beside the terminal:
@@ -310,7 +310,7 @@ export function MatterWorkbench({
           <span>{translate("workbench.searchConversation")}</span>
         </button>}</div>
         <div className="matter-topbar-end">
-          {mobile && !drawerTools && deviceMonitor}
+          {mobile && deviceMonitor}
           {mobile && <>
             {!drawerTools && <button aria-label={translate("workbench.chat")} aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={showChat}><MessageSquare /></button>}
             {o.terminalEnabled && <button aria-label={translate("workbench.terminal")} aria-pressed={o.activeView === 'shell'} onClick={() => o.onViewChange('shell')}><Terminal /></button>}
@@ -358,7 +358,6 @@ export function MatterWorkbench({
           <div className="matter-drawer-tools" role="group" aria-label={translate("workbench.workspaceTools")}>
             <a href={homeHref}><Home /><span>{translate("workbench.workspaces")}</span></a>
             <button aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={() => { showChat(); setSidebarOpen(false); }}><MessageSquare /><span>{translate("workbench.chat")}</span></button>
-            {deviceMonitor}
           </div>
         )}
         {o.error && (

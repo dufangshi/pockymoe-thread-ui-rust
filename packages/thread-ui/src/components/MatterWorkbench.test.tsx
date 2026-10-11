@@ -48,13 +48,13 @@ describe('phone top bar', () => {
     expect(drawer().querySelector('.matter-drawer-tools')).toBeNull();
   });
 
-  it('moves Home, Chat and the device monitor into the Plum Pocket drawer once each', () => {
+  it('moves Home and Chat into the Plum Pocket drawer and keeps the device monitor in the top bar', () => {
     document.documentElement.dataset.themePreset = 'plum-pocket';
     render();
-    for (const selector of ['a[href="/workspaces"]', 'button[aria-label="Device monitor"]']) {
-      expect(topbar().querySelector(selector)).toBeNull();
-      expect(host.querySelectorAll(selector)).toHaveLength(1);
-    }
+    expect(topbar().querySelector('a[href="/workspaces"]')).toBeNull();
+    expect(host.querySelectorAll('a[href="/workspaces"]')).toHaveLength(1);
+    expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
+    expect(host.querySelectorAll('button[aria-label="Device monitor"]')).toHaveLength(1);
     const tools = drawer().querySelector('[role="group"].matter-drawer-tools')!;
     expect(tools.querySelector('a[href="/workspaces"]')?.textContent).toBe('Workspaces');
     expect(tools.querySelector('button[aria-pressed="true"]')?.textContent).toBe('Chat');

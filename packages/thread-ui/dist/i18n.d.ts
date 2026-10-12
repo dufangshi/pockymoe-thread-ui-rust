@@ -2576,6 +2576,9 @@ declare const en: {
     };
     readonly 'chat.performedOperations': "Performed";
     readonly 'chat.performingOperations': "Working on";
+    readonly "auth.accountLegacyUpgrade": "First sign-in since the security upgrade";
+    readonly "auth.accountLegacyUpgradeHelp": "Use this only for an older account that has not been secured yet. This one-time upgrade sends your old password to the relay.";
+    readonly "auth.accountDeviceIdentityChanged": "This device has a different identity. Unlock and explicitly confirm the reinstalled device before connecting.";
     readonly "auth.avatar": "Profile avatar";
     readonly "auth.uploadAvatar": "Upload avatar";
     readonly "auth.removeAvatar": "Remove avatar";
@@ -2818,7 +2821,7 @@ declare const en: {
     readonly "auth.accountTemporaryPassword": "Temporary reset password";
     readonly "auth.accountTemporaryHelp": "Use only the temporary password supplied by your administrator here. Then recover your account key with your recovery code, or start over.";
     readonly "auth.accountResetRecoveryHelp": "Your login was reset. Enter your account recovery code and choose a new password. If you lost the code, starting over creates a new account key and your devices must be bound again locally.";
-    readonly "auth.accountLoginDowngrade": "This browser previously verified an account vault for this login. The relay now claims it has no vault. Connection blocked. Use the admin reset option only if you received a temporary reset password.";
+    readonly "auth.accountLoginDowngrade": "This password login was blocked. Secured accounts require local key derivation. Use the security upgrade option only for an older account that has never had a vault.";
     readonly "auth.user_id_taken": "That account identifier was taken. Try registering again to generate a new account key and recovery code.";
     readonly "auth.reauthentication_required": "Sign in again with your OAuth provider or verify an existing authenticator or passkey, then retry this change.";
     readonly "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key.";
@@ -5514,6 +5517,9 @@ declare const zhCN: {
     };
     'chat.performedOperations': "已执行";
     'chat.performingOperations': "正在执行";
+    "auth.accountLegacyUpgrade": "安全升级后的首次登录";
+    "auth.accountLegacyUpgradeHelp": "仅适用于尚未完成安全升级的旧账户。此次升级会将旧密码发送给中继。";
+    "auth.accountDeviceIdentityChanged": "此设备的身份已改变。请解锁并明确确认重新安装的设备，然后再连接。";
     "auth.avatar": "个人头像";
     "auth.uploadAvatar": "上传头像";
     "auth.removeAvatar": "移除头像";
@@ -5756,7 +5762,7 @@ declare const zhCN: {
     "auth.accountTemporaryPassword": "临时重置密码";
     "auth.accountTemporaryHelp": "此处仅用于输入管理员提供的临时密码。随后使用恢复码恢复账户密钥，或重新开始。";
     "auth.accountResetRecoveryHelp": "你的登录密码已重置。请输入账户恢复码并设置新密码。如果恢复码已丢失，重新开始会创建新的账户密钥，设备需要在本地重新绑定。";
-    "auth.accountLoginDowngrade": "此浏览器此前已验证过该账户的保险库，但中继现在声称保险库不存在。连接已阻止。仅在收到临时重置密码时使用管理员重置选项。";
+    "auth.accountLoginDowngrade": "此次密码登录已阻止。已完成安全升级的账户必须在本地派生密钥。仅对从未创建过保险库的旧账户使用安全升级选项。";
     "auth.user_id_taken": "该账户标识已被占用。请重新注册，以生成新的账户密钥和恢复码。";
     "auth.reauthentication_required": "请通过 OAuth 提供方重新登录，或验证已有的身份验证器或通行密钥，然后重试此更改。";
     "auth.accountVaultMissing": "此浏览器已验证过账户保险库，但中继现在声称保险库不存在。连接已阻止。仅在确定要重置账户密钥时重新开始。";
@@ -8474,6 +8480,9 @@ declare const resources: {
         };
         readonly 'chat.performedOperations': "Performed";
         readonly 'chat.performingOperations': "Working on";
+        readonly "auth.accountLegacyUpgrade": "First sign-in since the security upgrade";
+        readonly "auth.accountLegacyUpgradeHelp": "Use this only for an older account that has not been secured yet. This one-time upgrade sends your old password to the relay.";
+        readonly "auth.accountDeviceIdentityChanged": "This device has a different identity. Unlock and explicitly confirm the reinstalled device before connecting.";
         readonly "auth.avatar": "Profile avatar";
         readonly "auth.uploadAvatar": "Upload avatar";
         readonly "auth.removeAvatar": "Remove avatar";
@@ -8716,7 +8725,7 @@ declare const resources: {
         readonly "auth.accountTemporaryPassword": "Temporary reset password";
         readonly "auth.accountTemporaryHelp": "Use only the temporary password supplied by your administrator here. Then recover your account key with your recovery code, or start over.";
         readonly "auth.accountResetRecoveryHelp": "Your login was reset. Enter your account recovery code and choose a new password. If you lost the code, starting over creates a new account key and your devices must be bound again locally.";
-        readonly "auth.accountLoginDowngrade": "This browser previously verified an account vault for this login. The relay now claims it has no vault. Connection blocked. Use the admin reset option only if you received a temporary reset password.";
+        readonly "auth.accountLoginDowngrade": "This password login was blocked. Secured accounts require local key derivation. Use the security upgrade option only for an older account that has never had a vault.";
         readonly "auth.user_id_taken": "That account identifier was taken. Try registering again to generate a new account key and recovery code.";
         readonly "auth.reauthentication_required": "Sign in again with your OAuth provider or verify an existing authenticator or passkey, then retry this change.";
         readonly "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key.";
@@ -11411,6 +11420,9 @@ declare const resources: {
         };
         'chat.performedOperations': "已执行";
         'chat.performingOperations': "正在执行";
+        "auth.accountLegacyUpgrade": "安全升级后的首次登录";
+        "auth.accountLegacyUpgradeHelp": "仅适用于尚未完成安全升级的旧账户。此次升级会将旧密码发送给中继。";
+        "auth.accountDeviceIdentityChanged": "此设备的身份已改变。请解锁并明确确认重新安装的设备，然后再连接。";
         "auth.avatar": "个人头像";
         "auth.uploadAvatar": "上传头像";
         "auth.removeAvatar": "移除头像";
@@ -11653,7 +11665,7 @@ declare const resources: {
         "auth.accountTemporaryPassword": "临时重置密码";
         "auth.accountTemporaryHelp": "此处仅用于输入管理员提供的临时密码。随后使用恢复码恢复账户密钥，或重新开始。";
         "auth.accountResetRecoveryHelp": "你的登录密码已重置。请输入账户恢复码并设置新密码。如果恢复码已丢失，重新开始会创建新的账户密钥，设备需要在本地重新绑定。";
-        "auth.accountLoginDowngrade": "此浏览器此前已验证过该账户的保险库，但中继现在声称保险库不存在。连接已阻止。仅在收到临时重置密码时使用管理员重置选项。";
+        "auth.accountLoginDowngrade": "此次密码登录已阻止。已完成安全升级的账户必须在本地派生密钥。仅对从未创建过保险库的旧账户使用安全升级选项。";
         "auth.user_id_taken": "该账户标识已被占用。请重新注册，以生成新的账户密钥和恢复码。";
         "auth.reauthentication_required": "请通过 OAuth 提供方重新登录，或验证已有的身份验证器或通行密钥，然后重试此更改。";
         "auth.accountVaultMissing": "此浏览器已验证过账户保险库，但中继现在声称保险库不存在。连接已阻止。仅在确定要重置账户密钥时重新开始。";

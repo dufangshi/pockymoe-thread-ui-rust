@@ -1,4 +1,7 @@
 export const authEn = {
+  "auth.accountLegacyUpgrade": "First sign-in since the security upgrade",
+  "auth.accountLegacyUpgradeHelp": "Use this only for an older account that has not been secured yet. This one-time upgrade sends your old password to the relay.",
+  "auth.accountDeviceIdentityChanged": "This device has a different identity. Unlock and explicitly confirm the reinstalled device before connecting.",
   "auth.avatar": "Profile avatar",
   "auth.uploadAvatar": "Upload avatar",
   "auth.removeAvatar": "Remove avatar",
@@ -241,7 +244,7 @@ export const authEn = {
   "auth.accountTemporaryPassword": "Temporary reset password",
   "auth.accountTemporaryHelp": "Use only the temporary password supplied by your administrator here. Then recover your account key with your recovery code, or start over.",
   "auth.accountResetRecoveryHelp": "Your login was reset. Enter your account recovery code and choose a new password. If you lost the code, starting over creates a new account key and your devices must be bound again locally.",
-  "auth.accountLoginDowngrade": "This browser previously verified an account vault for this login. The relay now claims it has no vault. Connection blocked. Use the admin reset option only if you received a temporary reset password.",
+  "auth.accountLoginDowngrade": "This password login was blocked. Secured accounts require local key derivation. Use the security upgrade option only for an older account that has never had a vault.",
   "auth.user_id_taken": "That account identifier was taken. Try registering again to generate a new account key and recovery code.",
   "auth.reauthentication_required": "Sign in again with your OAuth provider or verify an existing authenticator or passkey, then retry this change.",
   "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key.",

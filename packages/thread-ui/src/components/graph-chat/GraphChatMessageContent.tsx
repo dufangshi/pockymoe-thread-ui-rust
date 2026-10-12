@@ -32,7 +32,7 @@ import { Button } from '../graph-ui/Button';
 import { usePlugins } from '../../plugins/usePlugins';
 import { GraphChatToolCall } from './GraphChatToolCall';
 import { getGraphChatHighlighter, syntaxThemeFor } from './graphChatShiki';
-import { useDocumentThemePreset } from '../themeHooks';
+import { useThemeFeature } from '../themeHooks';
 import { GraphChatMermaidDiagram } from './GraphChatMermaidDiagram';
 import { hasClosedMarkdownFence, isMermaidCode } from './graphChatMermaid';
 import {
@@ -186,7 +186,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
   >({});
   const [touchCode, setTouchCode] = useState<string | null>(null);
   const [dark, setDark] = useState(false);
-  const themePreset = useDocumentThemePreset();
+  const cssSyntaxPalette = useThemeFeature('code.cssSyntaxPalette');
   const { processedContent, resultMap } = useMemo(
     () => readOnly ? { processedContent: content, resultMap: new Map() } : preprocessGraphChatToolBlocks(content),
     [content, readOnly],
@@ -354,7 +354,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
     if (isFencedOrBlockCode) {
       const loadedLanguages = highlighter?.getLoadedLanguages?.() ?? [];
       const lang = loadedLanguages.includes(language) ? language : 'text';
-      const theme = syntaxThemeFor(dark, themePreset);
+      const theme = syntaxThemeFor(dark, cssSyntaxPalette);
       const id = `${language || 'text'}:${textContent.length}:${textContent.slice(0, 32)}`;
       let html = '';
 

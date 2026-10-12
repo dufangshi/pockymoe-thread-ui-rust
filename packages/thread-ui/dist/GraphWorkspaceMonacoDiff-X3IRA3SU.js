@@ -1,12 +1,12 @@
 import {
   editorThemeFor
-} from "./chunk-MBQG7JYP.js";
+} from "./chunk-MHUZXUZY.js";
 import {
-  useDocumentThemePreset
-} from "./chunk-ZN6LCQTY.js";
+  useDocumentThemeRevision
+} from "./chunk-QIOFPWO7.js";
 import {
   translate
-} from "./chunk-FFD45ZDV.js";
+} from "./chunk-IZMKUZH7.js";
 import {
   editor
 } from "./chunk-JXQIYSAV.js";
@@ -24,7 +24,7 @@ function WorkspaceDocumentDiff({
   compact
 }) {
   const host = useRef(null);
-  const themePreset = useDocumentThemePreset();
+  const themeRevision = useDocumentThemeRevision();
   useEffect(() => {
     if (!host.current) return;
     const left = editor.createModel(
@@ -52,7 +52,7 @@ function WorkspaceDocumentDiff({
       left.dispose();
       right.dispose();
     };
-  }, [original, modified, language, dark, compact, themePreset]);
+  }, [original, modified, language, dark, compact, themeRevision]);
   return /* @__PURE__ */ jsx(
     "div",
     {

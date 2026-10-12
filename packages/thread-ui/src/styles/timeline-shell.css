@@ -151,6 +151,21 @@
   color: var(--theme-fg-muted);
 }
 
+/* Token and price breakdown (a tooltip portal, outside the shell). Themes restyle
+   the surface, its arrow and the rule under the total. */
+.thread-usage-details {
+  border: 1px solid #484a41;
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: #f2f1e9;
+  background: #252622;
+  box-shadow: 0 6px 22px #0005;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.thread-usage-details [data-slot='tooltip-arrow'] { fill: #252622; }
+.thread-usage-details-total { border-bottom: 1px solid #484a41; }
+
 .thread-ui-shell .thread-graph-turn-body > :not([hidden]) ~ :not([hidden]),
 .thread-ui-shell
   .thread-graph-turn-collapsed-summary
@@ -532,3 +547,6 @@
 .thread-peer-execution { min-width: 0; }
 
 .thread-graph-user-preview-text { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+
+.thread-answer-sequence { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.thread-answer-section { min-width: 0; }

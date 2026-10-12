@@ -10,11 +10,11 @@ import type { ReactNode } from 'react';
 
 import { InputGroupButton } from '../graph-ui/InputGroup';
 import type { SettingsMenu } from './types';
-import { formatReasoningEffortLabel } from './composerUtils';
+import { formatContextTokenKilocount, formatReasoningEffortLabel } from './composerUtils';
 import { ContextProgressBar } from './composerPresentation';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
 import { Check, ChevronDown, Send, Target } from 'lucide-react';
-import { useDocumentThemePreset } from '../themeHooks';
+import { useThemeFeature } from '../themeHooks';
 import { ComposerReasoningSlider } from './ComposerReasoningSlider';
 
 /** Send, but later: an up arrow with a small clock. */
@@ -84,8 +84,10 @@ export function ComposerSettingsToolbar({
   onUpdateSettings: (input: UpdateThreadSettingsInput) => void;
 }) {
   useI18n();
-  // Plum Pocket shows the harness mascot, a menu chevron and per-intent send icons.
-  const plum = useDocumentThemePreset() === 'plum-pocket';
+  // Theme flags: the harness avatar and a chevron on the model chip, and
+  // per-intent send icons with the "Send after this turn" label.
+  const modelAvatar = useThemeFeature('composer.modelAvatar');
+  const intentIcons = useThemeFeature('composer.intentIcons');
   // A turn is running: sending now adds the prompt to run after it.
   const sendLater = queueing && activeView === 'chat' && !goalComposeMode;
   const selectedModelLabel =
@@ -121,25 +123,25 @@ export function ComposerSettingsToolbar({
           title={`${selectedModelLabel}${supportsEffort ? ` · ${effortLabel}` : ''}\n${modelContextTitle}`}
           className="composer-model-label flex flex-col items-center justify-center whitespace-nowrap px-1 text-xs text-stone-400"
         >
-          {plum && agent ? (
+          {modelAvatar && agent ? (
             <span className="matter-thread-avatar composer-model-avatar" data-agent={agent} aria-hidden="true" />
           ) : null}
           <span className="composer-model-name">{selectedModelLabel}</span>
           {supportsEffort && (
             <span className="composer-model-effort">{effortLabel}</span>
           )}
-          {plum ? <ChevronDown aria-hidden="true" className="composer-model-chevron" /> : null}
+          {modelAvatar ? <ChevronDown aria-hidden="true" className="composer-model-chevron" /> : null}
         </button>
         {model ? <ContextProgressBar contextUsage={contextUsage} /> : null}
         {openMenu === 'model' && (
           <ComposerMenuSurface
             align="end"
-            className="w-[min(19rem,calc(100vw-2rem))] rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1.5 text-[var(--theme-fg)] shadow-xl"
+            className="composer-model-menu w-[min(19rem,calc(100vw-2rem))] rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1.5 text-[var(--theme-fg)] shadow-xl"
           >
-            <p className="px-3 py-2 text-xs text-[var(--theme-fg-muted)]">
+            <p className="composer-model-menu-heading px-2 py-1 text-xs text-[var(--theme-fg-muted)]">
               {translate('chat.model')}
             </p>
-            <div className="max-h-[min(280px,35dvh)] overflow-y-auto">
+            <div className="max-h-[min(192px,28dvh)] overflow-y-auto">
               {modelOptions.map((entry) => (
                 <button
                   key={entry.id}
@@ -153,7 +155,7 @@ export function ComposerSettingsToolbar({
                       reasoningEffort: entry.defaultReasoningEffort ?? null,
                     })
                   }
-                  className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-xs hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed"
+                  className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-left text-xs hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed"
                 >
                   <span>{entry.displayName}</span>
                   {entry.model === model && (
@@ -175,6 +177,16 @@ export function ComposerSettingsToolbar({
                 onCommit={(next) => onUpdateSettings({ reasoningEffort: next })}
               />
             )}
+            <div className="composer-context-summary" title={modelContextTitle}>
+              <span>{translate('chat.context')}</span>
+              <span className="composer-context-value">
+                {contextUsage?.availability === 'available' && contextUsage.tokensInContextWindow != null && Number.isFinite(contextUsage.tokensInContextWindow)
+                  ? formatContextTokenKilocount(Math.max(0, contextUsage.tokensInContextWindow)).toUpperCase() : '—'}
+                <span className="composer-context-separator"> / </span>
+                {contextUsage?.modelContextWindow != null && Number.isFinite(contextUsage.modelContextWindow) && contextUsage.modelContextWindow > 0
+                  ? formatContextTokenKilocount(contextUsage.modelContextWindow).toUpperCase() : '—'}
+              </span>
+            </div>
           </ComposerMenuSurface>
         )}
       </div>
@@ -188,15 +200,15 @@ export function ComposerSettingsToolbar({
         aria-label={
           goalComposeMode
             ? translate('chat.setGoal')
-            : plum && sendLater
+            : intentIcons && sendLater
               ? translate('chat.sendAfterTurn')
               : translate('chat.sendPrompt')
         }
-        title={plum && sendLater ? translate('chat.sendAfterTurn') : sendButtonLabel}
+        title={intentIcons && sendLater ? translate('chat.sendAfterTurn') : sendButtonLabel}
         disabled={goalBusy || (activeView === 'chat' ? disabled : false)}
         className={`${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
       >
-        {plum ? (
+        {intentIcons ? (
           goalComposeMode ? (
             <Target aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
           ) : sendLater ? (

@@ -6,7 +6,7 @@
 .composer-reasoning {
   border-top: 1px solid var(--theme-border);
   margin-top: 6px;
-  padding: 14px 12px 6px;
+  padding: 8px 10px 2px;
   transition: --effort-color 240ms ease;
 }
 .composer-reasoning-heading {
@@ -23,15 +23,15 @@
   border-radius: 7px;
   padding: 2px 8px;
   font-size: 11px;
-  line-height: 18px;
+  line-height: 16px;
   animation: composer-effort-reveal 180ms ease-out;
 }
 .composer-reasoning-slider {
   position: relative;
   display: flex;
   align-items: center;
-  height: 40px;
-  margin: 9px 0 0;
+  height: 32px;
+  margin: 2px 0 0;
   touch-action: none;
   user-select: none;
   cursor: pointer;
@@ -96,7 +96,7 @@
 }
 .composer-reasoning-stops {
   position: relative;
-  height: 33px;
+  height: 27px;
   margin-top: -5px;
 }
 .composer-reasoning-stops button {
@@ -105,9 +105,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 7px;
+  gap: 4px;
   min-width: 24px;
-  padding: 0 0 8px;
+  padding: 0 0 4px;
   font-size: 9px;
   color: var(--theme-fg-muted);
   cursor: pointer;
@@ -147,4 +147,26 @@
     transition: none;
     animation: none;
   }
+}
+
+.composer-model-menu-heading { line-height: 16px; }
+.composer-context-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--theme-border);
+  margin-top: 4px;
+  padding: 7px 10px 3px;
+  color: var(--theme-fg-muted);
+  font-size: 11px;
+  line-height: 16px;
+}
+.composer-context-value { color: var(--theme-fg); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.composer-context-separator { color: var(--theme-fg-muted); }
+
+/* Dense controls need an opaque surface so conversation text and navigation
+   cannot show through the model choices and context readout. */
+.thread-ui-shell .composer-model-menu[data-composer-menu-surface] {
+  --composer-menu-surface-bg: var(--theme-panel);
 }

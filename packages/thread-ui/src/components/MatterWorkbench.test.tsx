@@ -35,7 +35,7 @@ beforeEach(() => {
 afterEach(() => {
   act(() => root.unmount());
   host.remove();
-  delete document.documentElement.dataset.themePreset;
+  delete document.documentElement.dataset.themeFeatures;
   vi.unstubAllGlobals();
 });
 
@@ -48,8 +48,8 @@ describe('phone top bar', () => {
     expect(drawer().querySelector('.matter-drawer-tools')).toBeNull();
   });
 
-  it('moves Home and Chat into the Plum Pocket drawer and keeps the device monitor in the top bar', () => {
-    document.documentElement.dataset.themePreset = 'plum-pocket';
+  it('moves Home and Chat into the drawer for themes with phone drawer tools and keeps the device monitor in the top bar', () => {
+    document.documentElement.dataset.themeFeatures = 'workbench.phoneDrawerTools';
     render();
     expect(topbar().querySelector('a[href="/workspaces"]')).toBeNull();
     expect(host.querySelectorAll('a[href="/workspaces"]')).toHaveLength(1);
@@ -62,11 +62,11 @@ describe('phone top bar', () => {
     expect(topbar().querySelector('button[aria-label="Open settings"]')).not.toBeNull();
   });
 
-  it('follows a live preset switch', async () => {
+  it('follows a live theme feature switch', async () => {
     render();
-    await act(async () => { document.documentElement.dataset.themePreset = 'plum-pocket'; await Promise.resolve(); });
+    await act(async () => { document.documentElement.dataset.themeFeatures = 'composer.richMenus workbench.phoneDrawerTools'; await Promise.resolve(); });
     expect(drawer().querySelector('.matter-drawer-tools')).not.toBeNull();
-    await act(async () => { document.documentElement.dataset.themePreset = 'classic'; await Promise.resolve(); });
+    await act(async () => { document.documentElement.dataset.themeFeatures = ''; await Promise.resolve(); });
     expect(drawer().querySelector('.matter-drawer-tools')).toBeNull();
     expect(topbar().querySelector('button[aria-label="Chat"]')).not.toBeNull();
   });

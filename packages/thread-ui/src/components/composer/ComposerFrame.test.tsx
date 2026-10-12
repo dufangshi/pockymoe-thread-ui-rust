@@ -90,7 +90,7 @@ describe('ComposerFrame', () => {
     expect(container.querySelector('[data-slot="shell-prompt"]')).toBeTruthy();
   });
 
-  it('sews the usage meter into the shell only for Plum Pocket', () => {
+  it.each(['classic', 'plum-pocket'])('anchors usage to the shell in %s without a footer row', (preset) => {
     const subscriptionUsage = {
       provider: 'claude' as const,
       authKind: 'subscription' as const,
@@ -98,13 +98,8 @@ describe('ComposerFrame', () => {
       stale: false,
       windows: [{ id: '5h', durationMinutes: 300, label: '5h', usedPercent: 10, resetsAt: null }],
     };
-    let container = renderFrame({ ...baseProps(), subscriptionUsage });
-    expect(container.querySelector('.thread-composer-usage-footer .thread-subscription-usage')).toBeTruthy();
-    expect(container.querySelector('.thread-composer-usage-tag')).toBeNull();
-    cleanup?.();
-
-    document.documentElement.dataset.themePreset = 'plum-pocket';
-    container = renderFrame({ ...baseProps(), subscriptionUsage });
+    document.documentElement.dataset.themePreset = preset;
+    const container = renderFrame({ ...baseProps(), subscriptionUsage });
     expect(container.querySelector('.shell .thread-composer-usage-tag .thread-subscription-usage')).toBeTruthy();
     expect(container.querySelector('.thread-composer-usage-footer')).toBeNull();
   });

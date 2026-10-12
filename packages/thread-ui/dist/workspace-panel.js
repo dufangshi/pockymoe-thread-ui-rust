@@ -45,16 +45,16 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-HB4YAKW2.js";
+} from "./chunk-7FXSUGGR.js";
 import {
-  useDocumentThemePreset
-} from "./chunk-ZN6LCQTY.js";
+  useThemeFeature
+} from "./chunk-QIOFPWO7.js";
 import {
   en,
   getLocale,
   translate,
   useI18n
-} from "./chunk-FFD45ZDV.js";
+} from "./chunk-IZMKUZH7.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect12, useMemo as useMemo11, useState as useState12 } from "react";
@@ -1643,7 +1643,7 @@ function WorkspaceNodeActions({
   onDelete
 }) {
   useI18n();
-  const shortLabels = useDocumentThemePreset() === "plum-pocket";
+  const shortLabels = useThemeFeature("explorer.shortMenuLabels");
   const [menu, setMenu] = useState4(null);
   const [dialog, setDialog] = useState4(null);
   const [name, setName] = useState4(node.name);
@@ -3960,7 +3960,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment4, jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-2U4IQGDU.js")
+  () => import("./GraphWorkspaceMonacoEditor-AWRDAZ3V.js")
 );
 function DownloadFilePreview({ node, onDownload, readOnlyReason }) {
   const { locale: i18nLocale } = useI18n();
@@ -4004,7 +4004,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-X4QBEXBH.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-X3IRA3SU.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -4094,7 +4094,7 @@ var GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview2({
     });
     return () => observer.disconnect();
   }, []);
-  const syntaxTheme = syntaxThemeFor(dark, useDocumentThemePreset());
+  const syntaxTheme = syntaxThemeFor(dark, useThemeFeature("code.cssSyntaxPalette"));
   const highlightedHtml = useMemo8(() => {
     if (!highlighter) {
       return "";

@@ -391,3 +391,26 @@ describe('ComposerSlashToolboxMenu', () => {
     expect(onCopySkillInvokeName).toHaveBeenCalledWith('review');
   });
 });
+
+describe('ComposerSlashToolboxMenu theme flags', () => {
+  afterEach(() => {
+    if (root) flushSync(() => root?.unmount());
+    container?.remove();
+    root = null;
+    container = null;
+    delete document.documentElement.dataset.themeFeatures;
+  });
+
+  it('renders icon rows and the slash glyph only with composer.richMenus', () => {
+    const plain = renderMenu({});
+    expect(plain.querySelector('.composer-toolbox-icon')).toBeNull();
+    expect(plain.querySelector('.composer-slash-glyph')).toBeNull();
+    flushSync(() => root?.unmount());
+    container?.remove();
+    document.documentElement.dataset.themeFeatures = 'composer.richMenus';
+    const rich = renderMenu({});
+    expect(rich.querySelector('.composer-slash-glyph')?.textContent).toBe('/');
+    expect(rich.querySelectorAll('.composer-toolbox-icon').length).toBeGreaterThan(1);
+    expect(rich.querySelector('.composer-toolbox-command')?.textContent).toBe('/plan');
+  });
+});

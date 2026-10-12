@@ -130,3 +130,6 @@ export { SettingsDialog } from './components/SettingsDialog';
 export { createWorkspacePathResolver } from './components/workspacePathLinks';
 
 export { GraphChatThreadChatPanel } from './components/graph-chat/GraphChatThreadChatPanel';
+
+export { THEME_FEATURES, isThemeFeature, useThemeFeature, documentThemeFeatures, type ThemeFeature } from './components/themeHooks';
+export { THEME_AGENT_KEY_PATTERN, themeAgentKey, themeAgentName, threadThemeAgentKey } from './components/themeAgent';

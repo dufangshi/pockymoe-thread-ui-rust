@@ -89,3 +89,24 @@ describe('ComposerAttachmentMenu', () => {
     expect(onPickFile).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('ComposerAttachmentMenu theme flags', () => {
+  afterEach(() => {
+    if (root) flushSync(() => root?.unmount());
+    container?.remove();
+    root = null;
+    container = null;
+    delete document.documentElement.dataset.themeFeatures;
+  });
+
+  it('adds the paperclip trigger and row icons only with composer.richMenus', () => {
+    const plain = renderMenu({ open: true });
+    expect(plain.querySelectorAll('.composer-attach-icon')).toHaveLength(0);
+    flushSync(() => root?.unmount());
+    container?.remove();
+    document.documentElement.dataset.themeFeatures = 'composer.richMenus';
+    const rich = renderMenu({ open: true });
+    expect(rich.querySelectorAll('.composer-attach-icon')).toHaveLength(2);
+    expect(rich.querySelector('[aria-label="Add attachment"] .lucide-paperclip')).not.toBeNull();
+  });
+});

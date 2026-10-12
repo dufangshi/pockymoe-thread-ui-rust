@@ -736,20 +736,17 @@
   border: 0;
   pointer-events: none;
 }
-.thread-ui-shell .matter-workbench .thread-graph-composer-layer > * {
+/* Only painted controls own hits. The full-width navigation strip and the
+   form's transparent padding must pass clicks to the transcript underneath. */
+.thread-ui-shell .matter-workbench .thread-graph-composer-layer > .thread-composer-pending-queue,
+.thread-ui-shell .matter-workbench .thread-graph-composer-form > * {
   pointer-events: auto;
 }
 .thread-ui-shell .matter-workbench .thread-graph-composer-form {
+  pointer-events: none;
   padding: 0;
   border: 0;
   background: transparent;
-}
-/* Usage is a footer below the input, never a reason for one pane's input to
-   sit higher than the other. The shared host reserves this space in both panes. */
-.thread-ui-shell .matter-workbench .thread-composer-usage-footer {
-  position: absolute;
-  inset-inline: 0;
-  top: 100%;
 }
 .thread-ui-shell .matter-workbench .thread-graph-composer-shell {
   border: 1px solid var(--theme-border-strong);

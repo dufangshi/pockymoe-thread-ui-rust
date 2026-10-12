@@ -6,6 +6,7 @@ import type {
   ReasoningEffortDto,
   ThreadContextUsageDto,
 } from '@pockymoe/shared';
+import { themeAgentKey } from '../themeAgent';
 
 export type ComposerAttachmentDraft = {
   clientId: string;
@@ -393,13 +394,7 @@ export function formatReasoningEffortLabel(
 
 /** The `data-agent` key a theme uses for the harness avatar ("Claude Code" -> "claude"). */
 export function composerAgentKey(label: string | null | undefined) {
-  const value = (label ?? '').trim().toLowerCase();
-  if (!value || value === 'acp') return undefined;
-  if (value.includes('claude')) return 'claude';
-  if (value.includes('codex')) return 'codex';
-  if (value.includes('deepseek') || value === 'dsh') return 'deepseek';
-  if (value.includes('copilot')) return 'copilot';
-  return value.split(/[^a-z0-9]+/).find(Boolean);
+  return themeAgentKey(label);
 }
 
 export function parseGoalTokenBudgetThousands(value: string) {

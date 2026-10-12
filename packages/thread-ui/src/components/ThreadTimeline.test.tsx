@@ -363,6 +363,55 @@ describe('ThreadTimeline', () => {
     expect(props.onLoadTurnDetail).not.toHaveBeenCalled();
   });
 
+  it('keeps substantial answers between independently folded work sections as progress continues', () => {
+    const answer = { id: 'answer', kind: 'agentMessage' as const, text: '## Public-key identity\n\n' + '设备独立验证签名，私钥保存在用户手中。'.repeat(40), status: 'completed' };
+    const command = (id: string) => ({ id, kind: 'commandExecution' as const, text: `hidden-${id}`, status: 'completed' });
+    const initial = { ...completedTurn([
+      { id: 'prompt', kind: 'userMessage' as const, text: 'Explain and implement' },
+      command('before'), answer, command('after'),
+    ]), status: 'inProgress' as const };
+    const props = { liveOutput: '', threadRunning: true, activeTurnId: initial.id, onLoadTurnDetail: vi.fn() };
+    const element = render(<ThreadTimeline {...props} turns={[initial]} />);
+    expect(element.textContent).toContain('Public-key identity');
+    expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(1);
+    expect(element.querySelectorAll('.thread-answer-sequence > .thread-execution-timeline')).toHaveLength(2);
+    expect(element.textContent).not.toContain('hidden-before');
+    expect(element.textContent).not.toContain('hidden-after');
+    const progress = { id: 'progress', kind: 'agentMessage' as const, text: 'Running the integration checks', status: 'running' };
+    const updated = { ...initial, items: [...initial.items, progress] };
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[updated]} />));
+    expect(element.textContent).toContain('Public-key identity');
+    expect(element.textContent).toContain(progress.text);
+    expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    // Open just the work after the answer. Earlier operations stay folded.
+    flushSync(() => element.querySelectorAll<HTMLButtonElement>('.thread-answer-sequence .thread-graph-history-group-toggle')[1]!.click());
+    expect(element.textContent).toContain('hidden-after');
+    expect(element.textContent).not.toContain('hidden-before');
+    const sections = [...element.querySelectorAll('.thread-answer-sequence > *')];
+    expect(sections[1]!.textContent).toContain('Public-key identity');
+    expect(sections[2]!.textContent).toContain('hidden-after');
+    expect(props.onLoadTurnDetail).not.toHaveBeenCalled();
+    flushSync(() => root?.render(<ThreadTimeline {...props} threadRunning={false} activeTurnId={null} turns={[{
+      ...updated, status: 'completed', items: [...updated.items, { id: 'final', kind: 'agentMessage', text: 'Implementation complete', responsePhase: 'final' }],
+    }]} />));
+    expect(element.textContent).toContain('Public-key identity');
+    expect(element.textContent).toContain('Implementation complete');
+    expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+  });
+
+  it('shows preserved long answers in a lazy summary without loading command histories', () => {
+    const answer = { id: 'answer', kind: 'agentMessage' as const, text: 'Long answer. '.repeat(60) };
+    const load = vi.fn();
+    const element = render(<ThreadTimeline liveOutput="" onLoadTurnDetail={load} autoCollapseCompletedTurns turns={[{
+      ...completedTurn([answer, { id: 'last', kind: 'agentMessage', text: 'Done', responsePhase: 'final' }]),
+      hasDeferredItems: true, deferredItemCount: 20,
+    }]} />);
+    expect(element.textContent).toContain('Long answer.');
+    expect(element.textContent).toContain('Done');
+    expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    expect(load).not.toHaveBeenCalled();
+  });
+
   it('keeps the final status when a collapsed turn has cached running details', async () => {
     const summary: ThreadTurnDto = {
       ...completedTurn([

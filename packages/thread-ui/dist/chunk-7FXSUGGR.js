@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-FFD45ZDV.js";
+} from "./chunk-IZMKUZH7.js";
 
 // src/components/graph-workspace/explorer/workspaceDocuments.ts
 var storeKey = /* @__PURE__ */ Symbol.for("remote-codex.workspace-documents");
@@ -1214,8 +1214,8 @@ var useFilePanel = () => useContext2(FilePanelContext);
 
 // src/components/graph-chat/graphChatShiki.ts
 var CSS_VARIABLES_SYNTAX_THEME = "pockymoe-css-variables";
-function syntaxThemeFor(dark, themePreset) {
-  if (themePreset === "plum-pocket") return CSS_VARIABLES_SYNTAX_THEME;
+function syntaxThemeFor(dark, cssPalette) {
+  if (cssPalette) return CSS_VARIABLES_SYNTAX_THEME;
   return dark ? "ayu-dark" : "github-light-default";
 }
 var graphChatHighlighterPromise = null;

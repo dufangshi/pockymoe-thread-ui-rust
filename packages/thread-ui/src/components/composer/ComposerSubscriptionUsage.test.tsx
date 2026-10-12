@@ -49,13 +49,6 @@ describe('ComposerSubscriptionUsage', () => {
     const fill = track?.firstElementChild as HTMLElement | null;
     expect(host.querySelector('[role=tooltip]')).toBeNull();
 
-    expect(control?.className).toContain('h-3');
-    expect(control?.className).toContain('bottom-0');
-    expect(control?.className).toContain('text-[8px]');
-    expect(control?.className).toContain('opacity-85');
-    expect(host.querySelector('.thread-subscription-usage')?.className).toContain('font-normal');
-    expect(host.querySelector('.thread-subscription-usage .font-semibold')).toBeNull();
-    expect(track?.className).toContain('w-6');
     expect(fill?.style.width).toBe('60%');
     expect(fill?.style.backgroundImage).toContain('linear-gradient');
     expect(control?.getAttribute('aria-expanded')).toBe('false');
@@ -86,7 +79,7 @@ describe('ComposerSubscriptionUsage', () => {
   it('keeps stale windows visible and labels their observation time', async () => {
     const host = await renderUsage('subscription', true);
     const control = host.querySelector<HTMLButtonElement>('.thread-subscription-usage');
-    expect(control?.className).toContain('opacity-60');
+    expect(control?.dataset.usageStale).toBe('true');
     expect(control?.getAttribute('aria-label')).toContain('last known');
     await act(async () => { control?.click(); });
     expect(host.querySelector('[role="tooltip"]')?.textContent).toContain('last known · updated');

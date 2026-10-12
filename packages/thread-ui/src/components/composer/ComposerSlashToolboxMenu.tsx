@@ -28,7 +28,7 @@ import {
   Webhook,
   Zap,
 } from 'lucide-react';
-import { useDocumentThemePreset } from '../themeHooks';
+import { useThemeFeature } from '../themeHooks';
 
 import { InputGroupButton } from '../graph-ui/InputGroup';
 import { SlashIcon } from './composerPresentation';
@@ -48,7 +48,7 @@ import type {
   SlashPanelView,
 } from './types';
 
-// Plum Pocket gives every toolbox row an icon tile and its description.
+// With rich menus every toolbox row gets an icon tile and its description.
 const toolboxIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   plan: ListChecks,
   goal: Target,
@@ -63,13 +63,13 @@ const toolboxIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   unsupported: CircleSlash,
 };
 
-function ToolboxLabel({ plum, action, command, description }: {
-  plum: boolean;
+function ToolboxLabel({ rich, action, command, description }: {
+  rich: boolean;
   action: string;
   command: string;
   description?: string | null | undefined;
 }) {
-  if (!plum) return <span>{command}</span>;
+  if (!rich) return <span>{command}</span>;
   const Icon = toolboxIcons[action] ?? MessageSquarePlus;
   return (
     <>
@@ -251,7 +251,7 @@ export function ComposerSlashToolboxMenu({
   onSaveRawMcpBlock: () => Promise<void> | void;
 }) {
   useI18n();
-  const plum = useDocumentThemePreset() === 'plum-pocket';
+  const rich = useThemeFeature('composer.richMenus');
   return (
     <div className="relative">
       <InputGroupButton
@@ -264,7 +264,7 @@ export function ComposerSlashToolboxMenu({
         onClick={onToggle}
         className={`${iconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`}
       >
-        {plum ? <span aria-hidden="true" className="composer-slash-glyph">/</span> : <SlashIcon />}
+        {rich ? <span aria-hidden="true" className="composer-slash-glyph">/</span> : <SlashIcon />}
       </InputGroupButton>
 
       {open && (
@@ -308,7 +308,7 @@ export function ComposerSlashToolboxMenu({
                   title={translate("chat.togglePlanMode")}
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <ToolboxLabel plum={plum} action="plan" command="/plan" />
+                    <ToolboxLabel rich={rich} action="plan" command="/plan" />
                     <span className="composer-toolbox-status text-[11px] uppercase tracking-[0.16em] text-stone-400">
                       {displayedCollaborationMode === 'plan' ? translate("chat.on") : translate("chat.off")}
                     </span>
@@ -333,9 +333,9 @@ export function ComposerSlashToolboxMenu({
                       className="min-w-0 flex-1 px-3 py-2.5 text-left text-sm text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
                       aria-label={translate("chat.viewGoals")}
                     >
-                      {plum ? (
+                      {rich ? (
                         <span className="flex items-center gap-3">
-                          <ToolboxLabel plum action={item.action} command={item.command} description={item.description} />
+                          <ToolboxLabel rich action={item.action} command={item.command} description={item.description} />
                         </span>
                       ) : (
                         <span>{item.command}</span>
@@ -361,7 +361,7 @@ export function ComposerSlashToolboxMenu({
                     title={item.description ?? item.label}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <ToolboxLabel plum={plum} action={item.action} command={item.command} description={item.description} />
+                      <ToolboxLabel rich={rich} action={item.action} command={item.command} description={item.description} />
                       <span className="composer-toolbox-status text-[11px] uppercase tracking-[0.16em] text-stone-400">
                         {toolboxItemStatus(item)}
                       </span>

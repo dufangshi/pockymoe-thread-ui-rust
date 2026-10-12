@@ -1,11 +1,11 @@
 import {
   cssHexVariable,
-  useDocumentThemePreset
-} from "./chunk-ZN6LCQTY.js";
+  useDocumentThemeRevision
+} from "./chunk-QIOFPWO7.js";
 import {
   translate,
   useI18n
-} from "./chunk-FFD45ZDV.js";
+} from "./chunk-IZMKUZH7.js";
 import {
   KeyCode,
   KeyMod,
@@ -309,7 +309,7 @@ function GraphWorkspaceMonacoEditor({
 }) {
   const modelKey = resourceKey ?? path;
   const { locale } = useI18n();
-  const themePreset = useDocumentThemePreset();
+  const themeRevision = useDocumentThemeRevision();
   const hostRef = useRef(null);
   const editorRef = useRef(null);
   const modelRef = useRef(null);
@@ -399,7 +399,7 @@ function GraphWorkspaceMonacoEditor({
   useEffect(() => {
     editor.setTheme(editorThemeFor(dark, editorRef.current?.getContainerDomNode()));
     editorRef.current?.updateOptions({ readOnly });
-  }, [dark, readOnly, themePreset]);
+  }, [dark, readOnly, themeRevision]);
   useEffect(() => {
     editorRef.current?.updateOptions({ ariaLabel: translate("files.workspaceEditor", { value1: path }) });
   }, [locale, path]);

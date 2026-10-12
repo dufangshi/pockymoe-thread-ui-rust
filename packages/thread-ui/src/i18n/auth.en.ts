@@ -1,4 +1,5 @@
 export const authEn = {
+  "auth.accountLoginLegacyHint": "If you have not signed in since the security upgrade, choose “First sign-in since the security upgrade” below.",
   "auth.accountLegacyUpgrade": "First sign-in since the security upgrade",
   "auth.accountLegacyUpgradeHelp": "Use this only for an older account that has not been secured yet. This one-time upgrade sends your old password to the relay.",
   "auth.accountDeviceIdentityChanged": "This device has a different identity. Unlock and explicitly confirm the reinstalled device before connecting.",

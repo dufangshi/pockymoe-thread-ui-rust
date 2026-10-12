@@ -294,6 +294,7 @@ var tourEn = {
 
 // src/i18n/auth.en.ts
 var authEn = {
+  "auth.accountLoginLegacyHint": "If you have not signed in since the security upgrade, choose \u201CFirst sign-in since the security upgrade\u201D below.",
   "auth.accountLegacyUpgrade": "First sign-in since the security upgrade",
   "auth.accountLegacyUpgradeHelp": "Use this only for an older account that has not been secured yet. This one-time upgrade sends your old password to the relay.",
   "auth.accountDeviceIdentityChanged": "This device has a different identity. Unlock and explicitly confirm the reinstalled device before connecting.",
@@ -3287,6 +3288,7 @@ var tourZhCN = {
 
 // src/i18n/auth.zh-CN.ts
 var authZhCN = {
+  "auth.accountLoginLegacyHint": "\u5982\u679C\u8FD9\u662F\u5B89\u5168\u5347\u7EA7\u540E\u7684\u9996\u6B21\u767B\u5F55\uFF0C\u8BF7\u9009\u62E9\u4E0B\u65B9\u7684\u201C\u5B89\u5168\u5347\u7EA7\u540E\u7684\u9996\u6B21\u767B\u5F55\u201D\u3002",
   "auth.accountLegacyUpgrade": "\u5B89\u5168\u5347\u7EA7\u540E\u7684\u9996\u6B21\u767B\u5F55",
   "auth.accountLegacyUpgradeHelp": "\u4EC5\u9002\u7528\u4E8E\u5C1A\u672A\u5B8C\u6210\u5B89\u5168\u5347\u7EA7\u7684\u65E7\u8D26\u6237\u3002\u6B64\u6B21\u5347\u7EA7\u4F1A\u5C06\u65E7\u5BC6\u7801\u53D1\u9001\u7ED9\u4E2D\u7EE7\u3002",
   "auth.accountDeviceIdentityChanged": "\u6B64\u8BBE\u5907\u7684\u8EAB\u4EFD\u5DF2\u6539\u53D8\u3002\u8BF7\u89E3\u9501\u5E76\u660E\u786E\u786E\u8BA4\u91CD\u65B0\u5B89\u88C5\u7684\u8BBE\u5907\uFF0C\u7136\u540E\u518D\u8FDE\u63A5\u3002",

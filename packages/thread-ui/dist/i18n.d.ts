@@ -2590,6 +2590,7 @@ declare const en: {
     };
     readonly 'chat.performedOperations': "Performed";
     readonly 'chat.performingOperations': "Working on";
+    readonly "auth.accountLoginLegacyHint": "If you have not signed in since the security upgrade, choose “First sign-in since the security upgrade” below.";
     readonly "auth.accountLegacyUpgrade": "First sign-in since the security upgrade";
     readonly "auth.accountLegacyUpgradeHelp": "Use this only for an older account that has not been secured yet. This one-time upgrade sends your old password to the relay.";
     readonly "auth.accountDeviceIdentityChanged": "This device has a different identity. Unlock and explicitly confirm the reinstalled device before connecting.";
@@ -5548,6 +5549,7 @@ declare const zhCN: {
     };
     'chat.performedOperations': "已执行";
     'chat.performingOperations': "正在执行";
+    "auth.accountLoginLegacyHint": "如果这是安全升级后的首次登录，请选择下方的“安全升级后的首次登录”。";
     "auth.accountLegacyUpgrade": "安全升级后的首次登录";
     "auth.accountLegacyUpgradeHelp": "仅适用于尚未完成安全升级的旧账户。此次升级会将旧密码发送给中继。";
     "auth.accountDeviceIdentityChanged": "此设备的身份已改变。请解锁并明确确认重新安装的设备，然后再连接。";
@@ -8528,6 +8530,7 @@ declare const resources: {
         };
         readonly 'chat.performedOperations': "Performed";
         readonly 'chat.performingOperations': "Working on";
+        readonly "auth.accountLoginLegacyHint": "If you have not signed in since the security upgrade, choose “First sign-in since the security upgrade” below.";
         readonly "auth.accountLegacyUpgrade": "First sign-in since the security upgrade";
         readonly "auth.accountLegacyUpgradeHelp": "Use this only for an older account that has not been secured yet. This one-time upgrade sends your old password to the relay.";
         readonly "auth.accountDeviceIdentityChanged": "This device has a different identity. Unlock and explicitly confirm the reinstalled device before connecting.";
@@ -11485,6 +11488,7 @@ declare const resources: {
         };
         'chat.performedOperations': "已执行";
         'chat.performingOperations': "正在执行";
+        "auth.accountLoginLegacyHint": "如果这是安全升级后的首次登录，请选择下方的“安全升级后的首次登录”。";
         "auth.accountLegacyUpgrade": "安全升级后的首次登录";
         "auth.accountLegacyUpgradeHelp": "仅适用于尚未完成安全升级的旧账户。此次升级会将旧密码发送给中继。";
         "auth.accountDeviceIdentityChanged": "此设备的身份已改变。请解锁并明确确认重新安装的设备，然后再连接。";

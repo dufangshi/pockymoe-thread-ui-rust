@@ -1,4 +1,5 @@
 export const authZhCN = {
+  "auth.accountLoginLegacyHint": "如果这是安全升级后的首次登录，请选择下方的“安全升级后的首次登录”。",
   "auth.accountLegacyUpgrade": "安全升级后的首次登录",
   "auth.accountLegacyUpgradeHelp": "仅适用于尚未完成安全升级的旧账户。此次升级会将旧密码发送给中继。",
   "auth.accountDeviceIdentityChanged": "此设备的身份已改变。请解锁并明确确认重新安装的设备，然后再连接。",

@@ -23,7 +23,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-MLCD6F6D.js";
+} from "./chunk-OOMO2QDM.js";
 import {
   cssHexVariable,
   useDocumentThemePreset
@@ -45,7 +45,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-M7RRPU5P.js";
+} from "./chunk-THWDFDTW.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -19805,7 +19805,8 @@ function ThreadActionsDialog({
                             shareThreadAccessLabel(share.threadAccess),
                             " / ",
                             shareWorkspaceAccessLabel(share.workspaceAccess)
-                          ] })
+                          ] }),
+                          share.trustContent
                         ] }),
                         onUpdateShare && /* @__PURE__ */ jsxs54("button", { type: "button", "aria-label": translate("sharing.editPermissionsFor", { value1: share.targetUsername }), className: "thread-export-dialog-secondary-button ml-auto flex items-center gap-1 rounded-lg border px-2 py-1.5 text-xs", disabled: busy, onClick: () => {
                           setEditingShare(share.id);

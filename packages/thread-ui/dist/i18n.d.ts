@@ -2028,6 +2028,9 @@ declare const en: {
         readonly one: "{{count}} item";
         readonly other: "{{count}} items";
     };
+    readonly "chat.peerAgent": "Agent";
+    readonly "chat.peerQuestion": "Question";
+    readonly "chat.peerUpdates": "Delegate update";
     readonly "chat.backgroundResumed": "Continuing";
     readonly "chat.waitingForWake": "Waiting for wake";
     readonly "chat.backgroundAwakened": "Awakened";
@@ -4821,6 +4824,9 @@ declare const zhCN: {
         readonly one: "{{count}} 项";
         readonly other: "{{count}} 项";
     };
+    "chat.peerAgent": "智能体";
+    "chat.peerQuestion": "提问";
+    "chat.peerUpdates": "子线程汇报";
     "chat.backgroundResumed": "继续执行";
     "chat.waitingForWake": "等待唤醒";
     "chat.backgroundAwakened": "已唤醒";
@@ -7636,6 +7642,9 @@ declare const resources: {
             readonly one: "{{count}} item";
             readonly other: "{{count}} items";
         };
+        readonly "chat.peerAgent": "Agent";
+        readonly "chat.peerQuestion": "Question";
+        readonly "chat.peerUpdates": "Delegate update";
         readonly "chat.backgroundResumed": "Continuing";
         readonly "chat.waitingForWake": "Waiting for wake";
         readonly "chat.backgroundAwakened": "Awakened";
@@ -10428,6 +10437,9 @@ declare const resources: {
             readonly one: "{{count}} 项";
             readonly other: "{{count}} 项";
         };
+        "chat.peerAgent": "智能体";
+        "chat.peerQuestion": "提问";
+        "chat.peerUpdates": "子线程汇报";
         "chat.backgroundResumed": "继续执行";
         "chat.waitingForWake": "等待唤醒";
         "chat.backgroundAwakened": "已唤醒";

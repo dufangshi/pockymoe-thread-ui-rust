@@ -390,6 +390,12 @@ export const HistoryItemRow = memo(function HistoryItemRow({
 });
 
 interface ThreadTurnRowProps {
+  peerWorkChildren?: ReactNode;
+  peerWorkSteps?: number;
+  peerWaitingForWake?: boolean;
+  summaryAgentOverride?: (ThreadHistoryItemDto & { kind: 'agentMessage' }) | null;
+  nestedPeerWork?: boolean;
+  omitAgentId?: string | undefined;
   revealTarget?: { itemId: string; key: number } | undefined;
   threadId: string | undefined;
   adapter?: ThreadTimelineAdapter | undefined;
@@ -568,6 +574,12 @@ function collapsedSummaryMessages(entries: TimelineHistoryEntry[], active: boole
 }
 
 export const ThreadTurnRow = memo(function ThreadTurnRow({
+  peerWorkChildren,
+  peerWorkSteps = 0,
+  peerWaitingForWake,
+  summaryAgentOverride,
+  nestedPeerWork = false,
+  omitAgentId,
   threadId,
   revealTarget,
   adapter,
@@ -631,8 +643,10 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     [liveOutput, mergedItems],
   );
   const preparedItems = useMemo(
-    () => prepareTurnItemsForRendering(mergedItems, activeForRendering).filter(item => showReasoningSummaries || item.kind !== 'reasoning'),
-    [activeForRendering, mergedItems, showReasoningSummaries],
+    () => prepareTurnItemsForRendering(mergedItems, activeForRendering).filter(item =>
+      (showReasoningSummaries || item.kind !== 'reasoning') &&
+      (!nestedPeerWork || item.kind !== 'userMessage') && item.id !== omitAgentId),
+    [activeForRendering, mergedItems, showReasoningSummaries, nestedPeerWork, omitAgentId],
   );
   const groupedItems = useMemo(
     () => groupTimelineHistoryItems(preparedItems),
@@ -742,12 +756,18 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       variant="footer"
       lastActivityAt={lastActivityAt}
       backgroundAgentCount={backgroundAgentCount}
-      waitingForWake={mergedItems.some(item => item.origin === 'nativeBackgroundWait' && item.status === 'waiting')}
+      waitingForWake={peerWaitingForWake ?? mergedItems.some(item => item.origin === 'nativeBackgroundWait' && item.status === 'waiting')}
     />
   ) : null;
   const collapsedSummary = useMemo(
-    () => collapsedSummaryMessages(groupedItems, activeForRendering),
-    [groupedItems, activeForRendering],
+    () => {
+      const summary = collapsedSummaryMessages(groupedItems, activeForRendering);
+      return summaryAgentOverride === undefined ? summary : {
+        ...summary, summaryAgent: summaryAgentOverride ?? undefined,
+        hiddenEntries: groupedItems.filter(entry => entry.kind !== 'item' || entry.item.kind !== 'userMessage'),
+      };
+    },
+    [groupedItems, activeForRendering, summaryAgentOverride],
   );
   const workedLabel = useMemo(
     () => turn.status === 'recovering' ? translate("chat.confirmingStatus") : activeForRendering ? translate("chat.working") : formatWorkedDuration(turn.startedAt, turn.completedAt, mergedItems),
@@ -759,7 +779,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
         {translate("chat.interrupted")}</span>
     ) : null;
   const hasCollapsedHiddenItems =
-    collapsedSummary.hiddenEntries.length > 0 || Boolean(turn.hasDeferredItems);
+    collapsedSummary.hiddenEntries.length > 0 || Boolean(turn.hasDeferredItems) || Boolean(peerWorkChildren);
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const visibleSummaryAgent = collapsedSummary.summaryAgent;
 
@@ -823,14 +843,14 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           {interruptedLabel}
           <ChevronRight className={`h-4 w-4 shrink-0 transition ${effectiveCollapsed ? '' : 'rotate-90'}`} />
           </button>
-          <span className="thread-execution-step-count">{stepCount} {translate("chat.steps")}</span>
+          <span className="thread-execution-step-count">{stepCount + peerWorkSteps} {translate("chat.steps")}</span>
           <TurnUsageInline turn={turn} speedMode="average" />
           <span
             className="thread-graph-worked-rule h-px min-w-0 flex-1"
             aria-hidden="true"
           />
         </div>
-        {!effectiveCollapsed ? <div className="thread-execution-timeline">{renderHistoryEntries(collapsedSummary.hiddenEntries)}</div> : null}
+        {!effectiveCollapsed ? <div className="thread-execution-timeline">{renderHistoryEntries(collapsedSummary.hiddenEntries)}{peerWorkChildren}</div> : null}
         {visibleSummaryAgent ? (
           <CompactMessageItem
             threadId={threadId}
@@ -884,6 +904,12 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       livePlan={displayedLivePlan}
     />
   );
+
+  if (nestedPeerWork) return <MessageExpansionScope key={`${threadId ?? ''}:${turn.id}`}>
+    <div className="thread-peer-execution">{historyNode}{liveHookPromptNode}{liveOutputNode}
+      {turn.error ? <p role="alert">{turn.error}</p> : null}
+    </div>
+  </MessageExpansionScope>;
 
   return (
     <MessageExpansionScope key={`${threadId ?? ''}:${turn.id}`}>

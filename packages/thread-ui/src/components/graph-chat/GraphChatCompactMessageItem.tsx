@@ -250,6 +250,9 @@ export const GraphChatCompactMessageItem = memo(
           />
         ) : (
           <GraphChatUserMessageBody
+            messageId={item.id}
+            scrollRootRef={scrollRootRef}
+            onBeforeResize={onBeforeMessageResize}
             threadId={threadId}
             text={item.text}
             attachmentPreviewUrls={item.attachmentPreviewUrls}

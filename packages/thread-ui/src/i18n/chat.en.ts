@@ -1,4 +1,7 @@
 export const chatEn = {
+  "chat.peerAgent": "Agent",
+  "chat.peerQuestion": "Question",
+  "chat.peerUpdates": "Delegate update",
   "chat.backgroundResumed": "Continuing",
   "chat.waitingForWake": "Waiting for wake",
   "chat.backgroundAwakened": "Awakened",

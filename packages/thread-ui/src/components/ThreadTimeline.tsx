@@ -14,10 +14,13 @@ import type {
 } from '@pockymoe/shared';
 import { useAppShellNav } from '../app-shell/AppShellNavContext';
 import { LongTextDialog } from './LongTextDialog';
+import { PeerWorkGroup } from './timeline/PeerWorkGroup';
+import { aggregatePeerWorkTurn, groupPeerWorkTurns, peerWorkForTurn, peerWorkPreview } from './timeline/peerWork';
 import type { ThreadTimelineAdapter } from '../adapters';
 import { GraphChatCompactMessageItem as CompactMessageItem } from './graph-chat/GraphChatCompactMessageItem';
 import {
   isRunningHistoryStatus,
+  countTurnSteps,
   parseHookPromptText,
   type TimelineTurn,
 } from './timeline/timelineItems';
@@ -221,8 +224,11 @@ function ThreadTimelineComponent({
   >({});
   const openLinkedThread = adapter?.onOpenLinkedThread;
   useEffect(() => {
-    if (searchTarget) setCollapsedTurnOverrides(current => ({ ...current, [searchTarget.turnId]: false }));
-  }, [searchTarget]);
+    if (searchTarget) {
+      const parent = groupPeerWorkTurns(turns).find(group => group.continuations.some(turn => turn.id === searchTarget.turnId));
+      setCollapsedTurnOverrides(current => ({ ...current, [searchTarget.turnId]: false, ...(parent ? { [parent.turn.id]: false } : {}) }));
+    }
+  }, [searchTarget, turns]);
   const {
     expandedText,
     openExpandedText: handleOpenExpandedText,
@@ -310,7 +316,7 @@ function ThreadTimelineComponent({
     preserveScrollPositionForResize();
     if (
       !currentCollapsed ||
-      !turn.hasDeferredItems ||
+      (!turn.hasDeferredItems && !peerWorkForTurn(loadedTurnDetails[turn.id] ?? turn)?.messages.some(message => message.text === undefined)) ||
       !loadTurnDetail ||
       (loadedTurnDetails[turn.id] && isTerminalTurnStatus(loadedTurnDetails[turn.id]!.status)
         && loadedTurnDetails[turn.id]!.status === turn.status)
@@ -570,6 +576,110 @@ function ThreadTimelineComponent({
     pendingPreviousNavigationRef.current = false;
     navigateToTurn(target);
   }, [previousTurnScrollRequestKey, nextTurnScrollRequestKey, findTurn, scrollContainerRef, hiddenCount, loadingEarlier, handleLoadEarlierClick, navigateToTurn]);
+  const peerGroups = groupPeerWorkTurns(visibleTurns);
+  const renderPeerWork = (turn: ThreadTurnDto, omitAgentId?: string) => {
+    const context = peerWorkForTurn(loadedTurnDetails[turn.id] ?? turn)!;
+    const expanded = collapsedTurnOverrides[turn.id] === false;
+    return <PeerWorkGroup key={turn.id} turn={turn} context={context} expanded={expanded}
+      loading={loadingTurnDetailIds.has(turn.id)} error={turnDetailErrors[turn.id]}
+      onToggle={() => handleToggleCollapse(turn, !expanded)} scrollRootRef={scrollContainerRef}>
+      {renderWorkTurn(turn, visibleTurns.indexOf(turn), [], true, omitAgentId)}
+      {(requestEntryAnchors.notesByTurnId.get(turn.id)?.length) ? <RequestEntrySectionForTurn
+        notes={requestEntryAnchors.notesByTurnId.get(turn.id) ?? []} requests={[]}
+        respondingRequestId={respondingRequestId} onRespondToRequest={onRespondToRequest ?? undefined} /> : null}
+    </PeerWorkGroup>;
+
+  };
+  const renderWorkTurn = (turn: ThreadTurnDto, visibleIndex: number, continuations: ThreadTurnDto[] = [], nested = false, omitAgentId?: string): React.ReactNode => {
+    const loadedTurn = loadedTurnDetails[turn.id];
+    // A summary refresh must update messages/usage without dropping the
+    // operations explicitly loaded earlier or restoring stale text.
+    const mergedItems = new Map(loadedTurn?.items.map((item) => [item.id, item]));
+    for (const item of turn.items) mergedItems.set(item.id, mergeThreadHistoryItem(mergedItems.get(item.id), item));
+    const hydratedTurn = loadedTurn
+      ? {
+          ...loadedTurn, ...turn,
+          hasDeferredItems: loadedTurn.hasDeferredItems,
+          deferredItemCount: loadedTurn.deferredItemCount,
+          items: [...mergedItems.values()],
+        }
+      : turn;
+    let displayTurn = mergeOptimisticTurnItems(
+      hydratedTurn,
+      optimisticTurn,
+    );
+    const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
+    const rowLiveItems =
+      liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
+    const rowLiveOutput =
+      liveOutputTargetTurnId === turn.id ? liveOutput : '';
+    let rowLiveActivityAt = latestTimestamp(
+      backendProgress?.turnId === turn.id ? backendProgress.receivedAt : null,
+      rowLivePlan?.updatedAt,
+      liveItemsTargetTurnId === turn.id ? liveItems?.updatedAt : null,
+      rowLiveOutput ? liveOutputActivityAt : null,
+    );
+    let rowForceActive =
+      activeTurnId === turn.id ||
+      (
+        shouldForceLatestVisibleTurnActive &&
+        latestVisibleTurnId === turn.id
+      );
+    const rowHasLiveActivity =
+      Boolean(rowLivePlan) ||
+      Boolean(rowLiveOutput) ||
+      Boolean(rowLiveItems && rowLiveItems.length > 0);
+    const latestContinuation = continuations.at(-1);
+    const preview = latestContinuation ? peerWorkPreview(latestContinuation, liveItemsTargetTurnId === latestContinuation.id ? liveItems?.items : null) : null;
+    const continuationSteps = continuations.reduce((sum, continuation) => sum + 1 + countTurnSteps(continuation, continuation.items), 0);
+    const continuationContent = continuations.length ? continuations.map(continuation => renderPeerWork(continuation, preview?.id)) : undefined;
+    if (latestContinuation) {
+      displayTurn = aggregatePeerWorkTurn(displayTurn, continuations);
+      rowLiveActivityAt = latestTimestamp(rowLiveActivityAt, backendProgress?.turnId === latestContinuation.id ? backendProgress.receivedAt : null,
+        liveItemsTargetTurnId === latestContinuation.id ? liveItems?.updatedAt : null,
+        ...latestContinuation.items.map(item => item.updatedAt ?? item.createdAt));
+      rowForceActive = rowForceActive || latestContinuation.id === activeTurnId || isRunningHistoryStatus(latestContinuation.status);
+    }
+    const rowCollapsed = collapsedStateForTurn(displayTurn, {
+      forceActive: rowForceActive,
+      hasLiveActivity: rowHasLiveActivity,
+    });
+
+    return (
+      <ThreadTurnRow
+        threadId={threadId}
+        peerWorkChildren={continuationContent}
+        peerWorkSteps={continuationSteps}
+        {...(latestContinuation ? { peerWaitingForWake: [...new Map([...latestContinuation.items, ...(liveItemsTargetTurnId === latestContinuation.id ? liveItems?.items ?? [] : [])].map(item => [item.id, item])).values()].some(item => item.origin === 'nativeBackgroundWait' && item.status === 'waiting') } : {})}
+        {...(continuations.length ? { summaryAgentOverride: preview } : {})}
+        nestedPeerWork={nested}
+        omitAgentId={omitAgentId}
+        {...(adapter ? { adapter } : {})}
+        turn={displayTurn}
+        revealTarget={searchTarget?.turnId === displayTurn.id ? searchTarget : undefined}
+        backgroundAgentCount={backgroundAgentCount}
+        absoluteIndex={visibleTurnAbsoluteOffset + visibleIndex + 1}
+        isCollapsed={rowCollapsed}
+        livePlan={rowLivePlan}
+        liveItems={rowLiveItems}
+        liveActivityAt={rowLiveActivityAt}
+        liveOutput={rowLiveOutput}
+        forceActive={rowForceActive}
+        onToggleCollapse={handleToggleCollapse}
+        deferredItemsLoading={loadingTurnDetailIds.has(turn.id)}
+        deferredItemsError={turnDetailErrors[turn.id]}
+        onOpenExpandedText={handleOpenExpandedText}
+        onOpenCommandDetail={handleOpenCommandDetail}
+        onOpenToolCallDetail={handleOpenToolCallDetail}
+        onOpenDeferredHistoryItemDetail={handleOpenDeferredHistoryItemDetail}
+        onBeforeMessageResize={preserveScrollPositionForResize}
+        {...(onSelectArtifact ? { onSelectArtifact } : {})}
+        scrollRootRef={scrollContainerRef}
+        articleRef={undefined}
+      />
+    );
+
+  };
   return (
     <>
       <section className={`flex min-h-0 flex-1 flex-col ${className}`.trim()}>
@@ -640,7 +750,7 @@ function ThreadTimelineComponent({
                   onOpenLinkedThread={openLinkedThread}
                 />
               ) : null}
-              {visibleTurns.map((turn, visibleIndex) => (
+              {peerGroups.map(({ turn, index: visibleIndex, continuations }) => (
                 <div key={turn.id} data-timeline-turn data-turn-id={turn.id}>
                   {(activityNoteAnchors.beforeTurnId.get(turn.id)?.length ?? 0) > 0 ? (
                     <ActivityNoteSection
@@ -656,78 +766,17 @@ function ThreadTimelineComponent({
                       onRespondToRequest={onRespondToRequest ?? undefined}
                     />
                   ) : null}
-                  {(() => {
-                    const loadedTurn = loadedTurnDetails[turn.id];
-                    // A summary refresh must update messages/usage without dropping the
-                    // operations explicitly loaded earlier or restoring stale text.
-                    const mergedItems = new Map(loadedTurn?.items.map((item) => [item.id, item]));
-                    for (const item of turn.items) mergedItems.set(item.id, mergeThreadHistoryItem(mergedItems.get(item.id), item));
-                    const hydratedTurn = loadedTurn
-                      ? {
-                          ...loadedTurn, ...turn,
-                          hasDeferredItems: loadedTurn.hasDeferredItems,
-                          deferredItemCount: loadedTurn.deferredItemCount,
-                          items: [...mergedItems.values()],
-                        }
-                      : turn;
-                    const displayTurn = mergeOptimisticTurnItems(
-                      hydratedTurn,
-                      optimisticTurn,
-                    );
-                    const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
-                    const rowLiveItems =
-                      liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
-                    const rowLiveOutput =
-                      liveOutputTargetTurnId === turn.id ? liveOutput : '';
-                    const rowLiveActivityAt = latestTimestamp(
-                      backendProgress?.turnId === turn.id ? backendProgress.receivedAt : null,
-                      rowLivePlan?.updatedAt,
-                      liveItemsTargetTurnId === turn.id ? liveItems?.updatedAt : null,
-                      rowLiveOutput ? liveOutputActivityAt : null,
-                    );
-                    const rowForceActive =
-                      activeTurnId === turn.id ||
-                      (
-                        shouldForceLatestVisibleTurnActive &&
-                        latestVisibleTurnId === turn.id
-                      );
-                    const rowHasLiveActivity =
-                      Boolean(rowLivePlan) ||
-                      Boolean(rowLiveOutput) ||
-                      Boolean(rowLiveItems && rowLiveItems.length > 0);
-                    const rowCollapsed = collapsedStateForTurn(displayTurn, {
-                      forceActive: rowForceActive,
-                      hasLiveActivity: rowHasLiveActivity,
-                    });
-
-                    return (
-                  <ThreadTurnRow
-                    threadId={threadId}
-                    {...(adapter ? { adapter } : {})}
-                    turn={displayTurn}
-                    revealTarget={searchTarget?.turnId === displayTurn.id ? searchTarget : undefined}
-                    backgroundAgentCount={backgroundAgentCount}
-                    absoluteIndex={visibleTurnAbsoluteOffset + visibleIndex + 1}
-                    isCollapsed={rowCollapsed}
-                    livePlan={rowLivePlan}
-                    liveItems={rowLiveItems}
-                    liveActivityAt={rowLiveActivityAt}
-                    liveOutput={rowLiveOutput}
-                    forceActive={rowForceActive}
-                    onToggleCollapse={handleToggleCollapse}
-                    deferredItemsLoading={loadingTurnDetailIds.has(turn.id)}
-                    deferredItemsError={turnDetailErrors[turn.id]}
-                    onOpenExpandedText={handleOpenExpandedText}
-                    onOpenCommandDetail={handleOpenCommandDetail}
-                    onOpenToolCallDetail={handleOpenToolCallDetail}
-                    onOpenDeferredHistoryItemDetail={handleOpenDeferredHistoryItemDetail}
-                    onBeforeMessageResize={preserveScrollPositionForResize}
-                    {...(onSelectArtifact ? { onSelectArtifact } : {})}
-                    scrollRootRef={scrollContainerRef}
-                    articleRef={undefined}
-                  />
-                    );
-                  })()}
+                  {peerWorkForTurn(turn) && !continuations.length ? renderPeerWork(turn) : renderWorkTurn(turn, visibleIndex, continuations)}
+                  {continuations.map(child => <div key={`peer-requests:${child.id}`}>
+                    {(activityNoteAnchors.beforeTurnId.get(child.id)?.length ?? 0) > 0 ? <ActivityNoteSection
+                      notes={activityNoteAnchors.beforeTurnId.get(child.id) ?? []} onOpenThread={onOpenThread} onOpenLinkedThread={openLinkedThread} /> : null}
+                    {(requestEntryAnchors.beforeTurnId.get(child.id)?.length ?? 0) > 0 ? <RequestEntrySection
+                      entries={requestEntryAnchors.beforeTurnId.get(child.id) ?? []} respondingRequestId={respondingRequestId} onRespondToRequest={onRespondToRequest ?? undefined} /> : null}
+                    {(requestEntryAnchors.pendingRequestsByTurnId.get(child.id)?.length ?? 0) > 0 ? <RequestEntrySectionForTurn
+                      notes={[]} requests={requestEntryAnchors.pendingRequestsByTurnId.get(child.id) ?? []} respondingRequestId={respondingRequestId} onRespondToRequest={onRespondToRequest ?? undefined} /> : null}
+                    {(activityNoteAnchors.afterTurnId.get(child.id)?.length ?? 0) > 0 ? <ActivityNoteSection
+                      notes={activityNoteAnchors.afterTurnId.get(child.id) ?? []} onOpenThread={onOpenThread} onOpenLinkedThread={openLinkedThread} /> : null}
+                  </div>)}
                   {(activityNoteAnchors.afterTurnId.get(turn.id)?.length ?? 0) > 0 ? (
                     <ActivityNoteSection
                       notes={activityNoteAnchors.afterTurnId.get(turn.id) ?? []}
@@ -766,7 +815,7 @@ function ThreadTimelineComponent({
                   ) : null}
                   {(() => {
                     const rowLiveOutput = liveOutputAttachedToOptimisticTurn ? liveOutput : '';
-                    const rowLiveActivityAt = latestTimestamp(
+                    let rowLiveActivityAt = latestTimestamp(
                       backendProgress?.turnId === optimisticTurn.id ? backendProgress.receivedAt : null,
                       liveItemsTargetTurnId === optimisticTurn.id
                         ? liveItems?.updatedAt

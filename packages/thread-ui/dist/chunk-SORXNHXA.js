@@ -473,6 +473,9 @@ var authEn = {
 
 // src/i18n/chat.en.ts
 var chatEn = {
+  "chat.peerAgent": "Agent",
+  "chat.peerQuestion": "Question",
+  "chat.peerUpdates": "Delegate update",
   "chat.backgroundResumed": "Continuing",
   "chat.waitingForWake": "Waiting for wake",
   "chat.backgroundAwakened": "Awakened",
@@ -3301,6 +3304,9 @@ var authZhCN = {
 
 // src/i18n/chat.zh-CN.ts
 var chatZhCN = {
+  "chat.peerAgent": "\u667A\u80FD\u4F53",
+  "chat.peerQuestion": "\u63D0\u95EE",
+  "chat.peerUpdates": "\u5B50\u7EBF\u7A0B\u6C47\u62A5",
   "chat.backgroundResumed": "\u7EE7\u7EED\u6267\u884C",
   "chat.waitingForWake": "\u7B49\u5F85\u5524\u9192",
   "chat.backgroundAwakened": "\u5DF2\u5524\u9192",

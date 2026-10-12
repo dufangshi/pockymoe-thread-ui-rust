@@ -1,4 +1,7 @@
 export const chatZhCN = {
+  "chat.peerAgent": "智能体",
+  "chat.peerQuestion": "提问",
+  "chat.peerUpdates": "子线程汇报",
   "chat.backgroundResumed": "继续执行",
   "chat.waitingForWake": "等待唤醒",
   "chat.backgroundAwakened": "已唤醒",

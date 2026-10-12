@@ -2448,7 +2448,8 @@ var sharingEn = {
   "sharing.accountKeyMismatch": "The account key does not match its public key or the identity saved in this browser. Compare the owner account key or recipient safety code through another channel.",
   "sharing.deviceCertificateInvalid": "The protected device certificate is missing or invalid. Reconnect the device and ask the owner to check its protection before continuing.",
   "sharing.reviewDifference": "Before (current device grant): {{value1}}\nAfter (dialog permissions): {{value2}}",
-  "sharing.dialogIncomplete": "The edit dialog did not provide every permission and target. Reopen the dialog before signing."
+  "sharing.dialogIncomplete": "The edit dialog did not provide every permission and target. Reopen the dialog before signing.",
+  "sharing.reviewChanges": "Changed fields (before \u2192 after): {{value1}}"
 };
 
 // src/i18n/workbench.en.ts
@@ -5423,7 +5424,8 @@ var sharingZhCN = {
   "sharing.accountKeyMismatch": "\u8D26\u6237\u5BC6\u94A5\u4E0E\u5176\u516C\u94A5\u6216\u6B64\u6D4F\u89C8\u5668\u4FDD\u5B58\u7684\u8EAB\u4EFD\u4E0D\u7B26\u3002\u8BF7\u901A\u8FC7\u5176\u4ED6\u6E20\u9053\u6838\u5BF9\u6240\u6709\u8005\u8D26\u6237\u5BC6\u94A5\u6216\u63A5\u6536\u4EBA\u7684\u5B89\u5168\u7801\u3002",
   "sharing.deviceCertificateInvalid": "\u53D7\u4FDD\u62A4\u8BBE\u5907\u7684\u8BC1\u4E66\u7F3A\u5931\u6216\u65E0\u6548\u3002\u8BF7\u91CD\u65B0\u8FDE\u63A5\u8BBE\u5907\uFF0C\u5E76\u8054\u7CFB\u6240\u6709\u8005\u68C0\u67E5\u8BBE\u5907\u4FDD\u62A4\u540E\u518D\u7EE7\u7EED\u3002",
   "sharing.reviewDifference": "\u4FEE\u6539\u524D\uFF08\u8BBE\u5907\u5F53\u524D\u6388\u6743\uFF09\uFF1A{{value1}}\n\u4FEE\u6539\u540E\uFF08\u5BF9\u8BDD\u6846\u4E2D\u7684\u6743\u9650\uFF09\uFF1A{{value2}}",
-  "sharing.dialogIncomplete": "\u7F16\u8F91\u5BF9\u8BDD\u6846\u672A\u63D0\u4F9B\u5B8C\u6574\u7684\u6743\u9650\u548C\u76EE\u6807\u3002\u8BF7\u91CD\u65B0\u6253\u5F00\u5BF9\u8BDD\u6846\u540E\u518D\u7B7E\u540D\u3002"
+  "sharing.dialogIncomplete": "\u7F16\u8F91\u5BF9\u8BDD\u6846\u672A\u63D0\u4F9B\u5B8C\u6574\u7684\u6743\u9650\u548C\u76EE\u6807\u3002\u8BF7\u91CD\u65B0\u6253\u5F00\u5BF9\u8BDD\u6846\u540E\u518D\u7B7E\u540D\u3002",
+  "sharing.reviewChanges": "\u53D8\u66F4\u5B57\u6BB5\uFF08\u4FEE\u6539\u524D \u2192 \u4FEE\u6539\u540E\uFF09\uFF1A{{value1}}"
 };
 
 // src/i18n/workbench.zh-CN.ts

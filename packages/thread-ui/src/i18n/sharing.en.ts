@@ -184,4 +184,5 @@ export const sharingEn = {
   "sharing.deviceCertificateInvalid": "The protected device certificate is missing or invalid. Reconnect the device and ask the owner to check its protection before continuing.",
   "sharing.reviewDifference": "Before (current device grant): {{value1}}\nAfter (dialog permissions): {{value2}}",
   "sharing.dialogIncomplete": "The edit dialog did not provide every permission and target. Reopen the dialog before signing.",
+  "sharing.reviewChanges": "Changed fields (before → after): {{value1}}",
 } as const;

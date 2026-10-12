@@ -1,4 +1,6 @@
 export const devicesEn = {
+  "devices.unsafeSetupValue": "Setup command refused: a value contains unsupported characters.",
+  "devices.invalidSetupToken": "Setup command refused: the device token is invalid.",
   "devices.protected": "Protected",
   "devices.notProtected": "Not protected · Relay trusted",
   "devices.waitingForConnection": "Waiting for first connection",

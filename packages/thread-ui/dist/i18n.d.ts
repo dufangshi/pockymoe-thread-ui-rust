@@ -1674,6 +1674,8 @@ declare const en: {
     readonly "files.andItsContents": " and its contents";
     readonly "files.loadingDiagram": "Loading diagram…";
     readonly "files.hidePreview": "Hide preview";
+    readonly "devices.unsafeSetupValue": "Setup command refused: a value contains unsupported characters.";
+    readonly "devices.invalidSetupToken": "Setup command refused: the device token is invalid.";
     readonly "devices.protected": "Protected";
     readonly "devices.notProtected": "Not protected · Relay trusted";
     readonly "devices.waitingForConnection": "Waiting for first connection";
@@ -4612,6 +4614,8 @@ declare const zhCN: {
     "files.andItsContents": "及其内容";
     "files.loadingDiagram": "正在加载图表…";
     "files.hidePreview": "收起预览";
+    "devices.unsafeSetupValue": "已拒绝生成设置命令：参数包含不支持的字符。";
+    "devices.invalidSetupToken": "已拒绝生成设置命令：设备令牌无效。";
     "devices.protected": "已保护";
     "devices.notProtected": "未保护 · 信任中继";
     "devices.waitingForConnection": "等待首次连接";
@@ -7572,6 +7576,8 @@ declare const resources: {
         readonly "files.andItsContents": " and its contents";
         readonly "files.loadingDiagram": "Loading diagram…";
         readonly "files.hidePreview": "Hide preview";
+        readonly "devices.unsafeSetupValue": "Setup command refused: a value contains unsupported characters.";
+        readonly "devices.invalidSetupToken": "Setup command refused: the device token is invalid.";
         readonly "devices.protected": "Protected";
         readonly "devices.notProtected": "Not protected · Relay trusted";
         readonly "devices.waitingForConnection": "Waiting for first connection";
@@ -10509,6 +10515,8 @@ declare const resources: {
         "files.andItsContents": "及其内容";
         "files.loadingDiagram": "正在加载图表…";
         "files.hidePreview": "收起预览";
+        "devices.unsafeSetupValue": "已拒绝生成设置命令：参数包含不支持的字符。";
+        "devices.invalidSetupToken": "已拒绝生成设置命令：设备令牌无效。";
         "devices.protected": "已保护";
         "devices.notProtected": "未保护 · 信任中继";
         "devices.waitingForConnection": "等待首次连接";

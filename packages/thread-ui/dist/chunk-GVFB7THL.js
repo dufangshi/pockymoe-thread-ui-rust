@@ -1456,7 +1456,24 @@ var devicesEn = {
   "devices.workspace": "Workspace",
   "devices.adapterInstallationFailed": "Adapter installation failed",
   "devices.baseComponentUpdateCompleted": "Base component update completed",
-  "devices.completed": "Completed"
+  "devices.completed": "Completed",
+  "devices.protectAllDevices": "Protect all devices",
+  "devices.protectRemotely": "Protect this device remotely",
+  "devices.confirmRemoteProtection": "Protect devices",
+  "devices.remoteProtectionTradeoff": "Remote protection trusts the relay at the moment of binding. After binding, your account key protects device commands and traffic.",
+  "devices.remoteProtectionLocalOption": "For the most secure option, run the local bind command on each device. It stays available below.",
+  "devices.remoteProtectionUpdatesHelp": "Older devices will offer Update and protect first and briefly disconnect during the update. Offline devices stay queued until they reconnect while this browser is open.",
+  "devices.remoteProtectionQueued": "Protection queued; waiting for the device to connect.",
+  "devices.remoteProtectionUpdateRequired": "Update this device before protecting it remotely.",
+  "devices.updateAndProtect": "Update and protect",
+  "devices.remoteProtectionUpdating": "Updating; waiting for the device to reconnect.",
+  "devices.remoteProtectionBinding": "Binding this device to your account key\u2026",
+  "devices.remoteProtectionCertifying": "Verifying enrollment and installing the device certificate\u2026",
+  "devices.remoteProtectionComplete": "Protection completed.",
+  "devices.remoteProtectionAlreadyBound": "Already bound; remote binding was skipped.",
+  "devices.remoteProtectionFailed": "Could not protect this device. Retry or use its local bind command.",
+  "devices.remoteProtectionUpdateFailed": "The update did not enable remote protection. Retry the update or update locally.",
+  "devices.remoteProtectionAccountMismatch": "This device is bound to another account key. Run pockymoe bind --reset locally, then retry or use the local bind command."
 };
 
 // src/i18n/files.en.ts
@@ -4456,7 +4473,24 @@ var devicesZhCN = {
   "devices.workspace": "\u5DE5\u4F5C\u533A",
   "devices.adapterInstallationFailed": "\u9002\u914D\u5668\u5B89\u88C5\u5931\u8D25",
   "devices.baseComponentUpdateCompleted": "\u57FA\u7840\u7EC4\u4EF6\u66F4\u65B0\u5B8C\u6210",
-  "devices.completed": "\u5DF2\u5B8C\u6210"
+  "devices.completed": "\u5DF2\u5B8C\u6210",
+  "devices.protectAllDevices": "\u4FDD\u62A4\u6240\u6709\u8BBE\u5907",
+  "devices.protectRemotely": "\u8FDC\u7A0B\u4FDD\u62A4\u6B64\u8BBE\u5907",
+  "devices.confirmRemoteProtection": "\u4FDD\u62A4\u8BBE\u5907",
+  "devices.remoteProtectionTradeoff": "\u8FDC\u7A0B\u4FDD\u62A4\u5728\u7ED1\u5B9A\u65F6\u4FE1\u4EFB\u4E2D\u7EE7\u3002\u7ED1\u5B9A\u5B8C\u6210\u540E\uFF0C\u8D26\u6237\u5BC6\u94A5\u4F1A\u4FDD\u62A4\u8BBE\u5907\u547D\u4EE4\u548C\u901A\u4FE1\u3002",
+  "devices.remoteProtectionLocalOption": "\u6700\u5B89\u5168\u7684\u65B9\u5F0F\u662F\u5728\u6BCF\u53F0\u8BBE\u5907\u4E0A\u8FD0\u884C\u672C\u5730\u7ED1\u5B9A\u547D\u4EE4\u3002\u4E0B\u65B9\u4ECD\u53EF\u4F7F\u7528\u672C\u5730\u547D\u4EE4\u3002",
+  "devices.remoteProtectionUpdatesHelp": "\u65E7\u7248\u8BBE\u5907\u4F1A\u5148\u63D0\u4F9B\u201C\u66F4\u65B0\u5E76\u4FDD\u62A4\u201D\uFF0C\u66F4\u65B0\u671F\u95F4\u4F1A\u77ED\u6682\u65AD\u5F00\u8FDE\u63A5\u3002\u79BB\u7EBF\u8BBE\u5907\u4F1A\u4FDD\u7559\u5F85\u5904\u7406\u72B6\u6001\uFF0C\u5E76\u5728\u6B64\u6D4F\u89C8\u5668\u6253\u5F00\u65F6\u91CD\u65B0\u8FDE\u63A5\u540E\u7EE7\u7EED\u3002",
+  "devices.remoteProtectionQueued": "\u5DF2\u52A0\u5165\u4FDD\u62A4\u961F\u5217\uFF0C\u7B49\u5F85\u8BBE\u5907\u8FDE\u63A5\u3002",
+  "devices.remoteProtectionUpdateRequired": "\u8BF7\u5148\u66F4\u65B0\u6B64\u8BBE\u5907\uFF0C\u518D\u8FDB\u884C\u8FDC\u7A0B\u4FDD\u62A4\u3002",
+  "devices.updateAndProtect": "\u66F4\u65B0\u5E76\u4FDD\u62A4",
+  "devices.remoteProtectionUpdating": "\u6B63\u5728\u66F4\u65B0\uFF0C\u7B49\u5F85\u8BBE\u5907\u91CD\u65B0\u8FDE\u63A5\u3002",
+  "devices.remoteProtectionBinding": "\u6B63\u5728\u5C06\u6B64\u8BBE\u5907\u7ED1\u5B9A\u5230\u8D26\u6237\u5BC6\u94A5\u2026",
+  "devices.remoteProtectionCertifying": "\u6B63\u5728\u9A8C\u8BC1\u6CE8\u518C\u5E76\u5B89\u88C5\u8BBE\u5907\u8BC1\u4E66\u2026",
+  "devices.remoteProtectionComplete": "\u4FDD\u62A4\u5DF2\u5B8C\u6210\u3002",
+  "devices.remoteProtectionAlreadyBound": "\u8BBE\u5907\u5DF2\u7ED1\u5B9A\uFF0C\u5DF2\u8DF3\u8FC7\u8FDC\u7A0B\u7ED1\u5B9A\u3002",
+  "devices.remoteProtectionFailed": "\u65E0\u6CD5\u4FDD\u62A4\u6B64\u8BBE\u5907\u3002\u8BF7\u91CD\u8BD5\u6216\u4F7F\u7528\u672C\u5730\u7ED1\u5B9A\u547D\u4EE4\u3002",
+  "devices.remoteProtectionUpdateFailed": "\u66F4\u65B0\u672A\u542F\u7528\u8FDC\u7A0B\u4FDD\u62A4\u3002\u8BF7\u91CD\u8BD5\u66F4\u65B0\u6216\u5728\u672C\u5730\u66F4\u65B0\u3002",
+  "devices.remoteProtectionAccountMismatch": "\u6B64\u8BBE\u5907\u5DF2\u7ED1\u5B9A\u5230\u5176\u4ED6\u8D26\u6237\u5BC6\u94A5\u3002\u8BF7\u5728\u8BBE\u5907\u4E0A\u8FD0\u884C pockymoe bind --reset\uFF0C\u7136\u540E\u91CD\u8BD5\u6216\u4F7F\u7528\u672C\u5730\u7ED1\u5B9A\u547D\u4EE4\u3002"
 };
 
 // src/i18n/files.zh-CN.ts

@@ -1,4 +1,7 @@
 export const devicesZhCN = {
+  "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；远程保护不会替换此注册流程。",
+  "devices.showLocalBindCommand": "显示本地绑定命令",
+  "devices.remoteProtectionInProgress": "此设备的远程保护已在进行中。请等待其完成后再开始本地注册。",
   "devices.platformUnix": "macOS 和 Linux",
   "devices.platformWindows": "Windows",
   "devices.repairDevice": "修复设备绑定",
@@ -446,5 +449,5 @@ export const devicesZhCN = {
   "devices.remoteProtectionAlreadyBound": "设备已绑定，已跳过远程绑定。",
   "devices.remoteProtectionFailed": "无法保护此设备。请重试或使用本地绑定命令。",
   "devices.remoteProtectionUpdateFailed": "更新未启用远程保护。请重试更新或在本地更新。",
-  "devices.remoteProtectionAccountMismatch": "此设备已绑定到其他账户密钥。请在设备上运行 pockymoe bind --reset，然后重试或使用本地绑定命令。",
+  "devices.remoteProtectionAccountMismatch": "中继报告此设备已绑定到其他账户密钥。请先在设备本地运行 pockymoe bind --status，并将其账户密钥指纹与你的账户密钥指纹进行比较。只有设备本身确认指纹不同，才运行 pockymoe bind --reset，然后重试或使用本地绑定命令。",
 } as const;

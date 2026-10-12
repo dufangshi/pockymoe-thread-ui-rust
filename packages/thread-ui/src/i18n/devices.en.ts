@@ -1,4 +1,7 @@
 export const devicesEn = {
+  "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; remote protection will not replace this enrollment.",
+  "devices.showLocalBindCommand": "Show local bind command",
+  "devices.remoteProtectionInProgress": "Remote protection is already in progress for this device. Wait for it to finish before starting a local enrollment.",
   "devices.platformUnix": "macOS & Linux",
   "devices.platformWindows": "Windows",
   "devices.repairDevice": "Repair device binding",
@@ -446,5 +449,5 @@ export const devicesEn = {
   "devices.remoteProtectionAlreadyBound": "Already bound; remote binding was skipped.",
   "devices.remoteProtectionFailed": "Could not protect this device. Retry or use its local bind command.",
   "devices.remoteProtectionUpdateFailed": "The update did not enable remote protection. Retry the update or update locally.",
-  "devices.remoteProtectionAccountMismatch": "This device is bound to another account key. Run pockymoe bind --reset locally, then retry or use the local bind command.",
+  "devices.remoteProtectionAccountMismatch": "The relay reports that this device is bound to another account key. First run pockymoe bind --status locally on the device and compare its account fingerprint with your account. Only run pockymoe bind --reset if the device itself confirms a different account fingerprint, then retry or use the local bind command.",
 } as const;

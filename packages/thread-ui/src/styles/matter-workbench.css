@@ -736,10 +736,14 @@
   border: 0;
   pointer-events: none;
 }
-.thread-ui-shell .matter-workbench .thread-graph-composer-layer > * {
+/* Only painted controls own hits. The full-width navigation strip and the
+   form's transparent padding must pass clicks to the transcript underneath. */
+.thread-ui-shell .matter-workbench .thread-graph-composer-layer > .thread-composer-pending-queue,
+.thread-ui-shell .matter-workbench .thread-graph-composer-form > * {
   pointer-events: auto;
 }
 .thread-ui-shell .matter-workbench .thread-graph-composer-form {
+  pointer-events: none;
   padding: 0;
   border: 0;
   background: transparent;

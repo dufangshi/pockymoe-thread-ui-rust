@@ -1476,7 +1476,7 @@ var devicesEn = {
   "devices.remoteProtectionAlreadyBound": "Already bound; remote binding was skipped.",
   "devices.remoteProtectionFailed": "Could not protect this device. Retry or use its local bind command.",
   "devices.remoteProtectionUpdateFailed": "The update did not enable remote protection. Retry the update or update locally.",
-  "devices.remoteProtectionAccountMismatch": "This device is bound to another account key. Run pockymoe bind --reset locally, then retry or use the local bind command."
+  "devices.remoteProtectionAccountMismatch": "The relay reports that this device is bound to another account key. First run pockymoe bind --status locally on the device and compare its account fingerprint with your account. Only run pockymoe bind --reset if the device itself confirms a different account fingerprint, then retry or use the local bind command."
 };
 
 // src/i18n/files.en.ts
@@ -4496,7 +4496,7 @@ var devicesZhCN = {
   "devices.remoteProtectionAlreadyBound": "\u8BBE\u5907\u5DF2\u7ED1\u5B9A\uFF0C\u5DF2\u8DF3\u8FC7\u8FDC\u7A0B\u7ED1\u5B9A\u3002",
   "devices.remoteProtectionFailed": "\u65E0\u6CD5\u4FDD\u62A4\u6B64\u8BBE\u5907\u3002\u8BF7\u91CD\u8BD5\u6216\u4F7F\u7528\u672C\u5730\u7ED1\u5B9A\u547D\u4EE4\u3002",
   "devices.remoteProtectionUpdateFailed": "\u66F4\u65B0\u672A\u542F\u7528\u8FDC\u7A0B\u4FDD\u62A4\u3002\u8BF7\u91CD\u8BD5\u66F4\u65B0\u6216\u5728\u672C\u5730\u66F4\u65B0\u3002",
-  "devices.remoteProtectionAccountMismatch": "\u6B64\u8BBE\u5907\u5DF2\u7ED1\u5B9A\u5230\u5176\u4ED6\u8D26\u6237\u5BC6\u94A5\u3002\u8BF7\u5728\u8BBE\u5907\u4E0A\u8FD0\u884C pockymoe bind --reset\uFF0C\u7136\u540E\u91CD\u8BD5\u6216\u4F7F\u7528\u672C\u5730\u7ED1\u5B9A\u547D\u4EE4\u3002"
+  "devices.remoteProtectionAccountMismatch": "\u4E2D\u7EE7\u62A5\u544A\u6B64\u8BBE\u5907\u5DF2\u7ED1\u5B9A\u5230\u5176\u4ED6\u8D26\u6237\u5BC6\u94A5\u3002\u8BF7\u5148\u5728\u8BBE\u5907\u672C\u5730\u8FD0\u884C pockymoe bind --status\uFF0C\u5E76\u5C06\u5176\u8D26\u6237\u5BC6\u94A5\u6307\u7EB9\u4E0E\u4F60\u7684\u8D26\u6237\u5BC6\u94A5\u6307\u7EB9\u8FDB\u884C\u6BD4\u8F83\u3002\u53EA\u6709\u8BBE\u5907\u672C\u8EAB\u786E\u8BA4\u6307\u7EB9\u4E0D\u540C\uFF0C\u624D\u8FD0\u884C pockymoe bind --reset\uFF0C\u7136\u540E\u91CD\u8BD5\u6216\u4F7F\u7528\u672C\u5730\u7ED1\u5B9A\u547D\u4EE4\u3002"
 };
 
 // src/i18n/files.zh-CN.ts

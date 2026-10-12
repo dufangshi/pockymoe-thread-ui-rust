@@ -182,4 +182,6 @@ export const sharingZhCN = {
   "sharing.inviteOwnerKey": "所有者账户密钥：{{value1}}",
   "sharing.accountKeyMismatch": "账户密钥与其公钥或此浏览器保存的身份不符。请通过其他渠道核对所有者账户密钥或接收人的安全码。",
   "sharing.deviceCertificateInvalid": "受保护设备的证书缺失或无效。请重新连接设备，并联系所有者检查设备保护后再继续。",
+  "sharing.reviewDifference": "修改前（设备当前授权）：{{value1}}\n修改后（对话框中的权限）：{{value2}}",
+  "sharing.dialogIncomplete": "编辑对话框未提供完整的权限和目标。请重新打开对话框后再签名。",
 } as const;

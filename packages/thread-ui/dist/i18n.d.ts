@@ -2686,6 +2686,8 @@ declare const en: {
     readonly "auth.ownerCancelled": "Passkey verification was cancelled. Try again when ready.";
     readonly "auth.ownerUnlockExpired": "This unlock prompt expired. Prepare a new prompt and try again.";
     readonly "auth.owner_session_required": "Unlock with your passkey to connect to this device.";
+    readonly "auth.owner_session_revoked": "This browser's access to the device was revoked. Unlock with your passkey again to create a new session.";
+    readonly "auth.owner_origin_mismatch": "This passkey belongs to a different site than the device's paired owner. Add a passkey from the same site used to pair this device.";
     readonly "auth.ownerUnlock": "Unlock with passkey";
     readonly "auth.ownerUnlockTitle": "Unlock your devices";
     readonly "auth.ownerUnlockHelp": "One passkey verification unlocks paired devices for 3 days in this browser.";
@@ -5529,6 +5531,8 @@ declare const zhCN: {
     "auth.ownerCancelled": "已取消通行密钥验证，可以再次尝试。";
     "auth.ownerUnlockExpired": "此解锁提示已过期，请刷新提示后重试。";
     "auth.owner_session_required": "请使用通行密钥解锁以连接此设备。";
+    "auth.owner_session_revoked": "此浏览器对此设备的访问权限已被撤销。请再次使用通行密钥解锁，以创建新会话。";
+    "auth.owner_origin_mismatch": "此通行密钥所属的网站与设备配对时使用的网站不同。请添加来自该设备配对网站的通行密钥。";
     "auth.ownerUnlock": "使用通行密钥解锁";
     "auth.ownerUnlockTitle": "解锁你的设备";
     "auth.ownerUnlockHelp": "在此浏览器中验证一次通行密钥，即可解锁已配对设备 3 天。";
@@ -8394,6 +8398,8 @@ declare const resources: {
         readonly "auth.ownerCancelled": "Passkey verification was cancelled. Try again when ready.";
         readonly "auth.ownerUnlockExpired": "This unlock prompt expired. Prepare a new prompt and try again.";
         readonly "auth.owner_session_required": "Unlock with your passkey to connect to this device.";
+        readonly "auth.owner_session_revoked": "This browser's access to the device was revoked. Unlock with your passkey again to create a new session.";
+        readonly "auth.owner_origin_mismatch": "This passkey belongs to a different site than the device's paired owner. Add a passkey from the same site used to pair this device.";
         readonly "auth.ownerUnlock": "Unlock with passkey";
         readonly "auth.ownerUnlockTitle": "Unlock your devices";
         readonly "auth.ownerUnlockHelp": "One passkey verification unlocks paired devices for 3 days in this browser.";
@@ -11236,6 +11242,8 @@ declare const resources: {
         "auth.ownerCancelled": "已取消通行密钥验证，可以再次尝试。";
         "auth.ownerUnlockExpired": "此解锁提示已过期，请刷新提示后重试。";
         "auth.owner_session_required": "请使用通行密钥解锁以连接此设备。";
+        "auth.owner_session_revoked": "此浏览器对此设备的访问权限已被撤销。请再次使用通行密钥解锁，以创建新会话。";
+        "auth.owner_origin_mismatch": "此通行密钥所属的网站与设备配对时使用的网站不同。请添加来自该设备配对网站的通行密钥。";
         "auth.ownerUnlock": "使用通行密钥解锁";
         "auth.ownerUnlockTitle": "解锁你的设备";
         "auth.ownerUnlockHelp": "在此浏览器中验证一次通行密钥，即可解锁已配对设备 3 天。";

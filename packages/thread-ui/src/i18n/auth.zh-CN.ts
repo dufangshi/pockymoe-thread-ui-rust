@@ -183,6 +183,8 @@ export const authZhCN = {
   "auth.ownerCancelled": "已取消通行密钥验证，可以再次尝试。",
   "auth.ownerUnlockExpired": "此解锁提示已过期，请刷新提示后重试。",
   "auth.owner_session_required": "请使用通行密钥解锁以连接此设备。",
+  "auth.owner_session_revoked": "此浏览器对此设备的访问权限已被撤销。请再次使用通行密钥解锁，以创建新会话。",
+  "auth.owner_origin_mismatch": "此通行密钥所属的网站与设备配对时使用的网站不同。请添加来自该设备配对网站的通行密钥。",
   "auth.ownerUnlock": "使用通行密钥解锁",
   "auth.ownerUnlockTitle": "解锁你的设备",
   "auth.ownerUnlockHelp": "在此浏览器中验证一次通行密钥，即可解锁已配对设备 3 天。",

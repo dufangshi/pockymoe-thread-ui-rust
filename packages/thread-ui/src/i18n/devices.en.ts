@@ -15,7 +15,7 @@ export const devicesEn = {
   "devices.browserRegisteredAt": "Registered {{value1}}",
   "devices.browserLastSeenAt": "Last seen {{value1}}",
   "devices.removeDevice": "Remove device",
-  "devices.removeDeviceHelp": "Remove trust in {{value1}}? The device keeps running, but other devices and browsers stop trusting it. Run pockymoe bind --reset locally to unbind it.",
+  "devices.removeDeviceHelp": "Remove {{value1}}? Its relay registration will be deleted, so it can no longer connect to this account. Other devices and browsers stop trusting it. The device keeps running and retains its local account binding until you run pockymoe bind --reset on it or uninstall it.",
   "devices.deviceRevocationFailed": "Unable to remove device trust. Try again.",
   "devices.protectionRequestFailed": "Device protection request failed ({{value1}}).",
   "devices.enrollmentMismatch": "Enrollment refused: the device identity, account key or secret did not match. Check the command on your device.",

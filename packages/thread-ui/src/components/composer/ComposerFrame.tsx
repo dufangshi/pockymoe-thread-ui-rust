@@ -10,7 +10,6 @@ import { InputGroup } from '../graph-ui/InputGroup';
 import { ComposerHiddenAttachmentInputs } from './ComposerHiddenAttachmentInputs';
 import { ComposerJumpLatestButton } from './ComposerJumpLatestButton';
 import { ComposerSubscriptionUsage, visibleSubscriptionWindows } from './ComposerSubscriptionUsage';
-import { useDocumentThemePreset } from '../themeHooks';
 
 export interface ComposerFrameProps {
   activeView: 'chat' | 'shell';
@@ -72,9 +71,6 @@ export function ComposerFrame({
   shellPromptSlot,
 }: ComposerFrameProps) {
   const { expanded, focusOwner, ...focusEvents } = useCompactComposer(formRef, activeView === 'chat');
-  // Plum Pocket sews the usage meter onto the composer's bottom seam instead of
-  // giving it a row of its own below.
-  const usageInShell = useDocumentThemePreset() === 'plum-pocket';
   const usage = activeView === 'chat' && visibleSubscriptionWindows(subscriptionUsage).length > 0
     ? <ComposerSubscriptionUsage usage={subscriptionUsage} />
     : null;
@@ -109,7 +105,7 @@ export function ComposerFrame({
         className={formClassName}
       >
         <div
-          className={`${shellClassName} flex w-full flex-col overflow-visible rounded-[16px] sm:rounded-[18px]`}
+          className={`${shellClassName} relative flex w-full flex-col overflow-visible rounded-[16px] sm:rounded-[18px]`}
         >
           <InputGroup className={inputGroupClassName}>
             {promptSlot}
@@ -118,13 +114,8 @@ export function ComposerFrame({
 
           {goalSlot}
           {shellPromptSlot}
-          {usage && usageInShell ? <div className="thread-composer-usage-tag">{usage}</div> : null}
+          {usage ? <div className="thread-composer-usage-tag">{usage}</div> : null}
         </div>
-        {usage && !usageInShell ? (
-          <div className="thread-composer-usage-footer relative mt-0.5 h-3 sm:h-4">
-            {usage}
-          </div>
-        ) : null}
         {error ? (
           <div className="mt-2 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
             {error}

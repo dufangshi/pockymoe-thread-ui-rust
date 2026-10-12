@@ -79,6 +79,52 @@
   mask-image: linear-gradient(to right, #000 calc(100% - min(48px, 30%)), transparent 100%);
 }
 
+/* A border legend, shared by all themes. Absolute positioning keeps the
+   input/buttons identical with or without allowance data. The surface cutout
+   masks only this short segment of the frame, without a badge outline. */
+.thread-ui-shell .thread-composer-usage-tag {
+  position: absolute;
+  z-index: 2;
+  right: 24px;
+  bottom: 0;
+  transform: translateY(50%);
+  display: flex;
+  height: 14px;
+  pointer-events: none;
+}
+.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 14px;
+  gap: 8px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(to bottom,
+    var(--composer-seam-surface, color-mix(in srgb, var(--theme-panel) 86%, var(--theme-bg))) calc(50% + 2px),
+    transparent calc(50% + 2px));
+  color: var(--theme-fg-muted);
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:hover { color: var(--theme-fg); }
+.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:focus-visible {
+  outline: 1px solid var(--theme-accent-strong);
+  outline-offset: 2px;
+}
+.thread-ui-shell .thread-composer-usage-tag [data-subscription-window-track] {
+  width: 18px;
+  height: 3px;
+  background: color-mix(in srgb, var(--theme-fg-muted) 25%, transparent);
+}
+.thread-subscription-usage[data-usage-stale] > span { opacity: .6; }
+
 /* Usage details live in the browser top layer, outside the trigger's opacity
    and the composer's stacking context, while retaining theme inheritance. */
 :root .thread-ui-shell .thread-subscription-usage-details.thread-composer-menu-surface[data-composer-menu-surface] {

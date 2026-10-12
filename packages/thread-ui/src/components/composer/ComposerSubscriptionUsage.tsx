@@ -56,7 +56,8 @@ export function ComposerSubscriptionUsage({
     <button
       ref={ref}
       type="button"
-      className={`thread-subscription-usage group pointer-events-auto absolute bottom-0 right-2 inline-flex h-3 items-center gap-1 rounded px-1 text-[8px] font-normal leading-none text-stone-400 transition-[color,opacity] duration-200 hover:text-stone-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-200/70 sm:right-3 sm:h-4 sm:text-[9px] ${usage.stale ? 'opacity-60' : 'opacity-85'}`}
+      className="thread-subscription-usage"
+      data-usage-stale={usage.stale ? 'true' : undefined}
       aria-label={translate("chat.subscriptionUsage", { value1: usage.provider, value2: description, value3: freshness })}
       data-composer-menu-trigger="true"
       aria-describedby={open ? detailsId : undefined}
@@ -71,7 +72,7 @@ export function ComposerSubscriptionUsage({
         const remaining = Math.max(0, Math.min(100, 100 - window.usedPercent));
         const hue = Math.round(18 + (remaining / 100) * 190);
         return (
-          <span key={window.id} className="inline-flex items-center gap-0.5">
+          <span key={window.id} className="thread-subscription-usage-window inline-flex items-center gap-0.5">
             <span className="font-normal tracking-[-0.01em]">{window.label}</span>
             <span
               data-subscription-window-track="true"

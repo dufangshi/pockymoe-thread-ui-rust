@@ -744,13 +744,6 @@
   border: 0;
   background: transparent;
 }
-/* Usage is a footer below the input, never a reason for one pane's input to
-   sit higher than the other. The shared host reserves this space in both panes. */
-.thread-ui-shell .matter-workbench .thread-composer-usage-footer {
-  position: absolute;
-  inset-inline: 0;
-  top: 100%;
-}
 .thread-ui-shell .matter-workbench .thread-graph-composer-shell {
   border: 1px solid var(--theme-border-strong);
   border-radius: 22px;

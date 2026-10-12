@@ -1,4 +1,7 @@
 export const devicesZhCN = {
+  "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；远程保护不会替换此注册流程。",
+  "devices.showLocalBindCommand": "显示本地绑定命令",
+  "devices.remoteProtectionInProgress": "此设备的远程保护已在进行中。请等待其完成后再开始本地注册。",
   "devices.platformUnix": "macOS 和 Linux",
   "devices.platformWindows": "Windows",
   "devices.repairDevice": "修复设备绑定",

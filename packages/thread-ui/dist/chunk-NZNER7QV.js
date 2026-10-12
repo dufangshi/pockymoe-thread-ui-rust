@@ -1026,6 +1026,9 @@ var commonEn = {
 
 // src/i18n/devices.en.ts
 var devicesEn = {
+  "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; remote protection will not replace this enrollment.",
+  "devices.showLocalBindCommand": "Show local bind command",
+  "devices.remoteProtectionInProgress": "Remote protection is already in progress for this device. Wait for it to finish before starting a local enrollment.",
   "devices.platformUnix": "macOS & Linux",
   "devices.platformWindows": "Windows",
   "devices.repairDevice": "Repair device binding",
@@ -4043,6 +4046,9 @@ var commonZhCN = {
 
 // src/i18n/devices.zh-CN.ts
 var devicesZhCN = {
+  "devices.localCommandPending": "\u6B63\u5728\u7B49\u5F85\u672C\u5730\u7ED1\u5B9A\u547D\u4EE4\u3002\u8BF7\u5728\u6B64\u8BBE\u5907\u4E0A\u8FD0\u884C\u547D\u4EE4\uFF1B\u8FDC\u7A0B\u4FDD\u62A4\u4E0D\u4F1A\u66FF\u6362\u6B64\u6CE8\u518C\u6D41\u7A0B\u3002",
+  "devices.showLocalBindCommand": "\u663E\u793A\u672C\u5730\u7ED1\u5B9A\u547D\u4EE4",
+  "devices.remoteProtectionInProgress": "\u6B64\u8BBE\u5907\u7684\u8FDC\u7A0B\u4FDD\u62A4\u5DF2\u5728\u8FDB\u884C\u4E2D\u3002\u8BF7\u7B49\u5F85\u5176\u5B8C\u6210\u540E\u518D\u5F00\u59CB\u672C\u5730\u6CE8\u518C\u3002",
   "devices.platformUnix": "macOS \u548C Linux",
   "devices.platformWindows": "Windows",
   "devices.repairDevice": "\u4FEE\u590D\u8BBE\u5907\u7ED1\u5B9A",

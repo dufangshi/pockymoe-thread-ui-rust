@@ -1,4 +1,7 @@
 export const devicesEn = {
+  "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; remote protection will not replace this enrollment.",
+  "devices.showLocalBindCommand": "Show local bind command",
+  "devices.remoteProtectionInProgress": "Remote protection is already in progress for this device. Wait for it to finish before starting a local enrollment.",
   "devices.platformUnix": "macOS & Linux",
   "devices.platformWindows": "Windows",
   "devices.repairDevice": "Repair device binding",

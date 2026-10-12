@@ -546,6 +546,7 @@ interface CreateThreadShareInput {
     label?: string | null;
 }
 interface ThreadShareSummary {
+    trustContent?: ReactNode;
     scope?: 'thread' | 'device';
     id: string;
     targetUsername: string;

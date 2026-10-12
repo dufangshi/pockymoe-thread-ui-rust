@@ -31,6 +31,7 @@ export interface CreateThreadShareInput {
 }
 
 export interface ThreadShareSummary {
+  trustContent?: ReactNode;
   scope?: 'thread' | 'device';
   id: string;
   targetUsername: string;
@@ -405,6 +406,7 @@ export function ThreadActionsDialog({
                             {share.scope === 'device' ? translate("sharing.wholeDevice") : ''}{share.label ? `${share.label} · ` : ''}
                             {shareThreadAccessLabel(share.threadAccess)} / {shareWorkspaceAccessLabel(share.workspaceAccess)}
                           </p>
+                          {share.trustContent}
                         </div>
                         {onUpdateShare && <button type="button" aria-label={translate("sharing.editPermissionsFor", { value1: share.targetUsername })} className="thread-export-dialog-secondary-button ml-auto flex items-center gap-1 rounded-lg border px-2 py-1.5 text-xs" disabled={busy} onClick={() => {setEditingShare(share.id);setShareDevice(share.scope === 'device');setTargetIdentifier(share.targetUsername);setThreadAccess(share.threadAccess ?? 'read');setWorkspaceAccess(share.workspaceAccess ?? 'none');setShareLabel(share.label ?? '');}}><Pencil size={13}/>{translate("sharing.edit")}</button>}
                         {onRevokeShare ? (

@@ -1,4 +1,7 @@
 export const chatZhCN = {
+  "chat.peerAgent": "智能体",
+  "chat.peerQuestion": "提问",
+  "chat.peerUpdates": "子线程汇报",
   "chat.backgroundResumed": "继续执行",
   "chat.waitingForWake": "等待唤醒",
   "chat.backgroundAwakened": "已唤醒",
@@ -147,6 +150,7 @@ export const chatZhCN = {
   "chat.creatingForkYouWillBeTakenTo": "正在创建分叉…就绪后将进入新线程。",
   "chat.subscriptionUsage": "{{value1}} 订阅用量。{{value2}}。{{value3}}",
   "chat.remaining": "% 剩余 ·",
+  "chat.remainingPercentage": "{{value1}}% 剩余",
   "chat.switchToChat": "切换到聊天",
   "chat.switchToShell": "切换到 Shell",
   "chat.closeShellTools": "关闭 Shell 工具",

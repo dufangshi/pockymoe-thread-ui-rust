@@ -1,4 +1,7 @@
 export const chatEn = {
+  "chat.peerAgent": "Agent",
+  "chat.peerQuestion": "Question",
+  "chat.peerUpdates": "Delegate update",
   "chat.backgroundResumed": "Continuing",
   "chat.waitingForWake": "Waiting for wake",
   "chat.backgroundAwakened": "Awakened",
@@ -147,6 +150,7 @@ export const chatEn = {
   "chat.creatingForkYouWillBeTakenTo": "Creating fork… You will be taken to the new thread when it is ready.",
   "chat.subscriptionUsage": "{{value1}} subscription usage. {{value2}}. {{value3}}",
   "chat.remaining": "% remaining ·",
+  "chat.remainingPercentage": "{{value1}}% remaining",
   "chat.switchToChat": "Switch to chat",
   "chat.switchToShell": "Switch to shell",
   "chat.closeShellTools": "Close shell tools",

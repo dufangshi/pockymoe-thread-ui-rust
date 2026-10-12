@@ -44,11 +44,10 @@ describe('ComposerSubscriptionUsage', () => {
   it('shows the remaining subscription window compactly', async () => {
     const host = await renderUsage('subscription');
     expect(host.textContent).toContain('5h');
-    expect(host.textContent).toContain('60%');
     const control = host.querySelector<HTMLButtonElement>('.thread-subscription-usage');
     const track = control?.querySelector<HTMLElement>('[data-subscription-window-track]');
     const fill = track?.firstElementChild as HTMLElement | null;
-    const details = control?.querySelector<HTMLElement>('[aria-hidden]');
+    expect(host.querySelector('[role=tooltip]')).toBeNull();
 
     expect(control?.className).toContain('h-3');
     expect(control?.className).toContain('bottom-0');
@@ -60,15 +59,23 @@ describe('ComposerSubscriptionUsage', () => {
     expect(fill?.style.width).toBe('60%');
     expect(fill?.style.backgroundImage).toContain('linear-gradient');
     expect(control?.getAttribute('aria-expanded')).toBe('false');
-    expect(details?.getAttribute('aria-hidden')).toBe('true');
 
     await act(async () => {
       control?.click();
     });
 
     expect(control?.getAttribute('aria-expanded')).toBe('true');
-    expect(details?.getAttribute('aria-hidden')).toBe('false');
-    expect(details?.className).toContain('opacity-100');
+    const details = host.querySelector<HTMLElement>('[role=tooltip]');
+    expect(details?.textContent).toContain('60%');
+    expect(control?.contains(details)).toBe(false);
+    expect(details?.getAttribute('popover')).toBeNull(); // jsdom fallback
+    expect(control?.getAttribute('aria-describedby')).toBe(details?.id);
+    await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); });
+    expect(host.querySelector('[role=tooltip]')).toBeNull();
+    await act(async () => { control?.click(); });
+    expect(host.querySelector('[role=tooltip]')).not.toBeNull();
+    await act(async () => { document.body.dispatchEvent(new Event('pointerdown', { bubbles: true })); });
+    expect(control?.getAttribute('aria-expanded')).toBe('false');
   });
 
   it('renders nothing for API-key authentication', async () => {

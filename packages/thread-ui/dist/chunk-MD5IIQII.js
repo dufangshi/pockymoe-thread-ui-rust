@@ -580,7 +580,8 @@ var authEn = {
   "auth.accountReason.recovery-code": "Authorize replacing your recovery code",
   "auth.invalid_credentials": "Incorrect login or password.",
   "auth.registration_password_invalid": "The registration invite code is incorrect.",
-  "auth.accountRecover": "Recover account"
+  "auth.accountRecover": "Recover account",
+  "auth.accountOAuthFactorRequired": "Use an existing authenticator or passkey to confirm this change. Your OAuth unlock password stays in this browser."
 };
 
 // src/i18n/chat.en.ts
@@ -3579,7 +3580,8 @@ var authZhCN = {
   "auth.accountReason.recovery-code": "\u6388\u6743\u66F4\u6362\u6062\u590D\u7801",
   "auth.invalid_credentials": "\u767B\u5F55\u540D\u6216\u5BC6\u7801\u4E0D\u6B63\u786E\u3002",
   "auth.registration_password_invalid": "\u6CE8\u518C\u9080\u8BF7\u7801\u4E0D\u6B63\u786E\u3002",
-  "auth.accountRecover": "\u6062\u590D\u8D26\u6237"
+  "auth.accountRecover": "\u6062\u590D\u8D26\u6237",
+  "auth.accountOAuthFactorRequired": "\u8BF7\u4F7F\u7528\u5DF2\u6709\u7684\u8EAB\u4EFD\u9A8C\u8BC1\u5668\u6216\u901A\u884C\u5BC6\u94A5\u786E\u8BA4\u6B64\u66F4\u6539\u3002OAuth \u89E3\u9501\u5BC6\u7801\u4EC5\u5728\u6B64\u6D4F\u89C8\u5668\u4E2D\u4F7F\u7528\u3002"
 };
 
 // src/i18n/chat.zh-CN.ts

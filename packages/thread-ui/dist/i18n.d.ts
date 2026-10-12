@@ -2848,6 +2848,7 @@ declare const en: {
     readonly "auth.invalid_credentials": "Incorrect login or password.";
     readonly "auth.registration_password_invalid": "The registration invite code is incorrect.";
     readonly "auth.accountRecover": "Recover account";
+    readonly "auth.accountOAuthFactorRequired": "Use an existing authenticator or passkey to confirm this change. Your OAuth unlock password stays in this browser.";
     readonly "automation.overview": "Plans and activity";
     readonly "automation.managed": "Agent managed";
     readonly "automation.activeCount": "Active";
@@ -5812,6 +5813,7 @@ declare const zhCN: {
     "auth.invalid_credentials": "登录名或密码不正确。";
     "auth.registration_password_invalid": "注册邀请码不正确。";
     "auth.accountRecover": "恢复账户";
+    "auth.accountOAuthFactorRequired": "请使用已有的身份验证器或通行密钥确认此更改。OAuth 解锁密码仅在此浏览器中使用。";
     "automation.overview": "计划与执行概览";
     "automation.managed": "Agent 管理";
     "automation.activeCount": "生效中";
@@ -8798,6 +8800,7 @@ declare const resources: {
         readonly "auth.invalid_credentials": "Incorrect login or password.";
         readonly "auth.registration_password_invalid": "The registration invite code is incorrect.";
         readonly "auth.accountRecover": "Recover account";
+        readonly "auth.accountOAuthFactorRequired": "Use an existing authenticator or passkey to confirm this change. Your OAuth unlock password stays in this browser.";
         readonly "automation.overview": "Plans and activity";
         readonly "automation.managed": "Agent managed";
         readonly "automation.activeCount": "Active";
@@ -11761,6 +11764,7 @@ declare const resources: {
         "auth.invalid_credentials": "登录名或密码不正确。";
         "auth.registration_password_invalid": "注册邀请码不正确。";
         "auth.accountRecover": "恢复账户";
+        "auth.accountOAuthFactorRequired": "请使用已有的身份验证器或通行密钥确认此更改。OAuth 解锁密码仅在此浏览器中使用。";
         "automation.overview": "计划与执行概览";
         "automation.managed": "Agent 管理";
         "automation.activeCount": "生效中";

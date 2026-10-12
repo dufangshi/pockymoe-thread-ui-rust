@@ -286,4 +286,5 @@ export const authZhCN = {
   "auth.invalid_credentials": "登录名或密码不正确。",
   "auth.registration_password_invalid": "注册邀请码不正确。",
   "auth.accountRecover": "恢复账户",
+  "auth.accountOAuthFactorRequired": "请使用已有的身份验证器或通行密钥确认此更改。OAuth 解锁密码仅在此浏览器中使用。",
 } as const;

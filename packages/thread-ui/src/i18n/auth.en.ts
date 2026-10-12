@@ -286,4 +286,5 @@ export const authEn = {
   "auth.invalid_credentials": "Incorrect login or password.",
   "auth.registration_password_invalid": "The registration invite code is incorrect.",
   "auth.accountRecover": "Recover account",
+  "auth.accountOAuthFactorRequired": "Use an existing authenticator or passkey to confirm this change. Your OAuth unlock password stays in this browser.",
 } as const;

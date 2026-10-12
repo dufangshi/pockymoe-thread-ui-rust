@@ -2060,6 +2060,9 @@ declare const en: {
         readonly one: "{{count}} item";
         readonly other: "{{count}} items";
     };
+    readonly "chat.peerAgent": "Agent";
+    readonly "chat.peerQuestion": "Question";
+    readonly "chat.peerUpdates": "Delegate update";
     readonly "chat.backgroundResumed": "Continuing";
     readonly "chat.waitingForWake": "Waiting for wake";
     readonly "chat.backgroundAwakened": "Awakened";
@@ -2208,6 +2211,7 @@ declare const en: {
     readonly "chat.creatingForkYouWillBeTakenTo": "Creating fork… You will be taken to the new thread when it is ready.";
     readonly "chat.subscriptionUsage": "{{value1}} subscription usage. {{value2}}. {{value3}}";
     readonly "chat.remaining": "% remaining ·";
+    readonly "chat.remainingPercentage": "{{value1}}% remaining";
     readonly "chat.switchToChat": "Switch to chat";
     readonly "chat.switchToShell": "Switch to shell";
     readonly "chat.closeShellTools": "Close shell tools";
@@ -4943,6 +4947,9 @@ declare const zhCN: {
         readonly one: "{{count}} 项";
         readonly other: "{{count}} 项";
     };
+    "chat.peerAgent": "智能体";
+    "chat.peerQuestion": "提问";
+    "chat.peerUpdates": "子线程汇报";
     "chat.backgroundResumed": "继续执行";
     "chat.waitingForWake": "等待唤醒";
     "chat.backgroundAwakened": "已唤醒";
@@ -5091,6 +5098,7 @@ declare const zhCN: {
     "chat.creatingForkYouWillBeTakenTo": "正在创建分叉…就绪后将进入新线程。";
     "chat.subscriptionUsage": "{{value1}} 订阅用量。{{value2}}。{{value3}}";
     "chat.remaining": "% 剩余 ·";
+    "chat.remainingPercentage": "{{value1}}% 剩余";
     "chat.switchToChat": "切换到聊天";
     "chat.switchToShell": "切换到 Shell";
     "chat.closeShellTools": "关闭 Shell 工具";
@@ -7848,6 +7856,9 @@ declare const resources: {
             readonly one: "{{count}} item";
             readonly other: "{{count}} items";
         };
+        readonly "chat.peerAgent": "Agent";
+        readonly "chat.peerQuestion": "Question";
+        readonly "chat.peerUpdates": "Delegate update";
         readonly "chat.backgroundResumed": "Continuing";
         readonly "chat.waitingForWake": "Waiting for wake";
         readonly "chat.backgroundAwakened": "Awakened";
@@ -7996,6 +8007,7 @@ declare const resources: {
         readonly "chat.creatingForkYouWillBeTakenTo": "Creating fork… You will be taken to the new thread when it is ready.";
         readonly "chat.subscriptionUsage": "{{value1}} subscription usage. {{value2}}. {{value3}}";
         readonly "chat.remaining": "% remaining ·";
+        readonly "chat.remainingPercentage": "{{value1}}% remaining";
         readonly "chat.switchToChat": "Switch to chat";
         readonly "chat.switchToShell": "Switch to shell";
         readonly "chat.closeShellTools": "Close shell tools";
@@ -10730,6 +10742,9 @@ declare const resources: {
             readonly one: "{{count}} 项";
             readonly other: "{{count}} 项";
         };
+        "chat.peerAgent": "智能体";
+        "chat.peerQuestion": "提问";
+        "chat.peerUpdates": "子线程汇报";
         "chat.backgroundResumed": "继续执行";
         "chat.waitingForWake": "等待唤醒";
         "chat.backgroundAwakened": "已唤醒";
@@ -10878,6 +10893,7 @@ declare const resources: {
         "chat.creatingForkYouWillBeTakenTo": "正在创建分叉…就绪后将进入新线程。";
         "chat.subscriptionUsage": "{{value1}} 订阅用量。{{value2}}。{{value3}}";
         "chat.remaining": "% 剩余 ·";
+        "chat.remainingPercentage": "{{value1}}% 剩余";
         "chat.switchToChat": "切换到聊天";
         "chat.switchToShell": "切换到 Shell";
         "chat.closeShellTools": "关闭 Shell 工具";

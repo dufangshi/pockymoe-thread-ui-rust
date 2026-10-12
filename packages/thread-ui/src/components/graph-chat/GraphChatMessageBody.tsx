@@ -325,20 +325,50 @@ export const GraphChatUserMessageBody = memo(
     text,
     attachmentPreviewUrls,
     getImageAssetUrl,
+    messageId,
+    scrollRootRef,
+    onBeforeResize,
   }: {
+    messageId?: string | undefined;
+    scrollRootRef?: RefObject<HTMLDivElement | null> | undefined;
+    onBeforeResize?: (() => void) | undefined;
     threadId?: string | undefined;
     text: string;
     attachmentPreviewUrls?: Record<string, string> | undefined;
     getImageAssetUrl?: ThreadTimelineAdapter['getImageAssetUrl'] | undefined;
   }) {
   const { locale: i18nLocale } = useI18n();
-    const segments = useMemo(() => tokenizeUserMessageText(text), [text]);
+    const allSegments = useMemo(() => tokenizeUserMessageText(text), [text]);
+    const [expanded, setExpanded] = useMessageExpansion(messageId, text, false);
+    const messageRef = useRef<HTMLDivElement>(null);
+    const scrollAnchor = useRef<{root: HTMLDivElement; top: number} | null>(null);
+    const narrative = allSegments.filter(segment => segment.type === 'text').map(segment => segment.text).join('');
+    const points = Array.from(narrative);
+    const wordBoundary = [...narrative.matchAll(/\S+/gu)][160]?.index ?? narrative.length;
+    const lineBoundary = narrative.split('\n').slice(0, 8).join('\n').length;
+    const previewEnd = Math.min(points.slice(0, 600).join('').length, wordBoundary, lineBoundary);
+    const isLong = previewEnd < narrative.length;
+    // Attachment markers do not consume the preview budget; chips stay accessible.
+    const segments: UserMessageSegment[] = isLong && !expanded ? [
+      {type:'text',key:'preview',text:`${narrative.slice(0, previewEnd).trimEnd()}…`},
+      ...allSegments.filter(segment => segment.type !== 'text'),
+    ] : allSegments;
+    useLayoutEffect(() => {
+      const anchor = scrollAnchor.current;
+      if (anchor && messageRef.current) anchor.root.scrollTop += messageRef.current.getBoundingClientRect().top - anchor.top;
+      scrollAnchor.current = null;
+    }, [expanded]);
+    const toggle = () => {
+      onBeforeResize?.();
+      if (scrollRootRef?.current && messageRef.current) scrollAnchor.current = {root:scrollRootRef.current,top:messageRef.current.getBoundingClientRect().top};
+      setExpanded(!expanded);
+    };
 
     return (
-      <div className="thread-graph-message-prose whitespace-pre-wrap break-words text-[15px] leading-6">
+      <div ref={messageRef} className="thread-graph-message-prose whitespace-pre-wrap break-words text-[15px] leading-6">
         {segments.map((segment) => {
           if (segment.type === 'text') {
-            return <span key={segment.key}>{segment.text}</span>;
+            return <span key={segment.key} className={isLong && !expanded ? "thread-graph-user-preview-text" : undefined}>{segment.text}</span>;
           }
 
           if (segment.type === 'photo') {
@@ -402,6 +432,11 @@ export const GraphChatUserMessageBody = memo(
             </span>
           );
         })}
+        {isLong ? <button type="button" onClick={event => {event.stopPropagation(); toggle();}} aria-expanded={expanded}
+          className="thread-graph-show-more timeline-meta-text mt-1 flex w-fit items-center gap-1 rounded px-1 text-xs transition">
+          {expanded ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
+          <span>{expanded ? translate('chat.showLess') : translate('chat.showMore')}</span>
+        </button> : null}
       </div>
     );
   },

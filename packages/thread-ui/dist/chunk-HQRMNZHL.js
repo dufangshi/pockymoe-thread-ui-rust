@@ -531,6 +531,9 @@ var authEn = {
 
 // src/i18n/chat.en.ts
 var chatEn = {
+  "chat.peerAgent": "Agent",
+  "chat.peerQuestion": "Question",
+  "chat.peerUpdates": "Delegate update",
   "chat.backgroundResumed": "Continuing",
   "chat.waitingForWake": "Waiting for wake",
   "chat.backgroundAwakened": "Awakened",
@@ -679,6 +682,7 @@ var chatEn = {
   "chat.creatingForkYouWillBeTakenTo": "Creating fork\u2026 You will be taken to the new thread when it is ready.",
   "chat.subscriptionUsage": "{{value1}} subscription usage. {{value2}}. {{value3}}",
   "chat.remaining": "% remaining \xB7",
+  "chat.remainingPercentage": "{{value1}}% remaining",
   "chat.switchToChat": "Switch to chat",
   "chat.switchToShell": "Switch to shell",
   "chat.closeShellTools": "Close shell tools",
@@ -3449,6 +3453,9 @@ var authZhCN = {
 
 // src/i18n/chat.zh-CN.ts
 var chatZhCN = {
+  "chat.peerAgent": "\u667A\u80FD\u4F53",
+  "chat.peerQuestion": "\u63D0\u95EE",
+  "chat.peerUpdates": "\u5B50\u7EBF\u7A0B\u6C47\u62A5",
   "chat.backgroundResumed": "\u7EE7\u7EED\u6267\u884C",
   "chat.waitingForWake": "\u7B49\u5F85\u5524\u9192",
   "chat.backgroundAwakened": "\u5DF2\u5524\u9192",
@@ -3597,6 +3604,7 @@ var chatZhCN = {
   "chat.creatingForkYouWillBeTakenTo": "\u6B63\u5728\u521B\u5EFA\u5206\u53C9\u2026\u5C31\u7EEA\u540E\u5C06\u8FDB\u5165\u65B0\u7EBF\u7A0B\u3002",
   "chat.subscriptionUsage": "{{value1}} \u8BA2\u9605\u7528\u91CF\u3002{{value2}}\u3002{{value3}}",
   "chat.remaining": "% \u5269\u4F59 \xB7",
+  "chat.remainingPercentage": "{{value1}}% \u5269\u4F59",
   "chat.switchToChat": "\u5207\u6362\u5230\u804A\u5929",
   "chat.switchToShell": "\u5207\u6362\u5230 Shell",
   "chat.closeShellTools": "\u5173\u95ED Shell \u5DE5\u5177",

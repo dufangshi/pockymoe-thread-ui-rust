@@ -63,3 +63,33 @@ it('keeps a local preview for both the chip and the lightbox', () => {
     container.remove();
   }
 });
+
+it('folds long prompts, keeps late attachments accessible, and resets disclosure for another message', () => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  const root = createRoot(container);
+  const text = `${'详细要求：请核对配对流程。'.repeat(100)}FULL PROMPT TAIL [PHOTO evidence.png] [FILE requirements.md]`;
+  try {
+    const message = (id: string) => <GraphChatUserMessageBody messageId={id} text={text} attachmentPreviewUrls={{'evidence.png':'/evidence.png'}} />;
+    act(() => root.render(message('first')));
+    const button = container.querySelector<HTMLButtonElement>('.thread-graph-show-more')!;
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(container.textContent).not.toContain('FULL PROMPT TAIL');
+    expect(container.querySelector('img')?.getAttribute('src')).toBe('/evidence.png');
+    expect(container.textContent).toContain('requirements.md');
+    act(() => button.click());
+    expect(container.textContent).toContain('FULL PROMPT TAIL');
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    act(() => root.render(message('first')));
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    act(() => root.render(message('second')));
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(container.textContent).not.toContain('FULL PROMPT TAIL');
+    act(() => root.render(<GraphChatUserMessageBody messageId="short" text="A short prompt" />));
+    expect(container.textContent).toBe('A short prompt');
+    expect(container.querySelector('.thread-graph-show-more')).toBeNull();
+  } finally {
+    act(() => root.unmount());
+    container.remove();
+  }
+});

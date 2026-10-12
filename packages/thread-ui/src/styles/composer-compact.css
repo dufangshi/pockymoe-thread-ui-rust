@@ -78,3 +78,32 @@
   -webkit-mask-image: linear-gradient(to right, #000 calc(100% - min(48px, 30%)), transparent 100%);
   mask-image: linear-gradient(to right, #000 calc(100% - min(48px, 30%)), transparent 100%);
 }
+
+/* Usage details live in the browser top layer, outside the trigger's opacity
+   and the composer's stacking context, while retaining theme inheritance. */
+:root .thread-ui-shell .thread-subscription-usage-details.thread-composer-menu-surface[data-composer-menu-surface] {
+  position: fixed;
+  inset: auto;
+  z-index: 150;
+  margin: 0;
+  width: 260px;
+  padding: 12px;
+  border: 1px solid var(--theme-border-strong, #52525b);
+  border-radius: 12px;
+  background: var(--subscription-details-bg, var(--theme-panel, #18181b)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: var(--theme-fg, #fafafa);
+  box-shadow: 0 12px 36px rgb(0 0 0 / 24%);
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 1;
+  pointer-events: auto;
+  overflow: auto;
+}
+.thread-subscription-usage-details::backdrop { background: transparent; }
+.thread-subscription-usage-detail-window + .thread-subscription-usage-detail-window { margin-top: 10px; }
+.thread-subscription-usage-detail-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.thread-subscription-usage-detail-heading strong { font-weight: 600; }
+.thread-subscription-usage-detail-reset { margin-top: 3px; color: var(--theme-fg-muted, #a1a1aa); font-size: 11px; }
+.thread-subscription-usage-detail-freshness { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--theme-border, #3f3f46); color: var(--theme-fg-muted, #a1a1aa); font-size: 10px; }

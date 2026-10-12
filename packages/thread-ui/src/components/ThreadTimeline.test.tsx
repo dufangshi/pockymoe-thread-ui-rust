@@ -57,6 +57,81 @@ function completedTurn(items: ThreadTurnDto['items']): ThreadTurnDto {
 }
 
 describe('ThreadTimeline', () => {
+  it('keeps a peer round human approval accessible while the whole task remains folded', () => {
+    const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Task'}]),id:'task'} as ThreadTurnDto;
+    const peer: ThreadTurnDto = {...completedTurn([{id:'wake:user',kind:'userMessage',text:'Wake envelope',peerWork:{taskTurnId:'task',messages:[{id:'q',kind:'question',name:'Reviewer',subject:'Scope?'}]}}]),id:'wake',status:'inProgress',hasDeferredItems:true};
+    const respond=vi.fn();
+    const el=render(<ThreadTimeline turns={[task,peer]} liveOutput="" onLoadTurnDetail={vi.fn()} pendingRequests={[{
+      id:'approval',kind:'permissionRequest',title:'Permission',description:'Approve the peer operation',turnId:'wake',itemId:null,createdAt:'2026-10-12T00:00:00Z',
+      questions:[{id:'permission',header:'Permission',question:'Allow verification?',isOther:false,isSecret:false,options:[{label:'Allow',description:'Allow verification'}]}],
+    }]} onRespondToRequest={respond} />);
+    expect(el.querySelector('.thread-peer-work-toggle')).toBeNull();
+    expect(el.textContent).toContain('Allow verification?');
+    const allow=[...el.querySelectorAll('button')].find(button=>button.textContent?.trim()==='Allow')!;
+    expect(allow).toBeDefined();
+    flushSync(()=>allow.click());
+    expect(respond).toHaveBeenCalled();
+  });
+
+  it('nests peer questions in task steps and loads only the selected question round', async () => {
+    const task = {...completedTurn([
+      {id:'user',kind:'userMessage',text:'Implement the original task'},
+      {id:'handoff',kind:'agentMessage',text:'Delegated the work',responsePhase:'commentary'},
+    ]),id:'task'} as ThreadTurnDto;
+    const peer = (id: string, subject: string): ThreadTurnDto => ({...completedTurn([
+      {id:`${id}:user`,kind:'userMessage',text:'[Pockymoe wake]',peerWork:{taskTurnId:'task',messages:[{id:`${id}:question`,kind:'question',name:'Reviewer',subject}]}},
+      {id:`${id}:reply`,kind:'agentMessage',text:`Reply for ${id}`,responsePhase:'final'},
+    ]),id,hasDeferredItems:true,deferredItemCount:1});
+    const first = peer('first','Can sessions expire?'), second = peer('second','Which scope applies?');
+    const load = vi.fn(async (id: string) => {
+      const turn = id === 'first' ? first : second;
+      return {...turn,hasDeferredItems:false,deferredItemCount:0,items:[
+        {...turn.items[0]!,peerWork:{taskTurnId:'task',messages:[{id:`${id}:question`,kind:'question' as const,name:'Reviewer',subject:'Can sessions expire?',text:'Full question: does the registration remain valid tomorrow?'}]}},
+        {id:`${id}:command`,kind:'commandExecution' as const,text:'verify-session',status:'completed' as const},
+        turn.items[1]!,
+      ]};
+    });
+    const el = render(<ThreadTimeline turns={[task,first,second]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={load} />);
+    expect(el.querySelectorAll('[data-role="user"]')).toHaveLength(1);
+    expect(el.querySelectorAll('.thread-graph-worked-summary')).toHaveLength(1);
+    expect(el.textContent).toContain('Reply for second');
+    expect(el.textContent).not.toContain('Reply for first');
+    expect(load).not.toHaveBeenCalled();
+    flushSync(() => (el.querySelector('.thread-graph-worked-summary button[aria-expanded]') as HTMLButtonElement).click());
+    expect(el.querySelectorAll('.thread-peer-work-toggle')).toHaveLength(2);
+    expect(load).not.toHaveBeenCalled();
+    const toggle = el.querySelector('.thread-peer-work-toggle') as HTMLButtonElement;
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    flushSync(() => toggle.click());
+    await vi.waitFor(() => expect(el.textContent).toContain('Full question: does the registration remain valid tomorrow?'));
+    expect(load).toHaveBeenCalledExactlyOnceWith('first');
+    expect(el.querySelector('.thread-peer-work-operations')?.textContent).toContain('verify-session');
+    expect(el.querySelector('.thread-peer-work-operations')?.textContent).toContain('Reply for first');
+    expect(el.querySelectorAll('[data-role="user"]')).toHaveLength(1);
+    flushSync(() => toggle.click());
+    flushSync(() => toggle.click());
+    expect(load).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the latest peer progress and final outside the task fold without exposing old replies', () => {
+    const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Task'}]),id:'task'} as ThreadTurnDto;
+    const peer: ThreadTurnDto = {...completedTurn([
+      {id:'wake:user',kind:'userMessage',text:'Wake envelope',peerWork:{taskTurnId:'task',messages:[{id:'q',kind:'question',name:'Reviewer',subject:'Scope?'}]}},
+      {id:'progress',kind:'agentMessage',text:'Latest peer progress',responsePhase:'commentary'},
+    ]),id:'wake',status:'inProgress'};
+    const props = {liveOutput:'',onLoadTurnDetail:vi.fn()};
+    const el = render(<ThreadTimeline {...props} turns={[task,peer]} threadRunning activeTurnId="wake" />);
+    expect(el.textContent).toContain('Latest peer progress');
+    expect(el.querySelectorAll('.thread-peer-work-toggle')).toHaveLength(0);
+    const next = {...peer,items:[...peer.items,{id:'new',kind:'agentMessage' as const,text:'New progress replaces old',responsePhase:'commentary' as const}]};
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[task,next]} threadRunning activeTurnId="wake" />));
+    expect(el.textContent).toContain('New progress replaces old');
+    expect(el.textContent).not.toContain('Latest peer progress');
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[task,{...next,status:'completed',items:[...next.items,{id:'final',kind:'agentMessage',text:'Final peer result',responsePhase:'final'}]}]} />));
+    expect(el.textContent).toContain('Final peer result');
+    expect(el.textContent).not.toContain('New progress replaces old');
+  });
+
   it.each([
     ['inProgress', 'Working', '工作中'],
     ['recovering', 'Confirming status', '正在确认状态'],

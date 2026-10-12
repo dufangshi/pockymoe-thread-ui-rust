@@ -2700,6 +2700,9 @@ declare const en: {
     readonly "auth.ownerUnlocking": "Verifying passkey…";
     readonly "auth.ownerRetry": "Try again";
     readonly "auth.ownerLater": "Later";
+    readonly "auth.ownerLockedNotice": "Paired device locked. Unlock to continue.";
+    readonly "auth.ownerLockedRevoked": "Device access revoked. Unlock again to continue.";
+    readonly "auth.ownerLockedUnlock": "Unlock";
     readonly "auth.ownerAccountSecurity": "Account → Security";
     readonly "auth.ownerPairTitle": "Pair this device";
     readonly "auth.ownerPairAction": "Pair with passkey";
@@ -5553,6 +5556,9 @@ declare const zhCN: {
     "auth.ownerUnlocking": "正在验证通行密钥…";
     "auth.ownerRetry": "重试";
     "auth.ownerLater": "稍后";
+    "auth.ownerLockedNotice": "已配对设备已锁定。解锁后继续。";
+    "auth.ownerLockedRevoked": "设备访问权限已被撤销。请再次解锁。";
+    "auth.ownerLockedUnlock": "解锁";
     "auth.ownerAccountSecurity": "账户 → 安全";
     "auth.ownerPairTitle": "配对此设备";
     "auth.ownerPairAction": "使用通行密钥配对";
@@ -8428,6 +8434,9 @@ declare const resources: {
         readonly "auth.ownerUnlocking": "Verifying passkey…";
         readonly "auth.ownerRetry": "Try again";
         readonly "auth.ownerLater": "Later";
+        readonly "auth.ownerLockedNotice": "Paired device locked. Unlock to continue.";
+        readonly "auth.ownerLockedRevoked": "Device access revoked. Unlock again to continue.";
+        readonly "auth.ownerLockedUnlock": "Unlock";
         readonly "auth.ownerAccountSecurity": "Account → Security";
         readonly "auth.ownerPairTitle": "Pair this device";
         readonly "auth.ownerPairAction": "Pair with passkey";
@@ -11280,6 +11289,9 @@ declare const resources: {
         "auth.ownerUnlocking": "正在验证通行密钥…";
         "auth.ownerRetry": "重试";
         "auth.ownerLater": "稍后";
+        "auth.ownerLockedNotice": "已配对设备已锁定。解锁后继续。";
+        "auth.ownerLockedRevoked": "设备访问权限已被撤销。请再次解锁。";
+        "auth.ownerLockedUnlock": "解锁";
         "auth.ownerAccountSecurity": "账户 → 安全";
         "auth.ownerPairTitle": "配对此设备";
         "auth.ownerPairAction": "使用通行密钥配对";

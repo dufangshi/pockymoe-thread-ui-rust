@@ -2697,6 +2697,7 @@ declare const en: {
     readonly "auth.ownerUnlockTitle": "Unlock your devices";
     readonly "auth.ownerUnlockHelp": "One passkey verification unlocks paired devices for 3 days in this browser.";
     readonly "auth.ownerPreparing": "Preparing passkey verification…";
+    readonly "auth.ownerUnlocking": "Verifying passkey…";
     readonly "auth.ownerRetry": "Try again";
     readonly "auth.ownerLater": "Later";
     readonly "auth.ownerAccountSecurity": "Account → Security";
@@ -2722,7 +2723,9 @@ declare const en: {
     readonly "auth.ownerSessions": "Owner sessions";
     readonly "auth.ownerRemove": "Remove passkey";
     readonly "auth.ownerRevoke": "Revoke session";
-    readonly "auth.ownerCurrent": "Current session";
+    readonly "auth.ownerCurrent": "This browser";
+    readonly "auth.ownerExpires": "Expires {{value1}}";
+    readonly "auth.ownerRegisterFirst": "Register a new passkey in Account → Security first, then add it to this device here.";
     readonly "auth.ownerAdd": "Add another passkey";
     readonly "auth.ownerSelect": "Choose an account passkey";
     readonly "auth.ownerLastCredential": "The last owner passkey cannot be removed here. Run pockymoe pair --reset locally on the device.";
@@ -5547,6 +5550,7 @@ declare const zhCN: {
     "auth.ownerUnlockTitle": "解锁你的设备";
     "auth.ownerUnlockHelp": "在此浏览器中验证一次通行密钥，即可解锁已配对设备 3 天。";
     "auth.ownerPreparing": "正在准备通行密钥验证…";
+    "auth.ownerUnlocking": "正在验证通行密钥…";
     "auth.ownerRetry": "重试";
     "auth.ownerLater": "稍后";
     "auth.ownerAccountSecurity": "账户 → 安全";
@@ -5572,7 +5576,9 @@ declare const zhCN: {
     "auth.ownerSessions": "所有者会话";
     "auth.ownerRemove": "移除通行密钥";
     "auth.ownerRevoke": "撤销会话";
-    "auth.ownerCurrent": "当前会话";
+    "auth.ownerCurrent": "此浏览器";
+    "auth.ownerExpires": "到期时间：{{value1}}";
+    "auth.ownerRegisterFirst": "请先在账户 → 安全中注册新的通行密钥，再回到此处将其添加到此设备。";
     "auth.ownerAdd": "添加其他通行密钥";
     "auth.ownerSelect": "选择账户通行密钥";
     "auth.ownerLastCredential": "无法在此移除最后一个所有者通行密钥，请在设备本地运行 pockymoe pair --reset。";
@@ -8419,6 +8425,7 @@ declare const resources: {
         readonly "auth.ownerUnlockTitle": "Unlock your devices";
         readonly "auth.ownerUnlockHelp": "One passkey verification unlocks paired devices for 3 days in this browser.";
         readonly "auth.ownerPreparing": "Preparing passkey verification…";
+        readonly "auth.ownerUnlocking": "Verifying passkey…";
         readonly "auth.ownerRetry": "Try again";
         readonly "auth.ownerLater": "Later";
         readonly "auth.ownerAccountSecurity": "Account → Security";
@@ -8444,7 +8451,9 @@ declare const resources: {
         readonly "auth.ownerSessions": "Owner sessions";
         readonly "auth.ownerRemove": "Remove passkey";
         readonly "auth.ownerRevoke": "Revoke session";
-        readonly "auth.ownerCurrent": "Current session";
+        readonly "auth.ownerCurrent": "This browser";
+        readonly "auth.ownerExpires": "Expires {{value1}}";
+        readonly "auth.ownerRegisterFirst": "Register a new passkey in Account → Security first, then add it to this device here.";
         readonly "auth.ownerAdd": "Add another passkey";
         readonly "auth.ownerSelect": "Choose an account passkey";
         readonly "auth.ownerLastCredential": "The last owner passkey cannot be removed here. Run pockymoe pair --reset locally on the device.";
@@ -11268,6 +11277,7 @@ declare const resources: {
         "auth.ownerUnlockTitle": "解锁你的设备";
         "auth.ownerUnlockHelp": "在此浏览器中验证一次通行密钥，即可解锁已配对设备 3 天。";
         "auth.ownerPreparing": "正在准备通行密钥验证…";
+        "auth.ownerUnlocking": "正在验证通行密钥…";
         "auth.ownerRetry": "重试";
         "auth.ownerLater": "稍后";
         "auth.ownerAccountSecurity": "账户 → 安全";
@@ -11293,7 +11303,9 @@ declare const resources: {
         "auth.ownerSessions": "所有者会话";
         "auth.ownerRemove": "移除通行密钥";
         "auth.ownerRevoke": "撤销会话";
-        "auth.ownerCurrent": "当前会话";
+        "auth.ownerCurrent": "此浏览器";
+        "auth.ownerExpires": "到期时间：{{value1}}";
+        "auth.ownerRegisterFirst": "请先在账户 → 安全中注册新的通行密钥，再回到此处将其添加到此设备。";
         "auth.ownerAdd": "添加其他通行密钥";
         "auth.ownerSelect": "选择账户通行密钥";
         "auth.ownerLastCredential": "无法在此移除最后一个所有者通行密钥，请在设备本地运行 pockymoe pair --reset。";

@@ -134,5 +134,10 @@ export const sharingZhCN = {
   "sharing.imagePreview": "图片预览",
   "sharing.closeImagePreview": "关闭图片预览",
   "sharing.actualSize": "实际大小",
-  "sharing.fitToWindow": "适应窗口"
+  "sharing.fitToWindow": "适应窗口",
+  "sharing.encryptedLinkKeysStayInThisBrowser": "新链接已加密。只有保存了链接密钥的浏览器才能显示完整 URL。请保存完整链接。",
+  "sharing.linkKeyUnavailableInThisBrowser": "此浏览器未保存该链接的密钥。",
+  "sharing.publicLinkKeyMissing": "此加密链接缺少密钥。请打开包含 #k= 片段的完整链接。",
+  "sharing.publicLinkKeyWrong": "无法解密此共享对话。链接密钥不正确或加密内容已损坏。",
+  "sharing.encryptedLiveLinkRequiresDeviceUpdate": "请更新设备以创建加密实时链接。",
 } as const;

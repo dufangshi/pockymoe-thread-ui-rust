@@ -134,5 +134,10 @@ export const sharingEn = {
   "sharing.imagePreview": "Image preview",
   "sharing.closeImagePreview": "Close image preview",
   "sharing.actualSize": "Actual size",
-  "sharing.fitToWindow": "Fit to window"
+  "sharing.fitToWindow": "Fit to window",
+  "sharing.encryptedLinkKeysStayInThisBrowser": "New links are encrypted. Full URLs are available only in browsers that kept their link keys. Keep a copy of the full link.",
+  "sharing.linkKeyUnavailableInThisBrowser": "Link key is unavailable in this browser.",
+  "sharing.publicLinkKeyMissing": "This encrypted link is missing its key. Open the full link, including the #k= fragment.",
+  "sharing.publicLinkKeyWrong": "Unable to decrypt this shared thread. The link key is wrong or the encrypted content is damaged.",
+  "sharing.encryptedLiveLinkRequiresDeviceUpdate": "Update the device to create encrypted live links.",
 } as const;

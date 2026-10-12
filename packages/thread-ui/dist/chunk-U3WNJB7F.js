@@ -2301,7 +2301,12 @@ var sharingEn = {
   "sharing.imagePreview": "Image preview",
   "sharing.closeImagePreview": "Close image preview",
   "sharing.actualSize": "Actual size",
-  "sharing.fitToWindow": "Fit to window"
+  "sharing.fitToWindow": "Fit to window",
+  "sharing.encryptedLinkKeysStayInThisBrowser": "New links are encrypted. Full URLs are available only in browsers that kept their link keys. Keep a copy of the full link.",
+  "sharing.linkKeyUnavailableInThisBrowser": "Link key is unavailable in this browser.",
+  "sharing.publicLinkKeyMissing": "This encrypted link is missing its key. Open the full link, including the #k= fragment.",
+  "sharing.publicLinkKeyWrong": "Unable to decrypt this shared thread. The link key is wrong or the encrypted content is damaged.",
+  "sharing.encryptedLiveLinkRequiresDeviceUpdate": "Update the device to create encrypted live links."
 };
 
 // src/i18n/workbench.en.ts
@@ -5129,7 +5134,12 @@ var sharingZhCN = {
   "sharing.imagePreview": "\u56FE\u7247\u9884\u89C8",
   "sharing.closeImagePreview": "\u5173\u95ED\u56FE\u7247\u9884\u89C8",
   "sharing.actualSize": "\u5B9E\u9645\u5927\u5C0F",
-  "sharing.fitToWindow": "\u9002\u5E94\u7A97\u53E3"
+  "sharing.fitToWindow": "\u9002\u5E94\u7A97\u53E3",
+  "sharing.encryptedLinkKeysStayInThisBrowser": "\u65B0\u94FE\u63A5\u5DF2\u52A0\u5BC6\u3002\u53EA\u6709\u4FDD\u5B58\u4E86\u94FE\u63A5\u5BC6\u94A5\u7684\u6D4F\u89C8\u5668\u624D\u80FD\u663E\u793A\u5B8C\u6574 URL\u3002\u8BF7\u4FDD\u5B58\u5B8C\u6574\u94FE\u63A5\u3002",
+  "sharing.linkKeyUnavailableInThisBrowser": "\u6B64\u6D4F\u89C8\u5668\u672A\u4FDD\u5B58\u8BE5\u94FE\u63A5\u7684\u5BC6\u94A5\u3002",
+  "sharing.publicLinkKeyMissing": "\u6B64\u52A0\u5BC6\u94FE\u63A5\u7F3A\u5C11\u5BC6\u94A5\u3002\u8BF7\u6253\u5F00\u5305\u542B #k= \u7247\u6BB5\u7684\u5B8C\u6574\u94FE\u63A5\u3002",
+  "sharing.publicLinkKeyWrong": "\u65E0\u6CD5\u89E3\u5BC6\u6B64\u5171\u4EAB\u5BF9\u8BDD\u3002\u94FE\u63A5\u5BC6\u94A5\u4E0D\u6B63\u786E\u6216\u52A0\u5BC6\u5185\u5BB9\u5DF2\u635F\u574F\u3002",
+  "sharing.encryptedLiveLinkRequiresDeviceUpdate": "\u8BF7\u66F4\u65B0\u8BBE\u5907\u4EE5\u521B\u5EFA\u52A0\u5BC6\u5B9E\u65F6\u94FE\u63A5\u3002"
 };
 
 // src/i18n/workbench.zh-CN.ts

@@ -808,6 +808,11 @@ declare const en: {
     readonly "sharing.closeImagePreview": "Close image preview";
     readonly "sharing.actualSize": "Actual size";
     readonly "sharing.fitToWindow": "Fit to window";
+    readonly "sharing.encryptedLinkKeysStayInThisBrowser": "New links are encrypted. Full URLs are available only in browsers that kept their link keys. Keep a copy of the full link.";
+    readonly "sharing.linkKeyUnavailableInThisBrowser": "Link key is unavailable in this browser.";
+    readonly "sharing.publicLinkKeyMissing": "This encrypted link is missing its key. Open the full link, including the #k= fragment.";
+    readonly "sharing.publicLinkKeyWrong": "Unable to decrypt this shared thread. The link key is wrong or the encrypted content is damaged.";
+    readonly "sharing.encryptedLiveLinkRequiresDeviceUpdate": "Update the device to create encrypted live links.";
     readonly "settings.upstreamsTab": "Upstreams";
     readonly "settings.upstreamsDescription": "Switch API providers for the harnesses installed on this device.";
     readonly "settings.upstreamsChooseDevice": "Open a device to manage its upstreams.";
@@ -3601,6 +3606,11 @@ declare const zhCN: {
     "sharing.closeImagePreview": "关闭图片预览";
     "sharing.actualSize": "实际大小";
     "sharing.fitToWindow": "适应窗口";
+    "sharing.encryptedLinkKeysStayInThisBrowser": "新链接已加密。只有保存了链接密钥的浏览器才能显示完整 URL。请保存完整链接。";
+    "sharing.linkKeyUnavailableInThisBrowser": "此浏览器未保存该链接的密钥。";
+    "sharing.publicLinkKeyMissing": "此加密链接缺少密钥。请打开包含 #k= 片段的完整链接。";
+    "sharing.publicLinkKeyWrong": "无法解密此共享对话。链接密钥不正确或加密内容已损坏。";
+    "sharing.encryptedLiveLinkRequiresDeviceUpdate": "请更新设备以创建加密实时链接。";
     "settings.upstreamsTab": "上游";
     "settings.upstreamsDescription": "为此设备上已安装的 harness 切换 API 上游。";
     "settings.upstreamsChooseDevice": "请打开设备以管理其上游。";
@@ -6416,6 +6426,11 @@ declare const resources: {
         readonly "sharing.closeImagePreview": "Close image preview";
         readonly "sharing.actualSize": "Actual size";
         readonly "sharing.fitToWindow": "Fit to window";
+        readonly "sharing.encryptedLinkKeysStayInThisBrowser": "New links are encrypted. Full URLs are available only in browsers that kept their link keys. Keep a copy of the full link.";
+        readonly "sharing.linkKeyUnavailableInThisBrowser": "Link key is unavailable in this browser.";
+        readonly "sharing.publicLinkKeyMissing": "This encrypted link is missing its key. Open the full link, including the #k= fragment.";
+        readonly "sharing.publicLinkKeyWrong": "Unable to decrypt this shared thread. The link key is wrong or the encrypted content is damaged.";
+        readonly "sharing.encryptedLiveLinkRequiresDeviceUpdate": "Update the device to create encrypted live links.";
         readonly "settings.upstreamsTab": "Upstreams";
         readonly "settings.upstreamsDescription": "Switch API providers for the harnesses installed on this device.";
         readonly "settings.upstreamsChooseDevice": "Open a device to manage its upstreams.";
@@ -9208,6 +9223,11 @@ declare const resources: {
         "sharing.closeImagePreview": "关闭图片预览";
         "sharing.actualSize": "实际大小";
         "sharing.fitToWindow": "适应窗口";
+        "sharing.encryptedLinkKeysStayInThisBrowser": "新链接已加密。只有保存了链接密钥的浏览器才能显示完整 URL。请保存完整链接。";
+        "sharing.linkKeyUnavailableInThisBrowser": "此浏览器未保存该链接的密钥。";
+        "sharing.publicLinkKeyMissing": "此加密链接缺少密钥。请打开包含 #k= 片段的完整链接。";
+        "sharing.publicLinkKeyWrong": "无法解密此共享对话。链接密钥不正确或加密内容已损坏。";
+        "sharing.encryptedLiveLinkRequiresDeviceUpdate": "请更新设备以创建加密实时链接。";
         "settings.upstreamsTab": "上游";
         "settings.upstreamsDescription": "为此设备上已安装的 harness 切换 API 上游。";
         "settings.upstreamsChooseDevice": "请打开设备以管理其上游。";

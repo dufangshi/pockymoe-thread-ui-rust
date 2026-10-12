@@ -1018,6 +1018,15 @@ var commonEn = {
 
 // src/i18n/devices.en.ts
 var devicesEn = {
+  "devices.platformUnix": "macOS & Linux",
+  "devices.platformWindows": "Windows",
+  "devices.repairDevice": "Repair device binding",
+  "devices.confirmIdentityReplacement": "Confirm device reinstall",
+  "devices.identityReplacementHelp": "The device identity changed. Confirm only if you reinstalled or reset this device. Unlocking your account will replace the identity your browsers trust.",
+  "devices.previousIdentity": "Previous identity",
+  "devices.newIdentity": "New identity",
+  "devices.identityUnavailable": "Previous identity unavailable",
+  "devices.replaceIdentity": "Confirm replacement and unlock",
   "devices.unsafeSetupValue": "Setup command refused: a value contains unsupported characters.",
   "devices.invalidSetupToken": "Setup command refused: the device token is invalid.",
   "devices.protected": "Protected",
@@ -3999,6 +4008,15 @@ var commonZhCN = {
 
 // src/i18n/devices.zh-CN.ts
 var devicesZhCN = {
+  "devices.platformUnix": "macOS \u548C Linux",
+  "devices.platformWindows": "Windows",
+  "devices.repairDevice": "\u4FEE\u590D\u8BBE\u5907\u7ED1\u5B9A",
+  "devices.confirmIdentityReplacement": "\u786E\u8BA4\u91CD\u65B0\u5B89\u88C5\u8BBE\u5907",
+  "devices.identityReplacementHelp": "\u8BBE\u5907\u8EAB\u4EFD\u5DF2\u66F4\u6539\u3002\u4EC5\u5728\u4F60\u91CD\u65B0\u5B89\u88C5\u6216\u91CD\u7F6E\u4E86\u6B64\u8BBE\u5907\u65F6\u786E\u8BA4\u3002\u89E3\u9501\u8D26\u6237\u540E\uFF0C\u5C06\u66FF\u6362\u6D4F\u89C8\u5668\u4FE1\u4EFB\u7684\u8BBE\u5907\u8EAB\u4EFD\u3002",
+  "devices.previousIdentity": "\u539F\u8BBE\u5907\u8EAB\u4EFD",
+  "devices.newIdentity": "\u65B0\u8BBE\u5907\u8EAB\u4EFD",
+  "devices.identityUnavailable": "\u539F\u8BBE\u5907\u8EAB\u4EFD\u4E0D\u53EF\u7528",
+  "devices.replaceIdentity": "\u786E\u8BA4\u66FF\u6362\u5E76\u89E3\u9501",
   "devices.unsafeSetupValue": "\u5DF2\u62D2\u7EDD\u751F\u6210\u8BBE\u7F6E\u547D\u4EE4\uFF1A\u53C2\u6570\u5305\u542B\u4E0D\u652F\u6301\u7684\u5B57\u7B26\u3002",
   "devices.invalidSetupToken": "\u5DF2\u62D2\u7EDD\u751F\u6210\u8BBE\u7F6E\u547D\u4EE4\uFF1A\u8BBE\u5907\u4EE4\u724C\u65E0\u6548\u3002",
   "devices.protected": "\u5DF2\u4FDD\u62A4",

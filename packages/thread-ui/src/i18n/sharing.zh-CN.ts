@@ -184,4 +184,5 @@ export const sharingZhCN = {
   "sharing.deviceCertificateInvalid": "受保护设备的证书缺失或无效。请重新连接设备，并联系所有者检查设备保护后再继续。",
   "sharing.reviewDifference": "修改前（设备当前授权）：{{value1}}\n修改后（对话框中的权限）：{{value2}}",
   "sharing.dialogIncomplete": "编辑对话框未提供完整的权限和目标。请重新打开对话框后再签名。",
+  "sharing.reviewChanges": "变更字段（修改前 → 修改后）：{{value1}}",
 } as const;

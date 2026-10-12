@@ -857,6 +857,7 @@ declare const en: {
     readonly "sharing.deviceCertificateInvalid": "The protected device certificate is missing or invalid. Reconnect the device and ask the owner to check its protection before continuing.";
     readonly "sharing.reviewDifference": "Before (current device grant): {{value1}}\nAfter (dialog permissions): {{value2}}";
     readonly "sharing.dialogIncomplete": "The edit dialog did not provide every permission and target. Reopen the dialog before signing.";
+    readonly "sharing.reviewChanges": "Changed fields (before → after): {{value1}}";
     readonly "settings.upstreamsTab": "Upstreams";
     readonly "settings.upstreamsDescription": "Switch API providers for the harnesses installed on this device.";
     readonly "settings.upstreamsChooseDevice": "Open a device to manage its upstreams.";
@@ -3800,6 +3801,7 @@ declare const zhCN: {
     "sharing.deviceCertificateInvalid": "受保护设备的证书缺失或无效。请重新连接设备，并联系所有者检查设备保护后再继续。";
     "sharing.reviewDifference": "修改前（设备当前授权）：{{value1}}\n修改后（对话框中的权限）：{{value2}}";
     "sharing.dialogIncomplete": "编辑对话框未提供完整的权限和目标。请重新打开对话框后再签名。";
+    "sharing.reviewChanges": "变更字段（修改前 → 修改后）：{{value1}}";
     "settings.upstreamsTab": "上游";
     "settings.upstreamsDescription": "为此设备上已安装的 harness 切换 API 上游。";
     "settings.upstreamsChooseDevice": "请打开设备以管理其上游。";
@@ -6765,6 +6767,7 @@ declare const resources: {
         readonly "sharing.deviceCertificateInvalid": "The protected device certificate is missing or invalid. Reconnect the device and ask the owner to check its protection before continuing.";
         readonly "sharing.reviewDifference": "Before (current device grant): {{value1}}\nAfter (dialog permissions): {{value2}}";
         readonly "sharing.dialogIncomplete": "The edit dialog did not provide every permission and target. Reopen the dialog before signing.";
+        readonly "sharing.reviewChanges": "Changed fields (before → after): {{value1}}";
         readonly "settings.upstreamsTab": "Upstreams";
         readonly "settings.upstreamsDescription": "Switch API providers for the harnesses installed on this device.";
         readonly "settings.upstreamsChooseDevice": "Open a device to manage its upstreams.";
@@ -9707,6 +9710,7 @@ declare const resources: {
         "sharing.deviceCertificateInvalid": "受保护设备的证书缺失或无效。请重新连接设备，并联系所有者检查设备保护后再继续。";
         "sharing.reviewDifference": "修改前（设备当前授权）：{{value1}}\n修改后（对话框中的权限）：{{value2}}";
         "sharing.dialogIncomplete": "编辑对话框未提供完整的权限和目标。请重新打开对话框后再签名。";
+        "sharing.reviewChanges": "变更字段（修改前 → 修改后）：{{value1}}";
         "settings.upstreamsTab": "上游";
         "settings.upstreamsDescription": "为此设备上已安装的 harness 切换 API 上游。";
         "settings.upstreamsChooseDevice": "请打开设备以管理其上游。";

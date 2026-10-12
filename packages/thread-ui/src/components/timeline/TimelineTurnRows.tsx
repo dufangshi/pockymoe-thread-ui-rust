@@ -61,6 +61,7 @@ import {
   type TimelineHistoryEntry,
   type TimelineTurn,
 } from './timelineItems';
+import { groupAnswerSections, isSubstantiveAnswer } from './answerSections';
 import { TurnTokenSummary } from './tokenFormatting';
 import { deriveDisplayedLivePlan, TurnStatusBar } from './turnStatus';
 import { TurnUsageInline } from './TurnUsageInline';
@@ -688,11 +689,17 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     }));
   }, []);
 
-  const renderHistoryEntries = (entries: TimelineHistoryEntry[]) => (
+  const renderHistoryEntries = (entries: TimelineHistoryEntry[], options?: {
+    collapsed: boolean;
+    onExpand: () => void;
+  }) => (
     <TimelineHistoryEntries
       entries={entries}
-      expandedGroups={expandedGroups}
-      onToggleGroupedItem={toggleGroupedItem}
+      expandedGroups={options?.collapsed ? {} : expandedGroups}
+      onToggleGroupedItem={options ? key => {
+        if (options.collapsed) options.onExpand();
+        toggleGroupedItem(key);
+      } : toggleGroupedItem}
       threadId={threadId}
       scrollRootRef={scrollRootRef}
       onOpenExpandedText={onOpenExpandedText}
@@ -782,6 +789,10 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     collapsedSummary.hiddenEntries.length > 0 || Boolean(turn.hasDeferredItems) || Boolean(peerWorkChildren);
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const visibleSummaryAgent = collapsedSummary.summaryAgent;
+  const answerSections = useMemo(() =>
+    groupedItems.some(entry => entry.kind === 'item' && isSubstantiveAnswer(entry.item) && (entry.item.id !== visibleSummaryAgent?.id || Array.from(entry.item.text.trim()).length >= 300))
+      ? groupAnswerSections(groupedItems.filter(entry => entry.kind !== 'item' || entry.item.kind !== 'userMessage'), visibleSummaryAgent?.id) : null,
+    [groupedItems, visibleSummaryAgent?.id]);
 
   const canToggleWorkedSummary =
     hasCollapsedHiddenItems;
@@ -850,8 +861,25 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
             aria-hidden="true"
           />
         </div>
-        {!effectiveCollapsed ? <div className="thread-execution-timeline">{renderHistoryEntries(collapsedSummary.hiddenEntries)}{peerWorkChildren}</div> : null}
-        {visibleSummaryAgent ? (
+        {answerSections ? <div className="thread-answer-sequence">
+          {answerSections.map(entry => entry.kind === 'item' ? (
+            <div className="thread-answer-section" key={entry.key}>
+              {entry.item.kind !== 'agentMessage' ? renderHistoryEntries([entry]) : <CompactMessageItem threadId={threadId} item={entry.item as ThreadHistoryItemDto & { kind: 'agentMessage' }}
+                streaming={entry.item.id === visibleSummaryAgent?.id && activeForRendering && isRunningHistoryStatus(entry.item.status)}
+                scrollRootRef={scrollRootRef}
+                timeLabel={formatPreciseMessageTimestamp(entry.item.createdAt ?? turn.startedAt)}
+                timeTitle={entry.item.createdAt ? formatLongTimestamp(entry.item.createdAt) : turnTimeTitle}
+                {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+                {...(adapter ? { adapter } : {})} />}
+            </div>
+          ) : (!effectiveCollapsed || !turn.hasDeferredItems) ? (
+            <div className="thread-execution-timeline" key={entry.key}>
+              {renderHistoryEntries([entry], { collapsed: effectiveCollapsed, onExpand: () => onToggleCollapse(turn, true) })}
+            </div>
+          ) : null)}
+          {!effectiveCollapsed ? peerWorkChildren : null}
+        </div> : !effectiveCollapsed ? <div className="thread-execution-timeline">{renderHistoryEntries(collapsedSummary.hiddenEntries)}{peerWorkChildren}</div> : null}
+        {visibleSummaryAgent && !answerSections?.some(entry => entry.kind === 'item' && entry.item.id === visibleSummaryAgent.id) ? (
           <CompactMessageItem
             threadId={threadId}
             item={visibleSummaryAgent}

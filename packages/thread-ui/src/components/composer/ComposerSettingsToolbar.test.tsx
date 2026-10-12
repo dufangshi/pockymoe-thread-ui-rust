@@ -9,6 +9,7 @@ import type {
   ModelOptionDto,
   ReasoningEffortDto,
   SandboxModeDto,
+  ThreadContextUsageDto,
   UpdateThreadSettingsInput,
 } from '@pockymoe/shared';
 
@@ -74,6 +75,7 @@ function renderToolbar({
   availableModels = modelOptions,
   agent,
   queueing = false,
+  contextUsage = null,
 }: {
   initialOpenMenu?: SettingsMenu;
   reasoningEffort?: ReasoningEffortDto | null;
@@ -90,6 +92,7 @@ function renderToolbar({
   availableModels?: ModelOptionDto[];
   agent?: string;
   queueing?: boolean;
+  contextUsage?: ThreadContextUsageDto | null;
 } = {}) {
   function Harness() {
     const [openMenu, setOpenMenu] = useState<SettingsMenu>(initialOpenMenu);
@@ -107,7 +110,7 @@ function renderToolbar({
           queueing={queueing}
           modelOptions={availableModels}
           modelContextTitle="1k / 8k tokens"
-          contextUsage={null}
+          contextUsage={contextUsage}
           reasoningEffort={reasoningEffort}
           supportedEfforts={supportedEfforts}
           sandboxMode={sandboxMode}
@@ -143,6 +146,18 @@ function buttonByText(view: HTMLElement, text: string) {
 }
 
 describe('ComposerSettingsToolbar', () => {
+  it.each([
+    [{ availability: 'available', tokensInContextWindow: 64400, modelContextWindow: 200000 }, '64.4K / 200K'],
+    [{ availability: 'available', tokensInContextWindow: 0, modelContextWindow: 128000 }, '0K / 128K'],
+    [null, '— / —'],
+  ] as const)('shows actual context use and capacity in the model menu (%j)', (usage, expected) => {
+    const element = renderToolbar({ initialOpenMenu: 'model', contextUsage: usage as ThreadContextUsageDto | null });
+    expect(document.querySelector('.composer-context-value')?.textContent).toBe(expected);
+    expect(document.querySelector('.composer-context-summary')?.textContent).toContain('Context');
+    act(() => element.querySelector<HTMLButtonElement>('[data-testid="composer-model-label"]')!.click());
+    expect(document.querySelector('.composer-context-summary')).toBeNull();
+  });
+
   it('adds the mascot, chevron and per-intent send icon only for Plum Pocket', () => {
     const classic = renderToolbar({ agent: 'claude', queueing: true });
     expect(classic.querySelector('.composer-model-avatar')).toBeNull();

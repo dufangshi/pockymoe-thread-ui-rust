@@ -10,7 +10,7 @@ import type { ReactNode } from 'react';
 
 import { InputGroupButton } from '../graph-ui/InputGroup';
 import type { SettingsMenu } from './types';
-import { formatReasoningEffortLabel } from './composerUtils';
+import { formatContextTokenKilocount, formatReasoningEffortLabel } from './composerUtils';
 import { ContextProgressBar } from './composerPresentation';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
 import { Check, ChevronDown, Send, Target } from 'lucide-react';
@@ -136,12 +136,12 @@ export function ComposerSettingsToolbar({
         {openMenu === 'model' && (
           <ComposerMenuSurface
             align="end"
-            className="w-[min(19rem,calc(100vw-2rem))] rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1.5 text-[var(--theme-fg)] shadow-xl"
+            className="composer-model-menu w-[min(19rem,calc(100vw-2rem))] rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1.5 text-[var(--theme-fg)] shadow-xl"
           >
-            <p className="px-3 py-2 text-xs text-[var(--theme-fg-muted)]">
+            <p className="composer-model-menu-heading px-2 py-1 text-xs text-[var(--theme-fg-muted)]">
               {translate('chat.model')}
             </p>
-            <div className="max-h-[min(280px,35dvh)] overflow-y-auto">
+            <div className="max-h-[min(192px,28dvh)] overflow-y-auto">
               {modelOptions.map((entry) => (
                 <button
                   key={entry.id}
@@ -155,7 +155,7 @@ export function ComposerSettingsToolbar({
                       reasoningEffort: entry.defaultReasoningEffort ?? null,
                     })
                   }
-                  className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-xs hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed"
+                  className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-left text-xs hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed"
                 >
                   <span>{entry.displayName}</span>
                   {entry.model === model && (
@@ -177,6 +177,16 @@ export function ComposerSettingsToolbar({
                 onCommit={(next) => onUpdateSettings({ reasoningEffort: next })}
               />
             )}
+            <div className="composer-context-summary" title={modelContextTitle}>
+              <span>{translate('chat.context')}</span>
+              <span className="composer-context-value">
+                {contextUsage?.availability === 'available' && contextUsage.tokensInContextWindow != null && Number.isFinite(contextUsage.tokensInContextWindow)
+                  ? formatContextTokenKilocount(Math.max(0, contextUsage.tokensInContextWindow)).toUpperCase() : '—'}
+                <span className="composer-context-separator"> / </span>
+                {contextUsage?.modelContextWindow != null && Number.isFinite(contextUsage.modelContextWindow) && contextUsage.modelContextWindow > 0
+                  ? formatContextTokenKilocount(contextUsage.modelContextWindow).toUpperCase() : '—'}
+              </span>
+            </div>
           </ComposerMenuSurface>
         )}
       </div>

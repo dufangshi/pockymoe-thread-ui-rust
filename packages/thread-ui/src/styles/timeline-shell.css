@@ -547,3 +547,6 @@
 .thread-peer-execution { min-width: 0; }
 
 .thread-graph-user-preview-text { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+
+.thread-answer-sequence { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.thread-answer-section { min-width: 0; }

@@ -153,7 +153,7 @@ describe('ComposerSettingsToolbar', () => {
     act(() => root?.unmount());
     container?.remove();
 
-    document.documentElement.dataset.themePreset = 'plum-pocket';
+    document.documentElement.dataset.themeFeatures = 'composer.modelAvatar composer.intentIcons';
     const plum = renderToolbar({ agent: 'claude', queueing: true });
     expect(plum.querySelector('.composer-model-avatar')?.getAttribute('data-agent')).toBe('claude');
     expect(plum.querySelector('.composer-model-chevron')).not.toBeNull();
@@ -185,7 +185,7 @@ describe('ComposerSettingsToolbar', () => {
   });
 
   afterEach(() => {
-    delete document.documentElement.dataset.themePreset;
+    delete document.documentElement.dataset.themeFeatures;
     if (root) act(() => root?.unmount());
     container?.remove();
     root = null;

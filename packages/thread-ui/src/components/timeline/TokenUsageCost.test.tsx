@@ -36,3 +36,24 @@ describe('billable input details', () => {
     } finally { flushSync(() => root.unmount()); container.remove(); }
   });
 });
+
+describe('usage receipt styling', () => {
+  it('leaves the surface to CSS hooks so themes can restyle it', () => {
+    vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} });
+    const container = document.createElement('div');
+    document.body.append(container);
+    const root = createRoot(container);
+    const usage = { inputTokens: 100, cachedInputTokens: 0, outputTokens: 10, reasoningOutputTokens: 0, totalTokens: 110 };
+    try {
+      flushSync(() => root.render(<TokenUsageCost usage={usage} price={{ inputUsd: 0.1, cachedInputUsd: 0, outputUsd: 0.1, totalUsd: 0.2 }} tooltipZIndex={91} />));
+      flushSync(() => container.querySelector<HTMLButtonElement>('button')!.click());
+      const popup = document.querySelector<HTMLElement>('[data-slot="tooltip-content"]')!;
+      expect(popup.classList.contains('thread-usage-details')).toBe(true);
+      expect(popup.style.background).toBe('');
+      expect(popup.style.border).toBe('');
+      expect(popup.style.zIndex).toBe('91');
+      expect(popup.querySelector('.thread-usage-details-total')).not.toBeNull();
+      expect(popup.querySelector<SVGElement>('[data-slot="tooltip-arrow"]')?.getAttribute('style') ?? '').not.toContain('fill');
+    } finally { flushSync(() => root.unmount()); container.remove(); }
+  });
+});

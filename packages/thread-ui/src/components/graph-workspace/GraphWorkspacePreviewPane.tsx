@@ -42,7 +42,7 @@ import type { HighlighterCore } from 'shiki/core';
 import type { ThreadWorkspaceFilePreview } from '../../adapters';
 import type { PluginContextValue } from '../../plugins/plugin-context';
 import { getGraphChatHighlighter, syntaxThemeFor } from '../graph-chat/graphChatShiki';
-import { useDocumentThemePreset } from '../themeHooks';
+import { useThemeFeature } from '../themeHooks';
 import {
   MOLECULAR_EXTENSIONS,
   buildMoleculePreviewSnapshot,
@@ -234,7 +234,7 @@ const GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview({
     return () => observer.disconnect();
   }, []);
 
-  const syntaxTheme = syntaxThemeFor(dark, useDocumentThemePreset());
+  const syntaxTheme = syntaxThemeFor(dark, useThemeFeature('code.cssSyntaxPalette'));
   const highlightedHtml = useMemo(() => {
     if (!highlighter) {
       return '';

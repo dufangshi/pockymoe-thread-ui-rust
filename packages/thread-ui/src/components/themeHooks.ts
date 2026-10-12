@@ -1,20 +1,66 @@
 import { useSyncExternalStore } from 'react';
 
-/* Components that paint with JavaScript palettes (xterm, Monaco) cannot follow CSS
-   variables by themselves. A host theme preset can set optional hex colors on
-   their containers (`--terminal-*`, `--editor-*`); these helpers read them and
-   report when the host switches `<html data-theme-preset>`. */
+/* The host applies a theme pack on `<html>`: `data-theme-preset` names it and
+   `data-theme-features` lists the capability flags it declares (space separated).
+   Components switch extra markup on flags, never on a pack's name. Components that
+   paint with JavaScript palettes (xterm, Monaco) cannot follow CSS variables by
+   themselves; they read optional hex colors (`--terminal-*`, `--editor-*`) and
+   re-read them when the theme changes. */
+
+/** Capability flags a theme pack may declare in `theme.json` `features`. Unknown
+ *  flags are ignored. Version 1 of the catalog; see docs/theme-packs.md. */
+export const THEME_FEATURES = [
+  /** Phones: Home and Chat move from the top bar into the thread drawer. */
+  'workbench.phoneDrawerTools',
+  /** The model chip shows the agent's avatar and a menu chevron. */
+  'composer.modelAvatar',
+  /** Icon rows in the slash toolbox and attach menu, a "/" glyph and a paperclip trigger. */
+  'composer.richMenus',
+  /** Per-intent send icons and the "Send after this turn" label while a turn runs. */
+  'composer.intentIcons',
+  /** Each reply opens with the agent's avatar and name, ahead of the work summary. */
+  'transcript.agentByline',
+  /** Short Explorer row-menu labels; the node name stays in the accessible name. */
+  'explorer.shortMenuLabels',
+  /** Code blocks use the CSS-variable Shiki theme (`--shiki-*`). */
+  'code.cssSyntaxPalette',
+] as const;
+export type ThemeFeature = (typeof THEME_FEATURES)[number];
+
+export function isThemeFeature(value: unknown): value is ThemeFeature {
+  return typeof value === 'string' && (THEME_FEATURES as readonly string[]).includes(value);
+}
+
+const THEME_ATTRIBUTES = ['data-theme-preset', 'data-theme-features'];
 
 function subscribe(onChange: () => void) {
   const observer = new MutationObserver(onChange);
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme-preset'] });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: THEME_ATTRIBUTES });
   return () => observer.disconnect();
 }
 const readPreset = () => document.documentElement.dataset.themePreset ?? '';
+const readFeatures = () => document.documentElement.dataset.themeFeatures ?? '';
+const readRevision = () => `${readPreset()}|${readFeatures()}`;
 
-/** The host's theme preset name, or '' when it has none. */
-export function useDocumentThemePreset() {
-  return useSyncExternalStore(subscribe, readPreset, () => '');
+/** The flags of the applied theme pack. */
+export function documentThemeFeatures(): ThemeFeature[] {
+  return readFeatures().split(/\s+/).filter(isThemeFeature);
+}
+
+/** True when the applied theme pack declares `flag`. */
+export function hasThemeFeature(flag: ThemeFeature) {
+  return readFeatures().split(/\s+/).includes(flag);
+}
+
+/** Whether the applied theme pack declares `flag`; re-renders when the theme changes. */
+export function useThemeFeature(flag: ThemeFeature) {
+  return useSyncExternalStore(subscribe, () => hasThemeFeature(flag), () => false);
+}
+
+/** Changes whenever the host applies another theme pack or flag set: a trigger for
+ *  components that re-read CSS variables into JavaScript palettes. */
+export function useDocumentThemeRevision() {
+  return useSyncExternalStore(subscribe, readRevision, () => '');
 }
 
 /** A `#rrggbb` or `#rrggbbaa` custom property inherited by `element`. */

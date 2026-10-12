@@ -15,14 +15,6 @@ import type {
 } from '@pockymoe/shared';
 import { Tooltip, TooltipTrigger, TooltipContent } from '../graph-ui/Tooltip';
 import { formatCompactTokenCount, formatCompactUsd } from './tokenFormatting';
-import { useDocumentThemePreset } from '../themeHooks';
-
-// Plum Pocket shows the breakdown as a small receipt in the theme's own colors.
-const plumReceipt = {
-  surface: { background: 'var(--theme-panel)', color: 'var(--theme-fg)', border: '1.5px solid var(--theme-border-strong)', borderRadius: 14, padding: '10px 13px', boxShadow: 'var(--theme-shadow)' },
-  arrow: { fill: 'var(--theme-border-strong)' },
-  rule: '1.5px dashed color-mix(in srgb, var(--plum-stitch) 60%, transparent)',
-};
 
 export interface TokenUsageCostProps {
   usage?: ThreadTurnTokenBreakdownDto | null;
@@ -49,7 +41,6 @@ export function TokenUsageCost({
   tooltipZIndex = 80,
 }: TokenUsageCostProps) {
   useI18n();
-  const receipt = useDocumentThemePreset() === 'plum-pocket' ? plumReceipt : null;
   const [detailsOpen, setDetailsOpen] = useState(false);
   const openAtPointerDown = useRef(false);
   const uncachedInput = usage
@@ -152,17 +143,7 @@ export function TokenUsageCost({
             sideOffset={6}
             collisionPadding={12}
             className="thread-usage-details"
-            arrowStyle={receipt?.arrow ?? { fill: '#252622' }}
             style={{
-              background: '#252622',
-              color: '#f2f1e9',
-              border: '1px solid #484a41',
-              borderRadius: 10,
-              padding: '9px 12px',
-              fontSize: 12,
-              lineHeight: 1.5,
-              boxShadow: '0 6px 22px #0005',
-              ...receipt?.surface,
               zIndex: tooltipZIndex,
               maxWidth: 'calc(100vw - 24px)',
             }}
@@ -174,7 +155,7 @@ export function TokenUsageCost({
                 {hasPrice ? formatCompactUsd(price.totalUsd) : priceTitle}
               </span>
             </div>
-            {usage && <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, paddingBottom: 8, marginBottom: 8, borderBottom: receipt?.rule ?? '1px solid #484a41' }}>
+            {usage && <div className="thread-usage-details-total" style={{ display: 'flex', justifyContent: 'space-between', gap: 12, paddingBottom: 8, marginBottom: 8 }}>
               <span>{translate('chat.totalInput')}</span>
               <span aria-label={translate('chat.tokens', { value1: translate('chat.totalInput'), value2: usage.inputTokens.toLocaleString(getLocale()) })} title={usage.inputTokens.toLocaleString(getLocale())} style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
                 {formatCompactTokenCount(usage.inputTokens)}

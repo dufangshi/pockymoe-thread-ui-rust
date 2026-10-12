@@ -14,7 +14,7 @@ import { formatReasoningEffortLabel } from './composerUtils';
 import { ContextProgressBar } from './composerPresentation';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
 import { Check, ChevronDown, Send, Target } from 'lucide-react';
-import { useDocumentThemePreset } from '../themeHooks';
+import { useThemeFeature } from '../themeHooks';
 import { ComposerReasoningSlider } from './ComposerReasoningSlider';
 
 /** Send, but later: an up arrow with a small clock. */
@@ -84,8 +84,10 @@ export function ComposerSettingsToolbar({
   onUpdateSettings: (input: UpdateThreadSettingsInput) => void;
 }) {
   useI18n();
-  // Plum Pocket shows the harness mascot, a menu chevron and per-intent send icons.
-  const plum = useDocumentThemePreset() === 'plum-pocket';
+  // Theme flags: the harness avatar and a chevron on the model chip, and
+  // per-intent send icons with the "Send after this turn" label.
+  const modelAvatar = useThemeFeature('composer.modelAvatar');
+  const intentIcons = useThemeFeature('composer.intentIcons');
   // A turn is running: sending now adds the prompt to run after it.
   const sendLater = queueing && activeView === 'chat' && !goalComposeMode;
   const selectedModelLabel =
@@ -121,14 +123,14 @@ export function ComposerSettingsToolbar({
           title={`${selectedModelLabel}${supportsEffort ? ` · ${effortLabel}` : ''}\n${modelContextTitle}`}
           className="composer-model-label flex flex-col items-center justify-center whitespace-nowrap px-1 text-xs text-stone-400"
         >
-          {plum && agent ? (
+          {modelAvatar && agent ? (
             <span className="matter-thread-avatar composer-model-avatar" data-agent={agent} aria-hidden="true" />
           ) : null}
           <span className="composer-model-name">{selectedModelLabel}</span>
           {supportsEffort && (
             <span className="composer-model-effort">{effortLabel}</span>
           )}
-          {plum ? <ChevronDown aria-hidden="true" className="composer-model-chevron" /> : null}
+          {modelAvatar ? <ChevronDown aria-hidden="true" className="composer-model-chevron" /> : null}
         </button>
         {model ? <ContextProgressBar contextUsage={contextUsage} /> : null}
         {openMenu === 'model' && (
@@ -188,15 +190,15 @@ export function ComposerSettingsToolbar({
         aria-label={
           goalComposeMode
             ? translate('chat.setGoal')
-            : plum && sendLater
+            : intentIcons && sendLater
               ? translate('chat.sendAfterTurn')
               : translate('chat.sendPrompt')
         }
-        title={plum && sendLater ? translate('chat.sendAfterTurn') : sendButtonLabel}
+        title={intentIcons && sendLater ? translate('chat.sendAfterTurn') : sendButtonLabel}
         disabled={goalBusy || (activeView === 'chat' ? disabled : false)}
         className={`${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
       >
-        {plum ? (
+        {intentIcons ? (
           goalComposeMode ? (
             <Target aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
           ) : sendLater ? (

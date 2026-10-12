@@ -49,7 +49,7 @@ import {
   type ShellPaneRuntimeState,
 } from './shellState';
 import { useShellSocketLifecycle } from './useShellSocketLifecycle';
-import { useDocumentThemePreset } from '../themeHooks';
+import { useDocumentThemeRevision } from '../themeHooks';
 
 export type ToolboxFeedbackState = 'idle' | 'done' | 'failed';
 
@@ -122,7 +122,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
     ref,
   ) {
   useI18n();
-    const themePreset = useDocumentThemePreset();
+    const themeRevision = useDocumentThemeRevision();
     const transformRef = useRef(inputTransform);
     transformRef.current = inputTransform;
     const terminalRef = useRef<Terminal | null>(null);
@@ -535,7 +535,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
       }
 
       terminal.options.theme = terminalThemeFor(effectiveTheme, terminalHostNode);
-    }, [effectiveTheme, themePreset, terminalHostNode]);
+    }, [effectiveTheme, themeRevision, terminalHostNode]);
 
     useEffect(() => {
       const terminal = terminalRef.current;

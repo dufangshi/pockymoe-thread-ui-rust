@@ -1,7 +1,7 @@
 import { translate, useI18n } from '../../i18n';
 import { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor/editor/editor.api.js';
-import { cssHexVariable, useDocumentThemePreset } from '../themeHooks';
+import { cssHexVariable, useDocumentThemeRevision } from '../themeHooks';
 import 'monaco-editor/languages/definitions/cpp/register.js';
 import 'monaco-editor/languages/definitions/css/register.js';
 import 'monaco-editor/languages/definitions/html/register.js';
@@ -179,7 +179,7 @@ export default function GraphWorkspaceMonacoEditor({
 }: GraphWorkspaceMonacoEditorProps) {
   const modelKey = resourceKey ?? path;
   const { locale } = useI18n();
-  const themePreset = useDocumentThemePreset();
+  const themeRevision = useDocumentThemeRevision();
   const hostRef = useRef<HTMLDivElement | null>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const modelRef = useRef<monaco.editor.ITextModel | null>(null);
@@ -277,7 +277,7 @@ export default function GraphWorkspaceMonacoEditor({
   useEffect(() => {
     monaco.editor.setTheme(editorThemeFor(dark, editorRef.current?.getContainerDomNode()));
     editorRef.current?.updateOptions({ readOnly });
-  }, [dark, readOnly, themePreset]);
+  }, [dark, readOnly, themeRevision]);
 
   useEffect(() => {
     editorRef.current?.updateOptions({ ariaLabel: translate('files.workspaceEditor', { value1: path }) });

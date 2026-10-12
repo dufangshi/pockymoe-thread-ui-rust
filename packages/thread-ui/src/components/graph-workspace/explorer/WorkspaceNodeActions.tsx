@@ -12,7 +12,7 @@ import { createPortal } from 'react-dom';
 import { RenameDialog } from '../../RenameDialog';
 import { ConfirmDialog } from '../../ConfirmDialog';
 import type { WorkspaceTreeNode } from '../workspaceTree';
-import { useDocumentThemePreset } from '../../themeHooks';
+import { useThemeFeature } from '../../themeHooks';
 
 export interface WorkspaceNodeActionProps {
   onCopyPath?: (
@@ -32,8 +32,8 @@ export function WorkspaceNodeActions({
   onDelete,
 }: WorkspaceNodeActionProps & { node: WorkspaceTreeNode }) {
   useI18n();
-  // Plum Pocket keeps menu labels short; the node name stays in the accessible name.
-  const shortLabels = useDocumentThemePreset() === 'plum-pocket';
+  // A theme can keep menu labels short; the node name stays in the accessible name.
+  const shortLabels = useThemeFeature('explorer.shortMenuLabels');
   const [menu, setMenu] = useState<{ left: number; top: number } | null>(null);
   const [dialog, setDialog] = useState<'rename' | 'delete' | null>(null);
   const [name, setName] = useState(node.name);

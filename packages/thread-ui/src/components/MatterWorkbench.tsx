@@ -23,7 +23,7 @@ import { useTabScrollEdges } from './useTabScrollEdges';
 import { WorkbenchContext } from './WorkbenchContext';
 import { WorkbenchPath } from './WorkbenchPath';
 import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
-import { useDocumentThemePreset } from './themeHooks';
+import { useThemeFeature } from './themeHooks';
 
 export interface WorkbenchThread {
   key: string;
@@ -128,9 +128,9 @@ export function MatterWorkbench({
     query.addEventListener('change', change);
     return () => query.removeEventListener('change', change);
   }, []);
-  // Plum Pocket keeps the phone top bar to touch-sized essentials and moves
-  // Home and Chat into the drawer; the device monitor stays in the top bar.
-  const drawerTools = useDocumentThemePreset() === 'plum-pocket' && mobile;
+  // A theme with phone drawer tools keeps the phone top bar to touch-sized
+  // essentials and moves Home and Chat into the drawer; the device monitor stays.
+  const drawerTools = useThemeFeature('workbench.phoneDrawerTools') && mobile;
   const toolPanel = useWorkbenchToolPanel();
   // With the bottom panel the conversation stays visible beside the terminal:
   // Chat is "pressed" unless a maximized terminal covers it.

@@ -4,9 +4,10 @@ import type { HighlighterCore } from 'shiki/core';
  *  preset can define its syntax palette in CSS for both color modes. */
 export const CSS_VARIABLES_SYNTAX_THEME = 'pockymoe-css-variables';
 
-/** The Shiki theme for code: the preset's CSS palette when it has one. */
-export function syntaxThemeFor(dark: boolean, themePreset: string) {
-  if (themePreset === 'plum-pocket') return CSS_VARIABLES_SYNTAX_THEME;
+/** The Shiki theme for code: the theme's CSS palette when it declares
+ *  `code.cssSyntaxPalette`. */
+export function syntaxThemeFor(dark: boolean, cssPalette: boolean) {
+  if (cssPalette) return CSS_VARIABLES_SYNTAX_THEME;
   return dark ? 'ayu-dark' : 'github-light-default';
 }
 

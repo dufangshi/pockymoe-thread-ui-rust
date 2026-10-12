@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor/editor/editor.api.js';
 import { editorThemeFor } from './GraphWorkspaceMonacoEditor';
-import { useDocumentThemePreset } from '../themeHooks';
+import { useDocumentThemeRevision } from '../themeHooks';
 import { translate } from '../../i18n';
 export default function WorkspaceDocumentDiff({
   original,
@@ -17,7 +17,7 @@ export default function WorkspaceDocumentDiff({
   compact: boolean;
 }) {
   const host = useRef<HTMLDivElement>(null);
-  const themePreset = useDocumentThemePreset();
+  const themeRevision = useDocumentThemeRevision();
   useEffect(() => {
     if (!host.current) return;
     const left = monaco.editor.createModel(
@@ -45,7 +45,7 @@ export default function WorkspaceDocumentDiff({
       left.dispose();
       right.dispose();
     };
-  }, [original, modified, language, dark, compact, themePreset]);
+  }, [original, modified, language, dark, compact, themeRevision]);
   return (
     <div
       ref={host}

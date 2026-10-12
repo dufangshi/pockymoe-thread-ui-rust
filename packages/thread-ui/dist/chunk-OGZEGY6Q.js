@@ -2391,7 +2391,18 @@ var sharingEn = {
   "sharing.recipientTofu": "Device identity trusted on first use; an owner certificate has not been verified. Compare an invite link fingerprint with the owner for stronger verification.",
   "sharing.granteeConnectionPinned": "Encrypted shared connection \xB7 invite identity pinned",
   "sharing.granteeConnectionTofu": "Encrypted shared connection \xB7 identity trusted on first use",
-  "sharing.permissionsDiffer": "Device permissions differ from this share"
+  "sharing.permissionsDiffer": "Device permissions differ from this share",
+  "sharing.reviewGrant": "Review the exact device grant before signing. Device: {{value1}}\nScope and target: {{value2}}\nAccess: {{value3}}\nExpiry: {{value4}}\nRecipient: {{value5}}\nPasskey safety code: {{value6}}",
+  "sharing.noExpiry": "No expiry",
+  "sharing.signReviewed": "Confirm to sign these permissions.",
+  "sharing.acknowledgeUnverified": "Recipient not verified. Confirm only if you acknowledge that these passkeys may belong to someone else and still want to sign these permissions.",
+  "sharing.signCancelled": "Grant signing cancelled. No device permissions were changed.",
+  "sharing.rowAltered": "The relay returned permissions that differ from your choices. No device grant was signed.",
+  "sharing.confirmInviteHelp": "Compare this device and fingerprint with the owner before saving the invite identity. A verified owner certificate takes precedence over invite pins.",
+  "sharing.inviteDevice": "Device: {{value1}}",
+  "sharing.confirmInvite": "Confirm device fingerprint",
+  "sharing.forgetInviteIdentity": "Forget pinned identity",
+  "sharing.reviewGrantTitle": "Review device grant"
 };
 
 // src/i18n/workbench.en.ts
@@ -5309,7 +5320,18 @@ var sharingZhCN = {
   "sharing.recipientTofu": "\u8BBE\u5907\u8EAB\u4EFD\u91C7\u7528\u9996\u6B21\u4F7F\u7528\u4FE1\u4EFB\uFF0C\u5C1A\u672A\u9A8C\u8BC1\u6240\u6709\u8005\u8BC1\u4E66\u3002\u4E0E\u6240\u6709\u8005\u6838\u5BF9\u9080\u8BF7\u94FE\u63A5\u6307\u7EB9\u53EF\u52A0\u5F3A\u9A8C\u8BC1\u3002",
   "sharing.granteeConnectionPinned": "\u5171\u4EAB\u8FDE\u63A5\u5DF2\u52A0\u5BC6 \xB7 \u5DF2\u56FA\u5B9A\u9080\u8BF7\u8EAB\u4EFD",
   "sharing.granteeConnectionTofu": "\u5171\u4EAB\u8FDE\u63A5\u5DF2\u52A0\u5BC6 \xB7 \u9996\u6B21\u4F7F\u7528\u4FE1\u4EFB\u8EAB\u4EFD",
-  "sharing.permissionsDiffer": "\u8BBE\u5907\u6743\u9650\u4E0E\u6B64\u5171\u4EAB\u4E0D\u4E00\u81F4"
+  "sharing.permissionsDiffer": "\u8BBE\u5907\u6743\u9650\u4E0E\u6B64\u5171\u4EAB\u4E0D\u4E00\u81F4",
+  "sharing.reviewGrant": "\u7B7E\u540D\u524D\u8BF7\u6838\u5BF9\u5C06\u6388\u6743\u7684\u5B8C\u6574\u4FE1\u606F\u3002\u8BBE\u5907\uFF1A{{value1}}\n\u8303\u56F4\u4E0E\u76EE\u6807\uFF1A{{value2}}\n\u8BBF\u95EE\u6743\u9650\uFF1A{{value3}}\n\u5230\u671F\u65F6\u95F4\uFF1A{{value4}}\n\u63A5\u6536\u4EBA\uFF1A{{value5}}\n\u901A\u884C\u5BC6\u94A5\u5B89\u5168\u7801\uFF1A{{value6}}",
+  "sharing.noExpiry": "\u6C38\u4E0D\u8FC7\u671F",
+  "sharing.signReviewed": "\u786E\u8BA4\u540E\u5C06\u7B7E\u7F72\u4EE5\u4E0A\u6743\u9650\u3002",
+  "sharing.acknowledgeUnverified": "\u63A5\u6536\u4EBA\u5C1A\u672A\u9A8C\u8BC1\u3002\u4EC5\u5728\u4F60\u7406\u89E3\u8FD9\u4E9B\u901A\u884C\u5BC6\u94A5\u53EF\u80FD\u5C5E\u4E8E\u4ED6\u4EBA\uFF0C\u5E76\u4ECD\u5E0C\u671B\u7B7E\u7F72\u4EE5\u4E0A\u6743\u9650\u65F6\u786E\u8BA4\u3002",
+  "sharing.signCancelled": "\u5DF2\u53D6\u6D88\u6388\u6743\u7B7E\u540D\uFF0C\u8BBE\u5907\u6743\u9650\u672A\u53D8\u66F4\u3002",
+  "sharing.rowAltered": "\u4E2D\u7EE7\u8FD4\u56DE\u7684\u6743\u9650\u4E0E\u4F60\u7684\u9009\u62E9\u4E0D\u7B26\uFF0C\u672A\u7B7E\u7F72\u8BBE\u5907\u6388\u6743\u3002",
+  "sharing.confirmInviteHelp": "\u4FDD\u5B58\u9080\u8BF7\u8EAB\u4EFD\u524D\uFF0C\u8BF7\u4E0E\u6240\u6709\u8005\u6838\u5BF9\u8BBE\u5907\u548C\u6307\u7EB9\u3002\u5DF2\u9A8C\u8BC1\u7684\u6240\u6709\u8005\u8BC1\u4E66\u4F18\u5148\u4E8E\u9080\u8BF7\u56FA\u5B9A\u7684\u6307\u7EB9\u3002",
+  "sharing.inviteDevice": "\u8BBE\u5907\uFF1A{{value1}}",
+  "sharing.confirmInvite": "\u786E\u8BA4\u8BBE\u5907\u6307\u7EB9",
+  "sharing.forgetInviteIdentity": "\u5FD8\u8BB0\u56FA\u5B9A\u7684\u8EAB\u4EFD",
+  "sharing.reviewGrantTitle": "\u6838\u5BF9\u8BBE\u5907\u6388\u6743"
 };
 
 // src/i18n/workbench.zh-CN.ts

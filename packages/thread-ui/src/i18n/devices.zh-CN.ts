@@ -1,5 +1,7 @@
 export const devicesZhCN = {
-  "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；远程保护不会替换此注册流程。",
+  "devices.useOneClickProtectionInstead": "改用一键保护",
+  "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。",
+  "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。",
   "devices.showLocalBindCommand": "显示本地绑定命令",
   "devices.remoteProtectionInProgress": "此设备的远程保护已在进行中。请等待其完成后再开始本地注册。",
   "devices.platformUnix": "macOS 和 Linux",

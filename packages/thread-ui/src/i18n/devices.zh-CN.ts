@@ -1,4 +1,6 @@
 export const devicesZhCN = {
+  "devices.unsafeSetupValue": "已拒绝生成设置命令：参数包含不支持的字符。",
+  "devices.invalidSetupToken": "已拒绝生成设置命令：设备令牌无效。",
   "devices.protected": "已保护",
   "devices.notProtected": "未保护 · 信任中继",
   "devices.waitingForConnection": "等待首次连接",

@@ -1018,6 +1018,8 @@ var commonEn = {
 
 // src/i18n/devices.en.ts
 var devicesEn = {
+  "devices.unsafeSetupValue": "Setup command refused: a value contains unsupported characters.",
+  "devices.invalidSetupToken": "Setup command refused: the device token is invalid.",
   "devices.protected": "Protected",
   "devices.notProtected": "Not protected \xB7 Relay trusted",
   "devices.waitingForConnection": "Waiting for first connection",
@@ -3997,6 +3999,8 @@ var commonZhCN = {
 
 // src/i18n/devices.zh-CN.ts
 var devicesZhCN = {
+  "devices.unsafeSetupValue": "\u5DF2\u62D2\u7EDD\u751F\u6210\u8BBE\u7F6E\u547D\u4EE4\uFF1A\u53C2\u6570\u5305\u542B\u4E0D\u652F\u6301\u7684\u5B57\u7B26\u3002",
+  "devices.invalidSetupToken": "\u5DF2\u62D2\u7EDD\u751F\u6210\u8BBE\u7F6E\u547D\u4EE4\uFF1A\u8BBE\u5907\u4EE4\u724C\u65E0\u6548\u3002",
   "devices.protected": "\u5DF2\u4FDD\u62A4",
   "devices.notProtected": "\u672A\u4FDD\u62A4 \xB7 \u4FE1\u4EFB\u4E2D\u7EE7",
   "devices.waitingForConnection": "\u7B49\u5F85\u9996\u6B21\u8FDE\u63A5",

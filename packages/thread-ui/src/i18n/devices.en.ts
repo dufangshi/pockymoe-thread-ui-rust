@@ -1,5 +1,7 @@
 export const devicesEn = {
-  "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; remote protection will not replace this enrollment.",
+  "devices.useOneClickProtectionInstead": "Use one-click protection instead",
+  "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.",
+  "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.",
   "devices.showLocalBindCommand": "Show local bind command",
   "devices.remoteProtectionInProgress": "Remote protection is already in progress for this device. Wait for it to finish before starting a local enrollment.",
   "devices.platformUnix": "macOS & Linux",

@@ -2821,6 +2821,10 @@ declare const en: {
     readonly "auth.accountRemoveBrowserConfirm": "Remove {{value1}}? It will lose access to your devices.";
     readonly "auth.accountRegenerateRecovery": "Regenerate recovery code";
     readonly "auth.accountStartOver": "Start over";
+    readonly "auth.accountSecretRotationWarning": "Changing your password or recovery code keeps the same account key. If either secret leaked, use Start over after signing in with a recovery code or administrator reset password, then bind your devices again.";
+    readonly "auth.accountUpgradeConfirmationRequired": "This browser has opened an account vault. Confirm the security warning before upgrading a different account.";
+    readonly "auth.accountUpgradeExistingVaultWarning": "This browser has already opened an account vault. Upgrading sends the password to the relay. Continue only for a different account that has never been secured. A sign-in error is not a reason to upgrade.";
+    readonly "auth.accountUpgradeExistingVaultConfirm": "I am upgrading a different account that has never been secured.";
     readonly "auth.accountRecoverySessionRequired": "Start over is available only after signing in with a recovery code or an administrator reset password.";
     readonly "auth.accountBrowserLabel": "{{value1}} on {{value2}}";
     readonly "auth.accountBrowserUnknown": "Browser";
@@ -5780,6 +5784,10 @@ declare const zhCN: {
     "auth.accountRemoveBrowserConfirm": "移除 {{value1}}？它将失去对设备的访问权限。";
     "auth.accountRegenerateRecovery": "重新生成恢复码";
     "auth.accountStartOver": "重新开始";
+    "auth.accountSecretRotationWarning": "更改密码或恢复码不会更换账户密钥。如果其中任何一个已泄露，请先使用恢复码或管理员重置密码登录，再选择“重新开始”，然后重新绑定所有设备。";
+    "auth.accountUpgradeConfirmationRequired": "此浏览器已打开过账户保险库。升级其他账户前，请确认安全提示。";
+    "auth.accountUpgradeExistingVaultWarning": "此浏览器已打开过账户保险库。升级会将密码发送给中继。仅当这是另一个尚未完成安全升级的账户时才继续。登录错误并不意味着需要升级。";
+    "auth.accountUpgradeExistingVaultConfirm": "我要升级的是另一个尚未完成安全升级的账户。";
     "auth.accountRecoverySessionRequired": "仅在使用恢复码或管理员重置密码登录后才能重新开始。";
     "auth.accountBrowserLabel": "{{value2}} 上的 {{value1}}";
     "auth.accountBrowserUnknown": "浏览器";
@@ -8761,6 +8769,10 @@ declare const resources: {
         readonly "auth.accountRemoveBrowserConfirm": "Remove {{value1}}? It will lose access to your devices.";
         readonly "auth.accountRegenerateRecovery": "Regenerate recovery code";
         readonly "auth.accountStartOver": "Start over";
+        readonly "auth.accountSecretRotationWarning": "Changing your password or recovery code keeps the same account key. If either secret leaked, use Start over after signing in with a recovery code or administrator reset password, then bind your devices again.";
+        readonly "auth.accountUpgradeConfirmationRequired": "This browser has opened an account vault. Confirm the security warning before upgrading a different account.";
+        readonly "auth.accountUpgradeExistingVaultWarning": "This browser has already opened an account vault. Upgrading sends the password to the relay. Continue only for a different account that has never been secured. A sign-in error is not a reason to upgrade.";
+        readonly "auth.accountUpgradeExistingVaultConfirm": "I am upgrading a different account that has never been secured.";
         readonly "auth.accountRecoverySessionRequired": "Start over is available only after signing in with a recovery code or an administrator reset password.";
         readonly "auth.accountBrowserLabel": "{{value1}} on {{value2}}";
         readonly "auth.accountBrowserUnknown": "Browser";
@@ -11719,6 +11731,10 @@ declare const resources: {
         "auth.accountRemoveBrowserConfirm": "移除 {{value1}}？它将失去对设备的访问权限。";
         "auth.accountRegenerateRecovery": "重新生成恢复码";
         "auth.accountStartOver": "重新开始";
+        "auth.accountSecretRotationWarning": "更改密码或恢复码不会更换账户密钥。如果其中任何一个已泄露，请先使用恢复码或管理员重置密码登录，再选择“重新开始”，然后重新绑定所有设备。";
+        "auth.accountUpgradeConfirmationRequired": "此浏览器已打开过账户保险库。升级其他账户前，请确认安全提示。";
+        "auth.accountUpgradeExistingVaultWarning": "此浏览器已打开过账户保险库。升级会将密码发送给中继。仅当这是另一个尚未完成安全升级的账户时才继续。登录错误并不意味着需要升级。";
+        "auth.accountUpgradeExistingVaultConfirm": "我要升级的是另一个尚未完成安全升级的账户。";
         "auth.accountRecoverySessionRequired": "仅在使用恢复码或管理员重置密码登录后才能重新开始。";
         "auth.accountBrowserLabel": "{{value2}} 上的 {{value1}}";
         "auth.accountBrowserUnknown": "浏览器";

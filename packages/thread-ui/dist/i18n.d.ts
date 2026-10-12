@@ -2820,6 +2820,9 @@ declare const en: {
     readonly "auth.accountRemoveBrowserConfirm": "Remove {{value1}}? It will lose access to your devices.";
     readonly "auth.accountRegenerateRecovery": "Regenerate recovery code";
     readonly "auth.accountStartOver": "Start over";
+    readonly "auth.accountRecoverySessionRequired": "Start over is available only after signing in with a recovery code or an administrator reset password.";
+    readonly "auth.accountBrowserLabel": "{{value1}} on {{value2}}";
+    readonly "auth.accountBrowserUnknown": "Browser";
     readonly "auth.accountResetWarning": "This replaces your account key. You must bind every device again locally. Existing browser certificates and recovery code will stop working.";
     readonly "auth.accountReason.connect": "Connect this browser to your devices";
     readonly "auth.accountReason.bind-device": "Authorize binding a device to your account";
@@ -5775,6 +5778,9 @@ declare const zhCN: {
     "auth.accountRemoveBrowserConfirm": "移除 {{value1}}？它将失去对设备的访问权限。";
     "auth.accountRegenerateRecovery": "重新生成恢复码";
     "auth.accountStartOver": "重新开始";
+    "auth.accountRecoverySessionRequired": "仅在使用恢复码或管理员重置密码登录后才能重新开始。";
+    "auth.accountBrowserLabel": "{{value2}} 上的 {{value1}}";
+    "auth.accountBrowserUnknown": "浏览器";
     "auth.accountResetWarning": "此操作会更换账户密钥。你必须在本地重新绑定所有设备。现有浏览器证书和恢复码将失效。";
     "auth.accountReason.connect": "将此浏览器连接到你的设备";
     "auth.accountReason.bind-device": "授权将设备绑定到你的账户";
@@ -8752,6 +8758,9 @@ declare const resources: {
         readonly "auth.accountRemoveBrowserConfirm": "Remove {{value1}}? It will lose access to your devices.";
         readonly "auth.accountRegenerateRecovery": "Regenerate recovery code";
         readonly "auth.accountStartOver": "Start over";
+        readonly "auth.accountRecoverySessionRequired": "Start over is available only after signing in with a recovery code or an administrator reset password.";
+        readonly "auth.accountBrowserLabel": "{{value1}} on {{value2}}";
+        readonly "auth.accountBrowserUnknown": "Browser";
         readonly "auth.accountResetWarning": "This replaces your account key. You must bind every device again locally. Existing browser certificates and recovery code will stop working.";
         readonly "auth.accountReason.connect": "Connect this browser to your devices";
         readonly "auth.accountReason.bind-device": "Authorize binding a device to your account";
@@ -11706,6 +11715,9 @@ declare const resources: {
         "auth.accountRemoveBrowserConfirm": "移除 {{value1}}？它将失去对设备的访问权限。";
         "auth.accountRegenerateRecovery": "重新生成恢复码";
         "auth.accountStartOver": "重新开始";
+        "auth.accountRecoverySessionRequired": "仅在使用恢复码或管理员重置密码登录后才能重新开始。";
+        "auth.accountBrowserLabel": "{{value2}} 上的 {{value1}}";
+        "auth.accountBrowserUnknown": "浏览器";
         "auth.accountResetWarning": "此操作会更换账户密钥。你必须在本地重新绑定所有设备。现有浏览器证书和恢复码将失效。";
         "auth.accountReason.connect": "将此浏览器连接到你的设备";
         "auth.accountReason.bind-device": "授权将设备绑定到你的账户";

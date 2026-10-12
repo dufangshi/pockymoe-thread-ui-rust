@@ -1675,7 +1675,7 @@ declare const en: {
     readonly "devices.browserRegisteredAt": "Registered {{value1}}";
     readonly "devices.browserLastSeenAt": "Last seen {{value1}}";
     readonly "devices.removeDevice": "Remove device";
-    readonly "devices.removeDeviceHelp": "Remove trust in {{value1}}? The device keeps running, but other devices and browsers stop trusting it. Run pockymoe bind --reset locally to unbind it.";
+    readonly "devices.removeDeviceHelp": "Remove {{value1}}? Its relay registration will be deleted, so it can no longer connect to this account. Other devices and browsers stop trusting it. The device keeps running and retains its local account binding until you run pockymoe bind --reset on it or uninstall it.";
     readonly "devices.deviceRevocationFailed": "Unable to remove device trust. Try again.";
     readonly "devices.protectionRequestFailed": "Device protection request failed ({{value1}}).";
     readonly "devices.enrollmentMismatch": "Enrollment refused: the device identity, account key or secret did not match. Check the command on your device.";
@@ -4585,7 +4585,7 @@ declare const zhCN: {
     "devices.browserRegisteredAt": "注册时间：{{value1}}";
     "devices.browserLastSeenAt": "最近访问：{{value1}}";
     "devices.removeDevice": "移除设备";
-    "devices.removeDeviceHelp": "移除对 {{value1}} 的信任？设备会继续运行，但其他设备和浏览器将不再信任它。在设备本地运行 pockymoe bind --reset 可解除绑定。";
+    "devices.removeDeviceHelp": "移除 {{value1}}？其中继注册将被删除，设备将无法再连接到此账户。其他设备和浏览器将不再信任它。设备仍会继续运行，并保留本地账户绑定，直到在设备上运行 pockymoe bind --reset 或将其卸载。";
     "devices.deviceRevocationFailed": "无法移除设备信任，请重试。";
     "devices.protectionRequestFailed": "设备保护请求失败（{{value1}}）。";
     "devices.enrollmentMismatch": "已拒绝注册：设备身份、账户密钥或密钥不匹配。请检查设备上的命令。";
@@ -7517,7 +7517,7 @@ declare const resources: {
         readonly "devices.browserRegisteredAt": "Registered {{value1}}";
         readonly "devices.browserLastSeenAt": "Last seen {{value1}}";
         readonly "devices.removeDevice": "Remove device";
-        readonly "devices.removeDeviceHelp": "Remove trust in {{value1}}? The device keeps running, but other devices and browsers stop trusting it. Run pockymoe bind --reset locally to unbind it.";
+        readonly "devices.removeDeviceHelp": "Remove {{value1}}? Its relay registration will be deleted, so it can no longer connect to this account. Other devices and browsers stop trusting it. The device keeps running and retains its local account binding until you run pockymoe bind --reset on it or uninstall it.";
         readonly "devices.deviceRevocationFailed": "Unable to remove device trust. Try again.";
         readonly "devices.protectionRequestFailed": "Device protection request failed ({{value1}}).";
         readonly "devices.enrollmentMismatch": "Enrollment refused: the device identity, account key or secret did not match. Check the command on your device.";
@@ -10426,7 +10426,7 @@ declare const resources: {
         "devices.browserRegisteredAt": "注册时间：{{value1}}";
         "devices.browserLastSeenAt": "最近访问：{{value1}}";
         "devices.removeDevice": "移除设备";
-        "devices.removeDeviceHelp": "移除对 {{value1}} 的信任？设备会继续运行，但其他设备和浏览器将不再信任它。在设备本地运行 pockymoe bind --reset 可解除绑定。";
+        "devices.removeDeviceHelp": "移除 {{value1}}？其中继注册将被删除，设备将无法再连接到此账户。其他设备和浏览器将不再信任它。设备仍会继续运行，并保留本地账户绑定，直到在设备上运行 pockymoe bind --reset 或将其卸载。";
         "devices.deviceRevocationFailed": "无法移除设备信任，请重试。";
         "devices.protectionRequestFailed": "设备保护请求失败（{{value1}}）。";
         "devices.enrollmentMismatch": "已拒绝注册：设备身份、账户密钥或密钥不匹配。请检查设备上的命令。";

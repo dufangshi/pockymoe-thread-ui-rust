@@ -294,6 +294,9 @@ var tourEn = {
 
 // src/i18n/auth.en.ts
 var authEn = {
+  "auth.accountLegacyUpgrade": "First sign-in since the security upgrade",
+  "auth.accountLegacyUpgradeHelp": "Use this only for an older account that has not been secured yet. This one-time upgrade sends your old password to the relay.",
+  "auth.accountDeviceIdentityChanged": "This device has a different identity. Unlock and explicitly confirm the reinstalled device before connecting.",
   "auth.avatar": "Profile avatar",
   "auth.uploadAvatar": "Upload avatar",
   "auth.removeAvatar": "Remove avatar",
@@ -521,6 +524,9 @@ var authEn = {
   "auth.accountRemoveBrowserConfirm": "Remove {{value1}}? It will lose access to your devices.",
   "auth.accountRegenerateRecovery": "Regenerate recovery code",
   "auth.accountStartOver": "Start over",
+  "auth.accountRecoverySessionRequired": "Start over is available only after signing in with a recovery code or an administrator reset password.",
+  "auth.accountBrowserLabel": "{{value1}} on {{value2}}",
+  "auth.accountBrowserUnknown": "Browser",
   "auth.accountResetWarning": "This replaces your account key. You must bind every device again locally. Existing browser certificates and recovery code will stop working.",
   "auth.accountReason.connect": "Connect this browser to your devices",
   "auth.accountReason.bind-device": "Authorize binding a device to your account",
@@ -536,7 +542,7 @@ var authEn = {
   "auth.accountTemporaryPassword": "Temporary reset password",
   "auth.accountTemporaryHelp": "Use only the temporary password supplied by your administrator here. Then recover your account key with your recovery code, or start over.",
   "auth.accountResetRecoveryHelp": "Your login was reset. Enter your account recovery code and choose a new password. If you lost the code, starting over creates a new account key and your devices must be bound again locally.",
-  "auth.accountLoginDowngrade": "This browser previously verified an account vault for this login. The relay now claims it has no vault. Connection blocked. Use the admin reset option only if you received a temporary reset password.",
+  "auth.accountLoginDowngrade": "This password login was blocked. Secured accounts require local key derivation. Use the security upgrade option only for an older account that has never had a vault.",
   "auth.user_id_taken": "That account identifier was taken. Try registering again to generate a new account key and recovery code.",
   "auth.reauthentication_required": "Sign in again with your OAuth provider or verify an existing authenticator or passkey, then retry this change.",
   "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key."
@@ -1015,6 +1021,17 @@ var commonEn = {
 
 // src/i18n/devices.en.ts
 var devicesEn = {
+  "devices.platformUnix": "macOS & Linux",
+  "devices.platformWindows": "Windows",
+  "devices.repairDevice": "Repair device binding",
+  "devices.confirmIdentityReplacement": "Confirm device reinstall",
+  "devices.identityReplacementHelp": "The device identity changed. Confirm only if you reinstalled or reset this device. Unlocking your account will replace the identity your browsers trust.",
+  "devices.previousIdentity": "Previous identity",
+  "devices.newIdentity": "New identity",
+  "devices.identityUnavailable": "Previous identity unavailable",
+  "devices.replaceIdentity": "Confirm replacement and unlock",
+  "devices.unsafeSetupValue": "Setup command refused: a value contains unsupported characters.",
+  "devices.invalidSetupToken": "Setup command refused: the device token is invalid.",
   "devices.protected": "Protected",
   "devices.notProtected": "Not protected \xB7 Relay trusted",
   "devices.waitingForConnection": "Waiting for first connection",
@@ -2446,7 +2463,10 @@ var sharingEn = {
   "sharing.confirmGrant": "Review and confirm",
   "sharing.inviteOwnerKey": "Owner account key: {{value1}}",
   "sharing.accountKeyMismatch": "The account key does not match its public key or the identity saved in this browser. Compare the owner account key or recipient safety code through another channel.",
-  "sharing.deviceCertificateInvalid": "The protected device certificate is missing or invalid. Reconnect the device and ask the owner to check its protection before continuing."
+  "sharing.deviceCertificateInvalid": "The protected device certificate is missing or invalid. Reconnect the device and ask the owner to check its protection before continuing.",
+  "sharing.reviewDifference": "Before (current device grant): {{value1}}\nAfter (dialog permissions): {{value2}}",
+  "sharing.dialogIncomplete": "The edit dialog did not provide every permission and target. Reopen the dialog before signing.",
+  "sharing.reviewChanges": "Changed fields (before \u2192 after): {{value1}}"
 };
 
 // src/i18n/workbench.en.ts
@@ -3267,6 +3287,9 @@ var tourZhCN = {
 
 // src/i18n/auth.zh-CN.ts
 var authZhCN = {
+  "auth.accountLegacyUpgrade": "\u5B89\u5168\u5347\u7EA7\u540E\u7684\u9996\u6B21\u767B\u5F55",
+  "auth.accountLegacyUpgradeHelp": "\u4EC5\u9002\u7528\u4E8E\u5C1A\u672A\u5B8C\u6210\u5B89\u5168\u5347\u7EA7\u7684\u65E7\u8D26\u6237\u3002\u6B64\u6B21\u5347\u7EA7\u4F1A\u5C06\u65E7\u5BC6\u7801\u53D1\u9001\u7ED9\u4E2D\u7EE7\u3002",
+  "auth.accountDeviceIdentityChanged": "\u6B64\u8BBE\u5907\u7684\u8EAB\u4EFD\u5DF2\u6539\u53D8\u3002\u8BF7\u89E3\u9501\u5E76\u660E\u786E\u786E\u8BA4\u91CD\u65B0\u5B89\u88C5\u7684\u8BBE\u5907\uFF0C\u7136\u540E\u518D\u8FDE\u63A5\u3002",
   "auth.avatar": "\u4E2A\u4EBA\u5934\u50CF",
   "auth.uploadAvatar": "\u4E0A\u4F20\u5934\u50CF",
   "auth.removeAvatar": "\u79FB\u9664\u5934\u50CF",
@@ -3494,6 +3517,9 @@ var authZhCN = {
   "auth.accountRemoveBrowserConfirm": "\u79FB\u9664 {{value1}}\uFF1F\u5B83\u5C06\u5931\u53BB\u5BF9\u8BBE\u5907\u7684\u8BBF\u95EE\u6743\u9650\u3002",
   "auth.accountRegenerateRecovery": "\u91CD\u65B0\u751F\u6210\u6062\u590D\u7801",
   "auth.accountStartOver": "\u91CD\u65B0\u5F00\u59CB",
+  "auth.accountRecoverySessionRequired": "\u4EC5\u5728\u4F7F\u7528\u6062\u590D\u7801\u6216\u7BA1\u7406\u5458\u91CD\u7F6E\u5BC6\u7801\u767B\u5F55\u540E\u624D\u80FD\u91CD\u65B0\u5F00\u59CB\u3002",
+  "auth.accountBrowserLabel": "{{value2}} \u4E0A\u7684 {{value1}}",
+  "auth.accountBrowserUnknown": "\u6D4F\u89C8\u5668",
   "auth.accountResetWarning": "\u6B64\u64CD\u4F5C\u4F1A\u66F4\u6362\u8D26\u6237\u5BC6\u94A5\u3002\u4F60\u5FC5\u987B\u5728\u672C\u5730\u91CD\u65B0\u7ED1\u5B9A\u6240\u6709\u8BBE\u5907\u3002\u73B0\u6709\u6D4F\u89C8\u5668\u8BC1\u4E66\u548C\u6062\u590D\u7801\u5C06\u5931\u6548\u3002",
   "auth.accountReason.connect": "\u5C06\u6B64\u6D4F\u89C8\u5668\u8FDE\u63A5\u5230\u4F60\u7684\u8BBE\u5907",
   "auth.accountReason.bind-device": "\u6388\u6743\u5C06\u8BBE\u5907\u7ED1\u5B9A\u5230\u4F60\u7684\u8D26\u6237",
@@ -3509,7 +3535,7 @@ var authZhCN = {
   "auth.accountTemporaryPassword": "\u4E34\u65F6\u91CD\u7F6E\u5BC6\u7801",
   "auth.accountTemporaryHelp": "\u6B64\u5904\u4EC5\u7528\u4E8E\u8F93\u5165\u7BA1\u7406\u5458\u63D0\u4F9B\u7684\u4E34\u65F6\u5BC6\u7801\u3002\u968F\u540E\u4F7F\u7528\u6062\u590D\u7801\u6062\u590D\u8D26\u6237\u5BC6\u94A5\uFF0C\u6216\u91CD\u65B0\u5F00\u59CB\u3002",
   "auth.accountResetRecoveryHelp": "\u4F60\u7684\u767B\u5F55\u5BC6\u7801\u5DF2\u91CD\u7F6E\u3002\u8BF7\u8F93\u5165\u8D26\u6237\u6062\u590D\u7801\u5E76\u8BBE\u7F6E\u65B0\u5BC6\u7801\u3002\u5982\u679C\u6062\u590D\u7801\u5DF2\u4E22\u5931\uFF0C\u91CD\u65B0\u5F00\u59CB\u4F1A\u521B\u5EFA\u65B0\u7684\u8D26\u6237\u5BC6\u94A5\uFF0C\u8BBE\u5907\u9700\u8981\u5728\u672C\u5730\u91CD\u65B0\u7ED1\u5B9A\u3002",
-  "auth.accountLoginDowngrade": "\u6B64\u6D4F\u89C8\u5668\u6B64\u524D\u5DF2\u9A8C\u8BC1\u8FC7\u8BE5\u8D26\u6237\u7684\u4FDD\u9669\u5E93\uFF0C\u4F46\u4E2D\u7EE7\u73B0\u5728\u58F0\u79F0\u4FDD\u9669\u5E93\u4E0D\u5B58\u5728\u3002\u8FDE\u63A5\u5DF2\u963B\u6B62\u3002\u4EC5\u5728\u6536\u5230\u4E34\u65F6\u91CD\u7F6E\u5BC6\u7801\u65F6\u4F7F\u7528\u7BA1\u7406\u5458\u91CD\u7F6E\u9009\u9879\u3002",
+  "auth.accountLoginDowngrade": "\u6B64\u6B21\u5BC6\u7801\u767B\u5F55\u5DF2\u963B\u6B62\u3002\u5DF2\u5B8C\u6210\u5B89\u5168\u5347\u7EA7\u7684\u8D26\u6237\u5FC5\u987B\u5728\u672C\u5730\u6D3E\u751F\u5BC6\u94A5\u3002\u4EC5\u5BF9\u4ECE\u672A\u521B\u5EFA\u8FC7\u4FDD\u9669\u5E93\u7684\u65E7\u8D26\u6237\u4F7F\u7528\u5B89\u5168\u5347\u7EA7\u9009\u9879\u3002",
   "auth.user_id_taken": "\u8BE5\u8D26\u6237\u6807\u8BC6\u5DF2\u88AB\u5360\u7528\u3002\u8BF7\u91CD\u65B0\u6CE8\u518C\uFF0C\u4EE5\u751F\u6210\u65B0\u7684\u8D26\u6237\u5BC6\u94A5\u548C\u6062\u590D\u7801\u3002",
   "auth.reauthentication_required": "\u8BF7\u901A\u8FC7 OAuth \u63D0\u4F9B\u65B9\u91CD\u65B0\u767B\u5F55\uFF0C\u6216\u9A8C\u8BC1\u5DF2\u6709\u7684\u8EAB\u4EFD\u9A8C\u8BC1\u5668\u6216\u901A\u884C\u5BC6\u94A5\uFF0C\u7136\u540E\u91CD\u8BD5\u6B64\u66F4\u6539\u3002",
   "auth.accountVaultMissing": "\u6B64\u6D4F\u89C8\u5668\u5DF2\u9A8C\u8BC1\u8FC7\u8D26\u6237\u4FDD\u9669\u5E93\uFF0C\u4F46\u4E2D\u7EE7\u73B0\u5728\u58F0\u79F0\u4FDD\u9669\u5E93\u4E0D\u5B58\u5728\u3002\u8FDE\u63A5\u5DF2\u963B\u6B62\u3002\u4EC5\u5728\u786E\u5B9A\u8981\u91CD\u7F6E\u8D26\u6237\u5BC6\u94A5\u65F6\u91CD\u65B0\u5F00\u59CB\u3002"
@@ -3988,6 +4014,17 @@ var commonZhCN = {
 
 // src/i18n/devices.zh-CN.ts
 var devicesZhCN = {
+  "devices.platformUnix": "macOS \u548C Linux",
+  "devices.platformWindows": "Windows",
+  "devices.repairDevice": "\u4FEE\u590D\u8BBE\u5907\u7ED1\u5B9A",
+  "devices.confirmIdentityReplacement": "\u786E\u8BA4\u91CD\u65B0\u5B89\u88C5\u8BBE\u5907",
+  "devices.identityReplacementHelp": "\u8BBE\u5907\u8EAB\u4EFD\u5DF2\u66F4\u6539\u3002\u4EC5\u5728\u4F60\u91CD\u65B0\u5B89\u88C5\u6216\u91CD\u7F6E\u4E86\u6B64\u8BBE\u5907\u65F6\u786E\u8BA4\u3002\u89E3\u9501\u8D26\u6237\u540E\uFF0C\u5C06\u66FF\u6362\u6D4F\u89C8\u5668\u4FE1\u4EFB\u7684\u8BBE\u5907\u8EAB\u4EFD\u3002",
+  "devices.previousIdentity": "\u539F\u8BBE\u5907\u8EAB\u4EFD",
+  "devices.newIdentity": "\u65B0\u8BBE\u5907\u8EAB\u4EFD",
+  "devices.identityUnavailable": "\u539F\u8BBE\u5907\u8EAB\u4EFD\u4E0D\u53EF\u7528",
+  "devices.replaceIdentity": "\u786E\u8BA4\u66FF\u6362\u5E76\u89E3\u9501",
+  "devices.unsafeSetupValue": "\u5DF2\u62D2\u7EDD\u751F\u6210\u8BBE\u7F6E\u547D\u4EE4\uFF1A\u53C2\u6570\u5305\u542B\u4E0D\u652F\u6301\u7684\u5B57\u7B26\u3002",
+  "devices.invalidSetupToken": "\u5DF2\u62D2\u7EDD\u751F\u6210\u8BBE\u7F6E\u547D\u4EE4\uFF1A\u8BBE\u5907\u4EE4\u724C\u65E0\u6548\u3002",
   "devices.protected": "\u5DF2\u4FDD\u62A4",
   "devices.notProtected": "\u672A\u4FDD\u62A4 \xB7 \u4FE1\u4EFB\u4E2D\u7EE7",
   "devices.waitingForConnection": "\u7B49\u5F85\u9996\u6B21\u8FDE\u63A5",
@@ -5419,7 +5456,10 @@ var sharingZhCN = {
   "sharing.confirmGrant": "\u6838\u5BF9\u5E76\u786E\u8BA4",
   "sharing.inviteOwnerKey": "\u6240\u6709\u8005\u8D26\u6237\u5BC6\u94A5\uFF1A{{value1}}",
   "sharing.accountKeyMismatch": "\u8D26\u6237\u5BC6\u94A5\u4E0E\u5176\u516C\u94A5\u6216\u6B64\u6D4F\u89C8\u5668\u4FDD\u5B58\u7684\u8EAB\u4EFD\u4E0D\u7B26\u3002\u8BF7\u901A\u8FC7\u5176\u4ED6\u6E20\u9053\u6838\u5BF9\u6240\u6709\u8005\u8D26\u6237\u5BC6\u94A5\u6216\u63A5\u6536\u4EBA\u7684\u5B89\u5168\u7801\u3002",
-  "sharing.deviceCertificateInvalid": "\u53D7\u4FDD\u62A4\u8BBE\u5907\u7684\u8BC1\u4E66\u7F3A\u5931\u6216\u65E0\u6548\u3002\u8BF7\u91CD\u65B0\u8FDE\u63A5\u8BBE\u5907\uFF0C\u5E76\u8054\u7CFB\u6240\u6709\u8005\u68C0\u67E5\u8BBE\u5907\u4FDD\u62A4\u540E\u518D\u7EE7\u7EED\u3002"
+  "sharing.deviceCertificateInvalid": "\u53D7\u4FDD\u62A4\u8BBE\u5907\u7684\u8BC1\u4E66\u7F3A\u5931\u6216\u65E0\u6548\u3002\u8BF7\u91CD\u65B0\u8FDE\u63A5\u8BBE\u5907\uFF0C\u5E76\u8054\u7CFB\u6240\u6709\u8005\u68C0\u67E5\u8BBE\u5907\u4FDD\u62A4\u540E\u518D\u7EE7\u7EED\u3002",
+  "sharing.reviewDifference": "\u4FEE\u6539\u524D\uFF08\u8BBE\u5907\u5F53\u524D\u6388\u6743\uFF09\uFF1A{{value1}}\n\u4FEE\u6539\u540E\uFF08\u5BF9\u8BDD\u6846\u4E2D\u7684\u6743\u9650\uFF09\uFF1A{{value2}}",
+  "sharing.dialogIncomplete": "\u7F16\u8F91\u5BF9\u8BDD\u6846\u672A\u63D0\u4F9B\u5B8C\u6574\u7684\u6743\u9650\u548C\u76EE\u6807\u3002\u8BF7\u91CD\u65B0\u6253\u5F00\u5BF9\u8BDD\u6846\u540E\u518D\u7B7E\u540D\u3002",
+  "sharing.reviewChanges": "\u53D8\u66F4\u5B57\u6BB5\uFF08\u4FEE\u6539\u524D \u2192 \u4FEE\u6539\u540E\uFF09\uFF1A{{value1}}"
 };
 
 // src/i18n/workbench.zh-CN.ts

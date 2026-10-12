@@ -183,6 +183,8 @@ export const authEn = {
   "auth.ownerCancelled": "Passkey verification was cancelled. Try again when ready.",
   "auth.ownerUnlockExpired": "This unlock prompt expired. Prepare a new prompt and try again.",
   "auth.owner_session_required": "Unlock with your passkey to connect to this device.",
+  "auth.owner_session_revoked": "This browser's access to the device was revoked. Unlock with your passkey again to create a new session.",
+  "auth.owner_origin_mismatch": "This passkey belongs to a different site than the device's paired owner. Add a passkey from the same site used to pair this device.",
   "auth.ownerUnlock": "Unlock with passkey",
   "auth.ownerUnlockTitle": "Unlock your devices",
   "auth.ownerUnlockHelp": "One passkey verification unlocks paired devices for 3 days in this browser.",

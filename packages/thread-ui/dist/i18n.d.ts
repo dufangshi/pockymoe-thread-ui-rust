@@ -1682,8 +1682,9 @@ declare const en: {
     readonly "devices.repairDevice": "Repair device binding";
     readonly "devices.confirmIdentityReplacement": "Confirm device reinstall";
     readonly "devices.identityReplacementHelp": "The device identity changed. Confirm only if you reinstalled or reset this device. Unlocking your account will replace the identity your browsers trust.";
-    readonly "devices.previousIdentity": "Previous identity";
-    readonly "devices.newIdentity": "New identity";
+    readonly "devices.previousIdentity": "Previous identity fingerprint";
+    readonly "devices.newIdentity": "New identity fingerprint";
+    readonly "devices.identityReplacementCompare": "Compare the new fingerprint with the output of pockymoe bind --status or pockymoe relay-fingerprint run locally on this device before confirming.";
     readonly "devices.identityUnavailable": "Previous identity unavailable";
     readonly "devices.replaceIdentity": "Confirm replacement and unlock";
     readonly "devices.unsafeSetupValue": "Setup command refused: a value contains unsupported characters.";
@@ -1708,6 +1709,7 @@ declare const en: {
     readonly "devices.deviceRevocationFailed": "Unable to remove device trust. Try again.";
     readonly "devices.protectionRequestFailed": "Device protection request failed ({{value1}}).";
     readonly "devices.enrollmentMismatch": "Enrollment refused: the device identity, account key or secret did not match. Check the command on your device.";
+    readonly "devices.enrollmentCertificateOlder": "Enrollment refused: this device certificate is older than the one already trusted. Check the device identity locally before retrying.";
     readonly "devices.enrollmentUploadFailed": "The device certificate could not be saved to the relay. Enrollment will resume on retry.";
     readonly "devices.enrollmentFailed": "Unable to complete device enrollment.";
     readonly "devices.retryEnrollment": "Retry enrollment";
@@ -4645,8 +4647,9 @@ declare const zhCN: {
     "devices.repairDevice": "修复设备绑定";
     "devices.confirmIdentityReplacement": "确认重新安装设备";
     "devices.identityReplacementHelp": "设备身份已更改。仅在你重新安装或重置了此设备时确认。解锁账户后，将替换浏览器信任的设备身份。";
-    "devices.previousIdentity": "原设备身份";
-    "devices.newIdentity": "新设备身份";
+    "devices.previousIdentity": "原设备身份指纹";
+    "devices.newIdentity": "新设备身份指纹";
+    "devices.identityReplacementCompare": "核对新指纹：在此设备本地运行 pockymoe bind --status 或 pockymoe relay-fingerprint，将命令输出与此处的新指纹进行比较，确认一致后再继续。";
     "devices.identityUnavailable": "原设备身份不可用";
     "devices.replaceIdentity": "确认替换并解锁";
     "devices.unsafeSetupValue": "已拒绝生成设置命令：参数包含不支持的字符。";
@@ -4671,6 +4674,7 @@ declare const zhCN: {
     "devices.deviceRevocationFailed": "无法移除设备信任，请重试。";
     "devices.protectionRequestFailed": "设备保护请求失败（{{value1}}）。";
     "devices.enrollmentMismatch": "已拒绝注册：设备身份、账户密钥或密钥不匹配。请检查设备上的命令。";
+    "devices.enrollmentCertificateOlder": "已拒绝注册：此设备证书早于已信任的证书。重试前，请在设备本地核对身份。";
     "devices.enrollmentUploadFailed": "无法将设备证书保存到中继。重试时将继续注册。";
     "devices.enrollmentFailed": "无法完成设备注册。";
     "devices.retryEnrollment": "重试注册";
@@ -7630,8 +7634,9 @@ declare const resources: {
         readonly "devices.repairDevice": "Repair device binding";
         readonly "devices.confirmIdentityReplacement": "Confirm device reinstall";
         readonly "devices.identityReplacementHelp": "The device identity changed. Confirm only if you reinstalled or reset this device. Unlocking your account will replace the identity your browsers trust.";
-        readonly "devices.previousIdentity": "Previous identity";
-        readonly "devices.newIdentity": "New identity";
+        readonly "devices.previousIdentity": "Previous identity fingerprint";
+        readonly "devices.newIdentity": "New identity fingerprint";
+        readonly "devices.identityReplacementCompare": "Compare the new fingerprint with the output of pockymoe bind --status or pockymoe relay-fingerprint run locally on this device before confirming.";
         readonly "devices.identityUnavailable": "Previous identity unavailable";
         readonly "devices.replaceIdentity": "Confirm replacement and unlock";
         readonly "devices.unsafeSetupValue": "Setup command refused: a value contains unsupported characters.";
@@ -7656,6 +7661,7 @@ declare const resources: {
         readonly "devices.deviceRevocationFailed": "Unable to remove device trust. Try again.";
         readonly "devices.protectionRequestFailed": "Device protection request failed ({{value1}}).";
         readonly "devices.enrollmentMismatch": "Enrollment refused: the device identity, account key or secret did not match. Check the command on your device.";
+        readonly "devices.enrollmentCertificateOlder": "Enrollment refused: this device certificate is older than the one already trusted. Check the device identity locally before retrying.";
         readonly "devices.enrollmentUploadFailed": "The device certificate could not be saved to the relay. Enrollment will resume on retry.";
         readonly "devices.enrollmentFailed": "Unable to complete device enrollment.";
         readonly "devices.retryEnrollment": "Retry enrollment";
@@ -10592,8 +10598,9 @@ declare const resources: {
         "devices.repairDevice": "修复设备绑定";
         "devices.confirmIdentityReplacement": "确认重新安装设备";
         "devices.identityReplacementHelp": "设备身份已更改。仅在你重新安装或重置了此设备时确认。解锁账户后，将替换浏览器信任的设备身份。";
-        "devices.previousIdentity": "原设备身份";
-        "devices.newIdentity": "新设备身份";
+        "devices.previousIdentity": "原设备身份指纹";
+        "devices.newIdentity": "新设备身份指纹";
+        "devices.identityReplacementCompare": "核对新指纹：在此设备本地运行 pockymoe bind --status 或 pockymoe relay-fingerprint，将命令输出与此处的新指纹进行比较，确认一致后再继续。";
         "devices.identityUnavailable": "原设备身份不可用";
         "devices.replaceIdentity": "确认替换并解锁";
         "devices.unsafeSetupValue": "已拒绝生成设置命令：参数包含不支持的字符。";
@@ -10618,6 +10625,7 @@ declare const resources: {
         "devices.deviceRevocationFailed": "无法移除设备信任，请重试。";
         "devices.protectionRequestFailed": "设备保护请求失败（{{value1}}）。";
         "devices.enrollmentMismatch": "已拒绝注册：设备身份、账户密钥或密钥不匹配。请检查设备上的命令。";
+        "devices.enrollmentCertificateOlder": "已拒绝注册：此设备证书早于已信任的证书。重试前，请在设备本地核对身份。";
         "devices.enrollmentUploadFailed": "无法将设备证书保存到中继。重试时将继续注册。";
         "devices.enrollmentFailed": "无法完成设备注册。";
         "devices.retryEnrollment": "重试注册";

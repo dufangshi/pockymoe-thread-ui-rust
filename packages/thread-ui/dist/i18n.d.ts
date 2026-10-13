@@ -1691,6 +1691,10 @@ declare const en: {
     readonly "files.andItsContents": " and its contents";
     readonly "files.loadingDiagram": "Loading diagram…";
     readonly "files.hidePreview": "Hide preview";
+    readonly "files.pdfOpenOrDownload": "This browser cannot show a PDF inside the page. Open it in a new tab or download it.";
+    readonly "files.openPdf": "Open";
+    readonly "files.openPdfInNewTab": "Open {{value1}} in a new tab";
+    readonly "files.linkedFileReadOnly": "Linked file outside the workspace: read-only preview.";
     readonly "devices.useOneClickProtectionInstead": "Use one-click protection instead";
     readonly "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.";
     readonly "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.";
@@ -4753,6 +4757,10 @@ declare const zhCN: {
     "files.andItsContents": "及其内容";
     "files.loadingDiagram": "正在加载图表…";
     "files.hidePreview": "收起预览";
+    "files.pdfOpenOrDownload": "此浏览器无法在页面内显示 PDF。可在新标签页中打开或下载。";
+    "files.openPdf": "打开";
+    "files.openPdfInNewTab": "在新标签页中打开 {{value1}}";
+    "files.linkedFileReadOnly": "工作区外的链接文件：只读预览。";
     "devices.useOneClickProtectionInstead": "改用一键保护";
     "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。";
     "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。";
@@ -7837,6 +7845,10 @@ declare const resources: {
         readonly "files.andItsContents": " and its contents";
         readonly "files.loadingDiagram": "Loading diagram…";
         readonly "files.hidePreview": "Hide preview";
+        readonly "files.pdfOpenOrDownload": "This browser cannot show a PDF inside the page. Open it in a new tab or download it.";
+        readonly "files.openPdf": "Open";
+        readonly "files.openPdfInNewTab": "Open {{value1}} in a new tab";
+        readonly "files.linkedFileReadOnly": "Linked file outside the workspace: read-only preview.";
         readonly "devices.useOneClickProtectionInstead": "Use one-click protection instead";
         readonly "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.";
         readonly "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.";
@@ -10898,6 +10910,10 @@ declare const resources: {
         "files.andItsContents": "及其内容";
         "files.loadingDiagram": "正在加载图表…";
         "files.hidePreview": "收起预览";
+        "files.pdfOpenOrDownload": "此浏览器无法在页面内显示 PDF。可在新标签页中打开或下载。";
+        "files.openPdf": "打开";
+        "files.openPdfInNewTab": "在新标签页中打开 {{value1}}";
+        "files.linkedFileReadOnly": "工作区外的链接文件：只读预览。";
         "devices.useOneClickProtectionInstead": "改用一键保护";
         "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。";
         "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。";

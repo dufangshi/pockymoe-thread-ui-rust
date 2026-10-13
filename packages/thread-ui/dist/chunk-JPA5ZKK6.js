@@ -2142,7 +2142,11 @@ var filesEn = {
   "files.workspaceImage": "workspace image",
   "files.andItsContents": " and its contents",
   "files.loadingDiagram": "Loading diagram\u2026",
-  "files.hidePreview": "Hide preview"
+  "files.hidePreview": "Hide preview",
+  "files.pdfOpenOrDownload": "This browser cannot show a PDF inside the page. Open it in a new tab or download it.",
+  "files.openPdf": "Open",
+  "files.openPdfInNewTab": "Open {{value1}} in a new tab",
+  "files.linkedFileReadOnly": "Linked file outside the workspace: read-only preview."
 };
 
 // src/i18n/settings.en.ts
@@ -5239,7 +5243,11 @@ var filesZhCN = {
   "files.workspaceImage": "\u5DE5\u4F5C\u533A\u56FE\u7247",
   "files.andItsContents": "\u53CA\u5176\u5185\u5BB9",
   "files.loadingDiagram": "\u6B63\u5728\u52A0\u8F7D\u56FE\u8868\u2026",
-  "files.hidePreview": "\u6536\u8D77\u9884\u89C8"
+  "files.hidePreview": "\u6536\u8D77\u9884\u89C8",
+  "files.pdfOpenOrDownload": "\u6B64\u6D4F\u89C8\u5668\u65E0\u6CD5\u5728\u9875\u9762\u5185\u663E\u793A PDF\u3002\u53EF\u5728\u65B0\u6807\u7B7E\u9875\u4E2D\u6253\u5F00\u6216\u4E0B\u8F7D\u3002",
+  "files.openPdf": "\u6253\u5F00",
+  "files.openPdfInNewTab": "\u5728\u65B0\u6807\u7B7E\u9875\u4E2D\u6253\u5F00 {{value1}}",
+  "files.linkedFileReadOnly": "\u5DE5\u4F5C\u533A\u5916\u7684\u94FE\u63A5\u6587\u4EF6\uFF1A\u53EA\u8BFB\u9884\u89C8\u3002"
 };
 
 // src/i18n/settings.zh-CN.ts

@@ -45,7 +45,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-SR4VROE6.js";
+} from "./chunk-FH5GKYRY.js";
 import {
   useThemeFeature
 } from "./chunk-QIOFPWO7.js";
@@ -54,7 +54,7 @@ import {
   getLocale,
   translate,
   useI18n
-} from "./chunk-UAYJOJDD.js";
+} from "./chunk-JPA5ZKK6.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect12, useMemo as useMemo11, useState as useState12 } from "react";
@@ -1282,6 +1282,7 @@ function useWorkspaceFilePreview({
     const currentAdapter = adapter;
     const currentPath = selectedPath;
     let cancelled = false;
+    let objectUrl = null;
     const abort = new AbortController();
     async function loadPreview() {
       setPreviewLoading(true);
@@ -1307,6 +1308,13 @@ function useWorkspaceFilePreview({
           if (!cancelled) {
             setImageUrl(rawUrl);
           }
+          return;
+        }
+        if (PDF_EXTENSIONS.has(extension) && currentAdapter.readRawFile) {
+          const blob = await currentAdapter.readRawFile({ ...identity, path: currentPath, signal: abort.signal });
+          if (cancelled) return;
+          objectUrl = URL.createObjectURL(blob.type === "application/pdf" ? blob : new Blob([blob], { type: "application/pdf" }));
+          setPdfUrl(objectUrl);
           return;
         }
         if (rawUrl && PDF_EXTENSIONS.has(extension)) {
@@ -1345,6 +1353,7 @@ function useWorkspaceFilePreview({
     return () => {
       cancelled = true;
       abort.abort();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [
     activeNode?.id,
@@ -2664,6 +2673,8 @@ import {
   BookOpen,
   Code2,
   Download as Download4,
+  ExternalLink,
+  FileText,
   Pencil as Pencil2,
   PanelLeftOpen,
   MoreHorizontal as MoreHorizontal3,
@@ -3960,14 +3971,44 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment4, jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-ESWKV74W.js")
+  () => import("./GraphWorkspaceMonacoEditor-2HDBVSH3.js")
 );
+var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
+function fileSizeLabel(size) {
+  return size === void 0 ? null : size < 1024 ? `${size} B` : size < 1024 * 1024 ? `${(size / 1024).toFixed(1)} KB` : `${(size / (1024 * 1024)).toFixed(1)} MB`;
+}
+function canShowInlinePdf(nav = typeof navigator === "undefined" ? void 0 : navigator) {
+  return nav?.pdfViewerEnabled !== false;
+}
+function WorkspacePdfPreview({ src, node }) {
+  useI18n();
+  const name = node.name || node.path.split("/").pop() || node.path;
+  if (canShowInlinePdf()) {
+    return /* @__PURE__ */ jsx16("div", { className: "thread-graph-file-preview-frame min-h-0 flex-1 overflow-hidden", children: /* @__PURE__ */ jsx16("iframe", { src, title: translate("files.pDFPreview", { value1: node.path || node.name }), className: "h-full w-full border-0" }) });
+  }
+  const sizeLabel = fileSizeLabel(node.size);
+  return /* @__PURE__ */ jsxs12("div", { className: "thread-graph-download-preview", "data-testid": "workspace-pdf-actions", children: [
+    /* @__PURE__ */ jsx16(FileText, { "aria-hidden": "true", className: "thread-graph-download-preview-icon" }),
+    /* @__PURE__ */ jsx16("strong", { children: name }),
+    sizeLabel ? /* @__PURE__ */ jsx16("span", { children: sizeLabel }) : null,
+    /* @__PURE__ */ jsx16("p", { children: translate("files.pdfOpenOrDownload") }),
+    /* @__PURE__ */ jsxs12("div", { className: "thread-graph-download-preview-actions", children: [
+      /* @__PURE__ */ jsxs12("a", { href: src, target: "_blank", rel: "noopener", "aria-label": translate("files.openPdfInNewTab", { value1: name }), children: [
+        /* @__PURE__ */ jsx16(ExternalLink, { "aria-hidden": "true", size: 16 }),
+        translate("files.openPdf")
+      ] }),
+      /* @__PURE__ */ jsxs12("a", { href: src, download: name, "aria-label": translate("files.download", { value1: name }), children: [
+        /* @__PURE__ */ jsx16(Download4, { "aria-hidden": "true", size: 16 }),
+        translate("files.downloadFile")
+      ] })
+    ] })
+  ] });
+}
 function DownloadFilePreview({ node, onDownload, readOnlyReason }) {
   const { locale: i18nLocale } = useI18n();
   const [pending, setPending] = useState10(false);
   const [error, setError] = useState10(null);
-  const size = node.size;
-  const sizeLabel = size === void 0 ? null : size < 1024 ? `${size} B` : size < 1024 * 1024 ? `${(size / 1024).toFixed(1)} KB` : `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  const sizeLabel = fileSizeLabel(node.size);
   return /* @__PURE__ */ jsxs12("div", { className: "thread-graph-download-preview", children: [
     /* @__PURE__ */ jsx16(Download4, { "aria-hidden": "true", className: "thread-graph-download-preview-icon" }),
     /* @__PURE__ */ jsx16("strong", { children: node.name }),
@@ -4004,7 +4045,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-XUFJTT7G.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-KQC7NTW3.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -4031,6 +4072,24 @@ function resolveWorkspaceMarkdownPath({ markdownPath, resourceUrl, workspaceRoot
   if (base === null) return null;
   const directory = base.slice(0, Math.max(0, base.lastIndexOf("/")));
   return relativeWorkspacePath(directory ? `${directory}/${path}` : path, workspaceRootPath);
+}
+function resolveLinkedMarkdownPath({ markdownPath, resourceUrl, workspaceRootPath = "" }) {
+  const markdown = normalizeFileSystemPath(markdownPath);
+  const prefix = /^[a-z]:\//i.exec(markdown)?.[0] ?? (markdown.startsWith("/") && !markdown.startsWith("//") ? "/" : null);
+  if (!prefix || workspaceRootPath && relativeWorkspacePath(markdown, workspaceRootPath) !== null) return null;
+  const raw = localFileHref(resourceUrl, typeof window === "undefined" ? void 0 : window.location.origin);
+  const path = raw?.split("#")[0] ?? "";
+  if (!path || path.startsWith("/") || /^[a-z]:\//i.test(path)) return null;
+  const segments = [];
+  const parts = markdown.slice(prefix.length).split("/");
+  for (const part of [...parts.slice(0, -1), ...path.split("/")]) {
+    if (!part || part === ".") continue;
+    if (part === "..") {
+      if (!segments.length) return null;
+      segments.pop();
+    } else segments.push(part);
+  }
+  return segments.length ? prefix + segments.join("/") : null;
 }
 function isSmallEditableTextFile(file) {
   return !file.truncated && file.size <= SMALL_TEXT_FILE_MAX_BYTES && file.content.split("\n").length <= SMALL_TEXT_FILE_MAX_LINES;
@@ -4165,11 +4224,14 @@ var GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview2({
   );
 });
 var MarkdownResourceContext = createContext({ markdownPath: "" });
+function markdownResourcePath(markdownPath, resourceUrl, workspaceRootPath = "") {
+  return resolveWorkspaceMarkdownPath({ markdownPath, resourceUrl, workspaceRootPath }) ?? resolveLinkedMarkdownPath({ markdownPath, resourceUrl, workspaceRootPath });
+}
 var workspaceMarkdownComponents = {
   a({ href, children: originalChildren, node: _node, ...props }) {
     const { markdownPath, workspaceRootPath, onOpenWorkspaceFile } = useContext(MarkdownResourceContext);
     const children = /* @__PURE__ */ jsx16(MarkdownImageLinkContext.Provider, { value: true, children: originalChildren });
-    const workspacePath = href ? resolveWorkspaceMarkdownPath({ markdownPath, resourceUrl: href, workspaceRootPath: workspaceRootPath ?? "" }) : null;
+    const workspacePath = href ? markdownResourcePath(markdownPath, href, workspaceRootPath) : null;
     if (workspacePath && onOpenWorkspaceFile) {
       return /* @__PURE__ */ jsx16(WorkspaceFileLink, { path: workspacePath, onOpen: ({ path }) => onOpenWorkspaceFile(path), children });
     }
@@ -4177,7 +4239,7 @@ var workspaceMarkdownComponents = {
   },
   img({ src, alt, ...props }) {
     const { markdownPath, workspaceRootPath, resolveWorkspaceFileUrl } = useContext(MarkdownResourceContext);
-    const workspacePath = src ? resolveWorkspaceMarkdownPath({ markdownPath, resourceUrl: src, workspaceRootPath: workspaceRootPath ?? "" }) : null;
+    const workspacePath = src ? markdownResourcePath(markdownPath, src, workspaceRootPath) : null;
     const resolvedSrc = workspacePath ? resolveWorkspaceFileUrl?.(workspacePath) ?? src : src;
     return resolvedSrc ? /* @__PURE__ */ jsx16(
       ZoomableImage,
@@ -4508,14 +4570,7 @@ function GraphWorkspacePreviewPane({
               moleculeId: moleculeSnapshot.uuid ?? selectedTarget.node.path,
               title: translate("files.pyMOLStylePDBCIF")
             }
-          ) }) : selectedTarget.kind === "workspace-file" && imageUrl ? /* @__PURE__ */ jsx16(WorkspaceImagePreview, { src: imageUrl, alt: selectedTarget.node.path || selectedTarget.node.name }, imageUrl) : selectedTarget.kind === "workspace-file" && pdfUrl ? /* @__PURE__ */ jsx16("div", { className: "thread-graph-file-preview-frame min-h-0 flex-1 overflow-hidden", children: /* @__PURE__ */ jsx16(
-            "iframe",
-            {
-              src: pdfUrl,
-              title: translate("files.pDFPreview", { value1: selectedTarget.node.path || selectedTarget.node.name }),
-              className: "h-full w-full border-0"
-            }
-          ) }) : selectedTarget.kind === "workspace-file" && previewFile ? /* @__PURE__ */ jsxs12("div", { className: "flex min-h-0 flex-1 flex-col", children: [
+          ) }) : selectedTarget.kind === "workspace-file" && imageUrl ? /* @__PURE__ */ jsx16(WorkspaceImagePreview, { src: imageUrl, alt: selectedTarget.node.path || selectedTarget.node.name }, imageUrl) : selectedTarget.kind === "workspace-file" && pdfUrl ? /* @__PURE__ */ jsx16(WorkspacePdfPreview, { src: pdfUrl, node: selectedTarget.node }, pdfUrl) : selectedTarget.kind === "workspace-file" && previewFile ? /* @__PURE__ */ jsxs12("div", { className: "flex min-h-0 flex-1 flex-col", children: [
             document2 && (document2.snapshot.readOnlyReason || ["conflict", "unknown", "error"].includes(document2.phase)) ? /* @__PURE__ */ jsxs12("div", { className: "workspace-document-status", role: "status", children: [
               /* @__PURE__ */ jsxs12("span", { children: [
                 document2.snapshot.readOnlyReason ? translate("files.safeReadOnly", { reason: translateReadOnly(document2.snapshot.readOnlyReason) }) : translate(document2.needsVerification && document2.phase === "clean" ? "files.safeAdoptedSnapshot" : `files.safePhase.${document2.phase}`),
@@ -4534,7 +4589,7 @@ function GraphWorkspacePreviewPane({
                 }, children: translate("files.safeUseCheckedBase") }) : null,
                 document2.phase === "conflict" && !showConflict ? /* @__PURE__ */ jsx16("button", { type: "button", onClick: () => setShowConflict(true), children: translate("files.safeViewConflict") }) : null
               ] })
-            ] }) : !document2 && canSaveDocument ? /* @__PURE__ */ jsx16("div", { className: "workspace-document-status", children: translate("files.safeUnavailable") }) : null,
+            ] }) : !document2 && canSaveDocument ? /* @__PURE__ */ jsx16("div", { className: "workspace-document-status", children: translate(isHostFilePath(previewFile.path) ? "files.linkedFileReadOnly" : "files.safeUnavailable") }) : null,
             document2 && (document2.phase === "conflict" || document2.phase === "unknown" && document2.conflict) && showConflict ? /* @__PURE__ */ jsxs12("div", { className: "workspace-document-conflict", "data-testid": "workspace-document-conflict", children: [
               /* @__PURE__ */ jsx16("strong", { children: translate(document2.phase === "unknown" ? "files.safePhase.unknown" : "files.safeConflictTitle") }),
               /* @__PURE__ */ jsx16("p", { children: translate(document2.phase === "unknown" ? "files.safeUnknown" : "files.safeConflictBody") }),

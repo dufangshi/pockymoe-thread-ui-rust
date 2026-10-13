@@ -23,15 +23,17 @@ vi.mock('./GraphWorkspacePreviewPane', () => ({
     mobileNavigation,
     onCollapse,
     onExpandExplorer,
+    pdfUrl,
     previewFile,
   }: {
+    pdfUrl?: string | null;
     focusLine?: number | null;
     mobileNavigation?: boolean;
     onCollapse?: () => void;
     onExpandExplorer?: () => void;
     previewFile?: ThreadWorkspaceFilePreview | null;
   }) => (
-    <div data-testid="preview-file" data-focus-line={focusLine ?? undefined}>
+    <div data-testid="preview-file" data-focus-line={focusLine ?? undefined} data-pdf-url={pdfUrl ?? undefined}>
       {previewFile?.path ?? 'none'}
       {onCollapse ? (
         <button type="button" aria-label="Hide Editor" onClick={onCollapse} />
@@ -226,6 +228,25 @@ describe('GraphWorkspaceExplorer', () => {
     expect(listTree).toHaveBeenCalledTimes(calls);
     expect(listTree.mock.calls.some(([input]) => String(input.path).startsWith('/outside'))).toBe(false);
     expect(statLinkedFile).toHaveBeenCalledTimes(1);
+  });
+
+  it('previews a PDF from bytes read through the adapter, not from a navigable URL', async () => {
+    const { adapter } = createAdapter();
+    const pdf = new Blob(['%PDF-1.4'], { type: 'application/octet-stream' });
+    const readRawFile = vi.fn<NonNullable<ThreadWorkspaceAdapter['readRawFile']>>(async () => pdf);
+    const getRawFileUrl = vi.fn(() => 'https://relay.example/relay/devices/d/api/raw');
+    const created: Blob[] = [];
+    const createObjectURL = vi.fn((blob: Blob) => { created.push(blob); return `blob:test/${created.length}`; });
+    const revokeObjectURL = vi.fn();
+    Object.assign(URL, { createObjectURL, revokeObjectURL });
+    await renderExplorer({ ...adapter, readRawFile, getRawFileUrl, listTree: async () => directory('', [file('report.pdf')]) }, { path: 'report.pdf', requestId: 1 });
+    const preview = () => host?.querySelector('[data-testid="preview-file"]');
+    await vi.waitFor(() => expect(preview()?.getAttribute('data-pdf-url')).toBe('blob:test/1'));
+    expect(readRawFile).toHaveBeenCalledWith(expect.objectContaining({ threadId: 'thread-1', workspaceId: 'workspace-1', path: 'report.pdf' }));
+    expect(created[0]?.type).toBe('application/pdf');
+    act(() => root?.unmount());
+    root = null;
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:test/1');
   });
 
   it('loads the root, previews the first file, and preserves expanded directories on refresh', async () => {

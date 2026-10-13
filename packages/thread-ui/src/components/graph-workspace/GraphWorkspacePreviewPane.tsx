@@ -23,6 +23,8 @@ import {
   BookOpen,
   Code2,
   Download,
+  ExternalLink,
+  FileText,
   Pencil,
   PanelLeftOpen,
   MoreHorizontal,
@@ -71,6 +73,50 @@ export type GraphWorkspacePreviewTarget =
   | { kind: 'meta'; node: WorkspaceTreeNode }
   | null;
 
+// Linked host files are opened by absolute path; they never use safe editing.
+const isHostFilePath = (path: string) => path.startsWith('/') || /^[a-z]:[\\/]/i.test(path);
+
+function fileSizeLabel(size: number | undefined) {
+  return size === undefined ? null : size < 1024 ? `${size} B`
+    : size < 1024 * 1024 ? `${(size / 1024).toFixed(1)} KB`
+    : `${(size / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+/** Chrome on Android reports false: it has no PDF viewer inside a frame. */
+export function canShowInlinePdf(nav: { pdfViewerEnabled?: boolean } | undefined =
+  typeof navigator === 'undefined' ? undefined : navigator) {
+  return nav?.pdfViewerEnabled !== false;
+}
+
+function WorkspacePdfPreview({ src, node }: { src: string; node: WorkspaceTreeNode }) {
+  useI18n();
+  const name = node.name || node.path.split('/').pop() || node.path;
+  if (canShowInlinePdf()) {
+    return (
+      <div className="thread-graph-file-preview-frame min-h-0 flex-1 overflow-hidden">
+        <iframe src={src} title={translate("files.pDFPreview", { value1: node.path || node.name })} className="h-full w-full border-0" />
+      </div>
+    );
+  }
+  const sizeLabel = fileSizeLabel(node.size);
+  return (
+    <div className="thread-graph-download-preview" data-testid="workspace-pdf-actions">
+      <FileText aria-hidden="true" className="thread-graph-download-preview-icon" />
+      <strong>{name}</strong>
+      {sizeLabel ? <span>{sizeLabel}</span> : null}
+      <p>{translate("files.pdfOpenOrDownload")}</p>
+      <div className="thread-graph-download-preview-actions">
+        <a href={src} target="_blank" rel="noopener" aria-label={translate("files.openPdfInNewTab", { value1: name })}>
+          <ExternalLink aria-hidden="true" size={16} />{translate("files.openPdf")}
+        </a>
+        <a href={src} download={name} aria-label={translate("files.download", { value1: name })}>
+          <Download aria-hidden="true" size={16} />{translate("files.downloadFile")}
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function DownloadFilePreview({ node, onDownload, readOnlyReason }: {
   readOnlyReason?: string;
   node: WorkspaceTreeNode;
@@ -79,10 +125,7 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }: {
   const { locale: i18nLocale } = useI18n();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const size = node.size;
-  const sizeLabel = size === undefined ? null : size < 1024 ? `${size} B`
-    : size < 1024 * 1024 ? `${(size / 1024).toFixed(1)} KB`
-    : `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  const sizeLabel = fileSizeLabel(node.size);
   return (
     <div className="thread-graph-download-preview">
       <Download aria-hidden="true" className="thread-graph-download-preview-icon" />
@@ -145,6 +188,33 @@ export function resolveWorkspaceMarkdownPath({ markdownPath, resourceUrl, worksp
   if (base === null) return null;
   const directory = base.slice(0, Math.max(0, base.lastIndexOf('/')));
   return relativeWorkspacePath(directory ? `${directory}/${path}` : path, workspaceRootPath);
+}
+
+/**
+ * A linked Markdown file is a host file outside the workspace that the owner
+ * opened by absolute path. Its relative resources resolve beside it, to absolute
+ * host paths that the adapter serves as linked files. Absolute and external
+ * resources stay unresolved, as for workspace documents.
+ */
+export function resolveLinkedMarkdownPath({ markdownPath, resourceUrl, workspaceRootPath = '' }: {
+  markdownPath: string; resourceUrl: string; workspaceRootPath?: string;
+}) {
+  const markdown = normalizeFileSystemPath(markdownPath);
+  const prefix = /^[a-z]:\//i.exec(markdown)?.[0] ?? (markdown.startsWith('/') && !markdown.startsWith('//') ? '/' : null);
+  if (!prefix || (workspaceRootPath && relativeWorkspacePath(markdown, workspaceRootPath) !== null)) return null;
+  const raw = localFileHref(resourceUrl, typeof window === 'undefined' ? undefined : window.location.origin);
+  const path = raw?.split('#')[0] ?? '';
+  if (!path || path.startsWith('/') || /^[a-z]:\//i.test(path)) return null;
+  const segments: string[] = [];
+  const parts = markdown.slice(prefix.length).split('/');
+  for (const part of [...parts.slice(0, -1), ...path.split('/')]) {
+    if (!part || part === '.') continue;
+    if (part === '..') {
+      if (!segments.length) return null;
+      segments.pop();
+    } else segments.push(part);
+  }
+  return segments.length ? prefix + segments.join('/') : null;
 }
 
 function isSmallEditableTextFile(file: ThreadWorkspaceFilePreview) {
@@ -324,13 +394,18 @@ type MarkdownResourceContextValue = {
 };
 const MarkdownResourceContext = createContext<MarkdownResourceContextValue>({ markdownPath: '' });
 
+function markdownResourcePath(markdownPath: string, resourceUrl: string, workspaceRootPath = '') {
+  return resolveWorkspaceMarkdownPath({ markdownPath, resourceUrl, workspaceRootPath })
+    ?? resolveLinkedMarkdownPath({ markdownPath, resourceUrl, workspaceRootPath });
+}
+
 // Stable component types keep image state alive when Explorer updates its callbacks.
 // Defining these inside the preview remounted every image (and closed its lightbox).
 const workspaceMarkdownComponents: Components = {
   a({ href, children: originalChildren, node: _node, ...props }) {
     const { markdownPath, workspaceRootPath, onOpenWorkspaceFile } = useContext(MarkdownResourceContext);
     const children = <MarkdownImageLinkContext.Provider value={true}>{originalChildren}</MarkdownImageLinkContext.Provider>;
-    const workspacePath = href ? resolveWorkspaceMarkdownPath({ markdownPath, resourceUrl: href, workspaceRootPath: workspaceRootPath ?? '' }) : null;
+    const workspacePath = href ? markdownResourcePath(markdownPath, href, workspaceRootPath) : null;
     if (workspacePath && onOpenWorkspaceFile) {
       return <WorkspaceFileLink path={workspacePath} onOpen={({ path }) => onOpenWorkspaceFile(path)}>{children}</WorkspaceFileLink>;
     }
@@ -338,7 +413,7 @@ const workspaceMarkdownComponents: Components = {
   },
   img({ src, alt, ...props }) {
     const { markdownPath, workspaceRootPath, resolveWorkspaceFileUrl } = useContext(MarkdownResourceContext);
-    const workspacePath = src ? resolveWorkspaceMarkdownPath({ markdownPath, resourceUrl: src, workspaceRootPath: workspaceRootPath ?? '' }) : null;
+    const workspacePath = src ? markdownResourcePath(markdownPath, src, workspaceRootPath) : null;
     const resolvedSrc = workspacePath ? (resolveWorkspaceFileUrl?.(workspacePath) ?? src) : src;
     return resolvedSrc ? <GraphWorkspaceZoomableImage src={resolvedSrc} alt={alt ?? ''} loading="lazy"
       className={props.className} width={props.width} height={props.height} /> : null;
@@ -723,13 +798,7 @@ export function GraphWorkspacePreviewPane({
         ) : selectedTarget.kind === 'workspace-file' && imageUrl ? (
           <WorkspaceImagePreview key={imageUrl} src={imageUrl} alt={selectedTarget.node.path || selectedTarget.node.name} />
         ) : selectedTarget.kind === 'workspace-file' && pdfUrl ? (
-          <div className="thread-graph-file-preview-frame min-h-0 flex-1 overflow-hidden">
-            <iframe
-              src={pdfUrl}
-              title={translate("files.pDFPreview", { value1: selectedTarget.node.path || selectedTarget.node.name })}
-              className="h-full w-full border-0"
-            />
-          </div>
+          <WorkspacePdfPreview key={pdfUrl} src={pdfUrl} node={selectedTarget.node} />
         ) : selectedTarget.kind === 'workspace-file' && previewFile ? (
           <div className="flex min-h-0 flex-1 flex-col">
             {document && (document.snapshot.readOnlyReason || ['conflict','unknown','error'].includes(document.phase)) ? (
@@ -741,7 +810,7 @@ export function GraphWorkspacePreviewPane({
                   {document.phase === 'conflict' && !showConflict ? <button type="button" onClick={() => setShowConflict(true)}>{translate('files.safeViewConflict')}</button> : null}
                 </div>
               </div>
-            ) : !document && canSaveDocument ? <div className="workspace-document-status">{translate('files.safeUnavailable')}</div> : null}
+            ) : !document && canSaveDocument ? <div className="workspace-document-status">{translate(isHostFilePath(previewFile.path) ? 'files.linkedFileReadOnly' : 'files.safeUnavailable')}</div> : null}
             {document && (document.phase === 'conflict' || (document.phase === 'unknown' && document.conflict)) && showConflict ? (
               <div className="workspace-document-conflict" data-testid="workspace-document-conflict">
                 <strong>{translate(document.phase==='unknown' ? 'files.safePhase.unknown':'files.safeConflictTitle')}</strong>

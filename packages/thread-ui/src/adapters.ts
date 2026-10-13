@@ -114,6 +114,17 @@ export interface ThreadWorkspaceAdapter {
     workspaceId?: string | null;
     path: string;
   }) => string;
+  /**
+   * File bytes through the authenticated (on a relay: encrypted) API. Previews
+   * that the browser would otherwise navigate to, such as PDF frames, use this:
+   * a frame or new tab on another origin bypasses the Web origin's transport.
+   */
+  readRawFile?: (input: {
+    threadId: string;
+    workspaceId?: string | null;
+    path: string;
+    signal?: AbortSignal;
+  }) => Promise<Blob>;
   uploadFile?: (input: {
     threadId: string;
     workspaceId?: string | null;

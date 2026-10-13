@@ -600,4 +600,8 @@ export const filesEn = {
   "files.andItsContents": " and its contents",
   "files.loadingDiagram": "Loading diagram…",
   "files.hidePreview": "Hide preview",
+  "files.pdfOpenOrDownload": "This browser cannot show a PDF inside the page. Open it in a new tab or download it.",
+  "files.openPdf": "Open",
+  "files.openPdfInNewTab": "Open {{value1}} in a new tab",
+  "files.linkedFileReadOnly": "Linked file outside the workspace: read-only preview.",
 } as const;

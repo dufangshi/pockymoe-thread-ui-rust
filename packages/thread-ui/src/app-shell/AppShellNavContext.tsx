@@ -13,6 +13,10 @@ export interface AppShellNavContextValue {
   closeNav: () => void;
   settingsOpen: boolean;
   openSettings: () => void;
+  /** Opens settings on one section, such as `resources`. */
+  openSettingsSection?: (sectionId: string) => void;
+  /** The section the settings dialog opens on; the first one when unset. */
+  settingsSection?: string | null;
   closeSettings: () => void;
   themeMode: ThemeMode;
   setThemeMode: (mode: ThemeMode) => void;

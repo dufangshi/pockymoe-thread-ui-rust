@@ -232,5 +232,20 @@ export const settingsEn = {
   "settings.upstreamsDeepSeekOfficial": "DeepSeek API",
   "settings.upstreamsResponses": "Responses",
   "settings.dshRunModeBroken": "{{value1}} (unavailable: {{value2}})",
-  "settings.dshRunModeBrokenUnknown": "DSH reports it cannot load"
+  "settings.dshRunModeBrokenUnknown": "DSH reports it cannot load",
+  "settings.resourcesTab": "Resources",
+  "settings.resourcesDescription": "Release idle harnesses and cap how many stay loaded.",
+  "settings.resourcesChooseDevice": "Open a device to manage its resources.",
+  "settings.resourcesUnavailable": "Update this device's Supervisor to change resource settings.",
+  "settings.idleRelease": "Release idle threads",
+  "settings.idleReleaseHint": "Ends a thread's harness once no page shows it and it has been idle this long.",
+  "settings.idleReleaseUnit": "min",
+  "settings.maxLoadedThreads": "Limit loaded threads",
+  "settings.maxLoadedThreadsHint": "Above this, the least recently used idle threads are released first.",
+  "settings.maxHarnessMemory": "Limit harness memory",
+  "settings.maxHarnessMemoryHint": "Measured as in the device monitor. Busy threads are never stopped.",
+  "settings.resourcesMinutesRange": "Enter 1–1440 minutes.",
+  "settings.resourcesThreadsRange": "Enter 1–200 threads.",
+  "settings.resourcesMemoryRange": "Enter at least 0.25 GiB.",
+  "settings.resourcesSaved": "Saved."
 } as const;

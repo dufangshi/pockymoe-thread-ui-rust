@@ -232,5 +232,20 @@ export const settingsZhCN = {
   "settings.upstreamsDeepSeekOfficial": "DeepSeek 官方 API",
   "settings.upstreamsResponses": "Responses",
   "settings.dshRunModeBroken": "{{value1}}（不可用：{{value2}}）",
-  "settings.dshRunModeBrokenUnknown": "DSH 报告无法加载"
+  "settings.dshRunModeBrokenUnknown": "DSH 报告无法加载",
+  "settings.resourcesTab": "资源",
+  "settings.resourcesDescription": "释放空闲 harness，限制同时加载的数量。",
+  "settings.resourcesChooseDevice": "请打开设备以管理其资源。",
+  "settings.resourcesUnavailable": "请更新此设备的 Supervisor 以修改资源设置。",
+  "settings.idleRelease": "空闲释放",
+  "settings.idleReleaseHint": "没有页面显示、且空闲满这么久后，结束 thread 的 harness。",
+  "settings.idleReleaseUnit": "分钟",
+  "settings.maxLoadedThreads": "限制加载的 thread 数",
+  "settings.maxLoadedThreadsHint": "超出时，先释放最久未用的空闲 thread。",
+  "settings.maxHarnessMemory": "限制 harness 内存",
+  "settings.maxHarnessMemoryHint": "口径与设备监控相同。不会结束正在工作的 thread。",
+  "settings.resourcesMinutesRange": "请输入 1–1440 分钟。",
+  "settings.resourcesThreadsRange": "请输入 1–200 个。",
+  "settings.resourcesMemoryRange": "请输入至少 0.25 GiB。",
+  "settings.resourcesSaved": "已保存。"
 } as const;

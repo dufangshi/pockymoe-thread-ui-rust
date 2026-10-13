@@ -1,4 +1,5 @@
 import { createWorkspacePathResolver } from './components/workspacePathLinks';
+import { ThreadLoadingIndicator } from './components/ThreadLoadingIndicator';
 import { translate, useI18n } from './i18n';
 import {
   useMemo,
@@ -393,10 +394,7 @@ export function ThreadDetailSurface({
     ) : null);
 
   const defaultContent = loading ? (
-    (loadingContent ?? (
-      <div className="flex flex-1 items-center justify-center px-6 py-12 text-center text-[var(--theme-fg-muted)]">
-        {translate("workbench.loadingThreadDetail")}</div>
-    ))
+    (loadingContent ?? <ThreadLoadingIndicator />)
   ) : detail ? (
     <div className={className}>
       {floatingPanel ? (

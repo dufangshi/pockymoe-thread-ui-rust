@@ -1,3 +1,4 @@
+import { ThreadLoadingIndicator } from '../ThreadLoadingIndicator';
 import { translate, useI18n } from '../../i18n';
 import {
   memo,
@@ -843,10 +844,11 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           disabled={deferredItemsLoading}
           aria-label={translate("chat.turn_6e6e38", { value1: workedLabel, value2: effectiveCollapsed ? translate("chat.expand") : translate("chat.collapse"), value3: absoluteIndex })}
           aria-expanded={!effectiveCollapsed}
+          aria-busy={deferredItemsLoading}
         >
           <span className="thread-graph-worked-label shrink-0">
             {deferredItemsLoading
-              ? translate("chat.loadingCompleteHistory")
+              ? <ThreadLoadingIndicator inline label={translate("chat.loadingCompleteHistory")} />
               : deferredItemsError
                 ? translate("chat.historyUnavailableRetry")
                 : workedLabel}

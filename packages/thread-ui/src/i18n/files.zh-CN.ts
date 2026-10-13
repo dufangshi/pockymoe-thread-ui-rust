@@ -600,4 +600,8 @@ export const filesZhCN = {
   "files.andItsContents": "及其内容",
   "files.loadingDiagram": "正在加载图表…",
   "files.hidePreview": "收起预览",
+  "files.pdfOpenOrDownload": "此浏览器无法在页面内显示 PDF。可在新标签页中打开或下载。",
+  "files.openPdf": "打开",
+  "files.openPdfInNewTab": "在新标签页中打开 {{value1}}",
+  "files.linkedFileReadOnly": "工作区外的链接文件：只读预览。",
 } as const;

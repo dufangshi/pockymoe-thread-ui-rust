@@ -666,7 +666,9 @@
   border: 1px solid var(--theme-border);
   border-radius: 20px;
 }
-.thread-graph-download-preview button {
+.thread-graph-download-preview-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.thread-graph-download-preview button,
+.thread-graph-download-preview-actions a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -677,7 +679,9 @@
   background: var(--theme-panel);
   cursor: pointer;
 }
-.thread-graph-download-preview button:hover { background: var(--theme-bg); }
+.thread-graph-download-preview-actions a { text-decoration: none; }
+.thread-graph-download-preview button:hover,
+.thread-graph-download-preview-actions a:hover { background: var(--theme-bg); }
 .thread-graph-download-preview button:disabled { opacity: .6; cursor: wait; }
 
 /* Safe small-file documents reuse the workspace surface and existing themes. */

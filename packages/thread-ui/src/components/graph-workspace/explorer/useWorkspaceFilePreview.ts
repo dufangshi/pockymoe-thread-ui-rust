@@ -54,6 +54,7 @@ export function useWorkspaceFilePreview({
     const currentPath = selectedPath;
 
     let cancelled = false;
+    let objectUrl: string | null = null;
     const abort = new AbortController();
     async function loadPreview() {
       setPreviewLoading(true);
@@ -79,6 +80,13 @@ export function useWorkspaceFilePreview({
           if (!cancelled) {
             setImageUrl(rawUrl);
           }
+          return;
+        }
+        if (PDF_EXTENSIONS.has(extension) && currentAdapter.readRawFile) {
+          const blob = await currentAdapter.readRawFile({ ...identity, path: currentPath, signal: abort.signal });
+          if (cancelled) return;
+          objectUrl = URL.createObjectURL(blob.type === 'application/pdf' ? blob : new Blob([blob], { type: 'application/pdf' }));
+          setPdfUrl(objectUrl);
           return;
         }
         if (rawUrl && PDF_EXTENSIONS.has(extension)) {
@@ -117,6 +125,7 @@ export function useWorkspaceFilePreview({
     return () => {
       cancelled = true;
       abort.abort();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [
     activeNode?.id,

@@ -7,6 +7,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultPluginContextValue } from '../../plugins/plugin-context';
 import {
   GraphWorkspacePreviewPane,
+  canShowInlinePdf,
+  resolveLinkedMarkdownPath,
   resolveWorkspaceMarkdownPath,
 } from './GraphWorkspacePreviewPane';
 import type { WorkspaceTreeNode } from './workspaceTree';
@@ -105,7 +107,71 @@ describe('resolveWorkspaceMarkdownPath', () => {
   });
 });
 
+describe('resolveLinkedMarkdownPath', () => {
+  it('resolves relative resources beside a linked host Markdown file', () => {
+    const linked = { markdownPath: '/tmp/report/REPORT.md', workspaceRootPath: '/home/u/treer' };
+    expect(resolveLinkedMarkdownPath({ ...linked, resourceUrl: 'shot.png' })).toBe('/tmp/report/shot.png');
+    expect(resolveLinkedMarkdownPath({ ...linked, resourceUrl: './images/a%20b.png#x' })).toBe('/tmp/report/images/a b.png');
+    expect(resolveLinkedMarkdownPath({ ...linked, resourceUrl: '../shared/logo.svg' })).toBe('/tmp/shared/logo.svg');
+    expect(resolveLinkedMarkdownPath({ markdownPath: 'C:\\notes\\r.md', resourceUrl: 'img/p.png' })).toBe('C:/notes/img/p.png');
+  });
+
+  it('leaves workspace documents, absolute, external and escaping resources alone', () => {
+    expect(resolveLinkedMarkdownPath({ markdownPath: '/home/u/treer/docs/a.md', resourceUrl: 'x.png', workspaceRootPath: '/home/u/treer' })).toBeNull();
+    expect(resolveLinkedMarkdownPath({ markdownPath: 'docs/a.md', resourceUrl: 'x.png' })).toBeNull();
+    expect(resolveLinkedMarkdownPath({ markdownPath: '/tmp/r.md', resourceUrl: '/etc/passwd' })).toBeNull();
+    expect(resolveLinkedMarkdownPath({ markdownPath: '/tmp/r.md', resourceUrl: 'https://example.com/x.png' })).toBeNull();
+    expect(resolveLinkedMarkdownPath({ markdownPath: '/tmp/r.md', resourceUrl: '../../x.png' })).toBeNull();
+  });
+});
+
+describe('PDF preview', () => {
+  const pdfNode: WorkspaceTreeNode = { id: 'pdf', path: 'docs/report.pdf', name: 'report.pdf', kind: 'file', size: 2048, children: [] };
+  afterEach(() => { Reflect.deleteProperty(navigator, 'pdfViewerEnabled'); });
+
+  it('detects browsers without an inline PDF viewer', () => {
+    expect(canShowInlinePdf({ pdfViewerEnabled: true })).toBe(true);
+    expect(canShowInlinePdf({})).toBe(true);
+    expect(canShowInlinePdf({ pdfViewerEnabled: false })).toBe(false);
+  });
+
+  it('frames the PDF where the browser has a viewer', () => {
+    Object.defineProperty(navigator, 'pdfViewerEnabled', { configurable: true, value: true });
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
+      selectedTarget={{ kind: 'workspace-file', node: pdfNode }} pdfUrl="blob:http://localhost/pdf" />);
+    expect(element.querySelector('iframe')?.getAttribute('src')).toBe('blob:http://localhost/pdf');
+    expect(element.querySelector('[data-testid="workspace-pdf-actions"]')).toBeNull();
+  });
+
+  it('offers Open and Download instead of a blank frame on phones', () => {
+    Object.defineProperty(navigator, 'pdfViewerEnabled', { configurable: true, value: false });
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
+      selectedTarget={{ kind: 'workspace-file', node: pdfNode }} pdfUrl="blob:http://localhost/pdf" />);
+    expect(element.querySelector('iframe')).toBeNull();
+    const open = element.querySelector<HTMLAnchorElement>('a[aria-label="Open report.pdf in a new tab"]')!;
+    expect(open.getAttribute('href')).toBe('blob:http://localhost/pdf');
+    expect(open.target).toBe('_blank');
+    const download = element.querySelector<HTMLAnchorElement>('a[aria-label="Download report.pdf"]')!;
+    expect(download.getAttribute('download')).toBe('report.pdf');
+    expect(element.textContent).toContain('2.0 KB');
+  });
+});
+
 describe('GraphWorkspacePreviewPane', () => {
+  it('resolves a linked Markdown file\'s relative images as linked files', () => {
+    const resolveWorkspaceFileUrl = vi.fn((path: string) => `/raw?path=${encodeURIComponent(path)}`);
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
+      selectedTarget={{ kind: 'workspace-file', node: { id: 'linked', path: '/tmp/report/REPORT.md', name: 'REPORT.md', kind: 'file', children: [] } }}
+      previewFile={{ path: '/tmp/report/REPORT.md', name: 'REPORT.md', language: 'markdown', size: 40, truncated: false, nextOffset: 40,
+        content: '# Report\n\n![Shot](shot.png)\n\n![Secret](/etc/passwd)' }}
+      canSaveDocument workspaceRootPath="/home/u/treer" resolveWorkspaceFileUrl={resolveWorkspaceFileUrl} />);
+    expect(element.querySelector('img[alt="Shot"]')?.getAttribute('src')).toBe('/raw?path=%2Ftmp%2Freport%2Fshot.png');
+    expect(element.querySelector('img[alt="Secret"]')?.getAttribute('src')).toBe('/etc/passwd');
+    expect(resolveWorkspaceFileUrl).toHaveBeenCalledTimes(1);
+    expect(element.textContent).toContain('Linked file outside the workspace: read-only preview.');
+    expect(element.textContent).not.toContain('Safe editing is unavailable');
+  });
+
   it('renders README HTML images and routes linked badges to relative workspace documents', () => {
     const onOpenWorkspaceFile = vi.fn();
     const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}

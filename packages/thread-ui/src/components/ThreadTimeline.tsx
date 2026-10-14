@@ -578,9 +578,10 @@ function ThreadTimelineComponent({
   }, [previousTurnScrollRequestKey, nextTurnScrollRequestKey, findTurn, scrollContainerRef, hiddenCount, loadingEarlier, handleLoadEarlierClick, navigateToTurn]);
   const peerGroups = groupPeerWorkTurns(visibleTurns);
   const renderPeerWork = (turn: ThreadTurnDto, omitAgentId?: string) => {
-    const context = peerWorkForTurn(loadedTurnDetails[turn.id] ?? turn)!;
+    const peerTurn = loadedTurnDetails[turn.id] ?? turn;
+    const context = peerWorkForTurn(peerTurn)!;
     const expanded = collapsedTurnOverrides[turn.id] === false;
-    return <PeerWorkGroup key={turn.id} turn={turn} context={context} expanded={expanded}
+    return <PeerWorkGroup key={turn.id} turn={peerTurn} context={context} expanded={expanded}
       loading={loadingTurnDetailIds.has(turn.id)} error={turnDetailErrors[turn.id]}
       onToggle={() => handleToggleCollapse(turn, !expanded)} scrollRootRef={scrollContainerRef}>
       {renderWorkTurn(turn, visibleTurns.indexOf(turn), [], true, omitAgentId)}

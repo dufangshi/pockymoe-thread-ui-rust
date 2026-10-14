@@ -113,6 +113,26 @@ describe('ThreadTimeline', () => {
     expect(load).toHaveBeenCalledTimes(1);
   });
 
+  it('identifies a registered delegate wake, shows its report and separates the ensuing work', () => {
+    setLocale('zh-CN', false);
+    const source = '12345678-1234-1234-1234-123456789012';
+    const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Original task'}]),id:'task'};
+    const peer = {...completedTurn([
+      {id:'wake:user',kind:'userMessage',text:`[Pockymoe wake: the delegates you registered a wake for have settled]\n- b-lab (${source}): idle\n  closing message: Full E2E report: all tests passed.\n\nVerify results before acting on them. Full transcripts: pockymoe transcript ID --limit 1`,peerWork:{taskTurnId:'task',messages:[{id:'delegate',kind:'result',name:'b-lab',fromThreadId:source,subject:'idle',text:null}]}},
+      {id:'reply',kind:'agentMessage',text:'Verified the report',responsePhase:'final'},
+    ]),id:'wake'} as ThreadTurnDto;
+    const el = render(<ThreadTimeline turns={[task,peer]} liveOutput="" autoCollapseCompletedTurns />);
+    flushSync(() => (el.querySelector('.thread-graph-worked-summary button[aria-expanded]') as HTMLButtonElement).click());
+    const toggle = el.querySelector('.thread-peer-work-toggle') as HTMLButtonElement;
+    expect(toggle.textContent).toContain('子线程唤醒');
+    expect(toggle.textContent).toContain('b-lab');
+    expect(toggle.textContent).not.toContain('idle');
+    flushSync(() => toggle.click());
+    expect(el.querySelector('.thread-peer-report')?.textContent).toContain('已结束执行');
+    expect(el.querySelector('.thread-peer-report')?.textContent).toContain('Full E2E report: all tests passed.');
+    expect(el.querySelector('.thread-peer-processing-label')?.textContent).toBe('唤醒后的处理');
+  });
+
   it('keeps the latest peer progress and final outside the task fold without exposing old replies', () => {
     const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Task'}]),id:'task'} as ThreadTurnDto;
     const peer: ThreadTurnDto = {...completedTurn([

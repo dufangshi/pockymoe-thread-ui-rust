@@ -536,14 +536,25 @@
 /* A peer question and the work it caused form one secondary step. */
 .thread-peer-work { min-width: 0; margin-block: 3px; }
 .thread-peer-work-heading { display: flex; align-items: center; gap: 6px; min-width: 0; }
+/* Leave room for the cost button's extended touch target in compact themes. */
+.thread-peer-work-heading > .thread-usage-cost { margin-inline-end: 4px; }
 .thread-peer-work-toggle { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1; min-height: 32px; padding: 3px 0; font-size: 12px; color: var(--theme-fg-muted); text-align: left; }
 .thread-peer-work-toggle > svg { width: 14px; height: 14px; flex-shrink: 0; }
 .thread-peer-work-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.thread-peer-work-kind { flex: none; color: var(--theme-fg); font-weight: 500; }
 .thread-peer-work-content { margin: 2px 0 4px 7px; padding: 4px 0 3px 12px; border-left: 1px solid var(--theme-border); min-width: 0; }
 .thread-peer-question { padding: 8px 10px; margin-bottom: 5px; border-radius: 8px; background: var(--theme-accent-soft); color: var(--theme-fg); overflow-wrap: anywhere; min-width: 0; }
 .thread-peer-question-source { margin-bottom: 4px; font-size: 10px; color: var(--theme-fg-muted); }
 .thread-peer-question .thread-graph-markdown { font-size: 12px; }
 .thread-peer-question .thread-graph-markdown > :last-child { margin-bottom: 0; }
+.thread-peer-report { background: var(--theme-panel); border: 1px solid var(--theme-border); }
+.thread-peer-report .thread-peer-question-source { display: flex; align-items: center; flex-wrap: wrap; gap: 5px 8px; font-size: 11px; }
+.thread-peer-question-source strong { color: var(--theme-fg); font-weight: 500; overflow-wrap: anywhere; }
+.thread-peer-source-state { font-size: 10px; color: var(--theme-fg-muted); }
+.thread-peer-wake-cause, .thread-peer-report-empty { margin: 0 0 6px; font-size: 11px; line-height: 1.5; color: var(--theme-fg-muted); }
+.thread-peer-report-empty { margin-bottom: 0; }
+.thread-peer-processing-label { display: flex; align-items: center; gap: 8px; margin: 8px 0 4px; font-size: 10px; color: var(--theme-fg-muted); }
+.thread-peer-processing-label::after { content: ''; height: 1px; flex: 1; background: var(--theme-border); }
 .thread-peer-execution { min-width: 0; }
 
 .thread-graph-user-preview-text { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }

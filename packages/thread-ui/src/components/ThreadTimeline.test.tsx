@@ -111,6 +111,13 @@ describe('ThreadTimeline', () => {
     flushSync(() => toggle.click());
     flushSync(() => toggle.click());
     expect(load).toHaveBeenCalledTimes(1);
+    const updated: ThreadTurnDto = { ...first, priceEstimate: {
+      currency: 'USD', pricingModelKey: 'claude-opus-5-5', pricingTierKey: 'standard',
+      inputUsd: 0.25, cachedInputUsd: 0, outputUsd: 1, totalUsd: 1.25,
+    } };
+    flushSync(() => root?.render(<ThreadTimeline turns={[task,updated,second]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={load} />));
+    expect(el.querySelector('.thread-peer-work .thread-turn-usage-price')?.textContent).toBe('$1.25');
+    expect(el.textContent).toContain('Full question: does the registration remain valid tomorrow?');
   });
 
   it('identifies a registered delegate wake, shows its report and separates the ensuing work', () => {

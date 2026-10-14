@@ -16379,7 +16379,7 @@ function ThreadTimelineComponent({
   }, [previousTurnScrollRequestKey, nextTurnScrollRequestKey, findTurn, scrollContainerRef, hiddenCount, loadingEarlier, handleLoadEarlierClick, navigateToTurn]);
   const peerGroups = groupPeerWorkTurns(visibleTurns);
   const renderPeerWork = (turn, omitAgentId) => {
-    const peerTurn = loadedTurnDetails[turn.id] ?? turn;
+    const peerTurn = { ...turn, items: loadedTurnDetails[turn.id]?.items ?? turn.items };
     const context = peerWorkForTurn(peerTurn);
     const expanded = collapsedTurnOverrides[turn.id] === false;
     return /* @__PURE__ */ jsxs52(

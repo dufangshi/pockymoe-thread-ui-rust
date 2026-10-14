@@ -578,7 +578,9 @@ function ThreadTimelineComponent({
   }, [previousTurnScrollRequestKey, nextTurnScrollRequestKey, findTurn, scrollContainerRef, hiddenCount, loadingEarlier, handleLoadEarlierClick, navigateToTurn]);
   const peerGroups = groupPeerWorkTurns(visibleTurns);
   const renderPeerWork = (turn: ThreadTurnDto, omitAgentId?: string) => {
-    const peerTurn = loadedTurnDetails[turn.id] ?? turn;
+    // Hydrate the wake envelope without freezing live status or billing at
+    // the time its details were opened.
+    const peerTurn = { ...turn, items: loadedTurnDetails[turn.id]?.items ?? turn.items };
     const context = peerWorkForTurn(peerTurn)!;
     const expanded = collapsedTurnOverrides[turn.id] === false;
     return <PeerWorkGroup key={turn.id} turn={peerTurn} context={context} expanded={expanded}

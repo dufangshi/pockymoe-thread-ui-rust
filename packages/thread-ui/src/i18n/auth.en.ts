@@ -36,6 +36,7 @@ export const authEn = {
   "auth.ui.reauthTitle": "Please sign in again",
   "auth.ui.reauthBody": "For your security, finishing the setup needs a fresh sign-in.",
   "auth.ui.reauthAction": "Sign in again",
+  "auth.ui.browserKeyLostBody": "This browser's saved key was cleared. Sign in again to reconnect.",
   "auth.ui.unlockTitle": "Unlock this browser",
   "auth.ui.unlockBody": "Enter your password to connect to your devices.",
   "auth.ui.unlockBodyOAuth": "Enter your unlock password to connect to your devices.",

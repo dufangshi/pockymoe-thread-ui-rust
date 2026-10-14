@@ -2736,6 +2736,7 @@ declare const en: {
     readonly "auth.ui.reauthTitle": "Please sign in again";
     readonly "auth.ui.reauthBody": "For your security, finishing the setup needs a fresh sign-in.";
     readonly "auth.ui.reauthAction": "Sign in again";
+    readonly "auth.ui.browserKeyLostBody": "This browser's saved key was cleared. Sign in again to reconnect.";
     readonly "auth.ui.unlockTitle": "Unlock this browser";
     readonly "auth.ui.unlockBody": "Enter your password to connect to your devices.";
     readonly "auth.ui.unlockBodyOAuth": "Enter your unlock password to connect to your devices.";
@@ -5869,6 +5870,7 @@ declare const zhCN: {
     "auth.ui.reauthTitle": "请重新登录";
     "auth.ui.reauthBody": "为了安全，完成设置需要重新登录一次。";
     "auth.ui.reauthAction": "重新登录";
+    "auth.ui.browserKeyLostBody": "此浏览器保存的密钥已被清除，请重新登录。";
     "auth.ui.unlockTitle": "解锁此浏览器";
     "auth.ui.unlockBody": "输入密码以连接你的设备。";
     "auth.ui.unlockBodyOAuth": "输入解锁密码以连接你的设备。";
@@ -9024,6 +9026,7 @@ declare const resources: {
         readonly "auth.ui.reauthTitle": "Please sign in again";
         readonly "auth.ui.reauthBody": "For your security, finishing the setup needs a fresh sign-in.";
         readonly "auth.ui.reauthAction": "Sign in again";
+        readonly "auth.ui.browserKeyLostBody": "This browser's saved key was cleared. Sign in again to reconnect.";
         readonly "auth.ui.unlockTitle": "Unlock this browser";
         readonly "auth.ui.unlockBody": "Enter your password to connect to your devices.";
         readonly "auth.ui.unlockBodyOAuth": "Enter your unlock password to connect to your devices.";
@@ -12156,6 +12159,7 @@ declare const resources: {
         "auth.ui.reauthTitle": "请重新登录";
         "auth.ui.reauthBody": "为了安全，完成设置需要重新登录一次。";
         "auth.ui.reauthAction": "重新登录";
+        "auth.ui.browserKeyLostBody": "此浏览器保存的密钥已被清除，请重新登录。";
         "auth.ui.unlockTitle": "解锁此浏览器";
         "auth.ui.unlockBody": "输入密码以连接你的设备。";
         "auth.ui.unlockBodyOAuth": "输入解锁密码以连接你的设备。";

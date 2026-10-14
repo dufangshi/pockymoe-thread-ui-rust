@@ -36,6 +36,7 @@ export const authZhCN = {
   "auth.ui.reauthTitle": "请重新登录",
   "auth.ui.reauthBody": "为了安全，完成设置需要重新登录一次。",
   "auth.ui.reauthAction": "重新登录",
+  "auth.ui.browserKeyLostBody": "此浏览器保存的密钥已被清除，请重新登录。",
   "auth.ui.unlockTitle": "解锁此浏览器",
   "auth.ui.unlockBody": "输入密码以连接你的设备。",
   "auth.ui.unlockBodyOAuth": "输入解锁密码以连接你的设备。",

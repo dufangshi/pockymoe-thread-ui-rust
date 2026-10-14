@@ -231,7 +231,7 @@ export function GraphChatThreadChatPanel({
 
   useLayoutEffect(() => {
     const node = internalComposerHostRef.current;
-    if (!node || !isMobileViewport) {
+    if (!node || (!isMobileViewport && !floatingDesktopComposer)) {
       setMobileComposerOverlap(0);
       return;
     }
@@ -239,12 +239,15 @@ export function GraphChatThreadChatPanel({
     const updateOverlap = () => {
       const rect = node.getBoundingClientRect();
       const root = panelRootRef.current;
+      // The navigation capsule sits above the host, outside its layout height.
+      const navigation = node.querySelector('.thread-jump-latest-cluster');
+      const top = navigation ? Math.min(rect.top, navigation.getBoundingClientRect().top) : rect.top;
       const bottom = useFloatingMobileComposer || !root
         ? window.innerHeight
         : Math.min(window.innerHeight, root.getBoundingClientRect().bottom);
       setPanelBottomGap(Math.max(0, Math.round(window.innerHeight - bottom)));
       setMobileComposerOverlap(
-        Math.max(0, Math.ceil(bottom - rect.top)),
+        Math.max(0, Math.ceil(bottom - top)),
       );
     };
 
@@ -257,6 +260,8 @@ export function GraphChatThreadChatPanel({
     if (typeof ResizeObserver !== 'undefined') {
       observer = new ResizeObserver(updateOverlap);
       observer.observe(node);
+      const navigation = node.querySelector('.thread-jump-latest-cluster');
+      if (navigation) observer.observe(navigation);
       if (panelRootRef.current) observer.observe(panelRootRef.current);
     }
 
@@ -268,6 +273,7 @@ export function GraphChatThreadChatPanel({
     };
   }, [
     isMobileViewport,
+    floatingDesktopComposer,
     mobileKeyboardInset,
     mobilePromptFocused,
     composerProps,
@@ -337,7 +343,7 @@ export function GraphChatThreadChatPanel({
   );
   const chatScrollBottomSpacer = isMobileViewport
     ? effectiveMobileComposerOverlap + 12
-    : floatingDesktopComposer ? mobileComposerHeight + 32 : 0;
+    : floatingDesktopComposer ? mobileComposerOverlap + 12 : 0;
   const panelStyle: CSSProperties | undefined =
     chatScrollBottomSpacer > 0
       ? ({

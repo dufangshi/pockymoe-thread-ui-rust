@@ -1196,7 +1196,9 @@ declare const en: {
     readonly "files.chooseTheInterfaceLanguageForThisBrowser": "Choose the interface language for this browser.";
     readonly "files.appearance": "Appearance";
     readonly "files.themePreset": "Theme";
-    readonly "files.themePresetDescription": "Choose a look for this browser. Light, dark and system modes apply to every theme.";
+    readonly "files.themePresetDescription": "Choose a look for this browser. A theme with one color mode always shows in it.";
+    readonly "files.themeLightOnly": "Light only";
+    readonly "files.themeDarkOnly": "Dark only";
     readonly "files.themePresetClassic": "Classic";
     readonly "files.themePresetClassicDescription": "The default quiet green workbench.";
     readonly "files.themeImport": "Import…";
@@ -4317,7 +4319,9 @@ declare const zhCN: {
     "files.chooseTheInterfaceLanguageForThisBrowser": "选择此浏览器的界面语言。";
     "files.appearance": "外观";
     "files.themePreset": "主题";
-    "files.themePresetDescription": "为这个浏览器选择一套外观。浅色、深色和跟随系统对每套主题都生效。";
+    "files.themePresetDescription": "为这个浏览器选择一套外观。只有一种颜色模式的主题总以该模式显示。";
+    "files.themeLightOnly": "仅浅色";
+    "files.themeDarkOnly": "仅深色";
     "files.themePresetClassic": "经典";
     "files.themePresetClassicDescription": "默认的安静绿色工作台。";
     "files.themeImport": "导入…";
@@ -7460,7 +7464,9 @@ declare const resources: {
         readonly "files.chooseTheInterfaceLanguageForThisBrowser": "Choose the interface language for this browser.";
         readonly "files.appearance": "Appearance";
         readonly "files.themePreset": "Theme";
-        readonly "files.themePresetDescription": "Choose a look for this browser. Light, dark and system modes apply to every theme.";
+        readonly "files.themePresetDescription": "Choose a look for this browser. A theme with one color mode always shows in it.";
+        readonly "files.themeLightOnly": "Light only";
+        readonly "files.themeDarkOnly": "Dark only";
         readonly "files.themePresetClassic": "Classic";
         readonly "files.themePresetClassicDescription": "The default quiet green workbench.";
         readonly "files.themeImport": "Import…";
@@ -10580,7 +10586,9 @@ declare const resources: {
         "files.chooseTheInterfaceLanguageForThisBrowser": "选择此浏览器的界面语言。";
         "files.appearance": "外观";
         "files.themePreset": "主题";
-        "files.themePresetDescription": "为这个浏览器选择一套外观。浅色、深色和跟随系统对每套主题都生效。";
+        "files.themePresetDescription": "为这个浏览器选择一套外观。只有一种颜色模式的主题总以该模式显示。";
+        "files.themeLightOnly": "仅浅色";
+        "files.themeDarkOnly": "仅深色";
         "files.themePresetClassic": "经典";
         "files.themePresetClassicDescription": "默认的安静绿色工作台。";
         "files.themeImport": "导入…";

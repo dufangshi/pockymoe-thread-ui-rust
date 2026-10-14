@@ -351,3 +351,25 @@ describe('ThreadWorkspaceLayout', () => {
     );
   });
 });
+
+
+describe('host-restricted navigation', () => {
+  it.each([false, true])('allows creation and hides home and settings while retaining child navigation (mobile=%s)', mobile => {
+    mockViewport(mobile);
+    Element.prototype.scrollIntoView = vi.fn();
+    const host = render(<ThreadWorkspaceLayout threads={[]} status={null}
+      restrictedNavigation
+      workspaceReturnHref="/workspaces" settingsSections={[{ id: 'global', label: 'Management', content: <p>Settings</p> }]}
+      getNewThreadHref={() => '/threads/new'}
+      workbench={{ threads: [{ key: 'local:child', title: 'Child', subtitle: 'Child thread', status: 'idle', href: '/threads/child', favorite: false }],
+        currentKey: 'local:child', activeView: 'chat', terminalEnabled: false, onViewChange: () => {}, onSearch: () => {}, workspacePath: '/project', favorite: false,
+        onToggleFavorite: () => {}, onNavigate: () => {}, notifications: [], unreadCount: 0, onReadNotifications: () => {} }}>
+      <p>Child conversation</p>
+    </ThreadWorkspaceLayout>);
+    expect(host.querySelector('a[href="/workspaces"]')).toBeNull();
+    expect(host.querySelector('button[title="New Chat"]')).not.toBeNull();
+    expect(host.querySelector('[data-testid="settings-dialog"]')).toBeNull();
+    expect(host.querySelector('a[href="/threads/child"]')).not.toBeNull();
+    expect(host.textContent).toContain('Child conversation');
+  });
+});

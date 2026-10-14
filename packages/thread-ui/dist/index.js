@@ -23,7 +23,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-6ATYFEI6.js";
+} from "./chunk-K25ORKQG.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -49,7 +49,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-5RTYJDGU.js";
+} from "./chunk-CCI65O6R.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -8105,7 +8105,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
       },
       children: [
         !mobile && /* @__PURE__ */ jsxs29("nav", { className: "matter-rail", "aria-label": translate("workbench.workspaceTools"), children: [
-          /* @__PURE__ */ jsxs29(
+          homeHref && /* @__PURE__ */ jsxs29(
             "a",
             {
               className: "matter-brand",
@@ -8180,7 +8180,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
           /* @__PURE__ */ jsx34("span", { className: "matter-topbar-separator" }),
           /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.goBack"), onClick: () => history.back(), children: /* @__PURE__ */ jsx34(ArrowLeft, {}) }),
           /* @__PURE__ */ jsx34("button", { "data-action": "go-forward", "aria-label": translate("workbench.goForward"), onClick: () => history.forward(), children: /* @__PURE__ */ jsx34(ArrowRight, {}) }),
-          !drawerTools && /* @__PURE__ */ jsx34("a", { href: homeHref, "aria-label": translate("workbench.backToWorkspaces"), title: translate("workbench.workspaces"), children: /* @__PURE__ */ jsx34(Home, {}) }),
+          !drawerTools && homeHref && /* @__PURE__ */ jsx34("a", { href: homeHref, "aria-label": translate("workbench.backToWorkspaces"), title: translate("workbench.workspaces"), children: /* @__PURE__ */ jsx34(Home, {}) }),
           /* @__PURE__ */ jsx34("div", { className: "matter-topbar-search", children: o.search ?? /* @__PURE__ */ jsxs29(
             "button",
             {
@@ -8252,7 +8252,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                 )
               ] }),
               drawerTools && /* @__PURE__ */ jsxs29("div", { className: "matter-drawer-tools", role: "group", "aria-label": translate("workbench.workspaceTools"), children: [
-                /* @__PURE__ */ jsxs29("a", { href: homeHref, children: [
+                homeHref && /* @__PURE__ */ jsxs29("a", { href: homeHref, children: [
                   /* @__PURE__ */ jsx34(Home, {}),
                   /* @__PURE__ */ jsx34("span", { children: translate("workbench.workspaces") })
                 ] }),
@@ -8777,6 +8777,7 @@ function ThreadWorkspaceLayout({
   settingsContent,
   globalSettingsContent,
   settingsSections,
+  restrictedNavigation = false,
   workspaceLabels = {},
   workspaceReturnHref,
   onWorkspaceReturn,
@@ -9064,6 +9065,7 @@ function ThreadWorkspaceLayout({
     );
   }
   function renderSettingsDialog() {
+    if (restrictedNavigation) return null;
     if (!settingsContent && !metaContent && !globalSettingsContent && !settingsSections?.length && !canUpdateThemeMode) {
       return null;
     }
@@ -9228,7 +9230,7 @@ function ThreadWorkspaceLayout({
   const renderWorkspaceFocusSplit = layoutMode === "mobile" || layoutMode === "responsive" && isWorkspaceFocusViewport;
   const renderMobileTopbarControls = renderMobileWorkspaceSplit;
   const canReturnToWorkspace = Boolean(
-    workspaceReturnHref || onWorkspaceReturn
+    !restrictedNavigation && (workspaceReturnHref || onWorkspaceReturn)
   );
   const workspaceReturnControl = canReturnToWorkspace ? /* @__PURE__ */ jsx36(
     "a",
@@ -9253,7 +9255,7 @@ function ThreadWorkspaceLayout({
         {
           options: workbench,
           title: currentThreadLabel ?? translate("files.newThread"),
-          homeHref: workspaceReturnHref ?? "/workspaces",
+          homeHref: restrictedNavigation ? void 0 : workspaceReturnHref ?? "/workspaces",
           settings: renderSettingsDialog(),
           newThread: renderNewThreadDialogButton("matter-new-thread", true),
           actions: threadActionsButton,
@@ -20832,6 +20834,7 @@ function ThreadDetailSurface({
   appMenuButton,
   appNavigationMenu,
   workspaceReturnHref,
+  restrictedNavigation,
   onWorkspaceReturn,
   threadActionsButton,
   surfaceActions,
@@ -21043,6 +21046,7 @@ function ThreadDetailSurface({
       appMenuButton,
       appNavigationMenu,
       workspaceReturnHref,
+      restrictedNavigation,
       ...onWorkspaceReturn ? { onWorkspaceReturn } : {},
       showMobileAppMenu: Boolean(appMenuButton),
       showMobileThreadNavToggle: presentation !== "embedded-single-thread",

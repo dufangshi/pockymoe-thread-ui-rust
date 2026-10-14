@@ -97,7 +97,7 @@ export function MatterWorkbench({
 }: {
   options: MatterWorkbenchOptions;
   title: string;
-  homeHref: string;
+  homeHref?: string | undefined;
   settings: ReactNode;
   newThread: ReactNode;
   actions: ReactNode;
@@ -246,13 +246,13 @@ export function MatterWorkbench({
       }}
     >
       {!mobile && <nav className="matter-rail" aria-label={translate("workbench.workspaceTools")}>
-        <a
+        {homeHref && <a
           className="matter-brand"
           href={homeHref}
           aria-label={translate("workbench.pockymoeHome")}
         >
           p<span>m</span>
-        </a>
+        </a>}
         <button
           aria-label={translate("workbench.chat")}
           aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'}
@@ -297,7 +297,7 @@ export function MatterWorkbench({
         <button data-action="go-forward" aria-label={translate("workbench.goForward")} onClick={() => history.forward()}>
           <ArrowRight />
         </button>
-        {!drawerTools && <a href={homeHref} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}>
+        {!drawerTools && homeHref && <a href={homeHref} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}>
           <Home />
         </a>}
         <div className="matter-topbar-search">{o.search ?? <button
@@ -356,7 +356,7 @@ export function MatterWorkbench({
         </div>
         {drawerTools && (
           <div className="matter-drawer-tools" role="group" aria-label={translate("workbench.workspaceTools")}>
-            <a href={homeHref}><Home /><span>{translate("workbench.workspaces")}</span></a>
+            {homeHref && <a href={homeHref}><Home /><span>{translate("workbench.workspaces")}</span></a>}
             <button aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={() => { showChat(); setSidebarOpen(false); }}><MessageSquare /><span>{translate("workbench.chat")}</span></button>
           </div>
         )}

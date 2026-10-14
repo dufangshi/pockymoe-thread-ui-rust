@@ -1,4 +1,5 @@
 export const workbenchZhCN = {
+  "workbench.treerScopeForbidden": "此对话或操作不在当前 Treer Hub 的可用范围内。",
   "workbench.subagentsRunning": "子智能体 · {{count}} 个运行中",
   "workbench.subagentCurrent": "进行中",
   "workbench.subagentUnread": "未读",

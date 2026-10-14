@@ -166,6 +166,7 @@ declare const en: {
     readonly 'search.assistant': "Assistant";
     readonly 'search.title': "Title";
     readonly 'search.localDevice': "Local device";
+    readonly "workbench.treerScopeForbidden": "This thread or action is not available through this Treer hub.";
     readonly "workbench.subagentsRunning": "Subagents · {{count}} running";
     readonly "workbench.subagentCurrent": "Current";
     readonly "workbench.subagentUnread": "Unread";
@@ -3298,6 +3299,7 @@ declare const zhCN: {
     'search.assistant': "助手";
     'search.title': "标题";
     'search.localDevice': "本地设备";
+    "workbench.treerScopeForbidden": "此对话或操作不在当前 Treer Hub 的可用范围内。";
     "workbench.subagentsRunning": "子智能体 · {{count}} 个运行中";
     "workbench.subagentCurrent": "进行中";
     "workbench.subagentUnread": "未读";
@@ -6452,6 +6454,7 @@ declare const resources: {
         readonly 'search.assistant': "Assistant";
         readonly 'search.title': "Title";
         readonly 'search.localDevice': "Local device";
+        readonly "workbench.treerScopeForbidden": "This thread or action is not available through this Treer hub.";
         readonly "workbench.subagentsRunning": "Subagents · {{count}} running";
         readonly "workbench.subagentCurrent": "Current";
         readonly "workbench.subagentUnread": "Unread";
@@ -9583,6 +9586,7 @@ declare const resources: {
         'search.assistant': "助手";
         'search.title': "标题";
         'search.localDevice': "本地设备";
+        "workbench.treerScopeForbidden": "此对话或操作不在当前 Treer Hub 的可用范围内。";
         "workbench.subagentsRunning": "子智能体 · {{count}} 个运行中";
         "workbench.subagentCurrent": "进行中";
         "workbench.subagentUnread": "未读";

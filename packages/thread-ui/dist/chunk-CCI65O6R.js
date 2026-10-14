@@ -2639,6 +2639,7 @@ var sharingEn = {
 
 // src/i18n/workbench.en.ts
 var workbenchEn = {
+  "workbench.treerScopeForbidden": "This thread or action is not available through this Treer hub.",
   "workbench.subagentsRunning": "Subagents \xB7 {{count}} running",
   "workbench.subagentCurrent": "Current",
   "workbench.subagentUnread": "Unread",
@@ -5800,6 +5801,7 @@ var sharingZhCN = {
 
 // src/i18n/workbench.zh-CN.ts
 var workbenchZhCN = {
+  "workbench.treerScopeForbidden": "\u6B64\u5BF9\u8BDD\u6216\u64CD\u4F5C\u4E0D\u5728\u5F53\u524D Treer Hub \u7684\u53EF\u7528\u8303\u56F4\u5185\u3002",
   "workbench.subagentsRunning": "\u5B50\u667A\u80FD\u4F53 \xB7 {{count}} \u4E2A\u8FD0\u884C\u4E2D",
   "workbench.subagentCurrent": "\u8FDB\u884C\u4E2D",
   "workbench.subagentUnread": "\u672A\u8BFB",

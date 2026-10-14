@@ -174,6 +174,7 @@ export interface ThreadDetailSurfaceProps {
   appMenuButton?: ReactNode;
   appNavigationMenu?: ReactNode;
   workspaceReturnHref?: string;
+  restrictedNavigation?: boolean;
   onWorkspaceReturn?: () => void;
   threadActionsButton?: ReactNode;
   surfaceActions?: ReactNode;
@@ -253,6 +254,7 @@ export function ThreadDetailSurface({
   appMenuButton,
   appNavigationMenu,
   workspaceReturnHref,
+  restrictedNavigation,
   onWorkspaceReturn,
   threadActionsButton,
   surfaceActions,
@@ -524,6 +526,7 @@ export function ThreadDetailSurface({
       appMenuButton={appMenuButton}
       appNavigationMenu={appNavigationMenu}
       workspaceReturnHref={workspaceReturnHref}
+      restrictedNavigation={restrictedNavigation}
       {...(onWorkspaceReturn ? { onWorkspaceReturn } : {})}
       showMobileAppMenu={Boolean(appMenuButton)}
       showMobileThreadNavToggle={presentation !== "embedded-single-thread"}

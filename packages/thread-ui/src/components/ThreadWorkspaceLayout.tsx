@@ -111,6 +111,8 @@ interface ThreadWorkspaceLayoutProps {
   getNewThreadHref?: (workspaceId?: string | null) => string;
   newThreadHref?: string;
   newThreadLabel?: string;
+  /** Host scope disables global settings and home navigation; conversation creation stays available. */
+  restrictedNavigation?: boolean;
   onNewThread?: () => void;
   onNewThreadTitle?: (title: string) => Promise<void> | void;
   renderNewThreadDialogContent?: (input: {
@@ -434,6 +436,7 @@ export function ThreadWorkspaceLayout({
   settingsContent,
   globalSettingsContent,
   settingsSections,
+  restrictedNavigation = false,
   workspaceLabels = {},
   workspaceReturnHref,
   onWorkspaceReturn,
@@ -775,6 +778,7 @@ export function ThreadWorkspaceLayout({
   }
 
   function renderSettingsDialog() {
+    if (restrictedNavigation) return null;
     if (
       !settingsContent &&
       !metaContent &&
@@ -979,7 +983,7 @@ export function ThreadWorkspaceLayout({
     (layoutMode === "responsive" && isWorkspaceFocusViewport);
   const renderMobileTopbarControls = renderMobileWorkspaceSplit;
   const canReturnToWorkspace = Boolean(
-    workspaceReturnHref || onWorkspaceReturn,
+    !restrictedNavigation && (workspaceReturnHref || onWorkspaceReturn),
   );
   const workspaceReturnControl = canReturnToWorkspace ? (
     <a
@@ -1000,7 +1004,7 @@ export function ThreadWorkspaceLayout({
 
   if (workbench) {
     return <GraphChatShellRoot effectiveTheme={effectiveTheme} layoutMode={layoutMode} themeMode={themeMode} viewportConstrained={viewportConstrained}>
-      <MatterWorkbench options={workbench} title={currentThreadLabel ?? translate("files.newThread")} homeHref={workspaceReturnHref ?? '/workspaces'}
+      <MatterWorkbench options={workbench} title={currentThreadLabel ?? translate("files.newThread")} homeHref={restrictedNavigation ? undefined : workspaceReturnHref ?? '/workspaces'}
         settings={renderSettingsDialog()} newThread={renderNewThreadDialogButton('matter-new-thread', true)}
         actions={threadActionsButton} connection={topbarActions ?? mobileHeaderAction} deviceMonitor={deviceMonitor}
         threadMenu={null}

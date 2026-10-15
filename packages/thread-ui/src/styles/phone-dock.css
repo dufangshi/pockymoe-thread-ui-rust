@@ -1,0 +1,251 @@
+/* One-handed phone layout (MatterWorkbench `has-phone-dock`): a status-only top
+   bar, the conversation, and a bottom navigation row under the composer. Every
+   control in the dock and the sheets is at least 44px. Desktop is untouched. */
+.matter-phone-dock,
+.matter-phone-sheet,
+.matter-phone-sheet-scrim {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  .thread-ui-shell .matter-workbench.has-phone-dock,
+  .thread-ui-shell .matter-workbench.has-phone-dock.is-sidebar-hidden {
+    grid-template-rows: calc(34px + env(safe-area-inset-top)) minmax(0, 1fr) auto;
+  }
+  .thread-ui-shell .matter-workbench.has-phone-dock > .matter-topbar { grid-row: 1; }
+  .thread-ui-shell .matter-workbench.has-phone-dock > .matter-main { grid-row: 2; }
+
+  /* Status only: device load, other running threads, connection, notifications. */
+  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only {
+    gap: 6px;
+    padding: env(safe-area-inset-top) 6px 0 4px;
+  }
+  .matter-topbar.is-status-only .matter-topbar-status {
+    display: flex;
+    flex: none;
+    align-items: center;
+  }
+  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only .matter-topbar-status > button { width: auto; min-width: 0; height: 34px; }
+  .matter-topbar-spacer { flex: 1; }
+  .matter-topbar.is-status-only.is-search-open .matter-topbar-status,
+  .matter-topbar.is-status-only.is-search-open .matter-topbar-spacer,
+  .matter-topbar.is-status-only.is-search-open .matter-running-chip { display: none; }
+  .matter-topbar.is-status-only.is-search-open .matter-topbar-search { flex: 1; min-width: 0; }
+  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > button,
+  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only .matter-connection > button {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+  }
+  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > .matter-running-chip {
+    width: auto;
+    gap: 4px;
+    padding: 0 9px;
+    height: 26px;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--theme-accent-solid) 14%, transparent);
+    color: var(--theme-accent-strong);
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .matter-running-chip svg { width: 13px; height: 13px; animation: matter-phone-spin 1.4s linear infinite; }
+  .matter-topbar.is-status-only .matter-connection:empty { display: none; }
+
+  /* The bottom navigation row. */
+  .thread-ui-shell .matter-workbench.has-phone-dock .matter-phone-dock {
+    grid-row: 3;
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px max(6px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--theme-border);
+    background: var(--matter-chrome);
+  }
+  .thread-ui-shell .matter-workbench.has-phone-dock.is-typing .matter-phone-dock { display: none; }
+  .thread-ui-shell .matter-workbench .matter-phone-dock button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    min-width: 44px;
+    margin: 0;
+    padding: 0;
+    border-radius: 13px;
+    color: var(--theme-fg-soft);
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-dock svg { width: 20px; height: 20px; }
+  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 10px;
+    border: 1px solid var(--theme-border);
+    background: var(--theme-panel);
+    color: var(--theme-fg);
+    font-size: 14px;
+    font-weight: 600;
+    touch-action: pan-y;
+    transition: transform 120ms;
+  }
+  .matter-phone-thread[data-nudge='1'] { transform: translateX(10px); }
+  .matter-phone-thread[data-nudge='-1'] { transform: translateX(-10px); }
+  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread svg { width: 16px; height: 16px; flex: none; color: var(--theme-fg-muted); }
+  .matter-phone-thread .matter-status-dot { flex: none; }
+  .matter-phone-thread-title { flex: 1; min-width: 0; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+  .matter-phone-thread-dots { position: absolute; bottom: 4px; left: 50%; display: flex; gap: 3px; transform: translateX(-50%); }
+  .matter-phone-thread-dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--theme-border-strong); }
+  .matter-phone-thread-dots i[data-on] { background: var(--theme-fg-muted); }
+  .matter-phone-panes {
+    display: flex;
+    padding: 2px;
+    border: 1px solid var(--theme-border);
+    border-radius: 15px;
+    background: var(--theme-panel);
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-panes button { height: 40px; border-radius: 12px; }
+  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-panes button[aria-pressed='true'] {
+    background: var(--theme-surface-strong);
+    color: var(--theme-fg);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+  }
+
+  /* The composer sits right on top of the dock instead of the screen edge. */
+  .thread-ui-shell .matter-workbench.has-phone-dock:not(.is-typing) .thread-graph-composer-host { bottom: 8px; }
+  .matter-workbench.has-phone-dock:not(.is-typing) .file-ask-bar { padding-bottom: 8px; }
+
+  /* Larger turn-jump targets above the composer. */
+  .thread-ui-shell .matter-workbench.has-phone-dock .thread-jump-latest-badge { height: 36px; min-width: 132px; padding: 2px; gap: 2px; }
+  .thread-ui-shell .matter-workbench.has-phone-dock .thread-jump-latest-badge > button { width: 44px; height: 32px; }
+  .thread-ui-shell .matter-workbench.has-phone-dock .thread-jump-latest-badge svg { width: 15px; height: 15px; }
+
+  /* Bottom sheets. Closed sheets stay mounted (inert) so host dialogs survive. */
+  .matter-phone-sheet-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 94;
+    background: rgb(10 14 12 / 36%);
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 95;
+    display: flex;
+    flex-direction: column;
+    max-height: 78dvh;
+    padding: 6px 0 max(8px, env(safe-area-inset-bottom));
+    border-radius: 22px 22px 0 0;
+    background: var(--theme-panel);
+    box-shadow: 0 -10px 34px rgb(0 0 0 / 18%);
+    visibility: hidden;
+    transform: translateY(105%);
+    transition: transform 180ms ease-out, visibility 0s linear 180ms;
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet[data-open] {
+    visibility: visible;
+    transform: none;
+    transition: transform 180ms ease-out;
+  }
+  .matter-phone-sheet-grabber { flex: none; width: 40px; height: 5px; margin: 2px auto 8px; border-radius: 3px; background: var(--theme-border-strong); }
+  .matter-phone-sheet-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 10px 6px; }
+  .matter-phone-sheet-body h3 {
+    margin: 10px 8px 6px;
+    overflow: hidden;
+    color: var(--theme-fg-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .matter-phone-sheet .matter-thread-row { min-height: 52px; font-size: 14px; }
+  .matter-phone-sheet .matter-thread-entry { position: relative; }
+  .matter-phone-sheet-notices a { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 10px; border-radius: 10px; color: var(--theme-fg); }
+  .matter-phone-sheet-notices a > span:last-child { min-width: 0; }
+  .matter-phone-sheet-notices b { display: block; overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .matter-phone-sheet-notices small { display: block; overflow: hidden; color: var(--theme-fg-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+  .matter-phone-sheet-footer { display: flex; flex: none; gap: 8px; align-items: center; padding: 8px 12px 0; border-top: 1px solid var(--theme-border); }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer > * { height: 46px; min-width: 46px; }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer .matter-phone-sheet-wide {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    width: auto;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0 14px;
+    border: 1px solid var(--theme-border);
+    border-radius: 14px;
+    font-size: 14px;
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer .matter-new-thread {
+    width: 46px;
+    border-radius: 14px;
+    background: var(--theme-fg);
+    color: var(--theme-panel);
+  }
+
+  /* More: labelled tiles for our own actions, host controls as a 44px icon row. */
+  .matter-phone-sheet-tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-tools > button {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: auto;
+    height: 72px;
+    padding: 6px 2px;
+    border-radius: 14px;
+    color: var(--theme-fg);
+    font-size: 11.5px;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .matter-phone-sheet-tools svg { width: 22px; height: 22px; }
+  /* Host controls arrive as icon buttons; label them from their accessible names. */
+  .matter-phone-sheet-host { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+  .matter-phone-sheet-host :is(div, span):not(:has(svg)) { display: none; }
+  .matter-phone-sheet-host :is(div, span):has(> :is(button, a)) { display: contents; }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-host :is(button, a)[aria-label] {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: auto;
+    height: 72px;
+    padding: 6px 2px;
+    border-radius: 14px;
+    color: var(--theme-fg);
+    font-size: 11.5px;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .matter-phone-sheet-host :is(button, a)[aria-label]::after { content: attr(aria-label); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-host svg { width: 22px; height: 22px; }
+  .matter-phone-sheet-list > :is(button, a, div) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 50px;
+    padding: 0 10px;
+    border-radius: 12px;
+    color: var(--theme-fg);
+    font-size: 14.5px;
+    text-align: left;
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-list > :is(button, a) { width: 100%; height: auto; justify-content: flex-start; }
+  .matter-phone-sheet-list svg { width: 20px; height: 20px; color: var(--theme-fg-muted); }
+  .matter-phone-sheet-settings { position: relative; }
+  /* The settings trigger is the host's own dialog button; stretch it over the row. */
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-settings > :first-child { position: static; width: 20px; min-width: 20px; height: 20px; }
+  .matter-phone-sheet-settings > :first-child::after { content: ''; position: absolute; inset: 0; }
+}
+
+@keyframes matter-phone-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .matter-running-chip svg { animation: none; }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet,
+  .thread-ui-shell .matter-workbench .matter-phone-sheet[data-open],
+  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread { transition: none; }
+}

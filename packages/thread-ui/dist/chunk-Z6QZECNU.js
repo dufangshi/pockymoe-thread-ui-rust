@@ -3243,7 +3243,17 @@ var workbenchEn = {
   "workbench.terminalStatusConnected": "Connected",
   "workbench.subagentCreated": "Created",
   "workbench.subagentUpdated": "Updated",
-  "workbench.subagentLoadEarlier": "Load earlier activity"
+  "workbench.subagentLoadEarlier": "Load earlier activity",
+  "workbench.phoneDock": "Thread navigation",
+  "workbench.phoneDockThread": "{{title}}. Tap for threads, swipe sideways to switch",
+  "workbench.phoneDockPanes": "Views",
+  "workbench.moreActions": "More actions",
+  "workbench.runningCount": "{{count}} other threads running",
+  "workbench.threadSheet": "Threads",
+  "workbench.thisWorkspace": "This workspace",
+  "workbench.workspaceAndShortcuts": "Workspace and shortcuts",
+  "workbench.app": "App",
+  "workbench.closeSheet": "Close"
 };
 
 // src/i18n/en.ts
@@ -6503,7 +6513,17 @@ var workbenchZhCN = {
   "workbench.terminalStatusConnected": "\u5DF2\u8FDE\u63A5",
   "workbench.subagentCreated": "\u521B\u5EFA\u4E8E",
   "workbench.subagentUpdated": "\u66F4\u65B0\u4E8E",
-  "workbench.subagentLoadEarlier": "\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55"
+  "workbench.subagentLoadEarlier": "\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55",
+  "workbench.phoneDock": "\u7EBF\u7A0B\u5BFC\u822A",
+  "workbench.phoneDockThread": "{{title}}\u3002\u8F7B\u70B9\u6253\u5F00\u7EBF\u7A0B\u5217\u8868\uFF0C\u5DE6\u53F3\u6ED1\u52A8\u5207\u6362",
+  "workbench.phoneDockPanes": "\u89C6\u56FE",
+  "workbench.moreActions": "\u66F4\u591A\u64CD\u4F5C",
+  "workbench.runningCount": "\u53E6\u6709 {{count}} \u4E2A\u7EBF\u7A0B\u8FD0\u884C\u4E2D",
+  "workbench.threadSheet": "\u7EBF\u7A0B",
+  "workbench.thisWorkspace": "\u672C\u5DE5\u4F5C\u533A",
+  "workbench.workspaceAndShortcuts": "\u5DE5\u4F5C\u533A\u4E0E\u5FEB\u6377\u65B9\u5F0F",
+  "workbench.app": "\u5E94\u7528",
+  "workbench.closeSheet": "\u5173\u95ED"
 };
 
 // src/i18n/zh-CN.ts

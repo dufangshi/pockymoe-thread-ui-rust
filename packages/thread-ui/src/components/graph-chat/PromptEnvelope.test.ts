@@ -5,10 +5,10 @@ import { parsePromptEnvelope } from './PromptEnvelope';
 describe('parsePromptEnvelope', () => {
   it('reads a peer task header, its reply and urgency lines, and shortens thread ids', () => {
     expect(parsePromptEnvelope('[Pockymoe task from thread bf8cee0b-f8f6-4f33-bac6-40ae6713768c | Fix the queue]\nIn reply to message m1\nImmediate handling needed: stale input\nPlease fix it.\nThanks')).toEqual({
-      type: 'peer', kind: 'task', from: 'bf8cee0b', subject: 'Fix the queue', urgent: 'stale input', body: 'Please fix it.\nThanks',
+      type: 'peer', kind: 'task', from: 'bf8cee0b', fromThreadId: 'bf8cee0b-f8f6-4f33-bac6-40ae6713768c', subject: 'Fix the queue', urgent: 'stale input', body: 'Please fix it.\nThanks',
     });
     expect(parsePromptEnvelope('[Pockymoe result from device-a/foreign-thread (device "Peer laptop")]\nDone')).toMatchObject({
-      type: 'peer', kind: 'result', from: 'device-a/foreign-thread (device "Peer laptop")', subject: null, urgent: null, body: 'Done',
+      type: 'peer', kind: 'result', fromThreadId: null, from: 'device-a/foreign-thread (device "Peer laptop")', subject: null, urgent: null, body: 'Done',
     });
   });
 

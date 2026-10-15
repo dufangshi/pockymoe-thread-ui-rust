@@ -78,10 +78,11 @@ describe('story mode', () => {
     const timeline = container.querySelector('.thread-execution-timeline.is-story')!;
     expect(timeline).not.toBeNull();
     const order = [...timeline.querySelectorAll('[data-message-id], .tlog-run[data-placeholder]')].map((node) =>
-      node.getAttribute('data-message-id') ?? `run:${node.textContent?.replace(/\s*·\s*/g, ' · ').trim()}`);
+      node.getAttribute('data-message-id') ?? `run:${[...node.querySelectorAll('.tlog-count')].map(count => count.getAttribute('aria-label')).join(',')}`);
     expect(container.querySelector('[data-message-id="final"]')).not.toBeNull();
     expect(timeline.compareDocumentPosition(container.querySelector('[data-message-id="final"]')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(order).toEqual(['run:1 command · 20s', 'say', 'run:2 commands · 1 failed']);
+    expect(order).toEqual(['run:1 command', 'say', 'run:2 commands,1 failed']);
+    expect(timeline.querySelector('.tlog-run .is-time')?.textContent?.replace('·', '')).toBe('20s');
     expect(load).not.toHaveBeenCalled();
   });
 

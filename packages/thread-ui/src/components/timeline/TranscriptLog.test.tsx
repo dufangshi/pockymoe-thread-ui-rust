@@ -42,7 +42,12 @@ describe('TranscriptLog', () => {
     ]} />);
     expect(container.querySelector('.tlog-run-head')?.getAttribute('aria-expanded')).toBe('false');
     expect(container.querySelector('.tlog-run-body')).toBeNull();
-    expect(container.querySelector('.tlog-summary')?.textContent?.replace(/\s*·\s*/g, ' · ')).toBe('edited 2 files +64 −3 · 1 command · 1 failed · 51s');
+    expect(container.querySelector('.tlog-summary')?.textContent).toContain('edited 2 files +64 −3');
+    expect([...container.querySelectorAll('.tlog-count[role=img]')].map(node => [node.getAttribute('data-kind'), node.getAttribute('aria-label')])).toEqual([['commands', '1 command'], ['failed', '1 failed']]);
+    expect(container.querySelector('.is-time')?.textContent?.replace('·', '')).toBe('51s');
+    const counts = container.querySelectorAll('.tlog-count');
+    expect(counts[0]!.parentElement!.nextElementSibling).toBe(counts[1]!.parentElement);
+    expect(counts[1]!.parentElement!.querySelector('.tlog-sep')).toBeNull();
     expect(container.querySelector('.tlog-run')?.getAttribute('data-failed')).toBe('true');
     await click('.tlog-run-head');
     expect(container.querySelectorAll('.tlog-row')).toHaveLength(2);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ThreadHistoryItemDto } from '@pockymoe/shared';
-import { activityFromItems, activityParts, itemsDuration, logStatus, toolResultText, turnActivity, turnChangedFiles } from './activity';
+import { activityFromItems, activityParts, stretchBetween, stretchFromItems, itemsDuration, logStatus, toolResultText, turnActivity, turnChangedFiles } from './activity';
 
 const item = (kind: ThreadHistoryItemDto['kind'], extra: Partial<ThreadHistoryItemDto> = {}): ThreadHistoryItemDto => ({ id: kind, kind, text: kind, ...extra });
 
@@ -53,13 +53,13 @@ describe('transcript activity', () => {
       reads: 4, searches: 2, agents: 1, tools: 3, reasoning: 7, failed: 1 };
     expect(activityParts(counts)).toEqual([
       { key: 'edits', text: 'edited 2 files' }, { key: 'added', text: '+64', tone: 'add' }, { key: 'removed', text: '−3', tone: 'remove' },
-      { key: 'commands', text: '6 commands' }, { key: 'reads', text: 'Read 4 files' }, { key: 'searches', text: '2 searches' },
-      { key: 'agents', text: '1 subagent' }, { key: 'tools', text: '3 tool calls' }, { key: 'failed', text: '1 failed', tone: 'failed' },
+      { key: 'commands', count: 6, text: '6 commands' }, { key: 'reads', count: 4, text: 'Read 4 files' }, { key: 'searches', count: 2, text: '2 searches' },
+      { key: 'agents', count: 1, text: '1 subagent' }, { key: 'tools', count: 3, text: '3 tool calls' }, { key: 'failed', count: 1, text: '1 failed', tone: 'failed' },
     ]);
     expect(activityParts(counts, { lines: false }).map(part => part.key)).toEqual(['edits', 'commands', 'reads', 'searches', 'agents', 'tools', 'failed']);
     expect(activityParts({ ...activityFromItems([]), fileChanges: 2 })[0]?.text).toBe('edited 2 files');
     expect(activityParts(activityFromItems([]))).toEqual([]);
-    expect(activityParts(activityFromItems([item('reasoning')])).map(part => part.key)).toEqual(['reasoning']);
+    expect(activityParts(activityFromItems([item('reasoning')]))).toEqual([{ key: 'reasoning', count: 1, text: 'thought once' }]);
   });
 
   it.each([
@@ -103,5 +103,46 @@ describe('turnChangedFiles', () => {
       { path: 'src/a.ts', itemId: 'e2', addedLines: 6, removedLines: 1 },
       { path: 'src/b.ts', itemId: 'e1', addedLines: 0, removedLines: 0 },
     ]);
+  });
+});
+
+describe('folded answer stretches', () => {
+  const segments = [
+    { before: 'answer-1', commands: 7, startedAt: '2026-10-10T10:00:00Z', endedAt: '2026-10-10T10:00:05Z' },
+    { before: 'narration', commands: 2, reads: 3, startedAt: '2026-10-10T10:00:10Z', endedAt: '2026-10-10T10:00:20Z' },
+    { before: 'answer-2', commands: 1, failed: 1, searches: 2, endedAt: '2026-10-10T10:00:30Z' },
+    { before: null, tools: 2 },
+  ];
+
+  it('sums every segment between answers, excluding the work before the first answer', () => {
+    expect(stretchBetween(segments, 'answer-1', 'answer-2')).toEqual({
+      before: 'answer-2', commands: 3, reads: 3, searches: 2, failed: 1,
+      startedAt: '2026-10-10T10:00:10Z', endedAt: '2026-10-10T10:00:30Z',
+    });
+    expect(stretchBetween(segments, null, 'answer-1')).toEqual(segments[0]);
+    expect(stretchBetween(segments, 'answer-2', null)).toEqual({ before: null, tools: 2 });
+    expect(stretchBetween(segments, null, null)).toMatchObject({ commands: 10, tools: 2, failed: 1 });
+  });
+
+  it('returns null for absent boundaries, empty segments and empty tails', () => {
+    expect(stretchBetween(undefined, null, null)).toBeNull();
+    expect(stretchBetween([], null, null)).toBeNull();
+    expect(stretchBetween(segments, 'missing', 'answer-2')).toBeNull();
+    expect(stretchBetween(segments, 'answer-1', 'missing')).toBeNull();
+    expect(stretchBetween(segments.slice(0, 3), 'answer-2', null)).toBeNull();
+  });
+
+  it('builds a loaded stretch with edit deltas, failed counts and timestamp bounds', () => {
+    expect(stretchFromItems([
+      item('fileRead', { createdAt: '2026-10-10T10:00:20Z' }),
+      item('commandExecution', { status: 'failed', createdAt: '2026-10-10T10:00:10Z', updatedAt: '2026-10-10T10:00:30Z' }),
+      item('fileChange', { text: 'src/a.ts', changedFiles: 1, addedLines: 64, removedLines: 3 }),
+      item('agentMessage'),
+    ], 'answer')).toEqual({ before: 'answer', reads: 1, commands: 1, failed: 1,
+      fileChanges: 1, changedFiles: 1, addedLines: 64, removedLines: 3,
+      startedAt: '2026-10-10T10:00:10Z', endedAt: '2026-10-10T10:00:30Z' });
+    expect(stretchFromItems([item('toolCall')], null)).toEqual({ before: null, tools: 1 });
+    expect(stretchFromItems([], 'answer')).toBeNull();
+    expect(stretchFromItems([item('agentMessage'), item('userMessage')], null)).toBeNull();
   });
 });

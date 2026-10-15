@@ -44,6 +44,8 @@ import {
 import { useDeferredHistoryDetail } from './timeline/useDeferredHistoryDetail';
 import { useTimelineScroll } from './timeline/useTimelineScroll';
 import { TranscriptLogContext, type TranscriptLogActions } from './timeline/TranscriptLog';
+import { ThreadLinkContext } from './graph-chat/PromptEnvelope';
+import { ScrollAnchorContext } from './timeline/scrollAnchor';
 import { storySegments } from './timeline/activity';
 
 export interface ThreadTimelineProps {
@@ -248,11 +250,6 @@ function ThreadTimelineComponent({
     loadHistoryItemDetail,
     onSelectHistoryItemDetail,
   });
-  const transcriptLogActions = useMemo<TranscriptLogActions>(() => ({
-    loadDetail: loadHistoryItemDetail,
-    workspaceRoot: adapter?.workspaceRootPath,
-    openText: handleOpenExpandedText,
-  }), [loadHistoryItemDetail, adapter?.workspaceRootPath, handleOpenExpandedText]);
   const {
     scrollContainerRef,
     scrollContentRef,
@@ -264,6 +261,9 @@ function ThreadTimelineComponent({
     handleTouchMove,
     handleTouchEnd,
     preserveScrollPositionForResize,
+    holdAnchorNow,
+    releaseAnchor,
+    slackRef,
     serverManagedHistory,
     effectiveTotalTurnCount,
     startIndex,
@@ -298,6 +298,36 @@ function ThreadTimelineComponent({
       bottomSpacer,
     ],
   });
+  const transcriptLogActions = useMemo<TranscriptLogActions>(() => ({
+    loadDetail: loadHistoryItemDetail,
+    workspaceRoot: adapter?.workspaceRootPath,
+    openText: handleOpenExpandedText,
+    anchor: preserveScrollPositionForResize,
+  }), [loadHistoryItemDetail, adapter?.workspaceRootPath, handleOpenExpandedText, preserveScrollPositionForResize]);
+  const scrollAnchor = useMemo(() => ({ hold: holdAnchorNow }), [holdAnchorNow]);
+  const openThreadLink = onOpenThread ?? adapter?.onOpenLinkedThread;
+  const threadLinks = useMemo(() => ({
+    ...(adapter?.getThreadHref ? { href: adapter.getThreadHref } : {}),
+    ...(openThreadLink ? { open: openThreadLink } : {}),
+  }), [adapter?.getThreadHref, openThreadLink]);
+  useEffect(() => {
+    // A composer floating over the transcript hides its bottom; sticky controls
+    // (an opened message's "Show less") stop above it.
+    const container = scrollContainerRef.current;
+    const composer = container?.closest('.thread-graph-chat-panel')?.querySelector<HTMLElement>(':scope > .thread-graph-composer-host');
+    if (!container || typeof ResizeObserver === 'undefined') return;
+    const measure = () => {
+      const overlap = composer ? container.getBoundingClientRect().bottom - composer.getBoundingClientRect().top : 0;
+      container.style.setProperty('--timeline-bottom-inset', `${Math.max(bottomSpacer, Math.round(overlap))}px`);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    if (composer) observer.observe(composer);
+    return () => observer.disconnect();
+  }, [bottomSpacer, scrollContainerRef]);
+
+
 
   useEffect(() => {
     setCollapsedTurnOverrides({});
@@ -736,6 +766,8 @@ function ThreadTimelineComponent({
 
   };
   return (
+    <ScrollAnchorContext.Provider value={scrollAnchor}>
+    <ThreadLinkContext.Provider value={threadLinks}>
     <TranscriptLogContext.Provider value={transcriptLogActions}>
       <section className={`flex min-h-0 flex-1 flex-col ${className}`.trim()}>
         <div
@@ -744,8 +776,8 @@ function ThreadTimelineComponent({
           onScroll={handleTimelineScroll}
           onWheel={(event) => { resetNavigation(); handleWheel(event); }}
           onTouchStart={(event) => { resetNavigation(); handleTouchStart(event); }}
-          onPointerDown={resetNavigation}
-          onKeyDown={(event) => { if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) resetNavigation(); }}
+          onPointerDown={(event) => { resetNavigation(); if (event.target === event.currentTarget) releaseAnchor(); }}
+          onKeyDown={(event) => { if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) { resetNavigation(); releaseAnchor(); } }}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onTouchCancel={handleTouchEnd}
@@ -753,6 +785,7 @@ function ThreadTimelineComponent({
           style={bottomSpacer > 0 ? { paddingBottom: bottomSpacer } : undefined}
         >
           <div ref={scrollContentRef} className="thread-graph-scroll-content">
+          <div ref={slackRef} aria-hidden="true" className="thread-scroll-slack" />
           <div ref={topSentinelRef} aria-hidden="true" className="h-px" />
           {turns.length > 0 && (
             <div className="thread-graph-history-control px-3 pb-1 pt-2 sm:px-5 sm:pb-1.5 sm:pt-3">
@@ -1085,6 +1118,8 @@ function ThreadTimelineComponent({
         onClose={closeExpandedText}
       />
     </TranscriptLogContext.Provider>
+    </ThreadLinkContext.Provider>
+    </ScrollAnchorContext.Provider>
   );
 }
 

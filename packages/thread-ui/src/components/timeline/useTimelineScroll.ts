@@ -18,6 +18,12 @@ import {
   isNearBottom,
 } from './timelineScroll';
 
+// How long a clicked control is held in place; each resize while holding extends it,
+// so a detail that loads and then animates open stays under the pointer.
+const ANCHOR_HOLD_MS = 900;
+const ANCHOR_EXTEND_MS = 500;
+const TOUCH_SCROLL_SLOP_PX = 6;
+
 function useChangeRevision(inputs: readonly unknown[]) {
   const previousInputsRef = useRef<readonly unknown[] | null>(null);
   const revisionRef = useRef(0);
@@ -77,6 +83,12 @@ export function useTimelineScroll({
   const autoLoadedEarlierRef = useRef(false);
   const topLoadArmedRef = useRef(false);
   const lastTouchYRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+  const anchorRef = useRef<{ element: Element; top: number; until: number; frame: number } | null>(null);
+  // Room added above the history when a control near the top must stay put
+  // while what is above it shrinks; given back once the reader scrolls.
+  const slackRef = useRef<HTMLDivElement | null>(null);
+  const slackPxRef = useRef(0);
   const touchPullDistanceRef = useRef(0);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_TURNS);
   const [loadMoreClicks, setLoadMoreClicks] = useState(0);
@@ -163,9 +175,86 @@ export function useTimelineScroll({
     );
   }, []);
 
+  const setSlack = useCallback((px: number, animate = false) => {
+    slackPxRef.current = Math.max(0, Math.round(px));
+    const slack = slackRef.current;
+    if (!slack) return;
+    slack.style.transition = animate ? 'height 260ms cubic-bezier(0.2, 0, 0, 1)' : '';
+    slack.style.height = `${slackPxRef.current}px`;
+  }, []);
+
+  const stopAnchor = useCallback(() => {
+    const anchor = anchorRef.current;
+    if (anchor) window.cancelAnimationFrame(anchor.frame);
+    anchorRef.current = null;
+  }, []);
+
+  /** The reader scrolls: stop holding, and give back any slack. */
+  const releaseAnchor = useCallback(() => {
+    stopAnchor();
+    const container = scrollContainerRef.current;
+    const slack = slackPxRef.current;
+    if (!container || !slack) return;
+    if (container.scrollTop >= slack) {
+      // Out of sight: drop it without moving what the reader sees.
+      setSlack(0);
+      container.scrollTop -= slack;
+      lastScrollTopRef.current = container.scrollTop;
+    } else {
+      setSlack(0, true);
+    }
+  }, [setSlack, stopAnchor]);
+
+  // Keeps the control the reader clicked at the same height on screen while
+  // what it opens or closes changes size, instead of following the tail.
+  /** One correction toward the held position; false once nothing is held. */
+  const correctAnchor = useCallback(() => {
+    const anchor = anchorRef.current;
+    const container = scrollContainerRef.current;
+    if (!anchor || !container) return false;
+    if (!anchor.element.isConnected || performance.now() > anchor.until) {
+      anchorRef.current = null;
+      return false;
+    }
+    let delta = anchor.element.getBoundingClientRect().top - anchor.top;
+    if (Math.abs(delta) >= 0.5) {
+      // Moved down: give back slack first. Moved up beyond the top: add slack.
+      const slack = slackPxRef.current;
+      if (delta > 0 && slack > 0) {
+        const take = Math.min(slack, delta);
+        setSlack(slack - take);
+        delta -= take;
+      } else if (delta < 0 && container.scrollTop + delta < 0) {
+        const need = -(container.scrollTop + delta);
+        setSlack(slack + need);
+        delta += need;
+      }
+      container.scrollTop += delta;
+      lastScrollTopRef.current = container.scrollTop;
+    }
+    return true;
+  }, [setSlack]);
+
+  const holdAnchor = useCallback(() => {
+    if (correctAnchor()) anchorRef.current!.frame = window.requestAnimationFrame(holdAnchor);
+  }, [correctAnchor]);
+
+  /** Called where a toggle commits (a layout effect), so the held control is
+      corrected before the frame is painted rather than one frame later. */
+  const holdAnchorNow = useCallback(() => { correctAnchor(); }, [correctAnchor]);
+
+  const anchorScroll = useCallback((element: Element) => {
+    stopAnchor();
+    anchorRef.current = { element, top: element.getBoundingClientRect().top, until: performance.now() + ANCHOR_HOLD_MS, frame: 0 };
+    anchorRef.current.frame = window.requestAnimationFrame(holdAnchor);
+  }, [holdAnchor, stopAnchor]);
+
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
-    if (container) {
+    if (container && anchorRef.current) {
+      // Scrolling done to hold a clicked control is not the reader moving.
+      lastScrollTopRef.current = container.scrollTop;
+    } else if (container) {
       userScrolledHistoryRef.current = true;
       const nextScrollTop = container.scrollTop;
       const previousScrollTop = lastScrollTopRef.current;
@@ -209,7 +298,9 @@ export function useTimelineScroll({
     shouldStickToBottomRef.current = true;
   }, []);
 
-  const preserveScrollPositionForResize = useCallback(() => {
+  /** Call before content changes size because of the reader; pass the control
+      they used to keep it where it is on screen. */
+  const preserveScrollPositionForResize = useCallback((anchor?: Element | null) => {
     scrollIntentRevisionRef.current += 1;
     const container = scrollContainerRef.current;
     if (!container) {
@@ -219,7 +310,8 @@ export function useTimelineScroll({
     lastObservedScrollHeightRef.current = container.scrollHeight;
     shouldStickToBottomRef.current = false;
     userScrolledAwayFromTailRef.current = true;
-  }, []);
+    if (anchor) anchorScroll(anchor);
+  }, [anchorScroll]);
 
   const handleLoadEarlierClick = useCallback(() => {
     if (serverManagedHistory && loadedHiddenCount === 0) {
@@ -237,6 +329,7 @@ export function useTimelineScroll({
   ]);
 
   const handleWheel = useCallback((event: WheelEvent<HTMLDivElement>) => {
+    releaseAnchor();
     const container = scrollContainerRef.current;
     if (
       !container ||
@@ -253,10 +346,12 @@ export function useTimelineScroll({
     }
 
     triggerServerLoadEarlier();
-  }, [canLoadEarlierFromServer, triggerServerLoadEarlier]);
+  }, [canLoadEarlierFromServer, releaseAnchor, triggerServerLoadEarlier]);
 
   const handleTouchStart = useCallback((event: TouchEvent<HTMLDivElement>) => {
-    lastTouchYRef.current = event.touches.item(0)?.clientY ?? null;
+    // A tap on a toggle is not a scroll; only a moving finger releases the hold.
+    touchStartYRef.current = event.touches.item(0)?.clientY ?? null;
+    lastTouchYRef.current = touchStartYRef.current;
     touchPullDistanceRef.current = 0;
   }, []);
 
@@ -265,6 +360,11 @@ export function useTimelineScroll({
     const nextY = event.touches.item(0)?.clientY ?? null;
     const previousY = lastTouchYRef.current;
     lastTouchYRef.current = nextY;
+    const startY = touchStartYRef.current;
+    if (startY !== null && nextY !== null && Math.abs(nextY - startY) > TOUCH_SCROLL_SLOP_PX) {
+      touchStartYRef.current = null;
+      releaseAnchor();
+    }
 
     if (
       !container ||
@@ -293,7 +393,7 @@ export function useTimelineScroll({
     if (touchPullDistanceRef.current >= 28) {
       triggerServerLoadEarlier();
     }
-  }, [canLoadEarlierFromServer, triggerServerLoadEarlier]);
+  }, [canLoadEarlierFromServer, releaseAnchor, triggerServerLoadEarlier]);
 
   const handleTouchEnd = useCallback(() => {
     lastTouchYRef.current = null;
@@ -316,11 +416,12 @@ export function useTimelineScroll({
   }, [threadId, scrollToBottom]);
 
   useEffect(() => {
+    setSlack(0);
     autoLoadedEarlierRef.current = false;
     userScrolledHistoryRef.current = false;
     topLoadArmedRef.current = false;
     pendingPrependScrollRef.current = null;
-  }, [threadId]);
+  }, [threadId, setSlack]);
 
   useEffect(() => {
     if (!loadingEarlier) {
@@ -364,7 +465,7 @@ export function useTimelineScroll({
 
   useEffect(() => {
     const container = scrollContainerRef.current;
-    if (container) {
+    if (container && !anchorRef.current) {
       lastObservedScrollHeightRef.current = container.scrollHeight;
       lastScrollTopRef.current = container.scrollTop;
       if (isNearBottom(container, 1)) {
@@ -388,7 +489,7 @@ export function useTimelineScroll({
     previousContentRevisionRef.current = contentRevision;
     const shouldAutoScroll =
       shouldForceScroll ||
-      (contentChanged &&
+      (contentChanged && !anchorRef.current &&
         shouldStickToBottomRef.current &&
         !userScrolledAwayFromTailRef.current);
 
@@ -423,6 +524,13 @@ export function useTimelineScroll({
       const previousScrollHeight = lastObservedScrollHeightRef.current;
       lastObservedScrollHeightRef.current = nextScrollHeight;
 
+      const anchor = anchorRef.current;
+      if (anchor) {
+        anchor.until = Math.max(anchor.until, performance.now() + ANCHOR_EXTEND_MS);
+        // Resize observers run after layout and before paint: correct now.
+        correctAnchor();
+        return;
+      }
       if (nextScrollHeight <= previousScrollHeight) {
         return;
       }
@@ -474,7 +582,7 @@ export function useTimelineScroll({
       observer.disconnect();
       viewportObserver.disconnect();
     };
-  }, [scrollToBottom]);
+  }, [correctAnchor, scrollToBottom]);
 
   useEffect(() => {
     if (!shouldStickToBottomRef.current || userScrolledAwayFromTailRef.current) {
@@ -500,6 +608,8 @@ export function useTimelineScroll({
     onTailVisibilityChange?.(isTailVisible);
   }, [isTailVisible, onTailVisibilityChange]);
 
+  useEffect(() => stopAnchor, [stopAnchor]);
+
   return {
     scrollContainerRef,
     scrollContentRef,
@@ -512,6 +622,9 @@ export function useTimelineScroll({
     handleTouchMove,
     handleTouchEnd,
     preserveScrollPositionForResize,
+    holdAnchorNow,
+    releaseAnchor,
+    slackRef,
     serverManagedHistory,
     effectiveTotalTurnCount,
     startIndex,

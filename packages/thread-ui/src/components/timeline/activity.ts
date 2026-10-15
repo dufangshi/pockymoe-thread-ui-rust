@@ -72,7 +72,10 @@ export function hasActivity(counts: ActivityCounts | null): counts is ActivityCo
 
 export interface ActivityPart {
   key: string;
+  /** The whole phrase, for assistive technology and plain-text use. */
   text: string;
+  /** Counted kinds can show as an icon and this number. */
+  count?: number;
   tone?: 'add' | 'remove' | 'failed';
 }
 
@@ -84,13 +87,13 @@ export function activityParts(counts: ActivityCounts, { lines = true }: { lines?
     if (lines && counts.addedLines) parts.push({ key: 'added', text: `+${counts.addedLines}`, tone: 'add' });
     if (lines && counts.removedLines) parts.push({ key: 'removed', text: `−${counts.removedLines}`, tone: 'remove' });
   }
-  if (counts.commands) parts.push({ key: 'commands', text: translate('chat.commandCount', { count: counts.commands }) });
-  if (counts.reads) parts.push({ key: 'reads', text: translate('chat.readFileCount', { count: counts.reads }) });
-  if (counts.searches) parts.push({ key: 'searches', text: translate('chat.logSearches', { count: counts.searches }) });
-  if (counts.agents) parts.push({ key: 'agents', text: translate('chat.logAgents', { count: counts.agents }) });
-  if (counts.tools) parts.push({ key: 'tools', text: translate('chat.logTools', { count: counts.tools }) });
-  if (!parts.length && counts.reasoning) parts.push({ key: 'reasoning', text: translate('chat.logThoughts', { count: counts.reasoning }) });
-  if (counts.failed) parts.push({ key: 'failed', text: translate('chat.logFailed', { count: counts.failed }), tone: 'failed' });
+  if (counts.commands) parts.push({ key: 'commands', count: counts.commands, text: translate('chat.commandCount', { count: counts.commands }) });
+  if (counts.reads) parts.push({ key: 'reads', count: counts.reads, text: translate('chat.readFileCount', { count: counts.reads }) });
+  if (counts.searches) parts.push({ key: 'searches', count: counts.searches, text: translate('chat.logSearches', { count: counts.searches }) });
+  if (counts.agents) parts.push({ key: 'agents', count: counts.agents, text: translate('chat.logAgents', { count: counts.agents }) });
+  if (counts.tools) parts.push({ key: 'tools', count: counts.tools, text: translate('chat.logTools', { count: counts.tools }) });
+  if (!parts.length && counts.reasoning) parts.push({ key: 'reasoning', count: counts.reasoning, text: translate('chat.logThoughts', { count: counts.reasoning }) });
+  if (counts.failed) parts.push({ key: 'failed', count: counts.failed, text: translate('chat.logFailed', { count: counts.failed }), tone: 'failed' });
   return parts;
 }
 
@@ -172,6 +175,49 @@ export function storySegments(turn: {
   if (!turn.hasDeferredItems || !segments?.length) return null;
   const ids = new Set(turn.items.map((item) => item.id));
   return segments.every((segment) => segment.before === null || ids.has(segment.before)) ? segments : null;
+}
+
+/** The work between two conversation items as one stretch: the Supervisor's
+    stretches after `afterId` up to the one that precedes `beforeId` (null = the
+    turn's start or end). Null when the summary has no stretches there. */
+export function stretchBetween(
+  segments: readonly ThreadTurnActivitySegmentDto[] | null | undefined,
+  afterId: string | null,
+  beforeId: string | null,
+): ThreadTurnActivitySegmentDto | null {
+  if (!segments?.length) return null;
+  const picked: ThreadTurnActivitySegmentDto[] = [];
+  let collecting = afterId === null;
+  for (const segment of segments) {
+    if (collecting) picked.push(segment);
+    if (collecting && segment.before === beforeId) break;
+    if (!collecting && segment.before === afterId) collecting = true;
+  }
+  if (!picked.length || (beforeId !== null && picked.at(-1)!.before !== beforeId)) return null;
+  const merged = { before: beforeId } as ThreadTurnActivitySegmentDto;
+  for (const key of Object.keys(EMPTY) as Array<keyof ActivityCounts>) {
+    if (key === 'fileCount') continue;
+    const total = picked.reduce((sum, segment) => sum + (segment[key] ?? 0), 0);
+    if (total) merged[key] = total;
+  }
+  const startedAt = picked.find((segment) => segment.startedAt)?.startedAt;
+  const endedAt = picked.findLast((segment) => segment.endedAt)?.endedAt;
+  if (startedAt) merged.startedAt = startedAt;
+  if (endedAt) merged.endedAt = endedAt;
+  return merged;
+}
+
+/** A stretch from loaded operations, for turns whose summary has none. */
+export function stretchFromItems(items: readonly ThreadHistoryItemDto[], beforeId: string | null): ThreadTurnActivitySegmentDto | null {
+  const counts = activityFromItems(items);
+  if (!hasActivity(counts)) return null;
+  const merged = { before: beforeId } as ThreadTurnActivitySegmentDto;
+  for (const key of Object.keys(EMPTY) as Array<keyof ActivityCounts>) {
+    if (key !== 'fileCount' && counts[key]) merged[key] = counts[key];
+  }
+  const times = items.flatMap((item) => [item.createdAt, item.updatedAt]).filter((time): time is string => Boolean(time)).sort();
+  if (times.length) { merged.startedAt = times[0]!; merged.endedAt = times.at(-1)!; }
+  return merged;
 }
 
 /** Elapsed time of one stretch of work, when the Supervisor reported it. */

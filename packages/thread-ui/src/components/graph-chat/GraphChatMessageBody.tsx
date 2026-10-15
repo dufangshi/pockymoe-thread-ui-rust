@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import {
   memo,
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -14,6 +15,7 @@ import {
 } from 'react';
 
 import { useMessageExpansion } from './MessageExpansionScope';
+import { ScrollAnchorContext } from '../timeline/scrollAnchor';
 import { ZoomableImage } from '../ZoomableImage';
 import type { ThreadTimelineAdapter } from '../../adapters';
 import { hasLikelyMarkdownSyntax } from '../markdownHeuristics';
@@ -138,6 +140,34 @@ export function GraphChatLinkifiedPlainText({ text }: { text: string }) {
   return <>{parts.length > 0 ? parts : text}</>;
 }
 
+type ScrollAnchor = { root: HTMLDivElement; element: Element; top: number };
+
+/** Collapsing keeps the toggle where it is on screen, so it can be clicked again
+    in place; expanding keeps the message's top, so reading continues below. */
+function captureToggleAnchor(
+  root: HTMLDivElement | null,
+  expanded: boolean,
+  message: Element | null,
+  toggle: Element | null,
+  onBeforeResize?: (anchor?: Element | null) => void,
+): ScrollAnchor | null {
+  const element = expanded ? toggle ?? message : message;
+  onBeforeResize?.(element);
+  return root && element ? { root, element, top: element.getBoundingClientRect().top } : null;
+}
+
+function restoreToggleAnchor(anchor: ScrollAnchor, hold?: () => void) {
+  // Inside a timeline, its hold also handles the top of the history.
+  if (hold) {
+    hold();
+    return undefined;
+  }
+  const adjust = () => { anchor.root.scrollTop += anchor.element.getBoundingClientRect().top - anchor.top; };
+  adjust();
+  const frame = window.requestAnimationFrame(adjust);
+  return () => window.cancelAnimationFrame(frame);
+}
+
 export const GraphChatMarkdownAwareBody = memo(
   function GraphChatMarkdownAwareBody({
     messageId,
@@ -160,7 +190,7 @@ export const GraphChatMarkdownAwareBody = memo(
     containerClassName?: string;
     plainTextClassName?: string;
     markdownClassName?: string;
-    onBeforeResize?: () => void;
+    onBeforeResize?: (anchor?: Element | null) => void;
     onOpenWorkspaceFile?: ThreadTimelineAdapter['onOpenWorkspaceFile'] | undefined;
     workspaceRootPath?: string | undefined;
     resolveWorkspacePath?: ThreadTimelineAdapter['resolveWorkspacePath'] | undefined;
@@ -168,10 +198,8 @@ export const GraphChatMarkdownAwareBody = memo(
   }) {
   const { locale: i18nLocale } = useI18n();
     const messageRef = useRef<HTMLDivElement | null>(null);
-    const scrollAnchorRef = useRef<{
-      root: HTMLDivElement;
-      top: number;
-    } | null>(null);
+    const toggleRef = useRef<HTMLButtonElement | null>(null);
+    const scrollAnchorRef = useRef<ScrollAnchor | null>(null);
     const [expanded, setExpanded] = useMessageExpansion(messageId, text, streaming);
     const shouldRenderMarkdown = hasLikelyMarkdownSyntax(text) || Boolean(resolveWorkspacePath && hasWorkspacePathSyntax(text));
     const isLargeText = !streaming && text.length > LARGE_MESSAGE_PREVIEW_CHARS;
@@ -184,34 +212,15 @@ export const GraphChatMarkdownAwareBody = memo(
     );
 
     const toggleExpanded = useCallback(() => {
-      const root = scrollRootRef.current;
-      const message = messageRef.current;
-      const previousTop = message?.getBoundingClientRect().top ?? null;
-
-      onBeforeResize?.();
-      scrollAnchorRef.current =
-        root && previousTop !== null ? { root, top: previousTop } : null;
+      scrollAnchorRef.current = captureToggleAnchor(scrollRootRef.current, expanded, messageRef.current, toggleRef.current, onBeforeResize);
       setExpanded(!expanded);
     }, [expanded, setExpanded, onBeforeResize, scrollRootRef]);
 
+    const { hold } = useContext(ScrollAnchorContext);
     useLayoutEffect(() => {
       const anchor = scrollAnchorRef.current;
-      const message = messageRef.current;
-      if (!anchor || !message) {
-        return;
-      }
-
       scrollAnchorRef.current = null;
-      const adjustScroll = () => {
-        const nextTop = message.getBoundingClientRect().top;
-        anchor.root.scrollTop += nextTop - anchor.top;
-      };
-
-      adjustScroll();
-      const frame = window.requestAnimationFrame(adjustScroll);
-      return () => {
-        window.cancelAnimationFrame(frame);
-      };
+      return anchor ? restoreToggleAnchor(anchor, hold) : undefined;
     }, [expanded]);
 
     useEffect(() => {
@@ -265,6 +274,7 @@ export const GraphChatMarkdownAwareBody = memo(
         )}
         {isLargeText ? (
           <button
+            ref={toggleRef}
             type="button"
             onClick={event => { event.stopPropagation(); toggleExpanded(); }}
             aria-expanded={expanded}
@@ -295,7 +305,7 @@ export const GraphChatAgentMessageBody = memo(
     text: string;
     scrollRootRef: RefObject<HTMLDivElement | null>;
     streaming?: boolean;
-    onBeforeResize?: () => void;
+    onBeforeResize?: (anchor?: Element | null) => void;
     onOpenWorkspaceFile?: ThreadTimelineAdapter['onOpenWorkspaceFile'] | undefined;
     workspaceRootPath?: string | undefined;
     resolveWorkspacePath?: ThreadTimelineAdapter['resolveWorkspacePath'] | undefined;
@@ -331,7 +341,7 @@ export const GraphChatUserMessageBody = memo(
   }: {
     messageId?: string | undefined;
     scrollRootRef?: RefObject<HTMLDivElement | null> | undefined;
-    onBeforeResize?: (() => void) | undefined;
+    onBeforeResize?: ((anchor?: Element | null) => void) | undefined;
     threadId?: string | undefined;
     text: string;
     attachmentPreviewUrls?: Record<string, string> | undefined;
@@ -341,7 +351,8 @@ export const GraphChatUserMessageBody = memo(
     const allSegments = useMemo(() => tokenizeUserMessageText(text), [text]);
     const [expanded, setExpanded] = useMessageExpansion(messageId, text, false);
     const messageRef = useRef<HTMLDivElement>(null);
-    const scrollAnchor = useRef<{root: HTMLDivElement; top: number} | null>(null);
+    const toggleRef = useRef<HTMLButtonElement>(null);
+    const scrollAnchor = useRef<ScrollAnchor | null>(null);
     const narrative = allSegments.filter(segment => segment.type === 'text').map(segment => segment.text).join('');
     const points = Array.from(narrative);
     const wordBoundary = [...narrative.matchAll(/\S+/gu)][160]?.index ?? narrative.length;
@@ -353,14 +364,14 @@ export const GraphChatUserMessageBody = memo(
       {type:'text',key:'preview',text:`${narrative.slice(0, previewEnd).trimEnd()}…`},
       ...allSegments.filter(segment => segment.type !== 'text'),
     ] : allSegments;
+    const { hold } = useContext(ScrollAnchorContext);
     useLayoutEffect(() => {
       const anchor = scrollAnchor.current;
-      if (anchor && messageRef.current) anchor.root.scrollTop += messageRef.current.getBoundingClientRect().top - anchor.top;
       scrollAnchor.current = null;
+      return anchor ? restoreToggleAnchor(anchor, hold) : undefined;
     }, [expanded]);
     const toggle = () => {
-      onBeforeResize?.();
-      if (scrollRootRef?.current && messageRef.current) scrollAnchor.current = {root:scrollRootRef.current,top:messageRef.current.getBoundingClientRect().top};
+      scrollAnchor.current = captureToggleAnchor(scrollRootRef?.current ?? null, expanded, messageRef.current, toggleRef.current, onBeforeResize);
       setExpanded(!expanded);
     };
 
@@ -432,7 +443,7 @@ export const GraphChatUserMessageBody = memo(
             </span>
           );
         })}
-        {isLong ? <button type="button" onClick={event => {event.stopPropagation(); toggle();}} aria-expanded={expanded}
+        {isLong ? <button ref={toggleRef} type="button" onClick={event => {event.stopPropagation(); toggle();}} aria-expanded={expanded}
           className="thread-graph-show-more timeline-meta-text mt-1 flex w-fit items-center gap-1 rounded px-1 text-xs transition">
           {expanded ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
           <span>{expanded ? translate('chat.showLess') : translate('chat.showMore')}</span>

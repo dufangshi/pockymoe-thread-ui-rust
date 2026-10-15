@@ -48,7 +48,7 @@
 }
 .tlog-part.is-add { color: var(--tlog-add); }
 .tlog-part.is-remove { color: var(--tlog-remove); }
-.tlog-part.is-failed { color: var(--tlog-failed); font-weight: 600; }
+.tlog-part.is-failed { color: inherit; font-weight: inherit; }
 .tlog-sep { margin: 0 0.4em; color: var(--theme-fg-muted); }
 .tlog-sep.is-lead { margin-left: 0; }
 
@@ -105,7 +105,7 @@
   min-width: 16px;
   border-top: 1px dashed var(--tlog-rule);
 }
-.tlog-run[data-failed] > .tlog-run-head .tlog-chev { color: var(--tlog-failed); }
+
 .tlog-run-body {
   display: flex;
   flex-direction: column;
@@ -423,6 +423,14 @@
 .prompt-envelope-glyph { flex: none; width: 1.6ch; text-align: center; font: 700 12px var(--tlog-font-mono); color: var(--theme-accent-strong, var(--theme-accent-solid)); }
 .prompt-envelope-kind { flex: none; font-weight: 600; color: var(--theme-fg-soft); }
 .prompt-envelope-from { flex: none; font-family: var(--tlog-font-mono); font-size: 11.5px; }
+.prompt-envelope-link {
+  color: inherit;
+  text-decoration: underline dotted var(--tlog-rule);
+  text-underline-offset: 3px;
+  border-radius: 3px;
+}
+.prompt-envelope-link:hover { color: var(--theme-accent-strong, var(--theme-fg)); text-decoration-style: solid; }
+.prompt-envelope-link:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
 .prompt-envelope-subject { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--theme-fg); font-weight: 600; }
 .prompt-envelope-head[data-kind='result'] .prompt-envelope-glyph { color: var(--tlog-add); }
 .prompt-envelope-head[data-kind='question'] .prompt-envelope-glyph { color: var(--tlog-failed); }
@@ -509,4 +517,76 @@
 @media (prefers-reduced-motion: reduce) {
   .tlog-collapse { transition: none; }
   .tlog-collapse[data-state='open'] > .tlog-collapse-inner { overflow: visible; }
+}
+
+/* An opened long message keeps "Show less" in reach: it rides just above the
+   composer until the message's end scrolls into view, then rests in place. */
+.thread-ui-shell .thread-graph-show-more[aria-expanded='true'] {
+  position: sticky;
+  bottom: calc(var(--timeline-bottom-inset, 0px) + 10px);
+  z-index: 6;
+  padding: 0 10px 0 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme-panel) 90%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-border) 80%, transparent), 0 4px 14px rgb(0 0 0 / 0.14);
+  opacity: 1;
+}
+.thread-ui-shell .thread-graph-show-more[aria-expanded='true']:hover,
+.thread-ui-shell .thread-graph-show-more[aria-expanded='true']:focus-visible {
+  background: color-mix(in srgb, var(--theme-panel) 96%, transparent);
+}
+
+/* Counts: an icon and a number each, quiet; failures are not a headline. */
+.tlog-part.is-count { display: inline-flex; align-items: center; }
+.tlog-part.is-count + .tlog-part.is-count { margin-left: 0.7em; }
+.tlog-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+}
+.tlog-count-icon { width: 12px; height: 12px; flex: none; opacity: 0.75; }
+.tlog-count[data-kind='failed'] .tlog-count-icon { stroke-width: 2.5; }
+
+/* The explanation that appears after the pointer rests on a count. */
+.tlog-hint {
+  position: fixed;
+  z-index: 1000;
+  display: grid;
+  gap: 3px;
+  width: max-content;
+  max-width: 240px;
+  padding: 8px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: normal;
+  text-align: left;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  animation: tlog-hint-in 140ms ease-out;
+}
+.tlog-hint[data-below] { transform: translate(-50%, 0); }
+.tlog-hint-title { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
+.tlog-hint-body { color: var(--theme-fg-soft); }
+.tlog-hint-example { color: var(--theme-fg-muted); font-family: var(--tlog-font-mono); font-size: 11px; }
+@keyframes tlog-hint-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tlog-hint { animation: none; } }
+
+/* An opened turn keeps its work line in reach: it rides at the top while the
+   turn scrolls past, so it folds from anywhere and stays where it was clicked. */
+.thread-ui-shell .thread-graph-worked-summary:has(> .thread-worked-toggle[aria-expanded='true']) {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in srgb, var(--theme-bg) 94%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }

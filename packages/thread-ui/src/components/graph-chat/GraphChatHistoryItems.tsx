@@ -464,7 +464,7 @@ export const GraphChatPlanHistoryItem = memo(function GraphChatPlanHistoryItem({
 }: {
   item: ThreadHistoryItemDto & { kind: 'plan' };
   scrollRootRef: RefObject<HTMLDivElement | null>;
-  onBeforeResize?: () => void;
+  onBeforeResize?: (anchor?: Element | null) => void;
   timeMeta?: ReactNode;
 }) {
   const { locale: i18nLocale } = useI18n();

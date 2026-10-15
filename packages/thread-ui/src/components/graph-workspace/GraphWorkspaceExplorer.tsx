@@ -302,8 +302,15 @@ export function GraphWorkspaceExplorer({
     window.requestAnimationFrame(restore);
   }
 
+  const treeShownForRevealRef = useRef<number | null>(null);
   useLayoutEffect(() => {
     if (collapsedPanel === 'explorer' || (focusPathRequest && restoredRevealRef.current !== focusPathRequest.requestId)) {
+      return;
+    }
+    // The first time the list shows after a link opened a file (a phone shows
+    // one or the other), it brings that file into view instead of the old place.
+    if (focusPathRequest && treeShownForRevealRef.current !== focusPathRequest.requestId) {
+      treeShownForRevealRef.current = focusPathRequest.requestId;
       return;
     }
     restoreExplorerScroll();

@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, type MouseEvent, type ReactNode } from 'react';
 import { ChevronRight } from 'lucide-react';
 
 import { translate, useI18n } from '../../i18n';
@@ -9,13 +9,18 @@ import { GraphChatLinkifiedPlainText } from './GraphChatMessageBody';
    typing, so they read as a labelled envelope or a one-line notice. */
 
 export type PromptEnvelope =
-  | { type: 'peer'; kind: string; from: string; subject: string | null; urgent: string | null; body: string }
+  | { type: 'peer'; kind: string; from: string; fromThreadId: string | null; subject: string | null; urgent: string | null; body: string }
   | { type: 'notice'; notice: 'inbox' | 'turn' | 'resume'; preview: string; body: string };
 
 // runtime service/update.rs RESUME_PROMPT
 const RESUME_PREFIX = 'The Supervisor was restarted for device maintenance, interrupting this task.';
 
 const UUID = /\b([0-9a-f]{8})-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
+// A sender on this device is "thread <id>"; another device's reads "device/thread (device …)".
+const LOCAL_SENDER = /^thread ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
+
+/** Opens a thread of this device from the transcript: an address and in-app navigation. */
+export const ThreadLinkContext = createContext<{ href?: (threadId: string) => string; open?: (threadId: string) => void }>({});
 
 function shortIds(text: string) {
   return text.replace(UUID, '$1');
@@ -57,10 +62,29 @@ export function parsePromptEnvelope(text: string): PromptEnvelope | null {
     type: 'peer',
     kind: peer[1]!,
     from: shortIds(from.replace(/^thread /, '')),
+    fromThreadId: LOCAL_SENDER.exec(from.trim())?.[1] ?? null,
     subject: subject ? shortIds(subject) : null,
     urgent,
     body,
   };
+}
+
+function ThreadLink({ threadId, label }: { threadId: string; label: string }) {
+  const links = useContext(ThreadLinkContext);
+  const href = links.href?.(threadId);
+  if (!href && !links.open) return <>{label}</>;
+  const open = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.stopPropagation();
+    // Modified clicks keep the browser's own new-tab and new-window handling.
+    if (!links.open || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    links.open(threadId);
+  };
+  return (
+    <a className="prompt-envelope-link" href={href ?? '#'} onClick={open} title={translate('chat.envelopeOpenSender', { id: threadId })}>
+      {label}
+    </a>
+  );
 }
 
 const KIND_LABEL: Record<string, 'chat.envelopeTask' | 'chat.envelopeQuestion' | 'chat.envelopeResult' | 'chat.envelopeStatus'> = {
@@ -79,7 +103,9 @@ export function PromptEnvelopeHeader({ envelope }: { envelope: PromptEnvelope & 
       <div className="prompt-envelope-head" data-kind={envelope.kind}>
         <span className="prompt-envelope-glyph" aria-hidden="true">↘</span>
         <span className="prompt-envelope-kind">{label}</span>
-        <span className="prompt-envelope-from">{translate('chat.envelopeFrom', { from: envelope.from })}</span>
+        <span className="prompt-envelope-from">{envelope.fromThreadId
+          ? <>{translate('chat.envelopeFrom', { from: '' }).trim()} <ThreadLink threadId={envelope.fromThreadId} label={envelope.from} /></>
+          : translate('chat.envelopeFrom', { from: envelope.from })}</span>
         {/* A subject derived from the first line would only repeat it. */}
         {envelope.subject && !envelope.body.trimStart().startsWith(envelope.subject.replace(/…$/, '').trimEnd())
           ? <span className="prompt-envelope-subject">{envelope.subject}</span> : null}

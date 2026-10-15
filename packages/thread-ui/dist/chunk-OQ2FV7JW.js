@@ -1111,7 +1111,22 @@ var chatEn = {
   "chat.envelopeResume": "Resumed after a Supervisor restart",
   "chat.logCopyCommand": "Copy command",
   "chat.logMoreFiles": { one: "{{count}} more file in the work", other: "{{count}} more files in the work" },
-  "chat.logShowFiles": "Show changed files"
+  "chat.logShowFiles": "Show changed files",
+  "chat.envelopeOpenSender": "Open the sending thread {{id}}",
+  "chat.hint.commands": "Commands the agent ran in a terminal, failed ones included.",
+  "chat.hint.commandsExample": "e.g. npm test, rg -n PromptQueue src",
+  "chat.hint.failed": "Operations that ended with an error or were interrupted, usually a failing test or a missing file.",
+  "chat.hint.failedExample": "e.g. node --test exited with code 1",
+  "chat.hint.reads": "Files the agent opened to read, without changing them.",
+  "chat.hint.readsExample": "e.g. src/prompt-queue.ts",
+  "chat.hint.searches": "Searches in the code or on the web.",
+  "chat.hint.searchesExample": 'e.g. searching for "PromptQueue"',
+  "chat.hint.agents": "Sub-agents or sub-threads this turn created or handed work to.",
+  "chat.hint.agentsExample": "e.g. a reviewer, a test runner thread",
+  "chat.hint.tools": "Calls to MCP servers or built-in tools, not terminal commands.",
+  "chat.hint.toolsExample": "e.g. a browser screenshot, reading a GitHub issue",
+  "chat.hint.reasoning": "Summaries of the model's reasoning steps.",
+  "chat.hint.reasoningExample": "e.g. planning which file to change first"
 };
 
 // src/i18n/common.en.ts
@@ -4353,7 +4368,22 @@ var chatZhCN = {
   "chat.envelopeResume": "Supervisor \u91CD\u542F\u540E\u7EE7\u7EED",
   "chat.logCopyCommand": "\u590D\u5236\u547D\u4EE4",
   "chat.logMoreFiles": { one: "\u8FC7\u7A0B\u4E2D\u8FD8\u6539\u4E86 {{count}} \u4E2A\u6587\u4EF6", other: "\u8FC7\u7A0B\u4E2D\u8FD8\u6539\u4E86 {{count}} \u4E2A\u6587\u4EF6" },
-  "chat.logShowFiles": "\u67E5\u770B\u6539\u52A8\u7684\u6587\u4EF6"
+  "chat.logShowFiles": "\u67E5\u770B\u6539\u52A8\u7684\u6587\u4EF6",
+  "chat.envelopeOpenSender": "\u6253\u5F00\u53D1\u9001\u65B9\u7EBF\u7A0B {{id}}",
+  "chat.hint.commands": "\u667A\u80FD\u4F53\u5728\u7EC8\u7AEF\u91CC\u6267\u884C\u7684\u547D\u4EE4\uFF0C\u5931\u8D25\u7684\u4E5F\u7B97\u5728\u5185\u3002",
+  "chat.hint.commandsExample": "\u4F8B\uFF1Anpm test\u3001rg -n PromptQueue src",
+  "chat.hint.failed": "\u4EE5\u9519\u8BEF\u7ED3\u675F\u6216\u88AB\u4E2D\u65AD\u7684\u64CD\u4F5C\uFF0C\u591A\u534A\u662F\u6CA1\u901A\u8FC7\u7684\u6D4B\u8BD5\u6216\u627E\u4E0D\u5230\u7684\u6587\u4EF6\u3002",
+  "chat.hint.failedExample": "\u4F8B\uFF1Anode --test \u9000\u51FA\u7801 1",
+  "chat.hint.reads": "\u667A\u80FD\u4F53\u6253\u5F00\u67E5\u770B\u3001\u4F46\u6CA1\u6709\u4FEE\u6539\u7684\u6587\u4EF6\u3002",
+  "chat.hint.readsExample": "\u4F8B\uFF1Asrc/prompt-queue.ts",
+  "chat.hint.searches": "\u5728\u4EE3\u7801\u6216\u7F51\u9875\u91CC\u7684\u641C\u7D22\u3002",
+  "chat.hint.searchesExample": "\u4F8B\uFF1A\u641C\u7D22 \u201CPromptQueue\u201D",
+  "chat.hint.agents": "\u8FD9\u4E00\u8F6E\u521B\u5EFA\u6216\u4EA4\u529E\u4EFB\u52A1\u7684\u5B50\u4EE3\u7406 / \u5B50\u7EBF\u7A0B\u3002",
+  "chat.hint.agentsExample": "\u4F8B\uFF1A\u5BA1\u67E5\u5B50\u4EE3\u7406\u3001\u8DD1\u6D4B\u8BD5\u7684\u5B50\u7EBF\u7A0B",
+  "chat.hint.tools": "MCP \u670D\u52A1\u5668\u6216\u5185\u7F6E\u5DE5\u5177\u7684\u8C03\u7528\uFF0C\u4E0D\u542B\u7EC8\u7AEF\u547D\u4EE4\u3002",
+  "chat.hint.toolsExample": "\u4F8B\uFF1A\u6D4F\u89C8\u5668\u622A\u56FE\u3001\u8BFB\u53D6 GitHub issue",
+  "chat.hint.reasoning": "\u6A21\u578B\u63A8\u7406\u6B65\u9AA4\u7684\u6458\u8981\u3002",
+  "chat.hint.reasoningExample": "\u4F8B\uFF1A\u5148\u60F3\u597D\u6539\u54EA\u4E2A\u6587\u4EF6"
 };
 
 // src/i18n/common.zh-CN.ts

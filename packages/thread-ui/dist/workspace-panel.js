@@ -45,7 +45,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-GKTFRBO5.js";
+} from "./chunk-TESFR2SL.js";
 import {
   useThemeFeature
 } from "./chunk-QIOFPWO7.js";
@@ -54,7 +54,7 @@ import {
   getLocale,
   translate,
   useI18n
-} from "./chunk-T7C22PEW.js";
+} from "./chunk-OQ2FV7JW.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect12, useMemo as useMemo11, useState as useState12 } from "react";
@@ -2171,16 +2171,56 @@ function WorkspaceExplorerTree({
     [canVirtualize, projection.indexById, virtualizer]
   );
   const revealedSelectionRef = useRef4(null);
+  const revealUntilRef = useRef4(0);
+  const revealTarget = useCallback3((id, toTop) => {
+    const index = projection.indexById.get(id);
+    if (index === void 0) return false;
+    if (!toTop) {
+      if (canVirtualize) virtualizer.scrollToIndex(index, { align: "auto" });
+      else rowElementsRef.current.get(id)?.scrollIntoView?.({ block: "nearest" });
+    } else if (canVirtualize) {
+      virtualizer.scrollToIndex(Math.max(0, index - 1), { align: "start" });
+    } else {
+      const row = rowElementsRef.current.get(id);
+      const scroller = scrollerRef.current;
+      if (row && scroller) {
+        const offset = row.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+        scroller.scrollTop += offset - row.offsetHeight;
+      }
+    }
+    return true;
+  }, [projection.indexById, canVirtualize, virtualizer, scrollerRef]);
+  const revealedRequestRef = useRef4(void 0);
   useEffect4(() => {
     const key = `${selectedNodeId}:${revealRequestKey ?? 0}`;
     if (!selectedNodeId || revealedSelectionRef.current === key) return;
-    const index = projection.indexById.get(selectedNodeId);
-    if (index === void 0) return;
+    const requested = revealRequestKey !== void 0 && revealRequestKey !== revealedRequestRef.current;
+    if (!revealTarget(selectedNodeId, requested)) return;
     revealedSelectionRef.current = key;
+    revealedRequestRef.current = revealRequestKey;
     setFocusedId(selectedNodeId);
-    if (canVirtualize) virtualizer.scrollToIndex(index, { align: "auto" });
-    else rowElementsRef.current.get(selectedNodeId)?.scrollIntoView?.({ block: "nearest" });
-  }, [selectedNodeId, revealRequestKey, projection.indexById, canVirtualize, virtualizer]);
+    revealUntilRef.current = requested ? performance.now() + 1500 : 0;
+  }, [selectedNodeId, revealRequestKey, revealTarget]);
+  useEffect4(() => {
+    if (!selectedNodeId || performance.now() > revealUntilRef.current) return;
+    const frame = window.requestAnimationFrame(() => revealTarget(selectedNodeId, true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [projection, selectedNodeId, revealTarget]);
+  useEffect4(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const stop = () => {
+      revealUntilRef.current = 0;
+    };
+    scroller.addEventListener("wheel", stop, { passive: true });
+    scroller.addEventListener("touchstart", stop, { passive: true });
+    scroller.addEventListener("keydown", stop);
+    return () => {
+      scroller.removeEventListener("wheel", stop);
+      scroller.removeEventListener("touchstart", stop);
+      scroller.removeEventListener("keydown", stop);
+    };
+  }, [scrollerRef]);
   const handleKeyDown = useCallback3(
     (event) => {
       const command = workspaceExplorerCommandForKey({
@@ -3971,7 +4011,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment4, jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-MZIDDQD6.js")
+  () => import("./GraphWorkspaceMonacoEditor-R77MLY5C.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4045,7 +4085,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-VHHNDPUC.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-B52ZJIAZ.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -5034,8 +5074,13 @@ function GraphWorkspaceExplorer({
     };
     window.requestAnimationFrame(restore);
   }
+  const treeShownForRevealRef = useRef10(null);
   useLayoutEffect3(() => {
     if (collapsedPanel === "explorer" || focusPathRequest && restoredRevealRef.current !== focusPathRequest.requestId) {
+      return;
+    }
+    if (focusPathRequest && treeShownForRevealRef.current !== focusPathRequest.requestId) {
+      treeShownForRevealRef.current = focusPathRequest.requestId;
       return;
     }
     restoreExplorerScroll();

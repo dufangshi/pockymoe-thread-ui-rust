@@ -55,6 +55,64 @@ function completedTurn(items: ThreadTurnDto['items']): ThreadTurnDto {
   };
 }
 
+describe('collapsed answer sections', () => {
+  const prompt = { id: 'prompt', kind: 'userMessage' as const, text: 'Explain and implement' };
+  const first = { id: 'answer-1', kind: 'agentMessage' as const, text: '## First answer\n\n' + 'Explanation of the implementation. '.repeat(30) };
+  const final = { id: 'answer-2', kind: 'agentMessage' as const, text: 'Implementation verified.', responsePhase: 'final' as const };
+  const command = (id: string) => ({ id, kind: 'commandExecution' as const, text: `hidden-${id}`, status: 'completed' });
+  const summary = { ...completedTurn([prompt, first, { id: 'narration', kind: 'agentMessage', text: 'Running checks.' }, final]), hasDeferredItems: true, deferredItemCount: 5,
+    activity: { commands: 5, reads: 2, segments: [
+      { before: first.id, commands: 2 },
+      { before: 'narration', commands: 1, reads: 1 },
+      { before: final.id, commands: 2, reads: 1 },
+    ] },
+  };
+  const detail = { ...summary, hasDeferredItems: false, activity: null, items: [
+    prompt, command('leading-1'), command('leading-2'), first,
+    { id: 'narration', kind: 'agentMessage' as const, text: 'Running checks.' }, command('gap-1'), command('gap-2'), command('gap-3'), final,
+  ] };
+
+  it('hides leading work and merges the gap into one counted placeholder without loading', () => {
+    const load = vi.fn();
+    const el = render(<ThreadTimeline turns={[summary]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={load} />);
+    expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    expect(el.querySelectorAll('.tlog-run[data-placeholder]')).toHaveLength(1);
+    const gap = el.querySelector('.thread-answer-sequence .tlog-run-head')!;
+    expect(gap.querySelector('[data-kind=commands]')?.getAttribute('aria-label')).toBe('3 commands');
+    expect(gap.querySelector('[data-kind=reads]')?.getAttribute('aria-label')).toBe('Read 2 files');
+    expect(el.querySelector('.tlog-row')).toBeNull();
+    expect(load).not.toHaveBeenCalled();
+  });
+
+  it('opens the gap run on hydration and hides all loaded work when collapsed again', async () => {
+    const load = vi.fn(async () => detail);
+    const el = render(<ThreadTimeline turns={[summary]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={load} />);
+    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-answer-sequence .tlog-run-head')!.click());
+    await vi.waitFor(() => expect(el.querySelector('.tlog-run[data-open] .tlog-title')?.textContent).toBe('hidden-gap-1'));
+    expect(load).toHaveBeenCalledTimes(1);
+    expect(el.textContent).not.toContain('hidden-leading-1');
+    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    expect(el.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('false');
+    expect(el.querySelector('.tlog-row, .tlog-single, .tlog-run[data-open]')).toBeNull();
+    expect(el.textContent).not.toContain('hidden-gap-1');
+    expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    expect(el.querySelectorAll('.tlog-run[data-placeholder]')).toHaveLength(1);
+  });
+
+  it.each(['deferred', 'loaded'])('keeps a gap made only of operations between answers in a %s turn', (mode) => {
+    const turn = mode === 'deferred' ? { ...summary, items: [prompt, first, final], activity: {
+      commands: 5, segments: [{ before: first.id, commands: 2 }, { before: final.id, commands: 3 }],
+    } }
+      : { ...detail, items: detail.items.filter(item => item.id !== 'narration') };
+    const el = render(<ThreadTimeline turns={[turn]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={vi.fn()} />);
+    expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    const gap = el.querySelector('.thread-answer-sequence .tlog-run[data-placeholder]');
+    expect(gap, 'operation-only gap must remain available between the two answers').not.toBeNull();
+    expect(gap!.querySelector('[data-kind=commands]')?.getAttribute('aria-label')).toBe('3 commands');
+    expect(el.querySelector('.tlog-row')).toBeNull();
+  });
+});
+
 describe('ThreadTimeline', () => {
   it('uses Supervisor activity on deferred turns and formats the work line in order', () => {
     const onLoadTurnDetail = vi.fn();
@@ -69,7 +127,9 @@ describe('ThreadTimeline', () => {
     };
     const el = render(<ThreadTimeline turns={[turn]} liveOutput="" onLoadTurnDetail={onLoadTurnDetail} />);
     const line = el.querySelector('.thread-graph-worked-summary')!;
-    expect(line.textContent?.replace(/\s*·\s*/g, ' · ')).toBe('Worked for 51s · 6 commands · 1 failed · edited 2 files +64 −3');
+    expect(line.querySelector('.thread-graph-worked-label')?.textContent).toBe('Worked for 51s');
+    expect([...line.querySelectorAll('.tlog-count[role=img]')].map(node => [node.getAttribute('data-kind'), node.getAttribute('aria-label')])).toEqual([['commands', '6 commands'], ['failed', '1 failed']]);
+    expect(line.textContent).toContain('edited 2 files +64 −3');
     expect(line.querySelector('.thread-execution-step-count')).toBeNull();
     expect(line.querySelector('.thread-turn-usage')).toBeNull();
     expect(onLoadTurnDetail).not.toHaveBeenCalled();
@@ -107,7 +167,7 @@ describe('ThreadTimeline', () => {
     const work = () => element.querySelector('.thread-worked-toggle')!;
     const fileToggle = () => element.querySelector<HTMLButtonElement>('.tlog-files-toggle')!;
     expect(work().getAttribute('aria-expanded')).toBe('false');
-    expect(work().textContent).toContain('2 commands');
+    expect(work().querySelector('.tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('2 commands');
     expect(work().textContent).not.toContain('edited');
     expect(fileToggle().textContent).toContain('edited 7 files');
     expect(element.querySelector('.tlog-files')).toBeNull();
@@ -157,7 +217,7 @@ describe('ThreadTimeline', () => {
     const toggle = () => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!;
     expect(toggle()).not.toBeNull();
     expect(toggle().getAttribute('aria-expanded')).toBe('false');
-    expect(toggle().textContent).toContain('2 commands');
+    expect(toggle().querySelector('.tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('2 commands');
     expect(element.querySelector('.tlog-single, .tlog-run, .tlog-current')).toBeNull();
     expect(element.querySelector('.thread-turn-receipt')).not.toBeNull();
     expect(element.querySelector('.thread-graph-turn-footer')).toBeNull();
@@ -179,7 +239,7 @@ describe('ThreadTimeline', () => {
     await vi.waitFor(() => expect(element.textContent).toContain('final-command'));
     expect(element.textContent).not.toContain('first-command');
     expect(element.textContent).not.toContain('second-command');
-    expect(toggle().textContent).toContain('1 command');
+    expect(toggle().querySelector('.tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('1 command');
   });
 
   it('keeps summary deferred items after completing a turn with stale inProgress detail', async () => {
@@ -447,7 +507,7 @@ describe('ThreadTimeline', () => {
       expandedText.indexOf('Intermediate checkpoint.'),
     );
     expect(expandedText).toContain('Final answer.');
-    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('1 command');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('1 command');
 
     const collapseButton = Array.from(element.querySelectorAll('button')).find(
       (button) => button.getAttribute('aria-label')?.includes('Collapse turn 1'),
@@ -459,7 +519,7 @@ describe('ThreadTimeline', () => {
     flushSync(() => cachedExpandButton?.click());
     expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
     expect(element.textContent).toContain('Intermediate checkpoint.');
-    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('1 command');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('1 command');
   });
 
   it('counts operations in the work line even when the run is folded and reasoning is hidden', () => {
@@ -474,14 +534,14 @@ describe('ThreadTimeline', () => {
         {id:'answer',kind:'agentMessage',text:'Final answer'},
       ]), hasDeferredItems:false, deferredItemCount:0,
     }]} />);
-    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('2 commands');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('2 commands');
     expect(element.querySelector('.thread-execution-step-count')).toBeNull();
     const expand = element.querySelector<HTMLButtonElement>('[aria-label*="Expand turn 1"]')!;
     expect(expand).not.toBeNull();
     flushSync(() => expand.click());
-    expect(element.textContent).toContain('2 commands');
+    expect(element.querySelector('.tlog-run .tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('2 commands');
     expect(element.textContent).not.toContain('Hidden reasoning');
-    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('2 commands');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('2 commands');
     expect(element.querySelector('.thread-execution-step-count')).toBeNull();
   });
 
@@ -495,25 +555,25 @@ describe('ThreadTimeline', () => {
     const onLoadTurnDetail = vi.fn().mockResolvedValue(full);
     const props = { threadRunning: true, activeTurnId: summary.id, liveOutput: '', onLoadTurnDetail };
     const element = render(<ThreadTimeline {...props} turns={[summary]} liveItems={{ turnId: summary.id, items: [command] }} />);
-    const count = () => element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent?.replace(/\s*·\s*/g, ' · ').trim();
+    const count = () => element.querySelector('.thread-graph-worked-summary .tlog-count[data-kind=commands]')?.getAttribute('aria-label');
     const toggle = (label: string) => flushSync(() => element.querySelector<HTMLButtonElement>(`[aria-label*="${label} turn 1"]`)!.click());
-    expect(count()).toBe('· 1 command');
+    expect(count()).toBe('1 command');
     await vi.waitFor(() => expect(onLoadTurnDetail).toHaveBeenCalledTimes(1));
     expect(element.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('true');
-    expect(count()).toBe('· 1 command');
+    expect(count()).toBe('1 command');
     toggle('Collapse');
     const nextCommand = { ...command, id: 'next-command', text: 'Read report' };
     flushSync(() => root?.render(<ThreadTimeline {...props} turns={[{ ...summary, deferredItemCount: 2 }]}
       liveItems={{ turnId: summary.id, items: [command, nextCommand] }} />));
-    expect(count()).toBe('· 2 commands');
+    expect(count()).toBe('2 commands');
     onLoadTurnDetail.mockResolvedValue({ ...full, items: [...full.items, nextCommand] });
     toggle('Expand');
     expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
     await vi.waitFor(() => expect(element.querySelector('[aria-label*="Collapse turn 1"]')).not.toBeNull());
-    expect(count()).toBe('· 2 commands');
+    expect(count()).toBe('2 commands');
     flushSync(() => root?.render(<ThreadTimeline {...props} turns={[{ ...summary, deferredItemCount: 2 }]}
       liveItems={{ turnId: summary.id, items: [{ ...nextCommand, status: 'completed' }] }} />));
-    expect(count()).toBe('· 2 commands');
+    expect(count()).toBe('2 commands');
   });
 
   it('loads running deferred operations once and merges later summary messages', async () => {
@@ -654,7 +714,7 @@ describe('ThreadTimeline', () => {
     expect(element.querySelector('.thread-graph-turn-footer')).toBeNull();
     expect(element.textContent).toContain('Finished');
     expect(element.textContent).toContain('final-model');
-    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('1 command');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('1 command');
     expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
   });
 
@@ -1029,7 +1089,7 @@ describe('ThreadTimeline', () => {
     expect(element.querySelector('.thread-graph-history-group-activity')).toBeNull();
     const commands = element.querySelector('.tlog-run')!;
     expect(commands.querySelector('.tlog-part.is-time')?.textContent?.replace(/\s*·\s*/g, ' · ').trim()).toBe('· 2s');
-    expect(commands.textContent).toContain('3 commands');
+    expect(commands.querySelector('.tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('3 commands');
     expect(element.textContent).not.toContain('pnpm test');
     expect(element.textContent).not.toContain('Agent activity');
     expect(element.textContent).not.toContain('Batch');
@@ -1081,7 +1141,7 @@ describe('ThreadTimeline', () => {
 
     expect(element.textContent).toContain('The first finding is ready.');
     expect(element.textContent).not.toContain('Performed');
-    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('1 command');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('1 command');
     expect(element.textContent).toContain(
       'The imported session now reads cleanly.',
     );

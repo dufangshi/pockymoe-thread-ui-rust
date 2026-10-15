@@ -18,6 +18,7 @@ import {
   type ActivityPart,
 } from './activity';
 import { Collapse } from './Collapse';
+import { ActivityCount, countedPart } from './ActivityCount';
 
 /* The transcript log: a run of agent operations folds into one summary line
    ("6 commands · edited 2 files +64 −3 · 38s"); opened, each operation is one
@@ -31,6 +32,8 @@ export interface TranscriptLogActions {
   workspaceRoot?: string | undefined;
   /** The floating viewer for a whole output or diff. */
   openText: (title: string, text: string, kind?: string) => void;
+  /** Keeps the control the reader used in place while what it toggles resizes. */
+  anchor?: ((element?: Element | null) => void) | undefined;
 }
 
 export const TranscriptLogContext = createContext<TranscriptLogActions | null>(null);
@@ -283,7 +286,7 @@ export const LogRow = memo(function LogRow({ item, defaultOpen = false, path }: 
   return (
     <div className="tlog-row" data-kind={item.kind} data-status={status} data-open={open || undefined}>
       <div className="tlog-row-line">
-        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={() => setChosen(!open)} title={title.full}>
+        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={(event) => { actions?.anchor?.(event.currentTarget); setChosen(!open); }} title={title.full}>
           <span className="tlog-glyph" aria-hidden="true">{GLYPH[item.kind] ?? '·'}</span>
           <span className={`tlog-title${title.mono ? ' is-mono' : ''}`}>{title.text}</span>
           {item.kind === 'fileChange' ? <DeltaBadges added={item.addedLines} removed={item.removedLines} /> : null}
@@ -313,7 +316,7 @@ function ReadBatch({ items }: { items: ThreadHistoryItemDto[] }) {
   return (
     <div className="tlog-row" data-kind="fileRead" data-batch="true" data-open={open || undefined}>
       <div className="tlog-row-line">
-        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={(event) => { actions?.anchor?.(event.currentTarget); setOpen((value) => !value); }}>
           <span className="tlog-glyph" aria-hidden="true">→</span>
           <span className="tlog-title">{translate('chat.readFileCount', { count: items.length })}</span>
           <span className="tlog-batch-names">{items.map((item) => displayPath(item.previewText?.trim() || item.text, actions?.workspaceRoot).split('/').at(-1)).join('  ')}</span>
@@ -348,15 +351,28 @@ function rowBlocks(items: ThreadHistoryItemDto[]): RowBlock[] {
   return blocks;
 }
 
+/** Edits read as words ("edited 2 files +64 −3"); counts as icons with numbers,
+    side by side after one separator. */
 export function Parts({ parts }: { parts: ActivityPart[] }) {
   return (
     <>
-      {parts.map((part, index) => (
-        <span key={part.key} className={`tlog-part${part.tone ? ` is-${part.tone}` : ''}`}>
-          {index > 0 && !part.tone?.match(/add|remove/) ? <span className="tlog-sep" aria-hidden="true">·</span> : index > 0 ? ' ' : null}
-          {part.text}
-        </span>
-      ))}
+      {parts.map((part, index) => {
+        const previous = parts[index - 1];
+        if (countedPart(part)) {
+          return (
+            <span key={part.key} className="tlog-part is-count">
+              {previous && !countedPart(previous) ? <span className="tlog-sep" aria-hidden="true">·</span> : null}
+              <ActivityCount part={part} />
+            </span>
+          );
+        }
+        return (
+          <span key={part.key} className={`tlog-part${part.tone ? ` is-${part.tone}` : ''}`}>
+            {index > 0 && !part.tone?.match(/add|remove/) ? <span className="tlog-sep" aria-hidden="true">·</span> : index > 0 ? ' ' : null}
+            {part.text}
+          </span>
+        );
+      })}
     </>
   );
 }
@@ -392,6 +408,7 @@ export const LogRun = memo(function LogRun({
   live?: boolean;
 }) {
   useI18n();
+  const actions = useContext(TranscriptLogContext);
   const counts = useMemo(() => activityFromItems(items), [items]);
   const parts = activityParts(counts);
   const running = items.some((item) => logStatus(item.status) === 'running');
@@ -409,7 +426,7 @@ export const LogRun = memo(function LogRun({
 
   return (
     <section className="tlog-run" data-open={expanded || undefined} data-running={running || undefined} data-failed={counts.failed > 0 || undefined}>
-      <button type="button" className="tlog-run-head" aria-expanded={expanded} onClick={onToggle}>
+      <button type="button" className="tlog-run-head" aria-expanded={expanded} onClick={(event) => { actions?.anchor?.(event.currentTarget); onToggle(); }}>
         <ChevronRight className="tlog-chev" aria-hidden="true" />
         <span className="tlog-summary">
           {parts.length ? <Parts parts={parts} /> : translate('chat.operationCount', { count: items.length })}
@@ -460,11 +477,12 @@ export function RunPlaceholder({ segment, loading, onOpen }: {
   onOpen: () => void;
 }) {
   useI18n();
+  const actions = useContext(TranscriptLogContext);
   const parts = activityParts(segmentCounts(segment));
   const duration = segmentDuration(segment);
   return (
     <section className="tlog-run" data-placeholder="true">
-      <button type="button" className="tlog-run-head" aria-expanded={false} aria-busy={loading} disabled={loading} onClick={onOpen}>
+      <button type="button" className="tlog-run-head" aria-expanded={false} aria-busy={loading} disabled={loading} onClick={(event) => { actions?.anchor?.(event.currentTarget); onOpen(); }}>
         <ChevronRight className="tlog-chev" aria-hidden="true" />
         <span className="tlog-summary">
           {parts.length ? <Parts parts={parts} /> : translate('chat.logActivity')}

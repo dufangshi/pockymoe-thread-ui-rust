@@ -61,7 +61,7 @@ import { TurnTokenSummary } from './tokenFormatting';
 import { TurnStatusBar } from './turnStatus';
 import { TurnUsageInline } from './TurnUsageInline';
 import { Collapse } from './Collapse';
-import { activityParts, hasActivity, storySegments, turnActivity, turnChangedFiles } from './activity';
+import { activityParts, hasActivity, storySegments, stretchBetween, stretchFromItems, turnActivity, turnChangedFiles } from './activity';
 import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff, Parts, RunPlaceholder } from './TranscriptLog';
 import { useAppShellNav } from '../../app-shell/AppShellNavContext';
 
@@ -121,7 +121,7 @@ interface HistoryItemRowProps {
   onOpenToolCallDetail: OpenToolCallDetailHandler;
   onOpenDeferredHistoryItemDetail: OpenDeferredHistoryItemDetailHandler;
   onSelectArtifact?: SelectArtifactHandler;
-  onBeforeMessageResize?: () => void;
+  onBeforeMessageResize?: (anchor?: Element | null) => void;
   adapter?: ThreadTimelineAdapter | undefined;
 }
 
@@ -420,7 +420,7 @@ interface ThreadTurnRowProps {
   onOpenToolCallDetail: OpenToolCallDetailHandler;
   onOpenDeferredHistoryItemDetail: OpenDeferredHistoryItemDetailHandler;
   onSelectArtifact?: SelectArtifactHandler;
-  onBeforeMessageResize?: () => void;
+  onBeforeMessageResize?: (anchor?: Element | null) => void;
   scrollRootRef: RefObject<HTMLDivElement | null>;
   articleRef?: RefCallback<HTMLElement> | undefined;
 }
@@ -855,7 +855,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           <button
             type="button"
             className="thread-worked-toggle group flex min-w-0 items-center gap-2 text-left transition"
-            onClick={() => onToggleCollapse(turn, effectiveCollapsed)}
+            onClick={(event) => { onBeforeMessageResize?.(event.currentTarget); onToggleCollapse(turn, effectiveCollapsed); }}
             disabled={deferredItemsLoading}
             aria-label={translate("chat.turn_6e6e38", { value1: workedLabel, value2: effectiveCollapsed ? translate("chat.expand") : translate("chat.collapse"), value3: absoluteIndex })}
             aria-expanded={!effectiveCollapsed}
@@ -876,7 +876,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           </button>
           {fileParts.length && changedFiles.length ? (
             <button type="button" className="tlog-files-toggle" aria-expanded={filesOpen} title={translate('chat.logShowFiles')}
-              onClick={() => { onBeforeMessageResize?.(); setFilesOpen(value => !value); }}>
+              onClick={(event) => { onBeforeMessageResize?.(event.currentTarget); setFilesOpen(value => !value); }}>
               <span className="tlog-sep" aria-hidden="true">·</span><Parts parts={fileParts} />
             </button>
           ) : fileParts.length ? <span className="tlog-summary"><span className="tlog-sep" aria-hidden="true">·</span><Parts parts={fileParts} /></span> : null}
@@ -904,20 +904,21 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           )}
         </Collapse>
         {effectiveCollapsed && answerSections ? <div className="thread-answer-sequence">
-          {answerSections.map(entry => entry.kind === 'item' ? (
-            <div className="thread-answer-section" key={entry.key}>
-              {entry.item.kind !== 'agentMessage' ? renderHistoryEntries([entry]) : <CompactMessageItem threadId={threadId} item={entry.item as ThreadHistoryItemDto & { kind: 'agentMessage' }}
-                streaming={entry.item.id === visibleSummaryAgent?.id && activeForRendering && isRunningHistoryStatus(entry.item.status)}
+          {foldedAnswerBlocks(answerSections, turn.activity?.segments).map(block => block.kind === 'gap' ? (
+            <div className="thread-execution-timeline" key={`gap:${block.before ?? 'end'}`}>
+              <RunPlaceholder segment={block.stretch} loading={deferredItemsLoading}
+                onOpen={() => { setOpenRunBefore(block.before); onToggleCollapse(turn, true, true); }} />
+            </div>
+          ) : (
+            <div className="thread-answer-section" key={block.entry.key}>
+              {block.entry.item.kind !== 'agentMessage' ? renderHistoryEntries([block.entry]) : <CompactMessageItem threadId={threadId} item={block.entry.item as ThreadHistoryItemDto & { kind: 'agentMessage' }}
+                streaming={block.entry.item.id === visibleSummaryAgent?.id && activeForRendering && isRunningHistoryStatus(block.entry.item.status)}
                 scrollRootRef={scrollRootRef}
-                timeTitle={entry.item.createdAt ? formatLongTimestamp(entry.item.createdAt) : turnTimeTitle}
+                timeTitle={block.entry.item.createdAt ? formatLongTimestamp(block.entry.item.createdAt) : turnTimeTitle}
                 {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
                 {...(adapter ? { adapter } : {})} />}
             </div>
-          ) : !turn.hasDeferredItems ? (
-            <div className="thread-execution-timeline" key={entry.key}>
-              {renderHistoryEntries([entry], { collapsed: true, onExpand: () => onToggleCollapse(turn, true) })}
-            </div>
-          ) : null)}
+          ))}
         </div> : null}
         {/* A finished turn's answer stays below its work, folded or not. */}
         {finalAnswer && (effectiveCollapsed || answerInLog || !mergedItems.some(item => item.id === finalAnswer.id))
@@ -1005,7 +1006,7 @@ interface TimelineHistoryEntriesProps {
   onOpenToolCallDetail: OpenToolCallDetailHandler;
   onOpenDeferredHistoryItemDetail: OpenDeferredHistoryItemDetailHandler;
   onSelectArtifact?: SelectArtifactHandler;
-  onBeforeMessageResize?: () => void;
+  onBeforeMessageResize?: (anchor?: Element | null) => void;
   adapter?: ThreadTimelineAdapter | undefined;
 }
 
@@ -1110,6 +1111,42 @@ function TimelineHistoryEntries({
       })}
     </>
   );
+}
+
+type FoldedAnswerBlock =
+  | { kind: 'answer'; entry: TimelineHistoryEntry & { kind: 'item' } }
+  | { kind: 'gap'; before: string | null; stretch: ThreadTurnActivitySegmentDto };
+
+function entryItems(entry: TimelineHistoryEntry): ThreadHistoryItemDto[] {
+  if (entry.kind === 'item') return [entry.item];
+  if (entry.kind === 'agentActivityGroup') return entry.entries.flatMap(entryItems);
+  return entry.items;
+}
+
+/** A folded turn reads as its answers. The work before the first one is the work
+    line's; the work between two answers (and after the last) is one counted line,
+    from the summary's stretches, else from loaded operations. */
+function foldedAnswerBlocks(sections: TimelineHistoryEntry[], segments: readonly ThreadTurnActivitySegmentDto[] | null | undefined): FoldedAnswerBlock[] {
+  const blocks: FoldedAnswerBlock[] = [];
+  let previous: string | null = null;
+  let work: ThreadHistoryItemDto[] = [];
+  const gap = (before: string | null) => {
+    if (previous === null) return;
+    const stretch = stretchBetween(segments, previous, before) ?? stretchFromItems(work, before);
+    if (stretch) blocks.push({ kind: 'gap', before, stretch });
+  };
+  for (const entry of sections) {
+    if (entry.kind !== 'item') {
+      work.push(...entryItems(entry));
+      continue;
+    }
+    gap(entry.item.id);
+    blocks.push({ kind: 'answer', entry });
+    previous = entry.item.id;
+    work = [];
+  }
+  gap(null);
+  return blocks;
 }
 
 type LogBlock =

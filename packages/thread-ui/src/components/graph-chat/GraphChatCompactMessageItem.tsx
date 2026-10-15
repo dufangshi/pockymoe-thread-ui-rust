@@ -87,7 +87,7 @@ export const GraphChatCompactMessageItem = memo(
     adapter?: ThreadTimelineAdapter;
     timeLabel?: ReactNode;
     timeTitle?: string | null | undefined;
-    onBeforeMessageResize?: () => void;
+    onBeforeMessageResize?: (anchor?: Element | null) => void;
   }) {
   const { locale: i18nLocale } = useI18n();
     const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(

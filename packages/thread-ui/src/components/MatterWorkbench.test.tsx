@@ -71,3 +71,30 @@ describe('phone top bar', () => {
     expect(topbar().querySelector('button[aria-label="Chat"]')).not.toBeNull();
   });
 });
+
+describe('phone files and conversation toggles', () => {
+  const click = (label: string) => act(() => topbar().querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!.click());
+  const pressed = (label: string) => topbar().querySelector(`button[aria-label="${label}"]`)!.getAttribute('aria-pressed');
+
+  it('closes Files with Chat, the button that is no longer pressed while Files covers it', () => {
+    render();
+    click('Toggle Explorer');
+    expect(pressed('Toggle Explorer')).toBe('true');
+    expect(pressed('Chat')).toBe('false');
+    click('Chat');
+    expect(pressed('Toggle Explorer')).toBe('false');
+    expect(pressed('Chat')).toBe('true');
+  });
+
+  it('shows the terminal from over Files instead of toggling it unseen', () => {
+    const onViewChange = vi.fn();
+    options.onViewChange = onViewChange;
+    try {
+      render();
+      click('Toggle Explorer');
+      click('Terminal');
+      expect(pressed('Toggle Explorer')).toBe('false');
+      expect(onViewChange).toHaveBeenCalledWith('shell');
+    } finally { options.onViewChange = () => {}; }
+  });
+});

@@ -334,7 +334,7 @@ export function WorkspaceExplorerPanel({
 
       {initialLoading ? (
         <div
-          className="flex-1 space-y-1 px-3 py-2"
+          className="workspace-loading-skeleton flex-1 space-y-1 px-3 py-2"
           role="status"
           aria-label={translate("files.loadingWorkspaceFiles")}
         >

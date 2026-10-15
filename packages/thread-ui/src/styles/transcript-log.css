@@ -635,3 +635,25 @@
   font-size: 12px;
 }
 .thread-ui-shell .workspace-missing-file-copy:hover { color: var(--theme-fg); background: var(--theme-hover); }
+
+/* A file's error keeps its download one tap away. */
+.thread-ui-shell .workspace-file-alert-download {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 3px 12px;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-fg);
+  font-size: 12.5px;
+}
+.thread-ui-shell .workspace-file-alert-download:hover:not(:disabled) { background: var(--theme-hover); }
+
+/* Loading Files: one skeleton, shown only if loading takes a moment. */
+.workspace-loading-skeleton { animation: workspace-skeleton-in 160ms ease-out 120ms both; }
+.workspace-loading-skeleton-bar { height: 41px; flex: none; border-bottom: 1px solid var(--theme-border); }
+@keyframes workspace-skeleton-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .workspace-loading-skeleton { animation: none; } }

@@ -613,4 +613,6 @@ export const filesEn = {
   "files.linkMissingTitle": "{{name}} is not on this device",
   "files.linkMissingHint": "It may have been moved or deleted, or it lives on another machine.",
   "files.copyPathShort": "Copy path",
+  "files.downloadShort": "Download",
+  "files.safeReason.unsupportedEncodingOrBinaryFile": "This file is not text, so it cannot be previewed.",
 } as const;

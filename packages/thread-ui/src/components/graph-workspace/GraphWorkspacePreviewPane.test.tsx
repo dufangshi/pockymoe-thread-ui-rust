@@ -419,3 +419,25 @@ describe('missing linked file', () => {
     expect(element.querySelector('.workspace-missing-file')).toBeNull();
   });
 });
+
+describe('files that cannot be previewed', () => {
+  const themeNode: WorkspaceTreeNode = { id: 'theme', path: '.scratch/elysia.pockytheme', name: 'elysia.pockytheme', kind: 'file', size: 241855, children: [] };
+
+  it('offers the download of a file that is not text, with that reason', () => {
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
+      selectedTarget={{ kind: 'workspace-file', node: themeNode }} downloadOnly downloadReason="unsupportedEncodingOrBinaryFile" onDownloadFile={() => undefined} />);
+    expect(element.querySelector('[role=alert]')).toBeNull();
+    expect(element.textContent).toContain('This file is not text, so it cannot be previewed.');
+    expect(element.querySelector('button[aria-label="Download elysia.pockytheme"]')).not.toBeNull();
+  });
+
+  it('puts the download beside a file error', async () => {
+    const onDownloadFile = vi.fn(async () => undefined);
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
+      selectedTarget={{ kind: 'workspace-file', node: themeNode }} error="unsupportedEncodingOrBinaryFile" onDownloadFile={onDownloadFile} />);
+    const alert = element.querySelector('[role=alert]')!;
+    expect(alert.textContent).toContain('This file is not text, so it cannot be previewed.');
+    await act(async () => { alert.querySelector<HTMLButtonElement>('.workspace-file-alert-download')!.click(); });
+    expect(onDownloadFile).toHaveBeenCalledTimes(1);
+  });
+});

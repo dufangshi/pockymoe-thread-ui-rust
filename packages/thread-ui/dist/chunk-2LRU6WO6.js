@@ -2289,7 +2289,9 @@ var filesEn = {
   "files.askFailed": "Not sent \xB7 open the conversation for details",
   "files.linkMissingTitle": "{{name}} is not on this device",
   "files.linkMissingHint": "It may have been moved or deleted, or it lives on another machine.",
-  "files.copyPathShort": "Copy path"
+  "files.copyPathShort": "Copy path",
+  "files.downloadShort": "Download",
+  "files.safeReason.unsupportedEncodingOrBinaryFile": "This file is not text, so it cannot be previewed."
 };
 
 // src/i18n/settings.en.ts
@@ -5549,7 +5551,9 @@ var filesZhCN = {
   "files.askFailed": "\u6CA1\u6709\u53D1\u51FA \xB7 \u56DE\u5230\u5BF9\u8BDD\u67E5\u770B\u539F\u56E0",
   "files.linkMissingTitle": "\u8FD9\u53F0\u8BBE\u5907\u4E0A\u6CA1\u6709 {{name}}",
   "files.linkMissingHint": "\u5B83\u53EF\u80FD\u5DF2\u88AB\u79FB\u52A8\u6216\u5220\u9664\uFF0C\u6216\u8005\u53EA\u5728\u53E6\u4E00\u53F0\u673A\u5668\u4E0A\u3002",
-  "files.copyPathShort": "\u590D\u5236\u8DEF\u5F84"
+  "files.copyPathShort": "\u590D\u5236\u8DEF\u5F84",
+  "files.downloadShort": "\u4E0B\u8F7D",
+  "files.safeReason.unsupportedEncodingOrBinaryFile": "\u8FD9\u4E0D\u662F\u6587\u672C\u6587\u4EF6\uFF0C\u65E0\u6CD5\u9884\u89C8\u3002"
 };
 
 // src/i18n/settings.zh-CN.ts

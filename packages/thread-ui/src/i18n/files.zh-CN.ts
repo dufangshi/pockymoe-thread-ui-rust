@@ -613,4 +613,6 @@ export const filesZhCN = {
   "files.linkMissingTitle": "这台设备上没有 {{name}}",
   "files.linkMissingHint": "它可能已被移动或删除，或者只在另一台机器上。",
   "files.copyPathShort": "复制路径",
+  "files.downloadShort": "下载",
+  "files.safeReason.unsupportedEncodingOrBinaryFile": "这不是文本文件，无法预览。",
 } as const;

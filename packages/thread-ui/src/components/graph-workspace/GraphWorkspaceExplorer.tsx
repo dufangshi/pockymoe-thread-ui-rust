@@ -189,6 +189,7 @@ export function GraphWorkspaceExplorer({
   const pendingExplorerScrollRestoreRef = useRef<number | null>(null);
   const {
     downloadOnly,
+    downloadReason,
     imageUrl,
     loadingMore,
     loadMore: handleLoadMore,
@@ -488,6 +489,7 @@ export function GraphWorkspaceExplorer({
       missingPath={missingPath}
       fileTabs={fileTabs}
       downloadOnly={downloadOnly}
+      downloadReason={downloadReason}
       {...(workspaceAdapter?.downloadNode && activeNode?.kind === 'file'
         ? { onDownloadFile: () => workspaceAdapter.downloadNode!({...workspaceIdentity, path: activeNode.path, kind: 'file'}) }
         : {})}

@@ -152,6 +152,18 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }: {
   );
 }
 
+function AlertDownloadButton({ name, onDownload }: { name: string; onDownload: () => Promise<void> | void }) {
+  const [pending, setPending] = useState(false);
+  return (
+    <button type="button" className="workspace-file-alert-download" disabled={pending}
+      aria-label={translate('files.download', { value1: name })}
+      onClick={async () => { setPending(true); try { await onDownload(); } catch { /* the dialog reports it */ } finally { setPending(false); } }}>
+      <Download aria-hidden="true" size={14} />
+      {pending ? translate('files.downloading') : translate('files.downloadShort')}
+    </button>
+  );
+}
+
 function translateReadOnly(reason: string) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en,key) ? translate(key as TranslationKey) : reason;
@@ -505,6 +517,7 @@ export function GraphWorkspacePreviewPane({
   fileTabs = [],
   focusLine,
   downloadOnly,
+  downloadReason = null,
   onDownloadFile,
   imageUrl,
   loadingMore,
@@ -541,6 +554,8 @@ export function GraphWorkspacePreviewPane({
   fileTabs?: WorkspaceFileTab[];
   focusLine?: number | null;
   downloadOnly?: boolean;
+  /** Why the file is offered as a download, when known (e.g. it is not text). */
+  downloadReason?: string | null;
   onDownloadFile?: () => Promise<void> | void;
   imageUrl?: string | null;
   loadingMore?: boolean;
@@ -796,8 +811,11 @@ export function GraphWorkspacePreviewPane({
       {actionsOpen && fileActions}
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {error ? (
-          <div role="alert" className="workspace-file-alert border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-5 py-3">
-            {translateReadOnly(error)}
+          <div role="alert" className="workspace-file-alert flex items-center gap-3 border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-5 py-3">
+            <span className="min-w-0 flex-1">{translateReadOnly(error)}</span>
+            {/* The file may still be useful: its download sits beside the error. */}
+            {onDownloadFile && selectedTarget?.kind === 'workspace-file'
+              ? <AlertDownloadButton name={selectedTarget.node.name} onDownload={onDownloadFile} /> : null}
           </div>
         ) : null}
         {!selectedTarget && missingPath ? (
@@ -809,7 +827,7 @@ export function GraphWorkspacePreviewPane({
           <div className="flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500">
             {translate("files.loadingFilePreview")}</div>
         ) : selectedTarget.kind === 'workspace-file' && downloadOnly ? (
-          <DownloadFilePreview key={selectedTarget.node.path} node={selectedTarget.node} onDownload={onDownloadFile} {...(activeFilePath && documents?.documents.get(activeFilePath)?.snapshot.readOnlyReason ? {readOnlyReason:documents.documents.get(activeFilePath)!.snapshot.readOnlyReason!}: {})} />
+          <DownloadFilePreview key={selectedTarget.node.path} node={selectedTarget.node} onDownload={onDownloadFile} {...(downloadReason ? { readOnlyReason: downloadReason } : activeFilePath && documents?.documents.get(activeFilePath)?.snapshot.readOnlyReason ? {readOnlyReason:documents.documents.get(activeFilePath)!.snapshot.readOnlyReason!}: {})} />
         ) : selectedTarget.kind === 'workspace-file' && moleculeSnapshot ? (
           <div className="thread-graph-molecule-preview min-h-0 flex-1 overflow-hidden">
             <GraphMoleculeViewer

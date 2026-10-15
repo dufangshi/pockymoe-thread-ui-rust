@@ -135,7 +135,11 @@ export function MatterWorkbench({
   // With the bottom panel the conversation stays visible beside the terminal:
   // Chat is "pressed" unless a maximized terminal covers it.
   const chatCovered = Boolean(o.panels && o.activeView === 'shell' && toolPanel.maximized && !toolPanel.collapsed);
+  const rootRef = useRef<HTMLDivElement>(null);
+  // A compact workbench draws Files over the conversation: Chat closes it.
+  const filesCoverChat = () => explorerOpen && (mobile || Boolean(rootRef.current?.querySelector('.workbench-panels.is-compact')));
   const showChat = () => {
+    if (filesCoverChat()) setExplorerOpen(false);
     if (o.panels) {
       if (chatCovered) toolPanel.update({ maximized: false });
     } else o.onViewChange('chat');
@@ -224,6 +228,7 @@ export function MatterWorkbench({
   ));
   return (
     <div
+      ref={rootRef}
       className={`matter-workbench ${sidebarHidden ? 'is-sidebar-hidden' : ''}`}
       onClick={(e) => {
         if (
@@ -312,8 +317,15 @@ export function MatterWorkbench({
         <div className="matter-topbar-end">
           {mobile && deviceMonitor}
           {mobile && <>
-            {!drawerTools && <button aria-label={translate("workbench.chat")} aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={showChat}><MessageSquare /></button>}
-            {o.terminalEnabled && <button aria-label={translate("workbench.terminal")} aria-pressed={o.activeView === 'shell'} onClick={() => o.onViewChange('shell')}><Terminal /></button>}
+            {!drawerTools && <button aria-label={translate("workbench.chat")} aria-pressed={!explorerOpen && (o.panels ? !chatCovered : o.activeView === 'chat')} onClick={showChat}><MessageSquare /></button>}
+            {o.terminalEnabled && <button aria-label={translate("workbench.terminal")} aria-pressed={!explorerOpen && o.activeView === 'shell'} onClick={() => {
+              // Over Files, the terminal button shows the terminal rather than hiding it unseen.
+              if (explorerOpen) {
+                setExplorerOpen(false);
+                if (o.activeView === 'shell') return;
+              }
+              o.onViewChange('shell');
+            }}><Terminal /></button>}
             {o.toolPanels?.map(panel => <button key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
             <button aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen /></button>
             {settings}

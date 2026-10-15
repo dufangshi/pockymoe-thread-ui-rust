@@ -50,7 +50,7 @@ function turn(items: ThreadTurnDto['items']): ThreadTurnDto {
 
 
 function row(element: ParentNode, kind: string) {
-  return element.querySelector<HTMLButtonElement>(`.tlog-row[data-kind="${kind}"] > .tlog-row-head`)!;
+  return element.querySelector<HTMLButtonElement>(`.tlog-row[data-kind="${kind}"] .tlog-row-head`)!;
 }
 
 function expandActivity(element: HTMLElement) {
@@ -100,7 +100,7 @@ describe('compact history items', () => {
     flushSync(() => row(element, 'toolCall').click());
     await vi.waitFor(() => expect(loader).toHaveBeenCalledWith('tool-1'));
     await vi.waitFor(() => expect(element.querySelector('.tlog-output')?.textContent).toBe('Tool output body'));
-    flushSync(() => element.querySelector<HTMLButtonElement>('.tlog-open')!.click());
+    flushSync(() => element.querySelector<HTMLButtonElement>('.tlog-viewable')!.click());
     await vi.waitFor(() => expect(document.body.querySelector('[role="dialog"]')?.textContent).toContain('Tool output body'));
   });
 

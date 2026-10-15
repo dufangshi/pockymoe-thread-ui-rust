@@ -491,4 +491,6 @@ export const chatEn = {
   'chat.envelopeTurn': 'Turn notification',
   'chat.envelopeResume': 'Resumed after a Supervisor restart',
   'chat.logCopyCommand': 'Copy command',
+  'chat.logMoreFiles': { one: '{{count}} more file in the work', other: '{{count}} more files in the work' },
+  'chat.logShowFiles': 'Show changed files',
 } as const;

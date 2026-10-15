@@ -607,13 +607,15 @@ export interface ThreadTurnActivityDto {
   agents?: number;
   reasoning?: number;
   failed?: number;
-  /** Up to eight changed files, first path of each edit, with the latest edit's item id. */
+  /** Distinct changed paths. */
+  fileCount?: number;
+  /** Up to forty changed files, with the latest edit's item id. */
   files?: ThreadTurnChangedFileDto[];
   /** The same counts per stretch of operations, keyed by the conversation item after it. */
   segments?: ThreadTurnActivitySegmentDto[];
 }
 
-export type ThreadTurnActivitySegmentDto = Omit<ThreadTurnActivityDto, 'files' | 'segments'> & {
+export type ThreadTurnActivitySegmentDto = Omit<ThreadTurnActivityDto, 'files' | 'segments' | 'fileCount'> & {
   before: string | null;
   startedAt?: string;
   endedAt?: string;

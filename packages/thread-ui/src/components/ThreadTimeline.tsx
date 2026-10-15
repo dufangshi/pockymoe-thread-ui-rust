@@ -221,6 +221,12 @@ function ThreadTimelineComponent({
   const [loadingTurnDetailIds, setLoadingTurnDetailIds] = useState<Set<string>>(
     () => new Set(),
   );
+  // A turn's last live operations outlive it until its summary carries them,
+  // so its work folds into the work line instead of vanishing first.
+  const [endedLiveItems, setEndedLiveItems] = useState<{ turnId: string; items: ThreadHistoryItemDto[] } | null>(null);
+  if (liveItems?.items.length && endedLiveItems?.items !== liveItems.items) {
+    setEndedLiveItems({ turnId: liveItems.turnId, items: liveItems.items });
+  }
   const [turnDetailErrors, setTurnDetailErrors] = useState<
     Record<string, string | undefined>
   >({});
@@ -245,10 +251,8 @@ function ThreadTimelineComponent({
   const transcriptLogActions = useMemo<TranscriptLogActions>(() => ({
     loadDetail: loadHistoryItemDetail,
     workspaceRoot: adapter?.workspaceRootPath,
-    openCommand: handleOpenCommandDetail,
-    openToolCall: handleOpenToolCallDetail,
-    openDeferred: handleOpenDeferredHistoryItemDetail,
-  }), [loadHistoryItemDetail, adapter?.workspaceRootPath, handleOpenCommandDetail, handleOpenToolCallDetail, handleOpenDeferredHistoryItemDetail]);
+    openText: handleOpenExpandedText,
+  }), [loadHistoryItemDetail, adapter?.workspaceRootPath, handleOpenExpandedText]);
   const {
     scrollContainerRef,
     scrollContentRef,
@@ -298,6 +302,7 @@ function ThreadTimelineComponent({
   useEffect(() => {
     setCollapsedTurnOverrides({});
     setLoadedTurnDetails({});
+    setEndedLiveItems(null);
     setLoadingTurnDetailIds(new Set());
     setTurnDetailErrors({});
   }, [threadId]);
@@ -403,6 +408,24 @@ function ThreadTimelineComponent({
     }
   }, [turns, loadTurnDetail, loadedTurnDetails, collapsedTurnOverrides, loadingTurnDetailIds, turnDetailErrors]);
 
+  useEffect(() => {
+    if (!loadTurnDetail) return;
+    // A working turn reads open, so it loads what its summary deferred, once.
+    for (const turn of turns) {
+      if (turn.status !== 'inProgress' || !turn.hasDeferredItems || collapsedTurnOverrides[turn.id] === true ||
+          loadedTurnDetails[turn.id] || loadingTurnDetailIds.has(turn.id) || turnDetailErrors[turn.id]) continue;
+      setLoadingTurnDetailIds((current) => new Set(current).add(turn.id));
+      void Promise.resolve().then(() => loadTurnDetail(turn.id)).then((detail) => {
+        if (detail.id !== turn.id) throw new Error(translate("chat.loadedTurnDetailDidNotMatchThe"));
+        setLoadedTurnDetails((current) => ({ ...current, [turn.id]: detail }));
+      }).catch((error: unknown) => {
+        setTurnDetailErrors((current) => ({ ...current, [turn.id]: error instanceof Error ? error.message : translate("chat.unableToLoadCompleteTurnHistory") }));
+      }).finally(() => {
+        setLoadingTurnDetailIds((current) => { const next = new Set(current); next.delete(turn.id); return next; });
+      });
+    }
+  }, [turns, loadTurnDetail, loadedTurnDetails, collapsedTurnOverrides, loadingTurnDetailIds, turnDetailErrors]);
+
   const collapsedStateForTurn = useCallback((
     turn: TimelineTurn,
     input: {
@@ -418,14 +441,18 @@ function ThreadTimelineComponent({
       return false;
     }
 
+    // A working turn stays open, its latest work unfolded; once finished it folds
+    // into its work line.
+    if (turn.status === 'inProgress' || turn.status === 'sending' || input.forceActive) {
+      return false;
+    }
     return Boolean(
-      (loadTurnDetail && turn.status === 'inProgress') || turn.hasDeferredItems ||
+      turn.hasDeferredItems ||
         (effectiveAutoCollapseCompletedTurns &&
           isTerminalTurnStatus(turn.status) &&
-          !input.forceActive &&
           !input.hasLiveActivity),
     );
-  }, [collapsedTurnOverrides, effectiveAutoCollapseCompletedTurns, loadTurnDetail]);
+  }, [collapsedTurnOverrides, effectiveAutoCollapseCompletedTurns]);
 
   const visibleTurns = serverManagedHistory ? turns : turns.slice(startIndex);
   const optimisticAbsoluteIndex = effectiveTotalTurnCount + 1;
@@ -614,6 +641,9 @@ function ThreadTimelineComponent({
   };
   const renderWorkTurn = (turn: ThreadTurnDto, visibleIndex: number, continuations: ThreadTurnDto[] = [], nested = false, omitAgentId?: string): React.ReactNode => {
     const loadedTurn = loadedTurnDetails[turn.id];
+    // Detail loaded while the turn worked is behind it once it ends; the
+    // summary then says what is still deferred.
+    const loadedWhileWorking = loadedTurn?.status === 'inProgress' && isTerminalTurnStatus(turn.status);
     // A summary refresh must update messages/usage without dropping the
     // operations explicitly loaded earlier or restoring stale text.
     const mergedItems = new Map(loadedTurn?.items.map((item) => [item.id, item]));
@@ -621,8 +651,8 @@ function ThreadTimelineComponent({
     const hydratedTurn = loadedTurn
       ? {
           ...loadedTurn, ...turn,
-          hasDeferredItems: loadedTurn.hasDeferredItems,
-          deferredItemCount: loadedTurn.deferredItemCount,
+          hasDeferredItems: loadedWhileWorking ? turn.hasDeferredItems : loadedTurn.hasDeferredItems,
+          deferredItemCount: loadedWhileWorking ? turn.deferredItemCount : loadedTurn.deferredItemCount,
           items: [...mergedItems.values()],
         }
       : turn;
@@ -633,6 +663,8 @@ function ThreadTimelineComponent({
     const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
     const rowLiveItems =
       liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
+    const rowEndedItems = !rowLiveItems?.length && (!loadedTurn || loadedWhileWorking) && endedLiveItems?.turnId === turn.id && isTerminalTurnStatus(turn.status)
+      ? endedLiveItems.items : null;
     const rowLiveOutput =
       liveOutputTargetTurnId === turn.id ? liveOutput : '';
     let rowLiveActivityAt = latestTimestamp(
@@ -683,11 +715,12 @@ function ThreadTimelineComponent({
         absoluteIndex={visibleTurnAbsoluteOffset + visibleIndex + 1}
         isCollapsed={rowCollapsed}
         livePlan={rowLivePlan}
-        liveItems={rowLiveItems}
+        liveItems={rowEndedItems ?? rowLiveItems}
         liveActivityAt={rowLiveActivityAt}
         liveOutput={rowLiveOutput}
         forceActive={rowForceActive}
         onToggleCollapse={handleToggleCollapse}
+        narrationMode={!effectiveAutoCollapseCompletedTurns}
         deferredItemsLoading={loadingTurnDetailIds.has(turn.id)}
         deferredItemsError={turnDetailErrors[turn.id]}
         onOpenExpandedText={handleOpenExpandedText}

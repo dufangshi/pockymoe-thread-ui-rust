@@ -1109,7 +1109,9 @@ var chatEn = {
   "chat.envelopeInbox": "Inbox reminder",
   "chat.envelopeTurn": "Turn notification",
   "chat.envelopeResume": "Resumed after a Supervisor restart",
-  "chat.logCopyCommand": "Copy command"
+  "chat.logCopyCommand": "Copy command",
+  "chat.logMoreFiles": { one: "{{count}} more file in the work", other: "{{count}} more files in the work" },
+  "chat.logShowFiles": "Show changed files"
 };
 
 // src/i18n/common.en.ts
@@ -2265,7 +2267,11 @@ var filesEn = {
   "files.pdfOpenOrDownload": "This browser cannot show a PDF inside the page. Open it in a new tab or download it.",
   "files.openPdf": "Open",
   "files.openPdfInNewTab": "Open {{value1}} in a new tab",
-  "files.linkedFileReadOnly": "Linked file outside the workspace: read-only preview."
+  "files.linkedFileReadOnly": "Linked file outside the workspace: read-only preview.",
+  "files.askAgent": "Ask the agent",
+  "files.askAgentPlaceholder": "Ask about this\u2026",
+  "files.askSent": "Sent \xB7 the reply appears in the conversation",
+  "files.askFailed": "Not sent \xB7 open the conversation for details"
 };
 
 // src/i18n/settings.en.ts
@@ -4345,7 +4351,9 @@ var chatZhCN = {
   "chat.envelopeInbox": "\u6536\u4EF6\u7BB1\u63D0\u9192",
   "chat.envelopeTurn": "\u8F6E\u6B21\u901A\u77E5",
   "chat.envelopeResume": "Supervisor \u91CD\u542F\u540E\u7EE7\u7EED",
-  "chat.logCopyCommand": "\u590D\u5236\u547D\u4EE4"
+  "chat.logCopyCommand": "\u590D\u5236\u547D\u4EE4",
+  "chat.logMoreFiles": { one: "\u8FC7\u7A0B\u4E2D\u8FD8\u6539\u4E86 {{count}} \u4E2A\u6587\u4EF6", other: "\u8FC7\u7A0B\u4E2D\u8FD8\u6539\u4E86 {{count}} \u4E2A\u6587\u4EF6" },
+  "chat.logShowFiles": "\u67E5\u770B\u6539\u52A8\u7684\u6587\u4EF6"
 };
 
 // src/i18n/common.zh-CN.ts
@@ -5501,7 +5509,11 @@ var filesZhCN = {
   "files.pdfOpenOrDownload": "\u6B64\u6D4F\u89C8\u5668\u65E0\u6CD5\u5728\u9875\u9762\u5185\u663E\u793A PDF\u3002\u53EF\u5728\u65B0\u6807\u7B7E\u9875\u4E2D\u6253\u5F00\u6216\u4E0B\u8F7D\u3002",
   "files.openPdf": "\u6253\u5F00",
   "files.openPdfInNewTab": "\u5728\u65B0\u6807\u7B7E\u9875\u4E2D\u6253\u5F00 {{value1}}",
-  "files.linkedFileReadOnly": "\u5DE5\u4F5C\u533A\u5916\u7684\u94FE\u63A5\u6587\u4EF6\uFF1A\u53EA\u8BFB\u9884\u89C8\u3002"
+  "files.linkedFileReadOnly": "\u5DE5\u4F5C\u533A\u5916\u7684\u94FE\u63A5\u6587\u4EF6\uFF1A\u53EA\u8BFB\u9884\u89C8\u3002",
+  "files.askAgent": "\u5411 Agent \u63D0\u95EE",
+  "files.askAgentPlaceholder": "\u5C31\u8FD9\u91CC\u63D0\u95EE\u2026",
+  "files.askSent": "\u5DF2\u53D1\u9001 \xB7 \u56DE\u590D\u4F1A\u51FA\u73B0\u5728\u5BF9\u8BDD\u91CC",
+  "files.askFailed": "\u6CA1\u6709\u53D1\u51FA \xB7 \u56DE\u5230\u5BF9\u8BDD\u67E5\u770B\u539F\u56E0"
 };
 
 // src/i18n/settings.zh-CN.ts

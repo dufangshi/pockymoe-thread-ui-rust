@@ -4,7 +4,7 @@ import { translate } from '../../i18n';
 export type ActivityCounts = Required<Omit<ThreadTurnActivityDto, 'files' | 'segments'>>;
 
 const EMPTY: ActivityCounts = {
-  commands: 0, fileChanges: 0, changedFiles: 0, addedLines: 0, removedLines: 0,
+  commands: 0, fileChanges: 0, changedFiles: 0, fileCount: 0, addedLines: 0, removedLines: 0,
   reads: 0, searches: 0, tools: 0, agents: 0, reasoning: 0, failed: 0,
 };
 
@@ -33,17 +33,20 @@ export function logStatus(status: string | null | undefined): LogStatus {
 /** Same counts as the Supervisor's summary of a folded turn (runtime service.rs). */
 export function activityFromItems(items: readonly ThreadHistoryItemDto[]): ActivityCounts {
   const counts = { ...EMPTY };
+  const paths = new Set<string>();
   for (const item of items) {
     const key = KEY_BY_KIND[item.kind];
     if (!key) continue;
     counts[key] += 1;
     if (logStatus(item.status) === 'failed') counts.failed += 1;
     if (item.kind === 'fileChange') {
+      if (logStatus(item.status) !== 'failed') item.text.split(/,\s+/).filter(Boolean).forEach((path) => paths.add(path));
       counts.changedFiles += item.changedFiles ?? 0;
       counts.addedLines += item.addedLines ?? 0;
       counts.removedLines += item.removedLines ?? 0;
     }
   }
+  counts.fileCount = paths.size;
   return counts;
 }
 
@@ -54,8 +57,9 @@ export function turnActivity(
   items: readonly ThreadHistoryItemDto[],
 ): ActivityCounts | null {
   const loaded = activityFromItems(items);
-  if (!turn.hasDeferredItems) return loaded;
-  if (!turn.activity) return hasActivity(loaded) ? loaded : null;
+  // Items loaded while a turn worked can be behind its summary, so the
+  // Supervisor's counts win wherever they are larger.
+  if (!turn.activity) return turn.hasDeferredItems && !hasActivity(loaded) ? null : loaded;
   const counts = { ...EMPTY };
   for (const key of Object.keys(EMPTY) as Array<keyof ActivityCounts>) counts[key] = turn.activity[key] ?? 0;
   for (const key of Object.keys(counts) as Array<keyof ActivityCounts>) counts[key] = Math.max(counts[key], loaded[key]);
@@ -76,7 +80,7 @@ export interface ActivityPart {
 export function activityParts(counts: ActivityCounts, { lines = true }: { lines?: boolean } = {}): ActivityPart[] {
   const parts: ActivityPart[] = [];
   if (counts.fileChanges) {
-    parts.push({ key: 'edits', text: translate('chat.logEdits', { count: counts.changedFiles || counts.fileChanges }) });
+    parts.push({ key: 'edits', text: translate('chat.logEdits', { count: counts.fileCount || counts.changedFiles || counts.fileChanges }) });
     if (lines && counts.addedLines) parts.push({ key: 'added', text: `+${counts.addedLines}`, tone: 'add' });
     if (lines && counts.removedLines) parts.push({ key: 'removed', text: `−${counts.removedLines}`, tone: 'remove' });
   }
@@ -130,7 +134,7 @@ export function turnChangedFiles(
   turn: { hasDeferredItems?: boolean | null; activity?: ThreadTurnActivityDto | null },
   items: readonly ThreadHistoryItemDto[],
 ): ThreadTurnChangedFileDto[] {
-  if (turn.hasDeferredItems) return turn.activity?.files ?? [];
+  if (turn.hasDeferredItems || turn.activity?.files) return turn.activity?.files ?? [];
   const files: ThreadTurnChangedFileDto[] = [];
   for (const item of items) {
     if (item.kind !== 'fileChange' || logStatus(item.status) === 'failed') continue;
@@ -151,7 +155,9 @@ export function turnChangedFiles(
 /** Counts of one stretch of work, ready for `activityParts`. */
 export function segmentCounts(segment: ThreadTurnActivitySegmentDto): ActivityCounts {
   const counts = { ...EMPTY };
-  for (const key of Object.keys(EMPTY) as Array<keyof ActivityCounts>) counts[key] = segment[key] ?? 0;
+  for (const key of Object.keys(EMPTY) as Array<keyof ActivityCounts>) {
+    if (key !== 'fileCount') counts[key] = segment[key] ?? 0;
+  }
   return counts;
 }
 

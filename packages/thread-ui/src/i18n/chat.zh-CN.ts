@@ -491,4 +491,6 @@ export const chatZhCN = {
   'chat.envelopeTurn': '轮次通知',
   'chat.envelopeResume': 'Supervisor 重启后继续',
   'chat.logCopyCommand': '复制命令',
+  'chat.logMoreFiles': { one: '过程中还改了 {{count}} 个文件', other: '过程中还改了 {{count}} 个文件' },
+  'chat.logShowFiles': '查看改动的文件',
 } as const;

@@ -116,21 +116,49 @@
 
 /* A row: glyph, title, delta and status on one line */
 .tlog-row { min-width: 0; }
-.tlog-row-head {
+.tlog-row-line {
+  position: relative;
   display: flex;
   align-items: center;
+  min-width: 0;
+  margin-left: -6px;
+  border-radius: 5px;
+}
+.tlog-row-line:hover { background: var(--theme-hover); }
+.tlog-row-head {
+  display: flex;
+  flex: 1;
+  align-items: center;
   gap: 8px;
-  width: 100%;
   min-width: 0;
   min-height: var(--tlog-row-height);
   padding: 0 6px;
-  margin-left: -6px;
-  border-radius: 5px;
   font-size: 12px;
   color: var(--theme-fg-soft);
   text-align: left;
 }
-.tlog-row-head:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.tlog-row-line:hover .tlog-row-head { color: var(--theme-fg); }
+/* Copy: a faint key beside a command on hover; on phones once the row is open. */
+.tlog-copy {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 22px;
+  margin-right: 2px;
+  border-radius: 4px;
+  color: var(--theme-fg-muted);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms;
+}
+.tlog-copy svg { width: 13px; height: 13px; }
+.tlog-row[data-open] .tlog-copy,
+.tlog-copy:focus-visible { opacity: 0.55; pointer-events: auto; }
+@media (hover: hover) {
+  .tlog-row-line:hover .tlog-copy { opacity: 0.55; pointer-events: auto; }
+}
+.tlog-copy:hover { opacity: 1; background: var(--theme-surface); color: var(--theme-fg); }
 .tlog-glyph {
   flex: none;
   width: 1.6ch;
@@ -221,6 +249,7 @@
   white-space: pre-wrap;
 }
 .tlog-command,
+.tlog-output pre,
 .tlog-output {
   margin: 0;
   max-height: calc(16 * 1.55em);
@@ -324,37 +353,30 @@
 .thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable { font-size: 0; }
 .thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable::before { content: '$ —'; font-size: 11px; }
 
-/* Changed files under a folded turn's work line */
-.tlog-files { min-width: 0; margin-top: -6px; }
-.tlog-files-row {
-  display: flex;
-  align-items: center;
-  gap: 4px 12px;
+/* The work line's edit counts open the changed files on their own. */
+.thread-ui-shell .tlog-files-toggle {
+  flex: 0 1 auto;
   min-width: 0;
-  min-height: var(--tlog-row-height);
   overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 12px;
-}
-.tlog-files-row > .tlog-glyph { margin-right: -4px; }
-.tlog-file {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  min-width: 0;
-  max-width: 40%;
-  padding: 1px 4px;
-  margin: 0 -4px;
-  border-radius: 4px;
   color: var(--theme-fg-soft);
+  font-variant-numeric: tabular-nums;
+  text-decoration: underline dotted var(--tlog-rule);
+  text-underline-offset: 3px;
 }
-.tlog-file:hover,
-.tlog-file[aria-expanded='true'] { background: var(--theme-hover); color: var(--theme-fg); }
-.tlog-file[aria-expanded='true'] .tlog-file-name { text-decoration: underline; text-underline-offset: 3px; }
-.tlog-file-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; font: 11.5px var(--tlog-font-mono); }
-.tlog-files-more { flex: none; font-size: 11px; color: var(--theme-fg-muted); }
-button.tlog-files-more:hover { color: var(--theme-fg); text-decoration: underline; }
-.tlog-files .tlog-detail { margin-left: 0; }
+.thread-ui-shell .tlog-files-toggle:hover,
+.thread-ui-shell .tlog-files-toggle[aria-expanded='true'] { color: var(--theme-fg); text-decoration-style: solid; }
+.tlog-files {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: -4px 0 4px 6px;
+  padding-left: 13px;
+  border-left: 1px solid var(--theme-border);
+}
+.tlog-files-more { margin: 2px 0; font-size: 11.5px; color: var(--theme-fg-muted); }
 
 /* Prompts written on an agent's behalf: an envelope header, or a one-line notice.
    They sit on the reader's side, not in the person's bubble. */
@@ -446,10 +468,38 @@ button.tlog-files-more:hover { color: var(--theme-fg); text-decoration: underlin
   font-variant-numeric: tabular-nums;
 }
 
-.tlog-files-more.is-narrow { display: none; }
-@media (max-width: 639px) {
-  .tlog-files-row:not([data-all]) .tlog-file:nth-of-type(n + 3) { display: none; }
-  .tlog-files-more.is-wide { display: none; }
-  .tlog-files-more.is-narrow { display: inline; }
-  .tlog-file { max-width: 46%; }
+
+/* Output and diff blocks open the floating viewer. */
+.tlog-output:has(> pre) { padding: 0; overflow: hidden; max-height: none; }
+.tlog-output > pre { border: 0; border-radius: 0; background: none; }
+.tlog-viewable { position: relative; cursor: zoom-in; }
+.tlog-viewable:hover { border-color: var(--theme-border-strong); }
+.tlog-viewable:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
+.tlog-more-lines {
+  position: sticky;
+  bottom: 0;
+  display: block;
+  padding: 2px 10px;
+  border-top: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  font-size: 11px;
+  color: var(--theme-fg-muted);
+  text-align: right;
+}
+
+/* A turn's work folds into its work line when the turn ends, and unfolds from it. */
+.tlog-collapse {
+  display: grid;
+  /* Long commands must not widen the column past the transcript. */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition: grid-template-rows 260ms cubic-bezier(0.2, 0, 0, 1), opacity 200ms ease;
+}
+.tlog-collapse[data-state='closed'] { grid-template-rows: 0fr; opacity: 0; }
+.tlog-collapse-inner { min-width: 0; min-height: 0; overflow: hidden; }
+.tlog-collapse[data-settled] > .tlog-collapse-inner { overflow: visible; }
+@media (prefers-reduced-motion: reduce) {
+  .tlog-collapse { transition: none; }
+  .tlog-collapse[data-state='open'] > .tlog-collapse-inner { overflow: visible; }
 }

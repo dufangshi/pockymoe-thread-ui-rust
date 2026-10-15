@@ -69,7 +69,7 @@ describe('ThreadTimeline', () => {
     };
     const el = render(<ThreadTimeline turns={[turn]} liveOutput="" onLoadTurnDetail={onLoadTurnDetail} />);
     const line = el.querySelector('.thread-graph-worked-summary')!;
-    expect(line.textContent?.replace(/\s*·\s*/g, ' · ')).toBe('Worked for 51s · edited 2 files +64 −3 · 6 commands · 1 failed');
+    expect(line.textContent?.replace(/\s*·\s*/g, ' · ')).toBe('Worked for 51s · 6 commands · 1 failed · edited 2 files +64 −3');
     expect(line.querySelector('.thread-execution-step-count')).toBeNull();
     expect(line.querySelector('.thread-turn-usage')).toBeNull();
     expect(onLoadTurnDetail).not.toHaveBeenCalled();
@@ -88,6 +88,146 @@ describe('ThreadTimeline', () => {
     }
   });
 
+  it('opens changed files independently of folded work and loads large diffs only on demand', async () => {
+    const files = ['a', 'b', 'c', 'large'].map((name, index) => ({
+      path: `src/${name}.ts`, itemId: `edit-${index}`, addedLines: index === 3 ? 41 : 1, removedLines: 1,
+    }));
+    const turn: ThreadTurnDto = {
+      ...completedTurn([
+        { id: 'prompt', kind: 'userMessage', text: 'Edit the files' },
+        { id: 'final', kind: 'agentMessage', text: 'Edits complete', responsePhase: 'final' },
+      ]),
+      hasDeferredItems: true, deferredItemCount: 8,
+      activity: { commands: 2, fileChanges: 4, fileCount: 7, addedLines: 44, removedLines: 4, files },
+    };
+    const onLoadTurnDetail = vi.fn();
+    const loadDetail = vi.fn(async (id: string) => ({ id, kind: 'fileChange' as const, title: id, text: '@@ -1 +1 @@\n-old\n+new' }));
+    const element = render(<ThreadTimeline turns={[turn]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={onLoadTurnDetail}
+      adapter={{ onLoadHistoryItemDetail: loadDetail }} />);
+    const work = () => element.querySelector('.thread-worked-toggle')!;
+    const fileToggle = () => element.querySelector<HTMLButtonElement>('.tlog-files-toggle')!;
+    expect(work().getAttribute('aria-expanded')).toBe('false');
+    expect(work().textContent).toContain('2 commands');
+    expect(work().textContent).not.toContain('edited');
+    expect(fileToggle().textContent).toContain('edited 7 files');
+    expect(element.querySelector('.tlog-files')).toBeNull();
+    expect(loadDetail).not.toHaveBeenCalled();
+    flushSync(() => fileToggle().click());
+    await vi.waitFor(() => expect(loadDetail).toHaveBeenCalledTimes(3));
+    expect(loadDetail.mock.calls.map(([id]) => id)).toEqual(['edit-0', 'edit-1', 'edit-2']);
+    expect(work().getAttribute('aria-expanded')).toBe('false');
+    expect(fileToggle().getAttribute('aria-expanded')).toBe('true');
+    expect(element.querySelectorAll('.tlog-files .tlog-row')).toHaveLength(4);
+    expect(element.querySelector('.tlog-files-more')?.textContent).toContain('3 more files');
+    expect(onLoadTurnDetail).not.toHaveBeenCalled();
+    const large = () => element.querySelector<HTMLButtonElement>('.tlog-files > .tlog-row:nth-child(4) .tlog-row-head')!;
+    expect(large().getAttribute('aria-expanded')).toBe('false');
+    flushSync(() => large().click());
+    await vi.waitFor(() => expect(loadDetail).toHaveBeenCalledWith('edit-3'));
+    expect(element.querySelector('.tlog-files > .tlog-row:nth-child(4) .thread-diff')?.textContent).toContain('new');
+    expect(onLoadTurnDetail).not.toHaveBeenCalled();
+    flushSync(() => fileToggle().click());
+    expect(element.querySelector('.tlog-files')).toBeNull();
+    flushSync(() => fileToggle().click());
+    await vi.waitFor(() => expect(element.querySelectorAll('.tlog-files .thread-diff')).toHaveLength(3));
+    expect(loadDetail).toHaveBeenCalledTimes(4);
+    expect(work().getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it.each([
+    ['cleared', true], ['empty', true], ['cleared', false], ['empty', false],
+  ] as const)('keeps completed live work foldable when live items are %s and deferred=%s', async (mode, deferred) => {
+    const turn: ThreadTurnDto = {
+      ...completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Check the work' }]), status: 'inProgress',
+    };
+    const items: ThreadTurnDto['items'] = [
+      { id: 'live-1', kind: 'commandExecution', text: 'first-command', status: 'completed' },
+      { id: 'live-2', kind: 'commandExecution', text: 'second-command', status: 'running' },
+    ];
+    let resolveDetail!: (detail: ThreadTurnDto) => void;
+    const load = vi.fn(() => new Promise<ThreadTurnDto>(resolve => { resolveDetail = resolve; }));
+    const props = { liveOutput: '', autoCollapseCompletedTurns: true, onLoadTurnDetail: load };
+    const element = render(<ThreadTimeline {...props} threadRunning activeTurnId={turn.id} turns={[turn]} liveItems={{ turnId: turn.id, items }} />);
+    expect(element.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('true');
+    expect(element.querySelector('.tlog-run-head')?.getAttribute('aria-expanded')).toBe('true');
+    const finished: ThreadTurnDto = { ...turn, status: 'completed', hasDeferredItems: deferred, deferredItemCount: deferred ? 2 : 0,
+      items: [...turn.items, { id: 'final', kind: 'agentMessage', text: 'Finished', responsePhase: 'final' }] };
+    flushSync(() => root?.render(<ThreadTimeline {...props} threadRunning={false} activeTurnId={null} turns={[finished]}
+      liveItems={mode === 'empty' ? { turnId: turn.id, items: [] } : null} />));
+    const toggle = () => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!;
+    expect(toggle()).not.toBeNull();
+    expect(toggle().getAttribute('aria-expanded')).toBe('false');
+    expect(toggle().textContent).toContain('2 commands');
+    expect(element.querySelector('.tlog-single, .tlog-run, .tlog-current')).toBeNull();
+    expect(element.querySelector('.thread-turn-receipt')).not.toBeNull();
+    expect(element.querySelector('.thread-graph-turn-footer')).toBeNull();
+    expect(load).not.toHaveBeenCalled();
+    flushSync(() => toggle().click());
+    if (!deferred) {
+      expect(load).not.toHaveBeenCalled();
+      expect(toggle().getAttribute('aria-expanded')).toBe('true');
+      expect(element.querySelector('.tlog-single')).toBeNull();
+      flushSync(() => element.querySelector<HTMLButtonElement>('.tlog-run-head')!.click());
+      expect(element.querySelectorAll('.tlog-run .tlog-row')).toHaveLength(2);
+      expect(element.textContent).toContain('first-command');
+      expect(element.textContent).toContain('second-command');
+      return;
+    }
+    expect(load).toHaveBeenCalledExactlyOnceWith(turn.id);
+    resolveDetail({ ...finished, hasDeferredItems: false, deferredItemCount: 0,
+      items: [turn.items[0]!, { id: 'authoritative', kind: 'commandExecution', text: 'final-command', status: 'completed' }, finished.items[1]!] });
+    await vi.waitFor(() => expect(element.textContent).toContain('final-command'));
+    expect(element.textContent).not.toContain('first-command');
+    expect(element.textContent).not.toContain('second-command');
+    expect(toggle().textContent).toContain('1 command');
+  });
+
+  it('keeps summary deferred items after completing a turn with stale inProgress detail', async () => {
+    const summary: ThreadTurnDto = { ...completedTurn([
+      { id: 'prompt', kind: 'userMessage', text: 'Check status' },
+      { id: 'checkpoint', kind: 'agentMessage', text: 'Checking' },
+    ]), status: 'inProgress', hasDeferredItems: true, deferredItemCount: 1 };
+    const stale: ThreadTurnDto = { ...summary, hasDeferredItems: false, deferredItemCount: 0,
+      items: [summary.items[0]!, { id: 'old-command', kind: 'commandExecution', text: 'old-command', status: 'completed' }, summary.items[1]!] };
+    const terminal: ThreadTurnDto = { ...summary, status: 'completed', hasDeferredItems: true, deferredItemCount: 7,
+      items: [summary.items[0]!, { id: 'final', kind: 'agentMessage', text: 'Final answer', responsePhase: 'final' }] };
+    const load = vi.fn().mockResolvedValueOnce(stale).mockResolvedValueOnce({ ...terminal, hasDeferredItems: false, deferredItemCount: 0,
+      items: [terminal.items[0]!, { id: 'new-command', kind: 'commandExecution', text: 'new-command', status: 'completed' }, terminal.items[1]!] });
+    const props = { liveOutput: '', onLoadTurnDetail: load, autoCollapseCompletedTurns: true };
+    const element = render(<ThreadTimeline {...props} turns={[summary]} threadRunning activeTurnId={summary.id} />);
+    await vi.waitFor(() => expect(element.textContent).toContain('old-command'));
+    flushSync(() => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[terminal]} threadRunning={false} activeTurnId={null} />));
+    expect(element.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('false');
+    expect(load).toHaveBeenCalledTimes(1);
+    flushSync(() => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    await vi.waitFor(() => expect(element.textContent).toContain('new-command'));
+    expect(load).toHaveBeenCalledTimes(2);
+    expect(element.textContent).not.toContain('old-command');
+  });
+
+  it('opens the live run while earlier runs fold after narration or a later run follows', () => {
+    const turn: ThreadTurnDto = { ...completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Inspect' }]), status: 'inProgress' };
+    const command = (id: string) => ({ id, kind: 'commandExecution' as const, text: id, status: 'completed' });
+    const initial = [command('first'), command('second')];
+    const timeline = (items: ThreadTurnDto['items']) => <ThreadTimeline turns={[turn]} liveOutput="" threadRunning activeTurnId={turn.id}
+      liveItems={{ turnId: turn.id, items }} />;
+    const element = render(timeline(initial));
+    const runs = () => [...element.querySelectorAll('.tlog-run-head')].map(node => node.getAttribute('aria-expanded'));
+    expect(runs()).toEqual(['true']);
+    expect(element.querySelectorAll('.tlog-row-head[aria-expanded="false"]')).toHaveLength(2);
+    const narrated: ThreadTurnDto['items'] = [...initial, { id: 'narration', kind: 'agentMessage', text: 'Checking the next result', responsePhase: 'commentary' }];
+    flushSync(() => root?.render(timeline(narrated)));
+    expect(runs()).toEqual(['false']);
+    expect(element.querySelector('[data-message-id="narration"]')).not.toBeNull();
+    flushSync(() => root?.render(timeline([...narrated, command('third'), command('fourth')])));
+    expect(runs()).toEqual(['false', 'true']);
+    expect(element.querySelectorAll('.tlog-run[data-open] .tlog-title')).toHaveLength(2);
+    expect(element.querySelector('.tlog-current')).toBeNull();
+    flushSync(() => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    expect(element.querySelector('.tlog-current .tlog-title')?.textContent).toBe('fourth');
+  });
+
   it('keeps a peer round human approval accessible while the whole task remains folded', () => {
     const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Task'}]),id:'task'} as ThreadTurnDto;
     const peer: ThreadTurnDto = {...completedTurn([{id:'wake:user',kind:'userMessage',text:'Wake envelope',peerWork:{taskTurnId:'task',messages:[{id:'q',kind:'question',name:'Reviewer',subject:'Scope?'}]}}]),id:'wake',status:'inProgress',hasDeferredItems:true};
@@ -96,6 +236,8 @@ describe('ThreadTimeline', () => {
       id:'approval',kind:'permissionRequest',title:'Permission',description:'Approve the peer operation',turnId:'wake',itemId:null,createdAt:'2026-10-12T00:00:00Z',
       questions:[{id:'permission',header:'Permission',question:'Allow verification?',isOther:false,isSecret:false,options:[{label:'Allow',description:'Allow verification'}]}],
     }]} onRespondToRequest={respond} />);
+    expect(el.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('true');
+    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
     expect(el.querySelector('.thread-peer-work-toggle')).toBeNull();
     expect(el.textContent).toContain('Allow verification?');
     const allow=[...el.querySelectorAll('button')].find(button=>button.textContent?.trim()==='Allow')!;
@@ -179,6 +321,8 @@ describe('ThreadTimeline', () => {
     ]),id:'wake',status:'inProgress'};
     const props = {liveOutput:'',onLoadTurnDetail:vi.fn()};
     const el = render(<ThreadTimeline {...props} turns={[task,peer]} threadRunning activeTurnId="wake" />);
+    expect(el.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('true');
+    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
     expect(el.textContent).toContain('Latest peer progress');
     expect(el.querySelectorAll('.thread-peer-work-toggle')).toHaveLength(0);
     const next = {...peer,items:[...peer.items,{id:'new',kind:'agentMessage' as const,text:'New progress replaces old',responsePhase:'commentary' as const}]};
@@ -354,8 +498,8 @@ describe('ThreadTimeline', () => {
     const count = () => element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent?.replace(/\s*·\s*/g, ' · ').trim();
     const toggle = (label: string) => flushSync(() => element.querySelector<HTMLButtonElement>(`[aria-label*="${label} turn 1"]`)!.click());
     expect(count()).toBe('· 1 command');
-    toggle('Expand');
-    await vi.waitFor(() => expect(element.querySelector('[aria-label*="Collapse turn 1"]')).not.toBeNull());
+    await vi.waitFor(() => expect(onLoadTurnDetail).toHaveBeenCalledTimes(1));
+    expect(element.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('true');
     expect(count()).toBe('· 1 command');
     toggle('Collapse');
     const nextCommand = { ...command, id: 'next-command', text: 'Read report' };
@@ -372,7 +516,7 @@ describe('ThreadTimeline', () => {
     expect(count()).toBe('· 2 commands');
   });
 
-  it('defers running operations until expansion and merges later summary messages', async () => {
+  it('loads running deferred operations once and merges later summary messages', async () => {
     const summary: ThreadTurnDto = {
       ...completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Live prompt' },
         { id: 'answer', kind: 'agentMessage', text: 'First checkpoint' }]),
@@ -383,10 +527,14 @@ describe('ThreadTimeline', () => {
     const onLoadTurnDetail = vi.fn().mockResolvedValue(full);
     const props = {onLoadTurnDetail, liveOutput:'', threadRunning:true, activeTurnId:'turn-1'};
     const element = render(<ThreadTimeline {...props} turns={[summary]} />);
-    expect(onLoadTurnDetail).not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(onLoadTurnDetail).toHaveBeenCalledTimes(1));
+    expect(element.textContent).toContain('unique-hidden-command');
     expect(element.textContent).toContain('First checkpoint');
-    const toggle = () => Array.from(element.querySelectorAll('button')).find(button => /Expand turn 1/.test(button.getAttribute('aria-label') ?? ''))!;
+    const toggle = () => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!;
     expect(toggle()).toBeTruthy();
+    expect(toggle().getAttribute('aria-expanded')).toBe('true');
+    flushSync(() => toggle().click());
+    expect(toggle().getAttribute('aria-expanded')).toBe('false');
     flushSync(() => toggle().click());
     await vi.waitFor(() => expect(element.querySelector('[aria-label*="Collapse turn 1"]')).not.toBeNull());
     expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
@@ -408,6 +556,9 @@ describe('ThreadTimeline', () => {
     const props = { onLoadTurnDetail: vi.fn(), liveOutput: '', threadRunning: true, activeTurnId: turn.id };
     const element = render(<ThreadTimeline {...props} turns={[turn]} />);
     const update = (items: ThreadTurnDto['items']) => flushSync(() => root?.render(<ThreadTimeline {...props} turns={[{ ...turn, items }]} />));
+    expect(element.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('true');
+    expect(element.querySelector('.tlog-current')).toBeNull();
+    flushSync(() => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
     expect(element.textContent).toContain(first.text);
     expect(element.querySelector('.tlog-current')?.textContent).toContain(command.text);
     expect(element.querySelector('[data-role="assistant"]')!.compareDocumentPosition(element.querySelector('.tlog-current')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -434,24 +585,25 @@ describe('ThreadTimeline', () => {
       { id: 'prompt', kind: 'userMessage' as const, text: 'Explain and implement' },
       command('before'), answer, command('after'),
     ]), status: 'inProgress' as const };
-    const props = { liveOutput: '', threadRunning: true, activeTurnId: initial.id, onLoadTurnDetail: vi.fn() };
+    const props = { liveOutput: '', autoCollapseCompletedTurns: false, threadRunning: true, activeTurnId: initial.id, onLoadTurnDetail: vi.fn() };
     const element = render(<ThreadTimeline {...props} turns={[initial]} />);
     expect(element.textContent).toContain('Public-key identity');
-    expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(1);
-    expect(element.querySelectorAll('.thread-answer-sequence > .thread-execution-timeline')).toHaveLength(2);
+    expect(element.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('true');
+    expect(element.querySelector('[data-message-id="answer"]')).not.toBeNull();
     expect(element.querySelectorAll('.tlog-single')[0]?.textContent).toContain('hidden-before');
-    expect(element.querySelector('.tlog-current')?.textContent).toContain('hidden-after');
+    expect(element.querySelectorAll('.tlog-single')[1]?.textContent).toContain('hidden-after');
+    expect(element.querySelector('.tlog-current')).toBeNull();
     const progress = { id: 'progress', kind: 'agentMessage' as const, text: 'Running the integration checks', status: 'running' };
     const updated = { ...initial, items: [...initial.items, progress] };
     flushSync(() => root?.render(<ThreadTimeline {...props} turns={[updated]} />));
     expect(element.textContent).toContain('Public-key identity');
     expect(element.textContent).toContain(progress.text);
-    expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    expect(element.querySelectorAll('[data-message-id="answer"], [data-message-id="progress"]')).toHaveLength(2);
     // A single operation shows its title immediately, with details still closed.
-    expect(element.querySelectorAll('.thread-answer-sequence .tlog-single .tlog-row-head[aria-expanded="false"]')).toHaveLength(2);
+    expect(element.querySelectorAll('.tlog-single .tlog-row-head[aria-expanded="false"]')).toHaveLength(2);
     expect(element.textContent).toContain('hidden-after');
     expect(element.querySelectorAll('.tlog-single')[0]?.textContent).toContain('hidden-before');
-    const sections = [...element.querySelectorAll('.thread-answer-sequence > *')];
+    const sections = [...element.querySelector('.thread-execution-timeline')!.children];
     expect(sections[1]!.textContent).toContain('Public-key identity');
     expect(sections[2]!.textContent).toContain('hidden-after');
     expect(props.onLoadTurnDetail).not.toHaveBeenCalled();
@@ -491,7 +643,7 @@ describe('ThreadTimeline', () => {
     });
     const props = { liveOutput: '', onLoadTurnDetail };
     const element = render(<ThreadTimeline {...props} threadRunning activeTurnId="turn-1" turns={[summary]} />);
-    flushSync(() => element.querySelector<HTMLButtonElement>('[aria-label*="Expand turn 1"]')!.click());
+    await vi.waitFor(() => expect(onLoadTurnDetail).toHaveBeenCalledTimes(1));
     await vi.waitFor(() => expect(element.querySelector('[aria-label*="Collapse turn 1"]')).not.toBeNull());
     flushSync(() => element.querySelector<HTMLButtonElement>('[aria-label*="Collapse turn 1"]')!.click());
     flushSync(() => root?.render(<ThreadTimeline {...props} threadRunning={false} activeTurnId={null} turns={[{

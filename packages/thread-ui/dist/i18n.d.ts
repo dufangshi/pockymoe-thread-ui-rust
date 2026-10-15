@@ -1713,6 +1713,10 @@ declare const en: {
     readonly "files.openPdf": "Open";
     readonly "files.openPdfInNewTab": "Open {{value1}} in a new tab";
     readonly "files.linkedFileReadOnly": "Linked file outside the workspace: read-only preview.";
+    readonly "files.askAgent": "Ask the agent";
+    readonly "files.askAgentPlaceholder": "Ask about this…";
+    readonly "files.askSent": "Sent · the reply appears in the conversation";
+    readonly "files.askFailed": "Not sent · open the conversation for details";
     readonly "devices.useOneClickProtectionInstead": "Use one-click protection instead";
     readonly "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.";
     readonly "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.";
@@ -2795,6 +2799,11 @@ declare const en: {
     readonly 'chat.envelopeTurn': "Turn notification";
     readonly 'chat.envelopeResume': "Resumed after a Supervisor restart";
     readonly 'chat.logCopyCommand': "Copy command";
+    readonly 'chat.logMoreFiles': {
+        readonly one: "{{count}} more file in the work";
+        readonly other: "{{count}} more files in the work";
+    };
+    readonly 'chat.logShowFiles': "Show changed files";
     readonly "auth.ui.signInTitle": "Sign in";
     readonly "auth.ui.registerTitle": "Create your account";
     readonly "auth.ui.or": "or";
@@ -4944,6 +4953,10 @@ declare const zhCN: {
     "files.openPdf": "打开";
     "files.openPdfInNewTab": "在新标签页中打开 {{value1}}";
     "files.linkedFileReadOnly": "工作区外的链接文件：只读预览。";
+    "files.askAgent": "向 Agent 提问";
+    "files.askAgentPlaceholder": "就这里提问…";
+    "files.askSent": "已发送 · 回复会出现在对话里";
+    "files.askFailed": "没有发出 · 回到对话查看原因";
     "devices.useOneClickProtectionInstead": "改用一键保护";
     "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。";
     "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。";
@@ -6026,6 +6039,11 @@ declare const zhCN: {
     'chat.envelopeTurn': "轮次通知";
     'chat.envelopeResume': "Supervisor 重启后继续";
     'chat.logCopyCommand': "复制命令";
+    'chat.logMoreFiles': {
+        readonly one: "过程中还改了 {{count}} 个文件";
+        readonly other: "过程中还改了 {{count}} 个文件";
+    };
+    'chat.logShowFiles': "查看改动的文件";
     "auth.ui.signInTitle": "登录";
     "auth.ui.registerTitle": "创建账号";
     "auth.ui.or": "或";
@@ -8197,6 +8215,10 @@ declare const resources: {
         readonly "files.openPdf": "Open";
         readonly "files.openPdfInNewTab": "Open {{value1}} in a new tab";
         readonly "files.linkedFileReadOnly": "Linked file outside the workspace: read-only preview.";
+        readonly "files.askAgent": "Ask the agent";
+        readonly "files.askAgentPlaceholder": "Ask about this…";
+        readonly "files.askSent": "Sent · the reply appears in the conversation";
+        readonly "files.askFailed": "Not sent · open the conversation for details";
         readonly "devices.useOneClickProtectionInstead": "Use one-click protection instead";
         readonly "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.";
         readonly "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.";
@@ -9279,6 +9301,11 @@ declare const resources: {
         readonly 'chat.envelopeTurn': "Turn notification";
         readonly 'chat.envelopeResume': "Resumed after a Supervisor restart";
         readonly 'chat.logCopyCommand': "Copy command";
+        readonly 'chat.logMoreFiles': {
+            readonly one: "{{count}} more file in the work";
+            readonly other: "{{count}} more files in the work";
+        };
+        readonly 'chat.logShowFiles': "Show changed files";
         readonly "auth.ui.signInTitle": "Sign in";
         readonly "auth.ui.registerTitle": "Create your account";
         readonly "auth.ui.or": "or";
@@ -11427,6 +11454,10 @@ declare const resources: {
         "files.openPdf": "打开";
         "files.openPdfInNewTab": "在新标签页中打开 {{value1}}";
         "files.linkedFileReadOnly": "工作区外的链接文件：只读预览。";
+        "files.askAgent": "向 Agent 提问";
+        "files.askAgentPlaceholder": "就这里提问…";
+        "files.askSent": "已发送 · 回复会出现在对话里";
+        "files.askFailed": "没有发出 · 回到对话查看原因";
         "devices.useOneClickProtectionInstead": "改用一键保护";
         "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。";
         "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。";
@@ -12509,6 +12540,11 @@ declare const resources: {
         'chat.envelopeTurn': "轮次通知";
         'chat.envelopeResume': "Supervisor 重启后继续";
         'chat.logCopyCommand': "复制命令";
+        'chat.logMoreFiles': {
+            readonly one: "过程中还改了 {{count}} 个文件";
+            readonly other: "过程中还改了 {{count}} 个文件";
+        };
+        'chat.logShowFiles': "查看改动的文件";
         "auth.ui.signInTitle": "登录";
         "auth.ui.registerTitle": "创建账号";
         "auth.ui.or": "或";

@@ -79,7 +79,9 @@ describe('story mode', () => {
     expect(timeline).not.toBeNull();
     const order = [...timeline.querySelectorAll('[data-message-id], .tlog-run[data-placeholder]')].map((node) =>
       node.getAttribute('data-message-id') ?? `run:${node.textContent?.replace(/\s*·\s*/g, ' · ').trim()}`);
-    expect(order).toEqual(['run:1 command · 20s', 'say', 'run:2 commands · 1 failed', 'final']);
+    expect(container.querySelector('[data-message-id="final"]')).not.toBeNull();
+    expect(timeline.compareDocumentPosition(container.querySelector('[data-message-id="final"]')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(order).toEqual(['run:1 command · 20s', 'say', 'run:2 commands · 1 failed']);
     expect(load).not.toHaveBeenCalled();
   });
 
@@ -120,5 +122,15 @@ describe('story mode', () => {
     expect(container.querySelector('.is-story')).toBeNull();
     expect(container.querySelector('.thread-graph-worked-summary > button.group')?.getAttribute('aria-expanded')).toBe('false');
     expect(load).not.toHaveBeenCalled();
+  });
+
+  it('uses the loaded log rather than narration placeholders when auto-collapse is on and the reader expands', async () => {
+    const load = vi.fn(async () => detail);
+    await render(summary, load, true);
+    await act(async () => container.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    expect(load).toHaveBeenCalledTimes(1);
+    expect(container.querySelector('.is-story, .tlog-run[data-placeholder]')).toBeNull();
+    expect(text('.tlog-single .tlog-title')).toEqual(['rg PromptQueue src']);
+    expect(container.querySelector('[data-message-id="say"]')).not.toBeNull();
   });
 });

@@ -1,5 +1,5 @@
-import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Check, ChevronRight, Copy } from 'lucide-react';
 
 import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto, ThreadTurnActivitySegmentDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
 
@@ -17,6 +17,7 @@ import {
   toolResultText,
   type ActivityPart,
 } from './activity';
+import { Collapse } from './Collapse';
 
 /* The transcript log: a run of agent operations folds into one summary line
    ("6 commands · edited 2 files +64 −3 · 38s"); opened, each operation is one
@@ -28,9 +29,8 @@ type DetailLoader = (itemId: string) => Promise<ThreadHistoryItemDetailDto> | Th
 export interface TranscriptLogActions {
   loadDetail?: DetailLoader | undefined;
   workspaceRoot?: string | undefined;
-  openCommand: (item: ThreadHistoryItemDto & { kind: 'commandExecution' }, title: string) => void;
-  openToolCall: (item: ThreadHistoryItemDto & { kind: 'toolCall' | 'agentToolCall' | 'skillToolCall' }, title: string) => void;
-  openDeferred: (item: ThreadHistoryItemDto, title: string, fallbackText: string, loadingText: string, errorText: string) => void;
+  /** The floating viewer for a whole output or diff. */
+  openText: (title: string, text: string, kind?: string) => void;
 }
 
 export const TranscriptLogContext = createContext<TranscriptLogActions | null>(null);
@@ -191,17 +191,24 @@ function statusTag(status: ReturnType<typeof logStatus>) {
   return null;
 }
 
-function openFull(actions: TranscriptLogActions | null, item: ThreadHistoryItemDto) {
-  if (!actions) return;
-  if (item.kind === 'commandExecution') {
-    actions.openCommand(item as ThreadHistoryItemDto & { kind: 'commandExecution' }, translate('chat.commandOutput'));
-  } else if (item.kind === 'toolCall' || item.kind === 'agentToolCall' || item.kind === 'skillToolCall') {
-    actions.openToolCall(item as ThreadHistoryItemDto & { kind: 'toolCall' | 'agentToolCall' | 'skillToolCall' }, translate('chat.toolCallDetails'));
-  } else if (item.kind === 'fileChange') {
-    actions.openDeferred(item, translate('chat.fileChangeDetails'), item.detailText ?? item.text, translate('chat.loadingFileChanges'), translate('chat.unableToLoadFileChanges'));
-  } else {
-    actions.openDeferred(item, translate('chat.logActivity'), item.detailText?.trim() || item.text, translate('chat.logLoading'), translate('chat.unableToLoadFullToolCallDetails'));
-  }
+/** A clipped output or diff; clicking it shows the whole text in the floating viewer. */
+function Viewable({ className, label, onOpen, more, children }: {
+  className: string;
+  label: string;
+  onOpen?: (() => void) | undefined;
+  more?: string | null;
+  children: ReactNode;
+}) {
+  if (!onOpen) return <div className={className}>{children}</div>;
+  // Selecting text inside the block does not open the viewer.
+  const open = () => { if (!window.getSelection()?.toString()) onOpen(); };
+  return (
+    <div className={`${className} tlog-viewable`} role="button" tabIndex={0} aria-label={label} title={label}
+      onClick={open} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpen(); } }}>
+      {children}
+      {more ? <span className="tlog-more-lines">{more}</span> : null}
+    </div>
+  );
 }
 
 function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: { full: string; text: string }; path?: string }) {
@@ -210,9 +217,6 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
   const detail = useItemDetail(item, !isReasoning);
   const workspaceRoot = actions?.workspaceRoot;
   const formatPath = useCallback((path: string) => displayPath(path, workspaceRoot), [workspaceRoot]);
-  const fullAction = !isReasoning && actions ? (
-    <button type="button" className="tlog-open tlog-full" onClick={() => openFull(actions, item)}>{translate('chat.logOpenFull')}</button>
-  ) : null;
 
   if (isReasoning) {
     return <div className="tlog-detail is-prose"><GraphChatLinkifiedPlainText text={item.text} /></div>;
@@ -220,65 +224,74 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
   if (detail.loading) return <div className="tlog-detail is-loading" role="status">{translate('chat.logLoading')}</div>;
 
   const text = detail.text ?? '';
+  const viewTitle = item.kind === 'fileChange' ? displayPath(path ?? title.full.split('\n')[0] ?? '', workspaceRoot) : title.text.replace(/ …$/, '');
   if (item.kind === 'fileChange' && /^@@ /m.test(text)) {
-    const diff = inlineDiff(path ? diffForPath(text, path) : text);
+    const whole = path ? diffForPath(text, path) : text;
+    const diff = inlineDiff(whole);
     return (
       <div className="tlog-detail is-diff">
-        <div className="tlog-diff"><DiffDetail text={diff.text} compact formatPath={formatPath} /></div>
-        {diff.hidden || fullAction ? (
-          <div className="tlog-detail-foot">
-            {diff.hidden ? <span>{translate('chat.logDiffMore', { count: diff.hidden })}</span> : null}
-            {fullAction}
-          </div>
-        ) : null}
+        <Viewable className="tlog-diff" label={translate('chat.logOpenFull')} onOpen={actions ? () => actions.openText(viewTitle, whole, 'fileChange') : undefined}
+          more={diff.hidden ? translate('chat.logDiffMore', { count: diff.hidden }) : null}>
+          <DiffDetail text={diff.text} compact formatPath={formatPath} />
+        </Viewable>
       </div>
     );
   }
 
   const command = item.kind === 'commandExecution' && title.full !== title.text.replace(/ …$/, '') ? title.full : null;
   const output = detail.error ?? (text ? toolResultText(text) : '');
+  const clipped = clip(output);
+  const whole = item.kind === 'commandExecution' ? `$ ${title.full}\n\n${output}` : text || output;
   return (
     <div className="tlog-detail">
       {command ? <pre className="tlog-command">{command}</pre> : null}
-      {output ? <pre className={`tlog-output${detail.error ? ' is-error' : ''}`}>{clip(output)}</pre>
-        : command ? null : <p className="tlog-empty">{translate('chat.logNoOutput')}</p>}
-      <div className="tlog-detail-foot">
-        {item.kind === 'commandExecution' ? <CopyText text={title.full} /> : null}
-        {fullAction}
-      </div>
+      {output ? (
+        <Viewable className={`tlog-output${detail.error ? ' is-error' : ''}`} label={translate('chat.logOpenFull')}
+          onOpen={actions && !detail.error ? () => actions.openText(viewTitle, whole) : undefined}>
+          <pre>{clipped}</pre>
+        </Viewable>
+      ) : command ? null : <p className="tlog-empty">{translate('chat.logNoOutput')}</p>}
     </div>
   );
 }
 
-function CopyText({ text }: { text: string }) {
+/** Copies a command; it appears beside its row on hover, and on phones once the row is open. */
+function CopyCommand({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <button type="button" className="tlog-open tlog-copy" onClick={() => {
-      void navigator.clipboard?.writeText(text).then(() => {
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1200);
-      }, () => undefined);
-    }}>
-      {copied ? translate('chat.copied') : translate('chat.logCopyCommand')}
+    <button type="button" className="tlog-copy" aria-label={translate('chat.logCopyCommand')} title={copied ? translate('chat.copied') : translate('chat.logCopyCommand')}
+      onClick={() => {
+        void navigator.clipboard?.writeText(text).then(() => {
+          setCopied(true);
+          window.setTimeout(() => setCopied(false), 1200);
+        }, () => undefined);
+      }}>
+      {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
     </button>
   );
 }
 
-export const LogRow = memo(function LogRow({ item, defaultOpen = false }: { item: ThreadHistoryItemDto; defaultOpen?: boolean }) {
+export const LogRow = memo(function LogRow({ item, defaultOpen = false, path }: { item: ThreadHistoryItemDto; defaultOpen?: boolean; path?: string }) {
   useI18n();
   const actions = useContext(TranscriptLogContext);
-  const [open, setOpen] = useState(defaultOpen);
+  // An edit the turn is making shows open and folds once the turn moves on,
+  // unless the reader has opened or closed it.
+  const [chosen, setChosen] = useState<boolean | null>(null);
+  const open = chosen ?? defaultOpen;
   const status = logStatus(item.status);
   const title = rowTitle(item, actions?.workspaceRoot);
   return (
     <div className="tlog-row" data-kind={item.kind} data-status={status} data-open={open || undefined}>
-      <button type="button" className="tlog-row-head" aria-expanded={open} onClick={() => setOpen((value) => !value)} title={title.full}>
-        <span className="tlog-glyph" aria-hidden="true">{GLYPH[item.kind] ?? '·'}</span>
-        <span className={`tlog-title${title.mono ? ' is-mono' : ''}`}>{title.text}</span>
-        {item.kind === 'fileChange' ? <DeltaBadges added={item.addedLines} removed={item.removedLines} /> : null}
-        {statusTag(status)}
-      </button>
-      {open ? <RowDetail item={item} title={title} /> : null}
+      <div className="tlog-row-line">
+        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={() => setChosen(!open)} title={title.full}>
+          <span className="tlog-glyph" aria-hidden="true">{GLYPH[item.kind] ?? '·'}</span>
+          <span className={`tlog-title${title.mono ? ' is-mono' : ''}`}>{title.text}</span>
+          {item.kind === 'fileChange' ? <DeltaBadges added={item.addedLines} removed={item.removedLines} /> : null}
+          {statusTag(status)}
+        </button>
+        {item.kind === 'commandExecution' ? <CopyCommand text={title.full} /> : null}
+      </div>
+      <Collapse open={open}><RowDetail item={item} title={title} {...(path ? { path } : {})} /></Collapse>
     </div>
   );
 });
@@ -299,12 +312,14 @@ function ReadBatch({ items }: { items: ThreadHistoryItemDto[] }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="tlog-row" data-kind="fileRead" data-batch="true" data-open={open || undefined}>
-      <button type="button" className="tlog-row-head" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
-        <span className="tlog-glyph" aria-hidden="true">→</span>
-        <span className="tlog-title">{translate('chat.readFileCount', { count: items.length })}</span>
-        <span className="tlog-batch-names">{items.map((item) => displayPath(item.previewText?.trim() || item.text, actions?.workspaceRoot).split('/').at(-1)).join('  ')}</span>
-      </button>
-      {open ? <div className="tlog-batch">{items.map((item) => <LogRow key={item.id} item={item} />)}</div> : null}
+      <div className="tlog-row-line">
+        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+          <span className="tlog-glyph" aria-hidden="true">→</span>
+          <span className="tlog-title">{translate('chat.readFileCount', { count: items.length })}</span>
+          <span className="tlog-batch-names">{items.map((item) => displayPath(item.previewText?.trim() || item.text, actions?.workspaceRoot).split('/').at(-1)).join('  ')}</span>
+        </button>
+      </div>
+      <Collapse open={open}><div className="tlog-batch">{items.map((item) => <LogRow key={item.id} item={item} />)}</div></Collapse>
     </div>
   );
 }
@@ -333,7 +348,7 @@ function rowBlocks(items: ThreadHistoryItemDto[]): RowBlock[] {
   return blocks;
 }
 
-function Parts({ parts }: { parts: ActivityPart[] }) {
+export function Parts({ parts }: { parts: ActivityPart[] }) {
   return (
     <>
       {parts.map((part, index) => (
@@ -382,7 +397,8 @@ export const LogRun = memo(function LogRun({
   const running = items.some((item) => logStatus(item.status) === 'running');
   const duration = itemsDuration(items);
   const blocks = useMemo(() => rowBlocks(items), [items]);
-  const openDiffs = useMemo(() => new Set(items.filter(opensDiff).slice(0, OPEN_DIFFS).map((item) => item.id)), [items]);
+  // Only the run being worked on shows its edits; finished runs keep them folded.
+  const openDiffs = useMemo(() => new Set(live ? items.filter(opensDiff).slice(0, OPEN_DIFFS).map((item) => item.id) : []), [items, live]);
   const [revealed, setRevealed] = useState(false);
   const limit = live ? LIVE_ROWS : INITIAL_ROWS;
   const hidden = revealed ? 0 : Math.max(0, blocks.length - limit);
@@ -402,7 +418,7 @@ export const LogRun = memo(function LogRun({
         {running ? <span className="tlog-spinner" role="img" aria-label={translate('chat.logRunning')} /> : null}
         <span className="tlog-rule" aria-hidden="true" />
       </button>
-      {expanded ? (
+      <Collapse open={expanded}>
         <div className="tlog-run-body">
           {live ? more : null}
           {shown.map((block) => block.kind === 'reads'
@@ -410,51 +426,28 @@ export const LogRun = memo(function LogRun({
             : <LogRow key={block.item.id} item={block.item} defaultOpen={openDiffs.has(block.item.id)} />)}
           {live ? null : more}
         </div>
-      ) : null}
+      </Collapse>
     </section>
   );
 });
 
-const FILE_CHIPS = 4;
-const FILE_CHIPS_NARROW = 2;
-
-/** "± queue-store.ts +2 −1  server.ts +5": the files a folded turn changed. A name
-    opens that file's latest diff right below; the rest of the work stays folded. */
+/** The files a turn changed, opened from its work line without opening the work:
+    one row each, the first few small edits showing their diff. */
 export function ChangedFiles({ files, total }: { files: ThreadTurnChangedFileDto[]; total?: number }) {
   useI18n();
-  const actions = useContext(TranscriptLogContext);
-  const [open, setOpen] = useState<string | null>(null);
-  const [all, setAll] = useState(false);
   if (!files.length) return null;
-  const shown = all ? files : files.slice(0, FILE_CHIPS);
-  const hidden = Math.max(files.length, total ?? 0) - shown.length;
-  const selected = files.find((file) => file.path === open);
-  const item: ThreadHistoryItemDto | null = selected ? {
-    id: selected.itemId, kind: 'fileChange', text: selected.path, status: 'completed', hasDeferredDetail: true,
-    addedLines: selected.addedLines ?? null, removedLines: selected.removedLines ?? null,
-  } : null;
+  const small = new Set(files.filter((file) => opensDiff({ id: file.itemId, kind: 'fileChange', text: file.path, addedLines: file.addedLines ?? null, removedLines: file.removedLines ?? null }))
+    .slice(0, OPEN_DIFFS).map((file) => file.path));
+  const more = Math.max(0, (total ?? 0) - files.length);
   return (
     <div className="tlog-files">
-      <div className="tlog-files-row" data-all={all || undefined}>
-        <span className="tlog-glyph" aria-hidden="true">±</span>
-        {shown.map((file) => {
-          const path = displayPath(file.path, actions?.workspaceRoot);
-          return (
-            <button key={file.path} type="button" className="tlog-file" aria-expanded={open === file.path} title={path}
-              onClick={() => setOpen((current) => current === file.path ? null : file.path)}>
-              <span className="tlog-file-name">{path.split('/').at(-1)}</span>
-              <DeltaBadges added={file.addedLines} removed={file.removedLines} />
-            </button>
-          );
-        })}
-        {/* Phones show two names; each width gets its own count of the rest. */}
-        {[{ width: 'wide', count: hidden }, { width: 'narrow', count: all ? hidden : hidden + Math.max(0, shown.length - FILE_CHIPS_NARROW) }].map(({ width, count }) => count > 0 ? (
-          !all && files.length > FILE_CHIPS_NARROW
-            ? <button key={width} type="button" className={`tlog-files-more is-${width}`} onClick={() => setAll(true)}>+{count}</button>
-            : <span key={width} className={`tlog-files-more is-${width}`}>+{count}</span>
-        ) : null)}
-      </div>
-      {item ? <RowDetail key={item.text} item={item} title={{ full: item.text, text: item.text }} path={item.text} /> : null}
+      {files.map((file) => (
+        <LogRow key={file.path} path={file.path} defaultOpen={small.has(file.path)} item={{
+          id: file.itemId, kind: 'fileChange', text: file.path, status: 'completed', hasDeferredDetail: true,
+          addedLines: file.addedLines ?? null, removedLines: file.removedLines ?? null,
+        }} />
+      ))}
+      {more ? <p className="tlog-files-more">{translate('chat.logMoreFiles', { count: more })}</p> : null}
     </div>
   );
 }

@@ -11,13 +11,13 @@ describe('transcript activity', () => {
       item('fileChange', { changedFiles: 2, addedLines: 64, removedLines: 3 }), item('fileChange'),
       item('fileRead'), item('webSearch'), item('toolCall'), item('skillToolCall', { status: 'denied' }),
       item('agentToolCall'), item('reasoning'), item('userMessage', { status: 'failed' }), item('agentMessage'), item('other'),
-    ])).toEqual({ commands: 2, fileChanges: 2, changedFiles: 2, addedLines: 64, removedLines: 3,
+    ])).toEqual({ commands: 2, fileChanges: 2, changedFiles: 2, fileCount: 1, addedLines: 64, removedLines: 3,
       reads: 1, searches: 1, tools: 2, agents: 1, reasoning: 1, failed: 2 });
   });
 
-  it('uses loaded counts once items are hydrated, ignoring stale server counts', () => {
+  it('keeps the maximum server and loaded counts after hydration', () => {
     const items = [item('commandExecution')];
-    expect(turnActivity({ hasDeferredItems: false, activity: { commands: 99, reads: 20 } }, items)).toEqual(activityFromItems(items));
+    expect(turnActivity({ hasDeferredItems: false, activity: { commands: 99, reads: 20 } }, items)).toEqual({ ...activityFromItems(items), commands: 99, reads: 20 });
     expect(turnActivity({}, [])).toEqual(activityFromItems([]));
   });
 
@@ -32,8 +32,20 @@ describe('transcript activity', () => {
     expect(turnActivity({ hasDeferredItems: true, activity: {
       commands: 6, fileChanges: 2, changedFiles: 2, addedLines: 10, removedLines: 3,
       reads: 4, searches: 2, tools: 0, agents: 1, reasoning: 5, failed: 0,
-    } }, loaded)).toEqual({ commands: 6, fileChanges: 2, changedFiles: 3, addedLines: 64, removedLines: 3,
+    } }, loaded)).toEqual({ commands: 6, fileChanges: 2, changedFiles: 3, fileCount: 1, addedLines: 64, removedLines: 3,
       reads: 4, searches: 2, tools: 1, agents: 1, reasoning: 5, failed: 1 });
+  });
+
+  it('counts distinct loaded paths and prefers fileCount over patch and edit counts', () => {
+    const counts = activityFromItems([
+      item('fileChange', { text: 'src/a.ts, src/b.ts', changedFiles: 4, addedLines: 1 }),
+      item('fileChange', { text: 'src/a.ts', changedFiles: 2, addedLines: 2 }),
+      item('fileChange', { text: 'src/failed.ts', status: 'failed' }),
+    ]);
+    expect(counts).toMatchObject({ fileCount: 2, changedFiles: 6, fileChanges: 3, addedLines: 3 });
+    expect(activityParts(counts)[0]?.text).toBe('edited 2 files');
+    expect(turnActivity({ hasDeferredItems: false, activity: { fileCount: 5 } }, [item('fileChange', { text: 'src/a.ts' })])?.fileCount).toBe(5);
+    expect(turnActivity({ hasDeferredItems: true, activity: { fileCount: 1 } }, [item('fileChange', { text: 'src/a.ts, src/b.ts' })])?.fileCount).toBe(2);
   });
 
   it('orders summary parts with edit and failure tones', () => {
@@ -80,6 +92,7 @@ describe('turnChangedFiles', () => {
   it('uses the Supervisor list for a folded turn and loaded edits otherwise', () => {
     const files = [{ path: 'src/a.ts', itemId: 'e1', addedLines: 3 }];
     expect(turnChangedFiles({ hasDeferredItems: true, activity: { fileChanges: 1, files } }, [])).toBe(files);
+    expect(turnChangedFiles({ hasDeferredItems: false, activity: { files } }, [item('fileChange', { text: 'other.ts' })])).toBe(files);
     expect(turnChangedFiles({ hasDeferredItems: true, activity: { commands: 2 } }, [])).toEqual([]);
     expect(turnChangedFiles({}, [
       { id: 'e1', kind: 'fileChange', text: 'src/a.ts, src/b.ts', status: 'completed', addedLines: 4, removedLines: 1 },

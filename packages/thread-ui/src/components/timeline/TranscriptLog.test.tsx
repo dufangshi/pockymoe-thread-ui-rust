@@ -9,9 +9,14 @@ vi.mock('../graph-chat/graphChatShiki', () => ({ getGraphChatHighlighter: async 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 let root: Root | undefined;
 let container: HTMLDivElement;
-afterEach(async () => { await act(async () => root?.unmount()); });
+afterEach(async () => {
+  await act(async () => root?.unmount());
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+  vi.useRealTimers();
+});
 const item = (id: string, kind: ThreadHistoryItemDto['kind'] = 'commandExecution', extra: Partial<ThreadHistoryItemDto> = {}): ThreadHistoryItemDto => ({ id, kind, text: id, status: 'completed', ...extra });
-const actions = (extra: Partial<TranscriptLogActions> = {}): TranscriptLogActions => ({ openCommand: vi.fn(), openToolCall: vi.fn(), openDeferred: vi.fn(), ...extra });
+const actions = (extra: Partial<TranscriptLogActions> = {}): TranscriptLogActions => ({ openText: vi.fn(), ...extra });
 async function render(node: ReactNode) {
   container = document.createElement('div');
   root = createRoot(container);
@@ -33,7 +38,7 @@ describe('TranscriptLog', () => {
   it('toggles a closed run and summarizes edits, commands, failures and elapsed time', async () => {
     await render(<Run items={[
       item('cmd', 'commandExecution', { status: 'failed', createdAt: '2026-10-10T10:00:00Z', updatedAt: '2026-10-10T10:00:51Z' }),
-      item('edit', 'fileChange', { changedFiles: 2, addedLines: 64, removedLines: 3 }),
+      item('src/a.ts, src/b.ts', 'fileChange', { changedFiles: 2, addedLines: 64, removedLines: 3 }),
     ]} />);
     expect(container.querySelector('.tlog-run-head')?.getAttribute('aria-expanded')).toBe('false');
     expect(container.querySelector('.tlog-run-body')).toBeNull();
@@ -65,15 +70,18 @@ describe('TranscriptLog', () => {
     await click('.tlog-row-head');
     expect(container.querySelector('.tlog-output')?.textContent).toBe('loaded output');
     expect(loadDetail).toHaveBeenCalledTimes(1);
-    await click('.tlog-full');
-    expect(context.openCommand).toHaveBeenCalledWith(row, 'Command Output');
+    await click('.tlog-viewable');
+    expect(context.openText).toHaveBeenCalledWith('cached', '$ cached\n\nloaded output');
+    expect(container.querySelector('.tlog-full, .tlog-open')).toBeNull();
   });
 
   it('keys completed details by both item id and status', async () => {
     const loadDetail = vi.fn(async (id: string) => detail(id, `output ${loadDetail.mock.calls.length}`));
     const context = actions({ loadDetail });
-    const node = (status: string) => <TranscriptLogContext.Provider value={context}><LogRow item={item('status-change', 'commandExecution', { status })} defaultOpen /></TranscriptLogContext.Provider>;
+    const node = (status: string) => <TranscriptLogContext.Provider value={context}><LogRow item={item('status-change', 'commandExecution', { status })} /></TranscriptLogContext.Provider>;
     await render(node('completed'));
+    expect(loadDetail).not.toHaveBeenCalled();
+    await click('.tlog-row-head');
     expect(loadDetail).toHaveBeenCalledTimes(1);
     await act(async () => root!.render(node('failed')));
     expect(loadDetail).toHaveBeenCalledTimes(2);
@@ -112,18 +120,20 @@ describe('TranscriptLog', () => {
     expect(loadDetail).toHaveBeenCalledTimes(2);
   });
 
-  it('uses inline output without loading and keeps full tool and diff open handlers', async () => {
+  it('opens inline tool output and diffs in the text viewer without loading', async () => {
     const context = actions({ loadDetail: vi.fn() });
     const tool = item('lookup', 'toolCall', { detailText: 'Tool: lookup\n\nResult:\n```text\nfound\n```', hasDeferredDetail: true });
     const edit = item('src/a.ts', 'fileChange', { detailText: '@@ -1 +1 @@\n-old\n+new', addedLines: 1, removedLines: 1 });
-    await render(<TranscriptLogContext.Provider value={context}><LogRow item={tool} defaultOpen /><LogRow item={edit} defaultOpen /></TranscriptLogContext.Provider>);
+    await render(<TranscriptLogContext.Provider value={context}><LogRow item={tool} /><LogRow item={edit} defaultOpen /></TranscriptLogContext.Provider>);
+    await click('[data-kind="toolCall"] .tlog-row-head');
     expect(context.loadDetail).not.toHaveBeenCalled();
     expect(container.querySelector('.tlog-output')?.textContent).toBe('found');
     expect(container.querySelector('.tlog-diff .is-add code')?.textContent).toBe('new');
-    await click('[data-kind="toolCall"] .tlog-open');
-    expect(context.openToolCall).toHaveBeenCalledWith(tool, 'Tool Call Details');
-    await click('[data-kind="fileChange"] .tlog-open');
-    expect(context.openDeferred).toHaveBeenCalledWith(edit, 'File Change Details', edit.detailText, expect.any(String), expect.any(String));
+    await click('[data-kind="toolCall"] .tlog-viewable');
+    expect(context.openText).toHaveBeenCalledWith('lookup', tool.detailText);
+    await click('[data-kind="fileChange"] .tlog-viewable');
+    expect(context.openText).toHaveBeenCalledWith('src/a.ts', edit.detailText, 'fileChange');
+    expect(container.querySelector('.tlog-open, .tlog-full')).toBeNull();
   });
 
   it.each([
@@ -137,7 +147,7 @@ describe('TranscriptLog', () => {
     const edits = Array.from({ length: 5 }, (_, index) => item(`edit-${index}`, 'fileChange', {
       addedLines: index === 0 ? 41 : 1, detailText: '@@ -1 +1 @@\n-old\n+new',
     }));
-    await render(<LogRun items={edits} expanded onToggle={vi.fn()} />);
+    await render(<LogRun items={edits} expanded live onToggle={vi.fn()} />);
     expect([...container.querySelectorAll('.tlog-row-head')].map(node => node.getAttribute('aria-expanded'))).toEqual(['false', 'true', 'true', 'true', 'false']);
     expect(container.querySelectorAll('.tlog-diff')).toHaveLength(3);
   });
@@ -151,9 +161,82 @@ describe('TranscriptLog', () => {
     expect(container.querySelector('[data-batch="true"] .tlog-title')?.textContent).toBe('Read 3 files');
     expect(container.querySelector('.tlog-batch-names')?.textContent).toBe('a.ts  b.ts  c.ts');
     expect(container.querySelectorAll('.tlog-run-body > .tlog-row')).toHaveLength(6);
-    await click('[data-batch="true"] > .tlog-row-head');
+    await click('[data-batch="true"] > .tlog-row-line > .tlog-row-head');
     expect(container.querySelectorAll('.tlog-batch .tlog-row')).toHaveLength(3);
     expect(container.querySelector('.tlog-batch .tlog-title')?.textContent).toBe('src/a.ts');
+  });
+
+  it('follows defaultOpen changes until the reader chooses the row state', async () => {
+    const edit = item('edit', 'fileChange', { detailText: '@@ -1 +1 @@\n-old\n+new' });
+    const node = (defaultOpen: boolean) => <LogRow item={edit} defaultOpen={defaultOpen} />;
+    const expanded = () => container.querySelector('.tlog-row-head')?.getAttribute('aria-expanded');
+    await render(node(false));
+    expect(expanded()).toBe('false');
+    await act(async () => root!.render(node(true)));
+    expect(expanded()).toBe('true');
+    await act(async () => root!.render(node(false)));
+    expect(expanded()).toBe('false');
+    await click('.tlog-row-head');
+    await act(async () => root!.render(node(true)));
+    await act(async () => root!.render(node(false)));
+    expect(expanded()).toBe('true');
+    await click('.tlog-row-head');
+    await act(async () => root!.render(node(true)));
+    expect(expanded()).toBe('false');
+  });
+
+  it('auto-opens only live small edits and closes them when the run stops being live', async () => {
+    const loadDetail = vi.fn(async (id: string) => detail(id, 'output'));
+    const items = [item('cmd', 'commandExecution', { status: 'running' }),
+      item('a.ts', 'fileChange', { addedLines: 1, detailText: '@@ -1 +1 @@\n-a\n+b' }),
+      item('b.ts', 'fileChange', { addedLines: 1, detailText: '@@ -1 +1 @@\n-a\n+b' })];
+    const node = (live: boolean) => <TranscriptLogContext.Provider value={actions({ loadDetail })}>
+      <LogRun items={items} expanded live={live} onToggle={vi.fn()} />
+    </TranscriptLogContext.Provider>;
+    await render(node(true));
+    expect(container.querySelector('[data-kind="commandExecution"] .tlog-row-head')?.getAttribute('aria-expanded')).toBe('false');
+    expect(loadDetail).not.toHaveBeenCalled();
+    // Explicitly close then reopen the second edit to preserve the reader's choice.
+    await click('.tlog-row:nth-child(3) .tlog-row-head');
+    await click('.tlog-row:nth-child(3) .tlog-row-head');
+    await act(async () => root!.render(node(false)));
+    expect([...container.querySelectorAll('.tlog-row-head')].map(node => node.getAttribute('aria-expanded'))).toEqual(['false', 'false', 'true']);
+    await click('[data-kind="commandExecution"] .tlog-row-head');
+    expect(loadDetail).toHaveBeenCalledExactlyOnceWith('cmd');
+  });
+
+  it('opens output with click, Enter or Space, while text selection suppresses a click', async () => {
+    const context = actions();
+    const command = item('cmd', 'commandExecution', { text: 'bash -lc "pwd"', detailText: '/work/repo' });
+    await render(<TranscriptLogContext.Provider value={context}><LogRow item={command} /></TranscriptLogContext.Provider>);
+    await click('.tlog-row-head');
+    const block = container.querySelector<HTMLElement>('.tlog-viewable')!;
+    expect(block.getAttribute('role')).toBe('button');
+    expect(block.tabIndex).toBe(0);
+    const selection = vi.spyOn(window, 'getSelection').mockReturnValue({ toString: () => 'selected output' } as Selection);
+    await click('.tlog-viewable');
+    expect(context.openText).not.toHaveBeenCalled();
+    selection.mockReturnValue(null);
+    await click('.tlog-viewable');
+    for (const key of ['Enter', ' ']) {
+      await act(async () => block.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })));
+    }
+    expect(context.openText).toHaveBeenCalledTimes(3);
+    expect(context.openText).toHaveBeenLastCalledWith('pwd', '$ pwd\n\n/work/repo');
+  });
+
+  it('copies the unwrapped command without expanding it and briefly shows a check icon', async () => {
+    vi.useFakeTimers();
+    const writeText = vi.fn(async () => undefined);
+    vi.stubGlobal('navigator', { clipboard: { writeText } });
+    await render(<LogRow item={item('cmd', 'commandExecution', { text: 'bash -lc "ls\npwd"' })} />);
+    await click('.tlog-copy');
+    expect(writeText).toHaveBeenCalledExactlyOnceWith('ls\npwd');
+    expect(container.querySelector('.tlog-row-head')?.getAttribute('aria-expanded')).toBe('false');
+    expect(container.querySelector('.tlog-copy')?.getAttribute('title')).toBe('Copied');
+    expect(container.querySelector('.tlog-copy .lucide-check')).not.toBeNull();
+    await act(async () => vi.advanceTimersByTime(1200));
+    expect(container.querySelector('.tlog-copy .lucide-copy')).not.toBeNull();
   });
 
   it.each([['completed', 'done', false], ['failed', 'failed', true], ['cancelled', 'interrupted', true], ['running', 'running', false]])(
@@ -198,24 +281,22 @@ describe('changed files', () => {
     expect(diffForPath('@@ -1 +1 @@\n-x\n+y', 'src/a.ts')).toBe('@@ -1 +1 @@\n-x\n+y');
   });
 
-  it('shows four names, reveals the rest, and opens one file\'s diff in place', async () => {
+  it('shows one row per file, auto-opens three small diffs and reports undisplayed files', async () => {
     const loadDetail = vi.fn(async (id: string) => ({ id, kind: 'fileChange' as const, title: id, text: patch }));
     const files = ['a', 'b', 'c', 'd', 'e'].map((name) => ({ path: `/repo/src/${name}.ts`, itemId: 'edit-1', addedLines: 1, removedLines: 0 }));
     await render(<TranscriptLogContext.Provider value={actions({ loadDetail, workspaceRoot: '/repo' })}><ChangedFiles files={files} total={12} /></TranscriptLogContext.Provider>);
-    expect([...container.querySelectorAll('.tlog-file-name')].map((node) => node.textContent)).toEqual(['a.ts', 'b.ts', 'c.ts', 'd.ts']);
-    expect(container.querySelector('.tlog-file')?.getAttribute('title')).toBe('src/a.ts');
-    expect(container.querySelector('.tlog-files-more')?.textContent).toBe('+8');
-    expect(loadDetail).not.toHaveBeenCalled();
-    await click('.tlog-file:nth-of-type(2)');
+    expect([...container.querySelectorAll('.tlog-title')].map(node => node.textContent)).toEqual(['src/a.ts', 'src/b.ts', 'src/c.ts', 'src/d.ts', 'src/e.ts']);
+    expect(container.querySelector('.tlog-row-head')?.getAttribute('title')).toBe('/repo/src/a.ts');
+    expect(container.querySelector('.tlog-files-more')?.textContent).toContain('7 more files');
     expect(loadDetail).toHaveBeenCalledExactlyOnceWith('edit-1');
-    expect(container.querySelector('.tlog-file:nth-of-type(2)')?.getAttribute('aria-expanded')).toBe('true');
-    expect(container.querySelector('.thread-diff')?.textContent).toContain('new b');
-    expect(container.querySelector('.thread-diff')?.textContent).not.toContain('new a');
-    await click('.tlog-file:nth-of-type(2)');
-    expect(container.querySelector('.thread-diff')).toBeNull();
-    await click('button.tlog-files-more');
-    expect(container.querySelectorAll('.tlog-file')).toHaveLength(5);
-    expect(container.querySelector('.tlog-files-more')?.textContent).toBe('+7');
+    expect([...container.querySelectorAll('.tlog-row-head')].map(node => node.getAttribute('aria-expanded'))).toEqual(['true', 'true', 'true', 'false', 'false']);
+    const second = '.tlog-files > .tlog-row:nth-child(2)';
+    expect(container.querySelector(`${second} .thread-diff`)?.textContent).toContain('new b');
+    expect(container.querySelector(`${second} .thread-diff`)?.textContent).not.toContain('new a');
+    await click(`${second} .tlog-row-head`);
+    expect(container.querySelector(`${second} .thread-diff`)).toBeNull();
+    await click(`${second} .tlog-row-head`);
+    expect(loadDetail).toHaveBeenCalledTimes(1);
   });
 
   it('renders nothing for a turn without edits', async () => {

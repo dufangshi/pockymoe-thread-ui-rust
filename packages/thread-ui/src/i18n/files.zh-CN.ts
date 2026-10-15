@@ -606,4 +606,8 @@ export const filesZhCN = {
   "files.openPdf": "打开",
   "files.openPdfInNewTab": "在新标签页中打开 {{value1}}",
   "files.linkedFileReadOnly": "工作区外的链接文件：只读预览。",
+  "files.askAgent": "向 Agent 提问",
+  "files.askAgentPlaceholder": "就这里提问…",
+  "files.askSent": "已发送 · 回复会出现在对话里",
+  "files.askFailed": "没有发出 · 回到对话查看原因",
 } as const;

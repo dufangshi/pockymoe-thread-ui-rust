@@ -606,4 +606,8 @@ export const filesEn = {
   "files.openPdf": "Open",
   "files.openPdfInNewTab": "Open {{value1}} in a new tab",
   "files.linkedFileReadOnly": "Linked file outside the workspace: read-only preview.",
+  "files.askAgent": "Ask the agent",
+  "files.askAgentPlaceholder": "Ask about this…",
+  "files.askSent": "Sent · the reply appears in the conversation",
+  "files.askFailed": "Not sent · open the conversation for details",
 } as const;

@@ -1515,7 +1515,7 @@ function JumpLatestStrip({
               disabled: !canJumpToPreviousTurn,
               onClick: () => onJumpToPreviousTurn?.(),
               className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35",
-              children: /* @__PURE__ */ jsx5("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx5("path", { d: "M3.5 12h9M8 10V5M6 7l2-2 2 2" }) })
+              children: /* @__PURE__ */ jsx5("svg", { "data-icon": "previous-turn", "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx5("path", { d: "M3.5 12h9M8 10V5M6 7l2-2 2 2" }) })
             }
           ),
           /* @__PURE__ */ jsx5("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
@@ -1531,6 +1531,7 @@ function JumpLatestStrip({
               children: /* @__PURE__ */ jsx5(
                 "svg",
                 {
+                  "data-icon": "latest",
                   "aria-hidden": "true",
                   viewBox: "0 0 16 16",
                   className: "h-3.5 w-3.5 fill-none stroke-current",
@@ -1552,7 +1553,7 @@ function JumpLatestStrip({
               disabled: !canJumpToNextTurn,
               onClick: () => onJumpToNextTurn?.(),
               className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35",
-              children: /* @__PURE__ */ jsx5("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx5("path", { d: "M3.5 4h9M8 6v5m-2-2 2 2 2-2" }) })
+              children: /* @__PURE__ */ jsx5("svg", { "data-icon": "next-turn", "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx5("path", { d: "M3.5 4h9M8 6v5m-2-2 2 2 2-2" }) })
             }
           )
         ]
@@ -1993,7 +1994,7 @@ function ComposerAttachmentMenu({
         title: translate("chat.addAttachment"),
         onClick: onToggle,
         className: `${iconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`,
-        children: rich ? /* @__PURE__ */ jsx10(Paperclip, { "aria-hidden": "true", className: "h-4 w-4", strokeWidth: 2 }) : /* @__PURE__ */ jsx10(PlusIcon, {})
+        children: rich ? /* @__PURE__ */ jsx10(Paperclip, { "data-icon": "attach", "aria-hidden": "true", className: "h-4 w-4", strokeWidth: 2 }) : /* @__PURE__ */ jsx10(PlusIcon, {})
       }
     ),
     open && /* @__PURE__ */ jsx10(
@@ -2009,7 +2010,7 @@ function ComposerAttachmentMenu({
               onClick: onPickPhoto,
               className: `${menuItemClassName2} block w-full rounded-xl px-3 py-2 text-left text-sm transition`,
               children: [
-                rich ? /* @__PURE__ */ jsx10(ImageIcon, { "aria-hidden": "true", className: "composer-attach-icon" }) : null,
+                rich ? /* @__PURE__ */ jsx10(ImageIcon, { "data-icon": "photo", "aria-hidden": "true", className: "composer-attach-icon" }) : null,
                 translate("chat.photo")
               ]
             }
@@ -2021,7 +2022,7 @@ function ComposerAttachmentMenu({
               onClick: onPickFile,
               className: `${menuItemClassName2} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition`,
               children: [
-                rich ? /* @__PURE__ */ jsx10(FileText, { "aria-hidden": "true", className: "composer-attach-icon" }) : null,
+                rich ? /* @__PURE__ */ jsx10(FileText, { "data-icon": "file", "aria-hidden": "true", className: "composer-attach-icon" }) : null,
                 translate("chat.file")
               ]
             }
@@ -3204,7 +3205,7 @@ function ToolboxLabel({ rich, action, command, description }) {
   if (!rich) return /* @__PURE__ */ jsx19("span", { children: command });
   const Icon = toolboxIcons[action] ?? MessageSquarePlus;
   return /* @__PURE__ */ jsxs17(Fragment5, { children: [
-    /* @__PURE__ */ jsx19("span", { className: "composer-toolbox-icon", "aria-hidden": "true", children: /* @__PURE__ */ jsx19(Icon, {}) }),
+    /* @__PURE__ */ jsx19("span", { className: "composer-toolbox-icon", "aria-hidden": "true", children: /* @__PURE__ */ jsx19(Icon, { "data-icon": toolboxIcons[action] ? action : "prompt" }) }),
     /* @__PURE__ */ jsxs17("span", { className: "composer-toolbox-text", children: [
       /* @__PURE__ */ jsx19("span", { className: "composer-toolbox-command", children: command }),
       description ? /* @__PURE__ */ jsx19("span", { className: "composer-toolbox-description", children: description }) : null
@@ -6837,7 +6838,7 @@ function DialogContent({
               "data-slot": "dialog-close",
               className: "absolute right-4 top-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
               children: [
-                /* @__PURE__ */ jsx29(XIcon, {}),
+                /* @__PURE__ */ jsx29(XIcon, { "data-icon": "close" }),
                 /* @__PURE__ */ jsx29("span", { className: "sr-only", children: translate("workbench.close") })
               ]
             }
@@ -8123,7 +8124,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               "aria-label": translate("workbench.chat"),
               "aria-pressed": o.panels ? !chatCovered : o.activeView === "chat",
               onClick: showChat,
-              children: /* @__PURE__ */ jsx34(MessageSquare, {})
+              children: /* @__PURE__ */ jsx34(MessageSquare, { "data-icon": "chat" })
             }
           ),
           o.terminalEnabled && /* @__PURE__ */ jsx34(
@@ -8133,7 +8134,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               "aria-pressed": o.activeView === "shell",
               title: `${translate("workbench.terminal")} (Ctrl+\`)`,
               onClick: () => o.onViewChange("shell"),
-              children: /* @__PURE__ */ jsx34(Terminal, {})
+              children: /* @__PURE__ */ jsx34(Terminal, { "data-icon": "terminal" })
             }
           ),
           o.toolPanels?.map((panel) => /* @__PURE__ */ jsx34(
@@ -8155,7 +8156,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               "aria-expanded": explorerOpen,
               title: translate("workbench.explorer"),
               onClick: () => setExplorerOpen((open) => !open),
-              children: /* @__PURE__ */ jsx34(FolderOpen2, {})
+              children: /* @__PURE__ */ jsx34(FolderOpen2, { "data-icon": "explorer" })
             }
           ),
           /* @__PURE__ */ jsxs29("div", { className: "matter-rail-bottom", children: [
@@ -8173,14 +8174,14 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                 if (mobile) setSidebarOpen(!sidebarOpen);
                 else setSidebarHidden(!sidebarHidden);
               },
-              children: /* @__PURE__ */ jsx34(PanelLeft, {})
+              children: /* @__PURE__ */ jsx34(PanelLeft, { "data-icon": "sidebar" })
             }
           ),
           /* @__PURE__ */ jsx34("span", { className: "matter-topbar-brand", children: "Pockymoe" }),
           /* @__PURE__ */ jsx34("span", { className: "matter-topbar-separator" }),
-          /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.goBack"), onClick: () => history.back(), children: /* @__PURE__ */ jsx34(ArrowLeft, {}) }),
-          /* @__PURE__ */ jsx34("button", { "data-action": "go-forward", "aria-label": translate("workbench.goForward"), onClick: () => history.forward(), children: /* @__PURE__ */ jsx34(ArrowRight, {}) }),
-          !drawerTools && homeHref && /* @__PURE__ */ jsx34("a", { href: homeHref, "aria-label": translate("workbench.backToWorkspaces"), title: translate("workbench.workspaces"), children: /* @__PURE__ */ jsx34(Home, {}) }),
+          /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.goBack"), onClick: () => history.back(), children: /* @__PURE__ */ jsx34(ArrowLeft, { "data-icon": "back" }) }),
+          /* @__PURE__ */ jsx34("button", { "data-action": "go-forward", "aria-label": translate("workbench.goForward"), onClick: () => history.forward(), children: /* @__PURE__ */ jsx34(ArrowRight, { "data-icon": "forward" }) }),
+          !drawerTools && homeHref && /* @__PURE__ */ jsx34("a", { href: homeHref, "aria-label": translate("workbench.backToWorkspaces"), title: translate("workbench.workspaces"), children: /* @__PURE__ */ jsx34(Home, { "data-icon": "home" }) }),
           /* @__PURE__ */ jsx34("div", { className: "matter-topbar-search", children: o.search ?? /* @__PURE__ */ jsxs29(
             "button",
             {
@@ -8189,7 +8190,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               disabled: o.emptyWorkspace,
               onClick: o.onSearch,
               children: [
-                /* @__PURE__ */ jsx34(Search, {}),
+                /* @__PURE__ */ jsx34(Search, { "data-icon": "search" }),
                 /* @__PURE__ */ jsx34("span", { children: translate("workbench.searchConversation") })
               ]
             }
@@ -8197,10 +8198,10 @@ ${thread.subtitle} \xB7 ${activity.label}`,
           /* @__PURE__ */ jsxs29("div", { className: "matter-topbar-end", children: [
             mobile && deviceMonitor,
             mobile && /* @__PURE__ */ jsxs29(Fragment8, { children: [
-              !drawerTools && /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.chat"), "aria-pressed": o.panels ? !chatCovered : o.activeView === "chat", onClick: showChat, children: /* @__PURE__ */ jsx34(MessageSquare, {}) }),
-              o.terminalEnabled && /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.terminal"), "aria-pressed": o.activeView === "shell", onClick: () => o.onViewChange("shell"), children: /* @__PURE__ */ jsx34(Terminal, {}) }),
+              !drawerTools && /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.chat"), "aria-pressed": o.panels ? !chatCovered : o.activeView === "chat", onClick: showChat, children: /* @__PURE__ */ jsx34(MessageSquare, { "data-icon": "chat" }) }),
+              o.terminalEnabled && /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.terminal"), "aria-pressed": o.activeView === "shell", onClick: () => o.onViewChange("shell"), children: /* @__PURE__ */ jsx34(Terminal, { "data-icon": "terminal" }) }),
               o.toolPanels?.map((panel) => /* @__PURE__ */ jsx34("button", { "aria-label": panel.label, title: panel.label, "aria-pressed": panel.active, onClick: panel.onToggle, children: panel.icon }, panel.id)),
-              /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.toggleExplorer"), "aria-pressed": explorerOpen, "aria-expanded": explorerOpen, title: translate("workbench.explorer"), onClick: () => setExplorerOpen((open) => !open), children: /* @__PURE__ */ jsx34(FolderOpen2, {}) }),
+              /* @__PURE__ */ jsx34("button", { "aria-label": translate("workbench.toggleExplorer"), "aria-pressed": explorerOpen, "aria-expanded": explorerOpen, title: translate("workbench.explorer"), onClick: () => setExplorerOpen((open) => !open), children: /* @__PURE__ */ jsx34(FolderOpen2, { "data-icon": "explorer" }) }),
               settings
             ] }),
             /* @__PURE__ */ jsx34("div", { className: "matter-connection", children: connection }),
@@ -8214,7 +8215,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                   o.onReadNotifications();
                 },
                 children: [
-                  /* @__PURE__ */ jsx34(Bell, {}),
+                  /* @__PURE__ */ jsx34(Bell, { "data-icon": "notifications" }),
                   o.unreadCount > 0 && /* @__PURE__ */ jsx34("span", { className: "matter-unread" })
                 ]
               }
@@ -8240,27 +8241,27 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                 /* @__PURE__ */ jsx34("button", { className: "matter-mobile-close", "aria-label": translate("workbench.openExplorer"), onClick: () => {
                   setExplorerOpen(true);
                   setSidebarOpen(false);
-                }, children: /* @__PURE__ */ jsx34(FolderOpen2, {}) }),
+                }, children: /* @__PURE__ */ jsx34(FolderOpen2, { "data-icon": "explorer" }) }),
                 /* @__PURE__ */ jsx34(
                   "button",
                   {
                     className: "matter-mobile-close",
                     "aria-label": translate("workbench.closeSidebar"),
                     onClick: () => setSidebarOpen(false),
-                    children: /* @__PURE__ */ jsx34(X3, {})
+                    children: /* @__PURE__ */ jsx34(X3, { "data-icon": "close" })
                   }
                 )
               ] }),
               drawerTools && /* @__PURE__ */ jsxs29("div", { className: "matter-drawer-tools", role: "group", "aria-label": translate("workbench.workspaceTools"), children: [
                 homeHref && /* @__PURE__ */ jsxs29("a", { href: homeHref, children: [
-                  /* @__PURE__ */ jsx34(Home, {}),
+                  /* @__PURE__ */ jsx34(Home, { "data-icon": "home" }),
                   /* @__PURE__ */ jsx34("span", { children: translate("workbench.workspaces") })
                 ] }),
                 /* @__PURE__ */ jsxs29("button", { "aria-pressed": o.panels ? !chatCovered : o.activeView === "chat", onClick: () => {
                   showChat();
                   setSidebarOpen(false);
                 }, children: [
-                  /* @__PURE__ */ jsx34(MessageSquare, {}),
+                  /* @__PURE__ */ jsx34(MessageSquare, { "data-icon": "chat" }),
                   /* @__PURE__ */ jsx34("span", { children: translate("workbench.chat") })
                 ] })
               ] }),
@@ -8274,7 +8275,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                   children: [
                     shortcutsOpen ? /* @__PURE__ */ jsx34(ChevronDown3, {}) : /* @__PURE__ */ jsx34(ChevronRight, {}),
                     /* @__PURE__ */ jsx34("span", { children: translate("workbench.shortcuts") }),
-                    /* @__PURE__ */ jsx34(Star, {})
+                    /* @__PURE__ */ jsx34(Star, { "data-icon": "shortcuts" })
                   ]
                 }
               ),
@@ -8313,7 +8314,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               /* @__PURE__ */ jsx34(GroupedThreadTabs, { threads: tabs, currentKey: o.currentKey, onNavigate: navigate }),
               newThread
             ] }) }),
-            !o.emptyWorkspace && /* @__PURE__ */ jsx34("button", { className: "matter-toolbar-toggle", "aria-label": translate("workbench.threadTools"), "aria-expanded": toolbarOpen, "aria-controls": "matter-thread-tools", onClick: () => setToolbarOpen((open) => !open), title: toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools"), children: /* @__PURE__ */ jsx34(SlidersHorizontal2, {}) }),
+            !o.emptyWorkspace && /* @__PURE__ */ jsx34("button", { className: "matter-toolbar-toggle", "aria-label": translate("workbench.threadTools"), "aria-expanded": toolbarOpen, "aria-controls": "matter-thread-tools", onClick: () => setToolbarOpen((open) => !open), title: toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools"), children: /* @__PURE__ */ jsx34(SlidersHorizontal2, { "data-icon": "thread-tools" }) }),
             o.statusActions,
             toolbarOpen && /* @__PURE__ */ jsxs29("div", { className: "matter-breadcrumb", id: "matter-thread-tools", children: [
               /* @__PURE__ */ jsx34(WorkbenchPath, { path: o.workspacePath }),
@@ -8326,7 +8327,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                   "aria-pressed": o.favorite,
                   disabled: o.favoriteBusy,
                   onClick: o.onToggleFavorite,
-                  children: /* @__PURE__ */ jsx34(Star, { fill: o.favorite ? "currentColor" : "none" })
+                  children: /* @__PURE__ */ jsx34(Star, { "data-icon": "shortcut", fill: o.favorite ? "currentColor" : "none" })
                 }
               ),
               /* @__PURE__ */ jsxs29("div", { className: "matter-thread-actions", children: [
@@ -8379,7 +8380,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                   {
                     "aria-label": translate("workbench.closeExplorer"),
                     onClick: () => setExplorerOpen(false),
-                    children: /* @__PURE__ */ jsx34(X3, {})
+                    children: /* @__PURE__ */ jsx34(X3, { "data-icon": "close" })
                   }
                 )
               ] }),
@@ -8412,7 +8413,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                     {
                       "aria-label": translate("workbench.closeNotificationPanel"),
                       onClick: () => setBellOpen(false),
-                      children: /* @__PURE__ */ jsx34(X3, {})
+                      children: /* @__PURE__ */ jsx34(X3, { "data-icon": "close" })
                     }
                   )
                 ] }),
@@ -8984,10 +8985,10 @@ function ThreadWorkspaceLayout({
   }
   function renderNewThreadDialogButton(className, compact = false) {
     const content = compact ? /* @__PURE__ */ jsxs30(Fragment9, { children: [
-      /* @__PURE__ */ jsx36(Plus, { className: "h-4 w-4" }),
+      /* @__PURE__ */ jsx36(Plus, { "data-icon": "new-thread", className: "h-4 w-4" }),
       /* @__PURE__ */ jsx36("span", { className: "sr-only", children: newThreadLabel })
     ] }) : /* @__PURE__ */ jsxs30(Fragment9, { children: [
-      /* @__PURE__ */ jsx36(Plus, { className: "h-4 w-4" }),
+      /* @__PURE__ */ jsx36(Plus, { "data-icon": "new-thread", className: "h-4 w-4" }),
       /* @__PURE__ */ jsx36("span", { children: newThreadLabel })
     ] });
     return /* @__PURE__ */ jsxs30(
@@ -9095,7 +9096,7 @@ function ThreadWorkspaceLayout({
             "aria-label": translate("files.openSettings"),
             title: translate("files.settings"),
             className: "thread-icon-button inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
-            children: /* @__PURE__ */ jsx36(Settings, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx36(Settings, { "data-icon": "settings", className: "h-4 w-4" })
           }
         ),
         extraContent: canUpdateThemeMode && !settingsSections ? /* @__PURE__ */ jsx36("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs30("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
@@ -10826,7 +10827,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
                 className: "thread-graph-code-copy absolute right-2 top-2 z-10 rounded-md p-1.5",
                 title: copyState[id] === "copied" ? translate("chat.copied") : copyState[id] === "failed" ? translate("chat.copyFailed") : translate("chat.copy"),
                 "aria-label": translate("chat.copyCode"),
-                children: copyState[id] === "copied" ? /* @__PURE__ */ jsx44(Check4, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx44(Copy3, { className: "h-3.5 w-3.5" })
+                children: copyState[id] === "copied" ? /* @__PURE__ */ jsx44(Check4, { "data-icon": "copied", className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx44(Copy3, { "data-icon": "copy", className: "h-3.5 w-3.5" })
               }
             ),
             html ? /* @__PURE__ */ jsx44("div", { dangerouslySetInnerHTML: { __html: html } }) : /* @__PURE__ */ jsx44("pre", { children: /* @__PURE__ */ jsx44("code", { className: "whitespace-pre", children: textContent }) })
@@ -11594,7 +11595,7 @@ var GraphChatCompactMessageItem = memo4(
         title: copyState === "copied" ? translate("chat.copied") : copyState === "failed" ? translate("chat.copyFailed") : translate("chat.copy_6b0f10", { value1: copyLabel }),
         onClick: () => void handleCopy(),
         className: `thread-graph-message-copy inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition ${copyState === "copied" ? "ui-status-info" : copyState === "failed" ? "ui-status-danger" : ""}`,
-        children: copyState === "copied" ? /* @__PURE__ */ jsx48(Check5, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx48(Copy4, { className: "h-3.5 w-3.5" })
+        children: copyState === "copied" ? /* @__PURE__ */ jsx48(Check5, { "data-icon": "copied", className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx48(Copy4, { "data-icon": "copy", className: "h-3.5 w-3.5" })
       }
     );
     const hasRunningReasoning = reasoningItems.some(
@@ -11613,6 +11614,7 @@ var GraphChatCompactMessageItem = memo4(
           /* @__PURE__ */ jsx48(
             Brain2,
             {
+              "data-icon": "think",
               className: `h-3.5 w-3.5 ${hasRunningReasoning ? "animate-pulse" : ""}`
             }
           ),
@@ -13250,7 +13252,7 @@ function GraphChatNativeTaskNotification({
           "aria-expanded": open,
           onClick: () => setOpen((value) => !value),
           children: [
-            waiting ? /* @__PURE__ */ jsx54(Hourglass, { className: "thread-graph-task-notice-icon", "aria-hidden": "true" }) : item.origin === "nativeTaskNotification" ? /* @__PURE__ */ jsx54(BellRing2, { className: "thread-graph-task-notice-icon", "aria-hidden": "true" }) : null,
+            waiting ? /* @__PURE__ */ jsx54(Hourglass, { "data-icon": "wait", className: "thread-graph-task-notice-icon", "aria-hidden": "true" }) : item.origin === "nativeTaskNotification" ? /* @__PURE__ */ jsx54(BellRing2, { "data-icon": "wake", className: "thread-graph-task-notice-icon", "aria-hidden": "true" }) : null,
             /* @__PURE__ */ jsx54("span", { className: "thread-graph-task-notice-label", children: label }),
             item.text ? /* @__PURE__ */ jsx54("span", { className: "thread-graph-task-notice-preview", children: item.text }) : null,
             /* @__PURE__ */ jsx54(ChevronRight4, { className: `thread-graph-task-notice-chevron${open ? " is-open" : ""}`, "aria-hidden": "true" })

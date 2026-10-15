@@ -1717,7 +1717,7 @@ function WorkspaceNodeActions({
               className: `${actionClass} workspace-node-quick-action`,
               title: translate("files.copyRelativePathFor", { value1: node.name }),
               "aria-label": translate("files.copyRelativePathFor", { value1: node.name }),
-              children: /* @__PURE__ */ jsx(Copy, { size: 14 })
+              children: /* @__PURE__ */ jsx(Copy, { "data-icon": "copy-path", size: 14 })
             }
           ),
           /* @__PURE__ */ jsx(
@@ -1728,7 +1728,7 @@ function WorkspaceNodeActions({
               className: `${actionClass} workspace-node-quick-action`,
               title: translate("files.copyAbsolutePathFor", { value1: node.name }),
               "aria-label": translate("files.copyAbsolutePathFor", { value1: node.name }),
-              children: /* @__PURE__ */ jsx(ClipboardCopy, { size: 14 })
+              children: /* @__PURE__ */ jsx(ClipboardCopy, { "data-icon": "copy-absolute-path", size: 14 })
             }
           )
         ] }),
@@ -1756,7 +1756,7 @@ function WorkspaceNodeActions({
                 }
               );
             },
-            children: /* @__PURE__ */ jsx(MoreHorizontal, { size: 14 })
+            children: /* @__PURE__ */ jsx(MoreHorizontal, { "data-icon": "more", size: 14 })
           }
         ),
         menu && createPortal(
@@ -1787,7 +1787,7 @@ function WorkspaceNodeActions({
                   onDownload(node);
                   close();
                 }, children: [
-                  /* @__PURE__ */ jsx(Download, { size: 16 }),
+                  /* @__PURE__ */ jsx(Download, { "data-icon": "download", size: 16 }),
                   translate("files.downloadFile")
                 ] }),
                 onCopyPath && /* @__PURE__ */ jsxs(Fragment, { children: [
@@ -1795,14 +1795,14 @@ function WorkspaceNodeActions({
                     onCopyPath(node, "relative");
                     close();
                   }, children: [
-                    /* @__PURE__ */ jsx(Copy, { size: 16 }),
+                    /* @__PURE__ */ jsx(Copy, { "data-icon": "copy-path", size: 16 }),
                     shortLabels ? translate("files.copyRelativePath") : translate("files.copyRelativePathFor", { value1: node.name })
                   ] }),
                   /* @__PURE__ */ jsxs("button", { role: "menuitem", type: "button", "aria-label": shortLabels ? translate("files.copyAbsolutePathFor", { value1: node.name }) : void 0, onClick: () => {
                     onCopyPath(node, "absolute");
                     close();
                   }, children: [
-                    /* @__PURE__ */ jsx(ClipboardCopy, { size: 16 }),
+                    /* @__PURE__ */ jsx(ClipboardCopy, { "data-icon": "copy-absolute-path", size: 16 }),
                     shortLabels ? translate("files.copyAbsolutePath") : translate("files.copyAbsolutePathFor", { value1: node.name })
                   ] })
                 ] }),
@@ -1818,7 +1818,7 @@ function WorkspaceNodeActions({
                       setMenu(null);
                     },
                     children: [
-                      /* @__PURE__ */ jsx(Pencil, { size: 14 }),
+                      /* @__PURE__ */ jsx(Pencil, { "data-icon": "rename", size: 14 }),
                       " ",
                       translate("files.rename_d3f4cb")
                     ]
@@ -1835,7 +1835,7 @@ function WorkspaceNodeActions({
                       setMenu(null);
                     },
                     children: [
-                      /* @__PURE__ */ jsx(Trash2, { size: 14 }),
+                      /* @__PURE__ */ jsx(Trash2, { "data-icon": "delete", size: 14 }),
                       " ",
                       translate("files.delete")
                     ]
@@ -1881,14 +1881,14 @@ function WorkspaceNodeActions({
 import { Fragment as Fragment2, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function iconForNode(node, expanded) {
   if (node.kind === "directory") {
-    return expanded ? /* @__PURE__ */ jsx2(FolderOpen, { className: "workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" }) : /* @__PURE__ */ jsx2(Folder, { className: "workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" });
+    return expanded ? /* @__PURE__ */ jsx2(FolderOpen, { "data-icon": "folder-open", className: "workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" }) : /* @__PURE__ */ jsx2(Folder, { "data-icon": "folder", className: "workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" });
   }
   const extension = extensionOf(node.name);
   if (extension === "zip") {
-    return /* @__PURE__ */ jsx2(FileArchive, { className: "workspace-node-icon is-archive h-4 w-4 text-amber-600" });
+    return /* @__PURE__ */ jsx2(FileArchive, { "data-icon": "archive", className: "workspace-node-icon is-archive h-4 w-4 text-amber-600" });
   }
   if (node.kind === "file" && ["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(extension)) {
-    return /* @__PURE__ */ jsx2(FileImage, { className: "workspace-node-icon is-image h-4 w-4 text-sky-500" });
+    return /* @__PURE__ */ jsx2(FileImage, { "data-icon": "image", className: "workspace-node-icon is-image h-4 w-4 text-sky-500" });
   }
   if (node.kind === "artifact" || [
     "xyz",
@@ -1905,9 +1905,9 @@ function iconForNode(node, expanded) {
     "yml",
     "py"
   ].includes(extension)) {
-    return /* @__PURE__ */ jsx2(FileCode2, { className: "workspace-node-icon is-code h-4 w-4 text-emerald-600" });
+    return /* @__PURE__ */ jsx2(FileCode2, { "data-icon": "code", className: "workspace-node-icon is-code h-4 w-4 text-emerald-600" });
   }
-  return /* @__PURE__ */ jsx2(File, { className: "workspace-node-icon is-file h-4 w-4 text-slate-400 dark:text-slate-500" });
+  return /* @__PURE__ */ jsx2(File, { "data-icon": "file", className: "workspace-node-icon is-file h-4 w-4 text-slate-400 dark:text-slate-500" });
 }
 function WorkspaceExplorerRow({
   row,
@@ -2026,7 +2026,7 @@ function WorkspaceExplorerRow({
               if (canToggleDirectory && window.matchMedia?.("(max-width: 639px)").matches) onToggle(node.path);
             },
             children: [
-              linkedDirectory ? /* @__PURE__ */ jsx2(FolderSymlink, { className: "workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400", "aria-hidden": "true" }) : iconForNode(node, expanded),
+              linkedDirectory ? /* @__PURE__ */ jsx2(FolderSymlink, { "data-icon": "folder-link", className: "workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400", "aria-hidden": "true" }) : iconForNode(node, expanded),
               linkedDirectory ? (
                 // Long host paths keep their meaningful tail visible.
                 /* @__PURE__ */ jsx2("span", { className: "workspace-linked-directory-label min-w-0 flex-1", title: `${displayName}
@@ -2389,7 +2389,7 @@ function WorkspaceExplorerPanel({
     /* @__PURE__ */ jsxs3("div", { title: filePanel?.label, className: "thread-graph-explorer-header flex h-9 shrink-0 items-center justify-between border-b px-2", children: [
       /* @__PURE__ */ jsx4("h2", { className: "text-[11px] font-semibold uppercase text-slate-600 dark:text-slate-300", children: translate("files.explorer") }),
       /* @__PURE__ */ jsxs3("div", { className: "thread-graph-explorer-toolbar flex items-center gap-1", children: [
-        filePanel && onExpandViewer && /* @__PURE__ */ jsx4("button", { type: "button", "data-testid": "workbench-close-files", className: iconButtonClassName, onClick: filePanel.close, "aria-label": translate("workbench.closeFiles"), title: translate("workbench.closeFiles"), children: /* @__PURE__ */ jsx4(X, { size: 16 }) }),
+        filePanel && onExpandViewer && /* @__PURE__ */ jsx4("button", { type: "button", "data-testid": "workbench-close-files", className: iconButtonClassName, onClick: filePanel.close, "aria-label": translate("workbench.closeFiles"), title: translate("workbench.closeFiles"), children: /* @__PURE__ */ jsx4(X, { "data-icon": "close", size: 16 }) }),
         onCreateFile && /* @__PURE__ */ jsx4(
           "button",
           {
@@ -2398,7 +2398,7 @@ function WorkspaceExplorerPanel({
             className: iconButtonClassName,
             title: translate("files.newFile"),
             "aria-label": translate("files.newFile"),
-            children: /* @__PURE__ */ jsx4(FilePlus2, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx4(FilePlus2, { "data-icon": "new-file", className: "h-4 w-4" })
           }
         ),
         /* @__PURE__ */ jsx4(
@@ -2410,7 +2410,7 @@ function WorkspaceExplorerPanel({
             title: translate("files.filterWorkspace"),
             "aria-label": translate("files.filterWorkspace"),
             "aria-pressed": filterOpen,
-            children: /* @__PURE__ */ jsx4(Search, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx4(Search, { "data-icon": "filter", className: "h-4 w-4" })
           }
         ),
         /* @__PURE__ */ jsx4(
@@ -2421,7 +2421,7 @@ function WorkspaceExplorerPanel({
             className: iconButtonClassName,
             title: translate("files.collapseFolders"),
             "aria-label": translate("files.collapseFolders"),
-            children: /* @__PURE__ */ jsx4(ListCollapse, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx4(ListCollapse, { "data-icon": "collapse-folders", className: "h-4 w-4" })
           }
         ),
         /* @__PURE__ */ jsx4(
@@ -2436,6 +2436,7 @@ function WorkspaceExplorerPanel({
             children: /* @__PURE__ */ jsx4(
               RefreshCw,
               {
+                "data-icon": "refresh",
                 className: `h-4 w-4 motion-reduce:animate-none ${loading ? "animate-spin" : ""}`
               }
             )
@@ -2448,7 +2449,7 @@ function WorkspaceExplorerPanel({
               className: `${iconButtonClassName} list-none cursor-pointer`,
               title: translate("files.moreExplorerActions"),
               "aria-label": translate("files.moreExplorerActions"),
-              children: /* @__PURE__ */ jsx4(MoreHorizontal2, { className: "h-4 w-4" })
+              children: /* @__PURE__ */ jsx4(MoreHorizontal2, { "data-icon": "more", className: "h-4 w-4" })
             }
           ),
           /* @__PURE__ */ jsxs3("div", { className: "absolute right-0 top-7 z-40 min-w-44 rounded-md border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1 shadow-lg", children: [
@@ -2459,7 +2460,7 @@ function WorkspaceExplorerPanel({
                 onClick: onUpload,
                 className: "flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm hover:bg-[var(--theme-hover)]",
                 children: [
-                  /* @__PURE__ */ jsx4(Upload, { className: "h-4 w-4" }),
+                  /* @__PURE__ */ jsx4(Upload, { "data-icon": "upload", className: "h-4 w-4" }),
                   translate("files.uploadFile")
                 ]
               }
@@ -2472,7 +2473,7 @@ function WorkspaceExplorerPanel({
                 disabled: !canEmptyGarbage,
                 className: "flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm text-rose-600 hover:bg-rose-500/10 disabled:opacity-50 dark:text-rose-300",
                 children: [
-                  /* @__PURE__ */ jsx4(Trash22, { className: "h-4 w-4" }),
+                  /* @__PURE__ */ jsx4(Trash22, { "data-icon": "delete", className: "h-4 w-4" }),
                   translate("files.emptyGarbage_b701de")
                 ]
               }
@@ -2488,7 +2489,7 @@ function WorkspaceExplorerPanel({
             className: collapseButtonClassName,
             title: translate("files.showEditor"),
             "aria-label": translate("files.showEditor"),
-            children: /* @__PURE__ */ jsx4(PanelRightOpen, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx4(PanelRightOpen, { "data-icon": "expand-viewer", className: "h-4 w-4" })
           }
         ) : null : onCollapse ? /* @__PURE__ */ jsx4(
           "button",
@@ -2499,7 +2500,7 @@ function WorkspaceExplorerPanel({
             className: collapseButtonClassName,
             title: translate("files.hideExplorer"),
             "aria-label": translate("files.hideExplorer"),
-            children: /* @__PURE__ */ jsx4(PanelLeftClose, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx4(PanelLeftClose, { "data-icon": "collapse-explorer", className: "h-4 w-4" })
           }
         ) : null
       ] })
@@ -3893,7 +3894,7 @@ function WorkspaceFileTabs({
                       onClick: () => onSelect(tab.path),
                       className: `flex h-full min-w-0 flex-1 items-center gap-1.5 px-2.5 text-left text-xs ${tab.pinned ? "" : "italic"}`,
                       children: [
-                        /* @__PURE__ */ jsx15(FileCode23, { className: "h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" }),
+                        /* @__PURE__ */ jsx15(FileCode23, { "data-icon": "code", className: "h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" }),
                         /* @__PURE__ */ jsx15("span", { className: "workspace-file-tab-name", dir: "rtl", children: /* @__PURE__ */ jsx15("bdi", { dir: "ltr", children: tab.name }) })
                       ]
                     }
@@ -3906,7 +3907,7 @@ function WorkspaceFileTabs({
                       className: "thread-graph-editor-tab-close mr-1 flex h-5 w-5 shrink-0 items-center justify-center rounded",
                       title: translate("files.close_069e97", { value1: tab.name }),
                       "aria-label": translate("files.close_069e97", { value1: tab.name }),
-                      children: dirty ? /* @__PURE__ */ jsx15(Circle, { className: "h-2.5 w-2.5 fill-current" }) : /* @__PURE__ */ jsx15(X2, { className: "h-3.5 w-3.5" })
+                      children: dirty ? /* @__PURE__ */ jsx15(Circle, { "data-icon": "unsaved", className: "h-2.5 w-2.5 fill-current" }) : /* @__PURE__ */ jsx15(X2, { "data-icon": "close", className: "h-3.5 w-3.5" })
                     }
                   )
                 ]
@@ -4431,7 +4432,7 @@ function GraphWorkspacePreviewPane({
     if (previewFile) await documents?.save(previewFile.path);
   }
   const fileToolbar = previewFile && (isMarkdownFile || isDrawioFile || canEditFile) ? /* @__PURE__ */ jsxs12("div", { className: "flex shrink-0 items-center gap-1", children: [
-    (isMarkdownFile || isDrawioFile) && !editing ? /* @__PURE__ */ jsx16("button", { type: "button", className: "thread-graph-editor-toolbar-button workspace-mobile-view-toggle", "aria-label": translate(markdownView === "preview" ? "files.source" : "files.preview", { value1: renderedViewLabel }), title: translate(markdownView === "preview" ? "files.source" : "files.preview", { value1: renderedViewLabel }), onClick: () => setMarkdownView((view) => view === "preview" ? "source" : "preview"), children: markdownView === "preview" ? /* @__PURE__ */ jsx16(Code2, { size: 16 }) : /* @__PURE__ */ jsx16(BookOpen, { size: 16 }) }) : null,
+    (isMarkdownFile || isDrawioFile) && !editing ? /* @__PURE__ */ jsx16("button", { type: "button", className: "thread-graph-editor-toolbar-button workspace-mobile-view-toggle", "aria-label": translate(markdownView === "preview" ? "files.source" : "files.preview", { value1: renderedViewLabel }), title: translate(markdownView === "preview" ? "files.source" : "files.preview", { value1: renderedViewLabel }), onClick: () => setMarkdownView((view) => view === "preview" ? "source" : "preview"), children: markdownView === "preview" ? /* @__PURE__ */ jsx16(Code2, { "data-icon": "source", size: 16 }) : /* @__PURE__ */ jsx16(BookOpen, { "data-icon": "preview", size: 16 }) }) : null,
     canEditFile ? /* @__PURE__ */ jsx16("div", { className: "flex shrink-0 items-center gap-0.5", children: editing ? /* @__PURE__ */ jsxs12(Fragment4, { children: [
       /* @__PURE__ */ jsx16(
         "button",
@@ -4446,7 +4447,7 @@ function GraphWorkspacePreviewPane({
           className: "thread-graph-editor-toolbar-button flex h-6 w-6 items-center justify-center rounded transition disabled:cursor-not-allowed disabled:opacity-40",
           title: translate("files.cancelEdits"),
           "aria-label": translate("files.cancelEdits"),
-          children: /* @__PURE__ */ jsx16(X3, { className: "h-3.5 w-3.5" })
+          children: /* @__PURE__ */ jsx16(X3, { "data-icon": "close", className: "h-3.5 w-3.5" })
         }
       ),
       /* @__PURE__ */ jsx16(
@@ -4458,7 +4459,7 @@ function GraphWorkspacePreviewPane({
           className: "thread-graph-editor-toolbar-button flex h-6 w-6 items-center justify-center rounded transition disabled:cursor-not-allowed disabled:opacity-40",
           title: translate("files.saveFile"),
           "aria-label": translate("files.saveFile"),
-          children: /* @__PURE__ */ jsx16(Save, { className: "h-3.5 w-3.5" })
+          children: /* @__PURE__ */ jsx16(Save, { "data-icon": "save", className: "h-3.5 w-3.5" })
         }
       )
     ] }) : /* @__PURE__ */ jsx16(
@@ -4472,7 +4473,7 @@ function GraphWorkspacePreviewPane({
         className: "thread-graph-editor-toolbar-button flex h-6 w-6 items-center justify-center rounded transition",
         title: translate("files.editFile"),
         "aria-label": translate("files.editFile"),
-        children: /* @__PURE__ */ jsx16(Pencil2, { className: "h-3.5 w-3.5" })
+        children: /* @__PURE__ */ jsx16(Pencil2, { "data-icon": "edit", className: "h-3.5 w-3.5" })
       }
     ) }) : null
   ] }) : null;
@@ -4480,7 +4481,7 @@ function GraphWorkspacePreviewPane({
   const documentMetadata = document2 ? `${documentState} \xB7 ${document2.snapshot.encoding === "utf-8" ? "UTF-8" : translate("files.safeUnknownEncoding")}${document2.snapshot.bom ? " BOM" : ""} \xB7 ${document2.snapshot.eol.toUpperCase()}` : void 0;
   const inlineStatus = document2 && /* @__PURE__ */ jsx16("span", { role: "status", "data-testid": "workspace-document-status", className: "sr-only", "data-phase": document2.phase, children: documentState });
   const backLabel = previousFilePath ? translate("files.backToDocument", { name: previousFilePath.split("/").pop() ?? previousFilePath }) : translate("workbench.goBack");
-  const navigationControls = /* @__PURE__ */ jsx16(Fragment4, { children: onNavigateForward && /* @__PURE__ */ jsx16("button", { type: "button", onClick: onNavigateForward, "aria-label": translate("files.goForward"), title: translate("files.goForward"), className: "thread-graph-editor-toolbar-button flex h-6 w-6 shrink-0 items-center justify-center rounded", children: /* @__PURE__ */ jsx16(ArrowRight, { size: 14 }) }) });
+  const navigationControls = /* @__PURE__ */ jsx16(Fragment4, { children: onNavigateForward && /* @__PURE__ */ jsx16("button", { type: "button", onClick: onNavigateForward, "aria-label": translate("files.goForward"), title: translate("files.goForward"), className: "thread-graph-editor-toolbar-button flex h-6 w-6 shrink-0 items-center justify-center rounded", children: /* @__PURE__ */ jsx16(ArrowRight, { "data-icon": "forward", size: 14 }) }) });
   const copyPath = activeNode?.path && !/^(?:\/|[a-z]:[\\/])/i.test(activeNode.path) && workspaceRootPath ? `${workspaceRootPath.replace(/[\\/]+$/, "")}/${activeNode.path}` : activeNode?.path ?? "";
   const fileActions = activeNode && /* @__PURE__ */ jsxs12(
     WorkspaceFileActions,
@@ -4514,7 +4515,7 @@ function GraphWorkspacePreviewPane({
       className: "flex h-6 w-6 shrink-0 items-center justify-center rounded text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)]",
       title: translate("files.showExplorer"),
       "aria-label": translate("files.showExplorer"),
-      children: /* @__PURE__ */ jsx16(PanelLeftOpen, { className: "h-3.5 w-3.5" })
+      children: /* @__PURE__ */ jsx16(PanelLeftOpen, { "data-icon": "expand-explorer", className: "h-3.5 w-3.5" })
     }
   ) : onCollapse ? /* @__PURE__ */ jsx16(
     "button",
@@ -4525,11 +4526,11 @@ function GraphWorkspacePreviewPane({
       className: "flex h-6 w-6 shrink-0 items-center justify-center rounded text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)]",
       title: translate("files.hideEditor"),
       "aria-label": translate("files.hideEditor"),
-      children: /* @__PURE__ */ jsx16(PanelRightClose, { className: "h-3.5 w-3.5" })
+      children: /* @__PURE__ */ jsx16(PanelRightClose, { "data-icon": "collapse-viewer", className: "h-3.5 w-3.5" })
     }
   ) : null;
-  const previewNavigation = (onNavigateBack || onReturnToFiles || onExpandExplorer) && /* @__PURE__ */ jsx16("button", { type: "button", className: "workspace-preview-back", onClick: onNavigateBack ?? onReturnToFiles ?? onExpandExplorer, "aria-label": onNavigateBack ? backLabel : translate("files.backToFiles"), title: onNavigateBack ? backLabel : translate("files.backToFiles"), "data-testid": "expand-explorer", children: /* @__PURE__ */ jsx16(ArrowLeft, { size: 18 }) });
-  const previewActions = /* @__PURE__ */ jsx16("button", { ref: actionTrigger, type: "button", className: "thread-graph-editor-toolbar-button workspace-file-more", "aria-label": translate("files.fileActions"), title: translate("files.fileActions"), "aria-expanded": actionsOpen, onClick: () => setActionsOpen((open) => !open), children: /* @__PURE__ */ jsx16(MoreHorizontal3, { size: 18 }) });
+  const previewNavigation = (onNavigateBack || onReturnToFiles || onExpandExplorer) && /* @__PURE__ */ jsx16("button", { type: "button", className: "workspace-preview-back", onClick: onNavigateBack ?? onReturnToFiles ?? onExpandExplorer, "aria-label": onNavigateBack ? backLabel : translate("files.backToFiles"), title: onNavigateBack ? backLabel : translate("files.backToFiles"), "data-testid": "expand-explorer", children: /* @__PURE__ */ jsx16(ArrowLeft, { "data-icon": "back", size: 18 }) });
+  const previewActions = /* @__PURE__ */ jsx16("button", { ref: actionTrigger, type: "button", className: "thread-graph-editor-toolbar-button workspace-file-more", "aria-label": translate("files.fileActions"), title: translate("files.fileActions"), "aria-expanded": actionsOpen, onClick: () => setActionsOpen((open) => !open), children: /* @__PURE__ */ jsx16(MoreHorizontal3, { "data-icon": "more", size: 18 }) });
   return /* @__PURE__ */ jsxs12(
     "section",
     {

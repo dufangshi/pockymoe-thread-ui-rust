@@ -1,0 +1,325 @@
+/* Transcript log: work summaries, runs of operations and their rows.
+   Glyphs mark the kind of each operation ($ command, ± edit, → read, ? search,
+   ◇ tool, » subagent, ✦ skill, ∴ thought); themes may redraw them. */
+
+.thread-ui-shell {
+  --tlog-font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --tlog-add: light-dark(oklch(45% 0.13 150), oklch(78% 0.14 150));
+  --tlog-remove: light-dark(oklch(50% 0.17 25), oklch(76% 0.13 25));
+  --tlog-failed: light-dark(#b3302c, #f0847f);
+  --tlog-rule: color-mix(in srgb, var(--theme-fg-muted) 45%, transparent);
+  --tlog-row-height: 26px;
+}
+
+/* Turn summary: "› Worked for 51s · edited 2 files +64 −3 · 6 commands ┄┄┄" */
+.thread-ui-shell .thread-graph-worked-summary {
+  min-width: 0;
+}
+.thread-ui-shell .thread-worked-toggle {
+  flex: 0 1 auto;
+  min-width: 0;
+  color: var(--theme-fg-soft);
+}
+.thread-ui-shell .thread-worked-toggle:hover,
+.thread-ui-shell .thread-worked-toggle:focus-visible {
+  color: var(--theme-fg);
+}
+.thread-ui-shell .thread-worked-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--theme-fg-muted);
+}
+.thread-ui-shell .thread-graph-worked-summary .thread-graph-worked-rule,
+.thread-ui-shell .matter-workbench .thread-graph-worked-summary .thread-graph-worked-rule {
+  display: block;
+  height: 0;
+  background: none;
+  border-top: 1px dashed var(--tlog-rule);
+  min-width: 16px;
+}
+
+.tlog-summary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--theme-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.tlog-part.is-add { color: var(--tlog-add); }
+.tlog-part.is-remove { color: var(--tlog-remove); }
+.tlog-part.is-failed { color: var(--tlog-failed); font-weight: 600; }
+.tlog-sep { color: var(--theme-fg-muted); }
+
+/* Receipt: time and usage under the answer. */
+.thread-ui-shell .thread-turn-receipt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--theme-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.thread-ui-shell .thread-turn-receipt time { white-space: nowrap; }
+.thread-ui-shell .thread-turn-receipt .thread-turn-usage { font-size: 11px; opacity: 0.9; }
+
+/* The expanded log: messages and runs in order, without the old rail. */
+.thread-ui-shell .thread-execution-timeline,
+.thread-ui-shell .matter-workbench .thread-execution-timeline {
+  margin: 0 0 4px;
+  padding-left: 0;
+  border-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.thread-ui-shell .thread-execution-timeline > *,
+.thread-ui-shell .matter-workbench .thread-execution-timeline > * {
+  margin: 0;
+}
+.thread-ui-shell .thread-execution-timeline > *::before,
+.thread-ui-shell .matter-workbench .thread-execution-timeline > *::before {
+  content: none;
+}
+
+/* A run of operations */
+.tlog-run { min-width: 0; }
+.tlog-run-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--tlog-row-height);
+  padding: 0;
+  font-size: 12px;
+  color: var(--theme-fg-soft);
+  text-align: left;
+}
+.tlog-run-head:hover .tlog-summary,
+.tlog-run-head:focus-visible .tlog-summary { color: var(--theme-fg); }
+.tlog-run-head .tlog-summary { flex: 0 1 auto; color: var(--theme-fg-soft); }
+.tlog-chev {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  color: var(--theme-fg-muted);
+  transition: transform 120ms;
+}
+.tlog-run[data-open] > .tlog-run-head .tlog-chev { transform: rotate(90deg); }
+.tlog-rule {
+  flex: 1;
+  min-width: 16px;
+  border-top: 1px dashed var(--tlog-rule);
+}
+.tlog-run[data-failed] > .tlog-run-head .tlog-chev { color: var(--tlog-failed); }
+.tlog-run-body {
+  display: flex;
+  flex-direction: column;
+  margin: 2px 0 6px 6px;
+  padding-left: 13px;
+  border-left: 1px solid var(--theme-border);
+}
+
+/* A row: glyph, title, delta and status on one line */
+.tlog-row { min-width: 0; }
+.tlog-row-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--tlog-row-height);
+  padding: 0 6px;
+  margin-left: -6px;
+  border-radius: 5px;
+  font-size: 12px;
+  color: var(--theme-fg-soft);
+  text-align: left;
+}
+.tlog-row-head:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.tlog-glyph {
+  flex: none;
+  width: 1.6ch;
+  font: 700 12px/1 var(--tlog-font-mono);
+  color: var(--theme-accent-strong, var(--theme-accent-solid));
+  text-align: center;
+}
+.tlog-row[data-kind='reasoning'] .tlog-glyph,
+.tlog-row[data-kind='fileRead'] .tlog-glyph,
+.tlog-row[data-kind='webSearch'] .tlog-glyph { color: var(--theme-fg-muted); }
+.tlog-row[data-status='failed'] .tlog-glyph { color: var(--tlog-failed); }
+.tlog-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tlog-title.is-mono { font-family: var(--tlog-font-mono); font-size: 11.5px; }
+.tlog-row[data-kind='reasoning'] .tlog-title { font-style: italic; color: var(--theme-fg-muted); }
+.tlog-row[data-kind='fileRead'][data-batch] .tlog-title { flex: none; }
+.tlog-batch-names {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 11px var(--tlog-font-mono);
+  color: var(--theme-fg-muted);
+}
+.tlog-delta {
+  display: inline-flex;
+  flex: none;
+  gap: 6px;
+  font: 600 11px var(--tlog-font-mono);
+}
+.tlog-delta .is-add { color: var(--tlog-add); }
+.tlog-delta .is-remove { color: var(--tlog-remove); }
+.tlog-tag {
+  flex: none;
+  font-size: 11px;
+  color: var(--theme-fg-muted);
+}
+.tlog-tag.is-failed { color: var(--tlog-failed); font-weight: 600; }
+.tlog-spinner {
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--theme-border-strong);
+  border-top-color: var(--theme-accent-solid);
+  border-radius: 50%;
+  animation: tlog-spin 0.9s linear infinite;
+}
+@keyframes tlog-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .tlog-spinner { animation: none; } }
+
+.tlog-batch { padding-left: 14px; }
+.tlog-more {
+  align-self: flex-start;
+  margin: 2px 0;
+  font-size: 11.5px;
+  color: var(--theme-accent-strong, var(--theme-accent-solid));
+}
+.tlog-more:hover { text-decoration: underline; }
+.tlog-single { min-width: 0; }
+.tlog-other { min-width: 0; margin: 2px 0; }
+
+/* Output and diffs, opened in place */
+.tlog-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 2px 0 8px 1.6ch;
+  min-width: 0;
+}
+.tlog-detail.is-loading,
+.tlog-empty {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--theme-fg-muted);
+}
+.tlog-detail.is-loading { margin: 2px 0 6px calc(1.6ch + 8px); }
+.tlog-detail.is-prose {
+  margin-left: calc(1.6ch + 8px);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--theme-fg-soft);
+  white-space: pre-wrap;
+}
+.tlog-command,
+.tlog-output {
+  margin: 0;
+  max-height: calc(16 * 1.55em);
+  overflow: auto;
+  padding: 6px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-surface);
+  font: 11.5px/1.55 var(--tlog-font-mono);
+  color: var(--theme-fg-soft);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.tlog-command { max-height: calc(6 * 1.55em); color: var(--theme-fg); }
+.tlog-output.is-error { color: var(--tlog-failed); }
+.tlog-diff {
+  max-height: calc(12 * 1.6em * 11.5 / 12 + 6px);
+  overflow: auto;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-panel);
+}
+.tlog-diff .thread-diff { font-size: 11.5px; padding: 2px 0; }
+.tlog-diff .thread-diff-line { min-height: 1.6em; }
+.thread-diff-line.is-file {
+  position: sticky;
+  left: 0;
+  padding: 2px 10px;
+  border-block: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-fg-soft);
+  font-weight: 600;
+}
+.thread-diff-line.is-file:first-child { border-top: 0; }
+.thread-diff-line.is-file .thread-diff-number,
+.thread-diff-line.is-file .thread-diff-sign { display: none; }
+.tlog-detail-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--theme-fg-muted);
+}
+.tlog-open {
+  font-size: 11px;
+  color: var(--theme-accent-strong, var(--theme-accent-solid));
+}
+.tlog-open:hover { text-decoration: underline; }
+
+/* Narration between runs reads as the agent talking, a step quieter than the answer. */
+.thread-ui-shell .thread-execution-timeline .thread-graph-message[data-role='assistant'] .thread-graph-message-content {
+  color: var(--theme-fg-soft);
+}
+
+@media (max-width: 639px) {
+  .thread-ui-shell { --tlog-row-height: 32px; }
+  .tlog-run-body { margin-left: 4px; padding-left: 10px; }
+  .tlog-detail { margin-left: 0; }
+}
+
+/* The operation a folded, working turn is running now. */
+.tlog-current { min-width: 0; margin-top: -4px; }
+
+/* Plan: a compact checklist */
+.thread-ui-shell .tlog-plan {
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-panel);
+}
+.tlog-plan-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--theme-fg-muted);
+}
+.tlog-plan-title { font-weight: 600; }
+.tlog-plan-count { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.tlog-plan-note { margin: 0 0 4px; font-size: 12.5px; color: var(--theme-fg-soft); }
+.tlog-plan-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.thread-ui-shell .tlog-plan .tlog-plan-step { padding: 0; border: 0; border-radius: 0; background: none; }
+.tlog-plan-step { display: flex; align-items: baseline; gap: 8px; font-size: 13px; line-height: 1.6; color: var(--theme-fg); }
+.tlog-plan-mark { flex: none; width: 1.6ch; font: 700 12px/1 var(--tlog-font-mono); text-align: center; }
+.tlog-plan-mark::before { content: '○'; color: var(--theme-fg-muted); }
+.tlog-plan-step[data-status='completed'] { color: var(--theme-fg-muted); }
+.tlog-plan-step[data-status='completed'] .tlog-plan-mark::before { content: '✓'; color: var(--tlog-add); }
+.tlog-plan-step[data-status='in_progress'] { font-weight: 600; }
+.tlog-plan-step[data-status='in_progress'] .tlog-plan-mark::before { content: '▸'; color: var(--theme-accent-strong, var(--theme-accent-solid)); }
+.tlog-plan-step[data-status='failed'] .tlog-plan-mark::before { content: '✕'; color: var(--tlog-failed); }

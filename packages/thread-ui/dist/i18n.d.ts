@@ -2745,6 +2745,46 @@ declare const en: {
     };
     readonly 'chat.performedOperations': "Performed";
     readonly 'chat.performingOperations': "Working on";
+    readonly 'chat.logEdits': {
+        readonly one: "edited {{count}} file";
+        readonly other: "edited {{count}} files";
+    };
+    readonly 'chat.logSearches': {
+        readonly one: "{{count}} search";
+        readonly other: "{{count}} searches";
+    };
+    readonly 'chat.logTools': {
+        readonly one: "{{count}} tool call";
+        readonly other: "{{count}} tool calls";
+    };
+    readonly 'chat.logAgents': {
+        readonly one: "{{count}} subagent";
+        readonly other: "{{count}} subagents";
+    };
+    readonly 'chat.logThoughts': {
+        readonly one: "thought once";
+        readonly other: "thought {{count}} times";
+    };
+    readonly 'chat.logFailed': {
+        readonly one: "{{count}} failed";
+        readonly other: "{{count}} failed";
+    };
+    readonly 'chat.logShowAll': {
+        readonly one: "Show {{count}} more";
+        readonly other: "Show {{count}} more";
+    };
+    readonly 'chat.logDiffMore': {
+        readonly one: "{{count}} more line";
+        readonly other: "{{count}} more lines";
+    };
+    readonly 'chat.logOpenFull': "Open in full";
+    readonly 'chat.logNoOutput': "No output";
+    readonly 'chat.logLoading': "Loading…";
+    readonly 'chat.logRunning': "running";
+    readonly 'chat.logFailedTag': "failed";
+    readonly 'chat.logInterrupted': "interrupted";
+    readonly 'chat.logActivity': "Activity";
+    readonly 'chat.logPlan': "Plan";
     readonly "auth.ui.signInTitle": "Sign in";
     readonly "auth.ui.registerTitle": "Create your account";
     readonly "auth.ui.or": "or";
@@ -5926,6 +5966,46 @@ declare const zhCN: {
     };
     'chat.performedOperations': "已执行";
     'chat.performingOperations': "正在执行";
+    'chat.logEdits': {
+        readonly one: "改了 {{count}} 个文件";
+        readonly other: "改了 {{count}} 个文件";
+    };
+    'chat.logSearches': {
+        readonly one: "搜索 {{count}} 次";
+        readonly other: "搜索 {{count}} 次";
+    };
+    'chat.logTools': {
+        readonly one: "{{count}} 次工具调用";
+        readonly other: "{{count}} 次工具调用";
+    };
+    'chat.logAgents': {
+        readonly one: "{{count}} 个子代理";
+        readonly other: "{{count}} 个子代理";
+    };
+    'chat.logThoughts': {
+        readonly one: "思考 1 次";
+        readonly other: "思考 {{count}} 次";
+    };
+    'chat.logFailed': {
+        readonly one: "{{count}} 个失败";
+        readonly other: "{{count}} 个失败";
+    };
+    'chat.logShowAll': {
+        readonly one: "再显示 {{count}} 项";
+        readonly other: "再显示 {{count}} 项";
+    };
+    'chat.logDiffMore': {
+        readonly one: "还有 {{count}} 行";
+        readonly other: "还有 {{count}} 行";
+    };
+    'chat.logOpenFull': "完整查看";
+    'chat.logNoOutput': "无输出";
+    'chat.logLoading': "加载中…";
+    'chat.logRunning': "运行中";
+    'chat.logFailedTag': "失败";
+    'chat.logInterrupted': "已中断";
+    'chat.logActivity': "操作";
+    'chat.logPlan': "计划";
     "auth.ui.signInTitle": "登录";
     "auth.ui.registerTitle": "创建账号";
     "auth.ui.or": "或";
@@ -9129,6 +9209,46 @@ declare const resources: {
         };
         readonly 'chat.performedOperations': "Performed";
         readonly 'chat.performingOperations': "Working on";
+        readonly 'chat.logEdits': {
+            readonly one: "edited {{count}} file";
+            readonly other: "edited {{count}} files";
+        };
+        readonly 'chat.logSearches': {
+            readonly one: "{{count}} search";
+            readonly other: "{{count}} searches";
+        };
+        readonly 'chat.logTools': {
+            readonly one: "{{count}} tool call";
+            readonly other: "{{count}} tool calls";
+        };
+        readonly 'chat.logAgents': {
+            readonly one: "{{count}} subagent";
+            readonly other: "{{count}} subagents";
+        };
+        readonly 'chat.logThoughts': {
+            readonly one: "thought once";
+            readonly other: "thought {{count}} times";
+        };
+        readonly 'chat.logFailed': {
+            readonly one: "{{count}} failed";
+            readonly other: "{{count}} failed";
+        };
+        readonly 'chat.logShowAll': {
+            readonly one: "Show {{count}} more";
+            readonly other: "Show {{count}} more";
+        };
+        readonly 'chat.logDiffMore': {
+            readonly one: "{{count}} more line";
+            readonly other: "{{count}} more lines";
+        };
+        readonly 'chat.logOpenFull': "Open in full";
+        readonly 'chat.logNoOutput': "No output";
+        readonly 'chat.logLoading': "Loading…";
+        readonly 'chat.logRunning': "running";
+        readonly 'chat.logFailedTag': "failed";
+        readonly 'chat.logInterrupted': "interrupted";
+        readonly 'chat.logActivity': "Activity";
+        readonly 'chat.logPlan': "Plan";
         readonly "auth.ui.signInTitle": "Sign in";
         readonly "auth.ui.registerTitle": "Create your account";
         readonly "auth.ui.or": "or";
@@ -12309,6 +12429,46 @@ declare const resources: {
         };
         'chat.performedOperations': "已执行";
         'chat.performingOperations': "正在执行";
+        'chat.logEdits': {
+            readonly one: "改了 {{count}} 个文件";
+            readonly other: "改了 {{count}} 个文件";
+        };
+        'chat.logSearches': {
+            readonly one: "搜索 {{count}} 次";
+            readonly other: "搜索 {{count}} 次";
+        };
+        'chat.logTools': {
+            readonly one: "{{count}} 次工具调用";
+            readonly other: "{{count}} 次工具调用";
+        };
+        'chat.logAgents': {
+            readonly one: "{{count}} 个子代理";
+            readonly other: "{{count}} 个子代理";
+        };
+        'chat.logThoughts': {
+            readonly one: "思考 1 次";
+            readonly other: "思考 {{count}} 次";
+        };
+        'chat.logFailed': {
+            readonly one: "{{count}} 个失败";
+            readonly other: "{{count}} 个失败";
+        };
+        'chat.logShowAll': {
+            readonly one: "再显示 {{count}} 项";
+            readonly other: "再显示 {{count}} 项";
+        };
+        'chat.logDiffMore': {
+            readonly one: "还有 {{count}} 行";
+            readonly other: "还有 {{count}} 行";
+        };
+        'chat.logOpenFull': "完整查看";
+        'chat.logNoOutput': "无输出";
+        'chat.logLoading': "加载中…";
+        'chat.logRunning': "运行中";
+        'chat.logFailedTag': "失败";
+        'chat.logInterrupted': "已中断";
+        'chat.logActivity': "操作";
+        'chat.logPlan': "计划";
         "auth.ui.signInTitle": "登录";
         "auth.ui.registerTitle": "创建账号";
         "auth.ui.or": "或";

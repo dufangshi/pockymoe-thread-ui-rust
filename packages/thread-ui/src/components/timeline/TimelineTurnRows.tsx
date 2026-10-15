@@ -48,7 +48,7 @@ import { GraphChatCompactMessageItem as CompactMessageItem } from '../graph-chat
 import { MessageExpansionScope } from '../graph-chat/MessageExpansionScope';
 import { GraphChatTurnBody } from '../graph-chat/GraphChatTurnBody';
 import { GraphChatTurnFrame } from '../graph-chat/GraphChatTurnFrame';
-import { TranscriptAgentByline, useTranscriptAgentIdentity } from '../graph-chat/TranscriptAgent';
+import { TranscriptAgentByline } from '../graph-chat/TranscriptAgent';
 import {
   countTurnSteps,
   getLiveOutputTailForTurn,
@@ -66,6 +66,8 @@ import { groupAnswerSections, isSubstantiveAnswer } from './answerSections';
 import { TurnTokenSummary } from './tokenFormatting';
 import { deriveDisplayedLivePlan, TurnStatusBar } from './turnStatus';
 import { TurnUsageInline } from './TurnUsageInline';
+import { activityParts, hasActivity, turnActivity } from './activity';
+import { ActivitySummary, isLogItem, LogRow, LogRun, opensDiff } from './TranscriptLog';
 import { useAppShellNav } from '../../app-shell/AppShellNavContext';
 
 type LivePlan = {
@@ -608,7 +610,6 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
 }: ThreadTurnRowProps) {
   const { locale: i18nLocale } = useI18n();
   const showReasoningSummaries = useAppShellNav()?.showReasoningSummaries ?? false;
-  const agentIdentity = useTranscriptAgentIdentity();
   const hasLiveActivity =
     Boolean(livePlan) ||
     Boolean(liveOutput) ||
@@ -683,12 +684,13 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     }
   }, [groupedItems, revealTarget]);
 
-  const toggleGroupedItem = useCallback((groupKey: string) => {
+  const toggleGroupedItem = useCallback((groupKey: string, currentExpanded: boolean) => {
+    onBeforeMessageResize?.();
     setExpandedGroups((current) => ({
       ...current,
-      [groupKey]: !current[groupKey],
+      [groupKey]: !currentExpanded,
     }));
-  }, []);
+  }, [onBeforeMessageResize]);
 
   const renderHistoryEntries = (entries: TimelineHistoryEntry[], options?: {
     collapsed: boolean;
@@ -697,9 +699,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     <TimelineHistoryEntries
       entries={entries}
       expandedGroups={options?.collapsed ? {} : expandedGroups}
-      onToggleGroupedItem={options ? key => {
+      onToggleGroupedItem={options ? (key, current) => {
         if (options.collapsed) options.onExpand();
-        toggleGroupedItem(key);
+        toggleGroupedItem(key, options.collapsed ? false : current);
       } : toggleGroupedItem}
       threadId={threadId}
       scrollRootRef={scrollRootRef}
@@ -797,6 +799,15 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
 
   const canToggleWorkedSummary =
     hasCollapsedHiddenItems;
+  const activityCounts = useMemo(() => turnActivity(turn, mergedItems), [turn, mergedItems]);
+  const summaryParts = hasActivity(activityCounts) ? activityParts(activityCounts) : [];
+  // Time and usage close the turn, under its answer, instead of crowding the work line.
+  const receiptNode = isTerminalTurnStatus(turn.status) ? (
+    <div className="thread-turn-receipt">
+      <time dateTime={turn.startedAt ?? undefined} title={turnTimeTitle}>{turnTimeLabel}</time>
+      <TurnUsageInline turn={turn} speedMode="average" />
+    </div>
+  ) : null;
   const terminalWorkedNode =
     isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems ? (
       <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
@@ -805,27 +816,43 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           {workedLabel}
         </span>
         {interruptedLabel}
-        <TurnUsageInline turn={turn} speedMode="average" />
+        <ActivitySummary parts={summaryParts} />
         <span
           className="thread-graph-worked-rule h-px min-w-0 flex-1"
           aria-hidden="true"
         />
       </div>
     ) : null;
+  const leadingUserCount = groupedItems.findIndex(
+    (entry) => !(entry.kind === 'item' && entry.item.kind === 'userMessage'),
+  );
+  const renderSummaryAgent = (item: ThreadHistoryItemDto & { kind: 'agentMessage' }) => (
+    <CompactMessageItem
+      threadId={threadId}
+      item={item}
+      streaming={activeForRendering && isRunningHistoryStatus(item.status)}
+      scrollRootRef={scrollRootRef}
+      timeTitle={item.createdAt ? formatLongTimestamp(item.createdAt) : turnTimeTitle}
+      {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+      {...(adapter ? { adapter } : {})}
+    />
+  );
+  // While a folded turn works, the operation after its latest narration says what it is doing now.
+  const currentOperation = useMemo(() => {
+    if (!activeForRendering) return null;
+    const narration = visibleSummaryAgent ? mergedItems.findIndex(item => item.id === visibleSummaryAgent.id) : -1;
+    const index = mergedItems.findLastIndex(item => isLogItem(item) && item.kind !== 'reasoning');
+    return index > narration ? mergedItems[index]! : null;
+  }, [activeForRendering, mergedItems, visibleSummaryAgent]);
   const collapsedSummaryNode =
     hasCollapsedHiddenItems ? (
       <div className="thread-graph-turn-collapsed-summary space-y-2">
-        {collapsedSummary.users.map((item) => (
+        {(effectiveCollapsed ? collapsedSummary.users : collapsedSummary.users.slice(0, Math.max(0, leadingUserCount))).map((item) => (
           <CompactMessageItem
             key={item.id}
             threadId={threadId}
             item={item}
             scrollRootRef={scrollRootRef}
-            timeLabel={
-              item.createdAt
-                ? formatMessageTimestamp(item.createdAt)
-                : formatMessageTimestamp(turn.startedAt)
-            }
             timeTitle={
               item.createdAt
                 ? formatLongTimestamp(item.createdAt)
@@ -839,70 +866,61 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           <TranscriptAgentByline />
           <button
             type="button"
-            className="group flex shrink-0 items-center gap-2 text-left transition"
-          onClick={() => onToggleCollapse(turn, effectiveCollapsed)}
-          disabled={deferredItemsLoading}
-          aria-label={translate("chat.turn_6e6e38", { value1: workedLabel, value2: effectiveCollapsed ? translate("chat.expand") : translate("chat.collapse"), value3: absoluteIndex })}
-          aria-expanded={!effectiveCollapsed}
-          aria-busy={deferredItemsLoading}
-        >
-          <span className="thread-graph-worked-label shrink-0">
-            {deferredItemsLoading
-              ? <ThreadLoadingIndicator inline label={translate("chat.loadingCompleteHistory")} />
-              : deferredItemsError
-                ? translate("chat.historyUnavailableRetry")
-                : workedLabel}
-          </span>
-          {interruptedLabel}
-          <ChevronRight className={`h-4 w-4 shrink-0 transition ${effectiveCollapsed ? '' : 'rotate-90'}`} />
+            className="thread-worked-toggle group flex min-w-0 items-center gap-2 text-left transition"
+            onClick={() => onToggleCollapse(turn, effectiveCollapsed)}
+            disabled={deferredItemsLoading}
+            aria-label={translate("chat.turn_6e6e38", { value1: workedLabel, value2: effectiveCollapsed ? translate("chat.expand") : translate("chat.collapse"), value3: absoluteIndex })}
+            aria-expanded={!effectiveCollapsed}
+            aria-busy={deferredItemsLoading}
+          >
+            <ChevronRight className={`thread-worked-chevron h-4 w-4 shrink-0 transition ${effectiveCollapsed ? '' : 'rotate-90'}`} />
+            <span className="thread-graph-worked-label shrink-0">
+              {deferredItemsLoading
+                ? <ThreadLoadingIndicator inline label={translate("chat.loadingCompleteHistory")} />
+                : deferredItemsError
+                  ? translate("chat.historyUnavailableRetry")
+                  : workedLabel}
+            </span>
+            {interruptedLabel}
+            {summaryParts.length
+              ? <ActivitySummary parts={summaryParts} />
+              : <span className="thread-execution-step-count">{stepCount + peerWorkSteps} {translate("chat.steps")}</span>}
           </button>
-          <span className="thread-execution-step-count">{stepCount + peerWorkSteps} {translate("chat.steps")}</span>
-          <TurnUsageInline turn={turn} speedMode="average" />
           <span
             className="thread-graph-worked-rule h-px min-w-0 flex-1"
             aria-hidden="true"
           />
         </div>
-        {answerSections ? <div className="thread-answer-sequence">
-          {answerSections.map(entry => entry.kind === 'item' ? (
-            <div className="thread-answer-section" key={entry.key}>
-              {entry.item.kind !== 'agentMessage' ? renderHistoryEntries([entry]) : <CompactMessageItem threadId={threadId} item={entry.item as ThreadHistoryItemDto & { kind: 'agentMessage' }}
-                streaming={entry.item.id === visibleSummaryAgent?.id && activeForRendering && isRunningHistoryStatus(entry.item.status)}
-                scrollRootRef={scrollRootRef}
-                timeLabel={formatPreciseMessageTimestamp(entry.item.createdAt ?? turn.startedAt)}
-                timeTitle={entry.item.createdAt ? formatLongTimestamp(entry.item.createdAt) : turnTimeTitle}
-                {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
-                {...(adapter ? { adapter } : {})} />}
-            </div>
-          ) : (!effectiveCollapsed || !turn.hasDeferredItems) ? (
-            <div className="thread-execution-timeline" key={entry.key}>
-              {renderHistoryEntries([entry], { collapsed: effectiveCollapsed, onExpand: () => onToggleCollapse(turn, true) })}
-            </div>
-          ) : null)}
-          {!effectiveCollapsed ? peerWorkChildren : null}
-        </div> : !effectiveCollapsed ? <div className="thread-execution-timeline">{renderHistoryEntries(collapsedSummary.hiddenEntries)}{peerWorkChildren}</div> : null}
-        {visibleSummaryAgent && !answerSections?.some(entry => entry.kind === 'item' && entry.item.id === visibleSummaryAgent.id) ? (
-          <CompactMessageItem
-            threadId={threadId}
-            item={visibleSummaryAgent}
-            streaming={activeForRendering && isRunningHistoryStatus(visibleSummaryAgent.status)}
-            scrollRootRef={scrollRootRef}
-            timeLabel={
-              visibleSummaryAgent.createdAt
-                ? formatPreciseMessageTimestamp(
-                    visibleSummaryAgent.createdAt,
-                  )
-                : formatPreciseMessageTimestamp(turn.startedAt)
-            }
-            timeTitle={
-              visibleSummaryAgent.createdAt
-                ? formatLongTimestamp(visibleSummaryAgent.createdAt)
-                : turnTimeTitle
-            }
-            {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
-            {...(adapter ? { adapter } : {})}
-          />
-        ) : null}
+        {effectiveCollapsed ? <>
+          {answerSections ? <div className="thread-answer-sequence">
+            {answerSections.map(entry => entry.kind === 'item' ? (
+              <div className="thread-answer-section" key={entry.key}>
+                {entry.item.kind !== 'agentMessage' ? renderHistoryEntries([entry]) : <CompactMessageItem threadId={threadId} item={entry.item as ThreadHistoryItemDto & { kind: 'agentMessage' }}
+                  streaming={entry.item.id === visibleSummaryAgent?.id && activeForRendering && isRunningHistoryStatus(entry.item.status)}
+                  scrollRootRef={scrollRootRef}
+                  timeTitle={entry.item.createdAt ? formatLongTimestamp(entry.item.createdAt) : turnTimeTitle}
+                  {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+                  {...(adapter ? { adapter } : {})} />}
+              </div>
+            ) : !turn.hasDeferredItems ? (
+              <div className="thread-execution-timeline" key={entry.key}>
+                {renderHistoryEntries([entry], { collapsed: true, onExpand: () => onToggleCollapse(turn, true) })}
+              </div>
+            ) : null)}
+          </div> : null}
+          {visibleSummaryAgent && !answerSections?.some(entry => entry.kind === 'item' && entry.item.id === visibleSummaryAgent.id)
+            ? renderSummaryAgent(visibleSummaryAgent) : null}
+          {currentOperation ? <div className="tlog-current"><LogRow key={currentOperation.id} item={currentOperation} /></div> : null}
+        </> : <>
+          {/* Opened, the turn reads in order: narration, runs of work, the answer. */}
+          <div className="thread-execution-timeline">
+            {renderHistoryEntries(leadingUserCount < 0 ? [] : groupedItems.slice(leadingUserCount))}
+            {peerWorkChildren}
+          </div>
+          {visibleSummaryAgent && !mergedItems.some(item => item.id === visibleSummaryAgent.id)
+            ? renderSummaryAgent(visibleSummaryAgent) : null}
+        </>}
+        {receiptNode}
         {activeForRendering ? <GraphChatTurnBody
           footer={footerNode}
           history={null}
@@ -912,18 +930,17 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
         /> : null}
       </div>
     ) : null;
-  const leadingUserCount = groupedItems.findIndex(
-    (entry) => !(entry.kind === 'item' && entry.item.kind === 'userMessage'),
-  );
+  // Prompt, what the agent did, then its answer and the receipt.
   const terminalHistoryNode =
-    agentIdentity && terminalWorkedNode && leadingUserCount > 0 ? (
+    terminalWorkedNode && leadingUserCount > 0 ? (
       <>
         {renderHistoryEntries(groupedItems.slice(0, leadingUserCount))}
         {terminalWorkedNode}
         {renderHistoryEntries(groupedItems.slice(leadingUserCount))}
+        {receiptNode}
       </>
     ) : (
-      <>{historyNode}{terminalWorkedNode}</>
+      <>{historyNode}{terminalWorkedNode}{receiptNode}</>
     );
   const turnBody = (
     <GraphChatTurnBody
@@ -965,7 +982,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
 interface TimelineHistoryEntriesProps {
   entries: TimelineHistoryEntry[];
   expandedGroups: Record<string, boolean>;
-  onToggleGroupedItem: (groupKey: string) => void;
+  onToggleGroupedItem: (groupKey: string, currentExpanded: boolean) => void;
   threadId: string | undefined;
   scrollRootRef: RefObject<HTMLDivElement | null>;
   fallbackTimestamp?: string | null | undefined;
@@ -1017,134 +1034,100 @@ function TimelineHistoryEntries({
     [fallbackTimestamp, turnStartedAt],
   );
 
+  const renderItem = (item: ThreadHistoryItemDto, key: string) => {
+    const timestamp = timestampForHistoryItem(item, fallbackTimestamp ?? null);
+    const isUserMessage = item.kind === 'userMessage';
+    const isAgentMessage = item.kind === 'agentMessage' || item.kind === 'reasoning';
+    const timeLabel = isUserMessage
+      ? formatMessageTimestamp(timestamp)
+      : isAgentMessage
+        ? formatPreciseMessageTimestamp(timestamp)
+        : fallbackTimeLabel;
+    return (
+      <HistoryItemRow
+        key={key}
+        threadId={threadId}
+        item={item}
+        scrollRootRef={scrollRootRef}
+        // Narration reads as one log; its time stays in the hover title.
+        timeLabel={isAgentMessage ? null : timeLabel}
+        timeTitle={item.createdAt ? formatLongTimestamp(timestamp) : fallbackTimeTitle}
+        timeMeta={relativeTimeMeta(timestamp)}
+        autoOpenToolDetails={autoOpenLatestToolDetails && key === latestEntryKey}
+        onOpenExpandedText={onOpenExpandedText}
+        onOpenCommandDetail={onOpenCommandDetail}
+        onOpenToolCallDetail={onOpenToolCallDetail}
+        onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
+        {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+        {...(onSelectArtifact ? { onSelectArtifact } : {})}
+        {...(adapter ? { adapter } : {})}
+      />
+    );
+  };
+
+  const blocks = logBlocks(entries);
+  const lastKey = blocks.at(-1)?.key;
   return (
-    <GraphChatHistoryEntries<TimelineHistoryEntry>
-      entries={entries}
-      expandedGroups={expandedGroups}
-      onToggleGroupedItem={onToggleGroupedItem}
-      renderCommandGroup={(entry, expanded, onToggleExpanded) => (
-        <CommandGroupItem
-          key={entry.key}
-          items={entry.items}
-          expanded={expanded}
-          onToggleExpanded={onToggleExpanded}
-          onOpen={onOpenCommandDetail}
-          renderItemTime={relativeTimeMeta}
-          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry), lastHistoryEntryTimestamp(entry))}
-        />
-      )}
-      renderFileChangeGroup={(entry, expanded, onToggleExpanded) => (
-        <FileChangeGroupItem
-          key={entry.key}
-          items={entry.items}
-          expanded={expanded}
-          onToggleExpanded={onToggleExpanded}
-          onOpen={(item, title) => onOpenDeferredHistoryItemDetail(item, title, item.detailText ?? item.text, translate("chat.loadingFileChanges"), translate("chat.unableToLoadFileChanges"))}
-          renderItemTime={relativeTimeMeta}
-          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry), lastHistoryEntryTimestamp(entry))}
-        />
-      )}
-      renderSearchGroup={(entry, expanded, onToggleExpanded) => (
-        <SearchGroupItem
-          key={entry.key}
-          items={entry.items}
-          expanded={expanded}
-          onToggleExpanded={onToggleExpanded}
-          onOpen={(item, title) => onOpenDeferredHistoryItemDetail(item, title, item.detailText?.trim() || item.text || translate("chat.webSearch"), translate("chat.loadingFullWebSearchDetails"), translate("chat.unableToLoadFullWebSearchDetails"))}
-          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry), lastHistoryEntryTimestamp(entry))}
-        />
-      )}
-      renderFileReadGroup={(entry, expanded, onToggleExpanded) => (
-        <FileReadGroupItem
-          key={entry.key}
-          items={entry.items}
-          expanded={expanded}
-          onToggleExpanded={onToggleExpanded}
-          onOpen={onOpenExpandedText}
-          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry), lastHistoryEntryTimestamp(entry))}
-        />
-      )}
-      renderToolCallGroup={(entry, expanded, onToggleExpanded) => (
-        <ToolCallGroupItem
-          key={entry.key}
-          items={entry.items}
-          expanded={expanded}
-          onToggleExpanded={onToggleExpanded}
-          onOpen={onOpenToolCallDetail}
-          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry), lastHistoryEntryTimestamp(entry))}
-        />
-      )}
-      renderAgentActivityGroup={(entry, expanded, onToggleExpanded) => (
-        <AgentActivityGroupItem
-          key={entry.key}
-          itemCount={entry.itemCount}
-          running={entry.entries.some(historyEntryRunning)}
-          expanded={expanded}
-          onToggleExpanded={onToggleExpanded}
-          timeMeta={relativeTimeMeta(
-            firstHistoryEntryTimestamp(entry), lastHistoryEntryTimestamp(entry),
-          )}
-        >
-          <TimelineHistoryEntries
-            entries={entry.entries}
-            expandedGroups={expandedGroups}
-            onToggleGroupedItem={onToggleGroupedItem}
-            threadId={threadId}
-            scrollRootRef={scrollRootRef}
-            onOpenExpandedText={onOpenExpandedText}
-            onOpenCommandDetail={onOpenCommandDetail}
-            onOpenToolCallDetail={onOpenToolCallDetail}
-            onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
-            {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
-            fallbackTimestamp={fallbackTimestamp}
-            fallbackTimeLabel={fallbackTimeLabel}
-            fallbackTimeTitle={fallbackTimeTitle}
-            turnStartedAt={turnStartedAt}
-            autoOpenLatestToolDetails={false}
-            {...(onSelectArtifact ? { onSelectArtifact } : {})}
-            {...(adapter ? { adapter } : {})}
-          />
-        </AgentActivityGroupItem>
-      )}
-      renderItem={(entry) => {
-        const timestamp = timestampForHistoryItem(
-          entry.item,
-          fallbackTimestamp ?? null,
-        );
-        const isUserMessage = entry.item.kind === 'userMessage';
-        const isAgentMessage =
-          entry.item.kind === 'agentMessage' || entry.item.kind === 'reasoning';
-        const timeLabel = isUserMessage
-          ? formatMessageTimestamp(timestamp)
-          : isAgentMessage
-            ? formatPreciseMessageTimestamp(timestamp)
-            : fallbackTimeLabel;
+    <>
+      {blocks.map((block) => {
+        if (block.kind === 'item') {
+          // A lone operation between messages is already one line.
+          return isLogItem(block.item)
+            ? <div key={block.key} className="tlog-single"><LogRow item={block.item} defaultOpen={opensDiff(block.item)} /></div>
+            : renderItem(block.item, block.key);
+        }
+        // The run that is still working stays open until the reader closes it.
+        const live = autoOpenLatestToolDetails && block.key === lastKey && block.items.some(item => isRunningHistoryStatus(item.status));
+        const expanded = expandedGroups[block.key] ?? expandedGroups[block.parentKey] ?? live;
         return (
-          <HistoryItemRow
-            key={entry.key}
-            threadId={threadId}
-            item={entry.item}
-            scrollRootRef={scrollRootRef}
-            timeLabel={isAgentMessage ? relativeTimeMeta(timestamp) : timeLabel}
-            timeTitle={
-              entry.item.createdAt
-                ? formatLongTimestamp(timestamp)
-                : fallbackTimeTitle
-            }
-            timeMeta={relativeTimeMeta(timestamp)}
-            autoOpenToolDetails={
-              autoOpenLatestToolDetails && entry.key === latestEntryKey
-            }
-            onOpenExpandedText={onOpenExpandedText}
-            onOpenCommandDetail={onOpenCommandDetail}
-            onOpenToolCallDetail={onOpenToolCallDetail}
-            onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
-            {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
-            {...(onSelectArtifact ? { onSelectArtifact } : {})}
-            {...(adapter ? { adapter } : {})}
+          <LogRun
+            key={block.key}
+            items={block.items}
+            expanded={expanded}
+            live={live}
+            onToggle={() => onToggleGroupedItem(block.key, expanded)}
           />
         );
-      }}
-    />
+      })}
+    </>
   );
+}
+
+type LogBlock =
+  | { kind: 'item'; key: string; item: ThreadHistoryItemDto }
+  | { kind: 'run'; key: string; parentKey: string; items: ThreadHistoryItemDto[] };
+
+/** Messages and notices stay in the reading flow; operations between them form runs. */
+function logBlocks(entries: TimelineHistoryEntry[]): LogBlock[] {
+  const blocks: LogBlock[] = [];
+  for (const entry of entries) {
+    if (entry.kind === 'item') {
+      blocks.push({ kind: 'item', key: entry.key, item: entry.item });
+      continue;
+    }
+    let run: ThreadHistoryItemDto[] = [];
+    let first = true;
+    const flush = () => {
+      if (run.length === 1) blocks.push({ kind: 'item', key: run[0]!.id, item: run[0]! });
+      else if (run.length) blocks.push({ kind: 'run', key: first ? entry.key : `${entry.key}@${run[0]!.id}`, parentKey: entry.key, items: run });
+      if (run.length) first = false;
+      run = [];
+    };
+    for (const item of flattenHistoryEntries([entry])) {
+      if (isLogItem(item)) run.push(item);
+      else {
+        flush();
+        blocks.push({ kind: 'item', key: item.id, item });
+      }
+    }
+    flush();
+  }
+  return blocks;
+}
+
+function flattenHistoryEntries(entries: TimelineHistoryEntry[]): ThreadHistoryItemDto[] {
+  return entries.flatMap((entry) =>
+    entry.kind === 'item' ? [entry.item]
+      : entry.kind === 'agentActivityGroup' ? flattenHistoryEntries(entry.entries)
+        : entry.items);
 }

@@ -590,7 +590,23 @@ export interface ThreadTurnDto {
   priceEstimate?: ThreadTurnPriceEstimateDto | null;
   hasDeferredItems?: boolean | null;
   deferredItemCount?: number | null;
+  /** Operation counts of a summarized turn; present only with deferred items. */
+  activity?: ThreadTurnActivityDto | null;
   items: ThreadHistoryItemDto[];
+}
+
+export interface ThreadTurnActivityDto {
+  commands?: number;
+  fileChanges?: number;
+  changedFiles?: number;
+  addedLines?: number;
+  removedLines?: number;
+  reads?: number;
+  searches?: number;
+  tools?: number;
+  agents?: number;
+  reasoning?: number;
+  failed?: number;
 }
 
 export interface ThreadActionQuestionOptionDto {

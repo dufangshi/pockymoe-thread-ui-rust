@@ -43,6 +43,7 @@ import {
 } from './timeline/timelineScroll';
 import { useDeferredHistoryDetail } from './timeline/useDeferredHistoryDetail';
 import { useTimelineScroll } from './timeline/useTimelineScroll';
+import { TranscriptLogContext, type TranscriptLogActions } from './timeline/TranscriptLog';
 
 export interface ThreadTimelineProps {
   threadId?: string | undefined;
@@ -240,6 +241,13 @@ function ThreadTimelineComponent({
     loadHistoryItemDetail,
     onSelectHistoryItemDetail,
   });
+  const transcriptLogActions = useMemo<TranscriptLogActions>(() => ({
+    loadDetail: loadHistoryItemDetail,
+    workspaceRoot: adapter?.workspaceRootPath,
+    openCommand: handleOpenCommandDetail,
+    openToolCall: handleOpenToolCallDetail,
+    openDeferred: handleOpenDeferredHistoryItemDetail,
+  }), [loadHistoryItemDetail, adapter?.workspaceRootPath, handleOpenCommandDetail, handleOpenToolCallDetail, handleOpenDeferredHistoryItemDetail]);
   const {
     scrollContainerRef,
     scrollContentRef,
@@ -684,7 +692,7 @@ function ThreadTimelineComponent({
 
   };
   return (
-    <>
+    <TranscriptLogContext.Provider value={transcriptLogActions}>
       <section className={`flex min-h-0 flex-1 flex-col ${className}`.trim()}>
         <div
           ref={scrollContainerRef}
@@ -1032,7 +1040,7 @@ function ThreadTimelineComponent({
         kind={expandedText?.kind}
         onClose={closeExpandedText}
       />
-    </>
+    </TranscriptLogContext.Provider>
   );
 }
 

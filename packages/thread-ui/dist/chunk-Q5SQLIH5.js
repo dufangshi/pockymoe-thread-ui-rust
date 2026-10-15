@@ -1083,7 +1083,23 @@ var chatEn = {
   "chat.addedLineCount": { one: "{{count}} line added", other: "{{count}} lines added" },
   "chat.removedLineCount": { one: "{{count}} line removed", other: "{{count}} lines removed" },
   "chat.performedOperations": "Performed",
-  "chat.performingOperations": "Working on"
+  "chat.performingOperations": "Working on",
+  "chat.logEdits": { one: "edited {{count}} file", other: "edited {{count}} files" },
+  "chat.logSearches": { one: "{{count}} search", other: "{{count}} searches" },
+  "chat.logTools": { one: "{{count}} tool call", other: "{{count}} tool calls" },
+  "chat.logAgents": { one: "{{count}} subagent", other: "{{count}} subagents" },
+  "chat.logThoughts": { one: "thought once", other: "thought {{count}} times" },
+  "chat.logFailed": { one: "{{count}} failed", other: "{{count}} failed" },
+  "chat.logShowAll": { one: "Show {{count}} more", other: "Show {{count}} more" },
+  "chat.logDiffMore": { one: "{{count}} more line", other: "{{count}} more lines" },
+  "chat.logOpenFull": "Open in full",
+  "chat.logNoOutput": "No output",
+  "chat.logLoading": "Loading\u2026",
+  "chat.logRunning": "running",
+  "chat.logFailedTag": "failed",
+  "chat.logInterrupted": "interrupted",
+  "chat.logActivity": "Activity",
+  "chat.logPlan": "Plan"
 };
 
 // src/i18n/common.en.ts
@@ -4293,7 +4309,23 @@ var chatZhCN = {
   "chat.addedLineCount": { one: "\u65B0\u589E {{count}} \u884C", other: "\u65B0\u589E {{count}} \u884C" },
   "chat.removedLineCount": { one: "\u5220\u9664 {{count}} \u884C", other: "\u5220\u9664 {{count}} \u884C" },
   "chat.performedOperations": "\u5DF2\u6267\u884C",
-  "chat.performingOperations": "\u6B63\u5728\u6267\u884C"
+  "chat.performingOperations": "\u6B63\u5728\u6267\u884C",
+  "chat.logEdits": { one: "\u6539\u4E86 {{count}} \u4E2A\u6587\u4EF6", other: "\u6539\u4E86 {{count}} \u4E2A\u6587\u4EF6" },
+  "chat.logSearches": { one: "\u641C\u7D22 {{count}} \u6B21", other: "\u641C\u7D22 {{count}} \u6B21" },
+  "chat.logTools": { one: "{{count}} \u6B21\u5DE5\u5177\u8C03\u7528", other: "{{count}} \u6B21\u5DE5\u5177\u8C03\u7528" },
+  "chat.logAgents": { one: "{{count}} \u4E2A\u5B50\u4EE3\u7406", other: "{{count}} \u4E2A\u5B50\u4EE3\u7406" },
+  "chat.logThoughts": { one: "\u601D\u8003 1 \u6B21", other: "\u601D\u8003 {{count}} \u6B21" },
+  "chat.logFailed": { one: "{{count}} \u4E2A\u5931\u8D25", other: "{{count}} \u4E2A\u5931\u8D25" },
+  "chat.logShowAll": { one: "\u518D\u663E\u793A {{count}} \u9879", other: "\u518D\u663E\u793A {{count}} \u9879" },
+  "chat.logDiffMore": { one: "\u8FD8\u6709 {{count}} \u884C", other: "\u8FD8\u6709 {{count}} \u884C" },
+  "chat.logOpenFull": "\u5B8C\u6574\u67E5\u770B",
+  "chat.logNoOutput": "\u65E0\u8F93\u51FA",
+  "chat.logLoading": "\u52A0\u8F7D\u4E2D\u2026",
+  "chat.logRunning": "\u8FD0\u884C\u4E2D",
+  "chat.logFailedTag": "\u5931\u8D25",
+  "chat.logInterrupted": "\u5DF2\u4E2D\u65AD",
+  "chat.logActivity": "\u64CD\u4F5C",
+  "chat.logPlan": "\u8BA1\u5212"
 };
 
 // src/i18n/common.zh-CN.ts

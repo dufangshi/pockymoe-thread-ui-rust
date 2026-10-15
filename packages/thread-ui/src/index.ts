@@ -9,6 +9,7 @@ import './styles/composer-compact.css';
 import './styles/composer-reasoning.css';
 import './styles/mermaid-diagrams.css';
 import './styles/terminal-panel.css';
+import './styles/transcript-log.css';
 
 export type {
   ShellSocketConnection,

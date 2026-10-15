@@ -1051,8 +1051,8 @@ function TimelineHistoryEntries({
         threadId={threadId}
         item={item}
         scrollRootRef={scrollRootRef}
-        // Narration reads as one log; its time stays in the hover title.
-        timeLabel={isAgentMessage ? null : timeLabel}
+        // Messages read as one log; their time shows on hover.
+        timeLabel={isAgentMessage || isUserMessage ? null : timeLabel}
         timeTitle={item.createdAt ? formatLongTimestamp(timestamp) : fallbackTimeTitle}
         timeMeta={relativeTimeMeta(timestamp)}
         autoOpenToolDetails={autoOpenLatestToolDetails && key === latestEntryKey}

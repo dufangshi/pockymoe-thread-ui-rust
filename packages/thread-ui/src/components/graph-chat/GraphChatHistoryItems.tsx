@@ -594,6 +594,8 @@ export const GraphChatContextCompactionItem = memo(
         <span className="tlog-title">{primaryText}</span>
         {secondaryText ? <span className="tlog-notice-detail" title={secondaryText}>{secondaryText}</span> : null}
         {isRunning ? <RunningDots tone="emerald" /> : null}
+        {graphHistoryStatusConfig(item.status).className === 'is-failed'
+          ? <span className="tlog-tag is-failed thread-graph-tool-badge">{translate('chat.failed')}</span> : null}
         {timeMeta}
       </div>
     );

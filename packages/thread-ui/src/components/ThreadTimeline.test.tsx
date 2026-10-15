@@ -14,7 +14,6 @@ import { WorkbenchContext } from './WorkbenchContext';
 const shellSettings = vi.hoisted(() => ({ showReasoningSummaries: true }));
 vi.mock('../app-shell/AppShellNavContext', () => ({ useAppShellNav: () => shellSettings }));
 import {
-  formatPreciseMessageTimestamp,
   formatLongTimestamp,
   formatShortTimestamp,
 } from './threadPresentation';
@@ -57,6 +56,38 @@ function completedTurn(items: ThreadTurnDto['items']): ThreadTurnDto {
 }
 
 describe('ThreadTimeline', () => {
+  it('uses Supervisor activity on deferred turns and formats the work line in order', () => {
+    const onLoadTurnDetail = vi.fn();
+    const turn: ThreadTurnDto = {
+      ...completedTurn([
+        { id: 'prompt', kind: 'userMessage', text: 'Inspect' },
+        { id: 'answer', kind: 'agentMessage', text: 'Done', responsePhase: 'final' },
+      ]),
+      startedAt: '2026-10-10T10:00:00Z', completedAt: '2026-10-10T10:00:51Z',
+      hasDeferredItems: true, deferredItemCount: 8,
+      activity: { commands: 6, fileChanges: 2, changedFiles: 2, addedLines: 64, removedLines: 3, failed: 1 },
+    };
+    const el = render(<ThreadTimeline turns={[turn]} liveOutput="" onLoadTurnDetail={onLoadTurnDetail} />);
+    const line = el.querySelector('.thread-graph-worked-summary')!;
+    expect(line.textContent?.replace(/\s*·\s*/g, ' · ')).toBe('Worked for 51s · edited 2 files +64 −3 · 6 commands · 1 failed');
+    expect(line.querySelector('.thread-execution-step-count')).toBeNull();
+    expect(line.querySelector('.thread-turn-usage')).toBeNull();
+    expect(onLoadTurnDetail).not.toHaveBeenCalled();
+  });
+
+  it('omits time labels on interleaved user messages and expanded narration', () => {
+    const el = render(<ThreadTimeline turns={[completedTurn([
+      { id: 'prompt', kind: 'userMessage', text: 'Initial prompt', createdAt: '2026-10-10T10:00:00Z' },
+      { id: 'narration', kind: 'agentMessage', text: 'Checking first', responsePhase: 'commentary', createdAt: '2026-10-10T10:00:01Z' },
+      { id: 'command', kind: 'commandExecution', text: 'pwd' },
+      { id: 'followup', kind: 'userMessage', text: 'Follow-up prompt', createdAt: '2026-10-10T10:00:02Z' },
+      { id: 'answer', kind: 'agentMessage', text: 'Final answer', responsePhase: 'final', createdAt: '2026-10-10T10:00:03Z' },
+    ])]} liveOutput="" autoCollapseCompletedTurns={false} />);
+    for (const message of el.querySelectorAll('[data-role]')) {
+      expect(message.querySelector('.thread-graph-message-time-row'), message.textContent ?? '').toBeNull();
+    }
+  });
+
   it('keeps a peer round human approval accessible while the whole task remains folded', () => {
     const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Task'}]),id:'task'} as ThreadTurnDto;
     const peer: ThreadTurnDto = {...completedTurn([{id:'wake:user',kind:'userMessage',text:'Wake envelope',peerWork:{taskTurnId:'task',messages:[{id:'q',kind:'question',name:'Reviewer',subject:'Scope?'}]}}]),id:'wake',status:'inProgress',hasDeferredItems:true};
@@ -272,7 +303,7 @@ describe('ThreadTimeline', () => {
       expandedText.indexOf('Intermediate checkpoint.'),
     );
     expect(expandedText).toContain('Final answer.');
-    expect(element.querySelector('.thread-execution-step-count')?.textContent).toBe('3 steps');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('1 command');
 
     const collapseButton = Array.from(element.querySelectorAll('button')).find(
       (button) => button.getAttribute('aria-label')?.includes('Collapse turn 1'),
@@ -284,10 +315,10 @@ describe('ThreadTimeline', () => {
     flushSync(() => cachedExpandButton?.click());
     expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
     expect(element.textContent).toContain('Intermediate checkpoint.');
-    expect(element.querySelector('.thread-execution-step-count')?.textContent).toBe('3 steps');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('1 command');
   });
 
-  it('counts work steps individually even when commands are grouped and reasoning is hidden', () => {
+  it('counts operations in the work line even when the run is folded and reasoning is hidden', () => {
     shellSettings.showReasoningSummaries = false;
     const element = render(<ThreadTimeline autoCollapseCompletedTurns liveOutput="" turns={[{
       ...completedTurn([
@@ -299,13 +330,15 @@ describe('ThreadTimeline', () => {
         {id:'answer',kind:'agentMessage',text:'Final answer'},
       ]), hasDeferredItems:false, deferredItemCount:0,
     }]} />);
-    expect(element.querySelector('.thread-execution-step-count')?.textContent).toBe('4 steps');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('2 commands');
+    expect(element.querySelector('.thread-execution-step-count')).toBeNull();
     const expand = element.querySelector<HTMLButtonElement>('[aria-label*="Expand turn 1"]')!;
     expect(expand).not.toBeNull();
     flushSync(() => expand.click());
     expect(element.textContent).toContain('2 commands');
     expect(element.textContent).not.toContain('Hidden reasoning');
-    expect(element.querySelector('.thread-execution-step-count')?.textContent).toBe('4 steps');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('2 commands');
+    expect(element.querySelector('.thread-execution-step-count')).toBeNull();
   });
 
   it('keeps overlapping live and deferred steps stable through repeated expansion and summary refreshes', async () => {
@@ -318,25 +351,25 @@ describe('ThreadTimeline', () => {
     const onLoadTurnDetail = vi.fn().mockResolvedValue(full);
     const props = { threadRunning: true, activeTurnId: summary.id, liveOutput: '', onLoadTurnDetail };
     const element = render(<ThreadTimeline {...props} turns={[summary]} liveItems={{ turnId: summary.id, items: [command] }} />);
-    const count = () => element.querySelector('.thread-execution-step-count')?.textContent;
+    const count = () => element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent?.replace(/\s*·\s*/g, ' · ').trim();
     const toggle = (label: string) => flushSync(() => element.querySelector<HTMLButtonElement>(`[aria-label*="${label} turn 1"]`)!.click());
-    expect(count()).toBe('1 steps');
+    expect(count()).toBe('· 1 command');
     toggle('Expand');
     await vi.waitFor(() => expect(element.querySelector('[aria-label*="Collapse turn 1"]')).not.toBeNull());
-    expect(count()).toBe('1 steps');
+    expect(count()).toBe('· 1 command');
     toggle('Collapse');
     const nextCommand = { ...command, id: 'next-command', text: 'Read report' };
     flushSync(() => root?.render(<ThreadTimeline {...props} turns={[{ ...summary, deferredItemCount: 2 }]}
       liveItems={{ turnId: summary.id, items: [command, nextCommand] }} />));
-    expect(count()).toBe('2 steps');
+    expect(count()).toBe('· 2 commands');
     onLoadTurnDetail.mockResolvedValue({ ...full, items: [...full.items, nextCommand] });
     toggle('Expand');
     expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
     await vi.waitFor(() => expect(element.querySelector('[aria-label*="Collapse turn 1"]')).not.toBeNull());
-    expect(count()).toBe('2 steps');
+    expect(count()).toBe('· 2 commands');
     flushSync(() => root?.render(<ThreadTimeline {...props} turns={[{ ...summary, deferredItemCount: 2 }]}
       liveItems={{ turnId: summary.id, items: [{ ...nextCommand, status: 'completed' }] }} />));
-    expect(count()).toBe('2 steps');
+    expect(count()).toBe('· 2 commands');
   });
 
   it('defers running operations until expansion and merges later summary messages', async () => {
@@ -376,7 +409,8 @@ describe('ThreadTimeline', () => {
     const element = render(<ThreadTimeline {...props} turns={[turn]} />);
     const update = (items: ThreadTurnDto['items']) => flushSync(() => root?.render(<ThreadTimeline {...props} turns={[{ ...turn, items }]} />));
     expect(element.textContent).toContain(first.text);
-    expect(element.textContent).not.toContain(command.text);
+    expect(element.querySelector('.tlog-current')?.textContent).toContain(command.text);
+    expect(element.querySelector('[data-role="assistant"]')!.compareDocumentPosition(element.querySelector('.tlog-current')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     const next = { id: 'next', kind: 'agentMessage' as const, text: '', status: 'inProgress', responsePhase: 'commentary' as const };
     update([...turn.items, next]);
     expect(element.textContent).toContain(first.text);
@@ -384,13 +418,16 @@ describe('ThreadTimeline', () => {
     update([...turn.items, progress]);
     expect(element.textContent).not.toContain(first.text);
     expect(element.textContent).toContain(progress.text);
+    expect(element.querySelector('.tlog-current')).toBeNull();
     update([...turn.items, { ...progress, text: 'Checking the next result now' }, { ...command, id: 'later-command', status: 'running' }]);
     expect(element.textContent).toContain('Checking the next result now');
+    expect(element.querySelectorAll('.tlog-current')).toHaveLength(1);
+    expect(element.querySelector('.tlog-current [data-status="running"]')).not.toBeNull();
     expect(element.querySelector('.thread-execution-timeline')).toBeNull();
     expect(props.onLoadTurnDetail).not.toHaveBeenCalled();
   });
 
-  it('keeps substantial answers between independently folded work sections as progress continues', () => {
+  it('keeps substantial answers between single-operation log rows as progress continues', () => {
     const answer = { id: 'answer', kind: 'agentMessage' as const, text: '## Public-key identity\n\n' + '设备独立验证签名，私钥保存在用户手中。'.repeat(40), status: 'completed' };
     const command = (id: string) => ({ id, kind: 'commandExecution' as const, text: `hidden-${id}`, status: 'completed' });
     const initial = { ...completedTurn([
@@ -402,18 +439,18 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain('Public-key identity');
     expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(1);
     expect(element.querySelectorAll('.thread-answer-sequence > .thread-execution-timeline')).toHaveLength(2);
-    expect(element.textContent).not.toContain('hidden-before');
-    expect(element.textContent).not.toContain('hidden-after');
+    expect(element.querySelectorAll('.tlog-single')[0]?.textContent).toContain('hidden-before');
+    expect(element.querySelector('.tlog-current')?.textContent).toContain('hidden-after');
     const progress = { id: 'progress', kind: 'agentMessage' as const, text: 'Running the integration checks', status: 'running' };
     const updated = { ...initial, items: [...initial.items, progress] };
     flushSync(() => root?.render(<ThreadTimeline {...props} turns={[updated]} />));
     expect(element.textContent).toContain('Public-key identity');
     expect(element.textContent).toContain(progress.text);
     expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(2);
-    // Open just the work after the answer. Earlier operations stay folded.
-    flushSync(() => element.querySelectorAll<HTMLButtonElement>('.thread-answer-sequence .thread-graph-history-group-toggle')[1]!.click());
+    // A single operation shows its title immediately, with details still closed.
+    expect(element.querySelectorAll('.thread-answer-sequence .tlog-single .tlog-row-head[aria-expanded="false"]')).toHaveLength(2);
     expect(element.textContent).toContain('hidden-after');
-    expect(element.textContent).not.toContain('hidden-before');
+    expect(element.querySelectorAll('.tlog-single')[0]?.textContent).toContain('hidden-before');
     const sections = [...element.querySelectorAll('.thread-answer-sequence > *')];
     expect(sections[1]!.textContent).toContain('Public-key identity');
     expect(sections[2]!.textContent).toContain('hidden-after');
@@ -423,7 +460,9 @@ describe('ThreadTimeline', () => {
     }]} />));
     expect(element.textContent).toContain('Public-key identity');
     expect(element.textContent).toContain('Implementation complete');
-    expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    // Terminal rendering returns to the expanded chronological log.
+    expect(element.querySelector('.thread-turn-receipt')).not.toBeNull();
+    expect(element.querySelectorAll('.tlog-single')).toHaveLength(2);
   });
 
   it('shows preserved long answers in a lazy summary without loading command histories', () => {
@@ -463,7 +502,7 @@ describe('ThreadTimeline', () => {
     expect(element.querySelector('.thread-graph-turn-footer')).toBeNull();
     expect(element.textContent).toContain('Finished');
     expect(element.textContent).toContain('final-model');
-    expect(element.querySelector('.thread-execution-step-count')?.textContent).toBe('1 steps');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('1 command');
     expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
   });
 
@@ -677,7 +716,7 @@ describe('ThreadTimeline', () => {
     );
   });
 
-  it('shows relative tool time and a permanent precise agent timestamp', () => {
+  it('keeps message timestamps in hover titles and omits visible time labels', () => {
     const startedAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString();
     const agentAt = new Date(Date.UTC(2026, 6, 3, 20, 11, 21)).toISOString();
     const element = render(
@@ -715,17 +754,13 @@ describe('ThreadTimeline', () => {
       />,
     );
 
-    expect(element.textContent).toContain('5s');
-    expect(element.textContent).toContain(
-      formatPreciseMessageTimestamp(agentAt),
-    );
-
-    const agentTime = Array.from(
-      element.querySelectorAll('.thread-graph-message-time-row'),
-    ).find(
-      (node) => node.textContent === formatPreciseMessageTimestamp(agentAt),
-    );
-    expect(agentTime).toBeTruthy();
+    expect(element.querySelector('.tlog-row')?.textContent).not.toContain('5s');
+    expect(element.querySelector('.thread-graph-message-time-row')).toBeNull();
+    for (const [id, timestamp] of [['agent-1', agentAt], ['user-1', startedAt]] as const) {
+      const message = element.querySelector(`[data-message-id="${id}"]`)!;
+      const titles = [message, ...message.querySelectorAll('[title]')].map(node => node.getAttribute('title'));
+      expect(titles, id).toContain(formatLongTimestamp(timestamp));
+    }
 
   });
 
@@ -840,8 +875,8 @@ describe('ThreadTimeline', () => {
     );
 
     expect(element.querySelector('.thread-graph-history-group-activity')).toBeNull();
-    const commands = element.querySelector('.thread-graph-history-group-command')!;
-    expect(commands.querySelector('.thread-graph-history-group-time')?.textContent).toBe('2s');
+    const commands = element.querySelector('.tlog-run')!;
+    expect(commands.querySelector('.tlog-part.is-time')?.textContent?.replace(/\s*·\s*/g, ' · ').trim()).toBe('· 2s');
     expect(commands.textContent).toContain('3 commands');
     expect(element.textContent).not.toContain('pnpm test');
     expect(element.textContent).not.toContain('Agent activity');
@@ -894,7 +929,7 @@ describe('ThreadTimeline', () => {
 
     expect(element.textContent).toContain('The first finding is ready.');
     expect(element.textContent).not.toContain('Performed');
-    expect(element.textContent).toContain('3 steps');
+    expect(element.querySelector('.thread-graph-worked-summary .tlog-summary')?.textContent).toContain('1 command');
     expect(element.textContent).toContain(
       'The imported session now reads cleanly.',
     );
@@ -906,7 +941,7 @@ describe('ThreadTimeline', () => {
     ).toHaveLength(2);
 
     const expandButton = Array.from(element.querySelectorAll('button')).find(
-      (button) => button.getAttribute('aria-label') === 'Expand 3 operations',
+      (button) => button.classList.contains('tlog-run-head'),
     );
     expect(expandButton).toBeTruthy();
     flushSync(() => {
@@ -920,7 +955,7 @@ describe('ThreadTimeline', () => {
     );
   });
 
-  it('preserves activity and command expansion choices as live entries arrive', () => {
+  it('preserves run and row expansion choices as live entries arrive', () => {
     const activeTurn: ThreadTurnDto = {
       ...completedTurn([]),
       status: 'inProgress',
@@ -942,13 +977,14 @@ describe('ThreadTimeline', () => {
     );
     const element = render(timeline(initialItems));
     const activityToggle = () => element.querySelector<HTMLButtonElement>(
-      '.thread-graph-history-group-activity button[aria-expanded]',
+      '.tlog-run-head',
     );
     const commandToggle = () => element.querySelector<HTMLButtonElement>(
-      '.thread-graph-history-group-command button[aria-expanded]',
+      '.tlog-row[data-kind="commandExecution"] .tlog-row-head',
     );
 
-    flushSync(() => activityToggle()?.click());
+    // The last run with a running operation starts open.
+    expect(activityToggle()?.getAttribute('aria-expanded')).toBe('true');
     flushSync(() => commandToggle()?.click());
     expect(activityToggle()?.getAttribute('aria-expanded')).toBe('true');
     expect(commandToggle()?.getAttribute('aria-expanded')).toBe('true');
@@ -963,7 +999,7 @@ describe('ThreadTimeline', () => {
     expect(commandToggle()?.getAttribute('aria-expanded')).toBe('true');
     expect(element.textContent).toContain('Inspecting the first issue.');
     expect(element.textContent).toContain('Reviewing the new result.');
-    expect(element.querySelector('[aria-label="Open grouped command 3"]')?.textContent)
+    expect(element.querySelectorAll('.tlog-row[data-kind="commandExecution"]')[2]?.textContent)
       .toContain('pnpm test');
 
     flushSync(() => activityToggle()?.click());
@@ -975,7 +1011,8 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).not.toContain('Preparing the next step.');
     flushSync(() => activityToggle()?.click());
     expect(element.textContent).toContain('Preparing the next step.');
-    expect(commandToggle()?.getAttribute('aria-expanded')).toBe('true');
+    expect(activityToggle()?.getAttribute('aria-expanded')).toBe('true');
+    expect(element.querySelectorAll('.tlog-row[data-kind="commandExecution"]')).toHaveLength(3);
   });
 
   it('shows file paths directly without opening a summary or details pane', () => {
@@ -1015,10 +1052,7 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain('Read');
     expect(element.textContent).toContain('Read file: src/agent-runtime.ts');
     expect(
-      Array.from(element.querySelectorAll('button'))
-        .find((button) =>
-          button.getAttribute('aria-label') === 'Show full file path',
-        )
+      element.querySelector('.tlog-row[data-kind="fileRead"] .tlog-row-head')
         ?.getAttribute('aria-expanded'),
     ).toBe('false');
 
@@ -1051,10 +1085,7 @@ describe('ThreadTimeline', () => {
 
     expect(element.textContent).toContain('Read');
     expect(
-      Array.from(element.querySelectorAll('button'))
-        .find((button) =>
-          button.getAttribute('aria-label') === 'Show full file path',
-        )
+      element.querySelector('.tlog-row[data-kind="fileRead"] .tlog-row-head')
         ?.getAttribute('aria-expanded'),
     ).toBe('false');
     expect(element.textContent).toContain('I found the next step.');

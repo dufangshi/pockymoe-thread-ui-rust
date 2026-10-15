@@ -49,7 +49,7 @@ const turn: ThreadTurnDto = {
 };
 
 describe('turn usage in the visible timeline', () => {
-  it.each([true, false])('shows whole-turn average above live activity and recent speed in the footer (measured=%s)', measured => {
+  it.each([true, false])('keeps live usage only in the footer with recent speed (measured=%s)', measured => {
     const container = document.createElement('div');
     const root = createRoot(container);
     const liveTurn: ThreadTurnDto = { ...turn, status: 'inProgress', completedAt: null, tokenUsage: { ...turn.tokenUsage!, generationSpeed: {
@@ -60,9 +60,8 @@ describe('turn usage in the visible timeline', () => {
       flushSync(() => root.render(<ThreadTimeline turns={[liveTurn]} activeTurnId={turn.id} liveOutput="Working..." />));
       const summary = container.querySelector('.thread-graph-worked-summary [data-testid="turn-token-speed"]');
       const footer = container.querySelector('.thread-graph-turn-footer [data-testid="turn-token-speed"]');
-      expect(summary?.textContent).toBe(`${measured ? '120.0' : '100.0'}`);
-      expect(summary?.getAttribute('aria-label')).toBe('Average output token speed');
-      expect(summary?.getAttribute('title')).toContain('Whole-turn average');
+      expect(summary).toBeNull();
+      expect(container.querySelector('.thread-turn-receipt')).toBeNull();
       expect(footer?.textContent).toBe(`${measured ? '150.0' : '80.0'}`);
     } finally { flushSync(() => root.unmount()); }
   });
@@ -122,7 +121,7 @@ describe('turn usage in the visible timeline', () => {
     } finally { flushSync(() => root.unmount()); container.remove(); vi.unstubAllGlobals(); }
   });
   it.each([true, false])(
-    'keeps usage on the Worked row when collapsed=%s',
+    'keeps usage in the receipt below the answer when collapsed=%s',
     (collapsed) => {
       const container = document.createElement('div');
       document.body.append(container);
@@ -139,20 +138,38 @@ describe('turn usage in the visible timeline', () => {
         );
         const summary = container.querySelector('.thread-graph-worked-summary');
         expect(summary?.textContent).toContain('Worked for 1m 12s');
-        expect(summary?.textContent).toContain('gpt-6-astra · high');
-        expect(summary?.textContent).toContain('3.5k');
-        expect(summary?.querySelector('.thread-turn-usage-tokens')?.textContent).not.toMatch(/\b(in|out|cached|cache write)\b/);
-        expect(summary?.textContent).toContain('$0.11');
-        expect(summary?.textContent).toContain('100.0');
-        expect(summary?.querySelector('button button')).toBeNull();
-        expect(summary?.querySelectorAll('.thread-token-metric-icon')).toHaveLength(2);
-        expect(summary?.querySelector('.thread-turn-usage-tokens')?.getAttribute('aria-label')).toContain('3,500');
+        expect(summary?.querySelector('.thread-turn-usage')).toBeNull();
+        const receipt = container.querySelector('.thread-turn-receipt');
+        expect(receipt).not.toBeNull();
+        expect(container.querySelector('[data-role="assistant"]')!.compareDocumentPosition(receipt!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(receipt?.querySelector('time')).not.toBeNull();
+        expect(receipt?.textContent).toContain('gpt-6-astra · high');
+        expect(receipt?.textContent).toContain('3.5k');
+        expect(receipt?.querySelector('.thread-turn-usage-tokens')?.textContent).not.toMatch(/\b(in|out|cached|cache write)\b/);
+        expect(receipt?.textContent).toContain('$0.11');
+        expect(receipt?.textContent).toContain('100.0');
+        expect(receipt?.querySelector('button button')).toBeNull();
+        expect(receipt?.querySelectorAll('.thread-token-metric-icon')).toHaveLength(2);
+        expect(receipt?.querySelector('.thread-turn-usage-tokens')?.getAttribute('aria-label')).toContain('3,500');
       } finally {
         flushSync(() => root.unmount());
         container.remove();
       }
     },
   );
+
+  it.each(['failed', 'interrupted'] as const)('closes %s turns with an answer receipt', status => {
+    const container = document.createElement('div');
+    const root = createRoot(container);
+    try {
+      flushSync(() => root.render(<ThreadTimeline turns={[{ ...turn, status }]} liveOutput="" />));
+      const receipt = container.querySelector('.thread-turn-receipt');
+      expect(receipt?.textContent).toContain('gpt-6-astra · high');
+      expect(receipt?.querySelector('[data-testid="turn-token-speed"]')?.textContent).toBe('100.0');
+      expect(container.querySelector('.thread-graph-worked-summary [data-testid="turn-token-speed"]')).toBeNull();
+      expect(container.querySelector('[data-role="assistant"]')!.compareDocumentPosition(receipt!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    } finally { flushSync(() => root.unmount()); }
+  });
 
   it('shows duration without a date in the compact footer', () => {
     const container = document.createElement('div');
@@ -184,7 +201,7 @@ describe('turn usage in the visible timeline', () => {
         ),
       );
       expect(
-        container.querySelector('.thread-graph-worked-summary')?.textContent,
+        container.querySelector('.thread-turn-receipt')?.textContent,
       ).toContain('gpt-6-astra · high');
     } finally {
       flushSync(() => root.unmount());

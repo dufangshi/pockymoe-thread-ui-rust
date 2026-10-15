@@ -152,8 +152,10 @@ export function GraphChatMessageFrame({
           >
             {children}
           </div>
-          {copyButton ? (
+          {copyButton || (!timeNode && timeTitle) ? (
             <div className="thread-graph-message-copy-desktop">
+              {/* Without a visible label the time appears with the hover actions. */}
+              {!timeNode && timeTitle ? <span className="thread-graph-message-hover-time" title={timeTitle}>{timeTitle}</span> : null}
               {copyButton}
             </div>
           ) : null}

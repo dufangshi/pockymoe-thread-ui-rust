@@ -306,6 +306,13 @@
 
 @media (max-width: 639px) {
   .thread-ui-shell { --tlog-row-height: 32px; }
+  /* A phone puts the file counts on their own line under the label, not after a stray "·". */
+  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) { row-gap: 0; }
+  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-worked-toggle { flex: 1 1 0; }
+  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle)::after { content: ''; order: 1; flex-basis: 100%; height: 0; }
+  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle { order: 2; margin-left: 22px; }
+  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle > .tlog-sep { display: none; }
+  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-graph-worked-rule { order: 3; }
   .tlog-run-body { margin-left: 4px; padding-left: 10px; }
   .tlog-detail { margin-left: 0; }
 }

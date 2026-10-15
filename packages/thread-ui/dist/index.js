@@ -8363,7 +8363,11 @@ ${thread.subtitle} \xB7 ${activity.label}`,
           /* @__PURE__ */ jsx35("span", { className: "matter-topbar-spacer" }),
           othersRunning > 0 && /* @__PURE__ */ jsxs30("button", { className: "matter-running-chip", "aria-label": translate("workbench.runningCount", { count: othersRunning }), onClick: () => setThreadsOpen(true), children: [
             /* @__PURE__ */ jsx35(LoaderCircle, { "aria-hidden": "true" }),
-            /* @__PURE__ */ jsx35("span", { children: othersRunning })
+            /* @__PURE__ */ jsxs30("span", { children: [
+              othersRunning,
+              " ",
+              translate("workbench.running")
+            ] })
           ] }),
           /* @__PURE__ */ jsx35("div", { className: "matter-connection", children: connection }),
           bell

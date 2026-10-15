@@ -341,7 +341,7 @@ export function MatterWorkbench({
         {o.searchOpen && <div className="matter-topbar-search">{o.search}</div>}
         <span className="matter-topbar-spacer" />
         {othersRunning > 0 && <button className="matter-running-chip" aria-label={translate('workbench.runningCount', { count: othersRunning })} onClick={() => setThreadsOpen(true)}>
-          <LoaderCircle aria-hidden="true" /><span>{othersRunning}</span>
+          <LoaderCircle aria-hidden="true" /><span>{othersRunning} {translate('workbench.running')}</span>
         </button>}
         <div className="matter-connection">{connection}</div>
         {bell}

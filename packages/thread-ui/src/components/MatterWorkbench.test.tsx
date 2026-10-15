@@ -92,7 +92,7 @@ describe('one-handed phone dock', () => {
     expect(topbar().classList.contains('is-status-only')).toBe(true);
     expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
     expect(topbar().querySelector('button[aria-label="Notifications"]')).not.toBeNull();
-    expect(topbar().querySelector('.matter-running-chip')?.textContent).toBe('2');
+    expect(topbar().querySelector('.matter-running-chip')?.textContent).toBe('2 Running');
     for (const label of ['Chat', 'Terminal', 'Toggle Explorer', 'Open settings', 'Go back']) {
       expect(topbar().querySelector(`button[aria-label="${label}"]`)).toBeNull();
     }

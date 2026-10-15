@@ -117,7 +117,7 @@ export const filesZhCN = {
   "files.adjustConversationComposerAndActivityTextChanges": "调整对话、输入框和活动文字。更改立即生效并保存在此设备上。",
   "files.reset": "重置",
   "files.threadTimeline": "线程时间线",
-  "files.collapseCompletedTurnsToKeepConversationsEasy": "折叠已完成的轮次，让对话更易浏览。",
+  "files.collapseCompletedTurnsToKeepConversationsEasy": "已完成的轮次只显示回答。关闭后保留 Agent 的过程叙述，操作仍折叠。",
   "files.autoCollapse": "自动折叠",
   "files.refreshPlugins": "刷新插件",
   "files.showAgentStatusSummaries": "显示智能体状态摘要",

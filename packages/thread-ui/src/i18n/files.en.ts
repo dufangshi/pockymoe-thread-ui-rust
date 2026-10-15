@@ -117,7 +117,7 @@ export const filesEn = {
   "files.adjustConversationComposerAndActivityTextChanges": "Adjust conversation, composer and activity text. Changes apply immediately and are saved on this device.",
   "files.reset": "Reset",
   "files.threadTimeline": "Thread timeline",
-  "files.collapseCompletedTurnsToKeepConversationsEasy": "Collapse completed turns to keep conversations easy to scan.",
+  "files.collapseCompletedTurnsToKeepConversationsEasy": "Fold completed turns to their answer. Off: keep the agent's narration, with its work folded.",
   "files.autoCollapse": "Auto collapse",
   "files.refreshPlugins": "Refresh plugins",
   "files.showAgentStatusSummaries": "Show agent status summaries",

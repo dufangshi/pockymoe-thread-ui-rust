@@ -153,6 +153,17 @@ declare function useWorkbenchPresentation(scope: string | null, contextKey?: str
     storageFailed: boolean;
 };
 
+type WorkbenchPane = 'primary' | 'reference';
+/** A phone split shows one conversation at a time; the composer switches it. */
+interface WorkbenchPaneSwitch {
+    pane: WorkbenchPane;
+    active: WorkbenchPane;
+    titles: Record<WorkbenchPane, string>;
+    select: (pane: WorkbenchPane) => void;
+    /** A rendered switch claims its pane, so the panels need no fallback there. */
+    claim: (pane: WorkbenchPane) => () => void;
+}
+
 /** Passed to bottom-panel content so its title bar can own the panel actions. */
 interface WorkbenchToolPanelControls {
     maximized: boolean;
@@ -168,6 +179,8 @@ interface WorkbenchPanelsOptions {
     deviceLabel: string;
     workspaceLabel: string;
     primaryTitle: string;
+    /** Receives the phone split switch, for a dock that shows the pinned conversations. */
+    onPaneSwitchChange?: ((value: WorkbenchPaneSwitch | null) => void) | undefined;
     primaryStatus: string;
     primaryHarness: string;
     presentation: WorkbenchPresentation;
@@ -223,6 +236,8 @@ interface WorkbenchToolPanel {
 interface MatterWorkbenchOptions {
     panels?: WorkbenchPanelsOptions;
     statusActions?: ReactNode;
+    /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
+    subscriptionUsage?: AgentSubscriptionUsageDto | null;
     emptyWorkspace?: boolean;
     navigationReady?: boolean;
     harnessSessionId?: string | null;
@@ -284,6 +299,9 @@ interface AppShellNavContextValue {
     setDefaultBackend: (backend: AgentBackendId) => void;
     autoCollapseCompletedTurns?: boolean;
     setAutoCollapseCompletedTurns?: (enabled: boolean) => void;
+    /** One-handed phone layout: status-only top bar, controls in a bottom dock. */
+    phoneDock?: boolean;
+    setPhoneDock?: (enabled: boolean) => void;
     showReasoningSummaries?: boolean;
     setShowReasoningSummaries?: (enabled: boolean) => void;
     sendShortcut?: ComposerSendShortcut;

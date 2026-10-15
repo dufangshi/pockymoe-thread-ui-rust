@@ -3255,7 +3255,11 @@ var workbenchEn = {
   "workbench.thisWorkspace": "This workspace",
   "workbench.workspaceAndShortcuts": "Workspace and shortcuts",
   "workbench.app": "App",
-  "workbench.closeSheet": "Close"
+  "workbench.closeSheet": "Close",
+  "workbench.phoneDockSetting": "One-handed phone layout",
+  "workbench.phoneDockSettingHint": "On a phone, threads, views and actions sit in a dock at the bottom and the top bar only shows status. Off restores the top toolbar and thread tabs.",
+  "workbench.phoneDockSettingToggle": "One-handed",
+  "workbench.pinnedThreads": "Pinned conversations"
 };
 
 // src/i18n/en.ts
@@ -6527,7 +6531,11 @@ var workbenchZhCN = {
   "workbench.thisWorkspace": "\u672C\u5DE5\u4F5C\u533A",
   "workbench.workspaceAndShortcuts": "\u5DE5\u4F5C\u533A\u4E0E\u5FEB\u6377\u65B9\u5F0F",
   "workbench.app": "\u5E94\u7528",
-  "workbench.closeSheet": "\u5173\u95ED"
+  "workbench.closeSheet": "\u5173\u95ED",
+  "workbench.phoneDockSetting": "\u624B\u673A\u5355\u624B\u6A21\u5F0F",
+  "workbench.phoneDockSettingHint": "\u5728\u624B\u673A\u4E0A\u628A\u7EBF\u7A0B\u3001\u89C6\u56FE\u548C\u64CD\u4F5C\u653E\u5230\u5E95\u90E8\uFF0C\u9876\u680F\u53EA\u663E\u793A\u72B6\u6001\u3002\u5173\u95ED\u540E\u6062\u590D\u539F\u6765\u7684\u9876\u90E8\u5DE5\u5177\u680F\u548C\u7EBF\u7A0B\u6807\u7B7E\u3002",
+  "workbench.phoneDockSettingToggle": "\u5355\u624B\u6A21\u5F0F",
+  "workbench.pinnedThreads": "\u56FA\u5B9A\u7684\u5BF9\u8BDD"
 };
 
 // src/i18n/zh-CN.ts

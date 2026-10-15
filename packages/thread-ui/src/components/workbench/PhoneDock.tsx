@@ -3,6 +3,7 @@ import { ChevronsUpDown, Ellipsis, FolderOpen, MessageSquare, Terminal } from 'l
 import { translate, useI18n } from '../../i18n';
 import type { WorkbenchThread } from '../MatterWorkbench';
 import { threadGroupActivity } from '../GroupedThreadTabs';
+import type { WorkbenchPane, WorkbenchPaneSwitch } from './paneSwitch';
 
 export type PhonePane = 'chat' | 'shell' | 'files';
 
@@ -12,10 +13,12 @@ const SWIPE_DISTANCE = 48;
     sheet, swipe sideways for the neighbouring open thread), the chat / terminal /
     files views and a More sheet for everything the top bar used to hold. */
 export function PhoneDock({
-  title, thread, siblings, currentKey, pane, terminalEnabled, onPane, onNavigate, onOpenThreads, onOpenMore, moreOpen, threadsOpen,
+  title, thread, paneSwitch = null, siblings, currentKey, pane, terminalEnabled, onPane, onNavigate, onOpenThreads, onOpenMore, moreOpen, threadsOpen,
 }: {
   title: string;
   thread: WorkbenchThread | undefined;
+  /** A split's two conversations: pinned side by side, one tap switches. */
+  paneSwitch?: WorkbenchPaneSwitch | null;
   siblings: WorkbenchThread[];
   currentKey: string;
   pane: PhonePane;
@@ -44,7 +47,7 @@ export function PhoneDock({
   }) : [];
   return (
     <nav className="matter-phone-dock" aria-label={translate('workbench.phoneDock')}>
-      <button
+      {paneSwitch ? <PinnedThreads value={paneSwitch} threadsOpen={threadsOpen} onOpenThreads={onOpenThreads} /> : <button
         type="button"
         className="matter-phone-thread"
         aria-haspopup="dialog"
@@ -84,7 +87,7 @@ export function PhoneDock({
         <span className="matter-phone-thread-title">{title}</span>
         <ChevronsUpDown aria-hidden="true" />
         {dots.length > 0 && <span className="matter-phone-thread-dots" aria-hidden="true">{dots.map((on, i) => <i key={i} data-on={on || undefined} />)}</span>}
-      </button>
+      </button>}
       <div className="matter-phone-panes" role="group" aria-label={translate('workbench.phoneDockPanes')}>
         <button type="button" aria-label={translate('workbench.chat')} aria-pressed={pane === 'chat'} onClick={() => onPane('chat')}><MessageSquare /></button>
         <button type="button" aria-label={translate('workbench.toggleExplorer')} aria-pressed={pane === 'files'} onClick={() => onPane('files')}><FolderOpen /></button>
@@ -92,6 +95,41 @@ export function PhoneDock({
       </div>
       <button type="button" className="matter-phone-more" aria-label={translate('workbench.moreActions')} aria-haspopup="dialog" aria-expanded={moreOpen} onClick={onOpenMore}><Ellipsis /></button>
     </nav>
+  );
+}
+
+/** A split pins two conversations to the dock. The one not shown comes forward
+    with a tap; tapping the shown one opens the thread list, like the single
+    thread button. The dock takes over both panes' switches. */
+function PinnedThreads({ value, threadsOpen, onOpenThreads }: {
+  value: WorkbenchPaneSwitch;
+  threadsOpen: boolean;
+  onOpenThreads: () => void;
+}) {
+  const { claim } = value;
+  useEffect(() => {
+    const releasePrimary = claim('primary');
+    const releaseReference = claim('reference');
+    return () => { releasePrimary(); releaseReference(); };
+  }, [claim]);
+  return (
+    <div className="matter-phone-pins" role="group" aria-label={translate('workbench.pinnedThreads')}>
+      {(['primary', 'reference'] as WorkbenchPane[]).map(side => {
+        const shown = value.active === side;
+        return (
+          <button key={side} type="button" className="matter-phone-pin" data-side={side} aria-pressed={shown}
+            {...(shown ? { 'aria-haspopup': 'dialog' as const, 'aria-expanded': threadsOpen } : {})}
+            aria-label={shown
+              ? translate('workbench.phoneDockThread', { title: value.titles[side] })
+              : translate(side === 'primary' ? 'workbench.showLeftConversation' : 'workbench.showRightConversation', { value1: value.titles[side] })}
+            title={value.titles[side]}
+            onClick={() => (shown ? onOpenThreads() : value.select(side))}>
+            <span className="matter-phone-pin-title">{value.titles[side]}</span>
+            {shown ? <ChevronsUpDown aria-hidden="true" /> : null}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 

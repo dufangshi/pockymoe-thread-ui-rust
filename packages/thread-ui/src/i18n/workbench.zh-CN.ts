@@ -517,4 +517,8 @@ export const workbenchZhCN = {
   'workbench.workspaceAndShortcuts': '工作区与快捷方式',
   'workbench.app': '应用',
   'workbench.closeSheet': '关闭',
+  "workbench.phoneDockSetting": "手机单手模式",
+  "workbench.phoneDockSettingHint": "在手机上把线程、视图和操作放到底部，顶栏只显示状态。关闭后恢复原来的顶部工具栏和线程标签。",
+  "workbench.phoneDockSettingToggle": "单手模式",
+  "workbench.pinnedThreads": "固定的对话",
 } as const;

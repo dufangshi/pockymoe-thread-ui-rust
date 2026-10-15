@@ -860,10 +860,65 @@
     inset 0 0 0 1px oklch(0.95 0.04 90 / 0.16) !important;
 }
 
-.thread-ui-shell .thread-jump-latest-badge {
-  border-color: var(--theme-border);
-  background: var(--theme-panel);
-  color: var(--theme-fg-muted);
+/* Turn navigation above the composer, at its right edge. */
+.thread-ui-shell .thread-jump-latest-cluster {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  pointer-events: none;
+}
+.thread-ui-shell .thread-jump-latest-cluster.has-pane-switch { justify-content: space-between; }
+.thread-ui-shell .thread-jump-panes { display: flex; min-width: 0; gap: 5px; }
+.thread-ui-shell .thread-jump-nav {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 1px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid color-mix(in srgb, var(--theme-border-strong) 70%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme-panel) 84%, transparent);
+  color: var(--theme-fg-soft);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  backdrop-filter: blur(14px) saturate(130%);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.12);
+  pointer-events: auto;
+}
+.thread-ui-shell .thread-jump-nav > button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 24px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.thread-ui-shell .thread-jump-nav > button svg { width: 15px; height: 15px; }
+.thread-ui-shell .thread-jump-nav > button:hover:not(:disabled) { background: var(--theme-hover); color: var(--theme-fg); }
+.thread-ui-shell .thread-jump-nav > button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
+.thread-ui-shell .thread-jump-nav > button:disabled { opacity: 0.32; cursor: default; }
+/* The latest reply: a quiet circle at the tail, the accent once the reader is away. */
+.thread-ui-shell .thread-jump-nav > .thread-jump-latest { width: 24px; height: 24px; margin-left: 3px; }
+.thread-ui-shell .thread-jump-nav:not([data-following]) > .thread-jump-latest { background: var(--theme-accent-solid); color: var(--theme-accent-solid-fg); }
+.thread-ui-shell .thread-jump-nav:not([data-following]) > .thread-jump-latest:hover { background: var(--theme-accent-solid-hover, var(--theme-accent-solid)); color: var(--theme-accent-solid-fg); }
+@media (max-width: 639px) {
+  /* Touch: 36px row, 44px-wide targets through their hit areas. */
+  .thread-ui-shell .thread-jump-nav { height: 36px; }
+  .thread-ui-shell .thread-jump-nav > button { width: 36px; height: 30px; }
+  .thread-ui-shell .thread-jump-nav > .thread-jump-latest { width: 30px; height: 30px; }
+  .thread-ui-shell .thread-jump-nav > button::after { content: ''; position: absolute; inset: -6px -4px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .thread-ui-shell .thread-jump-nav { background: var(--theme-panel); -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 
 .thread-ui-shell .ui-action-primary {

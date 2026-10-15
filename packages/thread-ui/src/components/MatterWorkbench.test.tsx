@@ -2,6 +2,7 @@
 import { act, type default as React } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { AppShellNavContext, type AppShellNavContextValue } from '../app-shell/AppShellNavContext';
 import { setLocale } from '../i18n';
 import { MatterWorkbench, type MatterWorkbenchOptions } from './MatterWorkbench';
 
@@ -13,13 +14,16 @@ const baseOptions: MatterWorkbenchOptions = {
   notifications: [], unreadCount: 0, onReadNotifications: () => {},
 };
 let options = baseOptions;
+let phoneDock = true;
 function render(statusActions: React.ReactNode = null) {
   act(() => root.render(
-    <MatterWorkbench options={{ ...options, statusActions }} title="A" homeHref="/workspaces" settings={<button aria-label="Open settings" />}
-      newThread={null} actions={null} threadMenu={null} connection={null}
-      deviceMonitor={<button aria-label="Device monitor" />} explorer={null} revealExplorer={0}>
-      <p>Conversation</p>
-    </MatterWorkbench>,
+    <AppShellNavContext.Provider value={{ phoneDock } as AppShellNavContextValue}>
+      <MatterWorkbench options={{ ...options, statusActions }} title="A" homeHref="/workspaces" settings={<button aria-label="Open settings" />}
+        newThread={null} actions={null} threadMenu={null} connection={null}
+        deviceMonitor={<button aria-label="Device monitor" />} explorer={null} revealExplorer={0}>
+        <p>Conversation</p>
+      </MatterWorkbench>
+    </AppShellNavContext.Provider>,
   ));
 }
 const topbar = () => host.querySelector('header.matter-topbar')!;
@@ -30,6 +34,7 @@ beforeEach(() => {
   vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
   setLocale('en', false);
   options = baseOptions;
+  phoneDock = true;
   host = document.createElement('div');
   document.body.append(host);
   root = createRoot(host);
@@ -38,12 +43,11 @@ afterEach(() => {
   act(() => root.unmount());
   host.remove();
   delete document.documentElement.dataset.themeFeatures;
-  localStorage.removeItem('pockymoe.phoneDock');
   vi.unstubAllGlobals();
 });
 
 describe('phone top bar without the dock', () => {
-  beforeEach(() => localStorage.setItem('pockymoe.phoneDock', 'off'));
+  beforeEach(() => { phoneDock = false; });
 
   it('keeps every control in the Classic top bar', () => {
     render();
@@ -78,6 +82,7 @@ describe('phone top bar without the dock', () => {
 });
 
 describe('phone files and conversation toggles', () => {
+  beforeEach(() => { phoneDock = false; });
   const click = (label: string) => act(() => topbar().querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!.click());
   const pressed = (label: string) => topbar().querySelector(`button[aria-label="${label}"]`)!.getAttribute('aria-pressed');
 
@@ -119,7 +124,7 @@ describe('one-handed phone dock', () => {
     expect(topbar().classList.contains('is-status-only')).toBe(true);
     expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
     expect(topbar().querySelector('button[aria-label="Notifications"]')).not.toBeNull();
-    expect(topbar().querySelector('.matter-running-chip')?.textContent).toBe('2 Running');
+    expect(topbar().querySelector('.matter-running-chip')?.getAttribute('aria-label')).toBe('2 other threads running');
     for (const label of ['Chat', 'Terminal', 'Toggle Explorer', 'Open settings', 'Go back']) {
       expect(topbar().querySelector(`button[aria-label="${label}"]`)).toBeNull();
     }
@@ -127,6 +132,18 @@ describe('one-handed phone dock', () => {
     const dock = host.querySelector('nav.matter-phone-dock')!;
     expect(dock.querySelector('button[aria-label="Chat"]')?.getAttribute('aria-pressed')).toBe('true');
     expect(dock.querySelector('.matter-phone-thread-title')?.textContent).toBe('A');
+  });
+
+  it('shows usage windows in the status bar', () => {
+    options = { ...baseOptions, subscriptionUsage: {
+      provider: 'codex', authKind: 'subscription', observedAt: new Date().toISOString(), stale: false,
+      windows: [{ id: 'primary', durationMinutes: 300, label: '5h', usedPercent: 40, resetsAt: null }],
+    } };
+    render();
+    expect(topbar().querySelector('.matter-topbar-usage .thread-subscription-usage')?.textContent).toContain('5h');
+    phoneDock = false;
+    render();
+    expect(topbar().querySelector('.thread-subscription-usage')).toBeNull();
   });
 
   it('switches views from the dock', () => {

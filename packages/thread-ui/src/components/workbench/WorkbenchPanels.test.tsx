@@ -29,6 +29,22 @@ function render() {
     ),
   );
 }
+const workbenchOptions = (): MatterWorkbenchOptions => ({
+  panels: options,
+  threads: [],
+  currentKey: 'host:primary',
+  favorite: false,
+  workspacePath: '/workspace',
+  activeView: 'chat',
+  terminalEnabled: false,
+  onViewChange: vi.fn(),
+  onToggleFavorite: vi.fn(),
+  onNavigate: vi.fn(),
+  onSearch: vi.fn(),
+  notifications: [],
+  unreadCount: 0,
+  onReadNotifications: vi.fn(),
+});
 beforeEach(() => {
   vi.stubGlobal(
     'ResizeObserver',
@@ -288,6 +304,34 @@ describe('split panes and independent tools', () => {
     act(() => back.click());
     expect(reference.hasAttribute('hidden')).toBe(true);
   });
+  it('pins a phone split to the one-handed dock and switches with one tap', () => {
+    vi.stubGlobal('innerWidth', 500);
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    vi.mocked(options.onFocusPane!).mockReturnValue(true);
+    options = { ...options, referenceContent: <ComposerJumpLatestButton activeView="chat" followTail={false} /> };
+    act(() =>
+      root.render(
+        <MatterWorkbench options={{ ...workbenchOptions(), panels: options }} title="Primary" settings={null} newThread={null}
+          actions={null} threadMenu={null} connection={null} explorer={null} revealExplorer={0}>
+          <ComposerJumpLatestButton activeView="chat" followTail={false} />
+        </MatterWorkbench>,
+      ),
+    );
+    // The dock holds both switches: none above the composers, no fallback.
+    expect(host.querySelector('.thread-pane-switch')).toBeNull();
+    expect(host.querySelector('.workbench-pane-switch-fallback')).toBeNull();
+    const pins = [...host.querySelectorAll<HTMLButtonElement>('.matter-phone-pin')];
+    expect(pins.map(pin => [pin.textContent, pin.getAttribute('aria-pressed')]))
+      .toEqual([['Primary', 'true'], ['Second conversation', 'false']]);
+    act(() => pins[1]!.click());
+    expect(options.onFocusPane).toHaveBeenLastCalledWith('reference');
+    expect(host.querySelector('[data-testid="reference-pane"]')!.hasAttribute('hidden')).toBe(false);
+    expect(pins[1]!.getAttribute('aria-pressed')).toBe('true');
+    const threads = host.querySelector(`section.matter-phone-sheet[aria-label="${t('workbench.threadSheet')}"]`)!;
+    expect(threads.hasAttribute('data-open')).toBe(false);
+    act(() => pins[1]!.click());
+    expect(threads.hasAttribute('data-open')).toBe(true);
+  });
   it('keeps the reference header and no pane switch side by side', () => {
     vi.stubGlobal('innerWidth', 1400);
     options = { ...options, referenceContent: <ComposerJumpLatestButton activeView="chat" followTail={false} /> };
@@ -296,22 +340,7 @@ describe('split panes and independent tools', () => {
     expect(host.querySelector('.thread-pane-switch')).toBeNull();
   });
   it('keeps split membership and ratio through the sidebar file toggle and its guarded callback', () => {
-    const workbench: MatterWorkbenchOptions = {
-      panels: options,
-      threads: [],
-      currentKey: 'host:primary',
-      favorite: false,
-      workspacePath: '/workspace',
-      activeView: 'chat',
-      terminalEnabled: false,
-      onViewChange: vi.fn(),
-      onToggleFavorite: vi.fn(),
-      onNavigate: vi.fn(),
-      onSearch: vi.fn(),
-      notifications: [],
-      unreadCount: 0,
-      onReadNotifications: vi.fn(),
-    };
+    const workbench = workbenchOptions();
     const renderWorkbench = () =>
       act(() =>
         root.render(

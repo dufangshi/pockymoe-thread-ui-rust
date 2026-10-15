@@ -30,6 +30,8 @@ export interface WorkbenchPanelsOptions {
   deviceLabel: string;
   workspaceLabel: string;
   primaryTitle: string;
+  /** Receives the phone split switch, for a dock that shows the pinned conversations. */
+  onPaneSwitchChange?: ((value: WorkbenchPaneSwitch | null) => void) | undefined;
   primaryStatus: string;
   primaryHarness: string;
   presentation: WorkbenchPresentation;
@@ -268,6 +270,12 @@ export function WorkbenchPanels({
     const base = { active: mobileView, titles: { primary: o.primaryTitle, reference: referenceTitle }, select: selectPane, claim: claimSwitch };
     return { primary: { ...base, pane: 'primary' }, reference: { ...base, pane: 'reference' } } satisfies Record<WorkbenchPane, WorkbenchPaneSwitch>;
   }, [paneSwitchEnabled, mobileView, o.primaryTitle, referenceTitle, selectPane, claimSwitch]);
+  const onPaneSwitchChange = o.onPaneSwitchChange;
+  useEffect(() => {
+    if (!onPaneSwitchChange) return;
+    onPaneSwitchChange(paneSwitches?.primary ?? null);
+    return () => onPaneSwitchChange(null);
+  }, [onPaneSwitchChange, paneSwitches]);
   // Without a composer (a loading or unavailable conversation) the pane keeps its own switch.
   const paneSwitchFallback = (pane: WorkbenchPane) => paneSwitches && mobileView === pane && switchClaims[pane] === 0 && (
     <div className="workbench-pane-switch-fallback">

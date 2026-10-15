@@ -25,6 +25,9 @@ export interface AppShellNavContextValue {
   setDefaultBackend: (backend: AgentBackendId) => void;
   autoCollapseCompletedTurns?: boolean;
   setAutoCollapseCompletedTurns?: (enabled: boolean) => void;
+  /** One-handed phone layout: status-only top bar, controls in a bottom dock. */
+  phoneDock?: boolean;
+  setPhoneDock?: (enabled: boolean) => void;
   showReasoningSummaries?: boolean;
   setShowReasoningSummaries?: (enabled: boolean) => void;
   sendShortcut?: ComposerSendShortcut;

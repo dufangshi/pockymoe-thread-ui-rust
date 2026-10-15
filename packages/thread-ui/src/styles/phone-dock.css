@@ -27,6 +27,9 @@
   }
   .thread-ui-shell .matter-workbench .matter-topbar.is-status-only .matter-topbar-status > button { width: auto; min-width: 0; height: 34px; }
   .matter-topbar-spacer { flex: 1; }
+  .matter-topbar.is-status-only .matter-topbar-usage { display: flex; flex: none; align-items: center; }
+  .thread-ui-shell .matter-topbar.is-status-only .matter-topbar-usage .thread-subscription-usage { width: auto; min-width: 0; height: 30px; gap: 8px; padding: 0 6px; }
+  .matter-topbar.is-status-only.is-search-open .matter-topbar-usage { display: none; }
   .matter-topbar.is-status-only.is-search-open .matter-topbar-status,
   .matter-topbar.is-status-only.is-search-open .matter-topbar-spacer,
   .matter-topbar.is-status-only.is-search-open .matter-running-chip { display: none; }
@@ -49,6 +52,14 @@
     font-size: 12px;
   }
   .matter-running-chip svg { width: 13px; height: 13px; animation: matter-phone-spin 1.4s linear infinite; }
+  /* Narrow phones keep the count and the spinner, and tighten the spacing so
+     the monitor, usage, running count and bell share one row. */
+  @media (max-width: 419px) { .matter-running-label { display: none; } }
+  @media (max-width: 379px) {
+    .thread-ui-shell .matter-workbench .matter-topbar.is-status-only { gap: 3px; }
+    .thread-ui-shell .matter-topbar.is-status-only .matter-topbar-usage .thread-subscription-usage { gap: 6px; padding: 0 3px; }
+    .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > .matter-running-chip { padding: 0 7px; }
+  }
   .matter-topbar.is-status-only .matter-connection:empty { display: none; }
 
   /* The bottom navigation row. */
@@ -98,6 +109,36 @@
   .matter-phone-thread-dots { position: absolute; bottom: 4px; left: 50%; display: flex; gap: 3px; transform: translateX(-50%); }
   .matter-phone-thread-dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--theme-border-strong); }
   .matter-phone-thread-dots i[data-on] { background: var(--theme-fg-muted); }
+  /* A split's two conversations, as a segmented control in the thread slot. */
+  .matter-phone-pins {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid var(--theme-border);
+    border-radius: 15px;
+    background: var(--theme-panel);
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 40px;
+    gap: 4px;
+    padding: 0 8px;
+    border-radius: 12px;
+    color: var(--theme-fg-muted);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin[aria-pressed='true'] {
+    background: var(--theme-surface-strong);
+    color: var(--theme-fg);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin svg { width: 14px; height: 14px; flex: none; color: var(--theme-fg-muted); }
+  .matter-phone-pin-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .matter-phone-panes {
     display: flex;
     padding: 2px;
@@ -116,10 +157,6 @@
   .thread-ui-shell .matter-workbench.has-phone-dock:not(.is-typing) .thread-graph-composer-host { bottom: 8px; }
   .matter-workbench.has-phone-dock:not(.is-typing) .file-ask-bar { padding-bottom: 8px; }
 
-  /* Larger turn-jump targets above the composer. */
-  .thread-ui-shell .matter-workbench.has-phone-dock .thread-jump-latest-badge { height: 36px; min-width: 132px; padding: 2px; gap: 2px; }
-  .thread-ui-shell .matter-workbench.has-phone-dock .thread-jump-latest-badge > button { width: 44px; height: 32px; }
-  .thread-ui-shell .matter-workbench.has-phone-dock .thread-jump-latest-badge svg { width: 15px; height: 15px; }
 
   /* Bottom sheets. Closed sheets stay mounted (inert) so host dialogs survive. */
   .matter-phone-sheet-scrim {
@@ -187,11 +224,12 @@
     color: var(--theme-panel);
   }
 
-  /* More: labelled tiles for our own actions, host controls as a 44px icon row. */
+  /* More: one grid of labelled tiles, our own actions first, then host controls. */
   .matter-phone-sheet-tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
   .thread-ui-shell .matter-workbench .matter-phone-sheet-tools > button {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 5px;
     width: auto;
     height: 72px;
@@ -204,17 +242,20 @@
   }
   .matter-phone-sheet-tools svg { width: 22px; height: 22px; }
   /* Host controls arrive as icon buttons; label them from their accessible names. */
-  .matter-phone-sheet-host { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+  .matter-phone-sheet-host { display: contents; }
   .matter-phone-sheet-host :is(div, span):not(:has(svg)) { display: none; }
   .matter-phone-sheet-host :is(div, span):has(> :is(button, a)) { display: contents; }
   .thread-ui-shell .matter-workbench .matter-phone-sheet-host :is(button, a)[aria-label] {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 5px;
     width: auto;
     height: 72px;
     padding: 6px 2px;
+    border: 0;
     border-radius: 14px;
+    background: transparent;
     color: var(--theme-fg);
     font-size: 11.5px;
     line-height: 1.2;
@@ -222,6 +263,10 @@
   }
   .matter-phone-sheet-host :is(button, a)[aria-label]::after { content: attr(aria-label); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .thread-ui-shell .matter-workbench .matter-phone-sheet-host svg { width: 22px; height: 22px; }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-tools :is(button, a)[aria-pressed='true'] {
+    background: var(--theme-surface-strong);
+    color: var(--theme-fg);
+  }
   .matter-phone-sheet-list > :is(button, a, div) {
     display: flex;
     align-items: center;

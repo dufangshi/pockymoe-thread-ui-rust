@@ -517,4 +517,8 @@ export const workbenchEn = {
   'workbench.workspaceAndShortcuts': 'Workspace and shortcuts',
   'workbench.app': 'App',
   'workbench.closeSheet': 'Close',
+  "workbench.phoneDockSetting": "One-handed phone layout",
+  "workbench.phoneDockSettingHint": "On a phone, threads, views and actions sit in a dock at the bottom and the top bar only shows status. Off restores the top toolbar and thread tabs.",
+  "workbench.phoneDockSettingToggle": "One-handed",
+  "workbench.pinnedThreads": "Pinned conversations",
 } as const;

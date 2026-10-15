@@ -683,6 +683,10 @@ declare const en: {
     readonly 'workbench.workspaceAndShortcuts': "Workspace and shortcuts";
     readonly 'workbench.app': "App";
     readonly 'workbench.closeSheet': "Close";
+    readonly "workbench.phoneDockSetting": "One-handed phone layout";
+    readonly "workbench.phoneDockSettingHint": "On a phone, threads, views and actions sit in a dock at the bottom and the top bar only shows status. Off restores the top toolbar and thread tabs.";
+    readonly "workbench.phoneDockSettingToggle": "One-handed";
+    readonly "workbench.pinnedThreads": "Pinned conversations";
     readonly "sharing.open": "Open";
     readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
     readonly "sharing.supervisorStatusUnavailable": "Supervisor status unavailable";
@@ -3953,6 +3957,10 @@ declare const zhCN: {
     'workbench.workspaceAndShortcuts': "工作区与快捷方式";
     'workbench.app': "应用";
     'workbench.closeSheet': "关闭";
+    "workbench.phoneDockSetting": "手机单手模式";
+    "workbench.phoneDockSettingHint": "在手机上把线程、视图和操作放到底部，顶栏只显示状态。关闭后恢复原来的顶部工具栏和线程标签。";
+    "workbench.phoneDockSettingToggle": "单手模式";
+    "workbench.pinnedThreads": "固定的对话";
     "sharing.open": "打开";
     "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
     "sharing.supervisorStatusUnavailable": "Supervisor 状态不可用";
@@ -7245,6 +7253,10 @@ declare const resources: {
         readonly 'workbench.workspaceAndShortcuts': "Workspace and shortcuts";
         readonly 'workbench.app': "App";
         readonly 'workbench.closeSheet': "Close";
+        readonly "workbench.phoneDockSetting": "One-handed phone layout";
+        readonly "workbench.phoneDockSettingHint": "On a phone, threads, views and actions sit in a dock at the bottom and the top bar only shows status. Off restores the top toolbar and thread tabs.";
+        readonly "workbench.phoneDockSettingToggle": "One-handed";
+        readonly "workbench.pinnedThreads": "Pinned conversations";
         readonly "sharing.open": "Open";
         readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
         readonly "sharing.supervisorStatusUnavailable": "Supervisor status unavailable";
@@ -10514,6 +10526,10 @@ declare const resources: {
         'workbench.workspaceAndShortcuts': "工作区与快捷方式";
         'workbench.app': "应用";
         'workbench.closeSheet': "关闭";
+        "workbench.phoneDockSetting": "手机单手模式";
+        "workbench.phoneDockSettingHint": "在手机上把线程、视图和操作放到底部，顶栏只显示状态。关闭后恢复原来的顶部工具栏和线程标签。";
+        "workbench.phoneDockSettingToggle": "单手模式";
+        "workbench.pinnedThreads": "固定的对话";
         "sharing.open": "打开";
         "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
         "sharing.supervisorStatusUnavailable": "Supervisor 状态不可用";

@@ -26,11 +26,12 @@ import { WorkbenchPath } from './WorkbenchPath';
 import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
 import { useThemeFeature } from './themeHooks';
 import { PhoneDock, PhoneSheet, type PhonePane } from './workbench/PhoneDock';
+import { PhoneDockContext } from './workbench/phoneDockContext';
+import type { WorkbenchPaneSwitch } from './workbench/paneSwitch';
+import { ComposerSubscriptionUsage, visibleSubscriptionWindows } from './composer/ComposerSubscriptionUsage';
+import type { AgentSubscriptionUsageDto } from '@pockymoe/shared';
+import { useAppShellNav } from '../app-shell/AppShellNavContext';
 
-/** Design prototype switch: `localStorage['pockymoe.phoneDock'] = 'off'` restores the old phone top bar. */
-function phoneDockEnabled() {
-  try { return localStorage.getItem('pockymoe.phoneDock') !== 'off'; } catch { return true; }
-}
 
 export interface WorkbenchThread {
   key: string;
@@ -62,6 +63,8 @@ export interface WorkbenchToolPanel {
 export interface MatterWorkbenchOptions {
   panels?: WorkbenchPanelsOptions;
   statusActions?: ReactNode;
+  /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
+  subscriptionUsage?: AgentSubscriptionUsageDto | null;
   emptyWorkspace?: boolean;
   navigationReady?: boolean;
   harnessSessionId?: string | null;
@@ -139,8 +142,12 @@ export function MatterWorkbench({
   // essentials and moves Home and Chat into the drawer; the device monitor stays.
   const drawerTools = useThemeFeature('workbench.phoneDrawerTools') && mobile;
   // One-handed phone layout: status-only top bar, navigation at the bottom.
-  const dock = mobile && phoneDockEnabled();
+  // A setting (Settings → Preferences), on by default; off keeps the classic phone bars.
+  const phoneDockSetting = useAppShellNav()?.phoneDock ?? true;
+  const dock = mobile && phoneDockSetting;
   const [threadsOpen, setThreadsOpen] = useState(false);
+  // A phone split's pinned conversations, switched from the dock.
+  const [paneSwitch, setPaneSwitch] = useState<WorkbenchPaneSwitch | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
   const [typing, setTyping] = useState(false);
   useEffect(() => {
@@ -345,8 +352,10 @@ export function MatterWorkbench({
         <div className="matter-topbar-status">{deviceMonitor}</div>
         {o.searchOpen && <div className="matter-topbar-search">{o.search}</div>}
         <span className="matter-topbar-spacer" />
+        {/* Usage windows are read, rarely touched: they live in the status bar. */}
+        {visibleSubscriptionWindows(o.subscriptionUsage).length > 0 && <div className="matter-topbar-usage"><ComposerSubscriptionUsage usage={o.subscriptionUsage} /></div>}
         {othersRunning > 0 && <button className="matter-running-chip" aria-label={translate('workbench.runningCount', { count: othersRunning })} onClick={() => setThreadsOpen(true)}>
-          <LoaderCircle aria-hidden="true" /><span>{othersRunning} {translate('workbench.running')}</span>
+          <LoaderCircle aria-hidden="true" /><span>{othersRunning}</span><span className="matter-running-label">{translate('workbench.running')}</span>
         </button>}
         <div className="matter-connection">{connection}</div>
         {bell}
@@ -502,7 +511,8 @@ export function MatterWorkbench({
           </div>
         </div>}
         </div>}
-        {o.panels ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={o.panels} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (
+        <PhoneDockContext.Provider value={dock}>
+        {o.panels ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={dock ? { ...o.panels, onPaneSwitchChange: setPaneSwitch } : o.panels} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (
         <div ref={contentRef} style={{ '--explorer-width': `${explorerWidth}px` } as CSSProperties} className={`matter-content ${explorerOpen ? 'has-explorer' : ''}`}>
           <div className="matter-chat">
             <WorkbenchContext.Provider value={true}>
@@ -531,9 +541,10 @@ export function MatterWorkbench({
           )}
         </div>
         )}
+        </PhoneDockContext.Provider>
       </main>
       {dock && <>
-        <PhoneDock title={title} thread={currentThread} siblings={swipeSiblings} currentKey={o.currentKey} pane={pane}
+        <PhoneDock title={title} thread={currentThread} paneSwitch={paneSwitch} siblings={swipeSiblings} currentKey={o.currentKey} pane={pane}
           terminalEnabled={o.terminalEnabled} onPane={choosePane} onNavigate={navigate}
           onOpenThreads={() => { setMoreOpen(false); setThreadsOpen(true); }} onOpenMore={() => { setThreadsOpen(false); setMoreOpen(true); }}
           threadsOpen={threadsOpen} moreOpen={moreOpen} />
@@ -566,8 +577,8 @@ export function MatterWorkbench({
             {!o.emptyWorkspace && <button type="button" onClick={o.onSearch}><Search /><span>{translate('workbench.searchConversation')}</span></button>}
             {!o.emptyWorkspace && <button type="button" aria-pressed={o.favorite} disabled={o.favoriteBusy} onClick={o.onToggleFavorite}><Star fill={o.favorite ? 'currentColor' : 'none'} /><span>{o.favorite ? translate('workbench.removeShortcut') : translate('workbench.addShortcut')}</span></button>}
             {o.toolPanels?.map(panel => <button type="button" key={panel.id} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}<span>{panel.label}</span></button>)}
+            <div className="matter-phone-sheet-host">{actions}{threadMenu}{o.statusActions}</div>
           </div>
-          <div className="matter-phone-sheet-host">{actions}{threadMenu}{o.statusActions}</div>
           <h3>{translate('workbench.app')}</h3>
           <div className="matter-phone-sheet-list">
             <button type="button" onClick={() => setSidebarOpen(true)}><PanelLeft /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>

@@ -36,6 +36,10 @@ interface MessagePresentationContext {
     item: ThreadHistoryItemDto;
     streaming: boolean;
 }
+interface PluginActionOutputContext {
+    action: string;
+    output: unknown;
+}
 /** An alternate body; the host keeps its existing markdown, expansion and copy controls. */
 interface MessagePresentation {
     id: string;
@@ -45,6 +49,8 @@ interface MessagePresentation {
     validate?: () => Promise<boolean>;
 }
 interface FrontendPluginModule {
+    /** Historical receipts remain readable after disabling the plugin. */
+    renderActionOutput?: (context: PluginActionOutputContext) => ReactNode | null;
     defaultEnabled?: boolean;
     presentMessage?: (context: MessagePresentationContext) => MessagePresentation | null;
     /** Available even when disabled so the plugin can be configured before enabling. */
@@ -58,4 +64,4 @@ interface FrontendPluginModule {
     }>;
 }
 
-export type { ArtifactRenderContext as A, FrontendPluginModule as F, InlineCodeRenderContext as I, MessagePresentation as M, PluginSettingsSnapshot as P, ThreadPanelContribution as T, MessagePresentationContext as a, PluginSettingsContext as b, PluginSettingsContribution as c };
+export type { ArtifactRenderContext as A, FrontendPluginModule as F, InlineCodeRenderContext as I, MessagePresentation as M, PluginSettingsSnapshot as P, ThreadPanelContribution as T, PluginActionOutputContext as a, MessagePresentationContext as b, PluginSettingsContext as c, PluginSettingsContribution as d };

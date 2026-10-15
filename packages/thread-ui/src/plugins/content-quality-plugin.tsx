@@ -1,10 +1,18 @@
 import { translate } from '../i18n';
 import { ContentQualitySettings } from './ContentQualitySettings';
+import {
+  ContentQualityActionOutput,
+  canRenderContentQualityActionOutput,
+} from './ContentQualityActionOutput';
 import type { FrontendPluginModule } from './plugin-types';
 
 export const CONTENT_QUALITY_PLUGIN_ID = 'pockymoe.content-quality';
 
 export const contentQualityPlugin: FrontendPluginModule = {
+  renderActionOutput: (context) =>
+    canRenderContentQualityActionOutput(context) ? (
+      <ContentQualityActionOutput {...context} />
+    ) : null,
   defaultEnabled: false,
   manifest: {
     id: CONTENT_QUALITY_PLUGIN_ID,
@@ -20,7 +28,12 @@ export const contentQualityPlugin: FrontendPluginModule = {
       artifactTypes: [],
       timelineRenderers: [],
       threadPanels: [],
-      actions: ['rewriteReply', 'reviewDocument', 'testConnection', 'afterTurn'],
+      actions: [
+        'rewriteReply',
+        'reviewDocument',
+        'testConnection',
+        'afterTurn',
+      ],
     },
   },
   settingsSections: [

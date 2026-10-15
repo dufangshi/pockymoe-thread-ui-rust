@@ -25,6 +25,7 @@ import type {
   PluginSettingsSnapshot,
   PluginSettingsContribution,
   MessagePresentationContext,
+  PluginActionOutputContext,
 } from './plugin-types';
 
 export interface PluginProviderAdapter {
@@ -243,6 +244,10 @@ export function PluginProvider({
     });
   }, [adapter, builtinPlugins, plugins, settingsPluginIds]);
 
+  const renderActionOutput = useCallback((pluginId: string, context: PluginActionOutputContext) =>
+    builtinPlugins.find(module => module.manifest.id === pluginId)?.renderActionOutput?.(context) ?? null,
+  [builtinPlugins]);
+
   const value = useMemo<PluginContextValue>(
     () => ({
       plugins,
@@ -258,12 +263,14 @@ export function PluginProvider({
       getThreadPanels,
       getSettingsSections,
       presentMessage,
+      renderActionOutput,
     }),
     [
       error,
       getThreadPanels,
       getSettingsSections,
       presentMessage,
+      renderActionOutput,
       hasRendererForArtifact,
       importPluginManifest,
       loading,

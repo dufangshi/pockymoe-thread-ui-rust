@@ -83,6 +83,7 @@ export {
 } from './plugins/plugin-context';
 export { PluginProvider } from './plugins/PluginProvider';
 export { usePlugins } from './plugins/usePlugins';
+export { PluginActionOutput } from './plugins/PluginActionOutput';
 export type {
   ArtifactRenderContext,
   FrontendPluginModule,
@@ -91,6 +92,7 @@ export type {
   PluginSettingsContribution,
   MessagePresentation,
   MessagePresentationContext,
+  PluginActionOutputContext,
   InlineCodeRenderContext,
   ThreadPanelContribution,
 } from './plugins/plugin-types';

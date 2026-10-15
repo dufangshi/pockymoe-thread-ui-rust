@@ -48,6 +48,11 @@ export interface MessagePresentationContext {
   streaming: boolean;
 }
 
+export interface PluginActionOutputContext {
+  action: string;
+  output: unknown;
+}
+
 /** An alternate body; the host keeps its existing markdown, expansion and copy controls. */
 export interface MessagePresentation {
   id: string;
@@ -58,6 +63,8 @@ export interface MessagePresentation {
 }
 
 export interface FrontendPluginModule {
+  /** Historical receipts remain readable after disabling the plugin. */
+  renderActionOutput?: (context: PluginActionOutputContext) => ReactNode | null;
   defaultEnabled?: boolean;
   presentMessage?: (context: MessagePresentationContext) => MessagePresentation | null;
   /** Available even when disabled so the plugin can be configured before enabling. */

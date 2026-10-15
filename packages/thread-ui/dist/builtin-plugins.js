@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-UN5CYSFA.js";
+} from "./chunk-F5VSKWPA.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -391,10 +391,143 @@ function ContentQualitySettings({ load, save }) {
   );
 }
 
+// src/plugins/ContentQualityActionOutput.tsx
+import { Fragment, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
+function record(value) {
+  return value && typeof value === "object" && !Array.isArray(value) ? value : null;
+}
+function text(value, limit = 2e3) {
+  return typeof value === "string" ? value.length > limit ? `${value.slice(0, limit)}\u2026` : value : "";
+}
+var statusKeys = {
+  reviewed: "quality.report.reviewed",
+  completed: "automation.completed",
+  failed: "automation.failed",
+  skipped: "automation.skipped",
+  connected: "quality.report.connected"
+};
+var reasonKeys = {
+  autoRepliesDisabled: "quality.report.repliesDisabled",
+  noReply: "quality.report.noReply",
+  belowMinReplyChars: "quality.report.shortReply",
+  alreadyPolished: "quality.report.alreadyPolished",
+  turnNotCompleted: "quality.report.turnNotCompleted",
+  unsupportedMarkup: "quality.report.unsupportedMarkup"
+};
+function ReportStatus({ report }) {
+  const { t } = useI18n();
+  const status = text(report.status);
+  const reason = text(report.reason);
+  const statusKey = Object.hasOwn(statusKeys, status) ? statusKeys[status] : void 0;
+  const reasonKey = Object.hasOwn(reasonKeys, reason) ? reasonKeys[reason] : void 0;
+  return /* @__PURE__ */ jsxs2(Fragment, { children: [
+    status && /* @__PURE__ */ jsxs2("p", { children: [
+      statusKey ? t(statusKey) : status,
+      reason ? ` \xB7 ${reasonKey ? t(reasonKey) : reason}` : ""
+    ] }),
+    typeof report.model === "string" && /* @__PURE__ */ jsxs2("p", { children: [
+      t("quality.model"),
+      ": ",
+      text(report.model)
+    ] }),
+    typeof report.error === "string" && /* @__PURE__ */ jsx2("p", { role: "status", className: "plugin-settings-error", children: text(report.error) })
+  ] });
+}
+function ReportText({
+  label,
+  value,
+  truncated
+}) {
+  const { t } = useI18n();
+  if (typeof value !== "string" || !value) return null;
+  return /* @__PURE__ */ jsxs2("details", { children: [
+    /* @__PURE__ */ jsx2("summary", { className: "cursor-pointer", children: label }),
+    /* @__PURE__ */ jsx2("pre", { className: "mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-xs", children: text(value, 12e3) }),
+    (truncated || value.length > 12e3) && /* @__PURE__ */ jsx2("p", { children: t("automation.outputTruncated") })
+  ] });
+}
+function DocumentReport({ report }) {
+  const { t } = useI18n();
+  const findings = Array.isArray(report.findings) ? report.findings.filter(
+    (finding) => typeof finding === "string"
+  ) : [];
+  return /* @__PURE__ */ jsxs2("article", { className: "space-y-2 rounded border border-[var(--theme-border)] p-3", children: [
+    /* @__PURE__ */ jsx2("h4", { className: "break-words font-semibold", children: text(report.path, 4096) }),
+    /* @__PURE__ */ jsx2(ReportStatus, { report }),
+    typeof report.written === "boolean" && /* @__PURE__ */ jsx2("p", { children: t(
+      report.written ? "quality.report.fileWritten" : "quality.report.fileUnchanged"
+    ) }),
+    !!findings.length && /* @__PURE__ */ jsxs2("div", { children: [
+      /* @__PURE__ */ jsx2("p", { className: "font-medium", children: t("quality.report.findings") }),
+      /* @__PURE__ */ jsx2("ul", { className: "list-disc space-y-1 pl-5", children: findings.slice(0, 100).map((finding, index) => /* @__PURE__ */ jsx2("li", { className: "whitespace-pre-wrap break-words", children: text(finding) }, index)) })
+    ] }),
+    findings.length > 100 && /* @__PURE__ */ jsx2("p", { children: t("automation.outputTruncated") }),
+    Array.isArray(report.findings) && !findings.length && /* @__PURE__ */ jsx2("p", { children: t("quality.report.noFindings") }),
+    /* @__PURE__ */ jsx2(
+      ReportText,
+      {
+        label: t("quality.report.diff"),
+        value: report.diff,
+        truncated: report.diffTruncated === true
+      }
+    ),
+    /* @__PURE__ */ jsx2(
+      ReportText,
+      {
+        label: t("quality.report.proposal"),
+        value: report.proposedRewrite
+      }
+    )
+  ] });
+}
+function canRenderContentQualityActionOutput({
+  action,
+  output
+}) {
+  const report = record(output);
+  if (!report) return false;
+  if (action === "afterTurn") return Array.isArray(report.documents);
+  if (action === "reviewDocument") return typeof report.path === "string";
+  return (action === "rewriteReply" || action === "testConnection") && typeof report.status === "string";
+}
+function ContentQualityActionOutput({
+  action,
+  output
+}) {
+  const { t } = useI18n();
+  const report = record(output);
+  if (!report) return null;
+  if (action === "afterTurn" && Array.isArray(report.documents)) {
+    const documents = report.documents.map(record).filter((value) => Boolean(value));
+    const reply = record(report.reply);
+    return /* @__PURE__ */ jsxs2("div", { className: "space-y-3", children: [
+      /* @__PURE__ */ jsx2(ReportStatus, { report }),
+      reply && /* @__PURE__ */ jsxs2("div", { children: [
+        /* @__PURE__ */ jsx2("p", { className: "font-medium", children: t("quality.report.reply") }),
+        /* @__PURE__ */ jsx2(ReportStatus, { report: reply })
+      ] }),
+      typeof report.documentScanError === "string" && /* @__PURE__ */ jsxs2("p", { role: "status", className: "plugin-settings-error", children: [
+        t("quality.report.scanError"),
+        ": ",
+        text(report.documentScanError)
+      ] }),
+      !documents.length && /* @__PURE__ */ jsx2("p", { children: t("quality.report.noDocuments") }),
+      documents.slice(0, 5).map((document, index) => /* @__PURE__ */ jsx2(DocumentReport, { report: document }, index)),
+      (report.documentsTruncated === true || documents.length > 5) && /* @__PURE__ */ jsx2("p", { children: t("quality.report.moreDocuments") })
+    ] });
+  }
+  if (action === "reviewDocument" && typeof report.path === "string")
+    return /* @__PURE__ */ jsx2(DocumentReport, { report });
+  if ((action === "rewriteReply" || action === "testConnection") && typeof report.status === "string")
+    return /* @__PURE__ */ jsx2(ReportStatus, { report });
+  return null;
+}
+
 // src/plugins/content-quality-plugin.tsx
-import { jsx as jsx2 } from "react/jsx-runtime";
+import { jsx as jsx3 } from "react/jsx-runtime";
 var CONTENT_QUALITY_PLUGIN_ID = "pockymoe.content-quality";
 var contentQualityPlugin = {
+  renderActionOutput: (context) => canRenderContentQualityActionOutput(context) ? /* @__PURE__ */ jsx3(ContentQualityActionOutput, { ...context }) : null,
   defaultEnabled: false,
   manifest: {
     id: CONTENT_QUALITY_PLUGIN_ID,
@@ -410,7 +543,12 @@ var contentQualityPlugin = {
       artifactTypes: [],
       timelineRenderers: [],
       threadPanels: [],
-      actions: ["rewriteReply", "reviewDocument", "testConnection", "afterTurn"]
+      actions: [
+        "rewriteReply",
+        "reviewDocument",
+        "testConnection",
+        "afterTurn"
+      ]
     }
   },
   settingsSections: [
@@ -422,7 +560,7 @@ var contentQualityPlugin = {
       get description() {
         return translate("quality.description");
       },
-      render: (context) => /* @__PURE__ */ jsx2(ContentQualitySettings, { ...context })
+      render: (context) => /* @__PURE__ */ jsx3(ContentQualitySettings, { ...context })
     }
   ],
   presentMessage: ({ item, streaming }) => {

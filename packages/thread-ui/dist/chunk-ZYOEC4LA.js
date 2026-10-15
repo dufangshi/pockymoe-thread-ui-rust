@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-UN5CYSFA.js";
+} from "./chunk-F5VSKWPA.js";
 
 // src/components/graph-workspace/explorer/workspaceDocuments.ts
 var storeKey = /* @__PURE__ */ Symbol.for("remote-codex.workspace-documents");

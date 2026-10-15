@@ -12,6 +12,7 @@ import type {
   InlineCodeRenderContext,
   MessagePresentation,
   MessagePresentationContext,
+  PluginActionOutputContext,
   ThreadPanelContribution,
 } from './plugin-types';
 
@@ -29,6 +30,7 @@ export interface PluginContextValue {
   getThreadPanels: () => ThreadPanelContribution[];
   getSettingsSections: () => SettingsSection[];
   presentMessage: (context: MessagePresentationContext) => MessagePresentation | null;
+  renderActionOutput: (pluginId: string, context: PluginActionOutputContext) => ReactNode | null;
 }
 
 export function mergePluginState(
@@ -102,6 +104,7 @@ export function createDefaultPluginContextValue(
           ),
       ),
     getSettingsSections: () => [],
+    renderActionOutput: (pluginId, context) => modules.find(module => module.manifest.id === pluginId)?.renderActionOutput?.(context) ?? null,
     presentMessage: context => {
       for (const module of enabledModules) {
         const presentation = module.presentMessage?.(context);

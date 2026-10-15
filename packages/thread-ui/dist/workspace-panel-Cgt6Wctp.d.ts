@@ -2,7 +2,7 @@ import * as react from 'react';
 import { ReactNode } from 'react';
 import * as _pockymoe_shared from '@pockymoe/shared';
 import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
-import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, a as MessagePresentationContext, M as MessagePresentation, F as FrontendPluginModule } from './plugin-types-Y59TXE2N.js';
+import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, b as MessagePresentationContext, M as MessagePresentation, a as PluginActionOutputContext, F as FrontendPluginModule } from './plugin-types-iEH-4_I_.js';
 
 interface PromptAttachmentUpload extends PromptAttachmentManifestEntryDto {
     file: File;
@@ -305,6 +305,7 @@ interface PluginContextValue {
     getThreadPanels: () => ThreadPanelContribution[];
     getSettingsSections: () => SettingsSection[];
     presentMessage: (context: MessagePresentationContext) => MessagePresentation | null;
+    renderActionOutput: (pluginId: string, context: PluginActionOutputContext) => ReactNode | null;
 }
 declare function mergePluginState(modules: FrontendPluginModule[], serverPlugins: PluginDto[]): PluginDto[];
 declare function createDefaultPluginContextValue(modules?: FrontendPluginModule[]): PluginContextValue;

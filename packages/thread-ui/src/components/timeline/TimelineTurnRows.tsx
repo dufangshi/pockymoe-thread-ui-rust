@@ -57,7 +57,7 @@ import {
 } from './timelineItems';
 import { groupAnswerSections, isSubstantiveAnswer } from './answerSections';
 import { TurnTokenSummary } from './tokenFormatting';
-import { deriveDisplayedLivePlan, TurnStatusBar } from './turnStatus';
+import { TurnStatusBar } from './turnStatus';
 import { TurnUsageInline } from './TurnUsageInline';
 import { activityParts, hasActivity, storySegments, turnActivity, turnChangedFiles } from './activity';
 import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff, RunPlaceholder } from './TranscriptLog';
@@ -67,6 +67,7 @@ type LivePlan = {
   turnId: string;
   explanation: string | null;
   plan: Array<{ step: string; status: string }>;
+  updatedAt?: string | null;
 };
 
 type SelectArtifactHandler = (input: {
@@ -604,10 +605,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     () => latestActivityTimestamp(turn.startedAt, mergedItems, liveActivityAt),
     [liveActivityAt, mergedItems, turn.startedAt],
   );
-  const displayedLivePlan = useMemo(
-    () => deriveDisplayedLivePlan(livePlan, mergedItems, turn.status),
-    [livePlan, mergedItems, turn.status],
-  );
+  // The plan reads as the agent last reported it; the transcript does not guess progress.
+  const displayedLivePlan = livePlan;
   const visibleLiveOutput = useMemo(
     () => getLiveOutputTailForTurn(liveOutput, mergedItems),
     [liveOutput, mergedItems],

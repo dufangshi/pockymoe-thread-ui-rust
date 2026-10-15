@@ -13875,72 +13875,6 @@ function ProgressIndicator({ age, at }) {
     )
   ] });
 }
-function normalizePlanStepStatus(status) {
-  const normalized = status.trim().toLowerCase();
-  if (normalized === "completed" || normalized === "done" || normalized === "complete") {
-    return "completed";
-  }
-  if (normalized === "in_progress" || normalized === "in progress" || normalized === "inprogress" || normalized === "running" || normalized === "active") {
-    return "in_progress";
-  }
-  if (normalized === "pending" || normalized === "todo" || normalized === "not_started" || normalized === "not started" || normalized === "queued") {
-    return "pending";
-  }
-  if (normalized === "failed" || normalized === "error") {
-    return "failed";
-  }
-  return "other";
-}
-function isLivePlanExecutionEvidence(item) {
-  switch (item.kind) {
-    case "fileChange":
-    case "webSearch":
-    case "image":
-    case "contextCompaction":
-      return true;
-    case "commandExecution":
-    case "toolCall":
-      return !isRunningHistoryStatus(item.status);
-    default:
-      return false;
-  }
-}
-function deriveDisplayedLivePlan(livePlan, items, turnStatus) {
-  if (!livePlan || !isActiveTurnStatus(turnStatus)) {
-    return livePlan;
-  }
-  const firstInProgressIndex = livePlan.plan.findIndex(
-    (step) => normalizePlanStepStatus(step.status) === "in_progress"
-  );
-  if (firstInProgressIndex < 0) {
-    return livePlan;
-  }
-  const nextPendingIndex = livePlan.plan.findIndex(
-    (step, index) => index > firstInProgressIndex && normalizePlanStepStatus(step.status) === "pending"
-  );
-  if (nextPendingIndex < 0) {
-    return livePlan;
-  }
-  const hasExecutionEvidence = items.some(
-    (item) => isLivePlanExecutionEvidence(item)
-  );
-  if (!hasExecutionEvidence) {
-    return livePlan;
-  }
-  const nextPlan = livePlan.plan.map((step, index) => {
-    if (index === firstInProgressIndex) {
-      return { ...step, status: "completed" };
-    }
-    if (index === nextPendingIndex) {
-      return { ...step, status: "in_progress" };
-    }
-    return step;
-  });
-  return {
-    ...livePlan,
-    plan: nextPlan
-  };
-}
 function useSecondClock(enabled) {
   const { locale: i18nLocale } = useI18n();
   const [now, setNow] = useState37(() => Date.now());
@@ -15028,10 +14962,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
     () => latestActivityTimestamp(turn.startedAt, mergedItems, liveActivityAt),
     [liveActivityAt, mergedItems, turn.startedAt]
   );
-  const displayedLivePlan = useMemo10(
-    () => deriveDisplayedLivePlan(livePlan, mergedItems, turn.status),
-    [livePlan, mergedItems, turn.status]
-  );
+  const displayedLivePlan = livePlan;
   const visibleLiveOutput = useMemo10(
     () => getLiveOutputTailForTurn(liveOutput, mergedItems),
     [liveOutput, mergedItems]

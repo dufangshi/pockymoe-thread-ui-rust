@@ -1555,7 +1555,7 @@ declare const en: {
     readonly "files.showExplorer": "Show Explorer";
     readonly "files.hideEditor": "Hide Editor";
     readonly "files.preview_f1fbb2": "Preview";
-    readonly "files.pickALiveMoleculeWorkspaceFileArtifact": "Pick a live molecule, workspace file, artifact, or thread event to preview it.";
+    readonly "files.pickALiveMoleculeWorkspaceFileArtifact": "Choose a file to view.";
     readonly "files.loadingFilePreview": "Loading file preview...";
     readonly "files.pyMOLStylePDBCIF": "PyMOL-style (PDB/CIF)";
     readonly "files.pDFPreview": "PDF preview: {{value1}}";
@@ -1717,6 +1717,9 @@ declare const en: {
     readonly "files.askAgentPlaceholder": "Ask about this…";
     readonly "files.askSent": "Sent · the reply appears in the conversation";
     readonly "files.askFailed": "Not sent · open the conversation for details";
+    readonly "files.linkMissingTitle": "{{name}} is not on this device";
+    readonly "files.linkMissingHint": "It may have been moved or deleted, or it lives on another machine.";
+    readonly "files.copyPathShort": "Copy path";
     readonly "devices.useOneClickProtectionInstead": "Use one-click protection instead";
     readonly "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.";
     readonly "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.";
@@ -4810,7 +4813,7 @@ declare const zhCN: {
     "files.showExplorer": "显示文件浏览器";
     "files.hideEditor": "隐藏编辑器";
     "files.preview_f1fbb2": "预览";
-    "files.pickALiveMoleculeWorkspaceFileArtifact": "选择实时分子、工作区文件、产物或线程事件以预览。";
+    "files.pickALiveMoleculeWorkspaceFileArtifact": "选择一个文件查看。";
     "files.loadingFilePreview": "正在加载文件预览…";
     "files.pyMOLStylePDBCIF": "PyMOL 风格（PDB/CIF）";
     "files.pDFPreview": "PDF 预览：{{value1}}";
@@ -4972,6 +4975,9 @@ declare const zhCN: {
     "files.askAgentPlaceholder": "就这里提问…";
     "files.askSent": "已发送 · 回复会出现在对话里";
     "files.askFailed": "没有发出 · 回到对话查看原因";
+    "files.linkMissingTitle": "这台设备上没有 {{name}}";
+    "files.linkMissingHint": "它可能已被移动或删除，或者只在另一台机器上。";
+    "files.copyPathShort": "复制路径";
     "devices.useOneClickProtectionInstead": "改用一键保护";
     "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。";
     "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。";
@@ -8087,7 +8093,7 @@ declare const resources: {
         readonly "files.showExplorer": "Show Explorer";
         readonly "files.hideEditor": "Hide Editor";
         readonly "files.preview_f1fbb2": "Preview";
-        readonly "files.pickALiveMoleculeWorkspaceFileArtifact": "Pick a live molecule, workspace file, artifact, or thread event to preview it.";
+        readonly "files.pickALiveMoleculeWorkspaceFileArtifact": "Choose a file to view.";
         readonly "files.loadingFilePreview": "Loading file preview...";
         readonly "files.pyMOLStylePDBCIF": "PyMOL-style (PDB/CIF)";
         readonly "files.pDFPreview": "PDF preview: {{value1}}";
@@ -8249,6 +8255,9 @@ declare const resources: {
         readonly "files.askAgentPlaceholder": "Ask about this…";
         readonly "files.askSent": "Sent · the reply appears in the conversation";
         readonly "files.askFailed": "Not sent · open the conversation for details";
+        readonly "files.linkMissingTitle": "{{name}} is not on this device";
+        readonly "files.linkMissingHint": "It may have been moved or deleted, or it lives on another machine.";
+        readonly "files.copyPathShort": "Copy path";
         readonly "devices.useOneClickProtectionInstead": "Use one-click protection instead";
         readonly "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.";
         readonly "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.";
@@ -11341,7 +11350,7 @@ declare const resources: {
         "files.showExplorer": "显示文件浏览器";
         "files.hideEditor": "隐藏编辑器";
         "files.preview_f1fbb2": "预览";
-        "files.pickALiveMoleculeWorkspaceFileArtifact": "选择实时分子、工作区文件、产物或线程事件以预览。";
+        "files.pickALiveMoleculeWorkspaceFileArtifact": "选择一个文件查看。";
         "files.loadingFilePreview": "正在加载文件预览…";
         "files.pyMOLStylePDBCIF": "PyMOL 风格（PDB/CIF）";
         "files.pDFPreview": "PDF 预览：{{value1}}";
@@ -11503,6 +11512,9 @@ declare const resources: {
         "files.askAgentPlaceholder": "就这里提问…";
         "files.askSent": "已发送 · 回复会出现在对话里";
         "files.askFailed": "没有发出 · 回到对话查看原因";
+        "files.linkMissingTitle": "这台设备上没有 {{name}}";
+        "files.linkMissingHint": "它可能已被移动或删除，或者只在另一台机器上。";
+        "files.copyPathShort": "复制路径";
         "devices.useOneClickProtectionInstead": "改用一键保护";
         "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。";
         "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。";

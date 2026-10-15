@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ComponentType } from 'react';
 import { createPortal } from 'react-dom';
-import { Bot, Check, FileText, Lightbulb, Search, Wrench, X } from 'lucide-react';
+import { Bot, Check, FileText, Lightbulb, Search, SquareTerminal, Wrench, X } from 'lucide-react';
 
 import { translate, useI18n } from '../../i18n';
 import type { ActivityPart } from './activity';
@@ -64,6 +64,8 @@ export function ActivityCount({ part }: { part: ActivityPart & { key: HintKey; c
   return (
     <span ref={ref} className="tlog-count" data-kind={part.key} role="img" aria-label={part.text}
       onPointerEnter={(event) => { if (event.pointerType === 'mouse') arm(); }} onPointerLeave={cancel} onPointerDown={cancel}>
+      {/* Ticks alone do not say what ran: a terminal marks them as commands. */}
+      {part.key === 'commands' ? <SquareTerminal className="tlog-count-icon is-kind" aria-hidden /> : null}
       <Icon className="tlog-count-icon" aria-hidden />
       <span aria-hidden="true">{part.count}</span>
       {hint ? createPortal(

@@ -53,10 +53,13 @@ describe('transcript activity', () => {
       reads: 4, searches: 2, agents: 1, tools: 3, reasoning: 7, failed: 1 };
     expect(activityParts(counts)).toEqual([
       { key: 'edits', text: 'edited 2 files' }, { key: 'added', text: '+64', tone: 'add' }, { key: 'removed', text: '−3', tone: 'remove' },
-      { key: 'commands', count: 6, text: '6 commands' }, { key: 'reads', count: 4, text: 'Read 4 files' }, { key: 'searches', count: 2, text: '2 searches' },
-      { key: 'agents', count: 1, text: '1 subagent' }, { key: 'tools', count: 3, text: '3 tool calls' }, { key: 'failed', count: 1, text: '1 failed', tone: 'failed' },
+      { key: 'commands', count: 6, text: '6 commands' }, { key: 'failed', count: 1, text: '1 failed', tone: 'failed' },
+      { key: 'reads', count: 4, text: 'Read 4 files' }, { key: 'searches', count: 2, text: '2 searches' },
+      { key: 'agents', count: 1, text: '1 subagent' }, { key: 'tools', count: 3, text: '3 tool calls' },
     ]);
-    expect(activityParts(counts, { lines: false }).map(part => part.key)).toEqual(['edits', 'commands', 'reads', 'searches', 'agents', 'tools', 'failed']);
+    // Failures follow the commands they mostly are; without commands they come last.
+    expect(activityParts(counts, { lines: false }).map(part => part.key)).toEqual(['edits', 'commands', 'failed', 'reads', 'searches', 'agents', 'tools']);
+    expect(activityParts({ ...counts, commands: 0 }, { lines: false }).map(part => part.key)).toEqual(['edits', 'reads', 'searches', 'agents', 'tools', 'failed']);
     expect(activityParts({ ...activityFromItems([]), fileChanges: 2 })[0]?.text).toBe('edited 2 files');
     expect(activityParts(activityFromItems([]))).toEqual([]);
     expect(activityParts(activityFromItems([item('reasoning')]))).toEqual([{ key: 'reasoning', count: 1, text: 'thought once' }]);

@@ -59,6 +59,7 @@ export function GraphWorkspaceExplorer({
     liveNodes,
     loadingDirectoryPaths,
     loadingTree,
+    missingPath,
     refreshWorkspaceTree,
     retryDirectory,
     setLoadingTree,
@@ -484,6 +485,7 @@ export function GraphWorkspaceExplorer({
       activeFilePath={activeNode?.kind === 'file' ? activeNode.path : null}
       dirtyFilePaths={dirtyFilePaths}
       error={workspaceError}
+      missingPath={missingPath}
       fileTabs={fileTabs}
       downloadOnly={downloadOnly}
       {...(workspaceAdapter?.downloadNode && activeNode?.kind === 'file'

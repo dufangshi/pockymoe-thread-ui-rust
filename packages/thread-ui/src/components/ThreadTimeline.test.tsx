@@ -75,7 +75,8 @@ describe('collapsed answer sections', () => {
   it('hides leading work and merges the gap into one counted placeholder without loading', () => {
     const load = vi.fn();
     const el = render(<ThreadTimeline turns={[summary]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={load} />);
-    expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(1);
+    expect(el.querySelector('.thread-answer-sequence')?.nextElementSibling?.textContent).toContain('Implementation verified.');
     expect(el.querySelectorAll('.tlog-run[data-placeholder]')).toHaveLength(1);
     const gap = el.querySelector('.thread-answer-sequence .tlog-run-head')!;
     expect(gap.querySelector('[data-kind=commands]')?.getAttribute('aria-label')).toBe('3 commands');
@@ -95,8 +96,25 @@ describe('collapsed answer sections', () => {
     expect(el.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('false');
     expect(el.querySelector('.tlog-row, .tlog-single, .tlog-run[data-open]')).toBeNull();
     expect(el.textContent).not.toContain('hidden-gap-1');
-    expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(1);
+    expect(el.querySelector('.thread-answer-sequence')?.nextElementSibling?.textContent).toContain('Implementation verified.');
     expect(el.querySelectorAll('.tlog-run[data-placeholder]')).toHaveLength(1);
+  });
+
+  it('keeps the final answer mounted in its place while the turn opens and closes', async () => {
+    const load = vi.fn(async () => detail);
+    const el = render(<ThreadTimeline turns={[summary]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={load} />);
+    const answer = () => [...el.querySelectorAll('[data-message-id]')].find(node => node.getAttribute('data-message-id') === final.id);
+    const before = answer();
+    expect(before).toBeTruthy();
+    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    expect(answer()).toBe(before);
+    // Opened and loaded: the narration is in, runs are folded.
+    await vi.waitFor(() => expect(el.querySelector('.thread-worked-toggle')?.getAttribute('aria-busy')).toBe('false'));
+    await vi.waitFor(() => expect(el.textContent).toContain('Running checks.'));
+    expect(answer()).toBe(before);
+    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    expect(answer()).toBe(before);
   });
 
   it.each(['deferred', 'loaded'])('keeps a gap made only of operations between answers in a %s turn', (mode) => {
@@ -105,7 +123,8 @@ describe('collapsed answer sections', () => {
     } }
       : { ...detail, items: detail.items.filter(item => item.id !== 'narration') };
     const el = render(<ThreadTimeline turns={[turn]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={vi.fn()} />);
-    expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(1);
+    expect(el.querySelector('.thread-answer-sequence')?.nextElementSibling?.textContent).toContain('Implementation verified.');
     const gap = el.querySelector('.thread-answer-sequence .tlog-run[data-placeholder]');
     expect(gap, 'operation-only gap must remain available between the two answers').not.toBeNull();
     expect(gap!.querySelector('[data-kind=commands]')?.getAttribute('aria-label')).toBe('3 commands');
@@ -465,7 +484,10 @@ describe('ThreadTimeline', () => {
     );
     flushSync(() => expandButton?.click());
     expect(onLoadTurnDetail).toHaveBeenCalledWith('turn-1');
-    expect(element.textContent).toContain('Loading complete history...');
+    // Loading keeps the work line's text and turns its chevron into a spinner.
+    expect(element.querySelector('.thread-worked-toggle')?.getAttribute('aria-busy')).toBe('true');
+    expect(element.querySelector('.thread-worked-spinner')?.getAttribute('aria-label')).toBe('Loading complete history...');
+    expect(element.querySelector('.thread-worked-toggle .thread-graph-worked-label')?.textContent).toMatch(/^Worked for/);
 
     resolveTurn({
       ...summaryTurn,
@@ -686,7 +708,9 @@ describe('ThreadTimeline', () => {
     }]} />);
     expect(element.textContent).toContain('Long answer.');
     expect(element.textContent).toContain('Done');
-    expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(2);
+    // Earlier answers stay in sequence; the final one has its own place after it.
+    expect(element.querySelectorAll('.thread-answer-section')).toHaveLength(1);
+    expect(element.querySelector('.thread-answer-sequence')?.nextElementSibling?.textContent).toContain('Done');
     expect(load).not.toHaveBeenCalled();
   });
 

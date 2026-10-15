@@ -263,7 +263,6 @@ function ThreadTimelineComponent({
     preserveScrollPositionForResize,
     holdAnchorNow,
     releaseAnchor,
-    slackRef,
     serverManagedHistory,
     effectiveTotalTurnCount,
     startIndex,
@@ -785,7 +784,6 @@ function ThreadTimelineComponent({
           style={bottomSpacer > 0 ? { paddingBottom: bottomSpacer } : undefined}
         >
           <div ref={scrollContentRef} className="thread-graph-scroll-content">
-          <div ref={slackRef} aria-hidden="true" className="thread-scroll-slack" />
           <div ref={topSentinelRef} aria-hidden="true" className="h-px" />
           {turns.length > 0 && (
             <div className="thread-graph-history-control px-3 pb-1 pt-2 sm:px-5 sm:pb-1.5 sm:pt-3">

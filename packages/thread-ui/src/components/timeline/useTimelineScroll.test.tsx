@@ -37,7 +37,6 @@ function HookHarness(
       onTouchMove={latestResult.handleTouchMove}
     >
       <div ref={latestResult.scrollContentRef}>
-        <div ref={latestResult.slackRef} className="thread-scroll-slack" />
         <button data-anchor>Toggle</button>
         <div ref={latestResult.topSentinelRef} />
         <div ref={latestResult.tailSentinelRef} />
@@ -336,7 +335,6 @@ describe('useTimelineScroll', () => {
     const harness = renderHookHarness(input);
     frames.clear();
     const scroller = harness.container.querySelector<HTMLElement>('[data-testid=scroll-container]')!;
-    const slack = harness.container.querySelector<HTMLElement>('.thread-scroll-slack')!;
     const anchor = harness.container.querySelector<HTMLElement>('[data-anchor]')!;
     let layoutTop = 400;
     let scrollTop = 200;
@@ -346,14 +344,14 @@ describe('useTimelineScroll', () => {
       scrollHeight: { configurable: true, get: () => scrollHeight },
       clientHeight: { configurable: true, value: 800 },
     });
-    vi.spyOn(anchor, 'getBoundingClientRect').mockImplementation(() => ({ top: layoutTop + parseFloat(slack.style.height || '0') - scrollTop }) as DOMRect);
+    vi.spyOn(anchor, 'getBoundingClientRect').mockImplementation(() => ({ top: layoutTop - scrollTop }) as DOMRect);
     const frame = (time: number) => {
       now = time;
       const pending = [...frames.values()];
       frames.clear();
       flushSync(() => pending.forEach(callback => callback(time)));
     };
-    return { ...harness, scroller, anchor, slack, frame,
+    return { ...harness, scroller, anchor, frame,
       move: (delta: number) => { layoutTop += delta; scrollHeight += delta; },
       resize: () => resize([], {} as ResizeObserver),
       revise: () => harness.rerender({ ...input, contentRevisionInputs: ['changed'] }),
@@ -388,33 +386,14 @@ describe('useTimelineScroll', () => {
     } finally { h.unmount(); }
   });
 
-  it('adds top slack when collapse would require negative scrollTop, then consumes it on expansion', () => {
+  it('stops at the top of the history instead of leaving a blank above it', () => {
     const h = anchoredHarness();
     try {
       latestResult!.preserveScrollPositionForResize(h.anchor);
       h.move(-300); h.frame(16);
       expect(h.scroller.scrollTop).toBe(0);
-      expect(h.slack.style.height).toBe('100px');
-      expect(h.anchor.getBoundingClientRect().top).toBe(200);
-      h.move(150); h.frame(32);
-      expect(h.slack.style.height).toBe('0px');
-      expect(h.scroller.scrollTop).toBe(50);
-      expect(h.anchor.getBoundingClientRect().top).toBe(200);
-    } finally { h.unmount(); }
-  });
-
-  it.each([false, true])('returns slack on release, invisibly when offscreen=%s', (offscreen) => {
-    const h = anchoredHarness();
-    try {
-      latestResult!.preserveScrollPositionForResize(h.anchor);
-      h.move(-300); h.frame(16);
-      if (offscreen) h.scroller.scrollTop = 150;
-      latestResult!.releaseAnchor();
-      expect(h.slack.style.height).toBe('0px');
-      expect(h.scroller.scrollTop).toBe(offscreen ? 50 : 0);
-      expect(h.slack.style.transition.includes('260ms')).toBe(!offscreen);
-      h.move(20); h.frame(32);
-      expect(h.scroller.scrollTop).toBe(offscreen ? 50 : 0);
+      expect(h.container.querySelector('.thread-scroll-slack')).toBeNull();
+      expect(h.anchor.getBoundingClientRect().top).toBe(100);
     } finally { h.unmount(); }
   });
 

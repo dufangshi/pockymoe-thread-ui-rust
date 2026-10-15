@@ -24,6 +24,7 @@ import {
   Code2,
   Download,
   ExternalLink,
+  FileQuestion,
   FileText,
   Pencil,
   PanelLeftOpen,
@@ -479,10 +480,28 @@ const GraphWorkspaceMarkdownPreview = memo(
   },
 );
 
+/** A link's target that is not on this device: what and where, and its path to copy. */
+function MissingLinkedFile({ path }: { path: string }) {
+  const [copied, setCopied] = useState(false);
+  const name = path.replace(/[\\/]+$/, '').split(/[\\/]/).at(-1) || path;
+  return (
+    <div className="workspace-missing-file" role="status">
+      <FileQuestion className="workspace-missing-file-icon" aria-hidden="true" />
+      <p className="workspace-missing-file-title">{translate('files.linkMissingTitle', { name })}</p>
+      <p className="workspace-missing-file-hint">{translate('files.linkMissingHint')}</p>
+      <code className="workspace-missing-file-path">{path}</code>
+      <button type="button" className="workspace-missing-file-copy" onClick={() => {
+        void navigator.clipboard?.writeText(path).then(() => { setCopied(true); window.setTimeout(() => setCopied(false), 1500); }, () => undefined);
+      }}>{copied ? translate('files.copied') : translate('files.copyPathShort')}</button>
+    </div>
+  );
+}
+
 export function GraphWorkspacePreviewPane({
   activeFilePath,
   dirtyFilePaths = new Set(),
   error,
+  missingPath = null,
   fileTabs = [],
   focusLine,
   downloadOnly,
@@ -517,6 +536,8 @@ export function GraphWorkspacePreviewPane({
   activeFilePath?: string | null;
   dirtyFilePaths?: ReadonlySet<string>;
   error?: string | null;
+  /** A linked file or folder that is not on this device. */
+  missingPath?: string | null;
   fileTabs?: WorkspaceFileTab[];
   focusLine?: number | null;
   downloadOnly?: boolean;
@@ -779,7 +800,9 @@ export function GraphWorkspacePreviewPane({
             {translateReadOnly(error)}
           </div>
         ) : null}
-        {!selectedTarget ? (
+        {!selectedTarget && missingPath ? (
+          <MissingLinkedFile path={missingPath} />
+        ) : !selectedTarget ? (
           <div className="flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500">
             {translate("files.pickALiveMoleculeWorkspaceFileArtifact")}</div>
         ) : selectedTarget.kind === 'workspace-file' && previewLoading ? (

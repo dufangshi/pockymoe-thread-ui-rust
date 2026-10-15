@@ -1,4 +1,3 @@
-import { ThreadLoadingIndicator } from '../ThreadLoadingIndicator';
 import { translate, useI18n } from '../../i18n';
 import {
   Fragment,
@@ -828,7 +827,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     return index > narration ? mergedItems[index]! : null;
   }, [activeForRendering, mergedItems, visibleSummaryAgent]);
   const logEntries = leadingUserCount < 0 ? [] : groupedItems.slice(leadingUserCount);
-  const finalAnswer = isTerminalTurnStatus(turn.status) && visibleSummaryAgent && !answerSections ? visibleSummaryAgent : null;
+  // A finished turn's answer has one place, below its work, folded or open: it
+  // never moves into the opening work (where it would vanish for a moment).
+  const finalAnswer = isTerminalTurnStatus(turn.status) && visibleSummaryAgent ? visibleSummaryAgent : null;
   const lastLogEntry = logEntries.at(-1);
   const answerInLog = Boolean(finalAnswer && lastLogEntry?.kind === 'item' && lastLogEntry.item.id === finalAnswer.id);
   const processEntries = answerInLog ? logEntries.slice(0, -1) : logEntries;
@@ -855,19 +856,22 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           <button
             type="button"
             className="thread-worked-toggle group flex min-w-0 items-center gap-2 text-left transition"
-            onClick={(event) => { onBeforeMessageResize?.(event.currentTarget); onToggleCollapse(turn, effectiveCollapsed); }}
-            disabled={deferredItemsLoading}
+            onClick={(event) => {
+              if (deferredItemsLoading) return;
+              onBeforeMessageResize?.(event.currentTarget);
+              onToggleCollapse(turn, effectiveCollapsed);
+            }}
             aria-label={translate("chat.turn_6e6e38", { value1: workedLabel, value2: effectiveCollapsed ? translate("chat.expand") : translate("chat.collapse"), value3: absoluteIndex })}
             aria-expanded={!effectiveCollapsed}
             aria-busy={deferredItemsLoading}
+            title={deferredItemsLoading ? translate("chat.loadingCompleteHistory") : undefined}
           >
-            <ChevronRight className={`thread-worked-chevron h-4 w-4 shrink-0 transition ${effectiveCollapsed ? '' : 'rotate-90'}`} />
+            {/* Loading only turns the chevron into a spinner; the line itself stays put. */}
+            {deferredItemsLoading
+              ? <span className="tlog-spinner thread-worked-spinner" role="img" aria-label={translate("chat.loadingCompleteHistory")} />
+              : <ChevronRight className={`thread-worked-chevron h-4 w-4 shrink-0 transition ${effectiveCollapsed ? '' : 'rotate-90'}`} />}
             <span className="thread-graph-worked-label shrink-0">
-              {deferredItemsLoading
-                ? <ThreadLoadingIndicator inline label={translate("chat.loadingCompleteHistory")} />
-                : deferredItemsError
-                  ? translate("chat.historyUnavailableRetry")
-                  : workedLabel}
+              {deferredItemsError ? translate("chat.historyUnavailableRetry") : workedLabel}
             </span>
             {interruptedLabel}
             {workParts.length
@@ -904,7 +908,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           )}
         </Collapse>
         {effectiveCollapsed && answerSections ? <div className="thread-answer-sequence">
-          {foldedAnswerBlocks(answerSections, turn.activity?.segments).map(block => block.kind === 'gap' ? (
+          {foldedAnswerBlocks(answerSections, turn.activity?.segments, finalAnswer?.id).map(block => block.kind === 'gap' ? (
             <div className="thread-execution-timeline" key={`gap:${block.before ?? 'end'}`}>
               <RunPlaceholder segment={block.stretch} loading={deferredItemsLoading}
                 onOpen={() => { setOpenRunBefore(block.before); onToggleCollapse(turn, true, true); }} />
@@ -1126,7 +1130,12 @@ function entryItems(entry: TimelineHistoryEntry): ThreadHistoryItemDto[] {
 /** A folded turn reads as its answers. The work before the first one is the work
     line's; the work between two answers (and after the last) is one counted line,
     from the summary's stretches, else from loaded operations. */
-function foldedAnswerBlocks(sections: TimelineHistoryEntry[], segments: readonly ThreadTurnActivitySegmentDto[] | null | undefined): FoldedAnswerBlock[] {
+function foldedAnswerBlocks(
+  sections: TimelineHistoryEntry[],
+  segments: readonly ThreadTurnActivitySegmentDto[] | null | undefined,
+  // Rendered after the sequence by the turn itself; the sequence stops before it.
+  finalId?: string,
+): FoldedAnswerBlock[] {
   const blocks: FoldedAnswerBlock[] = [];
   let previous: string | null = null;
   let work: ThreadHistoryItemDto[] = [];
@@ -1141,6 +1150,7 @@ function foldedAnswerBlocks(sections: TimelineHistoryEntry[], segments: readonly
       continue;
     }
     gap(entry.item.id);
+    if (entry.item.id === finalId) return blocks;
     blocks.push({ kind: 'answer', entry });
     previous = entry.item.id;
     work = [];

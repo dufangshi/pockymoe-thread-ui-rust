@@ -45,7 +45,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-TESFR2SL.js";
+} from "./chunk-FKJ7X2LY.js";
 import {
   useThemeFeature
 } from "./chunk-QIOFPWO7.js";
@@ -54,7 +54,7 @@ import {
   getLocale,
   translate,
   useI18n
-} from "./chunk-OQ2FV7JW.js";
+} from "./chunk-Y3ONZHEW.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect12, useMemo as useMemo11, useState as useState12 } from "react";
@@ -614,6 +614,7 @@ function useWorkspaceExplorerController({
     () => /* @__PURE__ */ new Map()
   );
   const [workspaceError, setWorkspaceError] = useState(null);
+  const [missingPath, setMissingPath] = useState(null);
   const activeNode = selectedNodeId === null ? null : nodeMap.get(selectedNodeId) ?? null;
   const liveNodes = useMemo2(
     () => tree.children.find((node) => node.path === "live")?.children ?? [],
@@ -792,6 +793,7 @@ function useWorkspaceExplorerController({
       const isCurrent = () => workspaceGenerationRef.current === workspaceGeneration && focusGenerationRef.current === generation;
       setSelectedNodeId(`workspace:${targetPath}`);
       setFilterQuery("");
+      setMissingPath(null);
       const external = relativeWorkspacePath(path, detail.workspace.absPath) === null;
       const ancestors = external ? [linkedParentDirectory(targetPath)] : ancestorDirectoryPaths(targetPath);
       setExpandedPaths((current) => {
@@ -858,11 +860,15 @@ function useWorkspaceExplorerController({
         adapterModelRef.current = nextModel;
         setAdapterModel(nextModel);
         if (!hasWorkspaceExplorerPath(nextModel, targetPath)) {
-          throw new Error(translate("files.fileNotFound", { value1: targetPath }));
+          throw new MissingTargetError(translate("files.fileNotFound", { value1: targetPath }));
         }
         setSelectedNodeId(`workspace:${targetPath}`);
       } catch (error) {
         if (!isCurrent()) {
+          return;
+        }
+        if (isMissingTarget(error)) {
+          setMissingPath(external ? path : targetPath);
           return;
         }
         setWorkspaceError(
@@ -1013,6 +1019,7 @@ function useWorkspaceExplorerController({
     liveNodes,
     loadingDirectoryPaths,
     loadingTree,
+    missingPath,
     nodeMap,
     refreshWorkspaceTree,
     retryDirectory: loadDirectoryChildren,
@@ -1026,6 +1033,7 @@ function useWorkspaceExplorerController({
       focusPendingRef.current = false;
       setLoadingTree(false);
       setWorkspaceError(null);
+      setMissingPath(null);
       setSelectedNodeId(id);
     },
     setWorkspaceError,
@@ -1034,6 +1042,13 @@ function useWorkspaceExplorerController({
     workspaceError,
     workspaceIdentity
   };
+}
+var MissingTargetError = class extends Error {
+};
+function isMissingTarget(error) {
+  if (error instanceof MissingTargetError) return true;
+  const code = error?.payload?.code ?? error?.code;
+  return code === "file_unavailable" || error instanceof Error && /no such file|not found|cannot find/i.test(error.message);
 }
 
 // src/components/graph-workspace/explorer/useWorkspaceExplorerActions.ts
@@ -2714,6 +2729,7 @@ import {
   Code2,
   Download as Download4,
   ExternalLink,
+  FileQuestion,
   FileText,
   Pencil as Pencil2,
   PanelLeftOpen,
@@ -4011,7 +4027,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment4, jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-R77MLY5C.js")
+  () => import("./GraphWorkspaceMonacoEditor-ZCPMBDEU.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4085,7 +4101,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-B52ZJIAZ.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-DNPSZHFC.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -4346,10 +4362,27 @@ var GraphWorkspaceMarkdownPreview = memo(
     ) }) }) });
   }
 );
+function MissingLinkedFile({ path }) {
+  const [copied, setCopied] = useState10(false);
+  const name = path.replace(/[\\/]+$/, "").split(/[\\/]/).at(-1) || path;
+  return /* @__PURE__ */ jsxs12("div", { className: "workspace-missing-file", role: "status", children: [
+    /* @__PURE__ */ jsx16(FileQuestion, { className: "workspace-missing-file-icon", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsx16("p", { className: "workspace-missing-file-title", children: translate("files.linkMissingTitle", { name }) }),
+    /* @__PURE__ */ jsx16("p", { className: "workspace-missing-file-hint", children: translate("files.linkMissingHint") }),
+    /* @__PURE__ */ jsx16("code", { className: "workspace-missing-file-path", children: path }),
+    /* @__PURE__ */ jsx16("button", { type: "button", className: "workspace-missing-file-copy", onClick: () => {
+      void navigator.clipboard?.writeText(path).then(() => {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1500);
+      }, () => void 0);
+    }, children: copied ? translate("files.copied") : translate("files.copyPathShort") })
+  ] });
+}
 function GraphWorkspacePreviewPane({
   activeFilePath,
   dirtyFilePaths = /* @__PURE__ */ new Set(),
   error,
+  missingPath = null,
   fileTabs = [],
   focusLine,
   downloadOnly,
@@ -4603,7 +4636,7 @@ function GraphWorkspacePreviewPane({
         actionsOpen && fileActions,
         /* @__PURE__ */ jsxs12("div", { className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: [
           error ? /* @__PURE__ */ jsx16("div", { role: "alert", className: "workspace-file-alert border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-5 py-3", children: translateReadOnly(error) }) : null,
-          !selectedTarget ? /* @__PURE__ */ jsx16("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: translate("files.pickALiveMoleculeWorkspaceFileArtifact") }) : selectedTarget.kind === "workspace-file" && previewLoading ? /* @__PURE__ */ jsx16("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: translate("files.loadingFilePreview") }) : selectedTarget.kind === "workspace-file" && downloadOnly ? /* @__PURE__ */ jsx16(DownloadFilePreview, { node: selectedTarget.node, onDownload: onDownloadFile, ...activeFilePath && documents?.documents.get(activeFilePath)?.snapshot.readOnlyReason ? { readOnlyReason: documents.documents.get(activeFilePath).snapshot.readOnlyReason } : {} }, selectedTarget.node.path) : selectedTarget.kind === "workspace-file" && moleculeSnapshot ? /* @__PURE__ */ jsx16("div", { className: "thread-graph-molecule-preview min-h-0 flex-1 overflow-hidden", children: /* @__PURE__ */ jsx16(
+          !selectedTarget && missingPath ? /* @__PURE__ */ jsx16(MissingLinkedFile, { path: missingPath }) : !selectedTarget ? /* @__PURE__ */ jsx16("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: translate("files.pickALiveMoleculeWorkspaceFileArtifact") }) : selectedTarget.kind === "workspace-file" && previewLoading ? /* @__PURE__ */ jsx16("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: translate("files.loadingFilePreview") }) : selectedTarget.kind === "workspace-file" && downloadOnly ? /* @__PURE__ */ jsx16(DownloadFilePreview, { node: selectedTarget.node, onDownload: onDownloadFile, ...activeFilePath && documents?.documents.get(activeFilePath)?.snapshot.readOnlyReason ? { readOnlyReason: documents.documents.get(activeFilePath).snapshot.readOnlyReason } : {} }, selectedTarget.node.path) : selectedTarget.kind === "workspace-file" && moleculeSnapshot ? /* @__PURE__ */ jsx16("div", { className: "thread-graph-molecule-preview min-h-0 flex-1 overflow-hidden", children: /* @__PURE__ */ jsx16(
             GraphMoleculeViewer,
             {
               source: moleculeSnapshot,
@@ -4825,6 +4858,7 @@ function GraphWorkspaceExplorer({
     liveNodes,
     loadingDirectoryPaths,
     loadingTree,
+    missingPath,
     refreshWorkspaceTree,
     retryDirectory,
     setLoadingTree,
@@ -5239,6 +5273,7 @@ function GraphWorkspaceExplorer({
       activeFilePath: activeNode?.kind === "file" ? activeNode.path : null,
       dirtyFilePaths,
       error: workspaceError,
+      missingPath,
       fileTabs,
       downloadOnly,
       ...workspaceAdapter?.downloadNode && activeNode?.kind === "file" ? { onDownloadFile: () => workspaceAdapter.downloadNode({ ...workspaceIdentity, path: activeNode.path, kind: "file" }) } : {},

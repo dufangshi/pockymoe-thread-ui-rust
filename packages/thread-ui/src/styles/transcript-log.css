@@ -509,9 +509,10 @@
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 1fr;
   opacity: 1;
-  transition: grid-template-rows 260ms cubic-bezier(0.2, 0, 0, 1), opacity 200ms ease;
+  /* The gap to its neighbours opens and closes with it, so nothing jumps first. */
+  transition: grid-template-rows 260ms cubic-bezier(0.2, 0, 0, 1), margin 260ms cubic-bezier(0.2, 0, 0, 1), opacity 200ms ease;
 }
-.tlog-collapse[data-state='closed'] { grid-template-rows: 0fr; opacity: 0; }
+.tlog-collapse[data-state='closed'] { grid-template-rows: 0fr; opacity: 0; margin-block: 0 !important; }
 .tlog-collapse-inner { min-width: 0; min-height: 0; overflow: hidden; }
 .tlog-collapse[data-settled] > .tlog-collapse-inner { overflow: visible; }
 @media (prefers-reduced-motion: reduce) {
@@ -549,6 +550,9 @@
   cursor: default;
 }
 .tlog-count-icon { width: 12px; height: 12px; flex: none; opacity: 0.75; }
+.tlog-count-icon.is-kind { margin-right: 2px; opacity: 0.6; }
+/* The failures sit right after the commands they belong to. */
+.tlog-part.is-count + .tlog-part.is-count:has(> .tlog-count[data-kind='failed']) { margin-left: 0.45em; }
 .tlog-count[data-kind='failed'] .tlog-count-icon { stroke-width: 2.5; }
 
 /* The explanation that appears after the pointer rests on a count. */
@@ -590,3 +594,44 @@
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
+
+/* The work line's chevron, while the turn's operations load. */
+.thread-worked-spinner { width: 12px; height: 12px; flex: none; margin: 2px; }
+
+/* A linked file that is not on this device. */
+.thread-ui-shell .workspace-missing-file {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 20px;
+  text-align: center;
+  color: var(--theme-fg-soft);
+}
+.workspace-missing-file-icon { width: 28px; height: 28px; color: var(--theme-fg-muted); opacity: 0.8; }
+.workspace-missing-file-title { margin: 4px 0 0; color: var(--theme-fg); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.workspace-missing-file-hint { margin: 0; max-width: 34ch; font-size: 13px; color: var(--theme-fg-muted); }
+.thread-ui-shell .workspace-missing-file-path {
+  max-width: min(100%, 56ch);
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--theme-surface);
+  font-family: var(--tlog-font-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.thread-ui-shell .workspace-missing-file-copy {
+  margin-top: 2px;
+  padding: 4px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-fg-soft);
+  font-size: 12px;
+}
+.thread-ui-shell .workspace-missing-file-copy:hover { color: var(--theme-fg); background: var(--theme-hover); }

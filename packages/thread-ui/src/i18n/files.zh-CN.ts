@@ -448,7 +448,7 @@ export const filesZhCN = {
   "files.showExplorer": "显示文件浏览器",
   "files.hideEditor": "隐藏编辑器",
   "files.preview_f1fbb2": "预览",
-  "files.pickALiveMoleculeWorkspaceFileArtifact": "选择实时分子、工作区文件、产物或线程事件以预览。",
+  "files.pickALiveMoleculeWorkspaceFileArtifact": "选择一个文件查看。",
   "files.loadingFilePreview": "正在加载文件预览…",
   "files.pyMOLStylePDBCIF": "PyMOL 风格（PDB/CIF）",
   "files.pDFPreview": "PDF 预览：{{value1}}",
@@ -610,4 +610,7 @@ export const filesZhCN = {
   "files.askAgentPlaceholder": "就这里提问…",
   "files.askSent": "已发送 · 回复会出现在对话里",
   "files.askFailed": "没有发出 · 回到对话查看原因",
+  "files.linkMissingTitle": "这台设备上没有 {{name}}",
+  "files.linkMissingHint": "它可能已被移动或删除，或者只在另一台机器上。",
+  "files.copyPathShort": "复制路径",
 } as const;

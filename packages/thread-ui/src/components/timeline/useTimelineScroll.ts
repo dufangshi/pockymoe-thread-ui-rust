@@ -85,10 +85,6 @@ export function useTimelineScroll({
   const lastTouchYRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const anchorRef = useRef<{ element: Element; top: number; until: number; frame: number } | null>(null);
-  // Room added above the history when a control near the top must stay put
-  // while what is above it shrinks; given back once the reader scrolls.
-  const slackRef = useRef<HTMLDivElement | null>(null);
-  const slackPxRef = useRef(0);
   const touchPullDistanceRef = useRef(0);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_TURNS);
   const [loadMoreClicks, setLoadMoreClicks] = useState(0);
@@ -175,35 +171,14 @@ export function useTimelineScroll({
     );
   }, []);
 
-  const setSlack = useCallback((px: number, animate = false) => {
-    slackPxRef.current = Math.max(0, Math.round(px));
-    const slack = slackRef.current;
-    if (!slack) return;
-    slack.style.transition = animate ? 'height 260ms cubic-bezier(0.2, 0, 0, 1)' : '';
-    slack.style.height = `${slackPxRef.current}px`;
-  }, []);
-
   const stopAnchor = useCallback(() => {
     const anchor = anchorRef.current;
     if (anchor) window.cancelAnimationFrame(anchor.frame);
     anchorRef.current = null;
   }, []);
 
-  /** The reader scrolls: stop holding, and give back any slack. */
-  const releaseAnchor = useCallback(() => {
-    stopAnchor();
-    const container = scrollContainerRef.current;
-    const slack = slackPxRef.current;
-    if (!container || !slack) return;
-    if (container.scrollTop >= slack) {
-      // Out of sight: drop it without moving what the reader sees.
-      setSlack(0);
-      container.scrollTop -= slack;
-      lastScrollTopRef.current = container.scrollTop;
-    } else {
-      setSlack(0, true);
-    }
-  }, [setSlack, stopAnchor]);
+  /** The reader scrolls: stop holding. */
+  const releaseAnchor = stopAnchor;
 
   // Keeps the control the reader clicked at the same height on screen while
   // what it opens or closes changes size, instead of following the tail.
@@ -216,24 +191,15 @@ export function useTimelineScroll({
       anchorRef.current = null;
       return false;
     }
-    let delta = anchor.element.getBoundingClientRect().top - anchor.top;
+    // Near the top of the history there may be no room to hold it: the
+    // scroll position stops at zero rather than leaving a blank above.
+    const delta = anchor.element.getBoundingClientRect().top - anchor.top;
     if (Math.abs(delta) >= 0.5) {
-      // Moved down: give back slack first. Moved up beyond the top: add slack.
-      const slack = slackPxRef.current;
-      if (delta > 0 && slack > 0) {
-        const take = Math.min(slack, delta);
-        setSlack(slack - take);
-        delta -= take;
-      } else if (delta < 0 && container.scrollTop + delta < 0) {
-        const need = -(container.scrollTop + delta);
-        setSlack(slack + need);
-        delta += need;
-      }
       container.scrollTop += delta;
       lastScrollTopRef.current = container.scrollTop;
     }
     return true;
-  }, [setSlack]);
+  }, []);
 
   const holdAnchor = useCallback(() => {
     if (correctAnchor()) anchorRef.current!.frame = window.requestAnimationFrame(holdAnchor);
@@ -416,12 +382,11 @@ export function useTimelineScroll({
   }, [threadId, scrollToBottom]);
 
   useEffect(() => {
-    setSlack(0);
     autoLoadedEarlierRef.current = false;
     userScrolledHistoryRef.current = false;
     topLoadArmedRef.current = false;
     pendingPrependScrollRef.current = null;
-  }, [threadId, setSlack]);
+  }, [threadId]);
 
   useEffect(() => {
     if (!loadingEarlier) {
@@ -624,7 +589,6 @@ export function useTimelineScroll({
     preserveScrollPositionForResize,
     holdAnchorNow,
     releaseAnchor,
-    slackRef,
     serverManagedHistory,
     effectiveTotalTurnCount,
     startIndex,

@@ -2125,7 +2125,7 @@ var filesEn = {
   "files.showExplorer": "Show Explorer",
   "files.hideEditor": "Hide Editor",
   "files.preview_f1fbb2": "Preview",
-  "files.pickALiveMoleculeWorkspaceFileArtifact": "Pick a live molecule, workspace file, artifact, or thread event to preview it.",
+  "files.pickALiveMoleculeWorkspaceFileArtifact": "Choose a file to view.",
   "files.loadingFilePreview": "Loading file preview...",
   "files.pyMOLStylePDBCIF": "PyMOL-style (PDB/CIF)",
   "files.pDFPreview": "PDF preview: {{value1}}",
@@ -2286,7 +2286,10 @@ var filesEn = {
   "files.askAgent": "Ask the agent",
   "files.askAgentPlaceholder": "Ask about this\u2026",
   "files.askSent": "Sent \xB7 the reply appears in the conversation",
-  "files.askFailed": "Not sent \xB7 open the conversation for details"
+  "files.askFailed": "Not sent \xB7 open the conversation for details",
+  "files.linkMissingTitle": "{{name}} is not on this device",
+  "files.linkMissingHint": "It may have been moved or deleted, or it lives on another machine.",
+  "files.copyPathShort": "Copy path"
 };
 
 // src/i18n/settings.en.ts
@@ -5382,7 +5385,7 @@ var filesZhCN = {
   "files.showExplorer": "\u663E\u793A\u6587\u4EF6\u6D4F\u89C8\u5668",
   "files.hideEditor": "\u9690\u85CF\u7F16\u8F91\u5668",
   "files.preview_f1fbb2": "\u9884\u89C8",
-  "files.pickALiveMoleculeWorkspaceFileArtifact": "\u9009\u62E9\u5B9E\u65F6\u5206\u5B50\u3001\u5DE5\u4F5C\u533A\u6587\u4EF6\u3001\u4EA7\u7269\u6216\u7EBF\u7A0B\u4E8B\u4EF6\u4EE5\u9884\u89C8\u3002",
+  "files.pickALiveMoleculeWorkspaceFileArtifact": "\u9009\u62E9\u4E00\u4E2A\u6587\u4EF6\u67E5\u770B\u3002",
   "files.loadingFilePreview": "\u6B63\u5728\u52A0\u8F7D\u6587\u4EF6\u9884\u89C8\u2026",
   "files.pyMOLStylePDBCIF": "PyMOL \u98CE\u683C\uFF08PDB/CIF\uFF09",
   "files.pDFPreview": "PDF \u9884\u89C8\uFF1A{{value1}}",
@@ -5543,7 +5546,10 @@ var filesZhCN = {
   "files.askAgent": "\u5411 Agent \u63D0\u95EE",
   "files.askAgentPlaceholder": "\u5C31\u8FD9\u91CC\u63D0\u95EE\u2026",
   "files.askSent": "\u5DF2\u53D1\u9001 \xB7 \u56DE\u590D\u4F1A\u51FA\u73B0\u5728\u5BF9\u8BDD\u91CC",
-  "files.askFailed": "\u6CA1\u6709\u53D1\u51FA \xB7 \u56DE\u5230\u5BF9\u8BDD\u67E5\u770B\u539F\u56E0"
+  "files.askFailed": "\u6CA1\u6709\u53D1\u51FA \xB7 \u56DE\u5230\u5BF9\u8BDD\u67E5\u770B\u539F\u56E0",
+  "files.linkMissingTitle": "\u8FD9\u53F0\u8BBE\u5907\u4E0A\u6CA1\u6709 {{name}}",
+  "files.linkMissingHint": "\u5B83\u53EF\u80FD\u5DF2\u88AB\u79FB\u52A8\u6216\u5220\u9664\uFF0C\u6216\u8005\u53EA\u5728\u53E6\u4E00\u53F0\u673A\u5668\u4E0A\u3002",
+  "files.copyPathShort": "\u590D\u5236\u8DEF\u5F84"
 };
 
 // src/i18n/settings.zh-CN.ts

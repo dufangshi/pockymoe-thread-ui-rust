@@ -88,12 +88,14 @@ export function activityParts(counts: ActivityCounts, { lines = true }: { lines?
     if (lines && counts.removedLines) parts.push({ key: 'removed', text: `−${counts.removedLines}`, tone: 'remove' });
   }
   if (counts.commands) parts.push({ key: 'commands', count: counts.commands, text: translate('chat.commandCount', { count: counts.commands }) });
+  // Failures read with the commands they mostly are: ">_ ✓69 ✕9".
+  if (counts.failed && counts.commands) parts.push({ key: 'failed', count: counts.failed, text: translate('chat.logFailed', { count: counts.failed }), tone: 'failed' });
   if (counts.reads) parts.push({ key: 'reads', count: counts.reads, text: translate('chat.readFileCount', { count: counts.reads }) });
   if (counts.searches) parts.push({ key: 'searches', count: counts.searches, text: translate('chat.logSearches', { count: counts.searches }) });
   if (counts.agents) parts.push({ key: 'agents', count: counts.agents, text: translate('chat.logAgents', { count: counts.agents }) });
   if (counts.tools) parts.push({ key: 'tools', count: counts.tools, text: translate('chat.logTools', { count: counts.tools }) });
   if (!parts.length && counts.reasoning) parts.push({ key: 'reasoning', count: counts.reasoning, text: translate('chat.logThoughts', { count: counts.reasoning }) });
-  if (counts.failed) parts.push({ key: 'failed', count: counts.failed, text: translate('chat.logFailed', { count: counts.failed }), tone: 'failed' });
+  if (counts.failed && !counts.commands) parts.push({ key: 'failed', count: counts.failed, text: translate('chat.logFailed', { count: counts.failed }), tone: 'failed' });
   return parts;
 }
 

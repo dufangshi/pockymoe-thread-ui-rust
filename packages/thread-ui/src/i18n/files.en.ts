@@ -448,7 +448,7 @@ export const filesEn = {
   "files.showExplorer": "Show Explorer",
   "files.hideEditor": "Hide Editor",
   "files.preview_f1fbb2": "Preview",
-  "files.pickALiveMoleculeWorkspaceFileArtifact": "Pick a live molecule, workspace file, artifact, or thread event to preview it.",
+  "files.pickALiveMoleculeWorkspaceFileArtifact": "Choose a file to view.",
   "files.loadingFilePreview": "Loading file preview...",
   "files.pyMOLStylePDBCIF": "PyMOL-style (PDB/CIF)",
   "files.pDFPreview": "PDF preview: {{value1}}",
@@ -610,4 +610,7 @@ export const filesEn = {
   "files.askAgentPlaceholder": "Ask about this…",
   "files.askSent": "Sent · the reply appears in the conversation",
   "files.askFailed": "Not sent · open the conversation for details",
+  "files.linkMissingTitle": "{{name}} is not on this device",
+  "files.linkMissingHint": "It may have been moved or deleted, or it lives on another machine.",
+  "files.copyPathShort": "Copy path",
 } as const;

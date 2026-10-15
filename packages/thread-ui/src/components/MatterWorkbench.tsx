@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Home,
   FolderOpen,
+  LoaderCircle,
   MessageSquare,
   PanelLeft,
   Search,
@@ -24,6 +25,12 @@ import { WorkbenchContext } from './WorkbenchContext';
 import { WorkbenchPath } from './WorkbenchPath';
 import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
 import { useThemeFeature } from './themeHooks';
+import { PhoneDock, PhoneSheet, type PhonePane } from './workbench/PhoneDock';
+
+/** Design prototype switch: `localStorage['pockymoe.phoneDock'] = 'off'` restores the old phone top bar. */
+function phoneDockEnabled() {
+  try { return localStorage.getItem('pockymoe.phoneDock') !== 'off'; } catch { return true; }
+}
 
 export interface WorkbenchThread {
   key: string;
@@ -131,6 +138,27 @@ export function MatterWorkbench({
   // A theme with phone drawer tools keeps the phone top bar to touch-sized
   // essentials and moves Home and Chat into the drawer; the device monitor stays.
   const drawerTools = useThemeFeature('workbench.phoneDrawerTools') && mobile;
+  // One-handed phone layout: status-only top bar, navigation at the bottom.
+  const dock = mobile && phoneDockEnabled();
+  const [threadsOpen, setThreadsOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [typing, setTyping] = useState(false);
+  useEffect(() => {
+    if (!dock) return;
+    // The keyboard needs the room: hide the navigation row while a field has focus.
+    const editing = () => {
+      const target = document.activeElement;
+      setTyping(target instanceof HTMLElement && !target.closest('.matter-phone-sheet, .matter-topbar')
+        && target.matches('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]), [contenteditable]:not([contenteditable="false"])'));
+    };
+    const blur = () => window.setTimeout(editing, 0);
+    document.addEventListener('focusin', editing);
+    document.addEventListener('focusout', blur);
+    return () => {
+      document.removeEventListener('focusin', editing);
+      document.removeEventListener('focusout', blur);
+    };
+  }, [dock]);
   const toolPanel = useWorkbenchToolPanel();
   // With the bottom panel the conversation stays visible beside the terminal:
   // Chat is "pressed" unless a maximized terminal covers it.
@@ -188,8 +216,36 @@ export function MatterWorkbench({
   const navigate = (href: string) => {
     setSidebarOpen(false);
     setBellOpen(false);
+    setThreadsOpen(false);
+    setMoreOpen(false);
     o.onNavigate(href);
   };
+  const pane: PhonePane = explorerOpen ? 'files' : o.activeView === 'shell' ? 'shell' : 'chat';
+  const choosePane = (next: PhonePane) => {
+    if (next === 'files') { setExplorerOpen(true); return; }
+    if (explorerOpen) setExplorerOpen(false);
+    // The host's view change toggles the terminal.
+    if ((next === 'shell') !== (o.activeView === 'shell')) o.onViewChange('shell');
+  };
+  const currentThread = o.threads.find(thread => thread.key === o.currentKey) ?? tabs.find(thread => thread.key === o.currentKey);
+  const tabRoots = groupThreads(tabs).map(group => group.root);
+  const swipeSiblings = tabRoots.some(thread => thread.key === o.currentKey) ? tabRoots : tabs;
+  const knownThreads = [...o.threads, ...tabs.filter(tab => !o.threads.some(thread => thread.key === tab.key))];
+  const othersRunning = knownThreads.filter(thread => thread.status === 'running' && thread.key !== o.currentKey).length;
+  const attention = (thread: WorkbenchThread) => thread.status === 'running' ? 0 : thread.status === 'unread' || thread.status === 'failed' ? 1 : 2;
+  const bell = (
+    <button
+      aria-label={translate("workbench.notifications")}
+      aria-expanded={bellOpen}
+      onClick={() => {
+        setBellOpen(!bellOpen);
+        o.onReadNotifications();
+      }}
+    >
+      <Bell />
+      {o.unreadCount > 0 && <span className="matter-unread" />}
+    </button>
+  );
   const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread)) => (
     <div key={thread.key} className="matter-thread-entry">
     <a
@@ -229,7 +285,7 @@ export function MatterWorkbench({
   return (
     <div
       ref={rootRef}
-      className={`matter-workbench ${sidebarHidden ? 'is-sidebar-hidden' : ''}`}
+      className={`matter-workbench ${sidebarHidden ? 'is-sidebar-hidden' : ''} ${dock ? 'has-phone-dock' : ''} ${dock && typing ? 'is-typing' : ''}`}
       onClick={(e) => {
         if (
           e.target instanceof Element &&
@@ -244,6 +300,8 @@ export function MatterWorkbench({
         if (e.key === 'Escape') {
           setBellOpen(false);
           setSidebarOpen(false);
+          setThreadsOpen(false);
+          setMoreOpen(false);
           e.currentTarget
             .querySelector('.matter-thread-menu[open]')
             ?.removeAttribute('open');
@@ -283,7 +341,16 @@ export function MatterWorkbench({
           title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen /></button>
         <div className="matter-rail-bottom">{deviceMonitor}{settings}</div>
       </nav>}
-      <header className={`matter-topbar ${o.searchOpen ? 'is-search-open' : ''}`}>
+      {dock ? <header className={`matter-topbar is-status-only ${o.searchOpen ? 'is-search-open' : ''}`}>
+        <div className="matter-topbar-status">{deviceMonitor}</div>
+        {o.searchOpen && <div className="matter-topbar-search">{o.search}</div>}
+        <span className="matter-topbar-spacer" />
+        {othersRunning > 0 && <button className="matter-running-chip" aria-label={translate('workbench.runningCount', { count: othersRunning })} onClick={() => setThreadsOpen(true)}>
+          <LoaderCircle aria-hidden="true" /><span>{othersRunning} {translate('workbench.running')}</span>
+        </button>}
+        <div className="matter-connection">{connection}</div>
+        {bell}
+      </header> : <header className={`matter-topbar ${o.searchOpen ? 'is-search-open' : ''}`}>
         <button
           aria-label={translate("workbench.toggleShortcutsSidebar")}
           aria-expanded={mobile ? sidebarOpen : !sidebarHidden}
@@ -331,19 +398,9 @@ export function MatterWorkbench({
             {settings}
           </>}
           <div className="matter-connection">{connection}</div>
-          <button
-            aria-label={translate("workbench.notifications")}
-            aria-expanded={bellOpen}
-            onClick={() => {
-              setBellOpen(!bellOpen);
-              o.onReadNotifications();
-            }}
-          >
-            <Bell />
-            {o.unreadCount > 0 && <span className="matter-unread" />}
-          </button>
+          {bell}
         </div>
-      </header>
+      </header>}
       {sidebarOpen && (
         <button
           className="matter-sidebar-scrim"
@@ -416,7 +473,7 @@ export function MatterWorkbench({
           {translate("workbench.yourConversationsTogether")}</div>
       </aside>
       <main className="matter-main">
-        <div className="matter-tabs-row">
+        {!dock && <div className="matter-tabs-row">
         <div className="tab-scroll-surface matter-tab-scroll" {...tabScrollEdges}>
         <nav ref={tabsRef} className="matter-thread-tabs" aria-label={translate("workbench.workspaceThreads")}>
           <GroupedThreadTabs threads={tabs} currentKey={o.currentKey} onNavigate={navigate} />
@@ -444,7 +501,7 @@ export function MatterWorkbench({
             {threadMenu}
           </div>
         </div>}
-        </div>
+        </div>}
         {o.panels ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={o.panels} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (
         <div ref={contentRef} style={{ '--explorer-width': `${explorerWidth}px` } as CSSProperties} className={`matter-content ${explorerOpen ? 'has-explorer' : ''}`}>
           <div className="matter-chat">
@@ -475,6 +532,51 @@ export function MatterWorkbench({
         </div>
         )}
       </main>
+      {dock && <>
+        <PhoneDock title={title} thread={currentThread} siblings={swipeSiblings} currentKey={o.currentKey} pane={pane}
+          terminalEnabled={o.terminalEnabled} onPane={choosePane} onNavigate={navigate}
+          onOpenThreads={() => { setMoreOpen(false); setThreadsOpen(true); }} onOpenMore={() => { setThreadsOpen(false); setMoreOpen(true); }}
+          threadsOpen={threadsOpen} moreOpen={moreOpen} />
+        <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
+          footer={<>
+            <button type="button" className="matter-phone-sheet-wide" onClick={() => { setThreadsOpen(false); setSidebarOpen(true); }}><PanelLeft /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>
+            {newThread}
+          </>}>
+          {o.unreadCount > 0 && <>
+            <h3>{translate('workbench.notifications')}</h3>
+            <div className="matter-phone-sheet-notices">
+              {[...o.notifications].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).slice(0, 3).map(n => (
+                <a key={n.id} href={n.href} onClick={e => { e.preventDefault(); o.onReadNotifications(); navigate(n.href); }}>
+                  <span className="matter-status-dot" data-status="completed" />
+                  <span><b>{n.title}</b>{n.summary && <small>{n.summary}</small>}</span>
+                </a>
+              ))}
+            </div>
+          </>}
+          <h3>{translate('workbench.thisWorkspace')}</h3>
+          <div className="matter-thread-section">{renderThreadGroups([...tabs].sort((a, b) => attention(a) - attention(b)))}</div>
+          {o.threads.some(thread => !tabs.some(tab => tab.key === thread.key)) && <>
+            <h3>{translate('workbench.recentChats')}</h3>
+            <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>
+          </>}
+        </PhoneSheet>
+        <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} onClose={() => setMoreOpen(false)}>
+          <h3 title={title}>{title}</h3>
+          <div className="matter-phone-sheet-tools">
+            {!o.emptyWorkspace && <button type="button" onClick={o.onSearch}><Search /><span>{translate('workbench.searchConversation')}</span></button>}
+            {!o.emptyWorkspace && <button type="button" aria-pressed={o.favorite} disabled={o.favoriteBusy} onClick={o.onToggleFavorite}><Star fill={o.favorite ? 'currentColor' : 'none'} /><span>{o.favorite ? translate('workbench.removeShortcut') : translate('workbench.addShortcut')}</span></button>}
+            {o.toolPanels?.map(panel => <button type="button" key={panel.id} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}<span>{panel.label}</span></button>)}
+          </div>
+          <div className="matter-phone-sheet-host">{actions}{threadMenu}{o.statusActions}</div>
+          <h3>{translate('workbench.app')}</h3>
+          <div className="matter-phone-sheet-list">
+            <button type="button" onClick={() => setSidebarOpen(true)}><PanelLeft /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>
+            {homeHref && <a href={homeHref}><Home /><span>{translate('workbench.backToWorkspaces')}</span></a>}
+            <button type="button" onClick={() => history.back()}><ArrowLeft /><span>{translate('workbench.goBack')}</span></button>
+            <div className="matter-phone-sheet-settings">{settings}<span>{translate('workbench.settings')}</span></div>
+          </div>
+        </PhoneSheet>
+      </>}
       {bellOpen && (
         <>
           <button

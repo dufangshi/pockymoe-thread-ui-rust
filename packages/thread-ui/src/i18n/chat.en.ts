@@ -1,4 +1,5 @@
 export const chatEn = {
+  'chat.replyVersion': 'Reply version',
   "chat.peerAgent": "Agent",
   "chat.peerQuestion": "Question",
   "chat.peerUpdates": "Delegate update",

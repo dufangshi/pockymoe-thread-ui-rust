@@ -42,6 +42,8 @@ export const automationZhCN = {
   "automation.action": "动作",
   "automation.prompt": "Prompt / 唤醒",
   "automation.notifyInbox": "被动收件箱",
+  "automation.pluginAction": "插件动作",
+  "automation.pluginCharge": "插件动作可能产生模型费用，其模型用量和费用不计入这些合计。",
   "automation.runScript": "运行脚本 / 命令",
   "automation.text": "文本",
   "automation.subject": "主题",

@@ -8,12 +8,14 @@ import { builtinFrontendPlugins } from '../builtin-plugins';
 import { createDefaultPluginContextValue, mergePluginState } from './plugin-context';
 
 describe('built-in plugin rendering', () => {
-  it('registers the terminal and DeepSeek Harness built-in plugins', () => {
+  it('registers built-in plugins with Content Quality disabled by default', () => {
     const plugins = createDefaultPluginContextValue(builtinFrontendPlugins);
     expect(plugins.plugins.map((plugin) => plugin.id)).toEqual([
       'remote-codex.terminal',
       'remote-codex.deepseek-harness',
+      'pockymoe.content-quality',
     ]);
+    expect(plugins.plugins.find(plugin => plugin.id === 'pockymoe.content-quality')?.enabled).toBe(false);
     expect(plugins.getThreadPanels()).toEqual([
       { id: 'terminal', kind: 'terminal', label: 'Terminal' },
       { id: 'deepseek-harness', kind: 'harness:deepseek', label: 'DeepSeek Harness' },
@@ -40,5 +42,11 @@ describe('built-in plugin rendering', () => {
     expect(dsh).toMatchObject({ name: 'DeepSeek Harness', enabled: false, available: false });
     expect(dsh.unavailableReason).toMatch(/Install DeepSeek Harness/);
     expect(dsh.capabilities.threadPanels[0]?.kind).toBe('harness:deepseek');
+  });
+
+  it('retains backend action capabilities alongside frontend metadata', () => {
+    const module = builtinFrontendPlugins.find(plugin => plugin.manifest.id === 'pockymoe.content-quality')!;
+    const reported: PluginDto = { ...module.manifest, enabled: false, capabilities: { ...module.manifest.capabilities, actions: ['newBackendAction'] } };
+    expect(mergePluginState(builtinFrontendPlugins, [reported]).find(plugin => plugin.id === reported.id)?.capabilities.actions).toEqual(['newBackendAction']);
   });
 });

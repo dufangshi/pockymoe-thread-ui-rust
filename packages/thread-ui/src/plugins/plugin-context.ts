@@ -1,4 +1,5 @@
 import { createContext, type ReactNode } from 'react';
+import type { SettingsSection } from '../components/SettingsPanels';
 
 import type {
   ImportPluginInput,
@@ -9,6 +10,8 @@ import type {
   ArtifactRenderContext,
   FrontendPluginModule,
   InlineCodeRenderContext,
+  MessagePresentation,
+  MessagePresentationContext,
   ThreadPanelContribution,
 } from './plugin-types';
 
@@ -24,6 +27,8 @@ export interface PluginContextValue {
   renderInlineCode: (context: InlineCodeRenderContext) => ReactNode | null;
   hasRendererForArtifact: (artifact: ThreadArtifactDto) => boolean;
   getThreadPanels: () => ThreadPanelContribution[];
+  getSettingsSections: () => SettingsSection[];
+  presentMessage: (context: MessagePresentationContext) => MessagePresentation | null;
 }
 
 export function mergePluginState(
@@ -35,7 +40,8 @@ export function mergePluginState(
     // Keep the device's availability report (for example a missing harness).
     ...byId.get(module.manifest.id),
     ...module.manifest,
-    enabled: byId.get(module.manifest.id)?.enabled ?? true,
+    capabilities: { ...module.manifest.capabilities, ...byId.get(module.manifest.id)?.capabilities },
+    enabled: byId.get(module.manifest.id)?.enabled ?? module.defaultEnabled ?? true,
     source: byId.get(module.manifest.id)?.source ?? 'builtin',
   }));
   const moduleIds = new Set(modules.map((module) => module.manifest.id));
@@ -51,7 +57,7 @@ export function createDefaultPluginContextValue(
   modules: FrontendPluginModule[] = [],
 ): PluginContextValue {
   const plugins = mergePluginState(modules, []);
-  const enabledModules = modules;
+  const enabledModules = modules.filter(module => plugins.some(plugin => plugin.id === module.manifest.id && plugin.enabled && plugin.available !== false));
   const renderArtifact: PluginContextValue['renderArtifact'] = (context) => {
     const module = enabledModules.find(
       (entry) =>
@@ -95,6 +101,14 @@ export function createDefaultPluginContextValue(
             (type) => type.type === artifact.type,
           ),
       ),
+    getSettingsSections: () => [],
+    presentMessage: context => {
+      for (const module of enabledModules) {
+        const presentation = module.presentMessage?.(context);
+        if (presentation) return presentation;
+      }
+      return null;
+    },
     getThreadPanels: () =>
       enabledModules.flatMap((module) => module.threadPanels ?? []),
   };

@@ -2,7 +2,7 @@ import * as react from 'react';
 import { ReactNode } from 'react';
 import * as _pockymoe_shared from '@pockymoe/shared';
 import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
-import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, F as FrontendPluginModule } from './plugin-types-DBa9QrHM.js';
+import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, a as MessagePresentationContext, M as MessagePresentation, F as FrontendPluginModule } from './plugin-types-Y59TXE2N.js';
 
 interface PromptAttachmentUpload extends PromptAttachmentManifestEntryDto {
     file: File;
@@ -280,6 +280,17 @@ interface WorkspaceSaveReceipt {
     message?: string;
 }
 
+type SettingsSection = {
+    id: string;
+    label: string;
+    description?: string;
+    content: ReactNode;
+};
+declare function SettingsPanels({ sections, initialId }: {
+    sections: SettingsSection[];
+    initialId?: string;
+}): react.JSX.Element | null;
+
 interface PluginContextValue {
     plugins: PluginDto[];
     loading: boolean;
@@ -292,6 +303,8 @@ interface PluginContextValue {
     renderInlineCode: (context: InlineCodeRenderContext) => ReactNode | null;
     hasRendererForArtifact: (artifact: ThreadArtifactDto) => boolean;
     getThreadPanels: () => ThreadPanelContribution[];
+    getSettingsSections: () => SettingsSection[];
+    presentMessage: (context: MessagePresentationContext) => MessagePresentation | null;
 }
 declare function mergePluginState(modules: FrontendPluginModule[], serverPlugins: PluginDto[]): PluginDto[];
 declare function createDefaultPluginContextValue(modules?: FrontendPluginModule[]): PluginContextValue;
@@ -324,4 +337,4 @@ interface ThreadGraphWorkspaceFeatures {
 declare function ThreadGraphWorkspacePanel({ detail, status, plugins, workspaceAdapter, metaContent, settingsContent, activeView, features: featureConfig, focusPathRequest, }: ThreadGraphWorkspacePanelProps): react.JSX.Element | null;
 declare const MemoizedThreadGraphWorkspacePanel: react.MemoExoticComponent<typeof ThreadGraphWorkspacePanel>;
 
-export { MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SendPromptInput as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, type ThreadWorkspaceAdapter as g, PluginContext as h, type ShellSocketConnection as i, type ShellSocketHandlers as j, type ThreadImageAssetVariant as k, type WorkspaceDocumentSnapshot as l, type WorkspaceSaveReceipt as m, type WorkspaceTab as n, createDefaultPluginContextValue as o, mergePluginState as p, ThreadGraphWorkspacePanel as q };
+export { MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SettingsSection as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, type ThreadWorkspaceAdapter as g, PluginContext as h, type SendPromptInput as i, SettingsPanels as j, type ShellSocketConnection as k, type ShellSocketHandlers as l, type ThreadImageAssetVariant as m, type WorkspaceDocumentSnapshot as n, type WorkspaceSaveReceipt as o, type WorkspaceTab as p, createDefaultPluginContextValue as q, mergePluginState as r, ThreadGraphWorkspacePanel as s };

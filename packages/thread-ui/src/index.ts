@@ -86,6 +86,11 @@ export { usePlugins } from './plugins/usePlugins';
 export type {
   ArtifactRenderContext,
   FrontendPluginModule,
+  PluginSettingsSnapshot,
+  PluginSettingsContext,
+  PluginSettingsContribution,
+  MessagePresentation,
+  MessagePresentationContext,
   InlineCodeRenderContext,
   ThreadPanelContribution,
 } from './plugins/plugin-types';

@@ -42,6 +42,8 @@ export const automationEn = {
   "automation.action": "Action",
   "automation.prompt": "Prompt / wake",
   "automation.notifyInbox": "Passive inbox",
+  "automation.pluginAction": "Plugin action",
+  "automation.pluginCharge": "Plugin actions may incur model charges. Their model usage and cost are not included in these totals.",
   "automation.runScript": "Run script / command",
   "automation.text": "Text",
   "automation.subject": "Subject",

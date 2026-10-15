@@ -1,6 +1,7 @@
-import { translate, useI18n } from '../i18n';
+import { translate } from '../i18n';
 import { terminalPluginManifest } from '@pockymoe/plugin-terminal';
 import { deepseekHarnessPlugin } from './deepseek-harness-plugin';
+import { contentQualityPlugin } from './content-quality-plugin';
 import type { FrontendPluginModule } from './plugin-types';
 
 export const builtinFrontendPlugins: FrontendPluginModule[] = [
@@ -15,4 +16,5 @@ export const builtinFrontendPlugins: FrontendPluginModule[] = [
     ],
   },
   deepseekHarnessPlugin,
+  contentQualityPlugin,
 ];

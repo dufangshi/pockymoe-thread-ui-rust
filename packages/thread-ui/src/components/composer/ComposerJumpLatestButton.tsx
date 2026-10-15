@@ -51,7 +51,7 @@ function JumpLatestStrip({
           onClick={() => onJumpToPreviousTurn?.()}
           className="inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35"
         >
-          <svg aria-hidden="true" viewBox="0 0 16 16" className="h-3.5 w-3.5 fill-none stroke-current" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg data-icon="previous-turn" aria-hidden="true" viewBox="0 0 16 16" className="h-3.5 w-3.5 fill-none stroke-current" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3.5 12h9M8 10V5M6 7l2-2 2 2" />
           </svg>
         </button>
@@ -64,6 +64,7 @@ function JumpLatestStrip({
           className="inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70"
         >
         <svg
+          data-icon="latest"
           aria-hidden="true"
           viewBox="0 0 16 16"
           className="h-3.5 w-3.5 fill-none stroke-current"
@@ -83,7 +84,7 @@ function JumpLatestStrip({
           onClick={() => onJumpToNextTurn?.()}
           className="inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35"
         >
-          <svg aria-hidden="true" viewBox="0 0 16 16" className="h-3.5 w-3.5 fill-none stroke-current" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg data-icon="next-turn" aria-hidden="true" viewBox="0 0 16 16" className="h-3.5 w-3.5 fill-none stroke-current" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3.5 4h9M8 6v5m-2-2 2 2 2-2" />
           </svg>
         </button>

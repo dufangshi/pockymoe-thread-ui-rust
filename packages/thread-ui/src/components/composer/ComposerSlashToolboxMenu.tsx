@@ -73,7 +73,7 @@ function ToolboxLabel({ rich, action, command, description }: {
   const Icon = toolboxIcons[action] ?? MessageSquarePlus;
   return (
     <>
-      <span className="composer-toolbox-icon" aria-hidden="true"><Icon /></span>
+      <span className="composer-toolbox-icon" aria-hidden="true"><Icon data-icon={toolboxIcons[action] ? action : 'prompt'} /></span>
       <span className="composer-toolbox-text">
         <span className="composer-toolbox-command">{command}</span>
         {description ? <span className="composer-toolbox-description">{description}</span> : null}

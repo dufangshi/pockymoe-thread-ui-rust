@@ -654,8 +654,8 @@ function GraphChatNativeTaskNotification({
           aria-expanded={open}
           onClick={() => setOpen(value => !value)}
         >
-          {waiting ? <Hourglass className="thread-graph-task-notice-icon" aria-hidden="true" />
-            : item.origin === 'nativeTaskNotification' ? <BellRing className="thread-graph-task-notice-icon" aria-hidden="true" /> : null}
+          {waiting ? <Hourglass data-icon="wait" className="thread-graph-task-notice-icon" aria-hidden="true" />
+            : item.origin === 'nativeTaskNotification' ? <BellRing data-icon="wake" className="thread-graph-task-notice-icon" aria-hidden="true" /> : null}
           <span className="thread-graph-task-notice-label">{label}</span>
           {item.text ? <span className="thread-graph-task-notice-preview">{item.text}</span> : null}
           <ChevronRight className={`thread-graph-task-notice-chevron${open ? ' is-open' : ''}`} aria-hidden="true" />

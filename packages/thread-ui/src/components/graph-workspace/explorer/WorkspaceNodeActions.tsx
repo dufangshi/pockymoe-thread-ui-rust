@@ -102,7 +102,7 @@ export function WorkspaceNodeActions({
             title={translate("files.copyRelativePathFor", { value1: node.name })}
             aria-label={translate("files.copyRelativePathFor", { value1: node.name })}
           >
-            <Copy size={14} />
+            <Copy data-icon="copy-path" size={14} />
           </button>
           <button
             type="button"
@@ -111,7 +111,7 @@ export function WorkspaceNodeActions({
             title={translate("files.copyAbsolutePathFor", { value1: node.name })}
             aria-label={translate("files.copyAbsolutePathFor", { value1: node.name })}
           >
-            <ClipboardCopy size={14} />
+            <ClipboardCopy data-icon="copy-absolute-path" size={14} />
           </button>
         </>
       )}
@@ -141,7 +141,7 @@ export function WorkspaceNodeActions({
             );
           }}
         >
-          <MoreHorizontal size={14} />
+          <MoreHorizontal data-icon="more" size={14} />
         </button>
       )}
       {menu &&
@@ -167,10 +167,10 @@ export function WorkspaceNodeActions({
               boxShadow: '0 8px 24px #0004',
             }}
           >
-            {onDownload && <button role="menuitem" type="button" onClick={() => { onDownload(node); close(); }}><Download size={16} />{translate('files.downloadFile')}</button>}
+            {onDownload && <button role="menuitem" type="button" onClick={() => { onDownload(node); close(); }}><Download data-icon="download" size={16} />{translate('files.downloadFile')}</button>}
             {onCopyPath && <>
-              <button role="menuitem" type="button" aria-label={shortLabels ? translate('files.copyRelativePathFor', { value1: node.name }) : undefined} onClick={() => { onCopyPath(node, 'relative'); close(); }}><Copy size={16} />{shortLabels ? translate('files.copyRelativePath') : translate('files.copyRelativePathFor', { value1: node.name })}</button>
-              <button role="menuitem" type="button" aria-label={shortLabels ? translate('files.copyAbsolutePathFor', { value1: node.name }) : undefined} onClick={() => { onCopyPath(node, 'absolute'); close(); }}><ClipboardCopy size={16} />{shortLabels ? translate('files.copyAbsolutePath') : translate('files.copyAbsolutePathFor', { value1: node.name })}</button>
+              <button role="menuitem" type="button" aria-label={shortLabels ? translate('files.copyRelativePathFor', { value1: node.name }) : undefined} onClick={() => { onCopyPath(node, 'relative'); close(); }}><Copy data-icon="copy-path" size={16} />{shortLabels ? translate('files.copyRelativePath') : translate('files.copyRelativePathFor', { value1: node.name })}</button>
+              <button role="menuitem" type="button" aria-label={shortLabels ? translate('files.copyAbsolutePathFor', { value1: node.name }) : undefined} onClick={() => { onCopyPath(node, 'absolute'); close(); }}><ClipboardCopy data-icon="copy-absolute-path" size={16} />{shortLabels ? translate('files.copyAbsolutePath') : translate('files.copyAbsolutePathFor', { value1: node.name })}</button>
             </>}
             {onRename && (
               <button
@@ -183,7 +183,7 @@ export function WorkspaceNodeActions({
                   setMenu(null);
                 }}
               >
-                <Pencil size={14} /> {translate("files.rename_d3f4cb")}</button>
+                <Pencil data-icon="rename" size={14} /> {translate("files.rename_d3f4cb")}</button>
             )}
             {onDelete && (
               <button
@@ -195,7 +195,7 @@ export function WorkspaceNodeActions({
                   setMenu(null);
                 }}
               >
-                <Trash2 size={14} /> {translate("files.delete")}</button>
+                <Trash2 data-icon="delete" size={14} /> {translate("files.delete")}</button>
             )}
           </div>,
           document.body,

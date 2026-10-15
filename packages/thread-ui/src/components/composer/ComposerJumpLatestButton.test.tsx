@@ -68,6 +68,12 @@ describe('ComposerJumpLatestButton', () => {
     container = null;
   });
 
+  it('names its glyphs with data-icon for theme packs', () => {
+    const { view } = renderButton({ activeView: 'chat' });
+    expect([...view.querySelectorAll('svg[data-icon]')].map((icon) => icon.getAttribute('data-icon')))
+      .toEqual(['previous-turn', 'latest', 'next-turn']);
+  });
+
   it('renders only in chat view and forwards clicks', () => {
     const { view, onToggleFollow } = renderButton({ activeView: 'chat' });
     const button = view.querySelector<HTMLButtonElement>(

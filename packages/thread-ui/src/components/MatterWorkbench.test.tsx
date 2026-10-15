@@ -71,3 +71,23 @@ describe('phone top bar', () => {
     expect(topbar().querySelector('button[aria-label="Chat"]')).not.toBeNull();
   });
 });
+
+describe('icon hooks', () => {
+  it('names each chrome icon with a neutral data-icon for theme packs', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+    render();
+    const icon = (selector: string) => host.querySelector(selector)?.querySelector('svg')?.getAttribute('data-icon');
+    expect(icon('header.matter-topbar > button[aria-expanded]')).toBe('sidebar');
+    expect(icon('button[aria-label="Go back"]')).toBe('back');
+    expect(icon('button[aria-label="Go forward"]')).toBe('forward');
+    expect(icon('header.matter-topbar a[href="/workspaces"]')).toBe('home');
+    expect(icon('.matter-search-trigger')).toBe('search');
+    expect(icon('button[aria-label="Notifications"]')).toBe('notifications');
+    expect(icon('.matter-rail button[aria-label="Chat"]')).toBe('chat');
+    expect(icon('.matter-rail button[aria-label="Terminal"]')).toBe('terminal');
+    expect(icon('.matter-rail button[aria-label="Toggle Explorer"]')).toBe('explorer');
+    expect(icon('.matter-toolbar-toggle')).toBe('thread-tools');
+    // The hook is an attribute only: Classic renders the same lucide glyph.
+    expect(host.querySelector('[data-icon="back"]')?.classList.contains('lucide')).toBe(true);
+  });
+});

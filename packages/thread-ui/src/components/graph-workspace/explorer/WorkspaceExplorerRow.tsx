@@ -22,20 +22,20 @@ import { LINKED_DIRECTORY_ID_PREFIX } from './workspaceLinkedFiles';
 function iconForNode(node: WorkspaceTreeNode, expanded: boolean) {
   if (node.kind === 'directory') {
     return expanded ? (
-      <FolderOpen className="workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" />
+      <FolderOpen data-icon="folder-open" className="workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" />
     ) : (
-      <Folder className="workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" />
+      <Folder data-icon="folder" className="workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" />
     );
   }
   const extension = extensionOf(node.name);
   if (extension === 'zip') {
-    return <FileArchive className="workspace-node-icon is-archive h-4 w-4 text-amber-600" />;
+    return <FileArchive data-icon="archive" className="workspace-node-icon is-archive h-4 w-4 text-amber-600" />;
   }
   if (
     node.kind === 'file' &&
     ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(extension)
   ) {
-    return <FileImage className="workspace-node-icon is-image h-4 w-4 text-sky-500" />;
+    return <FileImage data-icon="image" className="workspace-node-icon is-image h-4 w-4 text-sky-500" />;
   }
   if (
     node.kind === 'artifact' ||
@@ -55,9 +55,9 @@ function iconForNode(node: WorkspaceTreeNode, expanded: boolean) {
       'py',
     ].includes(extension)
   ) {
-    return <FileCode2 className="workspace-node-icon is-code h-4 w-4 text-emerald-600" />;
+    return <FileCode2 data-icon="code" className="workspace-node-icon is-code h-4 w-4 text-emerald-600" />;
   }
-  return <File className="workspace-node-icon is-file h-4 w-4 text-slate-400 dark:text-slate-500" />;
+  return <File data-icon="file" className="workspace-node-icon is-file h-4 w-4 text-slate-400 dark:text-slate-500" />;
 }
 
 export function WorkspaceExplorerRow({
@@ -204,7 +204,7 @@ export function WorkspaceExplorerRow({
         onClick={() => { onSelect(node); if (canToggleDirectory && window.matchMedia?.('(max-width: 639px)').matches) onToggle(node.path); }}
       >
         {linkedDirectory
-          ? <FolderSymlink className="workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" aria-hidden="true" />
+          ? <FolderSymlink data-icon="folder-link" className="workspace-node-icon is-folder h-4 w-4 text-slate-500 dark:text-slate-400" aria-hidden="true" />
           : iconForNode(node, expanded)}
         {linkedDirectory ? (
           // Long host paths keep their meaningful tail visible.

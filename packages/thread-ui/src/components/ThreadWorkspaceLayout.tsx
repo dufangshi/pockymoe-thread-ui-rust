@@ -694,12 +694,12 @@ export function ThreadWorkspaceLayout({
   function renderNewThreadDialogButton(className: string, compact = false) {
     const content = compact ? (
       <>
-        <Plus className="h-4 w-4" />
+        <Plus data-icon="new-thread" className="h-4 w-4" />
         <span className="sr-only">{newThreadLabel}</span>
       </>
     ) : (
       <>
-        <Plus className="h-4 w-4" />
+        <Plus data-icon="new-thread" className="h-4 w-4" />
         <span>{newThreadLabel}</span>
       </>
     );
@@ -803,7 +803,7 @@ export function ThreadWorkspaceLayout({
         sections={sections}
         trigger={<button type="button" aria-label={translate("files.openSettings")} title={translate("files.settings")}
           className="thread-icon-button inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full">
-          <Settings className="h-4 w-4" />
+          <Settings data-icon="settings" className="h-4 w-4" />
         </button>}
         extraContent={canUpdateThemeMode && !settingsSections ? (
             <div className="thread-graph-settings-card rounded-lg border p-3">

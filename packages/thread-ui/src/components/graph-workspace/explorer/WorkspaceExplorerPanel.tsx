@@ -144,11 +144,11 @@ export function WorkspaceExplorerPanel({
         <h2 className="text-[11px] font-semibold uppercase text-slate-600 dark:text-slate-300">
           {translate("files.explorer")}</h2>
         <div className="thread-graph-explorer-toolbar flex items-center gap-1">
-          {filePanel && onExpandViewer && <button type="button" data-testid="workbench-close-files" className={iconButtonClassName} onClick={filePanel.close} aria-label={translate('workbench.closeFiles')} title={translate('workbench.closeFiles')}><X size={16} /></button>}
+          {filePanel && onExpandViewer && <button type="button" data-testid="workbench-close-files" className={iconButtonClassName} onClick={filePanel.close} aria-label={translate('workbench.closeFiles')} title={translate('workbench.closeFiles')}><X data-icon="close" size={16} /></button>}
           {onCreateFile && <button type="button" onClick={onCreateFile}
             className={iconButtonClassName} title={translate('files.newFile')}
             aria-label={translate('files.newFile')}>
-            <FilePlus2 className="h-4 w-4" />
+            <FilePlus2 data-icon="new-file" className="h-4 w-4" />
           </button>}
           <button
             type="button"
@@ -158,7 +158,7 @@ export function WorkspaceExplorerPanel({
             aria-label={translate("files.filterWorkspace")}
             aria-pressed={filterOpen}
           >
-            <Search className="h-4 w-4" />
+            <Search data-icon="filter" className="h-4 w-4" />
           </button>
           <button
             type="button"
@@ -167,7 +167,7 @@ export function WorkspaceExplorerPanel({
             title={translate("files.collapseFolders")}
             aria-label={translate("files.collapseFolders")}
           >
-            <ListCollapse className="h-4 w-4" />
+            <ListCollapse data-icon="collapse-folders" className="h-4 w-4" />
           </button>
           <button
             type="button"
@@ -178,6 +178,7 @@ export function WorkspaceExplorerPanel({
             aria-label={translate("files.refreshWorkspace")}
           >
             <RefreshCw
+              data-icon="refresh"
               className={`h-4 w-4 motion-reduce:animate-none ${loading ? 'animate-spin' : ''}`}
             />
           </button>
@@ -188,7 +189,7 @@ export function WorkspaceExplorerPanel({
                 title={translate("files.moreExplorerActions")}
                 aria-label={translate("files.moreExplorerActions")}
               >
-                <MoreHorizontal className="h-4 w-4" />
+                <MoreHorizontal data-icon="more" className="h-4 w-4" />
               </summary>
               <div className="absolute right-0 top-7 z-40 min-w-44 rounded-md border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1 shadow-lg">
                 {canUpload ? (
@@ -197,7 +198,7 @@ export function WorkspaceExplorerPanel({
                     onClick={onUpload}
                     className="flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm hover:bg-[var(--theme-hover)]"
                   >
-                    <Upload className="h-4 w-4" />
+                    <Upload data-icon="upload" className="h-4 w-4" />
                     {translate("files.uploadFile")}</button>
                 ) : null}
                 {onEmptyGarbage ? (
@@ -207,7 +208,7 @@ export function WorkspaceExplorerPanel({
                     disabled={!canEmptyGarbage}
                     className="flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm text-rose-600 hover:bg-rose-500/10 disabled:opacity-50 dark:text-rose-300"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 data-icon="delete" className="h-4 w-4" />
                     {translate("files.emptyGarbage_b701de")}</button>
                 ) : null}
               </div>
@@ -222,7 +223,7 @@ export function WorkspaceExplorerPanel({
               title={translate("files.showEditor")}
               aria-label={translate("files.showEditor")}
             >
-              <PanelRightOpen className="h-4 w-4" />
+              <PanelRightOpen data-icon="expand-viewer" className="h-4 w-4" />
             </button>
           ) : null) : onCollapse ? (
             <button
@@ -233,7 +234,7 @@ export function WorkspaceExplorerPanel({
               title={translate("files.hideExplorer")}
               aria-label={translate("files.hideExplorer")}
             >
-              <PanelLeftClose className="h-4 w-4" />
+              <PanelLeftClose data-icon="collapse-explorer" className="h-4 w-4" />
             </button>
           ) : null}
         </div>

@@ -14626,7 +14626,7 @@ function turnActivity(turn, items) {
   const loaded = activityFromItems(items);
   if (!turn.hasDeferredItems) return loaded;
   if (!turn.activity) return hasActivity(loaded) ? loaded : null;
-  const { files: _files, ...server } = turn.activity;
+  const { files: _files, segments: _segments, ...server } = turn.activity;
   const counts = { ...EMPTY, ...server };
   for (const key of Object.keys(counts)) counts[key] = Math.max(counts[key], loaded[key]);
   return counts;
@@ -14700,6 +14700,21 @@ function turnChangedFiles(turn, items) {
     });
   }
   return files;
+}
+function segmentCounts(segment) {
+  const { before: _before, startedAt: _startedAt, endedAt: _endedAt, ...counts } = segment;
+  return { ...EMPTY, ...counts };
+}
+function storySegments(turn) {
+  const segments = turn.activity?.segments;
+  if (!turn.hasDeferredItems || !segments?.length) return null;
+  const ids = new Set(turn.items.map((item) => item.id));
+  return segments.every((segment) => segment.before === null || ids.has(segment.before)) ? segments : null;
+}
+function segmentDuration(segment) {
+  const start = Date.parse(segment.startedAt ?? "");
+  const end = Date.parse(segment.endedAt ?? "");
+  return Number.isFinite(start) && Number.isFinite(end) && end > start ? end - start : null;
 }
 
 // src/components/timeline/TranscriptLog.tsx
@@ -15063,6 +15078,23 @@ function ChangedFiles({ files, total }) {
     ] }),
     item ? /* @__PURE__ */ jsx61(RowDetail, { item, title: { full: item.text, text: item.text }, path: item.text }, item.text) : null
   ] });
+}
+function RunPlaceholder({ segment, loading, onOpen }) {
+  useI18n();
+  const parts = activityParts(segmentCounts(segment));
+  const duration = segmentDuration(segment);
+  return /* @__PURE__ */ jsx61("section", { className: "tlog-run", "data-placeholder": "true", children: /* @__PURE__ */ jsxs52("button", { type: "button", className: "tlog-run-head", "aria-expanded": false, "aria-busy": loading, disabled: loading, onClick: onOpen, children: [
+    /* @__PURE__ */ jsx61(ChevronRight6, { className: "tlog-chev", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsxs52("span", { className: "tlog-summary", children: [
+      parts.length ? /* @__PURE__ */ jsx61(Parts, { parts }) : translate("chat.logActivity"),
+      duration ? /* @__PURE__ */ jsxs52("span", { className: "tlog-part is-time", children: [
+        /* @__PURE__ */ jsx61("span", { className: "tlog-sep", "aria-hidden": "true", children: "\xB7" }),
+        compactDuration(duration)
+      ] }) : null
+    ] }),
+    loading ? /* @__PURE__ */ jsx61("span", { className: "tlog-spinner", role: "img", "aria-label": translate("chat.logLoading") }) : null,
+    /* @__PURE__ */ jsx61("span", { className: "tlog-rule", "aria-hidden": "true" })
+  ] }) });
 }
 
 // src/components/timeline/TimelineTimeToggle.tsx
@@ -15495,6 +15527,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
   const [expandedGroups, setExpandedGroups] = useState40(
     {}
   );
+  const [openRunBefore, setOpenRunBefore] = useState40(void 0);
   const revealedSearch = useRef21(null);
   useEffect27(() => {
     if (!revealTarget || revealedSearch.current === revealTarget.key) return;
@@ -15538,6 +15571,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
       fallbackTimeTitle: turnTimeTitle,
       turnStartedAt: turn.startedAt,
       autoOpenLatestToolDetails: autoOpenLatestToolDetails && entries.at(-1)?.key === groupedItems.at(-1)?.key,
+      ...openRunBefore !== void 0 ? { openRunBefore } : {},
       ...onSelectArtifact ? { onSelectArtifact } : {},
       ...adapter ? { adapter } : {}
     }
@@ -15613,6 +15647,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
   const activityCounts = useMemo10(() => turnActivity(turn, mergedItems), [turn, mergedItems]);
   const summaryParts = hasActivity(activityCounts) ? activityParts(activityCounts) : [];
   const changedFiles = useMemo10(() => turnChangedFiles(turn, mergedItems), [turn, mergedItems]);
+  const story = effectiveCollapsed ? null : storySegments(turn);
   const receiptNode = isTerminalTurnStatus(turn.status) ? /* @__PURE__ */ jsxs53("div", { className: "thread-turn-receipt", children: [
     /* @__PURE__ */ jsx63("time", { dateTime: turn.startedAt ?? void 0, title: turnTimeTitle, children: turnTimeLabel }),
     /* @__PURE__ */ jsx63(TurnUsageInline, { turn, speedMode: "average" })
@@ -15712,6 +15747,23 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
       ) }, entry.key) : !turn.hasDeferredItems ? /* @__PURE__ */ jsx63("div", { className: "thread-execution-timeline", children: renderHistoryEntries([entry], { collapsed: true, onExpand: () => onToggleCollapse(turn, true) }) }, entry.key) : null) }) : null,
       visibleSummaryAgent && !answerSections?.some((entry) => entry.kind === "item" && entry.item.id === visibleSummaryAgent.id) ? renderSummaryAgent(visibleSummaryAgent) : null,
       currentOperation ? /* @__PURE__ */ jsx63("div", { className: "tlog-current", children: /* @__PURE__ */ jsx63(LogRow, { item: currentOperation }, currentOperation.id) }) : null
+    ] }) : story ? /* @__PURE__ */ jsxs53(Fragment20, { children: [
+      isTerminalTurnStatus(turn.status) ? /* @__PURE__ */ jsx63(ChangedFiles, { files: changedFiles, total: activityCounts?.changedFiles }) : null,
+      /* @__PURE__ */ jsxs53("div", { className: "thread-execution-timeline is-story", children: [
+        storyBlocks(leadingUserCount < 0 ? [] : groupedItems.slice(leadingUserCount), story).map((block) => block.kind === "run" ? /* @__PURE__ */ jsx63(
+          RunPlaceholder,
+          {
+            segment: block.segment,
+            loading: deferredItemsLoading,
+            onOpen: () => {
+              setOpenRunBefore(block.segment.before);
+              onToggleCollapse(turn, true, true);
+            }
+          },
+          `run:${block.segment.before ?? "end"}`
+        ) : renderHistoryEntries([block.entry])),
+        peerWorkChildren
+      ] })
     ] }) : /* @__PURE__ */ jsxs53(Fragment20, { children: [
       /* @__PURE__ */ jsxs53("div", { className: "thread-execution-timeline", children: [
         renderHistoryEntries(leadingUserCount < 0 ? [] : groupedItems.slice(leadingUserCount)),
@@ -15793,7 +15845,8 @@ function TimelineHistoryEntries({
   fallbackTimeLabel,
   fallbackTimeTitle,
   turnStartedAt,
-  autoOpenLatestToolDetails = false
+  autoOpenLatestToolDetails = false,
+  openRunBefore
 }) {
   const { locale: i18nLocale } = useI18n();
   const latestEntryKey = entries.at(-1)?.key ?? null;
@@ -15838,12 +15891,15 @@ function TimelineHistoryEntries({
   };
   const blocks = logBlocks(entries);
   const lastKey = blocks.at(-1)?.key;
-  return /* @__PURE__ */ jsx63(Fragment20, { children: blocks.map((block) => {
+  const lastRunKey = blocks.findLast((block) => block.kind === "run")?.key;
+  return /* @__PURE__ */ jsx63(Fragment20, { children: blocks.map((block, index) => {
     if (block.kind === "item") {
       return isLogItem(block.item) ? /* @__PURE__ */ jsx63("div", { className: "tlog-single", children: /* @__PURE__ */ jsx63(LogRow, { item: block.item, defaultOpen: opensDiff(block.item) }) }, block.key) : renderItem(block.item, block.key);
     }
     const live = autoOpenLatestToolDetails && block.key === lastKey && block.items.some((item) => isRunningHistoryStatus(item.status));
-    const expanded = expandedGroups[block.key] ?? expandedGroups[block.parentKey] ?? live;
+    const next = blocks[index + 1];
+    const opened = openRunBefore === null ? block.key === lastRunKey : openRunBefore !== void 0 && next?.kind === "item" && next.item.id === openRunBefore;
+    const expanded = expandedGroups[block.key] ?? expandedGroups[block.parentKey] ?? (live || opened);
     return /* @__PURE__ */ jsx63(
       LogRun,
       {
@@ -15884,6 +15940,18 @@ function logBlocks(entries) {
 }
 function flattenHistoryEntries(entries) {
   return entries.flatMap((entry) => entry.kind === "item" ? [entry.item] : entry.kind === "agentActivityGroup" ? flattenHistoryEntries(entry.entries) : entry.items);
+}
+function storyBlocks(entries, segments) {
+  const before = new Map(segments.flatMap((segment) => segment.before ? [[segment.before, segment]] : []));
+  const blocks = [];
+  for (const item of flattenHistoryEntries(entries)) {
+    const segment = before.get(item.id);
+    if (segment) blocks.push({ kind: "run", segment });
+    blocks.push({ kind: "entry", entry: { kind: "item", key: item.id, item } });
+  }
+  const end = segments.find((segment) => segment.before === null);
+  if (end) blocks.push({ kind: "run", segment: end });
+  return blocks;
 }
 
 // src/components/timeline/timelineScroll.ts
@@ -16640,8 +16708,12 @@ function ThreadTimelineComponent({
     });
     return () => cancelAnimationFrame(frame);
   }, [searchTarget, collapsedTurnOverrides, preserveScrollPositionForResize]);
-  const handleToggleCollapse = useCallback18((turn, currentCollapsed) => {
+  const handleToggleCollapse = useCallback18((turn, currentCollapsed, loadDetails = false) => {
     preserveScrollPositionForResize();
+    if (currentCollapsed && !loadDetails && !effectiveAutoCollapseCompletedTurns && storySegments(turn)) {
+      setCollapsedTurnOverrides((current) => ({ ...current, [turn.id]: false }));
+      return;
+    }
     if (!currentCollapsed || !turn.hasDeferredItems && !peerWorkForTurn(loadedTurnDetails[turn.id] ?? turn)?.messages.some((message) => message.text === void 0) || !loadTurnDetail || loadedTurnDetails[turn.id] && isTerminalTurnStatus2(loadedTurnDetails[turn.id].status) && loadedTurnDetails[turn.id].status === turn.status) {
       setCollapsedTurnOverrides((current) => ({
         ...current,
@@ -16678,7 +16750,7 @@ function ThreadTimelineComponent({
         return next;
       });
     });
-  }, [loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize]);
+  }, [effectiveAutoCollapseCompletedTurns, loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize]);
   useEffect30(() => {
     if (!loadTurnDetail) return;
     for (const turn of turns) {
@@ -16703,6 +16775,9 @@ function ThreadTimelineComponent({
     const override = collapsedTurnOverrides[turn.id];
     if (override !== void 0) {
       return override;
+    }
+    if (!effectiveAutoCollapseCompletedTurns && isTerminalTurnStatus2(turn.status) && storySegments(turn)) {
+      return false;
     }
     return Boolean(
       loadTurnDetail && turn.status === "inProgress" || turn.hasDeferredItems || effectiveAutoCollapseCompletedTurns && isTerminalTurnStatus2(turn.status) && !input.forceActive && !input.hasLiveActivity

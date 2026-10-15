@@ -1,7 +1,7 @@
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 
-import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
+import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto, ThreadTurnActivitySegmentDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
 
 import { translate, useI18n } from '../../i18n';
 import { DiffDetail } from '../DiffDetail';
@@ -9,6 +9,8 @@ import { GraphChatLinkifiedPlainText } from '../graph-chat/GraphChatMessageBody'
 import {
   activityFromItems,
   activityParts,
+  segmentCounts,
+  segmentDuration,
   compactDuration,
   itemsDuration,
   logStatus,
@@ -434,5 +436,30 @@ export function ChangedFiles({ files, total }: { files: ThreadTurnChangedFileDto
       </div>
       {item ? <RowDetail key={item.text} item={item} title={{ full: item.text, text: item.text }} path={item.text} /> : null}
     </div>
+  );
+}
+
+/** A run of a folded turn whose operations are not loaded yet: its summary line
+    only. Opening it loads the turn and opens the matching run in place. */
+export function RunPlaceholder({ segment, loading, onOpen }: {
+  segment: ThreadTurnActivitySegmentDto;
+  loading: boolean;
+  onOpen: () => void;
+}) {
+  useI18n();
+  const parts = activityParts(segmentCounts(segment));
+  const duration = segmentDuration(segment);
+  return (
+    <section className="tlog-run" data-placeholder="true">
+      <button type="button" className="tlog-run-head" aria-expanded={false} aria-busy={loading} disabled={loading} onClick={onOpen}>
+        <ChevronRight className="tlog-chev" aria-hidden="true" />
+        <span className="tlog-summary">
+          {parts.length ? <Parts parts={parts} /> : translate('chat.logActivity')}
+          {duration ? <span className="tlog-part is-time"><span className="tlog-sep" aria-hidden="true">·</span>{compactDuration(duration)}</span> : null}
+        </span>
+        {loading ? <span className="tlog-spinner" role="img" aria-label={translate('chat.logLoading')} /> : null}
+        <span className="tlog-rule" aria-hidden="true" />
+      </button>
+    </section>
   );
 }

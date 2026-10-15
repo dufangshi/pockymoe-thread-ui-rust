@@ -13,7 +13,7 @@ import {
 } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
-import type { ThreadHistoryItemDto } from '@pockymoe/shared';
+import type { ThreadHistoryItemDto, ThreadTurnActivitySegmentDto } from '@pockymoe/shared';
 
 import type { ThreadTimelineAdapter } from '../../adapters';
 import {
@@ -66,8 +66,8 @@ import { groupAnswerSections, isSubstantiveAnswer } from './answerSections';
 import { TurnTokenSummary } from './tokenFormatting';
 import { deriveDisplayedLivePlan, TurnStatusBar } from './turnStatus';
 import { TurnUsageInline } from './TurnUsageInline';
-import { activityParts, hasActivity, turnActivity, turnChangedFiles } from './activity';
-import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff } from './TranscriptLog';
+import { activityParts, hasActivity, storySegments, turnActivity, turnChangedFiles } from './activity';
+import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff, RunPlaceholder } from './TranscriptLog';
 import { useAppShellNav } from '../../app-shell/AppShellNavContext';
 
 type LivePlan = {
@@ -412,7 +412,7 @@ interface ThreadTurnRowProps {
   liveOutput: string;
   forceActive?: boolean;
   backgroundAgentCount?: number;
-  onToggleCollapse: (turn: TimelineTurn, currentCollapsed: boolean) => void;
+  onToggleCollapse: (turn: TimelineTurn, currentCollapsed: boolean, loadDetails?: boolean) => void;
   deferredItemsLoading?: boolean;
   deferredItemsError?: string | undefined;
   onOpenExpandedText: OpenExpandedTextHandler;
@@ -666,6 +666,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
     {},
   );
+  // The run a reader opened from a folded turn's narration; null is the last run.
+  const [openRunBefore, setOpenRunBefore] = useState<string | null | undefined>(undefined);
   const revealedSearch = useRef<number | null>(null);
   useEffect(() => {
     if (!revealTarget || revealedSearch.current === revealTarget.key) return;
@@ -715,6 +717,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       fallbackTimeTitle={turnTimeTitle}
       turnStartedAt={turn.startedAt}
       autoOpenLatestToolDetails={autoOpenLatestToolDetails && entries.at(-1)?.key === groupedItems.at(-1)?.key}
+      {...(openRunBefore !== undefined ? { openRunBefore } : {})}
       {...(onSelectArtifact ? { onSelectArtifact } : {})}
       {...(adapter ? { adapter } : {})}
     />
@@ -802,6 +805,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const activityCounts = useMemo(() => turnActivity(turn, mergedItems), [turn, mergedItems]);
   const summaryParts = hasActivity(activityCounts) ? activityParts(activityCounts) : [];
   const changedFiles = useMemo(() => turnChangedFiles(turn, mergedItems), [turn, mergedItems]);
+  const story = effectiveCollapsed ? null : storySegments(turn);
   // Time and usage close the turn, under its answer, instead of crowding the work line.
   const receiptNode = isTerminalTurnStatus(turn.status) ? (
     <div className="thread-turn-receipt">
@@ -913,6 +917,16 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           {visibleSummaryAgent && !answerSections?.some(entry => entry.kind === 'item' && entry.item.id === visibleSummaryAgent.id)
             ? renderSummaryAgent(visibleSummaryAgent) : null}
           {currentOperation ? <div className="tlog-current"><LogRow key={currentOperation.id} item={currentOperation} /></div> : null}
+        </> : story ? <>
+          {isTerminalTurnStatus(turn.status) ? <ChangedFiles files={changedFiles} total={activityCounts?.changedFiles} /> : null}
+          {/* Narration from the summary, with each stretch of work as a run that loads when opened. */}
+          <div className="thread-execution-timeline is-story">
+            {storyBlocks(leadingUserCount < 0 ? [] : groupedItems.slice(leadingUserCount), story).map((block) => block.kind === 'run'
+              ? <RunPlaceholder key={`run:${block.segment.before ?? 'end'}`} segment={block.segment} loading={deferredItemsLoading}
+                  onOpen={() => { setOpenRunBefore(block.segment.before); onToggleCollapse(turn, true, true); }} />
+              : renderHistoryEntries([block.entry]))}
+            {peerWorkChildren}
+          </div>
         </> : <>
           {/* Opened, the turn reads in order: narration, runs of work, the answer. */}
           <div className="thread-execution-timeline">
@@ -985,6 +999,8 @@ interface TimelineHistoryEntriesProps {
   entries: TimelineHistoryEntry[];
   expandedGroups: Record<string, boolean>;
   onToggleGroupedItem: (groupKey: string, currentExpanded: boolean) => void;
+  /** Open the run before this item (null: the last run), once the turn has loaded. */
+  openRunBefore?: string | null;
   threadId: string | undefined;
   scrollRootRef: RefObject<HTMLDivElement | null>;
   fallbackTimestamp?: string | null | undefined;
@@ -1019,6 +1035,7 @@ function TimelineHistoryEntries({
   fallbackTimeTitle,
   turnStartedAt,
   autoOpenLatestToolDetails = false,
+  openRunBefore,
 }: TimelineHistoryEntriesProps) {
   const { locale: i18nLocale } = useI18n();
   const latestEntryKey = entries.at(-1)?.key ?? null;
@@ -1069,9 +1086,10 @@ function TimelineHistoryEntries({
 
   const blocks = logBlocks(entries);
   const lastKey = blocks.at(-1)?.key;
+  const lastRunKey = blocks.findLast((block) => block.kind === 'run')?.key;
   return (
     <>
-      {blocks.map((block) => {
+      {blocks.map((block, index) => {
         if (block.kind === 'item') {
           // A lone operation between messages is already one line.
           return isLogItem(block.item)
@@ -1080,7 +1098,10 @@ function TimelineHistoryEntries({
         }
         // The run that is still working stays open until the reader closes it.
         const live = autoOpenLatestToolDetails && block.key === lastKey && block.items.some(item => isRunningHistoryStatus(item.status));
-        const expanded = expandedGroups[block.key] ?? expandedGroups[block.parentKey] ?? live;
+        const next = blocks[index + 1];
+        const opened = openRunBefore === null ? block.key === lastRunKey
+          : openRunBefore !== undefined && next?.kind === 'item' && next.item.id === openRunBefore;
+        const expanded = expandedGroups[block.key] ?? expandedGroups[block.parentKey] ?? (live || opened);
         return (
           <LogRun
             key={block.key}
@@ -1132,4 +1153,22 @@ function flattenHistoryEntries(entries: TimelineHistoryEntry[]): ThreadHistoryIt
     entry.kind === 'item' ? [entry.item]
       : entry.kind === 'agentActivityGroup' ? flattenHistoryEntries(entry.entries)
         : entry.items);
+}
+
+type StoryBlock =
+  | { kind: 'entry'; entry: TimelineHistoryEntry }
+  | { kind: 'run'; segment: ThreadTurnActivitySegmentDto };
+
+/** A folded turn's summary items in order, each preceded by the work before it. */
+function storyBlocks(entries: TimelineHistoryEntry[], segments: ThreadTurnActivitySegmentDto[]): StoryBlock[] {
+  const before = new Map(segments.flatMap((segment) => segment.before ? [[segment.before, segment] as const] : []));
+  const blocks: StoryBlock[] = [];
+  for (const item of flattenHistoryEntries(entries)) {
+    const segment = before.get(item.id);
+    if (segment) blocks.push({ kind: 'run', segment });
+    blocks.push({ kind: 'entry', entry: { kind: 'item', key: item.id, item } });
+  }
+  const end = segments.find((segment) => segment.before === null);
+  if (end) blocks.push({ kind: 'run', segment: end });
+  return blocks;
 }

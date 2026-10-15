@@ -44,6 +44,7 @@ import {
 import { useDeferredHistoryDetail } from './timeline/useDeferredHistoryDetail';
 import { useTimelineScroll } from './timeline/useTimelineScroll';
 import { TranscriptLogContext, type TranscriptLogActions } from './timeline/TranscriptLog';
+import { storySegments } from './timeline/activity';
 
 export interface ThreadTimelineProps {
   threadId?: string | undefined;
@@ -320,8 +321,15 @@ function ThreadTimelineComponent({
   const handleToggleCollapse = useCallback((
     turn: TimelineTurn,
     currentCollapsed: boolean,
+    loadDetails = false,
   ) => {
     preserveScrollPositionForResize();
+    // With turns kept open, a folded summary opens as its narration; only a run
+    // the reader opens loads the turn's operations.
+    if (currentCollapsed && !loadDetails && !effectiveAutoCollapseCompletedTurns && storySegments(turn)) {
+      setCollapsedTurnOverrides((current) => ({ ...current, [turn.id]: false }));
+      return;
+    }
     if (
       !currentCollapsed ||
       (!turn.hasDeferredItems && !peerWorkForTurn(loadedTurnDetails[turn.id] ?? turn)?.messages.some(message => message.text === undefined)) ||
@@ -372,7 +380,7 @@ function ThreadTimelineComponent({
           return next;
         });
       });
-  }, [loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize]);
+  }, [effectiveAutoCollapseCompletedTurns, loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize]);
 
   useEffect(() => {
     if (!loadTurnDetail) return;
@@ -405,6 +413,9 @@ function ThreadTimelineComponent({
     const override = collapsedTurnOverrides[turn.id];
     if (override !== undefined) {
       return override;
+    }
+    if (!effectiveAutoCollapseCompletedTurns && isTerminalTurnStatus(turn.status) && storySegments(turn)) {
+      return false;
     }
 
     return Boolean(

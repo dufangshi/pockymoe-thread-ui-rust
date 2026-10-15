@@ -1,7 +1,7 @@
-import type { ThreadHistoryItemDto, ThreadTurnActivityDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
+import type { ThreadHistoryItemDto, ThreadTurnActivityDto, ThreadTurnActivitySegmentDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
 import { translate } from '../../i18n';
 
-export type ActivityCounts = Required<Omit<ThreadTurnActivityDto, 'files'>>;
+export type ActivityCounts = Required<Omit<ThreadTurnActivityDto, 'files' | 'segments'>>;
 
 const EMPTY: ActivityCounts = {
   commands: 0, fileChanges: 0, changedFiles: 0, addedLines: 0, removedLines: 0,
@@ -56,7 +56,7 @@ export function turnActivity(
   const loaded = activityFromItems(items);
   if (!turn.hasDeferredItems) return loaded;
   if (!turn.activity) return hasActivity(loaded) ? loaded : null;
-  const { files: _files, ...server } = turn.activity;
+  const { files: _files, segments: _segments, ...server } = turn.activity;
   const counts = { ...EMPTY, ...server };
   for (const key of Object.keys(counts) as Array<keyof ActivityCounts>) counts[key] = Math.max(counts[key], loaded[key]);
   return counts;
@@ -146,4 +146,30 @@ export function turnChangedFiles(
     });
   }
   return files;
+}
+
+/** Counts of one stretch of work, ready for `activityParts`. */
+export function segmentCounts(segment: ThreadTurnActivitySegmentDto): ActivityCounts {
+  const { before: _before, startedAt: _startedAt, endedAt: _endedAt, ...counts } = segment;
+  return { ...EMPTY, ...counts };
+}
+
+/** A folded turn can be told as narration between runs without loading its
+    operations when its summary carries the narration every stretch precedes. */
+export function storySegments(turn: {
+  hasDeferredItems?: boolean | null;
+  activity?: ThreadTurnActivityDto | null;
+  items: readonly ThreadHistoryItemDto[];
+}): ThreadTurnActivitySegmentDto[] | null {
+  const segments = turn.activity?.segments;
+  if (!turn.hasDeferredItems || !segments?.length) return null;
+  const ids = new Set(turn.items.map((item) => item.id));
+  return segments.every((segment) => segment.before === null || ids.has(segment.before)) ? segments : null;
+}
+
+/** Elapsed time of one stretch of work, when the Supervisor reported it. */
+export function segmentDuration(segment: ThreadTurnActivitySegmentDto): number | null {
+  const start = Date.parse(segment.startedAt ?? '');
+  const end = Date.parse(segment.endedAt ?? '');
+  return Number.isFinite(start) && Number.isFinite(end) && end > start ? end - start : null;
 }

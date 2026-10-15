@@ -445,3 +445,11 @@ button.tlog-files-more:hover { color: var(--theme-fg); text-decoration: underlin
   color: var(--theme-fg-muted);
   font-variant-numeric: tabular-nums;
 }
+
+.tlog-files-more.is-narrow { display: none; }
+@media (max-width: 639px) {
+  .tlog-files-row:not([data-all]) .tlog-file:nth-of-type(n + 3) { display: none; }
+  .tlog-files-more.is-wide { display: none; }
+  .tlog-files-more.is-narrow { display: inline; }
+  .tlog-file { max-width: 46%; }
+}

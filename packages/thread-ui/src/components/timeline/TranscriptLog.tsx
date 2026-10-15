@@ -394,6 +394,7 @@ export const LogRun = memo(function LogRun({
 });
 
 const FILE_CHIPS = 4;
+const FILE_CHIPS_NARROW = 2;
 
 /** "± queue-store.ts +2 −1  server.ts +5": the files a folded turn changed. A name
     opens that file's latest diff right below; the rest of the work stays folded. */
@@ -412,7 +413,7 @@ export function ChangedFiles({ files, total }: { files: ThreadTurnChangedFileDto
   } : null;
   return (
     <div className="tlog-files">
-      <div className="tlog-files-row">
+      <div className="tlog-files-row" data-all={all || undefined}>
         <span className="tlog-glyph" aria-hidden="true">±</span>
         {shown.map((file) => {
           const path = displayPath(file.path, actions?.workspaceRoot);
@@ -424,11 +425,12 @@ export function ChangedFiles({ files, total }: { files: ThreadTurnChangedFileDto
             </button>
           );
         })}
-        {hidden > 0 ? (
-          files.length > shown.length
-            ? <button type="button" className="tlog-files-more" onClick={() => setAll(true)}>+{hidden}</button>
-            : <span className="tlog-files-more">+{hidden}</span>
-        ) : null}
+        {/* Phones show two names; each width gets its own count of the rest. */}
+        {[{ width: 'wide', count: hidden }, { width: 'narrow', count: all ? hidden : hidden + Math.max(0, shown.length - FILE_CHIPS_NARROW) }].map(({ width, count }) => count > 0 ? (
+          !all && files.length > FILE_CHIPS_NARROW
+            ? <button key={width} type="button" className={`tlog-files-more is-${width}`} onClick={() => setAll(true)}>+{count}</button>
+            : <span key={width} className={`tlog-files-more is-${width}`}>+{count}</span>
+        ) : null)}
       </div>
       {item ? <RowDetail key={item.text} item={item} title={{ full: item.text, text: item.text }} path={item.text} /> : null}
     </div>

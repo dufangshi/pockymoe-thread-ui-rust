@@ -56,8 +56,8 @@ export function turnActivity(
   const loaded = activityFromItems(items);
   if (!turn.hasDeferredItems) return loaded;
   if (!turn.activity) return hasActivity(loaded) ? loaded : null;
-  const { files: _files, segments: _segments, ...server } = turn.activity;
-  const counts = { ...EMPTY, ...server };
+  const counts = { ...EMPTY };
+  for (const key of Object.keys(EMPTY) as Array<keyof ActivityCounts>) counts[key] = turn.activity[key] ?? 0;
   for (const key of Object.keys(counts) as Array<keyof ActivityCounts>) counts[key] = Math.max(counts[key], loaded[key]);
   return counts;
 }
@@ -150,8 +150,9 @@ export function turnChangedFiles(
 
 /** Counts of one stretch of work, ready for `activityParts`. */
 export function segmentCounts(segment: ThreadTurnActivitySegmentDto): ActivityCounts {
-  const { before: _before, startedAt: _startedAt, endedAt: _endedAt, ...counts } = segment;
-  return { ...EMPTY, ...counts };
+  const counts = { ...EMPTY };
+  for (const key of Object.keys(EMPTY) as Array<keyof ActivityCounts>) counts[key] = segment[key] ?? 0;
+  return counts;
 }
 
 /** A folded turn can be told as narration between runs without loading its

@@ -11,7 +11,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 import type { ThreadHistoryItemDto, ThreadTurnActivitySegmentDto } from '@pockymoe/shared';
 
@@ -22,26 +22,19 @@ import {
   formatPreciseMessageTimestamp,
   formatShortTimestamp,
 } from '../threadPresentation';
-import { GraphChatHistoryEntries } from '../graph-chat/GraphChatHistoryEntries';
 import {
   GraphChatAgentToolCallItem as AgentToolCallItem,
-  GraphChatAgentActivityGroupItem as AgentActivityGroupItem,
   GraphChatArtifactHistoryItem as ArtifactHistoryItem,
-  GraphChatCommandGroupItem as CommandGroupItem,
   GraphChatCommandItem as CommandItem,
   GraphChatContextCompactionItem as ContextCompactionItem,
-  GraphChatFileChangeGroupItem as FileChangeGroupItem,
   GraphChatFileChangeItem as FileChangeItem,
-  GraphChatFileReadGroupItem as FileReadGroupItem,
   GraphChatFileReadItem as FileReadItem,
   GraphChatGenericHistoryItem as GenericHistoryItem,
   GraphChatHookItem as HookItem,
   GraphChatImageItem as ImageItem,
   GraphChatPlanHistoryItem as PlanHistoryItem,
-  GraphChatSearchGroupItem as SearchGroupItem,
   GraphChatSkillToolCallItem as SkillToolCallItem,
   GraphChatToolCallItem as ToolCallItem,
-  GraphChatToolCallGroupItem as ToolCallGroupItem,
   GraphChatWebSearchItem as WebSearchItem,
 } from '../graph-chat/GraphChatHistoryItems';
 import { GraphChatCompactMessageItem as CompactMessageItem } from '../graph-chat/GraphChatCompactMessageItem';
@@ -500,34 +493,8 @@ export function formatWorkedDuration(
 }
 
 import { TimelineTimeToggle } from './TimelineTimeToggle';
-function historyEntryRunning(entry: TimelineHistoryEntry): boolean {
-  if (entry.kind === 'item') return isRunningHistoryStatus(entry.item.status);
-  if (entry.kind === 'agentActivityGroup') return entry.entries.some(historyEntryRunning);
-  return entry.items.some(item => isRunningHistoryStatus(item.status));
-}
 
-function firstHistoryEntryTimestamp(
-  entry: TimelineHistoryEntry,
-): string | null {
-  if (entry.kind === 'item') {
-    return (entry.item.origin === 'nativeTaskNotification' ? entry.item.awakenedAt : null) ?? entry.item.createdAt ?? null;
-  }
-  if (entry.kind === 'agentActivityGroup') {
-    return entry.entries[0]
-      ? firstHistoryEntryTimestamp(entry.entries[0])
-      : null;
-  }
-  return entry.items.find((item) => item.createdAt)?.createdAt ?? null;
-}
 
-function lastHistoryEntryTimestamp(entry: TimelineHistoryEntry): string | null {
-  if (entry.kind === 'item') return (entry.item.origin === 'nativeTaskNotification' ? entry.item.awakenedAt : null) ?? entry.item.updatedAt ?? entry.item.createdAt ?? null;
-  if (entry.kind === 'agentActivityGroup') {
-    const timestamps = entry.entries.map(lastHistoryEntryTimestamp).filter((value): value is string => Boolean(value));
-    return timestamps.sort((a,b)=>Date.parse(a)-Date.parse(b)).at(-1) ?? null;
-  }
-  return entry.items.map(item=>item.updatedAt ?? item.createdAt).filter((value): value is string => Boolean(value)).sort((a,b)=>Date.parse(a)-Date.parse(b)).at(-1) ?? null;
-}
 
 function collapsedSummaryMessages(entries: TimelineHistoryEntry[], active: boolean) {
   const itemEntries = entries.filter(

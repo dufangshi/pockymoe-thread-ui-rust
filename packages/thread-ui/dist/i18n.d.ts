@@ -1224,7 +1224,7 @@ declare const en: {
     readonly "files.adjustConversationComposerAndActivityTextChanges": "Adjust conversation, composer and activity text. Changes apply immediately and are saved on this device.";
     readonly "files.reset": "Reset";
     readonly "files.threadTimeline": "Thread timeline";
-    readonly "files.collapseCompletedTurnsToKeepConversationsEasy": "Collapse completed turns to keep conversations easy to scan.";
+    readonly "files.collapseCompletedTurnsToKeepConversationsEasy": "Fold completed turns to their answer. Off: keep the agent's narration, with its work folded.";
     readonly "files.autoCollapse": "Auto collapse";
     readonly "files.refreshPlugins": "Refresh plugins";
     readonly "files.showAgentStatusSummaries": "Show agent status summaries";
@@ -4454,7 +4454,7 @@ declare const zhCN: {
     "files.adjustConversationComposerAndActivityTextChanges": "调整对话、输入框和活动文字。更改立即生效并保存在此设备上。";
     "files.reset": "重置";
     "files.threadTimeline": "线程时间线";
-    "files.collapseCompletedTurnsToKeepConversationsEasy": "折叠已完成的轮次，让对话更易浏览。";
+    "files.collapseCompletedTurnsToKeepConversationsEasy": "已完成的轮次只显示回答。关闭后保留 Agent 的过程叙述，操作仍折叠。";
     "files.autoCollapse": "自动折叠";
     "files.refreshPlugins": "刷新插件";
     "files.showAgentStatusSummaries": "显示智能体状态摘要";
@@ -7706,7 +7706,7 @@ declare const resources: {
         readonly "files.adjustConversationComposerAndActivityTextChanges": "Adjust conversation, composer and activity text. Changes apply immediately and are saved on this device.";
         readonly "files.reset": "Reset";
         readonly "files.threadTimeline": "Thread timeline";
-        readonly "files.collapseCompletedTurnsToKeepConversationsEasy": "Collapse completed turns to keep conversations easy to scan.";
+        readonly "files.collapseCompletedTurnsToKeepConversationsEasy": "Fold completed turns to their answer. Off: keep the agent's narration, with its work folded.";
         readonly "files.autoCollapse": "Auto collapse";
         readonly "files.refreshPlugins": "Refresh plugins";
         readonly "files.showAgentStatusSummaries": "Show agent status summaries";
@@ -10935,7 +10935,7 @@ declare const resources: {
         "files.adjustConversationComposerAndActivityTextChanges": "调整对话、输入框和活动文字。更改立即生效并保存在此设备上。";
         "files.reset": "重置";
         "files.threadTimeline": "线程时间线";
-        "files.collapseCompletedTurnsToKeepConversationsEasy": "折叠已完成的轮次，让对话更易浏览。";
+        "files.collapseCompletedTurnsToKeepConversationsEasy": "已完成的轮次只显示回答。关闭后保留 Agent 的过程叙述，操作仍折叠。";
         "files.autoCollapse": "自动折叠";
         "files.refreshPlugins": "刷新插件";
         "files.showAgentStatusSummaries": "显示智能体状态摘要";

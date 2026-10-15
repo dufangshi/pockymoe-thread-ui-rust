@@ -771,7 +771,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const activityCounts = useMemo(() => turnActivity(turn, mergedItems), [turn, mergedItems]);
   const summaryParts = hasActivity(activityCounts) ? activityParts(activityCounts) : [];
   const changedFiles = useMemo(() => turnChangedFiles(turn, mergedItems), [turn, mergedItems]);
-  const story = effectiveCollapsed ? null : storySegments(turn);
+  // Only a finished turn is told from its summary; a working one loads as it streams.
+  const story = effectiveCollapsed || !isTerminalTurnStatus(turn.status) ? null : storySegments(turn);
   // Time and usage close the turn, under its answer, instead of crowding the work line.
   const receiptNode = isTerminalTurnStatus(turn.status) ? (
     <div className="thread-turn-receipt">

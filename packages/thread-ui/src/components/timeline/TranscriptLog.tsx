@@ -57,6 +57,8 @@ const GLYPH: Partial<Record<ThreadHistoryItemDto['kind'], string>> = {
 
 const DEFERRED_KINDS = new Set<ThreadHistoryItemDto['kind']>(['commandExecution', 'fileChange']);
 const detailCache = new WeakMap<DetailLoader, Map<string, Promise<string>>>();
+// Outputs can be large; keep the most recently opened ones.
+const DETAIL_CACHE_SIZE = 120;
 
 function useItemDetail(item: ThreadHistoryItemDto, enabled: boolean) {
   const actions = useContext(TranscriptLogContext);
@@ -81,6 +83,7 @@ function useItemDetail(item: ThreadHistoryItemDto, enabled: boolean) {
       pending = request;
       if (!live) {
         cache.set(key, request);
+        if (cache.size > DETAIL_CACHE_SIZE) cache.delete(cache.keys().next().value!);
         request.catch(() => cache!.delete(key));
       }
     }

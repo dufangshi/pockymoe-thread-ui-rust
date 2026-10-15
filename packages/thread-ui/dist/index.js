@@ -14208,6 +14208,7 @@ var GLYPH = {
 };
 var DEFERRED_KINDS = /* @__PURE__ */ new Set(["commandExecution", "fileChange"]);
 var detailCache = /* @__PURE__ */ new WeakMap();
+var DETAIL_CACHE_SIZE = 120;
 function useItemDetail(item, enabled) {
   const actions = useContext8(TranscriptLogContext);
   const loader = actions?.loadDetail;
@@ -14230,6 +14231,7 @@ function useItemDetail(item, enabled) {
       pending = request;
       if (!live) {
         cache.set(key, request);
+        if (cache.size > DETAIL_CACHE_SIZE) cache.delete(cache.keys().next().value);
         request.catch(() => cache.delete(key));
       }
     }
@@ -15105,7 +15107,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
   const activityCounts = useMemo10(() => turnActivity(turn, mergedItems), [turn, mergedItems]);
   const summaryParts = hasActivity(activityCounts) ? activityParts(activityCounts) : [];
   const changedFiles = useMemo10(() => turnChangedFiles(turn, mergedItems), [turn, mergedItems]);
-  const story = effectiveCollapsed ? null : storySegments(turn);
+  const story = effectiveCollapsed || !isTerminalTurnStatus(turn.status) ? null : storySegments(turn);
   const receiptNode = isTerminalTurnStatus(turn.status) ? /* @__PURE__ */ jsxs52("div", { className: "thread-turn-receipt", children: [
     /* @__PURE__ */ jsx62("time", { dateTime: turn.startedAt ?? void 0, title: turnTimeTitle, children: turnTimeLabel }),
     /* @__PURE__ */ jsx62(TurnUsageInline, { turn, speedMode: "average" })
@@ -16168,7 +16170,7 @@ function ThreadTimelineComponent({
   }, [searchTarget, collapsedTurnOverrides, preserveScrollPositionForResize]);
   const handleToggleCollapse = useCallback18((turn, currentCollapsed, loadDetails = false) => {
     preserveScrollPositionForResize();
-    if (currentCollapsed && !loadDetails && !effectiveAutoCollapseCompletedTurns && storySegments(turn)) {
+    if (currentCollapsed && !loadDetails && !effectiveAutoCollapseCompletedTurns && isTerminalTurnStatus2(turn.status) && storySegments(turn)) {
       setCollapsedTurnOverrides((current) => ({ ...current, [turn.id]: false }));
       return;
     }

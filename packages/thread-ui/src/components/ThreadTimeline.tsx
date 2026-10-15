@@ -326,7 +326,7 @@ function ThreadTimelineComponent({
     preserveScrollPositionForResize();
     // With turns kept open, a folded summary opens as its narration; only a run
     // the reader opens loads the turn's operations.
-    if (currentCollapsed && !loadDetails && !effectiveAutoCollapseCompletedTurns && storySegments(turn)) {
+    if (currentCollapsed && !loadDetails && !effectiveAutoCollapseCompletedTurns && isTerminalTurnStatus(turn.status) && storySegments(turn)) {
       setCollapsedTurnOverrides((current) => ({ ...current, [turn.id]: false }));
       return;
     }

@@ -23,7 +23,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-E45T7OJ2.js";
+} from "./chunk-I6752RSR.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -49,7 +49,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-IIBTZ7FM.js";
+} from "./chunk-MHVLF32T.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -9618,8 +9618,9 @@ function DiffDetail({ text, compact = false, formatPath }) {
       return [{ line, kind, code, oldNumber, newNumber, tokens }];
     });
   }, [text, highlighter, theme, compact, formatPath]);
+  const oldColumn = rows.some((row) => row.oldNumber !== null);
   return /* @__PURE__ */ jsx37("pre", { className: "thread-diff", "aria-label": translate("files.fileChanges"), "data-highlighted": Boolean(highlighter), children: rows.map((row, index) => /* @__PURE__ */ jsxs31("div", { className: `thread-diff-line is-${row.kind}`, children: [
-    /* @__PURE__ */ jsx37("span", { className: "thread-diff-number", children: row.oldNumber }),
+    oldColumn ? /* @__PURE__ */ jsx37("span", { className: "thread-diff-number", children: row.oldNumber }) : null,
     /* @__PURE__ */ jsx37("span", { className: "thread-diff-number", children: row.newNumber }),
     /* @__PURE__ */ jsx37("span", { className: "thread-diff-sign", children: row.kind === "add" ? "+" : row.kind === "remove" ? "\u2212" : " " }),
     /* @__PURE__ */ jsx37("code", { children: row.tokens?.map((token, i) => /* @__PURE__ */ jsx37("span", { style: { color: theme === "light" && token.color ? `color-mix(in oklch, ${token.color} 65%, var(--theme-fg))` : token.color }, children: token.content }, i)) ?? row.code })
@@ -14346,7 +14347,7 @@ function RowDetail({ item, title, path }) {
   const detail = useItemDetail(item, !isReasoning);
   const workspaceRoot = actions?.workspaceRoot;
   const formatPath = useCallback14((path2) => displayPath(path2, workspaceRoot), [workspaceRoot]);
-  const fullAction = !isReasoning && actions ? /* @__PURE__ */ jsx60("button", { type: "button", className: "tlog-open", onClick: () => openFull(actions, item), children: translate("chat.logOpenFull") }) : null;
+  const fullAction = !isReasoning && actions ? /* @__PURE__ */ jsx60("button", { type: "button", className: "tlog-open tlog-full", onClick: () => openFull(actions, item), children: translate("chat.logOpenFull") }) : null;
   if (isReasoning) {
     return /* @__PURE__ */ jsx60("div", { className: "tlog-detail is-prose", children: /* @__PURE__ */ jsx60(GraphChatLinkifiedPlainText, { text: item.text }) });
   }
@@ -14367,8 +14368,20 @@ function RowDetail({ item, title, path }) {
   return /* @__PURE__ */ jsxs51("div", { className: "tlog-detail", children: [
     command ? /* @__PURE__ */ jsx60("pre", { className: "tlog-command", children: command }) : null,
     output ? /* @__PURE__ */ jsx60("pre", { className: `tlog-output${detail.error ? " is-error" : ""}`, children: clip(output) }) : command ? null : /* @__PURE__ */ jsx60("p", { className: "tlog-empty", children: translate("chat.logNoOutput") }),
-    fullAction ? /* @__PURE__ */ jsx60("div", { className: "tlog-detail-foot", children: fullAction }) : null
+    /* @__PURE__ */ jsxs51("div", { className: "tlog-detail-foot", children: [
+      item.kind === "commandExecution" ? /* @__PURE__ */ jsx60(CopyText, { text: title.full }) : null,
+      fullAction
+    ] })
   ] });
+}
+function CopyText({ text }) {
+  const [copied, setCopied] = useState38(false);
+  return /* @__PURE__ */ jsx60("button", { type: "button", className: "tlog-open tlog-copy", onClick: () => {
+    void navigator.clipboard?.writeText(text).then(() => {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1200);
+    }, () => void 0);
+  }, children: copied ? translate("chat.copied") : translate("chat.logCopyCommand") });
 }
 var LogRow = memo6(function LogRow2({ item, defaultOpen = false }) {
   useI18n();

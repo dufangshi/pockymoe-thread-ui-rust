@@ -2794,6 +2794,7 @@ declare const en: {
     readonly 'chat.envelopeInbox': "Inbox reminder";
     readonly 'chat.envelopeTurn': "Turn notification";
     readonly 'chat.envelopeResume': "Resumed after a Supervisor restart";
+    readonly 'chat.logCopyCommand': "Copy command";
     readonly "auth.ui.signInTitle": "Sign in";
     readonly "auth.ui.registerTitle": "Create your account";
     readonly "auth.ui.or": "or";
@@ -6024,6 +6025,7 @@ declare const zhCN: {
     'chat.envelopeInbox': "收件箱提醒";
     'chat.envelopeTurn': "轮次通知";
     'chat.envelopeResume': "Supervisor 重启后继续";
+    'chat.logCopyCommand': "复制命令";
     "auth.ui.signInTitle": "登录";
     "auth.ui.registerTitle": "创建账号";
     "auth.ui.or": "或";
@@ -9276,6 +9278,7 @@ declare const resources: {
         readonly 'chat.envelopeInbox': "Inbox reminder";
         readonly 'chat.envelopeTurn': "Turn notification";
         readonly 'chat.envelopeResume': "Resumed after a Supervisor restart";
+        readonly 'chat.logCopyCommand': "Copy command";
         readonly "auth.ui.signInTitle": "Sign in";
         readonly "auth.ui.registerTitle": "Create your account";
         readonly "auth.ui.or": "or";
@@ -12505,6 +12508,7 @@ declare const resources: {
         'chat.envelopeInbox': "收件箱提醒";
         'chat.envelopeTurn': "轮次通知";
         'chat.envelopeResume': "Supervisor 重启后继续";
+        'chat.logCopyCommand': "复制命令";
         "auth.ui.signInTitle": "登录";
         "auth.ui.registerTitle": "创建账号";
         "auth.ui.or": "或";

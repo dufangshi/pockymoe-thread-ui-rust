@@ -490,4 +490,5 @@ export const chatEn = {
   'chat.envelopeInbox': 'Inbox reminder',
   'chat.envelopeTurn': 'Turn notification',
   'chat.envelopeResume': 'Resumed after a Supervisor restart',
+  'chat.logCopyCommand': 'Copy command',
 } as const;

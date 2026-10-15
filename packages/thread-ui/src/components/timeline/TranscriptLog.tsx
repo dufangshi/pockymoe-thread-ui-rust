@@ -211,7 +211,7 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
   const workspaceRoot = actions?.workspaceRoot;
   const formatPath = useCallback((path: string) => displayPath(path, workspaceRoot), [workspaceRoot]);
   const fullAction = !isReasoning && actions ? (
-    <button type="button" className="tlog-open" onClick={() => openFull(actions, item)}>{translate('chat.logOpenFull')}</button>
+    <button type="button" className="tlog-open tlog-full" onClick={() => openFull(actions, item)}>{translate('chat.logOpenFull')}</button>
   ) : null;
 
   if (isReasoning) {
@@ -242,8 +242,25 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
       {command ? <pre className="tlog-command">{command}</pre> : null}
       {output ? <pre className={`tlog-output${detail.error ? ' is-error' : ''}`}>{clip(output)}</pre>
         : command ? null : <p className="tlog-empty">{translate('chat.logNoOutput')}</p>}
-      {fullAction ? <div className="tlog-detail-foot">{fullAction}</div> : null}
+      <div className="tlog-detail-foot">
+        {item.kind === 'commandExecution' ? <CopyText text={title.full} /> : null}
+        {fullAction}
+      </div>
     </div>
+  );
+}
+
+function CopyText({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button type="button" className="tlog-open tlog-copy" onClick={() => {
+      void navigator.clipboard?.writeText(text).then(() => {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1200);
+      }, () => undefined);
+    }}>
+      {copied ? translate('chat.copied') : translate('chat.logCopyCommand')}
+    </button>
   );
 }
 

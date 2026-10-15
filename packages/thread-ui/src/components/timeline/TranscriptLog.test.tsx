@@ -65,7 +65,7 @@ describe('TranscriptLog', () => {
     await click('.tlog-row-head');
     expect(container.querySelector('.tlog-output')?.textContent).toBe('loaded output');
     expect(loadDetail).toHaveBeenCalledTimes(1);
-    await click('.tlog-open');
+    await click('.tlog-full');
     expect(context.openCommand).toHaveBeenCalledWith(row, 'Command Output');
   });
 

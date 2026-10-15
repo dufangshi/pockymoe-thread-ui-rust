@@ -1108,7 +1108,8 @@ var chatEn = {
   "chat.envelopeUrgent": "Immediate:",
   "chat.envelopeInbox": "Inbox reminder",
   "chat.envelopeTurn": "Turn notification",
-  "chat.envelopeResume": "Resumed after a Supervisor restart"
+  "chat.envelopeResume": "Resumed after a Supervisor restart",
+  "chat.logCopyCommand": "Copy command"
 };
 
 // src/i18n/common.en.ts
@@ -4343,7 +4344,8 @@ var chatZhCN = {
   "chat.envelopeUrgent": "\u9700\u7ACB\u5373\u5904\u7406\uFF1A",
   "chat.envelopeInbox": "\u6536\u4EF6\u7BB1\u63D0\u9192",
   "chat.envelopeTurn": "\u8F6E\u6B21\u901A\u77E5",
-  "chat.envelopeResume": "Supervisor \u91CD\u542F\u540E\u7EE7\u7EED"
+  "chat.envelopeResume": "Supervisor \u91CD\u542F\u540E\u7EE7\u7EED",
+  "chat.logCopyCommand": "\u590D\u5236\u547D\u4EE4"
 };
 
 // src/i18n/common.zh-CN.ts

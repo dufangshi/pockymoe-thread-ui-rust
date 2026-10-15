@@ -49,9 +49,11 @@ export function DiffDetail({ text, compact = false, formatPath }: { text: string
       return [{ line, kind, code, oldNumber, newNumber, tokens }];
     });
   }, [text, highlighter, theme, compact, formatPath]);
+  // A new file has no old lines; its empty number column is dropped.
+  const oldColumn = rows.some(row => row.oldNumber !== null);
   return <pre className="thread-diff" aria-label={translate("files.fileChanges")} data-highlighted={Boolean(highlighter)}>
     {rows.map((row, index) => <div key={index} className={`thread-diff-line is-${row.kind}`}>
-      <span className="thread-diff-number">{row.oldNumber}</span><span className="thread-diff-number">{row.newNumber}</span>
+      {oldColumn ? <span className="thread-diff-number">{row.oldNumber}</span> : null}<span className="thread-diff-number">{row.newNumber}</span>
       <span className="thread-diff-sign">{row.kind === 'add' ? '+' : row.kind === 'remove' ? '−' : ' '}</span>
       <code>{row.tokens?.map((token, i) => <span key={i} style={{ color: theme === 'light' && token.color ? `color-mix(in oklch, ${token.color} 65%, var(--theme-fg))` : token.color }}>{token.content}</span>) ?? row.code}</code>
     </div>)}

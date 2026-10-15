@@ -490,4 +490,5 @@ export const chatZhCN = {
   'chat.envelopeInbox': '收件箱提醒',
   'chat.envelopeTurn': '轮次通知',
   'chat.envelopeResume': 'Supervisor 重启后继续',
+  'chat.logCopyCommand': '复制命令',
 } as const;

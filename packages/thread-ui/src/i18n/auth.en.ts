@@ -318,4 +318,5 @@ export const authEn = {
   "auth.user_id_taken": "That account identifier was taken. Try registering again to generate a new account key and recovery code.",
   "auth.reauthentication_required": "Sign in again with your OAuth provider or verify an existing authenticator or passkey, then retry this change.",
   "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key.",
+  "auth.accountKeyIdLabel": "Account ID",
 } as const;

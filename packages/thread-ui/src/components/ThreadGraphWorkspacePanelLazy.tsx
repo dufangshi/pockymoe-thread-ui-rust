@@ -8,6 +8,7 @@ import {
 import type {
   ThreadGraphWorkspacePanelProps,
 } from './ThreadGraphWorkspacePanel';
+import { RenderErrorBoundary } from './RenderErrorBoundary';
 
 const LazyThreadGraphWorkspacePanel = lazy(async () => {
   const module = await import('../workspace-panel');
@@ -27,9 +28,11 @@ export function ThreadGraphWorkspacePanel(
 ) {
   const { locale: i18nLocale } = useI18n();
   return (
-    <Suspense fallback={<ThreadGraphWorkspaceLoadingFallback />}>
-      <LazyThreadGraphWorkspacePanel {...props} />
-    </Suspense>
+    <RenderErrorBoundary className="h-full min-h-0 flex-1">
+      <Suspense fallback={<ThreadGraphWorkspaceLoadingFallback />}>
+        <LazyThreadGraphWorkspacePanel {...props} />
+      </Suspense>
+    </RenderErrorBoundary>
   );
 }
 

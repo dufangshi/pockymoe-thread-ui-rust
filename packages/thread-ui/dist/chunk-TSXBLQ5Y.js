@@ -612,7 +612,8 @@ var authEn = {
   "auth.accountLoginDowngrade": "This password login was blocked. Secured accounts require local key derivation. Use the security upgrade option only for an older account that has never had a vault.",
   "auth.user_id_taken": "That account identifier was taken. Try registering again to generate a new account key and recovery code.",
   "auth.reauthentication_required": "Sign in again with your OAuth provider or verify an existing authenticator or passkey, then retry this change.",
-  "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key."
+  "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key.",
+  "auth.accountKeyIdLabel": "Account ID"
 };
 
 // src/i18n/chat.en.ts
@@ -1089,6 +1090,22 @@ var chatEn = {
 var commonEn = {
   "common.language": "Language",
   "common.languageDescription": "Choose the interface language for this browser.",
+  "common.errorTitle": "Something went wrong",
+  "common.errorBody": "This part of the page could not be shown.",
+  "common.updatedTitle": "Pockymoe was updated",
+  "common.updatedBody": "Reload to use the new version.",
+  "common.reload": "Reload",
+  "common.help": "Help",
+  "common.helpTopics": "Help topics",
+  "common.helpIntro": "What device, connection and account messages mean, and how to fix them.",
+  "common.helpDevices": "Devices and protection",
+  "common.helpDevicesSummary": "What each device status means and how to fix it.",
+  "common.helpConnection": "Connection and encryption",
+  "common.helpConnectionSummary": "The lock icon, fingerprints and offline devices.",
+  "common.helpAccount": "Account and sign-in",
+  "common.helpAccountSummary": "Unlocking, recovery codes and password prompts.",
+  "common.openApp": "Open Pockymoe",
+  "common.helpNotFound": "This help topic does not exist.",
   "common.items": {
     "one": "{{count}} item",
     "other": "{{count}} items"
@@ -1583,7 +1600,37 @@ var devicesEn = {
   "devices.processRoleBridge": "Bridge",
   "devices.processRoleMcp": "MCP",
   "devices.processRoleTool": "Tool",
-  "devices.processRoleOther": "Other"
+  "devices.processRoleOther": "Other",
+  "devices.state.protected": "Protected",
+  "devices.state.notProtected": "Not protected",
+  "devices.state.waitingBind": "Waiting for bind",
+  "devices.state.waitingDevice": "Waiting for device",
+  "devices.state.updateNeeded": "Update needed",
+  "devices.state.updating": "Updating",
+  "devices.state.protecting": "Protecting",
+  "devices.state.needsRepair": "Needs repair",
+  "devices.state.identityChanged": "Identity changed",
+  "devices.state.otherAccount": "Bound to another account",
+  "devices.state.updateFailed": "Update failed",
+  "devices.state.failed": "Protection failed",
+  "devices.detail.protected": "Only your signed-in browsers can control this device.",
+  "devices.detail.notProtected": "The relay can still send commands to this device. Protect it to lock it to your account.",
+  "devices.detail.waitingBind": "Run the bind command on the device and keep this browser open until it finishes.",
+  "devices.detail.waitingDevice": "Protection finishes on its own when the device comes online.",
+  "devices.detail.updateNeeded": "This device runs an older Pockymoe. Update it to protect it from here.",
+  "devices.detail.updating": "The device reconnects after the update, then protection continues.",
+  "devices.detail.protecting": "Binding the device to your account\u2026",
+  "devices.detail.needsRepair": "The device is bound but did not show a valid certificate.",
+  "devices.detail.identityChanged": "The device's identity key differs from the one this browser saved.",
+  "devices.detail.otherAccount": "The device reports a binding to a different account key.",
+  "devices.detail.updateFailed": "The update did not enable protection.",
+  "devices.detail.failed": "The last attempt did not finish.",
+  "devices.yourAccountId": "Your account ID: {{value1}}",
+  "devices.howToFix": "How to fix",
+  "devices.learnMore": "Learn more",
+  "devices.retryProtection": "Retry",
+  "devices.onlineSince": "Online since {{value1}}",
+  "devices.lastSeen": "Last seen {{value1}}"
 };
 
 // src/i18n/files.en.ts
@@ -3775,7 +3822,8 @@ var authZhCN = {
   "auth.accountLoginDowngrade": "\u6B64\u6B21\u5BC6\u7801\u767B\u5F55\u5DF2\u963B\u6B62\u3002\u5DF2\u5B8C\u6210\u5B89\u5168\u5347\u7EA7\u7684\u8D26\u6237\u5FC5\u987B\u5728\u672C\u5730\u6D3E\u751F\u5BC6\u94A5\u3002\u4EC5\u5BF9\u4ECE\u672A\u521B\u5EFA\u8FC7\u4FDD\u9669\u5E93\u7684\u65E7\u8D26\u6237\u4F7F\u7528\u5B89\u5168\u5347\u7EA7\u9009\u9879\u3002",
   "auth.user_id_taken": "\u8BE5\u8D26\u6237\u6807\u8BC6\u5DF2\u88AB\u5360\u7528\u3002\u8BF7\u91CD\u65B0\u6CE8\u518C\uFF0C\u4EE5\u751F\u6210\u65B0\u7684\u8D26\u6237\u5BC6\u94A5\u548C\u6062\u590D\u7801\u3002",
   "auth.reauthentication_required": "\u8BF7\u901A\u8FC7 OAuth \u63D0\u4F9B\u65B9\u91CD\u65B0\u767B\u5F55\uFF0C\u6216\u9A8C\u8BC1\u5DF2\u6709\u7684\u8EAB\u4EFD\u9A8C\u8BC1\u5668\u6216\u901A\u884C\u5BC6\u94A5\uFF0C\u7136\u540E\u91CD\u8BD5\u6B64\u66F4\u6539\u3002",
-  "auth.accountVaultMissing": "\u6B64\u6D4F\u89C8\u5668\u5DF2\u9A8C\u8BC1\u8FC7\u8D26\u6237\u4FDD\u9669\u5E93\uFF0C\u4F46\u4E2D\u7EE7\u73B0\u5728\u58F0\u79F0\u4FDD\u9669\u5E93\u4E0D\u5B58\u5728\u3002\u8FDE\u63A5\u5DF2\u963B\u6B62\u3002\u4EC5\u5728\u786E\u5B9A\u8981\u91CD\u7F6E\u8D26\u6237\u5BC6\u94A5\u65F6\u91CD\u65B0\u5F00\u59CB\u3002"
+  "auth.accountVaultMissing": "\u6B64\u6D4F\u89C8\u5668\u5DF2\u9A8C\u8BC1\u8FC7\u8D26\u6237\u4FDD\u9669\u5E93\uFF0C\u4F46\u4E2D\u7EE7\u73B0\u5728\u58F0\u79F0\u4FDD\u9669\u5E93\u4E0D\u5B58\u5728\u3002\u8FDE\u63A5\u5DF2\u963B\u6B62\u3002\u4EC5\u5728\u786E\u5B9A\u8981\u91CD\u7F6E\u8D26\u6237\u5BC6\u94A5\u65F6\u91CD\u65B0\u5F00\u59CB\u3002",
+  "auth.accountKeyIdLabel": "\u8D26\u6237 ID"
 };
 
 // src/i18n/chat.zh-CN.ts
@@ -4252,6 +4300,22 @@ var chatZhCN = {
 var commonZhCN = {
   "common.language": "\u8BED\u8A00",
   "common.languageDescription": "\u9009\u62E9\u6B64\u6D4F\u89C8\u5668\u7684\u754C\u9762\u8BED\u8A00\u3002",
+  "common.errorTitle": "\u9875\u9762\u51FA\u9519\u4E86",
+  "common.errorBody": "\u8FD9\u90E8\u5206\u9875\u9762\u65E0\u6CD5\u663E\u793A\u3002",
+  "common.updatedTitle": "Pockymoe \u5DF2\u66F4\u65B0",
+  "common.updatedBody": "\u91CD\u65B0\u52A0\u8F7D\u5373\u53EF\u4F7F\u7528\u65B0\u7248\u672C\u3002",
+  "common.reload": "\u91CD\u65B0\u52A0\u8F7D",
+  "common.help": "\u5E2E\u52A9",
+  "common.helpTopics": "\u5E2E\u52A9\u4E3B\u9898",
+  "common.helpIntro": "\u8BBE\u5907\u3001\u8FDE\u63A5\u548C\u8D26\u6237\u63D0\u793A\u7684\u542B\u4E49\uFF0C\u4EE5\u53CA\u89E3\u51B3\u529E\u6CD5\u3002",
+  "common.helpDevices": "\u8BBE\u5907\u4E0E\u4FDD\u62A4",
+  "common.helpDevicesSummary": "\u6BCF\u79CD\u8BBE\u5907\u72B6\u6001\u7684\u542B\u4E49\u548C\u89E3\u51B3\u529E\u6CD5\u3002",
+  "common.helpConnection": "\u8FDE\u63A5\u4E0E\u52A0\u5BC6",
+  "common.helpConnectionSummary": "\u9501\u56FE\u6807\u3001\u6307\u7EB9\u6838\u5BF9\u548C\u8BBE\u5907\u79BB\u7EBF\u3002",
+  "common.helpAccount": "\u8D26\u6237\u4E0E\u767B\u5F55",
+  "common.helpAccountSummary": "\u89E3\u9501\u3001\u6062\u590D\u7801\u548C\u5BC6\u7801\u63D0\u793A\u3002",
+  "common.openApp": "\u6253\u5F00 Pockymoe",
+  "common.helpNotFound": "\u6CA1\u6709\u8FD9\u4E2A\u5E2E\u52A9\u4E3B\u9898\u3002",
   "common.items": {
     "one": "{{count}} \u9879",
     "other": "{{count}} \u9879"
@@ -4746,7 +4810,37 @@ var devicesZhCN = {
   "devices.processRoleBridge": "\u6865\u63A5",
   "devices.processRoleMcp": "MCP",
   "devices.processRoleTool": "\u5DE5\u5177",
-  "devices.processRoleOther": "\u5176\u4ED6"
+  "devices.processRoleOther": "\u5176\u4ED6",
+  "devices.state.protected": "\u5DF2\u4FDD\u62A4",
+  "devices.state.notProtected": "\u672A\u4FDD\u62A4",
+  "devices.state.waitingBind": "\u7B49\u5F85\u7ED1\u5B9A",
+  "devices.state.waitingDevice": "\u7B49\u5F85\u8BBE\u5907\u4E0A\u7EBF",
+  "devices.state.updateNeeded": "\u9700\u8981\u66F4\u65B0",
+  "devices.state.updating": "\u6B63\u5728\u66F4\u65B0",
+  "devices.state.protecting": "\u6B63\u5728\u4FDD\u62A4",
+  "devices.state.needsRepair": "\u9700\u8981\u4FEE\u590D",
+  "devices.state.identityChanged": "\u8EAB\u4EFD\u5DF2\u53D8\u5316",
+  "devices.state.otherAccount": "\u7ED1\u5B9A\u5230\u5176\u4ED6\u8D26\u6237",
+  "devices.state.updateFailed": "\u66F4\u65B0\u5931\u8D25",
+  "devices.state.failed": "\u4FDD\u62A4\u5931\u8D25",
+  "devices.detail.protected": "\u53EA\u6709\u4F60\u767B\u5F55\u8FC7\u7684\u6D4F\u89C8\u5668\u80FD\u63A7\u5236\u8FD9\u53F0\u8BBE\u5907\u3002",
+  "devices.detail.notProtected": "Relay \u76EE\u524D\u4ECD\u80FD\u5411\u8FD9\u53F0\u8BBE\u5907\u53D1\u9001\u547D\u4EE4\u3002\u4FDD\u62A4\u540E\uFF0C\u8BBE\u5907\u53EA\u542C\u4F60\u8D26\u6237\u7684\u6307\u4EE4\u3002",
+  "devices.detail.waitingBind": "\u5728\u8BBE\u5907\u4E0A\u8FD0\u884C\u7ED1\u5B9A\u547D\u4EE4\uFF0C\u5B8C\u6210\u524D\u8BF7\u4FDD\u6301\u6B64\u6D4F\u89C8\u5668\u6253\u5F00\u3002",
+  "devices.detail.waitingDevice": "\u8BBE\u5907\u4E0A\u7EBF\u540E\u4F1A\u81EA\u52A8\u5B8C\u6210\u4FDD\u62A4\u3002",
+  "devices.detail.updateNeeded": "\u8FD9\u53F0\u8BBE\u5907\u7684 Pockymoe \u7248\u672C\u8F83\u65E7\uFF0C\u66F4\u65B0\u540E\u624D\u80FD\u5728\u8FD9\u91CC\u4FDD\u62A4\u3002",
+  "devices.detail.updating": "\u66F4\u65B0\u5B8C\u6210\u540E\u8BBE\u5907\u4F1A\u91CD\u65B0\u8FDE\u63A5\uFF0C\u5E76\u7EE7\u7EED\u4FDD\u62A4\u3002",
+  "devices.detail.protecting": "\u6B63\u5728\u628A\u8BBE\u5907\u7ED1\u5B9A\u5230\u4F60\u7684\u8D26\u6237\u2026",
+  "devices.detail.needsRepair": "\u8BBE\u5907\u5DF2\u7ED1\u5B9A\uFF0C\u4F46\u6CA1\u6709\u51FA\u793A\u6709\u6548\u7684\u8BC1\u4E66\u3002",
+  "devices.detail.identityChanged": "\u8BBE\u5907\u7684\u8EAB\u4EFD\u5BC6\u94A5\u548C\u6B64\u6D4F\u89C8\u5668\u8BB0\u5F55\u7684\u4E0D\u4E00\u81F4\u3002",
+  "devices.detail.otherAccount": "\u8BBE\u5907\u62A5\u544A\u5B83\u7ED1\u5B9A\u7684\u662F\u53E6\u4E00\u4E2A\u8D26\u6237\u5BC6\u94A5\u3002",
+  "devices.detail.updateFailed": "\u66F4\u65B0\u540E\u4ECD\u65E0\u6CD5\u542F\u7528\u4FDD\u62A4\u3002",
+  "devices.detail.failed": "\u4E0A\u6B21\u4FDD\u62A4\u6CA1\u6709\u5B8C\u6210\u3002",
+  "devices.yourAccountId": "\u4F60\u7684\u8D26\u6237 ID\uFF1A{{value1}}",
+  "devices.howToFix": "\u67E5\u770B\u89E3\u51B3\u529E\u6CD5",
+  "devices.learnMore": "\u4E86\u89E3\u66F4\u591A",
+  "devices.retryProtection": "\u91CD\u8BD5",
+  "devices.onlineSince": "{{value1}} \u8D77\u5728\u7EBF",
+  "devices.lastSeen": "\u6700\u540E\u5728\u7EBF {{value1}}"
 };
 
 // src/i18n/files.zh-CN.ts

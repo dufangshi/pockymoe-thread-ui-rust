@@ -318,4 +318,5 @@ export const authZhCN = {
   "auth.user_id_taken": "该账户标识已被占用。请重新注册，以生成新的账户密钥和恢复码。",
   "auth.reauthentication_required": "请通过 OAuth 提供方重新登录，或验证已有的身份验证器或通行密钥，然后重试此更改。",
   "auth.accountVaultMissing": "此浏览器已验证过账户保险库，但中继现在声称保险库不存在。连接已阻止。仅在确定要重置账户密钥时重新开始。",
+  "auth.accountKeyIdLabel": "账户 ID",
 } as const;

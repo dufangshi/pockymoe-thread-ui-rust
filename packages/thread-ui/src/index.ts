@@ -51,6 +51,7 @@ export {
   type WorkspaceTab,
 } from './components/ThreadGraphWorkspacePanelLazy';
 export { ConfirmDialog } from './components/ConfirmDialog';
+export { isStaleBuildError, RenderErrorBoundary, RenderErrorFallback } from './components/RenderErrorBoundary';
 export {
   ExportTranscriptDialog,
   ThreadActionsDialog,

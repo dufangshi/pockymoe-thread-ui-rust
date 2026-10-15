@@ -1,6 +1,22 @@
 export const commonZhCN = {
   "common.language": "语言",
   "common.languageDescription": "选择此浏览器的界面语言。",
+  "common.errorTitle": "页面出错了",
+  "common.errorBody": "这部分页面无法显示。",
+  "common.updatedTitle": "Pockymoe 已更新",
+  "common.updatedBody": "重新加载即可使用新版本。",
+  "common.reload": "重新加载",
+  "common.help": "帮助",
+  "common.helpTopics": "帮助主题",
+  "common.helpIntro": "设备、连接和账户提示的含义，以及解决办法。",
+  "common.helpDevices": "设备与保护",
+  "common.helpDevicesSummary": "每种设备状态的含义和解决办法。",
+  "common.helpConnection": "连接与加密",
+  "common.helpConnectionSummary": "锁图标、指纹核对和设备离线。",
+  "common.helpAccount": "账户与登录",
+  "common.helpAccountSummary": "解锁、恢复码和密码提示。",
+  "common.openApp": "打开 Pockymoe",
+  "common.helpNotFound": "没有这个帮助主题。",
   "common.items": {
     "one": "{{count}} 项",
     "other": "{{count}} 项"

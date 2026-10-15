@@ -319,4 +319,9 @@ export const authEn = {
   "auth.reauthentication_required": "Sign in again with your OAuth provider or verify an existing authenticator or passkey, then retry this change.",
   "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key.",
   "auth.accountKeyIdLabel": "Account ID",
+  "auth.passcodeTitle": "Enter passcode",
+  "auth.passcodeDescription": "Pockymoe on this computer requires a passcode.",
+  "auth.passcodeLabel": "Passcode",
+  "auth.passcodeWrong": "Wrong passcode.",
+  "auth.passcodeRateLimited": "Too many wrong passcodes. Wait a minute and try again.",
 } as const;

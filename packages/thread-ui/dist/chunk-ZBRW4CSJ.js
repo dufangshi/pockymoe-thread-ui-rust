@@ -686,7 +686,12 @@ var authEn = {
   "auth.user_id_taken": "That account identifier was taken. Try registering again to generate a new account key and recovery code.",
   "auth.reauthentication_required": "Sign in again with your OAuth provider or verify an existing authenticator or passkey, then retry this change.",
   "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key.",
-  "auth.accountKeyIdLabel": "Account ID"
+  "auth.accountKeyIdLabel": "Account ID",
+  "auth.passcodeTitle": "Enter passcode",
+  "auth.passcodeDescription": "Pockymoe on this computer requires a passcode.",
+  "auth.passcodeLabel": "Passcode",
+  "auth.passcodeWrong": "Wrong passcode.",
+  "auth.passcodeRateLimited": "Too many wrong passcodes. Wait a minute and try again."
 };
 
 // src/i18n/chat.en.ts
@@ -2566,7 +2571,20 @@ var settingsEn = {
   "settings.resourcesMinutesRange": "Enter 1\u20131440 minutes.",
   "settings.resourcesThreadsRange": "Enter 1\u2013200 threads.",
   "settings.resourcesMemoryRange": "Enter at least 0.25 GiB.",
-  "settings.resourcesSaved": "Saved."
+  "settings.resourcesSaved": "Saved.",
+  "settings.passcodeTitle": "Access passcode",
+  "settings.passcodeOffDescription": "Anyone who can open this address can use Pockymoe. Set a passcode to make other browsers enter it first.",
+  "settings.passcodeOnDescription": "On. Other browsers enter the passcode once before using Pockymoe.",
+  "settings.passcodeLabel": "Passcode",
+  "settings.passcodeNewLabel": "New passcode",
+  "settings.passcodeEnable": "Turn on",
+  "settings.passcodeChange": "Change",
+  "settings.passcodeDisable": "Turn off",
+  "settings.passcodeDisableConfirm": "Turn off the passcode? Anyone who can open this address can use Pockymoe again.",
+  "settings.passcodeSaved": "Passcode saved. Other browsers are signed out.",
+  "settings.passcodeRemoved": "Passcode turned off.",
+  "settings.passcodeForgot": "Forgot it? Run pockymoe passcode off on this computer.",
+  "settings.passcodeTooShort": "Use at least 4 characters."
 };
 
 // src/i18n/sharing.en.ts
@@ -3971,7 +3989,12 @@ var authZhCN = {
   "auth.user_id_taken": "\u8BE5\u8D26\u6237\u6807\u8BC6\u5DF2\u88AB\u5360\u7528\u3002\u8BF7\u91CD\u65B0\u6CE8\u518C\uFF0C\u4EE5\u751F\u6210\u65B0\u7684\u8D26\u6237\u5BC6\u94A5\u548C\u6062\u590D\u7801\u3002",
   "auth.reauthentication_required": "\u8BF7\u901A\u8FC7 OAuth \u63D0\u4F9B\u65B9\u91CD\u65B0\u767B\u5F55\uFF0C\u6216\u9A8C\u8BC1\u5DF2\u6709\u7684\u8EAB\u4EFD\u9A8C\u8BC1\u5668\u6216\u901A\u884C\u5BC6\u94A5\uFF0C\u7136\u540E\u91CD\u8BD5\u6B64\u66F4\u6539\u3002",
   "auth.accountVaultMissing": "\u6B64\u6D4F\u89C8\u5668\u5DF2\u9A8C\u8BC1\u8FC7\u8D26\u6237\u4FDD\u9669\u5E93\uFF0C\u4F46\u4E2D\u7EE7\u73B0\u5728\u58F0\u79F0\u4FDD\u9669\u5E93\u4E0D\u5B58\u5728\u3002\u8FDE\u63A5\u5DF2\u963B\u6B62\u3002\u4EC5\u5728\u786E\u5B9A\u8981\u91CD\u7F6E\u8D26\u6237\u5BC6\u94A5\u65F6\u91CD\u65B0\u5F00\u59CB\u3002",
-  "auth.accountKeyIdLabel": "\u8D26\u6237 ID"
+  "auth.accountKeyIdLabel": "\u8D26\u6237 ID",
+  "auth.passcodeTitle": "\u8F93\u5165\u8BBF\u95EE\u53E3\u4EE4",
+  "auth.passcodeDescription": "\u8FD9\u53F0\u7535\u8111\u4E0A\u7684 Pockymoe \u8BBE\u7F6E\u4E86\u8BBF\u95EE\u53E3\u4EE4\u3002",
+  "auth.passcodeLabel": "\u8BBF\u95EE\u53E3\u4EE4",
+  "auth.passcodeWrong": "\u53E3\u4EE4\u4E0D\u5BF9\u3002",
+  "auth.passcodeRateLimited": "\u9519\u8BEF\u6B21\u6570\u8FC7\u591A\uFF0C\u8BF7\u4E00\u5206\u949F\u540E\u518D\u8BD5\u3002"
 };
 
 // src/i18n/chat.zh-CN.ts
@@ -5851,7 +5874,20 @@ var settingsZhCN = {
   "settings.resourcesMinutesRange": "\u8BF7\u8F93\u5165 1\u20131440 \u5206\u949F\u3002",
   "settings.resourcesThreadsRange": "\u8BF7\u8F93\u5165 1\u2013200 \u4E2A\u3002",
   "settings.resourcesMemoryRange": "\u8BF7\u8F93\u5165\u81F3\u5C11 0.25 GiB\u3002",
-  "settings.resourcesSaved": "\u5DF2\u4FDD\u5B58\u3002"
+  "settings.resourcesSaved": "\u5DF2\u4FDD\u5B58\u3002",
+  "settings.passcodeTitle": "\u8BBF\u95EE\u53E3\u4EE4",
+  "settings.passcodeOffDescription": "\u73B0\u5728\u4EFB\u4F55\u80FD\u6253\u5F00\u8FD9\u4E2A\u5730\u5740\u7684\u4EBA\u90FD\u80FD\u4F7F\u7528 Pockymoe\u3002\u8BBE\u7F6E\u53E3\u4EE4\u540E\uFF0C\u5176\u4ED6\u6D4F\u89C8\u5668\u9700\u8981\u5148\u8F93\u5165\u53E3\u4EE4\u3002",
+  "settings.passcodeOnDescription": "\u5DF2\u5F00\u542F\u3002\u5176\u4ED6\u6D4F\u89C8\u5668\u9700\u8981\u5148\u8F93\u5165\u4E00\u6B21\u53E3\u4EE4\u624D\u80FD\u4F7F\u7528\u3002",
+  "settings.passcodeLabel": "\u53E3\u4EE4",
+  "settings.passcodeNewLabel": "\u65B0\u53E3\u4EE4",
+  "settings.passcodeEnable": "\u5F00\u542F",
+  "settings.passcodeChange": "\u4FEE\u6539",
+  "settings.passcodeDisable": "\u5173\u95ED",
+  "settings.passcodeDisableConfirm": "\u5173\u95ED\u8BBF\u95EE\u53E3\u4EE4\uFF1F\u5173\u95ED\u540E\uFF0C\u4EFB\u4F55\u80FD\u6253\u5F00\u8FD9\u4E2A\u5730\u5740\u7684\u4EBA\u90FD\u80FD\u518D\u6B21\u4F7F\u7528 Pockymoe\u3002",
+  "settings.passcodeSaved": "\u53E3\u4EE4\u5DF2\u4FDD\u5B58\uFF0C\u5176\u4ED6\u6D4F\u89C8\u5668\u5DF2\u9000\u51FA\u767B\u5F55\u3002",
+  "settings.passcodeRemoved": "\u8BBF\u95EE\u53E3\u4EE4\u5DF2\u5173\u95ED\u3002",
+  "settings.passcodeForgot": "\u5FD8\u8BB0\u53E3\u4EE4\uFF1F\u5728\u8FD9\u53F0\u7535\u8111\u4E0A\u8FD0\u884C pockymoe passcode off\u3002",
+  "settings.passcodeTooShort": "\u81F3\u5C11 4 \u4E2A\u5B57\u7B26\u3002"
 };
 
 // src/i18n/sharing.zh-CN.ts

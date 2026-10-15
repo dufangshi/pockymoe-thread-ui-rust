@@ -481,4 +481,13 @@ export const chatZhCN = {
   'chat.logInterrupted': '已中断',
   'chat.logActivity': '操作',
   'chat.logPlan': '计划',
+  'chat.envelopeTask': '任务',
+  'chat.envelopeQuestion': '提问',
+  'chat.envelopeResult': '结果',
+  'chat.envelopeStatus': '进展',
+  'chat.envelopeFrom': '来自 {{from}}',
+  'chat.envelopeUrgent': '需立即处理：',
+  'chat.envelopeInbox': '收件箱提醒',
+  'chat.envelopeTurn': '轮次通知',
+  'chat.envelopeResume': 'Supervisor 重启后继续',
 } as const;

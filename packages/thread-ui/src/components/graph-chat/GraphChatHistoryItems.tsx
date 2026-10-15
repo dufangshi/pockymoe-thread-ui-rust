@@ -7,7 +7,6 @@ import {
   type RefObject,
 } from 'react';
 import {
-  Archive,
   BellRing,
   Hourglass,
   ArrowDown,
@@ -588,30 +587,15 @@ export const GraphChatContextCompactionItem = memo(
         ? item.detailText
         : null;
 
+    // One quiet line in the log, like the operations around it.
     return (
-      <GraphChatHistoryEventFrame
-        className="thread-graph-event-context"
-        icon={<Archive className="h-4 w-4" />}
-        item={item}
-        timeMeta={timeMeta}
-        title={isRunning ? translate("chat.compacting") : translate("chat.compacted")}
-        tone="context"
-      >
-        <div className="thread-graph-history-event-line">
-          <span className="thread-graph-history-event-primary">
-            {primaryText}
-          </span>
-          {isRunning ? <RunningDots tone="emerald" /> : null}
-        </div>
-        {secondaryText ? (
-          <p
-            className="thread-graph-history-event-secondary"
-            title={secondaryText}
-          >
-            {secondaryText}
-          </p>
-        ) : null}
-      </GraphChatHistoryEventFrame>
+      <div className="tlog-notice thread-graph-event-context" data-kind="contextCompaction" data-status={isRunning ? 'running' : 'done'}>
+        <span className="tlog-glyph" aria-hidden="true">≋</span>
+        <span className="tlog-title">{primaryText}</span>
+        {secondaryText ? <span className="tlog-notice-detail" title={secondaryText}>{secondaryText}</span> : null}
+        {isRunning ? <RunningDots tone="emerald" /> : null}
+        {timeMeta}
+      </div>
     );
   },
 );

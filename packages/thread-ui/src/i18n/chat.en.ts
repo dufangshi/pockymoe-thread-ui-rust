@@ -481,4 +481,13 @@ export const chatEn = {
   'chat.logInterrupted': 'interrupted',
   'chat.logActivity': 'Activity',
   'chat.logPlan': 'Plan',
+  'chat.envelopeTask': 'Task',
+  'chat.envelopeQuestion': 'Question',
+  'chat.envelopeResult': 'Result',
+  'chat.envelopeStatus': 'Status',
+  'chat.envelopeFrom': 'from {{from}}',
+  'chat.envelopeUrgent': 'Immediate:',
+  'chat.envelopeInbox': 'Inbox reminder',
+  'chat.envelopeTurn': 'Turn notification',
+  'chat.envelopeResume': 'Resumed after a Supervisor restart',
 } as const;

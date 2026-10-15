@@ -88,7 +88,7 @@ export function GraphChatMessageFrame({
   children: ReactNode;
   messageId?: string;
   /** Neutral styling hook for messages that are not replies, such as reasoning. */
-  variant?: 'reasoning' | undefined;
+  variant?: 'reasoning' | 'envelope' | 'notice' | undefined;
   copyButton?: ReactNode;
   kind: GraphChatMessageKind;
   metaControl?: ReactNode;

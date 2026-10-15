@@ -1099,7 +1099,16 @@ var chatEn = {
   "chat.logFailedTag": "failed",
   "chat.logInterrupted": "interrupted",
   "chat.logActivity": "Activity",
-  "chat.logPlan": "Plan"
+  "chat.logPlan": "Plan",
+  "chat.envelopeTask": "Task",
+  "chat.envelopeQuestion": "Question",
+  "chat.envelopeResult": "Result",
+  "chat.envelopeStatus": "Status",
+  "chat.envelopeFrom": "from {{from}}",
+  "chat.envelopeUrgent": "Immediate:",
+  "chat.envelopeInbox": "Inbox reminder",
+  "chat.envelopeTurn": "Turn notification",
+  "chat.envelopeResume": "Resumed after a Supervisor restart"
 };
 
 // src/i18n/common.en.ts
@@ -4325,7 +4334,16 @@ var chatZhCN = {
   "chat.logFailedTag": "\u5931\u8D25",
   "chat.logInterrupted": "\u5DF2\u4E2D\u65AD",
   "chat.logActivity": "\u64CD\u4F5C",
-  "chat.logPlan": "\u8BA1\u5212"
+  "chat.logPlan": "\u8BA1\u5212",
+  "chat.envelopeTask": "\u4EFB\u52A1",
+  "chat.envelopeQuestion": "\u63D0\u95EE",
+  "chat.envelopeResult": "\u7ED3\u679C",
+  "chat.envelopeStatus": "\u8FDB\u5C55",
+  "chat.envelopeFrom": "\u6765\u81EA {{from}}",
+  "chat.envelopeUrgent": "\u9700\u7ACB\u5373\u5904\u7406\uFF1A",
+  "chat.envelopeInbox": "\u6536\u4EF6\u7BB1\u63D0\u9192",
+  "chat.envelopeTurn": "\u8F6E\u6B21\u901A\u77E5",
+  "chat.envelopeResume": "Supervisor \u91CD\u542F\u540E\u7EE7\u7EED"
 };
 
 // src/i18n/common.zh-CN.ts

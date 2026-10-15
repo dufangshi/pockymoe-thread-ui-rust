@@ -1,6 +1,6 @@
 import {
   translate
-} from "./chunk-Q5SQLIH5.js";
+} from "./chunk-PRAIFIJ7.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";

@@ -355,3 +355,80 @@
 .tlog-files-more { flex: none; font-size: 11px; color: var(--theme-fg-muted); }
 button.tlog-files-more:hover { color: var(--theme-fg); text-decoration: underline; }
 .tlog-files .tlog-detail { margin-left: 0; }
+
+/* Prompts written on an agent's behalf: an envelope header, or a one-line notice.
+   They sit on the reader's side, not in the person's bubble. */
+.thread-ui-shell .thread-graph-message:is([data-variant='envelope'], [data-variant='notice']) { justify-content: flex-start; }
+.thread-ui-shell .thread-graph-message:is([data-variant='envelope'], [data-variant='notice']) :is(.thread-graph-message-stack, .thread-graph-message-bubble, .thread-graph-message-content) {
+  max-width: 100%;
+  width: 100%;
+  margin-left: 0;
+  align-items: stretch;
+}
+.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant='envelope'] .thread-graph-message-bubble {
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border);
+  border-left: 3px solid var(--theme-accent-solid);
+  border-radius: 6px;
+  background: var(--theme-panel);
+  box-shadow: none;
+  color: var(--theme-fg);
+}
+.thread-ui-shell .thread-graph-message[data-variant='envelope'] .thread-graph-message-prose { font-size: 13.5px; line-height: 1.6; }
+.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant='notice'] .thread-graph-message-bubble {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.prompt-envelope-head,
+.prompt-notice-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--theme-fg-muted);
+}
+.prompt-envelope-head { margin-bottom: 4px; }
+.prompt-envelope-glyph { flex: none; width: 1.6ch; text-align: center; font: 700 12px var(--tlog-font-mono); color: var(--theme-accent-strong, var(--theme-accent-solid)); }
+.prompt-envelope-kind { flex: none; font-weight: 600; color: var(--theme-fg-soft); }
+.prompt-envelope-from { flex: none; font-family: var(--tlog-font-mono); font-size: 11.5px; }
+.prompt-envelope-subject { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--theme-fg); font-weight: 600; }
+.prompt-envelope-head[data-kind='result'] .prompt-envelope-glyph { color: var(--tlog-add); }
+.prompt-envelope-head[data-kind='question'] .prompt-envelope-glyph { color: var(--tlog-failed); }
+.prompt-envelope-urgent { margin: 0 0 4px; font-size: 12px; color: var(--tlog-failed); }
+.prompt-notice-head {
+  width: 100%;
+  min-height: var(--tlog-row-height);
+  text-align: left;
+}
+.prompt-notice-head:hover .prompt-notice-preview { color: var(--theme-fg); }
+.prompt-notice-preview { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prompt-notice-chev { flex: none; width: 12px; height: 12px; align-self: center; transition: transform 120ms; }
+.prompt-notice[data-open] .prompt-notice-chev { transform: rotate(90deg); }
+.prompt-notice-body {
+  margin: 2px 0 6px calc(1.6ch + 8px);
+  padding: 6px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-surface);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--theme-fg-soft);
+  white-space: pre-wrap;
+}
+
+/* One-line notices in the log (context compaction) */
+.tlog-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: var(--tlog-row-height);
+  font-size: 12px;
+  color: var(--theme-fg-muted);
+}
+.tlog-notice .tlog-glyph { color: var(--theme-fg-muted); }
+.tlog-notice .tlog-title { flex: 0 1 auto; }
+.tlog-notice-detail { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.8; }

@@ -1,7 +1,7 @@
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 
-import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto } from '@pockymoe/shared';
+import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
 
 import { translate, useI18n } from '../../i18n';
 import { DiffDetail } from '../DiffDetail';
@@ -151,6 +151,19 @@ function clip(text: string) {
   return `${text.slice(0, MAX_INLINE_CHARS - 4_000)}\n…\n${text.slice(-4_000)}`;
 }
 
+/** One file's sections of a patch that may cover several files. */
+export function diffForPath(text: string, path: string) {
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const starts = lines.flatMap((line, index) => line.startsWith('--- ') && lines[index + 1]?.startsWith('+++ ') ? [index] : []);
+  if (starts.length < 2) return text;
+  const kept = starts.flatMap((start, index) => {
+    const target = lines[start + 1]!.slice(4).replace(/^b\//, '');
+    return target === path || target.endsWith(`/${path}`) || path.endsWith(`/${target}`)
+      ? lines.slice(start, starts[index + 1] ?? lines.length) : [];
+  });
+  return kept.length ? kept.join('\n') : text;
+}
+
 /** The first lines of a diff; DiffDetail's compact mode drops the file headers. */
 function inlineDiff(text: string) {
   const lines = text.replace(/\r\n/g, '\n').split('\n');
@@ -186,7 +199,7 @@ function openFull(actions: TranscriptLogActions | null, item: ThreadHistoryItemD
   }
 }
 
-function RowDetail({ item, title }: { item: ThreadHistoryItemDto; title: { full: string; text: string } }) {
+function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: { full: string; text: string }; path?: string }) {
   const actions = useContext(TranscriptLogContext);
   const isReasoning = item.kind === 'reasoning';
   const detail = useItemDetail(item, !isReasoning);
@@ -203,7 +216,7 @@ function RowDetail({ item, title }: { item: ThreadHistoryItemDto; title: { full:
 
   const text = detail.text ?? '';
   if (item.kind === 'fileChange' && /^@@ /m.test(text)) {
-    const diff = inlineDiff(text);
+    const diff = inlineDiff(path ? diffForPath(text, path) : text);
     return (
       <div className="tlog-detail is-diff">
         <div className="tlog-diff"><DiffDetail text={diff.text} compact formatPath={formatPath} /></div>
@@ -303,7 +316,7 @@ function Parts({ parts }: { parts: ActivityPart[] }) {
     <>
       {parts.map((part, index) => (
         <span key={part.key} className={`tlog-part${part.tone ? ` is-${part.tone}` : ''}`}>
-          {index > 0 && !part.tone?.match(/add|remove/) ? <span className="tlog-sep" aria-hidden="true"> · </span> : index > 0 ? ' ' : null}
+          {index > 0 && !part.tone?.match(/add|remove/) ? <span className="tlog-sep" aria-hidden="true">·</span> : index > 0 ? ' ' : null}
           {part.text}
         </span>
       ))}
@@ -314,7 +327,7 @@ function Parts({ parts }: { parts: ActivityPart[] }) {
 /** Follows a label such as "Worked for 51s", so it opens with a separator. */
 export function ActivitySummary({ parts }: { parts: ActivityPart[] }) {
   if (!parts.length) return null;
-  return <span className="tlog-summary"><span className="tlog-sep" aria-hidden="true">· </span><Parts parts={parts} /></span>;
+  return <span className="tlog-summary"><span className="tlog-sep is-lead" aria-hidden="true">·</span><Parts parts={parts} /></span>;
 }
 
 const INITIAL_ROWS = 40;
@@ -362,7 +375,7 @@ export const LogRun = memo(function LogRun({
         <ChevronRight className="tlog-chev" aria-hidden="true" />
         <span className="tlog-summary">
           {parts.length ? <Parts parts={parts} /> : translate('chat.operationCount', { count: items.length })}
-          {duration && !running ? <span className="tlog-part is-time"><span className="tlog-sep" aria-hidden="true"> · </span>{compactDuration(duration)}</span> : null}
+          {duration && !running ? <span className="tlog-part is-time"><span className="tlog-sep" aria-hidden="true">·</span>{compactDuration(duration)}</span> : null}
         </span>
         {running ? <span className="tlog-spinner" role="img" aria-label={translate('chat.logRunning')} /> : null}
         <span className="tlog-rule" aria-hidden="true" />
@@ -379,3 +392,45 @@ export const LogRun = memo(function LogRun({
     </section>
   );
 });
+
+const FILE_CHIPS = 4;
+
+/** "± queue-store.ts +2 −1  server.ts +5": the files a folded turn changed. A name
+    opens that file's latest diff right below; the rest of the work stays folded. */
+export function ChangedFiles({ files, total }: { files: ThreadTurnChangedFileDto[]; total?: number }) {
+  useI18n();
+  const actions = useContext(TranscriptLogContext);
+  const [open, setOpen] = useState<string | null>(null);
+  const [all, setAll] = useState(false);
+  if (!files.length) return null;
+  const shown = all ? files : files.slice(0, FILE_CHIPS);
+  const hidden = Math.max(files.length, total ?? 0) - shown.length;
+  const selected = files.find((file) => file.path === open);
+  const item: ThreadHistoryItemDto | null = selected ? {
+    id: selected.itemId, kind: 'fileChange', text: selected.path, status: 'completed', hasDeferredDetail: true,
+    addedLines: selected.addedLines ?? null, removedLines: selected.removedLines ?? null,
+  } : null;
+  return (
+    <div className="tlog-files">
+      <div className="tlog-files-row">
+        <span className="tlog-glyph" aria-hidden="true">±</span>
+        {shown.map((file) => {
+          const path = displayPath(file.path, actions?.workspaceRoot);
+          return (
+            <button key={file.path} type="button" className="tlog-file" aria-expanded={open === file.path} title={path}
+              onClick={() => setOpen((current) => current === file.path ? null : file.path)}>
+              <span className="tlog-file-name">{path.split('/').at(-1)}</span>
+              <DeltaBadges added={file.addedLines} removed={file.removedLines} />
+            </button>
+          );
+        })}
+        {hidden > 0 ? (
+          files.length > shown.length
+            ? <button type="button" className="tlog-files-more" onClick={() => setAll(true)}>+{hidden}</button>
+            : <span className="tlog-files-more">+{hidden}</span>
+        ) : null}
+      </div>
+      {item ? <RowDetail key={item.text} item={item} title={{ full: item.text, text: item.text }} path={item.text} /> : null}
+    </div>
+  );
+}

@@ -607,6 +607,15 @@ export interface ThreadTurnActivityDto {
   agents?: number;
   reasoning?: number;
   failed?: number;
+  /** Up to eight changed files, first path of each edit, with the latest edit's item id. */
+  files?: ThreadTurnChangedFileDto[];
+}
+
+export interface ThreadTurnChangedFileDto {
+  path: string;
+  itemId: string;
+  addedLines?: number;
+  removedLines?: number;
 }
 
 export interface ThreadActionQuestionOptionDto {

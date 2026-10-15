@@ -49,7 +49,8 @@
 .tlog-part.is-add { color: var(--tlog-add); }
 .tlog-part.is-remove { color: var(--tlog-remove); }
 .tlog-part.is-failed { color: var(--tlog-failed); font-weight: 600; }
-.tlog-sep { color: var(--theme-fg-muted); }
+.tlog-sep { margin: 0 0.4em; color: var(--theme-fg-muted); }
+.tlog-sep.is-lead { margin-left: 0; }
 
 /* Receipt: time and usage under the answer. */
 .thread-ui-shell .thread-turn-receipt {
@@ -65,24 +66,14 @@
 .thread-ui-shell .thread-turn-receipt time { white-space: nowrap; }
 .thread-ui-shell .thread-turn-receipt .thread-turn-usage { font-size: 11px; opacity: 0.9; }
 
-/* The expanded log: messages and runs in order, without the old rail. */
-.thread-ui-shell .thread-execution-timeline,
-.thread-ui-shell .matter-workbench .thread-execution-timeline {
+/* The expanded log: messages and runs in order. */
+.thread-ui-shell .thread-execution-timeline {
   margin: 0 0 4px;
-  padding-left: 0;
-  border-left: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-.thread-ui-shell .thread-execution-timeline > *,
-.thread-ui-shell .matter-workbench .thread-execution-timeline > * {
-  margin: 0;
-}
-.thread-ui-shell .thread-execution-timeline > *::before,
-.thread-ui-shell .matter-workbench .thread-execution-timeline > *::before {
-  content: none;
-}
+.thread-ui-shell .thread-execution-timeline > * { margin: 0; }
 
 /* A run of operations */
 .tlog-run { min-width: 0; }
@@ -323,3 +314,44 @@
 .tlog-plan-step[data-status='in_progress'] { font-weight: 600; }
 .tlog-plan-step[data-status='in_progress'] .tlog-plan-mark::before { content: '▸'; color: var(--theme-accent-strong, var(--theme-accent-solid)); }
 .tlog-plan-step[data-status='failed'] .tlog-plan-mark::before { content: '✕'; color: var(--tlog-failed); }
+
+@media (max-width: 639px) {
+  .tlog-output { max-height: calc(10 * 1.55em); }
+  .tlog-diff .thread-diff-line > .thread-diff-number:first-child { display: none; }
+}
+
+/* An unknown price is a dash in the receipt; its button still opens the token details. */
+.thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable { font-size: 0; }
+.thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable::before { content: '$ —'; font-size: 11px; }
+
+/* Changed files under a folded turn's work line */
+.tlog-files { min-width: 0; margin-top: -6px; }
+.tlog-files-row {
+  display: flex;
+  align-items: center;
+  gap: 4px 12px;
+  min-width: 0;
+  min-height: var(--tlog-row-height);
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.tlog-files-row > .tlog-glyph { margin-right: -4px; }
+.tlog-file {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  max-width: 40%;
+  padding: 1px 4px;
+  margin: 0 -4px;
+  border-radius: 4px;
+  color: var(--theme-fg-soft);
+}
+.tlog-file:hover,
+.tlog-file[aria-expanded='true'] { background: var(--theme-hover); color: var(--theme-fg); }
+.tlog-file[aria-expanded='true'] .tlog-file-name { text-decoration: underline; text-underline-offset: 3px; }
+.tlog-file-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; font: 11.5px var(--tlog-font-mono); }
+.tlog-files-more { flex: none; font-size: 11px; color: var(--theme-fg-muted); }
+button.tlog-files-more:hover { color: var(--theme-fg); text-decoration: underline; }
+.tlog-files .tlog-detail { margin-left: 0; }

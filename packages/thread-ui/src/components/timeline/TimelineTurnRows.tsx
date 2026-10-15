@@ -66,8 +66,8 @@ import { groupAnswerSections, isSubstantiveAnswer } from './answerSections';
 import { TurnTokenSummary } from './tokenFormatting';
 import { deriveDisplayedLivePlan, TurnStatusBar } from './turnStatus';
 import { TurnUsageInline } from './TurnUsageInline';
-import { activityParts, hasActivity, turnActivity } from './activity';
-import { ActivitySummary, isLogItem, LogRow, LogRun, opensDiff } from './TranscriptLog';
+import { activityParts, hasActivity, turnActivity, turnChangedFiles } from './activity';
+import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff } from './TranscriptLog';
 import { useAppShellNav } from '../../app-shell/AppShellNavContext';
 
 type LivePlan = {
@@ -801,6 +801,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     hasCollapsedHiddenItems;
   const activityCounts = useMemo(() => turnActivity(turn, mergedItems), [turn, mergedItems]);
   const summaryParts = hasActivity(activityCounts) ? activityParts(activityCounts) : [];
+  const changedFiles = useMemo(() => turnChangedFiles(turn, mergedItems), [turn, mergedItems]);
   // Time and usage close the turn, under its answer, instead of crowding the work line.
   const receiptNode = isTerminalTurnStatus(turn.status) ? (
     <div className="thread-turn-receipt">
@@ -892,6 +893,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           />
         </div>
         {effectiveCollapsed ? <>
+          {isTerminalTurnStatus(turn.status) ? <ChangedFiles files={changedFiles} total={activityCounts?.changedFiles} /> : null}
           {answerSections ? <div className="thread-answer-sequence">
             {answerSections.map(entry => entry.kind === 'item' ? (
               <div className="thread-answer-section" key={entry.key}>

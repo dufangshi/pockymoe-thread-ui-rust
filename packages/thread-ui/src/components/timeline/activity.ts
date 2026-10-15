@@ -1,7 +1,7 @@
-import type { ThreadHistoryItemDto, ThreadTurnActivityDto } from '@pockymoe/shared';
+import type { ThreadHistoryItemDto, ThreadTurnActivityDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
 import { translate } from '../../i18n';
 
-export type ActivityCounts = Required<ThreadTurnActivityDto>;
+export type ActivityCounts = Required<Omit<ThreadTurnActivityDto, 'files'>>;
 
 const EMPTY: ActivityCounts = {
   commands: 0, fileChanges: 0, changedFiles: 0, addedLines: 0, removedLines: 0,
@@ -56,7 +56,8 @@ export function turnActivity(
   const loaded = activityFromItems(items);
   if (!turn.hasDeferredItems) return loaded;
   if (!turn.activity) return hasActivity(loaded) ? loaded : null;
-  const counts = { ...EMPTY, ...turn.activity };
+  const { files: _files, ...server } = turn.activity;
+  const counts = { ...EMPTY, ...server };
   for (const key of Object.keys(counts) as Array<keyof ActivityCounts>) counts[key] = Math.max(counts[key], loaded[key]);
   return counts;
 }
@@ -122,4 +123,27 @@ export function toolResultText(detail: string): string {
     } catch { /* not a JSON string literal */ }
   }
   return body.replace(/^```\w*\n([\s\S]*?)\n```$/, '$1');
+}
+
+/** Files a turn changed: the Supervisor's list for a folded turn, else the loaded edits. */
+export function turnChangedFiles(
+  turn: { hasDeferredItems?: boolean | null; activity?: ThreadTurnActivityDto | null },
+  items: readonly ThreadHistoryItemDto[],
+): ThreadTurnChangedFileDto[] {
+  if (turn.hasDeferredItems) return turn.activity?.files ?? [];
+  const files: ThreadTurnChangedFileDto[] = [];
+  for (const item of items) {
+    if (item.kind !== 'fileChange' || logStatus(item.status) === 'failed') continue;
+    item.text.split(/,\s+/).filter(Boolean).forEach((path, index) => {
+      const added = index === 0 ? item.addedLines ?? 0 : 0;
+      const removed = index === 0 ? item.removedLines ?? 0 : 0;
+      const file = files.find((entry) => entry.path === path);
+      if (file) {
+        file.itemId = item.id;
+        file.addedLines = (file.addedLines ?? 0) + added;
+        file.removedLines = (file.removedLines ?? 0) + removed;
+      } else files.push({ path, itemId: item.id, addedLines: added, removedLines: removed });
+    });
+  }
+  return files;
 }

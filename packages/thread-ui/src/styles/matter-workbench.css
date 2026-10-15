@@ -980,28 +980,6 @@
   font-size: 12px;
   font-weight: 500;
 }
-.thread-ui-shell .matter-workbench .thread-execution-timeline {
-  position: relative;
-  margin: 2px 0 12px 7px;
-  padding-left: 14px;
-  border-left: 1px solid var(--theme-border-strong);
-}
-.thread-ui-shell .matter-workbench .thread-execution-timeline > * {
-  position: relative;
-  margin-top: 0;
-  margin-bottom: 4px;
-}
-.thread-ui-shell .matter-workbench .thread-execution-timeline > *::before {
-  content: '';
-  position: absolute;
-  left: -18px;
-  top: 14px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--theme-accent-solid);
-  box-shadow: 0 0 0 3px var(--theme-bg);
-}
 .thread-ui-shell .matter-workbench .thread-execution-timeline .thread-graph-message-bubble {
   font-size: 13px;
   line-height: 1.6;

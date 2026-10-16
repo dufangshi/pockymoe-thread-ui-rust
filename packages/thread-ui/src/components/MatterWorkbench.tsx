@@ -2,7 +2,7 @@ import { WorkbenchPanels, type WorkbenchPanelsOptions } from './workbench/Workbe
 import { useWorkbenchToolPanel } from './workbench/toolPanel';
 import { getLocale } from '../i18n';
 import { translate, useI18n } from '../i18n';
-import { useEffect, useState, useRef, type ReactNode, type CSSProperties } from 'react';
+import { useEffect, useState, useRef, type ReactNode, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -83,6 +83,9 @@ export interface MatterWorkbenchOptions {
   toolPanels?: WorkbenchToolPanel[];
   onToggleFavorite: () => void;
   onNavigate: (href: string) => void;
+  /** Warm a thread's detail before it is opened (a row is pressed, or it is a
+      dock swipe away), so opening it shows the conversation at once. */
+  onPrefetchThread?: (href: string) => void;
   onSearch: () => void;
   search?: ReactNode;
   searchOpen?: boolean;
@@ -366,6 +369,13 @@ export function MatterWorkbench({
     setMoreOpen(false);
     o.onNavigate(href);
   };
+  // Home stays inside the app: a full page load flashed the bare page and lost
+  // its state. A modified or middle click keeps the browser's own behaviour.
+  const goHome = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    if (!homeHref || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    navigate(homeHref);
+  };
   const pane: PhonePane = explorerOpen ? 'files' : o.activeView === 'shell' ? 'shell' : 'chat';
   const choosePane = (next: PhonePane) => {
     if (next === 'files') { setExplorerOpen(true); return; }
@@ -376,6 +386,17 @@ export function MatterWorkbench({
   const currentThread = o.threads.find(thread => thread.key === o.currentKey) ?? tabs.find(thread => thread.key === o.currentKey);
   const tabRoots = groupThreads(tabs).map(group => group.root);
   const swipeSiblings = tabRoots.some(thread => thread.key === o.currentKey) ? tabRoots : tabs;
+  const prefetchThread = o.onPrefetchThread;
+  const swipeNeighbours = (() => {
+    const index = swipeSiblings.findIndex(thread => thread.key === o.currentKey);
+    return index < 0 ? '' : [swipeSiblings[index - 1]?.href, swipeSiblings[index + 1]?.href].filter(Boolean).join(' ');
+  })();
+  useEffect(() => {
+    // The threads a sideways swipe on the dock opens, warmed once the page is idle.
+    if (!dock || !prefetchThread || !swipeNeighbours || typeof window.requestIdleCallback !== 'function') return;
+    const handle = window.requestIdleCallback(() => { for (const href of swipeNeighbours.split(' ')) prefetchThread(href); });
+    return () => window.cancelIdleCallback(handle);
+  }, [dock, prefetchThread, swipeNeighbours]);
   const knownThreads = [...o.threads, ...tabs.filter(tab => !o.threads.some(thread => thread.key === tab.key))];
   const othersRunning = knownThreads.filter(thread => thread.status === 'running' && thread.key !== o.currentKey).length;
   const attention = (thread: WorkbenchThread) => thread.status === 'running' ? 0 : thread.status === 'unread' || thread.status === 'failed' ? 1 : 2;
@@ -400,6 +421,8 @@ export function MatterWorkbench({
         e.preventDefault();
         navigate(thread.href);
       }}
+      onPointerDown={() => o.onPrefetchThread?.(thread.href)}
+      onMouseEnter={() => o.onPrefetchThread?.(thread.href)}
       className="matter-thread-row"
       aria-current={thread.key === o.currentKey ? 'page' : undefined}
       title={`${thread.title}\n${thread.subtitle} · ${activity.label}`}
@@ -457,7 +480,7 @@ export function MatterWorkbench({
       {!mobile && <nav className="matter-rail" aria-label={translate("workbench.workspaceTools")}>
         {homeHref && <a
           className="matter-brand"
-          href={homeHref}
+          href={homeHref} onClick={goHome}
           aria-label={translate("workbench.pockymoeHome")}
         >
           p<span>m</span>
@@ -517,7 +540,7 @@ export function MatterWorkbench({
         <button data-action="go-forward" aria-label={translate("workbench.goForward")} onClick={() => history.forward()}>
           <ArrowRight data-icon="forward" />
         </button>
-        {!drawerTools && homeHref && <a href={homeHref} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}>
+        {!drawerTools && homeHref && <a href={homeHref} onClick={goHome} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}>
           <Home data-icon="home" />
         </a>}
         <div className="matter-topbar-search">{o.search ?? <button
@@ -578,7 +601,7 @@ export function MatterWorkbench({
         </div>
         {drawerTools && (
           <div className="matter-drawer-tools" role="group" aria-label={translate("workbench.workspaceTools")}>
-            {homeHref && <a href={homeHref}><Home data-icon="home" /><span>{translate("workbench.workspaces")}</span></a>}
+            {homeHref && <a href={homeHref} onClick={goHome}><Home data-icon="home" /><span>{translate("workbench.workspaces")}</span></a>}
             <button aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={() => { showChat(); setSidebarOpen(false); }}><MessageSquare data-icon="chat" /><span>{translate("workbench.chat")}</span></button>
           </div>
         )}
@@ -724,7 +747,7 @@ export function MatterWorkbench({
           <h3>{translate('workbench.app')}</h3>
           <div className="matter-phone-sheet-list">
             <button type="button" onClick={() => setSidebarOpen(true)}><PanelLeft data-icon="sidebar" /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>
-            {homeHref && <a href={homeHref}><Home data-icon="home" /><span>{translate('workbench.backToWorkspaces')}</span></a>}
+            {homeHref && <a href={homeHref} onClick={goHome}><Home data-icon="home" /><span>{translate('workbench.backToWorkspaces')}</span></a>}
             <button type="button" onClick={() => history.back()}><ArrowLeft data-icon="back" /><span>{translate('workbench.goBack')}</span></button>
             <div className="matter-phone-sheet-settings">{settings}<span>{translate('workbench.settings')}</span></div>
           </div>

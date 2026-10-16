@@ -1019,7 +1019,7 @@ export function ThreadWorkspaceLayout({
 
   if (workbench) {
     return <GraphChatShellRoot effectiveTheme={effectiveTheme} layoutMode={layoutMode} themeMode={themeMode} viewportConstrained={viewportConstrained}>
-      <MatterWorkbench options={workbench} title={currentThreadLabel ?? translate("files.newThread")} homeHref={restrictedNavigation ? undefined : workspaceReturnHref ?? '/workspaces'}
+      <MatterWorkbench options={workbench} title={currentThreadLabel ?? (currentThreadId ? "" : translate("files.newThread"))} homeHref={restrictedNavigation ? undefined : workspaceReturnHref ?? '/workspaces'}
         settings={renderSettingsDialog()} newThread={renderNewThreadDialogButton('matter-new-thread', true)}
         actions={threadActionsButton} connection={topbarActions ?? mobileHeaderAction} deviceMonitor={deviceMonitor}
         threadMenu={null}

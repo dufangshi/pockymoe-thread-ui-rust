@@ -244,6 +244,9 @@ interface MatterWorkbenchOptions {
     toolPanels?: WorkbenchToolPanel[];
     onToggleFavorite: () => void;
     onNavigate: (href: string) => void;
+    /** Warm a thread's detail before it is opened (a row is pressed, or it is a
+        dock swipe away), so opening it shows the conversation at once. */
+    onPrefetchThread?: (href: string) => void;
     onSearch: () => void;
     search?: ReactNode;
     searchOpen?: boolean;

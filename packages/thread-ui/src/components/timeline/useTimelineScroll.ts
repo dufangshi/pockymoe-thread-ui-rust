@@ -372,6 +372,9 @@ export function useTimelineScroll({
 
   useLayoutEffect(() => {
     const intent = scrollIntentRevisionRef.current;
+    // Before paint, so a thread never shows its top for a frame; again on the
+    // next frame for content that lays out late.
+    scrollToBottom();
     const frame = window.requestAnimationFrame(() => {
       if (intent === scrollIntentRevisionRef.current) scrollToBottom();
     });
@@ -446,7 +449,9 @@ export function useTimelineScroll({
     recomputeTailVisibility();
   }, [contentRevision, recomputeTailVisibility, visibleCount]);
 
-  useEffect(() => {
+  // A layout effect: content that arrives while following the tail is scrolled
+  // to before it paints, not a frame later from its top.
+  useLayoutEffect(() => {
     const shouldForceScroll =
       scrollRequestKey !== lastHandledScrollRequestKeyRef.current;
     const contentChanged =
@@ -463,6 +468,7 @@ export function useTimelineScroll({
     }
 
     const intent = scrollIntentRevisionRef.current;
+    scrollToBottom();
     const frame = window.requestAnimationFrame(() => {
       if (intent === scrollIntentRevisionRef.current) scrollToBottom();
     });

@@ -3556,7 +3556,7 @@ declare const zhCN: {
     "tour.more.subagents.title": "子智能体";
     "tour.more.subagents.body": "列出本对话启动的子智能体及其运行状态。";
     "tour.more.subagents.prereq": "Agent 启动子智能体后会出现在这里；它们的对话也会归在侧栏的父对话下。";
-    'search.trigger': "搜索会话";
+    'search.trigger': "搜索对话";
     'search.input': "搜索消息";
     'search.close': "关闭搜索";
     'search.placeholder': "搜索当前会话…";
@@ -10409,7 +10409,7 @@ declare const resources: {
         "tour.more.subagents.title": "子智能体";
         "tour.more.subagents.body": "列出本对话启动的子智能体及其运行状态。";
         "tour.more.subagents.prereq": "Agent 启动子智能体后会出现在这里；它们的对话也会归在侧栏的父对话下。";
-        'search.trigger': "搜索会话";
+        'search.trigger': "搜索对话";
         'search.input': "搜索消息";
         'search.close': "关闭搜索";
         'search.placeholder': "搜索当前会话…";

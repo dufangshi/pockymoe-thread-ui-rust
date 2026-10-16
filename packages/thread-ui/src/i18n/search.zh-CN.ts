@@ -1,5 +1,5 @@
 export const searchZhCN = {
-  'search.trigger': "搜索会话",
+  'search.trigger': "搜索对话",
   'search.input': "搜索消息",
   'search.close': "关闭搜索",
   'search.placeholder': "搜索当前会话…",

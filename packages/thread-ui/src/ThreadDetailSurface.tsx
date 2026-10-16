@@ -507,7 +507,8 @@ export function ThreadDetailSurface({
       error={loading ? null : error}
       viewportConstrained
       currentThreadId={currentThreadId ?? detail?.thread.id}
-      currentThreadLabel={detail?.thread.title}
+      // While a thread loads, its title from the list rather than "New thread".
+      currentThreadLabel={detail?.thread.title ?? threads.find(thread => thread.id === (currentThreadId ?? detail?.thread.id))?.title ?? undefined}
       currentWorkspaceId={currentWorkspaceId ?? detail?.thread.workspaceId}
       currentWorkspaceLabel={currentWorkspaceLabel ?? detail?.workspace.label}
       harnessLabel={composerProps?.agentLabel}

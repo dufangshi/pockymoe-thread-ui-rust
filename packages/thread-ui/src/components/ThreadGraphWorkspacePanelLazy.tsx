@@ -10,10 +10,16 @@ import type {
 } from './ThreadGraphWorkspacePanel';
 import { RenderErrorBoundary } from './RenderErrorBoundary';
 
+const loadWorkspacePanel = () => import('../workspace-panel');
 const LazyThreadGraphWorkspacePanel = lazy(async () => {
-  const module = await import('../workspace-panel');
+  const module = await loadWorkspacePanel();
   return { default: module.ThreadGraphWorkspacePanel };
 });
+// Fetch the Files code once the page is idle, so its first opening shows the
+// list instead of a loading skeleton. Without idle callbacks it loads on demand.
+if (typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function') {
+  window.requestIdleCallback(() => { void loadWorkspacePanel().catch(() => { /* Loaded on demand instead. */ }); });
+}
 
 /** The same skeleton the file list shows while it loads, so opening Files the
     first time goes skeleton → list instead of text → skeleton → list. */

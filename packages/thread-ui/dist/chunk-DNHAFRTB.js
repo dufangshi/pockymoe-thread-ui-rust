@@ -3618,7 +3618,7 @@ var contentQualityZhCN = {
 
 // src/i18n/search.zh-CN.ts
 var searchZhCN = {
-  "search.trigger": "\u641C\u7D22\u4F1A\u8BDD",
+  "search.trigger": "\u641C\u7D22\u5BF9\u8BDD",
   "search.input": "\u641C\u7D22\u6D88\u606F",
   "search.close": "\u5173\u95ED\u641C\u7D22",
   "search.placeholder": "\u641C\u7D22\u5F53\u524D\u4F1A\u8BDD\u2026",

@@ -223,6 +223,22 @@ export const GraphChatMarkdownAwareBody = memo(
       return anchor ? restoreToggleAnchor(anchor, hold) : undefined;
     }, [expanded]);
 
+    useLayoutEffect(() => {
+      // Decide before the first paint for messages on screen or near the end
+      // (threads open at their end), so they never show raw markdown and then
+      // jump; the observer below handles the ones far away.
+      const node = messageRef.current;
+      if (isActivated || !node) return;
+      const root = scrollRootRef.current;
+      const box = node.getBoundingClientRect();
+      const view = root ? root.getBoundingClientRect() : { top: 0, bottom: window.innerHeight };
+      const height = view.bottom - view.top || window.innerHeight;
+      const end = root ? view.top - root.scrollTop + root.scrollHeight : document.documentElement.scrollHeight;
+      if ((box.bottom >= view.top - height && box.top <= view.bottom + height) || box.bottom >= end - 2 * height) setIsActivated(true);
+      // Only the first layout: later moves are the observer's.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     useEffect(() => {
       if (streaming || typeof IntersectionObserver === 'undefined') {
         setIsActivated(true);

@@ -1348,9 +1348,11 @@ describe('ThreadTimeline', () => {
     const scrollContainer = element.querySelector<HTMLElement>(
       '[data-testid="thread-scroll-container"]',
     )!;
+    // A container that does not move: writes (the hook's own scrolls) are ignored.
     Object.defineProperty(scrollContainer, 'scrollTop', {
       configurable: true,
-      value: 0,
+      get: () => 0,
+      set: () => {},
     });
     scrollContainer.getBoundingClientRect = () =>
       ({ top: 0, bottom: 300, height: 300 }) as DOMRect;
@@ -1418,9 +1420,11 @@ describe('ThreadTimeline', () => {
     const scrollContainer = element.querySelector<HTMLElement>(
       '[data-testid="thread-scroll-container"]',
     )!;
+    // A container that does not move: writes (the hook's own scrolls) are ignored.
     Object.defineProperty(scrollContainer, 'scrollTop', {
       configurable: true,
-      value: 600,
+      get: () => 600,
+      set: () => {},
     });
     scrollContainer.getBoundingClientRect = () =>
       ({ top: 0, bottom: 300, height: 300 }) as DOMRect;

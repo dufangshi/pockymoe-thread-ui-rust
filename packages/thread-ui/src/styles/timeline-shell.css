@@ -575,6 +575,11 @@
   color: var(--theme-fg-muted);
   font-size: 12px;
 }
+/* A load that finishes quickly never shows the loader: it fades in only after
+   a moment, so switching threads does not flash a spinner. */
+.thread-loading-indicator:not(.is-inline) { animation: thread-loading-in 180ms ease-out 160ms both; }
+@keyframes thread-loading-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .thread-loading-indicator:not(.is-inline) { animation-duration: 1ms; } }
 .thread-loading-caption { display: inline-flex; align-items: center; gap: 8px; }
 .thread-loading-ring {
   width: 14px;

@@ -17,7 +17,9 @@ var automationEn = {
   "automation.emptyTitle": "No automations yet",
   "automation.emptyHint": "Ask your agent to schedule a task.",
   "automation.hourly": "Every {{value1}} hours",
+  "automation.hourlyOne": "Every hour",
   "automation.minutely": "Every {{value1}} minutes",
+  "automation.minutelyOne": "Every minute",
   "automation.sourceNative": "Claude",
   "automation.sourceDevice": "Device",
   "automation.ruleDetails": "Details",
@@ -130,7 +132,9 @@ var automationEn = {
   "automation.tokensUnknown": "Tokens unknown",
   "automation.costUnknown": "Cost unknown",
   "automation.runDetails": "Run details",
-  "automation.historyHelp": "About execution history"
+  "automation.historyHelp": "About execution history",
+  "automation.everyMinute": "Every minute",
+  "automation.everyHour": "Every hour"
 };
 
 // src/i18n/content-quality.en.ts
@@ -3331,7 +3335,9 @@ var automationZhCN = {
   "automation.emptyTitle": "\u8FD8\u6CA1\u6709\u81EA\u52A8\u5316",
   "automation.emptyHint": "\u8BA9 Agent \u5E2E\u4F60\u5B89\u6392\u4E00\u4E2A\u4EFB\u52A1\u3002",
   "automation.hourly": "\u6BCF {{value1}} \u5C0F\u65F6",
+  "automation.hourlyOne": "\u6BCF\u5C0F\u65F6",
   "automation.minutely": "\u6BCF {{value1}} \u5206\u949F",
+  "automation.minutelyOne": "\u6BCF\u5206\u949F",
   "automation.sourceNative": "Claude",
   "automation.sourceDevice": "\u8BBE\u5907",
   "automation.ruleDetails": "\u8BE6\u60C5",
@@ -3444,7 +3450,9 @@ var automationZhCN = {
   "automation.tokensUnknown": "Token \u672A\u77E5",
   "automation.costUnknown": "\u8D39\u7528\u672A\u77E5",
   "automation.runDetails": "\u8FD0\u884C\u8BE6\u60C5",
-  "automation.historyHelp": "\u5173\u4E8E\u6267\u884C\u5386\u53F2"
+  "automation.historyHelp": "\u5173\u4E8E\u6267\u884C\u5386\u53F2",
+  "automation.everyMinute": "\u6BCF\u5206\u949F",
+  "automation.everyHour": "\u6BCF\u5C0F\u65F6"
 };
 
 // src/i18n/content-quality.zh-CN.ts

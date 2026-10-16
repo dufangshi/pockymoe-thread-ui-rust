@@ -13,7 +13,9 @@ export const automationEn = {
   "automation.emptyTitle": "No automations yet",
   "automation.emptyHint": "Ask your agent to schedule a task.",
   "automation.hourly": "Every {{value1}} hours",
+  "automation.hourlyOne": "Every hour",
   "automation.minutely": "Every {{value1}} minutes",
+  "automation.minutelyOne": "Every minute",
   "automation.sourceNative": "Claude",
   "automation.sourceDevice": "Device",
   "automation.ruleDetails": "Details",
@@ -127,4 +129,6 @@ export const automationEn = {
   "automation.costUnknown": "Cost unknown",
   "automation.runDetails": "Run details",
   "automation.historyHelp": "About execution history",
+  "automation.everyMinute": "Every minute",
+  "automation.everyHour": "Every hour",
 } as const;

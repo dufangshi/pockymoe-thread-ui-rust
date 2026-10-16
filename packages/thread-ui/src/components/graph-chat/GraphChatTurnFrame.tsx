@@ -8,6 +8,8 @@ export interface GraphChatTurnFrameProps {
   collapsedBody?: ReactNode;
   error?: string | null;
   footer?: ReactNode;
+  /** The turn's own line above its prompt: start time, model and usage. */
+  head?: ReactNode;
   headerStatus?: ReactNode;
   isActive?: boolean;
   refCallback?: RefCallback<HTMLElement> | undefined;
@@ -25,6 +27,7 @@ export function GraphChatTurnFrame({
   collapsedBody,
   error,
   footer,
+  head,
   headerStatus,
   isActive = false,
   refCallback,
@@ -72,6 +75,7 @@ export function GraphChatTurnFrame({
       ) : null}
 
       <div className="thread-graph-turn-body mt-2 space-y-2">
+        {head}
         {collapsed ? collapsedBody : body}
         {!collapsed ? footer : null}
       </div>

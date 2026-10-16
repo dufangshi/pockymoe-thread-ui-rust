@@ -238,7 +238,7 @@ describe('ThreadTimeline', () => {
     expect(toggle().getAttribute('aria-expanded')).toBe('false');
     expect(toggle().querySelector('.tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('2 commands');
     expect(element.querySelector('.tlog-single, .tlog-run, .tlog-current')).toBeNull();
-    expect(element.querySelector('.thread-turn-receipt')).not.toBeNull();
+    expect(element.querySelector('.thread-turn-head time')).not.toBeNull();
     expect(element.querySelector('.thread-graph-turn-footer')).toBeNull();
     expect(load).not.toHaveBeenCalled();
     flushSync(() => toggle().click());
@@ -695,7 +695,7 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain('Public-key identity');
     expect(element.textContent).toContain('Implementation complete');
     // Terminal rendering returns to the expanded chronological log.
-    expect(element.querySelector('.thread-turn-receipt')).not.toBeNull();
+    expect(element.querySelector('.thread-turn-head time')).not.toBeNull();
     expect(element.querySelectorAll('.tlog-single')).toHaveLength(2);
   });
 

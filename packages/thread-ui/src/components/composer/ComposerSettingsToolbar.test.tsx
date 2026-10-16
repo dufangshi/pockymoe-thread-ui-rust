@@ -243,7 +243,9 @@ describe('ComposerSettingsToolbar', () => {
       model: 'gpt-5-mini',
       reasoningEffort: 'minimal',
     });
-    act(() => buttonByText(view, 'low')!.click());
+    // The level names belong to the slider, which steps a level at a time from the keyboard.
+    const thumb = view.querySelector<HTMLElement>('.composer-reasoning-thumb')!;
+    act(() => { thumb.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); });
     expect(onUpdateSettings).toHaveBeenCalledWith({ reasoningEffort: 'low' });
     expect(buttonByText(view, 'Plan')).toBeUndefined();
   });

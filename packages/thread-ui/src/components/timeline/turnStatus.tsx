@@ -1,5 +1,5 @@
 import { translate, useI18n } from '../../i18n';
-import { Hourglass } from 'lucide-react';
+import { Bot, Hourglass } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../graph-ui/Tooltip';
 
@@ -110,7 +110,7 @@ export function normalizePlanStepStatus(status: string) {
   return 'other' as const;
 }
 
-function useSecondClock(enabled: boolean) {
+export function useSecondClock(enabled: boolean) {
   const { locale: i18nLocale } = useI18n();
   const [now, setNow] = useState(() => Date.now());
 
@@ -127,7 +127,7 @@ function useSecondClock(enabled: boolean) {
   return now;
 }
 
-function formatElapsedDuration(
+export function formatElapsedDuration(
   startedAt: string | null | undefined,
   now: number,
 ) {
@@ -265,13 +265,17 @@ export function TurnStatusBar({
       <div className="thread-graph-turn-footer flex w-full items-center justify-between gap-3 text-xs">
         <div className="thread-graph-turn-footer-runtime flex min-w-0 flex-wrap items-center gap-2">
           {active && turn.status !== 'recovering' ? <TranscriptAgentByline size="small" /> : null}
+          {/* Waiting and background agents read as small moving marks, not phrases. */}
           {active && turn.status !== 'recovering' && waitingForWake ? (
-            <span className="inline-flex items-center gap-1.5 text-[var(--theme-fg-muted)]" role="status">
-              <Hourglass className="h-3 w-3" aria-hidden="true" />{translate('chat.waitingForWake')}
+            <span className="thread-wait-mark" role="status" aria-label={translate('chat.waitingForWake')} title={translate('chat.waitingForWake')}>
+              <Hourglass aria-hidden="true" />
             </span>
           ) : active && turn.status !== 'recovering' && backgroundAgentCount > 0 ? (
-            <span className="thread-background-agent-status min-w-0 text-[var(--theme-fg-muted)]" role="status">
-              {backgroundAgentCount} {translate("chat.backgroundAgent")}{backgroundAgentCount === 1 ? '' : translate("chat.s")} {translate("chat.running_3c49d9")}</span>
+            <span className="thread-background-agent-status" role="status"
+              aria-label={translate('chat.backgroundAgentsRunning', { count: backgroundAgentCount })}
+              title={translate('chat.backgroundAgentsRunning', { count: backgroundAgentCount })}>
+              <Bot aria-hidden="true" /><b>{backgroundAgentCount}</b>
+            </span>
           ) : active && turn.status !== 'recovering'
             ? <ProgressIndicator age={progressAge} at={effectiveLastActivityAt} />
             : <TurnStatusIndicator status={turn.status} />}

@@ -52,19 +52,94 @@
 .tlog-sep { margin: 0 0.4em; color: var(--theme-fg-muted); }
 .tlog-sep.is-lead { margin-left: 0; }
 
-/* Receipt: time and usage under the answer. */
-.thread-ui-shell .thread-turn-receipt {
+/* The turn's head: a quiet line above its prompt, between two rules. It says
+   when the turn started, the model, the cost and the speed; tapping it opens the
+   details under it. */
+.thread-ui-shell .thread-turn-head {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 4px 10px;
-  margin-top: 2px;
-  font-size: 11px;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  margin: 4px 0 2px;
   color: var(--theme-fg-muted);
+  font-size: 11px;
+  line-height: 20px;
   font-variant-numeric: tabular-nums;
 }
-.thread-ui-shell .thread-turn-receipt time { white-space: nowrap; }
-.thread-ui-shell .thread-turn-receipt .thread-turn-usage { font-size: 11px; opacity: 0.9; }
+.thread-ui-shell .thread-turn-head::before,
+.thread-ui-shell .thread-turn-head::after { content: ''; flex: 1 1 0; min-width: 12px; height: 1px; background: var(--theme-border); }
+/* On a narrow screen the closing rule gives way before the model name does. */
+.thread-ui-shell .thread-turn-head::after { min-width: 0; }
+.thread-ui-shell .thread-turn-head-main {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0 3px;
+  border-radius: 5px;
+  color: inherit;
+  white-space: nowrap;
+}
+.thread-ui-shell .thread-turn-head-main:hover,
+.thread-ui-shell .thread-turn-head-main[aria-expanded='true'] { color: var(--theme-fg); }
+.thread-ui-shell .thread-turn-head-main:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
+.thread-ui-shell .thread-turn-head-main > * + *::before,
+.thread-ui-shell :is(.thread-turn-head-cost, .thread-turn-head-speed)::before { content: '·'; margin-right: 6px; color: var(--theme-fg-muted); }
+.thread-ui-shell .thread-turn-head-main > * + *::before { margin-left: 6px; }
+.thread-ui-shell .thread-turn-head-model { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.thread-ui-shell .thread-turn-head-main > :not(.thread-turn-head-model) { flex: none; }
+.thread-ui-shell .thread-turn-head-live { display: inline-flex; align-items: center; gap: 5px; color: var(--theme-accent-strong, var(--theme-accent-solid)); }
+.thread-ui-shell .thread-turn-head-live > i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: thread-live-dot 1.6s ease-in-out infinite; }
+.thread-ui-shell :is(.thread-turn-head-cost, .thread-turn-head-speed) { flex: none; white-space: nowrap; }
+.thread-ui-shell button.thread-turn-head-speed { padding: 0 2px; border-radius: 4px; color: inherit; text-decoration: underline dotted; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); text-underline-offset: 3px; }
+.thread-ui-shell button.thread-turn-head-speed:hover,
+.thread-ui-shell button.thread-turn-head-speed[aria-expanded='true'] { color: var(--theme-fg); }
+.thread-ui-shell button.thread-turn-head-speed:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
+
+/* Live marks on the working line instead of phrases: an hourglass that turns
+   while waiting for a wake, a bot and its count that breathes while background
+   agents run. Their full wording is in the label and title. */
+.thread-ui-shell :is(.thread-wait-mark, .thread-background-agent-status) {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  color: var(--theme-fg-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.thread-ui-shell :is(.thread-wait-mark, .thread-background-agent-status) svg { width: 14px; height: 14px; }
+.thread-ui-shell .thread-wait-mark svg { animation: thread-hourglass 2.4s ease-in-out infinite; }
+.thread-ui-shell .thread-background-agent-status svg { color: var(--theme-accent-strong, var(--theme-accent-solid)); animation: thread-agent-breathe 1.8s ease-in-out infinite; }
+.thread-ui-shell .thread-background-agent-status b { font-weight: 600; }
+@keyframes thread-live-dot { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@keyframes thread-hourglass { 0%, 40% { transform: rotate(0); } 50%, 90% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
+@keyframes thread-agent-breathe { 0%, 100% { opacity: 0.55; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-1px); } }
+@media (prefers-reduced-motion: reduce) {
+  .thread-ui-shell :is(.thread-turn-head-live > i, .thread-wait-mark svg, .thread-background-agent-status svg) { animation: none; }
+}
+.thread-ui-shell .thread-turn-head .thread-turn-usage-price { font-size: 11px; line-height: 16px; }
+.thread-ui-shell .thread-turn-head-detail {
+  display: grid;
+  grid-template-columns: max-content minmax(0, auto);
+  gap: 3px 14px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 2px auto 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  background: var(--theme-surface);
+  font-size: 12px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.thread-ui-shell .thread-turn-head-detail > div { display: contents; }
+.thread-ui-shell .thread-turn-head-detail dt { color: var(--theme-fg-muted); }
+.thread-ui-shell .thread-turn-head-detail dd { margin: 0; color: var(--theme-fg); overflow-wrap: anywhere; }
+
+/* A prompt added while the turn worked says so, with its own time. */
+.thread-ui-shell .thread-graph-message-kicker { margin: 0 4px 3px; color: var(--theme-fg-muted); font-size: 11px; line-height: 14px; }
 
 /* The expanded log: messages and runs in order. */
 .thread-ui-shell .thread-execution-timeline {
@@ -356,9 +431,6 @@
   .tlog-diff .thread-diff-line > .thread-diff-number:first-child { display: none; }
 }
 
-/* An unknown price is a dash in the receipt; its button still opens the token details. */
-.thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable { font-size: 0; }
-.thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable::before { content: '$ —'; font-size: 11px; }
 
 /* The work line's edit counts open the changed files on their own. */
 .thread-ui-shell .tlog-files-toggle {

@@ -1,3 +1,4 @@
+import { usePhoneDock } from '../workbench/phoneDockContext';
 import type {
   FormEvent,
   MutableRefObject,
@@ -71,7 +72,9 @@ export function ComposerFrame({
   shellPromptSlot,
 }: ComposerFrameProps) {
   const { expanded, focusOwner, ...focusEvents } = useCompactComposer(formRef, activeView === 'chat');
-  const usage = activeView === 'chat' && visibleSubscriptionWindows(subscriptionUsage).length > 0
+  // The phone dock's status bar shows usage instead.
+  const dock = usePhoneDock();
+  const usage = !dock && activeView === 'chat' && visibleSubscriptionWindows(subscriptionUsage).length > 0
     ? <ComposerSubscriptionUsage usage={subscriptionUsage} />
     : null;
   return (

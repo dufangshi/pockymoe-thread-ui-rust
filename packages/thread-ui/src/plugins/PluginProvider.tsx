@@ -230,20 +230,26 @@ export function PluginProvider({
     return null;
   }, [enabledModules]);
 
-  const getSettingsSections = useCallback((pluginId?: string) => {
-    if (!adapter.loadPluginSettings || !adapter.savePluginSettings) return [];
-    return builtinPlugins.flatMap(module => {
-      if (pluginId !== undefined && module.manifest.id !== pluginId) return [];
-      const devicePlugin = plugins.find(plugin => plugin.id === module.manifest.id);
-      if (!settingsPluginIds.has(module.manifest.id) || !devicePlugin || devicePlugin.available === false) return [];
-      return (module.settingsSections ?? []).map(section => ({
+  const getSettingsSections = useCallback((pluginId?: string) => builtinPlugins.flatMap(module => {
+    if (pluginId !== undefined && module.manifest.id !== pluginId) return [];
+    const devicePlugin = plugins.find(plugin => plugin.id === module.manifest.id);
+    const browser = devicePlugin?.enabled && devicePlugin.available !== false
+      ? (module.browserSettingsSections ?? []).map(section => ({
         id: `plugin:${module.manifest.id}:${section.id}`,
         label: section.label,
-        description: section.description,
-        content: <PluginSettingsSection section={section} pluginId={module.manifest.id} adapter={adapter} />,
-      }));
-    });
-  }, [adapter, builtinPlugins, plugins, settingsPluginIds]);
+        ...(section.description ? { description: section.description } : {}),
+        content: section.render(),
+      }))
+      : [];
+    if (!adapter.loadPluginSettings || !adapter.savePluginSettings) return browser;
+    if (!settingsPluginIds.has(module.manifest.id) || !devicePlugin || devicePlugin.available === false) return browser;
+    return [...browser, ...(module.settingsSections ?? []).map(section => ({
+      id: `plugin:${module.manifest.id}:${section.id}`,
+      label: section.label,
+      description: section.description,
+      content: <PluginSettingsSection section={section} pluginId={module.manifest.id} adapter={adapter} />,
+    }))];
+  }), [adapter, builtinPlugins, plugins, settingsPluginIds]);
 
   const renderActionOutput = useCallback((pluginId: string, context: PluginActionOutputContext) =>
     builtinPlugins.find(module => module.manifest.id === pluginId)?.renderActionOutput?.(context) ?? null,

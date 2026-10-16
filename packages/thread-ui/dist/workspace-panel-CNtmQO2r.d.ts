@@ -1,8 +1,8 @@
 import * as react from 'react';
-import { ReactNode } from 'react';
+import { ReactNode, MutableRefObject } from 'react';
 import * as _pockymoe_shared from '@pockymoe/shared';
 import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
-import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, b as MessagePresentationContext, M as MessagePresentation, a as PluginActionOutputContext, F as FrontendPluginModule } from './plugin-types-iEH-4_I_.js';
+import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, b as MessagePresentationContext, M as MessagePresentation, a as PluginActionOutputContext, F as FrontendPluginModule } from './plugin-types-CgVfWBnd.js';
 
 interface PromptAttachmentUpload extends PromptAttachmentManifestEntryDto {
     file: File;
@@ -42,6 +42,8 @@ interface ThreadTimelineAdapter {
     }) => string;
     resolveHref?: (href: string) => string;
     onOpenLinkedThread?: (threadId: string) => void;
+    /** An address for a thread on this device, so links to it can open in a new tab. */
+    getThreadHref?: (threadId: string) => string;
     onOpenWorkspaceFile?: (input: {
         path: string;
         line?: number;
@@ -286,9 +288,14 @@ type SettingsSection = {
     description?: string;
     content: ReactNode;
 };
-declare function SettingsPanels({ sections, initialId }: {
+declare function SettingsPanels({ sections, initialId, selected: selectedId, onSelect, scroll }: {
     sections: SettingsSection[];
     initialId?: string;
+    /** Held by the owner when the panels may remount while open. */
+    selected?: string | undefined;
+    onSelect?: ((id: string) => void) | undefined;
+    /** The panel's scroll offset, kept by the owner across such a remount. */
+    scroll?: MutableRefObject<number> | undefined;
 }): react.JSX.Element | null;
 
 interface PluginContextValue {
@@ -339,4 +346,4 @@ interface ThreadGraphWorkspaceFeatures {
 declare function ThreadGraphWorkspacePanel({ detail, status, plugins, workspaceAdapter, metaContent, settingsContent, activeView, features: featureConfig, focusPathRequest, }: ThreadGraphWorkspacePanelProps): react.JSX.Element | null;
 declare const MemoizedThreadGraphWorkspacePanel: react.MemoExoticComponent<typeof ThreadGraphWorkspacePanel>;
 
-export { MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SettingsSection as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, type ThreadWorkspaceAdapter as g, PluginContext as h, type SendPromptInput as i, SettingsPanels as j, type ShellSocketConnection as k, type ShellSocketHandlers as l, type ThreadImageAssetVariant as m, type WorkspaceDocumentSnapshot as n, type WorkspaceSaveReceipt as o, type WorkspaceTab as p, createDefaultPluginContextValue as q, mergePluginState as r, ThreadGraphWorkspacePanel as s };
+export { MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SettingsSection as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, SettingsPanels as g, type ThreadWorkspaceAdapter as h, PluginContext as i, type SendPromptInput as j, type ShellSocketConnection as k, type ShellSocketHandlers as l, type ThreadImageAssetVariant as m, type WorkspaceDocumentSnapshot as n, type WorkspaceSaveReceipt as o, type WorkspaceTab as p, createDefaultPluginContextValue as q, mergePluginState as r, ThreadGraphWorkspacePanel as s };

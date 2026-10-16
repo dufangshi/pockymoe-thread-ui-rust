@@ -71,7 +71,7 @@ describe('ComposerJumpLatestButton', () => {
   it('names its glyphs with data-icon for theme packs', () => {
     const { view } = renderButton({ activeView: 'chat' });
     expect([...view.querySelectorAll('svg[data-icon]')].map((icon) => icon.getAttribute('data-icon')))
-      .toEqual(['previous-turn', 'latest', 'next-turn']);
+      .toEqual(['previous-turn', 'next-turn', 'latest']);
   });
 
   it('renders only in chat view and forwards clicks', () => {
@@ -91,21 +91,19 @@ describe('ComposerJumpLatestButton', () => {
     expect(view.querySelector('[aria-label="Jump to latest"]')).toBeNull();
   });
 
-  it('marks the badge active when following the tail', () => {
+  it('marks the navigation as following the tail', () => {
     const { view } = renderButton({ activeView: 'chat', followTail: true });
+    expect(view.querySelector('[aria-label="Timeline navigation"]')?.hasAttribute('data-following')).toBe(true);
 
-    expect(view.querySelector('.thread-jump-latest-badge')?.className).toContain(
-      'is-active',
-    );
+    renderButton({ activeView: 'chat', followTail: false });
+    expect(container?.querySelector('[aria-label="Timeline navigation"]')?.hasAttribute('data-following')).toBe(false);
   });
 
-  it('keeps timeline navigation centered without reserving a second row for usage', () => {
-    const { view } = renderButton({
-      activeView: 'chat',
-    });
-
-    expect(view.querySelector('[aria-label="Timeline navigation"]')?.closest('.thread-jump-latest-cluster')?.className)
-      .toContain('left-1/2');
+  it('groups previous, next and latest in one strip without usage', () => {
+    const { view } = renderButton({ activeView: 'chat' });
+    const nav = view.querySelector('[aria-label="Timeline navigation"]')!;
+    expect([...nav.querySelectorAll('button')].map(button => button.getAttribute('aria-label')))
+      .toEqual(['Jump to previous turn', 'Jump to next turn', 'Jump to latest']);
     expect(view.querySelector('.thread-subscription-usage')).toBeNull();
   });
 

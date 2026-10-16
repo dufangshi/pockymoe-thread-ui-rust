@@ -5,11 +5,13 @@ import './styles/history-markdown.css';
 import './styles/composer-plan.css';
 import './styles/export-dialog.css';
 import './styles/matter-workbench.css';
+import './styles/phone-dock.css';
 import './styles/composer-compact.css';
 import './styles/composer-reasoning.css';
 import './styles/mermaid-diagrams.css';
 import './styles/plugin-reports.css';
 import './styles/terminal-panel.css';
+import './styles/transcript-log.css';
 
 export type {
   ShellSocketConnection,
@@ -103,8 +105,10 @@ export {
   useAppShellNav,
   type AgentBackendId,
   type AppShellNavContextValue,
+  type PhoneHand,
   type ThemeMode,
 } from './app-shell/AppShellNavContext';
+export { PhoneHandChoice } from './app-shell/PhoneHandChoice';
 export {
   AppShellMenuButton,
   AppShellNavigationMenu,

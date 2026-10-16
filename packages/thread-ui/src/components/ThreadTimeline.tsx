@@ -43,6 +43,10 @@ import {
 } from './timeline/timelineScroll';
 import { useDeferredHistoryDetail } from './timeline/useDeferredHistoryDetail';
 import { useTimelineScroll } from './timeline/useTimelineScroll';
+import { TranscriptLogContext, type TranscriptLogActions } from './timeline/TranscriptLog';
+import { ThreadLinkContext } from './graph-chat/PromptEnvelope';
+import { ScrollAnchorContext } from './timeline/scrollAnchor';
+import { storySegments } from './timeline/activity';
 
 export interface ThreadTimelineProps {
   threadId?: string | undefined;
@@ -219,6 +223,12 @@ function ThreadTimelineComponent({
   const [loadingTurnDetailIds, setLoadingTurnDetailIds] = useState<Set<string>>(
     () => new Set(),
   );
+  // A turn's last live operations outlive it until its summary carries them,
+  // so its work folds into the work line instead of vanishing first.
+  const [endedLiveItems, setEndedLiveItems] = useState<{ turnId: string; items: ThreadHistoryItemDto[] } | null>(null);
+  if (liveItems?.items.length && endedLiveItems?.items !== liveItems.items) {
+    setEndedLiveItems({ turnId: liveItems.turnId, items: liveItems.items });
+  }
   const [turnDetailErrors, setTurnDetailErrors] = useState<
     Record<string, string | undefined>
   >({});
@@ -251,6 +261,8 @@ function ThreadTimelineComponent({
     handleTouchMove,
     handleTouchEnd,
     preserveScrollPositionForResize,
+    holdAnchorNow,
+    releaseAnchor,
     serverManagedHistory,
     effectiveTotalTurnCount,
     startIndex,
@@ -285,10 +297,58 @@ function ThreadTimelineComponent({
       bottomSpacer,
     ],
   });
+  const transcriptLogActions = useMemo<TranscriptLogActions>(() => ({
+    loadDetail: loadHistoryItemDetail,
+    workspaceRoot: adapter?.workspaceRootPath,
+    openText: handleOpenExpandedText,
+    anchor: preserveScrollPositionForResize,
+  }), [loadHistoryItemDetail, adapter?.workspaceRootPath, handleOpenExpandedText, preserveScrollPositionForResize]);
+  const scrollAnchor = useMemo(() => ({ hold: holdAnchorNow }), [holdAnchorNow]);
+  const openThreadLink = onOpenThread ?? adapter?.onOpenLinkedThread;
+  const threadLinks = useMemo(() => ({
+    ...(adapter?.getThreadHref ? { href: adapter.getThreadHref } : {}),
+    ...(openThreadLink ? { open: openThreadLink } : {}),
+  }), [adapter?.getThreadHref, openThreadLink]);
+  useEffect(() => {
+    // A composer floating over the transcript hides its bottom; sticky controls
+    // (an opened message's "Show less") stop above it, and above the turn strip
+    // on its top edge only where the strip is actually under them.
+    const container = scrollContainerRef.current;
+    const composer = container?.closest('.thread-graph-chat-panel')?.querySelector<HTMLElement>(':scope > .thread-graph-composer-host');
+    if (!container || typeof ResizeObserver === 'undefined') return;
+    const placeToggles = () => {
+      const strip = composer?.querySelector<HTMLElement>('.thread-jump-nav')?.getBoundingClientRect();
+      const bottom = container.getBoundingClientRect().bottom;
+      for (const toggle of container.querySelectorAll<HTMLElement>('.thread-graph-show-more[aria-expanded="true"]')) {
+        const box = toggle.getBoundingClientRect();
+        if (strip && strip.width > 0 && box.left < strip.right && box.right > strip.left) {
+          toggle.style.setProperty('--sticky-inset', `${Math.max(bottomSpacer, Math.round(bottom - strip.top))}px`);
+        } else toggle.style.removeProperty('--sticky-inset');
+      }
+    };
+    const measure = () => {
+      const overlap = composer ? container.getBoundingClientRect().bottom - composer.getBoundingClientRect().top : 0;
+      container.style.setProperty('--timeline-bottom-inset', `${Math.max(bottomSpacer, Math.round(overlap))}px`);
+      placeToggles();
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    if (composer) observer.observe(composer);
+    // Opening a message, or switching hands (the strip changes sides).
+    const toggles = new MutationObserver(placeToggles);
+    toggles.observe(container, { subtree: true, attributes: true, attributeFilter: ['aria-expanded'] });
+    const workbench = container.closest('.matter-workbench');
+    if (workbench) toggles.observe(workbench, { attributes: true, attributeFilter: ['class'] });
+    return () => { observer.disconnect(); toggles.disconnect(); };
+  }, [bottomSpacer, scrollContainerRef]);
+
+
 
   useEffect(() => {
     setCollapsedTurnOverrides({});
     setLoadedTurnDetails({});
+    setEndedLiveItems(null);
     setLoadingTurnDetailIds(new Set());
     setTurnDetailErrors({});
   }, [threadId]);
@@ -312,8 +372,15 @@ function ThreadTimelineComponent({
   const handleToggleCollapse = useCallback((
     turn: TimelineTurn,
     currentCollapsed: boolean,
+    loadDetails = false,
   ) => {
     preserveScrollPositionForResize();
+    // With turns kept open, a folded summary opens as its narration; only a run
+    // the reader opens loads the turn's operations.
+    if (currentCollapsed && !loadDetails && !effectiveAutoCollapseCompletedTurns && isTerminalTurnStatus(turn.status) && storySegments(turn)) {
+      setCollapsedTurnOverrides((current) => ({ ...current, [turn.id]: false }));
+      return;
+    }
     if (
       !currentCollapsed ||
       (!turn.hasDeferredItems && !peerWorkForTurn(loadedTurnDetails[turn.id] ?? turn)?.messages.some(message => message.text === undefined)) ||
@@ -364,7 +431,7 @@ function ThreadTimelineComponent({
           return next;
         });
       });
-  }, [loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize]);
+  }, [effectiveAutoCollapseCompletedTurns, loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize]);
 
   useEffect(() => {
     if (!loadTurnDetail) return;
@@ -375,6 +442,24 @@ function ThreadTimelineComponent({
       if (collapsedTurnOverrides[turn.id] !== false || !loaded ||
           loaded.status !== 'inProgress' || !isTerminalTurnStatus(turn.status) ||
           loadingTurnDetailIds.has(turn.id) || turnDetailErrors[turn.id]) continue;
+      setLoadingTurnDetailIds((current) => new Set(current).add(turn.id));
+      void Promise.resolve().then(() => loadTurnDetail(turn.id)).then((detail) => {
+        if (detail.id !== turn.id) throw new Error(translate("chat.loadedTurnDetailDidNotMatchThe"));
+        setLoadedTurnDetails((current) => ({ ...current, [turn.id]: detail }));
+      }).catch((error: unknown) => {
+        setTurnDetailErrors((current) => ({ ...current, [turn.id]: error instanceof Error ? error.message : translate("chat.unableToLoadCompleteTurnHistory") }));
+      }).finally(() => {
+        setLoadingTurnDetailIds((current) => { const next = new Set(current); next.delete(turn.id); return next; });
+      });
+    }
+  }, [turns, loadTurnDetail, loadedTurnDetails, collapsedTurnOverrides, loadingTurnDetailIds, turnDetailErrors]);
+
+  useEffect(() => {
+    if (!loadTurnDetail) return;
+    // A working turn reads open, so it loads what its summary deferred, once.
+    for (const turn of turns) {
+      if (turn.status !== 'inProgress' || !turn.hasDeferredItems || collapsedTurnOverrides[turn.id] === true ||
+          loadedTurnDetails[turn.id] || loadingTurnDetailIds.has(turn.id) || turnDetailErrors[turn.id]) continue;
       setLoadingTurnDetailIds((current) => new Set(current).add(turn.id));
       void Promise.resolve().then(() => loadTurnDetail(turn.id)).then((detail) => {
         if (detail.id !== turn.id) throw new Error(translate("chat.loadedTurnDetailDidNotMatchThe"));
@@ -398,15 +483,22 @@ function ThreadTimelineComponent({
     if (override !== undefined) {
       return override;
     }
+    if (!effectiveAutoCollapseCompletedTurns && isTerminalTurnStatus(turn.status) && storySegments(turn)) {
+      return false;
+    }
 
+    // A working turn stays open, its latest work unfolded; once finished it folds
+    // into its work line.
+    if (turn.status === 'inProgress' || turn.status === 'sending' || input.forceActive) {
+      return false;
+    }
     return Boolean(
-      (loadTurnDetail && turn.status === 'inProgress') || turn.hasDeferredItems ||
+      turn.hasDeferredItems ||
         (effectiveAutoCollapseCompletedTurns &&
           isTerminalTurnStatus(turn.status) &&
-          !input.forceActive &&
           !input.hasLiveActivity),
     );
-  }, [collapsedTurnOverrides, effectiveAutoCollapseCompletedTurns, loadTurnDetail]);
+  }, [collapsedTurnOverrides, effectiveAutoCollapseCompletedTurns]);
 
   const visibleTurns = serverManagedHistory ? turns : turns.slice(startIndex);
   const optimisticAbsoluteIndex = effectiveTotalTurnCount + 1;
@@ -595,6 +687,9 @@ function ThreadTimelineComponent({
   };
   const renderWorkTurn = (turn: ThreadTurnDto, visibleIndex: number, continuations: ThreadTurnDto[] = [], nested = false, omitAgentId?: string): React.ReactNode => {
     const loadedTurn = loadedTurnDetails[turn.id];
+    // Detail loaded while the turn worked is behind it once it ends; the
+    // summary then says what is still deferred.
+    const loadedWhileWorking = loadedTurn?.status === 'inProgress' && isTerminalTurnStatus(turn.status);
     // A summary refresh must update messages/usage without dropping the
     // operations explicitly loaded earlier or restoring stale text.
     const mergedItems = new Map(loadedTurn?.items.map((item) => [item.id, item]));
@@ -602,8 +697,8 @@ function ThreadTimelineComponent({
     const hydratedTurn = loadedTurn
       ? {
           ...loadedTurn, ...turn,
-          hasDeferredItems: loadedTurn.hasDeferredItems,
-          deferredItemCount: loadedTurn.deferredItemCount,
+          hasDeferredItems: loadedWhileWorking ? turn.hasDeferredItems : loadedTurn.hasDeferredItems,
+          deferredItemCount: loadedWhileWorking ? turn.deferredItemCount : loadedTurn.deferredItemCount,
           items: [...mergedItems.values()],
         }
       : turn;
@@ -614,6 +709,8 @@ function ThreadTimelineComponent({
     const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
     const rowLiveItems =
       liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
+    const rowEndedItems = !rowLiveItems?.length && (!loadedTurn || loadedWhileWorking) && endedLiveItems?.turnId === turn.id && isTerminalTurnStatus(turn.status)
+      ? endedLiveItems.items : null;
     const rowLiveOutput =
       liveOutputTargetTurnId === turn.id ? liveOutput : '';
     let rowLiveActivityAt = latestTimestamp(
@@ -664,11 +761,12 @@ function ThreadTimelineComponent({
         absoluteIndex={visibleTurnAbsoluteOffset + visibleIndex + 1}
         isCollapsed={rowCollapsed}
         livePlan={rowLivePlan}
-        liveItems={rowLiveItems}
+        liveItems={rowEndedItems ?? rowLiveItems}
         liveActivityAt={rowLiveActivityAt}
         liveOutput={rowLiveOutput}
         forceActive={rowForceActive}
         onToggleCollapse={handleToggleCollapse}
+        narrationMode={!effectiveAutoCollapseCompletedTurns}
         deferredItemsLoading={loadingTurnDetailIds.has(turn.id)}
         deferredItemsError={turnDetailErrors[turn.id]}
         onOpenExpandedText={handleOpenExpandedText}
@@ -684,7 +782,9 @@ function ThreadTimelineComponent({
 
   };
   return (
-    <>
+    <ScrollAnchorContext.Provider value={scrollAnchor}>
+    <ThreadLinkContext.Provider value={threadLinks}>
+    <TranscriptLogContext.Provider value={transcriptLogActions}>
       <section className={`flex min-h-0 flex-1 flex-col ${className}`.trim()}>
         <div
           ref={scrollContainerRef}
@@ -692,8 +792,8 @@ function ThreadTimelineComponent({
           onScroll={handleTimelineScroll}
           onWheel={(event) => { resetNavigation(); handleWheel(event); }}
           onTouchStart={(event) => { resetNavigation(); handleTouchStart(event); }}
-          onPointerDown={resetNavigation}
-          onKeyDown={(event) => { if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) resetNavigation(); }}
+          onPointerDown={(event) => { resetNavigation(); if (event.target === event.currentTarget) releaseAnchor(); }}
+          onKeyDown={(event) => { if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) { resetNavigation(); releaseAnchor(); } }}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onTouchCancel={handleTouchEnd}
@@ -1032,7 +1132,9 @@ function ThreadTimelineComponent({
         kind={expandedText?.kind}
         onClose={closeExpandedText}
       />
-    </>
+    </TranscriptLogContext.Provider>
+    </ThreadLinkContext.Provider>
+    </ScrollAnchorContext.Provider>
   );
 }
 

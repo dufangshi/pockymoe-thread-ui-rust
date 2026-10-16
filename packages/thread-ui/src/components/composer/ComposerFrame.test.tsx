@@ -5,6 +5,7 @@ import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { PhoneDockContext } from '../workbench/phoneDockContext';
 import { ComposerFrame, type ComposerFrameProps } from './ComposerFrame';
 
 let cleanup: (() => void) | null = null;
@@ -31,12 +32,12 @@ function baseProps(): ComposerFrameProps {
   };
 }
 
-function renderFrame(props: ComposerFrameProps) {
+function renderFrame(props: ComposerFrameProps, dock = false) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
   flushSync(() => {
-    root.render(<ComposerFrame {...props} />);
+    root.render(<PhoneDockContext.Provider value={dock}><ComposerFrame {...props} /></PhoneDockContext.Provider>);
   });
   cleanup = () => {
     flushSync(() => {
@@ -90,17 +91,23 @@ describe('ComposerFrame', () => {
     expect(container.querySelector('[data-slot="shell-prompt"]')).toBeTruthy();
   });
 
+  const subscriptionUsage = {
+    provider: 'claude' as const,
+    authKind: 'subscription' as const,
+    observedAt: new Date().toISOString(),
+    stale: false,
+    windows: [{ id: '5h', durationMinutes: 300, label: '5h', usedPercent: 10, resetsAt: null }],
+  };
+
   it.each(['classic', 'plum-pocket'])('anchors usage to the shell in %s without a footer row', (preset) => {
-    const subscriptionUsage = {
-      provider: 'claude' as const,
-      authKind: 'subscription' as const,
-      observedAt: new Date().toISOString(),
-      stale: false,
-      windows: [{ id: '5h', durationMinutes: 300, label: '5h', usedPercent: 10, resetsAt: null }],
-    };
     document.documentElement.dataset.themePreset = preset;
     const container = renderFrame({ ...baseProps(), subscriptionUsage });
     expect(container.querySelector('.shell .thread-composer-usage-tag .thread-subscription-usage')).toBeTruthy();
     expect(container.querySelector('.thread-composer-usage-footer')).toBeNull();
+  });
+
+  it('leaves usage to the status bar under the phone dock', () => {
+    const container = renderFrame({ ...baseProps(), subscriptionUsage }, true);
+    expect(container.querySelector('.thread-subscription-usage')).toBeNull();
   });
 });

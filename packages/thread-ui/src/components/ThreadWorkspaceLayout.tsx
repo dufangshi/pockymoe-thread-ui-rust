@@ -483,6 +483,18 @@ export function ThreadWorkspaceLayout({
         : "light"
       : themeMode);
   const [mobileRoomsOpen, setMobileRoomsOpen] = useState(false);
+  // The settings button moves between the phone dock's More sheet and the top
+  // bar when the one-handed layout is switched from inside settings, which
+  // remounts the dialog: keep it open, on the same section, from here.
+  const [ownSettingsOpen, setOwnSettingsOpen] = useState(false);
+  const [settingsSection, setSettingsSection] = useState<string | undefined>();
+  const settingsScroll = useRef(0);
+  const settingsOpen = settingsDialogOpen ?? ownSettingsOpen;
+  const changeSettingsOpen = (open: boolean) => {
+    if (settingsDialogOpen === undefined) setOwnSettingsOpen(open);
+    if (!open) { setSettingsSection(undefined); settingsScroll.current = 0; }
+    onSettingsDialogOpenChange?.(open);
+  };
   const [roomsRailCollapsed, setRoomsRailCollapsed] = useState(false);
   const [workspaceCollapsed, setWorkspaceCollapsed] = useState(
     !initialWorkspaceFocusViewport,
@@ -796,8 +808,11 @@ export function ThreadWorkspaceLayout({
 
     return (
       <SettingsDialog
-        {...(settingsDialogOpen !== undefined ? { open: settingsDialogOpen } : {})}
-        {...(onSettingsDialogOpenChange ? { onOpenChange: onSettingsDialogOpenChange } : {})}
+        open={settingsOpen}
+        onOpenChange={changeSettingsOpen}
+        section={settingsSection}
+        onSectionChange={setSettingsSection}
+        panelScroll={settingsScroll}
         themeMode={themeMode} effectiveTheme={effectiveTheme}
         contentProps={{ 'data-testid': 'settings-dialog' }}
         sections={sections}
@@ -1004,7 +1019,7 @@ export function ThreadWorkspaceLayout({
 
   if (workbench) {
     return <GraphChatShellRoot effectiveTheme={effectiveTheme} layoutMode={layoutMode} themeMode={themeMode} viewportConstrained={viewportConstrained}>
-      <MatterWorkbench options={workbench} title={currentThreadLabel ?? translate("files.newThread")} homeHref={restrictedNavigation ? undefined : workspaceReturnHref ?? '/workspaces'}
+      <MatterWorkbench options={workbench} title={currentThreadLabel ?? (currentThreadId ? "" : translate("files.newThread"))} homeHref={restrictedNavigation ? undefined : workspaceReturnHref ?? '/workspaces'}
         settings={renderSettingsDialog()} newThread={renderNewThreadDialogButton('matter-new-thread', true)}
         actions={threadActionsButton} connection={topbarActions ?? mobileHeaderAction} deviceMonitor={deviceMonitor}
         threadMenu={null}

@@ -2,7 +2,7 @@ import { WorkbenchPanels, type WorkbenchPanelsOptions } from './workbench/Workbe
 import { useWorkbenchToolPanel } from './workbench/toolPanel';
 import { getLocale } from '../i18n';
 import { translate, useI18n } from '../i18n';
-import { useEffect, useState, useRef, type ReactNode, type CSSProperties } from 'react';
+import { useEffect, useState, useRef, type ReactNode, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,6 +11,8 @@ import {
   ChevronRight,
   Home,
   FolderOpen,
+  Hand,
+  LoaderCircle,
   MessageSquare,
   PanelLeft,
   Search,
@@ -24,6 +26,13 @@ import { WorkbenchContext } from './WorkbenchContext';
 import { WorkbenchPath } from './WorkbenchPath';
 import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
 import { useThemeFeature } from './themeHooks';
+import { PhoneDock, PhoneSheet, type PhonePane } from './workbench/PhoneDock';
+import { PhoneDockContext } from './workbench/phoneDockContext';
+import type { WorkbenchPaneSwitch } from './workbench/paneSwitch';
+import { ComposerSubscriptionUsage, visibleSubscriptionWindows } from './composer/ComposerSubscriptionUsage';
+import type { AgentSubscriptionUsageDto } from '@pockymoe/shared';
+import { useAppShellNav } from '../app-shell/AppShellNavContext';
+
 
 export interface WorkbenchThread {
   key: string;
@@ -55,6 +64,8 @@ export interface WorkbenchToolPanel {
 export interface MatterWorkbenchOptions {
   panels?: WorkbenchPanelsOptions;
   statusActions?: ReactNode;
+  /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
+  subscriptionUsage?: AgentSubscriptionUsageDto | null;
   emptyWorkspace?: boolean;
   navigationReady?: boolean;
   harnessSessionId?: string | null;
@@ -72,6 +83,9 @@ export interface MatterWorkbenchOptions {
   toolPanels?: WorkbenchToolPanel[];
   onToggleFavorite: () => void;
   onNavigate: (href: string) => void;
+  /** Warm a thread's detail before it is opened (a row is pressed, or it is a
+      dock swipe away), so opening it shows the conversation at once. */
+  onPrefetchThread?: (href: string) => void;
   onSearch: () => void;
   search?: ReactNode;
   searchOpen?: boolean;
@@ -131,11 +145,178 @@ export function MatterWorkbench({
   // A theme with phone drawer tools keeps the phone top bar to touch-sized
   // essentials and moves Home and Chat into the drawer; the device monitor stays.
   const drawerTools = useThemeFeature('workbench.phoneDrawerTools') && mobile;
+  // One-handed phone layout: status-only top bar, navigation at the bottom.
+  // A setting (Settings → Preferences), on by default; off keeps the classic phone bars.
+  const shellNav = useAppShellNav();
+  const dock = mobile && (shellNav?.phoneDock ?? true);
+  // Left-handed: the dock, the composer's buttons and the turn strip are mirrored.
+  const leftHanded = dock && shellNav?.phoneHand === 'left';
+  const [threadsOpen, setThreadsOpen] = useState(false);
+  // A phone split's pinned conversations, switched from the dock.
+  const [paneSwitch, setPaneSwitch] = useState<WorkbenchPaneSwitch | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    // A dock switched off and on (crossing 640px, or the setting) starts from the
+    // focus as it is now, not from a stale typing state.
+    if (!dock) { setTyping(false); return; }
+    // The keyboard needs the room: hide the navigation row while a field has focus.
+    const editing = () => {
+      const target = document.activeElement;
+      return target instanceof HTMLElement && !target.closest('.matter-phone-sheet, .matter-topbar')
+        && target.matches('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]), [contenteditable]:not([contenteditable="false"])');
+    };
+    let timer = 0;
+    setTyping(editing());
+    const settle = () => {
+      window.clearTimeout(timer);
+      document.removeEventListener('click', afterTap, true);
+      setTyping(editing());
+    };
+    const afterTap = () => { window.clearTimeout(timer); timer = window.setTimeout(settle, 0); };
+    const focusIn = () => { if (editing()) settle(); };
+    // A tap moves focus on mousedown, before mouseup and click: bringing the row
+    // back then would move the tapped control (Send, New terminal) from under the
+    // finger. It returns once that tap has clicked, or shortly after a blur
+    // without one (the keyboard's own close button).
+    const focusOut = () => window.setTimeout(() => {
+      if (editing()) return;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(settle, 400);
+      document.addEventListener('click', afterTap, { capture: true, once: true });
+    }, 0);
+    document.addEventListener('focusin', focusIn);
+    document.addEventListener('focusout', focusOut);
+    return () => {
+      window.clearTimeout(timer);
+      document.removeEventListener('click', afterTap, true);
+      document.removeEventListener('focusin', focusIn);
+      document.removeEventListener('focusout', focusOut);
+    };
+  }, [dock]);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const scrimRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const root = rootRef.current, drawer = sidebarRef.current;
+    if (!dock || !root || !drawer) return;
+    // The workspace drawer follows a sideways drag: rightwards from the left part
+    // of the conversation opens it, leftwards on it or on the dimmed page closes
+    // it. Browsers give pages no way to reserve the screen edge from the system
+    // back gesture, so the drag may start anywhere in the left 40%, not only at
+    // the edge. The right side and the bottom panel keep their own gestures.
+    let start: { x: number; y: number; time: number } | null = null;
+    let dragging = false, offset = 0;
+    const width = () => drawer.getBoundingClientRect().width || 270;
+    const paint = (shown: number) => {
+      drawer.style.transform = `translateX(${Math.round(shown - width())}px)`;
+      if (scrimRef.current) scrimRef.current.style.opacity = String(Math.max(0, Math.min(1, shown / width())));
+    };
+    const reset = () => {
+      drawer.removeAttribute('data-dragging');
+      drawer.style.transform = '';
+      if (scrimRef.current) { scrimRef.current.removeAttribute('data-dragging'); scrimRef.current.style.opacity = ''; }
+    };
+    const begin = (event: TouchEvent) => {
+      start = null; dragging = false; offset = 0;
+      const target = event.target instanceof Element ? event.target : null;
+      if (event.touches.length !== 1 || !target) return;
+      const x = event.touches[0]!.clientX;
+      if (sidebarOpen) {
+        if (!target.closest('.matter-sidebar, .matter-sidebar-scrim')) return;
+      } else {
+        if (x > window.innerWidth * 0.4 || !target.closest('.matter-main')) return;
+        if (target.closest('.thread-graph-composer-host, .file-ask-bar, .matter-phone-dock, .xterm, .terminal-panel, input, textarea, [contenteditable="true"], [contenteditable="plaintext-only"], [role="dialog"], [data-no-swipe]')) return;
+        // A row that can still scroll back to its start keeps the swipe.
+        for (let node: Element | null = target; node && node !== root; node = node.parentElement) {
+          if (node.scrollLeft > 0 && node.scrollWidth > node.clientWidth) return;
+        }
+      }
+      start = { x, y: event.touches[0]!.clientY, time: event.timeStamp };
+    };
+    const move = (event: TouchEvent) => {
+      if (!start) return;
+      const dx = event.touches[0]!.clientX - start.x, dy = event.touches[0]!.clientY - start.y;
+      if (!dragging) {
+        if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { start = null; return; }
+        // A long press before moving is a text selection, not a drag.
+        if (Math.abs(dx) < 12 || Math.abs(dx) < Math.abs(dy) * 1.3 || (sidebarOpen ? dx > 0 : dx < 0) || event.timeStamp - start.time > 450) return;
+        if (window.getSelection()?.toString()) { start = null; return; }
+        dragging = true;
+        drawer.setAttribute('data-dragging', '');
+        scrimRef.current?.setAttribute('data-dragging', '');
+      }
+      event.preventDefault();
+      offset = dx;
+      paint(sidebarOpen ? Math.max(0, width() + dx) : Math.min(width(), Math.max(0, dx)));
+    };
+    const end = (event: TouchEvent) => {
+      const from = start;
+      start = null;
+      if (!from || !dragging) return;
+      dragging = false;
+      const fast = Math.abs(offset) / Math.max(1, event.timeStamp - from.time) > 0.5;
+      const far = Math.abs(offset) > width() * 0.3;
+      reset();
+      if (sidebarOpen && offset < 0 && (far || fast)) setSidebarOpen(false);
+      else if (!sidebarOpen && offset > 0 && (far || fast)) setSidebarOpen(true);
+    };
+    root.addEventListener('touchstart', begin, { passive: true });
+    root.addEventListener('touchmove', move, { passive: false });
+    root.addEventListener('touchend', end);
+    root.addEventListener('touchcancel', end);
+    return () => {
+      reset();
+      root.removeEventListener('touchstart', begin);
+      root.removeEventListener('touchmove', move);
+      root.removeEventListener('touchend', end);
+      root.removeEventListener('touchcancel', end);
+    };
+  }, [dock, sidebarOpen]);
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!dock || !root) return;
+    // Swiping up on the bottom panel (the composer or the dock) opens the thread
+    // sheet. A prompt that can scroll keeps the gesture for itself.
+    let start: { x: number; y: number } | null = null;
+    const begin = (event: TouchEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      start = null;
+      if (event.touches.length !== 1 || !target?.closest('.thread-graph-composer-host, .matter-phone-dock')) return;
+      if (target.closest('.matter-phone-thread, [role="menu"], [role="listbox"], [role="dialog"], .thread-jump-latest-cluster')) return;
+      const scroller = target.closest<HTMLElement>('[role="textbox"], textarea');
+      if (scroller && /auto|scroll/.test(getComputedStyle(scroller).overflowY) && scroller.scrollHeight > scroller.clientHeight + 1) return;
+      start = { x: event.touches[0]!.clientX, y: event.touches[0]!.clientY };
+    };
+    const end = (event: TouchEvent) => {
+      const from = start;
+      start = null;
+      const touch = event.changedTouches[0];
+      if (!from || !touch) return;
+      const dx = touch.clientX - from.x, dy = touch.clientY - from.y;
+      if (dy > -40 || Math.abs(dy) < Math.abs(dx) * 1.5) return;
+      if (document.activeElement instanceof HTMLElement && root.contains(document.activeElement)) document.activeElement.blur();
+      setMoreOpen(false);
+      setThreadsOpen(true);
+    };
+    const cancel = () => { start = null; };
+    root.addEventListener('touchstart', begin, { passive: true });
+    root.addEventListener('touchend', end);
+    root.addEventListener('touchcancel', cancel);
+    return () => {
+      root.removeEventListener('touchstart', begin);
+      root.removeEventListener('touchend', end);
+      root.removeEventListener('touchcancel', cancel);
+    };
+  }, [dock]);
   const toolPanel = useWorkbenchToolPanel();
   // With the bottom panel the conversation stays visible beside the terminal:
   // Chat is "pressed" unless a maximized terminal covers it.
   const chatCovered = Boolean(o.panels && o.activeView === 'shell' && toolPanel.maximized && !toolPanel.collapsed);
+  // A compact workbench draws Files over the conversation: Chat closes it.
+  const filesCoverChat = () => explorerOpen && (mobile || Boolean(rootRef.current?.querySelector('.workbench-panels.is-compact')));
   const showChat = () => {
+    if (filesCoverChat()) setExplorerOpen(false);
     if (o.panels) {
       if (chatCovered) toolPanel.update({ maximized: false });
     } else o.onViewChange('chat');
@@ -184,8 +365,54 @@ export function MatterWorkbench({
   const navigate = (href: string) => {
     setSidebarOpen(false);
     setBellOpen(false);
+    setThreadsOpen(false);
+    setMoreOpen(false);
     o.onNavigate(href);
   };
+  // Home stays inside the app: a full page load flashed the bare page and lost
+  // its state. A modified or middle click keeps the browser's own behaviour.
+  const goHome = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    if (!homeHref || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    navigate(homeHref);
+  };
+  const pane: PhonePane = explorerOpen ? 'files' : o.activeView === 'shell' ? 'shell' : 'chat';
+  const choosePane = (next: PhonePane) => {
+    if (next === 'files') { setExplorerOpen(true); return; }
+    if (explorerOpen) setExplorerOpen(false);
+    // The host's view change toggles the terminal.
+    if ((next === 'shell') !== (o.activeView === 'shell')) o.onViewChange('shell');
+  };
+  const currentThread = o.threads.find(thread => thread.key === o.currentKey) ?? tabs.find(thread => thread.key === o.currentKey);
+  const tabRoots = groupThreads(tabs).map(group => group.root);
+  const swipeSiblings = tabRoots.some(thread => thread.key === o.currentKey) ? tabRoots : tabs;
+  const prefetchThread = o.onPrefetchThread;
+  const swipeNeighbours = (() => {
+    const index = swipeSiblings.findIndex(thread => thread.key === o.currentKey);
+    return index < 0 ? '' : [swipeSiblings[index - 1]?.href, swipeSiblings[index + 1]?.href].filter(Boolean).join(' ');
+  })();
+  useEffect(() => {
+    // The threads a sideways swipe on the dock opens, warmed once the page is idle.
+    if (!dock || !prefetchThread || !swipeNeighbours || typeof window.requestIdleCallback !== 'function') return;
+    const handle = window.requestIdleCallback(() => { for (const href of swipeNeighbours.split(' ')) prefetchThread(href); });
+    return () => window.cancelIdleCallback(handle);
+  }, [dock, prefetchThread, swipeNeighbours]);
+  const knownThreads = [...o.threads, ...tabs.filter(tab => !o.threads.some(thread => thread.key === tab.key))];
+  const othersRunning = knownThreads.filter(thread => thread.status === 'running' && thread.key !== o.currentKey).length;
+  const attention = (thread: WorkbenchThread) => thread.status === 'running' ? 0 : thread.status === 'unread' || thread.status === 'failed' ? 1 : 2;
+  const bell = (
+    <button
+      aria-label={translate("workbench.notifications")}
+      aria-expanded={bellOpen}
+      onClick={() => {
+        setBellOpen(!bellOpen);
+        o.onReadNotifications();
+      }}
+    >
+      <Bell data-icon="notifications" />
+      {o.unreadCount > 0 && <span className="matter-unread" />}
+    </button>
+  );
   const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread)) => (
     <div key={thread.key} className="matter-thread-entry">
     <a
@@ -194,6 +421,8 @@ export function MatterWorkbench({
         e.preventDefault();
         navigate(thread.href);
       }}
+      onPointerDown={() => o.onPrefetchThread?.(thread.href)}
+      onMouseEnter={() => o.onPrefetchThread?.(thread.href)}
       className="matter-thread-row"
       aria-current={thread.key === o.currentKey ? 'page' : undefined}
       title={`${thread.title}\n${thread.subtitle} · ${activity.label}`}
@@ -224,7 +453,8 @@ export function MatterWorkbench({
   ));
   return (
     <div
-      className={`matter-workbench ${sidebarHidden ? 'is-sidebar-hidden' : ''}`}
+      ref={rootRef}
+      className={`matter-workbench ${sidebarHidden ? 'is-sidebar-hidden' : ''} ${dock ? 'has-phone-dock' : ''} ${leftHanded ? 'is-left-handed' : ''} ${dock && typing ? 'is-typing' : ''}`}
       onClick={(e) => {
         if (
           e.target instanceof Element &&
@@ -239,6 +469,8 @@ export function MatterWorkbench({
         if (e.key === 'Escape') {
           setBellOpen(false);
           setSidebarOpen(false);
+          setThreadsOpen(false);
+          setMoreOpen(false);
           e.currentTarget
             .querySelector('.matter-thread-menu[open]')
             ?.removeAttribute('open');
@@ -248,7 +480,7 @@ export function MatterWorkbench({
       {!mobile && <nav className="matter-rail" aria-label={translate("workbench.workspaceTools")}>
         {homeHref && <a
           className="matter-brand"
-          href={homeHref}
+          href={homeHref} onClick={goHome}
           aria-label={translate("workbench.pockymoeHome")}
         >
           p<span>m</span>
@@ -278,7 +510,18 @@ export function MatterWorkbench({
           title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
         <div className="matter-rail-bottom">{deviceMonitor}{settings}</div>
       </nav>}
-      <header className={`matter-topbar ${o.searchOpen ? 'is-search-open' : ''}`}>
+      {dock ? <header className={`matter-topbar is-status-only ${o.searchOpen ? 'is-search-open' : ''}`}>
+        <div className="matter-topbar-status">{deviceMonitor}</div>
+        {o.searchOpen && <div className="matter-topbar-search">{o.search}</div>}
+        <span className="matter-topbar-spacer" />
+        {/* Usage windows are read, rarely touched: they live in the status bar. */}
+        {visibleSubscriptionWindows(o.subscriptionUsage).length > 0 && <div className="matter-topbar-usage"><ComposerSubscriptionUsage usage={o.subscriptionUsage} /></div>}
+        {othersRunning > 0 && <button className="matter-running-chip" aria-label={translate('workbench.runningCount', { count: othersRunning })} onClick={() => setThreadsOpen(true)}>
+          <LoaderCircle aria-hidden="true" /><span>{othersRunning}</span><span className="matter-running-label">{translate('workbench.running')}</span>
+        </button>}
+        <div className="matter-connection">{connection}</div>
+        {bell}
+      </header> : <header className={`matter-topbar ${o.searchOpen ? 'is-search-open' : ''}`}>
         <button
           aria-label={translate("workbench.toggleShortcutsSidebar")}
           aria-expanded={mobile ? sidebarOpen : !sidebarHidden}
@@ -297,7 +540,7 @@ export function MatterWorkbench({
         <button data-action="go-forward" aria-label={translate("workbench.goForward")} onClick={() => history.forward()}>
           <ArrowRight data-icon="forward" />
         </button>
-        {!drawerTools && homeHref && <a href={homeHref} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}>
+        {!drawerTools && homeHref && <a href={homeHref} onClick={goHome} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}>
           <Home data-icon="home" />
         </a>}
         <div className="matter-topbar-search">{o.search ?? <button
@@ -312,34 +555,36 @@ export function MatterWorkbench({
         <div className="matter-topbar-end">
           {mobile && deviceMonitor}
           {mobile && <>
-            {!drawerTools && <button aria-label={translate("workbench.chat")} aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={showChat}><MessageSquare data-icon="chat" /></button>}
-            {o.terminalEnabled && <button aria-label={translate("workbench.terminal")} aria-pressed={o.activeView === 'shell'} onClick={() => o.onViewChange('shell')}><Terminal data-icon="terminal" /></button>}
+            {!drawerTools && <button aria-label={translate("workbench.chat")} aria-pressed={!explorerOpen && (o.panels ? !chatCovered : o.activeView === 'chat')} onClick={showChat}><MessageSquare data-icon="chat" /></button>}
+            {o.terminalEnabled && <button aria-label={translate("workbench.terminal")} aria-pressed={!explorerOpen && o.activeView === 'shell'} onClick={() => {
+              // Over Files, the terminal button shows the terminal rather than hiding it unseen.
+              if (explorerOpen) {
+                setExplorerOpen(false);
+                if (o.activeView === 'shell') return;
+              }
+              o.onViewChange('shell');
+            }}><Terminal data-icon="terminal" /></button>}
             {o.toolPanels?.map(panel => <button key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
             <button aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
             {settings}
           </>}
           <div className="matter-connection">{connection}</div>
-          <button
-            aria-label={translate("workbench.notifications")}
-            aria-expanded={bellOpen}
-            onClick={() => {
-              setBellOpen(!bellOpen);
-              o.onReadNotifications();
-            }}
-          >
-            <Bell data-icon="notifications" />
-            {o.unreadCount > 0 && <span className="matter-unread" />}
-          </button>
+          {bell}
         </div>
-      </header>
-      {sidebarOpen && (
+      </header>}
+      {/* Under the dock the scrim stays mounted so a drag can fade it in. */}
+      {(sidebarOpen || dock) && (
         <button
+          ref={scrimRef}
           className="matter-sidebar-scrim"
           aria-label={translate("workbench.closeNavigation")}
+          data-open={sidebarOpen || undefined}
+          {...(sidebarOpen ? {} : { 'aria-hidden': true, tabIndex: -1 })}
           onClick={() => setSidebarOpen(false)}
         />
       )}
       <aside
+        ref={sidebarRef}
         className={`matter-sidebar ${sidebarOpen ? 'is-open' : ''}`}
         aria-label={translate("workbench.threadNavigation")}
       >
@@ -356,7 +601,7 @@ export function MatterWorkbench({
         </div>
         {drawerTools && (
           <div className="matter-drawer-tools" role="group" aria-label={translate("workbench.workspaceTools")}>
-            {homeHref && <a href={homeHref}><Home data-icon="home" /><span>{translate("workbench.workspaces")}</span></a>}
+            {homeHref && <a href={homeHref} onClick={goHome}><Home data-icon="home" /><span>{translate("workbench.workspaces")}</span></a>}
             <button aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={() => { showChat(); setSidebarOpen(false); }}><MessageSquare data-icon="chat" /><span>{translate("workbench.chat")}</span></button>
           </div>
         )}
@@ -404,7 +649,7 @@ export function MatterWorkbench({
           {translate("workbench.yourConversationsTogether")}</div>
       </aside>
       <main className="matter-main">
-        <div className="matter-tabs-row">
+        {!dock && <div className="matter-tabs-row">
         <div className="tab-scroll-surface matter-tab-scroll" {...tabScrollEdges}>
         <nav ref={tabsRef} className="matter-thread-tabs" aria-label={translate("workbench.workspaceThreads")}>
           <GroupedThreadTabs threads={tabs} currentKey={o.currentKey} onNavigate={navigate} />
@@ -432,8 +677,9 @@ export function MatterWorkbench({
             {threadMenu}
           </div>
         </div>}
-        </div>
-        {o.panels ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={o.panels} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (
+        </div>}
+        <PhoneDockContext.Provider value={dock}>
+        {o.panels ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={dock ? { ...o.panels, onPaneSwitchChange: setPaneSwitch } : o.panels} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (
         <div ref={contentRef} style={{ '--explorer-width': `${explorerWidth}px` } as CSSProperties} className={`matter-content ${explorerOpen ? 'has-explorer' : ''}`}>
           <div className="matter-chat">
             <WorkbenchContext.Provider value={true}>
@@ -462,7 +708,51 @@ export function MatterWorkbench({
           )}
         </div>
         )}
+        </PhoneDockContext.Provider>
       </main>
+      {dock && <>
+        <PhoneDock title={title} thread={currentThread} paneSwitch={paneSwitch} siblings={swipeSiblings} currentKey={o.currentKey} pane={pane}
+          terminalEnabled={o.terminalEnabled} onPane={choosePane} onNavigate={navigate}
+          onOpenThreads={() => { setMoreOpen(false); setThreadsOpen(true); }} onOpenMore={() => { setThreadsOpen(false); setMoreOpen(true); }}
+          threadsOpen={threadsOpen} moreOpen={moreOpen} />
+        <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
+          footer={newThread}>
+          {o.unreadCount > 0 && <>
+            <h3>{translate('workbench.notifications')}</h3>
+            <div className="matter-phone-sheet-notices">
+              {[...o.notifications].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).slice(0, 3).map(n => (
+                <a key={n.id} href={n.href} onClick={e => { e.preventDefault(); o.onReadNotifications(); navigate(n.href); }}>
+                  <span className="matter-status-dot" data-status="completed" />
+                  <span><b>{n.title}</b>{n.summary && <small>{n.summary}</small>}</span>
+                </a>
+              ))}
+            </div>
+          </>}
+          <h3>{translate('workbench.thisWorkspace')}</h3>
+          <div className="matter-thread-section">{renderThreadGroups([...tabs].sort((a, b) => attention(a) - attention(b)))}</div>
+          {o.threads.some(thread => !tabs.some(tab => tab.key === thread.key)) && <>
+            <h3>{translate('workbench.recentChats')}</h3>
+            <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>
+          </>}
+        </PhoneSheet>
+        <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} onClose={() => setMoreOpen(false)}>
+          <h3 title={title}>{title}</h3>
+          <div className="matter-phone-sheet-tools">
+            {!o.emptyWorkspace && <button type="button" onClick={o.onSearch}><Search data-icon="search" /><span>{translate('workbench.searchConversation')}</span></button>}
+            {!o.emptyWorkspace && <button type="button" aria-pressed={o.favorite} disabled={o.favoriteBusy} onClick={o.onToggleFavorite}><Star data-icon="shortcut" fill={o.favorite ? 'currentColor' : 'none'} /><span>{o.favorite ? translate('workbench.removeShortcut') : translate('workbench.addShortcut')}</span></button>}
+            {o.toolPanels?.map(panel => <button type="button" key={panel.id} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}<span>{panel.label}</span></button>)}
+            {shellNav?.setPhoneHand && <button type="button" aria-pressed={leftHanded} onClick={() => shellNav.setPhoneHand?.(leftHanded ? 'right' : 'left')}><Hand className="matter-phone-hand-icon" /><span>{translate('workbench.leftHanded')}</span></button>}
+            <div className="matter-phone-sheet-host">{actions}{threadMenu}{o.statusActions}</div>
+          </div>
+          <h3>{translate('workbench.app')}</h3>
+          <div className="matter-phone-sheet-list">
+            <button type="button" onClick={() => setSidebarOpen(true)}><PanelLeft data-icon="sidebar" /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>
+            {homeHref && <a href={homeHref} onClick={goHome}><Home data-icon="home" /><span>{translate('workbench.backToWorkspaces')}</span></a>}
+            <button type="button" onClick={() => history.back()}><ArrowLeft data-icon="back" /><span>{translate('workbench.goBack')}</span></button>
+            <div className="matter-phone-sheet-settings">{settings}<span>{translate('workbench.settings')}</span></div>
+          </div>
+        </PhoneSheet>
+      </>}
       {bellOpen && (
         <>
           <button

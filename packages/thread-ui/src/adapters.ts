@@ -27,6 +27,8 @@ export interface ThreadTimelineAdapter {
   }) => string;
   resolveHref?: (href: string) => string;
   onOpenLinkedThread?: (threadId: string) => void;
+  /** An address for a thread on this device, so links to it can open in a new tab. */
+  getThreadHref?: (threadId: string) => string;
   onOpenWorkspaceFile?: (input: { path: string; line?: number }) => void;
   cancelPendingSteer?: (
     threadId: string,

@@ -49,21 +49,13 @@ function turn(items: ThreadTurnDto['items']): ThreadTurnDto {
 }
 
 
-function button(element: ParentNode, label: string) {
-  const found = Array.from(element.querySelectorAll('button')).find(
-    (candidate) => candidate.getAttribute('aria-label') === label,
-  );
-  if (!found) throw new Error(`missing button ${label}`);
-  return found;
+function row(element: ParentNode, kind: string) {
+  return element.querySelector<HTMLButtonElement>(`.tlog-row[data-kind="${kind}"] .tlog-row-head`)!;
 }
 
 function expandActivity(element: HTMLElement) {
-  // Batches nest (activity > commands); open each level as it appears.
-  for (let pass = 0; pass < 4; pass += 1) {
-    const toggles = Array.from(element.querySelectorAll<HTMLButtonElement>('button[aria-expanded="false"]'))
-      .filter((toggle) => toggle.closest('.thread-graph-history-group'));
-    if (!toggles.length) return;
-    for (const toggle of toggles) flushSync(() => toggle.click());
+  for (const toggle of element.querySelectorAll<HTMLButtonElement>('.tlog-run-head[aria-expanded="false"]')) {
+    flushSync(() => toggle.click());
   }
 }
 
@@ -87,9 +79,9 @@ describe('compact history items', () => {
     );
     expandActivity(element);
     expect(element.textContent).toContain('rust gzip');
-    flushSync(() => button(element, 'Open grouped web search 1').click());
-    expect(loader).toHaveBeenCalledWith('search-1');
-    expect(document.body.textContent).toContain('Loading full web search details');
+    flushSync(() => row(element, 'webSearch').click());
+    await vi.waitFor(() => expect(loader).toHaveBeenCalledWith('search-1'));
+    expect(element.querySelector('.tlog-detail[role="status"]')).not.toBeNull();
     pending[0]!({ id: 'search-1', kind: 'webSearch', title: 'rust gzip', text: 'Result: flate2 docs' });
     await vi.waitFor(() => expect(document.body.textContent).toContain('Result: flate2 docs'));
   });
@@ -105,9 +97,11 @@ describe('compact history items', () => {
       />,
     );
     expandActivity(element);
-    flushSync(() => button(element, 'Open full tool call').click());
-    expect(loader).toHaveBeenCalledWith('tool-1');
-    await vi.waitFor(() => expect(document.body.textContent).toContain('Tool output body'));
+    flushSync(() => row(element, 'toolCall').click());
+    await vi.waitFor(() => expect(loader).toHaveBeenCalledWith('tool-1'));
+    await vi.waitFor(() => expect(element.querySelector('.tlog-output')?.textContent).toBe('Tool output body'));
+    flushSync(() => element.querySelector<HTMLButtonElement>('.tlog-viewable')!.click());
+    await vi.waitFor(() => expect(document.body.querySelector('[role="dialog"]')?.textContent).toContain('Tool output body'));
   });
 
   it('falls back to text when previewText and sourceTurnId are omitted', () => {

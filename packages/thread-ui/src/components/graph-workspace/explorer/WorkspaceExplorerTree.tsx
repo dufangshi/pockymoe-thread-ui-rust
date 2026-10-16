@@ -164,16 +164,58 @@ export function WorkspaceExplorerTree({
   );
 
   const revealedSelectionRef = useRef<string | null>(null);
+  // A link opened into the tree brings its target near the top, one row of
+  // context above it, and keeps it there while the folders around it load.
+  const revealUntilRef = useRef(0);
+  const revealTarget = useCallback((id: string, toTop: boolean) => {
+    const index = projection.indexById.get(id);
+    if (index === undefined) return false;
+    if (!toTop) {
+      // Selecting a row the reader can see moves nothing.
+      if (canVirtualize) virtualizer.scrollToIndex(index, {align: 'auto'});
+      else rowElementsRef.current.get(id)?.scrollIntoView?.({block: 'nearest'});
+    } else if (canVirtualize) {
+      virtualizer.scrollToIndex(Math.max(0, index - 1), {align: 'start'});
+    } else {
+      const row = rowElementsRef.current.get(id);
+      const scroller = scrollerRef.current;
+      if (row && scroller) {
+        const offset = row.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+        scroller.scrollTop += offset - row.offsetHeight;
+      }
+    }
+    return true;
+  }, [projection.indexById, canVirtualize, virtualizer, scrollerRef]);
+  // A tree opened by a link reveals that target as a new request.
+  const revealedRequestRef = useRef<number | undefined>(undefined);
   useEffect(() => {
     const key = `${selectedNodeId}:${revealRequestKey ?? 0}`;
     if (!selectedNodeId || revealedSelectionRef.current === key) return;
-    const index = projection.indexById.get(selectedNodeId);
-    if (index === undefined) return;
+    const requested = revealRequestKey !== undefined && revealRequestKey !== revealedRequestRef.current;
+    if (!revealTarget(selectedNodeId, requested)) return;
     revealedSelectionRef.current = key;
+    revealedRequestRef.current = revealRequestKey;
     setFocusedId(selectedNodeId);
-    if (canVirtualize) virtualizer.scrollToIndex(index, {align: 'auto'});
-    else rowElementsRef.current.get(selectedNodeId)?.scrollIntoView?.({block: 'nearest'});
-  }, [selectedNodeId, revealRequestKey, projection.indexById, canVirtualize, virtualizer]);
+    revealUntilRef.current = requested ? performance.now() + 1500 : 0;
+  }, [selectedNodeId, revealRequestKey, revealTarget]);
+  useEffect(() => {
+    if (!selectedNodeId || performance.now() > revealUntilRef.current) return;
+    const frame = window.requestAnimationFrame(() => revealTarget(selectedNodeId, true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [projection, selectedNodeId, revealTarget]);
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const stop = () => { revealUntilRef.current = 0; };
+    scroller.addEventListener('wheel', stop, { passive: true });
+    scroller.addEventListener('touchstart', stop, { passive: true });
+    scroller.addEventListener('keydown', stop);
+    return () => {
+      scroller.removeEventListener('wheel', stop);
+      scroller.removeEventListener('touchstart', stop);
+      scroller.removeEventListener('keydown', stop);
+    };
+  }, [scrollerRef]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {

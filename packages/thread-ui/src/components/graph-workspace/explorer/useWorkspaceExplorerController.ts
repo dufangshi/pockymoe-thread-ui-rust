@@ -122,6 +122,9 @@ export function useWorkspaceExplorerController({
     () => new Map(),
   );
   const [workspaceError, setWorkspaceError] = useState<string | null>(null);
+  // A link whose file or folder is not on this device: shown calmly in the
+  // viewer with its path, not as a raw error.
+  const [missingPath, setMissingPath] = useState<string | null>(null);
 
   const activeNode =
     selectedNodeId === null
@@ -345,6 +348,7 @@ export function useWorkspaceExplorerController({
       const isCurrent = () => workspaceGenerationRef.current === workspaceGeneration && focusGenerationRef.current === generation;
       setSelectedNodeId(`workspace:${targetPath}`);
       setFilterQuery('');
+      setMissingPath(null);
       const external = relativeWorkspacePath(path, detail.workspace.absPath) === null;
       const ancestors = external ? [linkedParentDirectory(targetPath)] : ancestorDirectoryPaths(targetPath);
       setExpandedPaths((current) => {
@@ -418,11 +422,15 @@ export function useWorkspaceExplorerController({
         adapterModelRef.current = nextModel;
         setAdapterModel(nextModel);
         if (!hasWorkspaceExplorerPath(nextModel, targetPath)) {
-          throw new Error(translate("files.fileNotFound", { value1: targetPath }));
+          throw new MissingTargetError(translate("files.fileNotFound", { value1: targetPath }));
         }
         setSelectedNodeId(`workspace:${targetPath}`);
       } catch (error) {
         if (!isCurrent()) {
+          return;
+        }
+        if (isMissingTarget(error)) {
+          setMissingPath(external ? path : targetPath);
           return;
         }
         setWorkspaceError(
@@ -600,6 +608,7 @@ export function useWorkspaceExplorerController({
     liveNodes,
     loadingDirectoryPaths,
     loadingTree,
+    missingPath,
     nodeMap,
     refreshWorkspaceTree,
     retryDirectory: loadDirectoryChildren,
@@ -613,6 +622,7 @@ export function useWorkspaceExplorerController({
       focusPendingRef.current = false;
       setLoadingTree(false);
       setWorkspaceError(null);
+      setMissingPath(null);
       setSelectedNodeId(id);
     },
     setWorkspaceError,
@@ -621,4 +631,14 @@ export function useWorkspaceExplorerController({
     workspaceError,
     workspaceIdentity,
   };
+}
+
+class MissingTargetError extends Error {}
+
+/** A linked target that is not there: a workspace path absent from the tree,
+    or a file outside it that the Supervisor cannot find. */
+function isMissingTarget(error: unknown) {
+  if (error instanceof MissingTargetError) return true;
+  const code = (error as { code?: unknown; payload?: { code?: unknown } } | null)?.payload?.code ?? (error as { code?: unknown } | null)?.code;
+  return code === 'file_unavailable' || (error instanceof Error && /no such file|not found|cannot find/i.test(error.message));
 }

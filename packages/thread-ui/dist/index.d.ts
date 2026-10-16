@@ -1,10 +1,10 @@
-import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as ThreadWorkspaceAdapter } from './workspace-panel-BDxv7d4o.js';
-export { h as PluginContext, i as SendPromptInput, j as SettingsPanels, k as ShellSocketConnection, l as ShellSocketHandlers, m as ThreadImageAssetVariant, W as WorkspaceDocumentSaveInput, n as WorkspaceDocumentSnapshot, o as WorkspaceSaveReceipt, p as WorkspaceTab, q as createDefaultPluginContextValue, r as mergePluginState } from './workspace-panel-BDxv7d4o.js';
+import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-CNtmQO2r.js';
+export { i as PluginContext, j as SendPromptInput, k as ShellSocketConnection, l as ShellSocketHandlers, m as ThreadImageAssetVariant, W as WorkspaceDocumentSaveInput, n as WorkspaceDocumentSnapshot, o as WorkspaceSaveReceipt, p as WorkspaceTab, q as createDefaultPluginContextValue, r as mergePluginState } from './workspace-panel-CNtmQO2r.js';
 import * as react from 'react';
 import { Dispatch, SetStateAction, ReactNode, Component, ErrorInfo, RefObject, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
 import { ReasoningEffortDto, CollaborationModeDto, SandboxModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput, UpdatePluginInput } from '@pockymoe/shared';
-import { P as PluginSettingsSnapshot, F as FrontendPluginModule, a as PluginActionOutputContext } from './plugin-types-iEH-4_I_.js';
-export { A as ArtifactRenderContext, I as InlineCodeRenderContext, M as MessagePresentation, b as MessagePresentationContext, c as PluginSettingsContext, d as PluginSettingsContribution, T as ThreadPanelContribution } from './plugin-types-iEH-4_I_.js';
+import { P as PluginSettingsSnapshot, F as FrontendPluginModule, a as PluginActionOutputContext } from './plugin-types-CgVfWBnd.js';
+export { A as ArtifactRenderContext, I as InlineCodeRenderContext, M as MessagePresentation, b as MessagePresentationContext, c as PluginSettingsContext, d as PluginSettingsContribution, T as ThreadPanelContribution } from './plugin-types-CgVfWBnd.js';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 export { DEFAULT_LOCALE, I18nProvider, LOCALE_OPTIONS, LOCALE_STORAGE_KEY, LanguageSwitcher, Locale, SUPPORTED_LOCALES, TranslationKey, TranslationValues, detectLocale, formatDate, formatNumber, getLocale, initializeI18n, normalizeLocale, setLocale, t, translate, useI18n } from './i18n.js';
 
@@ -142,6 +142,17 @@ declare function useWorkbenchPresentation(scope: string | null, contextKey?: str
     storageFailed: boolean;
 };
 
+type WorkbenchPane = 'primary' | 'reference';
+/** A phone split shows one conversation at a time; the composer switches it. */
+interface WorkbenchPaneSwitch {
+    pane: WorkbenchPane;
+    active: WorkbenchPane;
+    titles: Record<WorkbenchPane, string>;
+    select: (pane: WorkbenchPane) => void;
+    /** A rendered switch claims its pane, so the panels need no fallback there. */
+    claim: (pane: WorkbenchPane) => () => void;
+}
+
 /** Passed to bottom-panel content so its title bar can own the panel actions. */
 interface WorkbenchToolPanelControls {
     maximized: boolean;
@@ -157,6 +168,8 @@ interface WorkbenchPanelsOptions {
     deviceLabel: string;
     workspaceLabel: string;
     primaryTitle: string;
+    /** Receives the phone split switch, for a dock that shows the pinned conversations. */
+    onPaneSwitchChange?: ((value: WorkbenchPaneSwitch | null) => void) | undefined;
     primaryStatus: string;
     primaryHarness: string;
     presentation: WorkbenchPresentation;
@@ -212,6 +225,8 @@ interface WorkbenchToolPanel {
 interface MatterWorkbenchOptions {
     panels?: WorkbenchPanelsOptions;
     statusActions?: ReactNode;
+    /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
+    subscriptionUsage?: AgentSubscriptionUsageDto | null;
     emptyWorkspace?: boolean;
     navigationReady?: boolean;
     harnessSessionId?: string | null;
@@ -229,6 +244,9 @@ interface MatterWorkbenchOptions {
     toolPanels?: WorkbenchToolPanel[];
     onToggleFavorite: () => void;
     onNavigate: (href: string) => void;
+    /** Warm a thread's detail before it is opened (a row is pressed, or it is a
+        dock swipe away), so opening it shows the conversation at once. */
+    onPrefetchThread?: (href: string) => void;
     onSearch: () => void;
     search?: ReactNode;
     searchOpen?: boolean;
@@ -253,6 +271,7 @@ declare function MatterWorkbench({ options: o, title, homeHref, settings, newThr
 }): react.JSX.Element;
 
 type ThemeMode = 'system' | 'light' | 'dark';
+type PhoneHand = 'right' | 'left';
 type AgentBackendId = AgentBackendIdDto;
 interface AppShellNavContextValue {
     navOpen: boolean;
@@ -273,6 +292,12 @@ interface AppShellNavContextValue {
     setDefaultBackend: (backend: AgentBackendId) => void;
     autoCollapseCompletedTurns?: boolean;
     setAutoCollapseCompletedTurns?: (enabled: boolean) => void;
+    /** One-handed phone layout: status-only top bar, controls in a bottom dock. */
+    phoneDock?: boolean;
+    setPhoneDock?: (enabled: boolean) => void;
+    /** The thumb the one-handed layout is arranged for; left mirrors it. */
+    phoneHand?: PhoneHand;
+    setPhoneHand?: (hand: PhoneHand) => void;
     showReasoningSummaries?: boolean;
     setShowReasoningSummaries?: (enabled: boolean) => void;
     sendShortcut?: ComposerSendShortcut;
@@ -732,6 +757,12 @@ declare function PluginSettingsButton({ plugin, className }: {
     className?: string;
 }): react.JSX.Element | null;
 
+/** Right or left thumb for the one-handed phone layout, as a two-way switch. */
+declare function PhoneHandChoice({ hand, onChange }: {
+    hand: PhoneHand;
+    onChange: (hand: PhoneHand) => void;
+}): react.JSX.Element;
+
 interface AppShellNavigationItem {
     label: string;
     href: string;
@@ -813,8 +844,11 @@ declare function ConversationSearchExcerpt({ text, query }: {
 declare function confirmWorkspaceDocumentLeave(): boolean;
 
 /** One settings shell for the workbench and pages outside conversations. */
-declare function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId, contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
+declare function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId, section, onSectionChange, panelScroll, contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
     sections: SettingsSection[];
+    section?: string | undefined;
+    onSectionChange?: ((id: string) => void) | undefined;
+    panelScroll?: ComponentProps<typeof SettingsPanels>['scroll'];
     themeMode?: string;
     effectiveTheme?: 'light' | 'dark';
     trigger?: ReactNode;
@@ -877,4 +911,4 @@ declare function ThreadLoadingIndicator({ inline, label }: {
     label?: string;
 }): react.JSX.Element;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ExportTranscriptDialog, FrontendPluginModule, GraphChatThreadChatPanel, LongTextDialog, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginProvider, PluginSettingsButton, PluginSettingsSnapshot, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsSection, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, confirmWorkspaceDocumentLeave, createWorkspacePathResolver, documentThemeFeatures, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, usePlugins, useThemeFeature, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ExportTranscriptDialog, FrontendPluginModule, GraphChatThreadChatPanel, LongTextDialog, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginProvider, PluginSettingsButton, PluginSettingsSnapshot, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, SettingsSection, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, confirmWorkspaceDocumentLeave, createWorkspacePathResolver, documentThemeFeatures, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, usePlugins, useThemeFeature, useWorkbenchPresentation };

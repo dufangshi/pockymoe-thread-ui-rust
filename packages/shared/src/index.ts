@@ -604,7 +604,42 @@ export interface ThreadTurnDto {
   priceEstimate?: ThreadTurnPriceEstimateDto | null;
   hasDeferredItems?: boolean | null;
   deferredItemCount?: number | null;
+  /** Operation counts of a summarized turn; present only with deferred items. */
+  activity?: ThreadTurnActivityDto | null;
   items: ThreadHistoryItemDto[];
+}
+
+export interface ThreadTurnActivityDto {
+  commands?: number;
+  fileChanges?: number;
+  changedFiles?: number;
+  addedLines?: number;
+  removedLines?: number;
+  reads?: number;
+  searches?: number;
+  tools?: number;
+  agents?: number;
+  reasoning?: number;
+  failed?: number;
+  /** Distinct changed paths. */
+  fileCount?: number;
+  /** Up to forty changed files, with the latest edit's item id. */
+  files?: ThreadTurnChangedFileDto[];
+  /** The same counts per stretch of operations, keyed by the conversation item after it. */
+  segments?: ThreadTurnActivitySegmentDto[];
+}
+
+export type ThreadTurnActivitySegmentDto = Omit<ThreadTurnActivityDto, 'files' | 'segments' | 'fileCount'> & {
+  before: string | null;
+  startedAt?: string;
+  endedAt?: string;
+};
+
+export interface ThreadTurnChangedFileDto {
+  path: string;
+  itemId: string;
+  addedLines?: number;
+  removedLines?: number;
 }
 
 export interface ThreadActionQuestionOptionDto {

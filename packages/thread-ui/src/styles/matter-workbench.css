@@ -757,23 +757,7 @@
   box-shadow: inset 0 1px 0 var(--matter-glass-highlight), var(--matter-composer-shadow);
   padding: 12px 14px 10px;
 }
-.thread-ui-shell .matter-workbench .thread-jump-latest-badge {
-  height: 30px;
-  padding: 3px;
-  gap: 2px;
-  border: 0;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--theme-panel) 48%, transparent);
-  color: var(--theme-fg-soft);
-  backdrop-filter: blur(18px) saturate(130%);
-  -webkit-backdrop-filter: blur(18px) saturate(130%);
-  box-shadow: inset 0 1px 0 var(--matter-glass-highlight), 0 4px 16px rgb(18 32 25 / 18%);
-}
-.thread-ui-shell .matter-workbench .thread-jump-latest-badge > span { display: none; }
-.thread-ui-shell .matter-workbench .thread-jump-latest-badge > button { border-radius: 999px; border: 0; }
-.thread-ui-shell .matter-workbench .thread-jump-latest-badge > button:hover:not(:disabled) { background: var(--theme-hover); }
-.thread-ui-shell .matter-workbench .thread-jump-latest-badge.is-active > button[data-action="jump-latest"] { color: var(--theme-accent-strong); background: var(--theme-accent-soft); }
-/* Phone split: the two conversations flank the timeline capsule above the composer. */
+/* Phone split: the two conversations sit left of the turn navigation above the composer. */
 .thread-pane-switch {
   position: relative;
   display: inline-flex;
@@ -817,7 +801,7 @@
 .matter-thread-entry > .matter-thread-row { flex: 1; min-width: 0; padding-right: 32px; }
 .matter-thread-entry > .recent-thread-actions { position: absolute; right: 3px; }
 @media (prefers-reduced-transparency: reduce) {
-  .thread-ui-shell .matter-workbench :is(.thread-graph-composer-shell, .thread-jump-latest-badge) { background: var(--theme-panel); backdrop-filter: none; }
+  .thread-ui-shell .matter-workbench .thread-graph-composer-shell { background: var(--theme-panel); backdrop-filter: none; }
 }
 .thread-ui-shell .matter-workbench .thread-graph-composer-shell:focus-within {
   border-color: var(--theme-accent-solid);
@@ -979,28 +963,6 @@
 .thread-ui-shell .matter-workbench .thread-graph-worked-label {
   font-size: 12px;
   font-weight: 500;
-}
-.thread-ui-shell .matter-workbench .thread-execution-timeline {
-  position: relative;
-  margin: 2px 0 12px 7px;
-  padding-left: 14px;
-  border-left: 1px solid var(--theme-border-strong);
-}
-.thread-ui-shell .matter-workbench .thread-execution-timeline > * {
-  position: relative;
-  margin-top: 0;
-  margin-bottom: 4px;
-}
-.thread-ui-shell .matter-workbench .thread-execution-timeline > *::before {
-  content: '';
-  position: absolute;
-  left: -18px;
-  top: 14px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--theme-accent-solid);
-  box-shadow: 0 0 0 3px var(--theme-bg);
 }
 .thread-ui-shell .matter-workbench .thread-execution-timeline .thread-graph-message-bubble {
   font-size: 13px;
@@ -1177,22 +1139,6 @@
   }
   .thread-ui-shell .matter-workbench .thread-graph-composer-form {
     padding-top: 0 !important;
-  }
-  .thread-ui-shell .matter-workbench .thread-jump-latest-badge {
-    height: 18px;
-    min-width: 72px;
-    padding: 1.8px;
-    gap: 1.2px;
-    bottom: 1px;
-    background: color-mix(in srgb, var(--theme-panel) 36%, transparent);
-    box-shadow: inset 0 1px 0 var(--matter-glass-highlight), 0 2px 8px rgb(18 32 25 / 12%);
-  }
-  .thread-ui-shell .matter-workbench .thread-jump-latest-badge > button {
-    width: 24px;
-  }
-  .thread-ui-shell .matter-workbench .thread-jump-latest-badge svg {
-    width: 8.4px;
-    height: 8.4px;
   }
   .thread-ui-shell .matter-workbench .thread-graph-message-list {
     padding-inline: 9px;

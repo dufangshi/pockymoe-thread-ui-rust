@@ -18,6 +18,7 @@ import {
   GraphChatUserMessageBody,
 } from './GraphChatMessageBody';
 import { GraphChatMessageFrame } from './GraphChatMessageFrame';
+import { parsePromptEnvelope, PromptEnvelopeHeader, PromptNotice } from './PromptEnvelope';
 import {
   Accordion,
   AccordionContent,
@@ -87,7 +88,7 @@ export const GraphChatCompactMessageItem = memo(
     adapter?: ThreadTimelineAdapter;
     timeLabel?: ReactNode;
     timeTitle?: string | null | undefined;
-    onBeforeMessageResize?: () => void;
+    onBeforeMessageResize?: (anchor?: Element | null) => void;
   }) {
   const { locale: i18nLocale } = useI18n();
     const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(
@@ -220,11 +221,20 @@ export const GraphChatCompactMessageItem = memo(
         </div>
       ) : null;
 
+    const envelope = item.kind === 'userMessage' ? parsePromptEnvelope(item.text) : null;
+    if (envelope?.type === 'notice') {
+      return (
+        <GraphChatMessageFrame messageId={item.id} kind={item.kind} variant="notice" timeLabel={timeLabel} timeTitle={timeTitle}>
+          <PromptNotice envelope={envelope} />
+        </GraphChatMessageFrame>
+      );
+    }
+
     return (
       <GraphChatMessageFrame
         messageId={item.id}
         kind={item.kind}
-        variant={variant}
+        variant={envelope ? 'envelope' : variant}
         // Execution status belongs to the turn summary, not every emitted reply.
         status={queuedLikeStatus ? item.status : null}
         copyButton={copyButton}
@@ -260,15 +270,18 @@ export const GraphChatCompactMessageItem = memo(
               : {})}
           />
         ) : (
+          <>
+          {envelope?.type === 'peer' ? <PromptEnvelopeHeader envelope={envelope} /> : null}
           <GraphChatUserMessageBody
             messageId={item.id}
             scrollRootRef={scrollRootRef}
             onBeforeResize={onBeforeMessageResize}
             threadId={threadId}
-            text={item.text}
+            text={envelope?.type === 'peer' ? envelope.body : item.text}
             attachmentPreviewUrls={item.attachmentPreviewUrls}
             getImageAssetUrl={adapter?.getImageAssetUrl}
           />
+          </>
         )}
       </GraphChatMessageFrame>
     );

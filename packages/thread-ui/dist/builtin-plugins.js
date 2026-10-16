@@ -1,7 +1,11 @@
 import {
+  setTerminalPreferences,
+  useTerminalPreferences
+} from "./chunk-5NGPD4NR.js";
+import {
   translate,
   useI18n
-} from "./chunk-OS56KYCZ.js";
+} from "./chunk-UM5AGJ7J.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -629,7 +633,50 @@ var contentQualityPlugin = {
   }
 };
 
+// src/components/shell/TerminalSettings.tsx
+import { jsx as jsx4, jsxs as jsxs3 } from "react/jsx-runtime";
+function TerminalSettings() {
+  useI18n();
+  const preferences = useTerminalPreferences();
+  const choice = (key, label, options) => /* @__PURE__ */ jsxs3("fieldset", { className: "terminal-settings-choice", children: [
+    /* @__PURE__ */ jsx4("legend", { children: label }),
+    options.map(([value, text2]) => /* @__PURE__ */ jsxs3("label", { children: [
+      /* @__PURE__ */ jsx4(
+        "input",
+        {
+          type: "radio",
+          name: `terminal-${key}`,
+          checked: preferences[key] === value,
+          onChange: () => setTerminalPreferences({ [key]: value })
+        }
+      ),
+      /* @__PURE__ */ jsx4("span", { children: text2 })
+    ] }, value))
+  ] });
+  const toggle = (key, label, hint) => /* @__PURE__ */ jsxs3("label", { className: "terminal-settings-toggle", children: [
+    /* @__PURE__ */ jsxs3("span", { children: [
+      /* @__PURE__ */ jsx4("b", { children: label }),
+      /* @__PURE__ */ jsx4("small", { children: hint })
+    ] }),
+    /* @__PURE__ */ jsx4("input", { type: "checkbox", checked: preferences[key], onChange: (event) => setTerminalPreferences({ [key]: event.target.checked }) })
+  ] });
+  return /* @__PURE__ */ jsxs3("div", { className: "terminal-settings", children: [
+    toggle("copyOnSelect", translate("files.terminalCopyOnSelect"), translate("files.terminalCopyOnSelectHint")),
+    choice("ctrlV", "Ctrl+V", [
+      ["smart", translate("files.terminalCtrlVSmart")],
+      ["paste", translate("files.terminalCtrlVPaste")]
+    ]),
+    choice("rightClick", translate("files.terminalRightClick"), [
+      ["menu", translate("files.terminalRightClickMenu")],
+      ["copyPaste", translate("files.terminalRightClickCopyPaste")]
+    ]),
+    toggle("pasteWarning", translate("files.terminalPasteWarning"), translate("files.terminalPasteWarningHint")),
+    /* @__PURE__ */ jsx4("p", { className: "terminal-settings-note", children: translate("files.terminalKeysNote") })
+  ] });
+}
+
 // src/plugins/builtin-plugin-modules.tsx
+import { jsx as jsx5 } from "react/jsx-runtime";
 var builtinFrontendPlugins = [
   {
     manifest: terminalPluginManifest,
@@ -641,7 +688,17 @@ var builtinFrontendPlugins = [
           return translate("workbench.terminal");
         }
       }
-    ]
+    ],
+    browserSettingsSections: [{
+      id: "clipboard",
+      get label() {
+        return translate("workbench.terminal");
+      },
+      get description() {
+        return translate("files.terminalSettingsDescription");
+      },
+      render: () => /* @__PURE__ */ jsx5(TerminalSettings, {})
+    }]
   },
   deepseekHarnessPlugin,
   contentQualityPlugin

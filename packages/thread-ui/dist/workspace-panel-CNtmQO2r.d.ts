@@ -310,7 +310,8 @@ interface PluginContextValue {
     renderInlineCode: (context: InlineCodeRenderContext) => ReactNode | null;
     hasRendererForArtifact: (artifact: ThreadArtifactDto) => boolean;
     getThreadPanels: () => ThreadPanelContribution[];
-    getSettingsSections: () => SettingsSection[];
+    /** Sections are ids `plugin:<pluginId>:<sectionId>`; pass a plugin id for one plugin's sections. */
+    getSettingsSections: (pluginId?: string) => SettingsSection[];
     presentMessage: (context: MessagePresentationContext) => MessagePresentation | null;
     renderActionOutput: (pluginId: string, context: PluginActionOutputContext) => ReactNode | null;
 }

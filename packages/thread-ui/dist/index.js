@@ -26,7 +26,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-G3LKO53K.js";
+} from "./chunk-QTRAQETV.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -52,7 +52,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-3QI7NBAZ.js";
+} from "./chunk-5SDT6AUF.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -89,6 +89,9 @@ styleInject('@property --effort-color { syntax: "<color>"; inherits: true; initi
 
 // src/styles/mermaid-diagrams.css
 styleInject(".thread-graph-message-markdown .thread-graph-mermaid {\n  min-width: 0;\n  max-width: 100%;\n  margin: 1rem 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 14px;\n  background: var(--theme-panel);\n  white-space: normal;\n}\n.thread-graph-mermaid-toolbar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 6px 10px 6px 14px;\n  border-bottom: 1px solid var(--theme-border);\n  color: var(--theme-fg-muted);\n  font: 500 11px/1.4 system-ui, sans-serif;\n}\n.thread-graph-mermaid-label,\n.thread-graph-mermaid-actions {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n.thread-graph-mermaid-actions {\n  gap: 2px;\n}\n.thread-graph-mermaid-actions button {\n  display: grid;\n  place-items: center;\n  width: 32px;\n  height: 32px;\n  padding: 0;\n  border: 0;\n  border-radius: 7px;\n  background: transparent;\n  color: inherit;\n  cursor: pointer;\n}\n.thread-graph-mermaid-actions button:hover,\n.thread-graph-mermaid-actions button[aria-pressed=true] {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-graph-mermaid-actions button:focus-visible {\n  outline: 2px solid var(--theme-accent);\n  outline-offset: 1px;\n}\n.thread-graph-mermaid-canvas {\n  padding: 20px 16px;\n  overflow: auto;\n}\n.thread-graph-mermaid-canvas > svg {\n  display: block;\n  width: 100%;\n  height: auto;\n  max-height: min(600px, 60svh);\n  margin: auto;\n}\n.thread-graph-message-markdown .thread-graph-mermaid-source {\n  margin: 0;\n  padding: 16px;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  overflow: auto;\n  white-space: pre;\n  font-size: 12px;\n  line-height: 1.7;\n}\n.thread-graph-mermaid-error {\n  display: block;\n  padding: 0 16px 12px;\n  color: var(--theme-fg-muted);\n  font-size: 12px;\n}\n@media (max-width: 640px) {\n  .thread-graph-mermaid-canvas {\n    padding: 16px 8px;\n  }\n  .thread-graph-mermaid-actions button {\n    width: 36px;\n    height: 36px;\n  }\n}\n");
+
+// src/styles/plugin-reports.css
+styleInject('.plugin-action-output {\n  display: grid;\n  gap: 8px;\n  min-width: 0;\n  font-size: 12px;\n  line-height: 1.55;\n  color: var(--theme-fg);\n}\n.plugin-report-line {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 8px;\n  color: var(--theme-fg-muted);\n}\n.plugin-report-meta {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.plugin-report-note {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.plugin-report-error {\n  padding: 6px 9px;\n  border-radius: 7px;\n  border: 1px solid var(--status-danger-border, color-mix(in srgb, #d85b64 35%, transparent));\n  background: var(--status-danger-bg, color-mix(in srgb, #d85b64 10%, transparent));\n  color: var(--status-danger-fg, #b4323d);\n  overflow-wrap: anywhere;\n  white-space: pre-wrap;\n}\n.plugin-report-tag {\n  display: inline-flex;\n  align-items: center;\n  min-height: 18px;\n  padding: 0 6px;\n  border-radius: 5px;\n  font-size: 10.5px;\n  font-weight: 500;\n  line-height: 1;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  background: var(--theme-hover);\n}\n.plugin-report-tag.is-success {\n  color: var(--status-success-fg, var(--theme-accent-strong));\n  background: var(--status-success-bg, var(--theme-accent-soft));\n}\n.plugin-report-tag.is-accent {\n  color: var(--theme-accent-strong);\n  background: var(--theme-accent-soft);\n}\n.plugin-report-tag.is-danger {\n  color: var(--status-danger-fg, #b4323d);\n  background: var(--status-danger-bg, color-mix(in srgb, #d85b64 12%, transparent));\n}\n.plugin-report-pre {\n  max-height: 16rem;\n  margin-top: 6px;\n  padding: 8px 10px;\n  overflow: auto;\n  border-radius: 7px;\n  background: color-mix(in srgb, var(--theme-fg) 5%, transparent);\n  font:\n    11px/1.6 ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    monospace;\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n  color: var(--theme-fg);\n}\n.plugin-report-disclosure > summary {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  cursor: pointer;\n  list-style: none;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.plugin-report-disclosure > summary::-webkit-details-marker {\n  display: none;\n}\n.plugin-report-disclosure > summary::before {\n  content: "";\n  width: 5px;\n  height: 5px;\n  margin: 0 2px 0 1px;\n  border-right: 1.5px solid currentColor;\n  border-bottom: 1.5px solid currentColor;\n  transform: rotate(-45deg);\n  transition: transform .15s;\n}\n.plugin-report-disclosure[open] > summary::before {\n  transform: rotate(45deg);\n}\n.plugin-report-disclosure > summary:hover {\n  color: var(--theme-fg);\n}\n.plugin-report-disclosure > summary:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 2px;\n  border-radius: 4px;\n}\n.quality-report {\n  display: grid;\n  gap: 10px;\n  min-width: 0;\n}\n.quality-report-reply {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: baseline;\n  gap: 4px 10px;\n}\n.quality-report-reply > div {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 8px;\n  min-width: 0;\n}\n.quality-report-label {\n  font-size: 11px;\n  font-weight: 500;\n  color: var(--theme-fg-soft, var(--theme-fg-muted));\n}\n.quality-docs {\n  display: grid;\n  min-width: 0;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  overflow: hidden;\n}\n.quality-doc {\n  display: grid;\n  gap: 6px;\n  min-width: 0;\n  padding: 10px 12px;\n}\n.quality-doc + .quality-doc {\n  border-top: 1px solid var(--theme-border);\n}\n.quality-doc[data-status=failed] {\n  box-shadow: inset 2px 0 0 var(--status-danger-fg, #b4323d);\n}\n.quality-doc-header {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: space-between;\n  gap: 4px 10px;\n  min-width: 0;\n}\n.quality-doc-path {\n  min-width: 0;\n  font:\n    500 12px/1.4 ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    monospace;\n  color: var(--theme-fg);\n  overflow-wrap: anywhere;\n}\n.quality-doc-tags {\n  display: inline-flex;\n  flex-wrap: wrap;\n  gap: 4px;\n}\n.quality-doc-findings {\n  display: grid;\n  gap: 3px;\n  padding-left: 14px;\n  list-style: disc;\n  color: var(--theme-fg);\n}\n.quality-doc-findings li {\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n}\n.quality-doc-findings li::marker {\n  color: var(--theme-fg-muted);\n}\n.quality-doc-actions {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 2px 14px;\n}\n.quality-doc-actions:empty {\n  display: none;\n}\n.quality-doc-actions > details[open] {\n  flex-basis: 100%;\n}\n.quality-doc-actions > .plugin-report-meta {\n  margin-left: auto;\n}\n.quality-diff .is-add {\n  color: var(--status-success-fg, #1d7a4c);\n}\n.quality-diff .is-del {\n  color: var(--status-danger-fg, #b4323d);\n}\n.quality-diff .is-hunk {\n  color: var(--theme-fg-muted);\n}\n.plugin-settings-dialog:focus {\n  outline: none;\n}\n');
 
 // src/styles/terminal-panel.css
 styleInject('.terminal-panel {\n  --terminal-bg: #0f1317;\n  --terminal-header-height: 35px;\n  --terminal-tab-height: 26px;\n  --terminal-target-size: 26px;\n  position: relative;\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n  color: var(--theme-fg);\n  background: var(--terminal-bg);\n}\n.terminal-panel[data-terminal-theme=light] {\n  --terminal-bg: #ebeeeb;\n}\n.terminal-panel [hidden] {\n  display: none !important;\n}\n.terminal-panel button {\n  font: inherit;\n  color: inherit;\n  background: transparent;\n  border: 0;\n  cursor: pointer;\n}\n.terminal-panel button:disabled {\n  cursor: default;\n  opacity: .42;\n}\n.terminal-panel button:focus-visible,\n.terminal-panel [role=separator]:focus-visible,\n.terminal-tab:focus-visible {\n  outline: 2px solid var(--theme-accent-strong);\n  outline-offset: -2px;\n}\n.terminal-header {\n  display: flex;\n  flex: 0 0 var(--terminal-header-height);\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  padding: 0 4px 0 12px;\n  background: var(--theme-panel);\n  border-bottom: 1px solid var(--theme-border);\n  user-select: none;\n}\n.terminal-title {\n  flex-shrink: 0;\n  margin: 0;\n  font-size: 11px;\n  font-weight: 600;\n  letter-spacing: .06em;\n  text-transform: uppercase;\n  color: var(--theme-fg-soft);\n}\n.terminal-header-active {\n  display: inline-flex;\n  flex-shrink: 1;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n  font-size: 12px;\n  color: var(--theme-fg);\n}\n.terminal-header-active > span:last-child {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.terminal-target {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.terminal-feedback {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-align: right;\n  white-space: nowrap;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.terminal-actions {\n  display: flex;\n  flex-shrink: 0;\n  align-items: center;\n  gap: 1px;\n  margin-left: auto;\n}\n.terminal-actions-separator {\n  width: 1px;\n  height: 16px;\n  margin: 0 4px;\n  background: var(--theme-border-strong);\n}\n.terminal-icon-button {\n  display: inline-flex;\n  flex-shrink: 0;\n  align-items: center;\n  justify-content: center;\n  width: var(--terminal-target-size);\n  height: var(--terminal-target-size);\n  border-radius: 6px;\n  color: var(--theme-fg-muted) !important;\n}\n.terminal-icon-button:not(:disabled):hover,\n.terminal-icon-button[aria-expanded=true] {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.terminal-switcher {\n  display: inline-flex;\n  flex: 0 1 auto;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n  height: 32px;\n  padding: 0 8px;\n  margin-left: -6px;\n  border-radius: 7px;\n  font-size: 13px;\n  font-weight: 500;\n}\n.terminal-switcher > span:first-of-type {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.terminal-switcher:not(:disabled):hover,\n.terminal-switcher[aria-expanded=true] {\n  background: var(--theme-hover) !important;\n}\n.terminal-banner {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 4px 4px 4px 12px;\n  font-size: 12px;\n  color: var(--theme-fg);\n  background: color-mix(in oklch, #d1555f 14%, var(--theme-panel));\n  border-bottom: 1px solid color-mix(in oklch, #d1555f 30%, var(--theme-border));\n}\n.terminal-banner > span {\n  flex: 1;\n  min-width: 0;\n  overflow-wrap: anywhere;\n}\n.terminal-body {\n  display: flex;\n  flex: 1;\n  min-width: 0;\n  min-height: 0;\n}\n.terminal-groups {\n  position: relative;\n  display: flex;\n  flex: 1;\n  min-width: 0;\n  min-height: 0;\n}\n.terminal-groups[data-orientation=vertical] {\n  flex-direction: column;\n}\n.terminal-pane {\n  position: relative;\n  display: flex;\n  flex-basis: 0;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.terminal-pane > .shell-pane {\n  flex: 1;\n}\n.terminal-pane.is-split.is-active::after {\n  content: "";\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--theme-accent-solid) 45%, transparent);\n}\n.terminal-panel.is-compact .terminal-pane.is-split.is-active::after {\n  display: none;\n}\n.terminal-panel .shell-pane-host {\n  padding: 0;\n  background: var(--terminal-bg);\n}\n.terminal-panel .shell-pane-host .xterm {\n  height: 100%;\n  padding: 4px 0 2px 10px;\n}\n.terminal-panel .shell-pane-host .xterm-viewport {\n  scrollbar-width: thin;\n}\n.terminal-pane-sash {\n  position: relative;\n  flex: 0 0 1px;\n  background: var(--theme-border);\n  touch-action: none;\n  cursor: col-resize;\n}\n.terminal-groups[data-orientation=vertical] > .terminal-pane-sash {\n  cursor: row-resize;\n}\n.terminal-pane-sash::before {\n  content: "";\n  position: absolute;\n  inset: 0 -4px;\n  z-index: 2;\n}\n.terminal-groups[data-orientation=vertical] > .terminal-pane-sash::before {\n  inset: -4px 0;\n}\n.terminal-pane-sash:hover,\n.terminal-pane-sash:active,\n.terminal-pane-sash:focus-visible {\n  background: var(--theme-accent-solid);\n}\n.terminal-pane-status {\n  position: absolute;\n  top: 6px;\n  right: 10px;\n  z-index: 3;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  max-width: calc(100% - 20px);\n  padding: 3px 4px 3px 10px;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 999px;\n  font-size: 11px;\n  color: var(--theme-fg-soft);\n  background: var(--theme-panel);\n  box-shadow: 0 4px 14px rgb(0 0 0 / .14);\n}\n.terminal-pane-status > span {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.terminal-pane-status.is-connecting {\n  padding-right: 10px;\n  opacity: 0;\n  animation: terminal-status-in .2s ease-out .6s forwards;\n}\n.terminal-pane-status button {\n  display: inline-flex;\n  flex-shrink: 0;\n  align-items: center;\n  gap: 4px;\n  padding: 3px 8px;\n  border-radius: 999px !important;\n  color: var(--theme-accent-strong) !important;\n}\n.terminal-pane-status button:hover {\n  background: var(--theme-hover) !important;\n}\n@keyframes terminal-status-in {\n  to {\n    opacity: 1;\n  }\n}\n.terminal-empty {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 10px;\n  padding: 16px;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n}\n.terminal-empty button {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  padding: 6px 12px;\n  border: 1px solid var(--theme-border-strong) !important;\n  border-radius: 7px;\n  font-size: 12px;\n  color: var(--theme-fg) !important;\n  background: var(--theme-panel) !important;\n}\n.terminal-empty button:hover {\n  background: var(--theme-hover) !important;\n}\n.terminal-tabs-sash {\n  position: relative;\n  flex: 0 0 1px;\n  background: var(--theme-border);\n  cursor: col-resize;\n  touch-action: none;\n}\n.terminal-tabs-sash::before {\n  content: "";\n  position: absolute;\n  inset: 0 -4px;\n  z-index: 2;\n}\n.terminal-tabs-sash:hover,\n.terminal-tabs-sash:active,\n.terminal-tabs-sash:focus-visible {\n  background: var(--theme-accent-solid);\n}\n.terminal-tabs-host {\n  flex-shrink: 0;\n  min-width: 0;\n  overflow: hidden;\n  background: var(--theme-panel);\n}\n.terminal-tabs {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  padding: 4px 0;\n  overflow-y: auto;\n  scrollbar-width: thin;\n}\n.terminal-tab {\n  position: relative;\n  display: flex;\n  flex-shrink: 0;\n  align-items: center;\n  gap: 6px;\n  height: var(--terminal-tab-height);\n  padding: 0 4px 0 10px;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  cursor: pointer;\n  outline: none;\n}\n.terminal-tabs.is-narrow .terminal-tab {\n  justify-content: center;\n  padding: 0;\n}\n.terminal-tab:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.terminal-tab.is-active {\n  background: var(--theme-accent-soft);\n  color: var(--theme-fg);\n}\n.terminal-tab.is-active::before {\n  content: "";\n  position: absolute;\n  inset: 0 auto 0 0;\n  width: 2px;\n  background: var(--theme-accent-solid);\n}\n.terminal-tab-prefix {\n  flex-shrink: 0;\n  width: 1ch;\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    monospace;\n  color: var(--theme-fg-muted);\n}\n.terminal-tab-icon {\n  flex-shrink: 0;\n  color: var(--theme-fg-muted);\n}\n.terminal-tab.is-active .terminal-tab-icon {\n  color: var(--theme-accent-strong);\n}\n.terminal-tab-label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.terminal-tab-actions {\n  display: none;\n  flex-shrink: 0;\n  align-items: center;\n}\n.terminal-tab:hover .terminal-tab-actions,\n.terminal-tab:focus-within .terminal-tab-actions,\n.terminal-tab.is-active .terminal-tab-actions {\n  display: inline-flex;\n}\n.terminal-tab:hover .terminal-status-dot,\n.terminal-tab:focus-within .terminal-status-dot,\n.terminal-tab.is-active .terminal-status-dot {\n  display: none;\n}\n.terminal-tab-actions button {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 22px;\n  height: 22px;\n  border-radius: 5px;\n  color: var(--theme-fg-muted) !important;\n}\n.terminal-tab-actions button:not(:disabled):hover {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.terminal-tab-rename {\n  flex: 1;\n  min-width: 0;\n}\n.terminal-tab-rename input {\n  width: 100%;\n  height: 20px;\n  padding: 0 4px;\n  border: 1px solid var(--theme-accent-solid);\n  border-radius: 4px;\n  font-size: 12px;\n  color: var(--theme-fg);\n  background: var(--theme-bg);\n  outline: none;\n}\n.terminal-status-dot {\n  flex-shrink: 0;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--theme-fg-muted);\n  opacity: .6;\n}\n.terminal-status-dot[data-status=connected] {\n  background: var(--theme-accent-solid);\n  opacity: 1;\n}\n.terminal-status-dot[data-status=connecting] {\n  background: #d29b2c;\n  opacity: 1;\n}\n.terminal-status-dot[data-status=disconnected] {\n  background: transparent;\n  box-shadow: inset 0 0 0 1.5px #d1555f;\n  opacity: 1;\n}\n.terminal-menu {\n  position: fixed;\n  z-index: 260;\n  display: flex;\n  flex-direction: column;\n  gap: 1px;\n  min-width: 200px;\n  max-width: min(320px, calc(100vw - 16px));\n  max-height: min(60vh, 420px);\n  padding: 5px;\n  overflow-y: auto;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 10px;\n  color: var(--theme-fg);\n  background: var(--theme-panel);\n  box-shadow: 0 14px 40px rgb(0 0 0 / .22), 0 2px 8px rgb(0 0 0 / .08);\n}\n.terminal-menu-item {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  min-height: 30px;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  text-align: left;\n}\n.terminal-menu-item > span:not(.terminal-status-dot):not(.terminal-tab-prefix) {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.terminal-menu-item:not(:disabled):hover,\n.terminal-menu-item:focus-visible {\n  background: var(--theme-hover);\n}\n.terminal-menu-item.is-danger {\n  color: #d1555f;\n}\n.terminal-menu-item[aria-checked=true] {\n  background: var(--theme-accent-soft);\n}\n.terminal-menu-row {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n.terminal-menu-rename {\n  display: flex;\n  flex: 1;\n  gap: 4px;\n  padding: 2px;\n}\n.terminal-menu-rename input {\n  flex: 1;\n  min-width: 0;\n  height: 32px;\n  padding: 0 8px;\n  border: 1px solid var(--theme-accent-solid);\n  border-radius: 6px;\n  font-size: 16px;\n  color: var(--theme-fg);\n  background: var(--theme-bg);\n  outline: none;\n}\n.terminal-panel.is-compact {\n  --terminal-header-height: 40px;\n  --terminal-target-size: 36px;\n}\n.terminal-panel.is-compact .terminal-header {\n  gap: 4px;\n  padding: 0 2px 0 10px;\n}\n.terminal-panel.is-compact .terminal-target {\n  display: none;\n}\n.terminal-panel.is-compact .terminal-feedback {\n  flex: 0 1 auto;\n}\n.terminal-panel.is-compact .shell-pane-host .xterm {\n  padding-left: 6px;\n}\n@media (pointer: coarse) {\n  .terminal-panel {\n    --terminal-tab-height: 40px;\n    --terminal-target-size: 36px;\n  }\n  .terminal-tab-actions {\n    display: inline-flex;\n  }\n  .terminal-tab .terminal-status-dot {\n    display: inline-block !important;\n  }\n  .terminal-tab-actions button {\n    width: 32px;\n    height: 32px;\n  }\n  .terminal-menu-item {\n    min-height: 44px;\n    font-size: 14px;\n  }\n  .terminal-pane-sash::before {\n    inset: 0 -10px;\n  }\n  .terminal-groups[data-orientation=vertical] > .terminal-pane-sash::before {\n    inset: -10px 0;\n  }\n  .terminal-tabs-sash::before {\n    inset: 0 -10px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .terminal-pane-status.is-connecting {\n    animation: none;\n    opacity: 1;\n  }\n}\n.terminal-selection {\n  position: absolute;\n  inset: 0;\n  z-index: 20;\n  display: flex;\n  flex-direction: column;\n  background: var(--terminal-bg, var(--theme-panel));\n  color: var(--terminal-fg, var(--theme-fg));\n}\n.terminal-selection-bar {\n  position: absolute;\n  inset: 6px 6px auto;\n  z-index: 1;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  padding: 5px 6px 5px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 12px;\n  background: color-mix(in srgb, var(--theme-panel) 94%, transparent);\n  color: var(--theme-fg);\n  box-shadow: 0 6px 20px rgb(0 0 0 / 22%);\n  font-size: 13px;\n}\n.terminal-selection-bar > span {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.terminal-panel .terminal-selection-bar > button,\n.terminal-selection-bar > button {\n  min-width: 44px;\n  min-height: 36px;\n  padding: 0 12px;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  font-size: 13px;\n}\n.terminal-selection-bar > button.is-primary,\n.terminal-paste-confirm > button.is-primary,\n.terminal-paste-field button.is-primary {\n  border-color: transparent;\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n}\n.terminal-selection-bar > button:disabled {\n  opacity: .45;\n}\n.terminal-selection-text {\n  flex: 1;\n  min-height: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  padding: 0 4px 56px 0;\n  font-family:\n    "IBM Plex Mono",\n    SFMono-Regular,\n    Menlo,\n    monospace;\n  font-size: 13px;\n  line-height: 1.25;\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n  -webkit-user-select: text;\n  user-select: text;\n  -webkit-touch-callout: default;\n}\n.terminal-paste-confirm,\n.terminal-paste-field {\n  position: absolute;\n  inset: auto 8px 8px;\n  z-index: 21;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px;\n  padding: 10px;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 12px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 10px 30px rgb(0 0 0 / 25%);\n  font-size: 13px;\n}\n.terminal-paste-confirm > span {\n  flex: 1 1 200px;\n  min-width: 0;\n}\n.terminal-paste-confirm > button,\n.terminal-paste-field button {\n  min-height: 36px;\n  padding: 0 14px;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.terminal-paste-field {\n  flex-direction: column;\n  align-items: stretch;\n}\n.terminal-paste-field textarea {\n  width: 100%;\n  min-height: 72px;\n  padding: 8px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  font:\n    16px/1.4 "IBM Plex Mono",\n    SFMono-Regular,\n    Menlo,\n    monospace;\n  resize: vertical;\n}\n.terminal-paste-field > div {\n  display: flex;\n  justify-content: flex-end;\n  gap: 8px;\n}\n.terminal-paste-field button:disabled {\n  opacity: .45;\n}\n');
@@ -22963,7 +22966,8 @@ function PluginProvider({
     }
     return null;
   }, [enabledModules]);
-  const getSettingsSections = useCallback22(() => builtinPlugins.flatMap((module) => {
+  const getSettingsSections = useCallback22((pluginId) => builtinPlugins.flatMap((module) => {
+    if (pluginId !== void 0 && module.manifest.id !== pluginId) return [];
     const devicePlugin = plugins.find((plugin) => plugin.id === module.manifest.id);
     const browser = devicePlugin?.enabled && devicePlugin.available !== false ? (module.browserSettingsSections ?? []).map((section) => ({
       id: `plugin:${module.manifest.id}:${section.id}`,
@@ -23039,43 +23043,88 @@ function PluginActionOutput({
     json = String(output);
   }
   const raw = /* @__PURE__ */ jsxs67(Fragment26, { children: [
-    /* @__PURE__ */ jsx80("pre", { className: "max-h-64 overflow-auto whitespace-pre-wrap break-words text-xs", children: json.slice(0, OUTPUT_LIMIT) }),
-    json.length > OUTPUT_LIMIT && /* @__PURE__ */ jsx80("p", { children: t2("automation.outputTruncated") })
+    /* @__PURE__ */ jsx80("pre", { className: "plugin-report-pre", children: json.slice(0, OUTPUT_LIMIT) }),
+    json.length > OUTPUT_LIMIT && /* @__PURE__ */ jsx80("p", { className: "plugin-report-note", children: t2("automation.outputTruncated") })
   ] });
-  return /* @__PURE__ */ jsxs67(
-    "details",
-    {
-      open: true,
-      className: "plugin-action-output space-y-2",
-      "aria-label": t2("automation.pluginOutput"),
-      children: [
-        /* @__PURE__ */ jsx80("summary", { className: "cursor-pointer font-medium", children: t2("automation.pluginOutput") }),
-        rendered ?? raw,
-        rendered && /* @__PURE__ */ jsxs67("details", { children: [
-          /* @__PURE__ */ jsx80("summary", { className: "cursor-pointer", children: t2("automation.rawOutput") }),
-          raw
-        ] })
-      ]
+  return /* @__PURE__ */ jsxs67("section", { className: "plugin-action-output", "aria-label": t2("automation.pluginOutput"), children: [
+    rendered ?? raw,
+    rendered && /* @__PURE__ */ jsxs67("details", { className: "plugin-report-disclosure", children: [
+      /* @__PURE__ */ jsx80("summary", { children: t2("automation.rawOutput") }),
+      raw
+    ] })
+  ] });
+}
+
+// src/plugins/PluginSettingsButton.tsx
+import { Settings as Settings2 } from "lucide-react";
+import { useRef as useRef36, useState as useState57 } from "react";
+import { jsx as jsx81, jsxs as jsxs68 } from "react/jsx-runtime";
+function PluginSettingsButton({ plugin, className }) {
+  const { t: t2 } = useI18n();
+  const plugins = usePlugins();
+  const trigger = useRef36(null);
+  const content = useRef36(null);
+  const [open, setOpen] = useState57(false);
+  const [theme, setTheme] = useState57({});
+  const sections = plugins.getSettingsSections(plugin.id);
+  if (!sections.length) return null;
+  const label = t2("settings.pluginSettings", { value1: plugin.name });
+  const single = sections.length === 1 ? sections[0] : null;
+  return /* @__PURE__ */ jsxs68(Dialog, { open, onOpenChange: (next) => {
+    if (next) {
+      const host = trigger.current?.closest("[data-theme-effective]");
+      setTheme({ effective: host?.dataset.themeEffective, mode: host?.dataset.themeMode });
     }
-  );
+    setOpen(next);
+  }, children: [
+    /* @__PURE__ */ jsx81(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx81("button", { ref: trigger, type: "button", className: className ?? "plugin-settings-trigger", "aria-label": label, title: label, children: /* @__PURE__ */ jsx81(Settings2, { "data-icon": "settings", size: 15, "aria-hidden": "true" }) }) }),
+    /* @__PURE__ */ jsxs68(
+      DialogContent,
+      {
+        ref: content,
+        "data-theme-effective": theme.effective,
+        "data-theme-mode": theme.mode,
+        "data-testid": "pluginSettingsDialog",
+        className: "thread-graph-dialog matter-settings-dialog plugin-settings-dialog",
+        overlayClassName: "plugin-settings-overlay",
+        onOpenAutoFocus: (event) => {
+          event.preventDefault();
+          content.current?.focus();
+        },
+        children: [
+          /* @__PURE__ */ jsxs68(DialogHeader, { className: "plugin-settings-dialog-header", children: [
+            /* @__PURE__ */ jsx81(DialogTitle, { children: label }),
+            /* @__PURE__ */ jsx81(DialogDescription, { children: single?.description ?? plugin.description })
+          ] }),
+          /* @__PURE__ */ jsx81("div", { className: "plugin-settings-dialog-body", children: single ? single.content : sections.map((section) => /* @__PURE__ */ jsxs68("section", { className: "plugin-settings-dialog-section", "aria-labelledby": `${section.id}-heading`, children: [
+            /* @__PURE__ */ jsxs68("header", { children: [
+              /* @__PURE__ */ jsx81("h3", { id: `${section.id}-heading`, children: section.label }),
+              section.description && /* @__PURE__ */ jsx81("p", { children: section.description })
+            ] }),
+            section.content
+          ] }, section.id)) })
+        ]
+      }
+    )
+  ] });
 }
 
 // src/app-shell/PhoneHandChoice.tsx
-import { jsx as jsx81, jsxs as jsxs68 } from "react/jsx-runtime";
+import { jsx as jsx82, jsxs as jsxs69 } from "react/jsx-runtime";
 function PhoneHandChoice({ hand, onChange }) {
   useI18n();
-  return /* @__PURE__ */ jsxs68("div", { className: "mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2", children: [
-    /* @__PURE__ */ jsxs68("div", { className: "min-w-0", children: [
-      /* @__PURE__ */ jsx81("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneHand") }),
-      /* @__PURE__ */ jsx81("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneHandHint") })
+  return /* @__PURE__ */ jsxs69("div", { className: "mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2", children: [
+    /* @__PURE__ */ jsxs69("div", { className: "min-w-0", children: [
+      /* @__PURE__ */ jsx82("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneHand") }),
+      /* @__PURE__ */ jsx82("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneHandHint") })
     ] }),
-    /* @__PURE__ */ jsx81(
+    /* @__PURE__ */ jsx82(
       "div",
       {
         role: "radiogroup",
         "aria-label": translate("workbench.phoneHand"),
         className: "inline-flex shrink-0 rounded-full border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] p-0.5",
-        children: ["left", "right"].map((value) => /* @__PURE__ */ jsx81(
+        children: ["left", "right"].map((value) => /* @__PURE__ */ jsx82(
           "button",
           {
             type: "button",
@@ -23093,15 +23142,15 @@ function PhoneHandChoice({ hand, onChange }) {
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect44, useRef as useRef36, useState as useState57 } from "react";
-import { jsx as jsx82, jsxs as jsxs69 } from "react/jsx-runtime";
+import { useEffect as useEffect44, useRef as useRef37, useState as useState58 } from "react";
+import { jsx as jsx83, jsxs as jsxs70 } from "react/jsx-runtime";
 function MenuIcon() {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx82("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx82("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
+  return /* @__PURE__ */ jsx83("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx83("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
 }
 function CloseIcon() {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx82("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx82("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
+  return /* @__PURE__ */ jsx83("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx83("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
 }
 function menuItemClassName(disabled = false) {
   return `flex w-full items-center rounded-[0.95rem] px-3 py-2 text-left text-sm transition ${disabled ? "cursor-not-allowed bg-[var(--theme-muted)] text-[var(--theme-fg-muted)]" : "text-[var(--theme-fg)] hover:bg-[var(--theme-hover)]"}`;
@@ -23141,7 +23190,7 @@ function AppShellMenuButton({ className = "" }) {
   if (!shellNav) {
     return null;
   }
-  return /* @__PURE__ */ jsx82(
+  return /* @__PURE__ */ jsx83(
     "button",
     {
       type: "button",
@@ -23150,7 +23199,7 @@ function AppShellMenuButton({ className = "" }) {
       "aria-controls": "app-shell-navigation-menu",
       onClick: shellNav.toggleNav,
       className: `inline-flex h-10 w-10 shrink-0 items-center justify-center text-[var(--theme-fg)] transition hover:text-[var(--theme-fg-soft)] ${className}`.trim(),
-      children: shellNav.navOpen ? /* @__PURE__ */ jsx82(CloseIcon, {}) : /* @__PURE__ */ jsx82(MenuIcon, {})
+      children: shellNav.navOpen ? /* @__PURE__ */ jsx83(CloseIcon, {}) : /* @__PURE__ */ jsx83(MenuIcon, {})
     }
   );
 }
@@ -23162,7 +23211,7 @@ function AppShellNavigationMenu({
 }) {
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
-  const menuRef = useRef36(null);
+  const menuRef = useRef37(null);
   useEffect44(() => {
     if (!shellNav?.navOpen) {
       return;
@@ -23191,7 +23240,7 @@ function AppShellNavigationMenu({
   if (!shellNav?.navOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs69(
+  return /* @__PURE__ */ jsxs70(
     "div",
     {
       ref: menuRef,
@@ -23201,14 +23250,14 @@ function AppShellNavigationMenu({
       onTouchStart: (event) => event.stopPropagation(),
       className: `rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] p-4 shadow-2xl shadow-black/15 backdrop-blur ${className}`.trim(),
       children: [
-        /* @__PURE__ */ jsxs69("div", { children: [
-          /* @__PURE__ */ jsx82("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Pockymoe" }),
-          /* @__PURE__ */ jsx82("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.navigation") })
+        /* @__PURE__ */ jsxs70("div", { children: [
+          /* @__PURE__ */ jsx83("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Pockymoe" }),
+          /* @__PURE__ */ jsx83("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.navigation") })
         ] }),
-        /* @__PURE__ */ jsxs69("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
+        /* @__PURE__ */ jsxs70("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
           items.map((item) => {
             const active = currentPath === item.href;
-            return /* @__PURE__ */ jsx82(
+            return /* @__PURE__ */ jsx83(
               "button",
               {
                 type: "button",
@@ -23226,7 +23275,7 @@ function AppShellNavigationMenu({
               item.href
             );
           }),
-          /* @__PURE__ */ jsx82(
+          /* @__PURE__ */ jsx83(
             "button",
             {
               type: "button",
@@ -23255,8 +23304,8 @@ function AppShellSettingsDialog({
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
   const plugins = usePlugins();
-  const [pluginImportDraft, setPluginImportDraft] = useState57("");
-  const [pluginImportState, setPluginImportState] = useState57({
+  const [pluginImportDraft, setPluginImportDraft] = useState58("");
+  const [pluginImportState, setPluginImportState] = useState58({
     busy: false,
     message: null,
     error: null
@@ -23323,8 +23372,8 @@ function AppShellSettingsDialog({
   if (!shellNav?.settingsOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs69("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
-    /* @__PURE__ */ jsx82(
+  return /* @__PURE__ */ jsxs70("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
+    /* @__PURE__ */ jsx83(
       "button",
       {
         type: "button",
@@ -23333,7 +23382,7 @@ function AppShellSettingsDialog({
         className: "ui-overlay-scrim absolute inset-0 backdrop-blur-sm"
       }
     ),
-    /* @__PURE__ */ jsxs69(
+    /* @__PURE__ */ jsxs70(
       "section",
       {
         role: "dialog",
@@ -23341,62 +23390,62 @@ function AppShellSettingsDialog({
         "aria-label": translate("files.settings"),
         className: "relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-4xl flex-col overflow-hidden rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] shadow-2xl shadow-black/20",
         children: [
-          /* @__PURE__ */ jsx82("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs69("div", { className: "flex items-start justify-between gap-3", children: [
-            /* @__PURE__ */ jsxs69("div", { children: [
-              /* @__PURE__ */ jsx82("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.settings") }),
-              /* @__PURE__ */ jsx82("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: translate("files.settings") }),
-              /* @__PURE__ */ jsx82("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: translate("files.manageAppearanceAndThreadUIPlugins") })
+          /* @__PURE__ */ jsx83("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs70("div", { className: "flex items-start justify-between gap-3", children: [
+            /* @__PURE__ */ jsxs70("div", { children: [
+              /* @__PURE__ */ jsx83("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.settings") }),
+              /* @__PURE__ */ jsx83("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: translate("files.settings") }),
+              /* @__PURE__ */ jsx83("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: translate("files.manageAppearanceAndThreadUIPlugins") })
             ] }),
-            /* @__PURE__ */ jsx82(
+            /* @__PURE__ */ jsx83(
               "button",
               {
                 type: "button",
                 "aria-label": translate("files.closeSettings"),
                 onClick: shellNav.closeSettings,
                 className: "inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--theme-border-strong)] bg-[var(--theme-surface-strong)] text-[var(--theme-fg)] transition hover:border-[var(--theme-border-contrast)] hover:bg-[var(--theme-hover)]",
-                children: /* @__PURE__ */ jsx82(CloseIcon, {})
+                children: /* @__PURE__ */ jsx83(CloseIcon, {})
               }
             )
           ] }) }),
-          /* @__PURE__ */ jsx82("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs69("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsxs69("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsx82("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs69("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx82("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
-                /* @__PURE__ */ jsxs69("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
+          /* @__PURE__ */ jsx83("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs70("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxs70("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsx83("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs70("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx83("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
+                /* @__PURE__ */ jsxs70("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
                   translate("files.chooseLightDarkOrFollowTheSystem"),
                   " ",
                   effectiveTheme,
                   "."
                 ] })
               ] }) }),
-              /* @__PURE__ */ jsx82("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
+              /* @__PURE__ */ jsx83("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
                 const active = selectedThemeMode === option.value;
-                return /* @__PURE__ */ jsxs69(
+                return /* @__PURE__ */ jsxs70(
                   "button",
                   {
                     type: "button",
                     onClick: () => shellNav.setThemeMode(option.value),
                     className: `block rounded-[1rem] border px-3 py-2.5 text-left transition ${active ? "border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)]" : "border-[var(--theme-border)] bg-[var(--theme-surface-strong)] hover:bg-[var(--theme-hover)]"}`,
                     children: [
-                      /* @__PURE__ */ jsxs69("div", { className: "flex items-center justify-between gap-3", children: [
-                        /* @__PURE__ */ jsx82("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
-                        active ? /* @__PURE__ */ jsx82("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: translate("files.active") }) : null
+                      /* @__PURE__ */ jsxs70("div", { className: "flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx83("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
+                        active ? /* @__PURE__ */ jsx83("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: translate("files.active") }) : null
                       ] }),
-                      /* @__PURE__ */ jsx82("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
+                      /* @__PURE__ */ jsx83("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
                     ]
                   },
                   option.value
                 );
               }) })
             ] }),
-            shellNav?.setPhoneDock ? /* @__PURE__ */ jsxs69("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsxs69("div", { className: "flex items-start justify-between gap-4", children: [
-                /* @__PURE__ */ jsxs69("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx82("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneDockSetting") }),
-                  /* @__PURE__ */ jsx82("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneDockSettingHint") })
+            shellNav?.setPhoneDock ? /* @__PURE__ */ jsxs70("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsxs70("div", { className: "flex items-start justify-between gap-4", children: [
+                /* @__PURE__ */ jsxs70("div", { className: "min-w-0", children: [
+                  /* @__PURE__ */ jsx83("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneDockSetting") }),
+                  /* @__PURE__ */ jsx83("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneDockSettingHint") })
                 ] }),
-                /* @__PURE__ */ jsxs69("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
-                  /* @__PURE__ */ jsx82(
+                /* @__PURE__ */ jsxs70("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
+                  /* @__PURE__ */ jsx83(
                     "input",
                     {
                       type: "checkbox",
@@ -23405,18 +23454,18 @@ function AppShellSettingsDialog({
                       className: "h-4 w-4 accent-[var(--theme-accent-solid)]"
                     }
                   ),
-                  /* @__PURE__ */ jsx82("span", { children: translate("workbench.phoneDockSettingToggle") })
+                  /* @__PURE__ */ jsx83("span", { children: translate("workbench.phoneDockSettingToggle") })
                 ] })
               ] }),
-              shellNav.setPhoneHand && (shellNav.phoneDock ?? true) ? /* @__PURE__ */ jsx82(PhoneHandChoice, { hand: shellNav.phoneHand ?? "right", onChange: shellNav.setPhoneHand }) : null
+              shellNav.setPhoneHand && (shellNav.phoneDock ?? true) ? /* @__PURE__ */ jsx83(PhoneHandChoice, { hand: shellNav.phoneHand ?? "right", onChange: shellNav.setPhoneHand }) : null
             ] }) : null,
-            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx82("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs69("div", { className: "flex items-start justify-between gap-4", children: [
-              /* @__PURE__ */ jsxs69("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx82("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.threadTimeline") }),
-                /* @__PURE__ */ jsx82("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.collapseCompletedTurnsIntoPromptElapsedWork") })
+            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx83("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs70("div", { className: "flex items-start justify-between gap-4", children: [
+              /* @__PURE__ */ jsxs70("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx83("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.threadTimeline") }),
+                /* @__PURE__ */ jsx83("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.collapseCompletedTurnsIntoPromptElapsedWork") })
               ] }),
-              /* @__PURE__ */ jsxs69("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
-                /* @__PURE__ */ jsx82(
+              /* @__PURE__ */ jsxs70("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
+                /* @__PURE__ */ jsx83(
                   "input",
                   {
                     type: "checkbox",
@@ -23427,16 +23476,16 @@ function AppShellSettingsDialog({
                     className: "h-4 w-4 accent-[var(--theme-accent-solid)]"
                   }
                 ),
-                /* @__PURE__ */ jsx82("span", { children: translate("files.autoCollapse") })
+                /* @__PURE__ */ jsx83("span", { children: translate("files.autoCollapse") })
               ] })
             ] }) }) : null,
-            /* @__PURE__ */ jsxs69("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsxs69("div", { className: "flex items-start justify-between gap-3", children: [
-                /* @__PURE__ */ jsxs69("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx82("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.plugins") }),
-                  /* @__PURE__ */ jsx82("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.enableRenderersAndThreadExtensionsLoadedBy") })
+            /* @__PURE__ */ jsxs70("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsxs70("div", { className: "flex items-start justify-between gap-3", children: [
+                /* @__PURE__ */ jsxs70("div", { className: "min-w-0", children: [
+                  /* @__PURE__ */ jsx83("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.plugins") }),
+                  /* @__PURE__ */ jsx83("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.enableRenderersAndThreadExtensionsLoadedBy") })
                 ] }),
-                /* @__PURE__ */ jsx82(
+                /* @__PURE__ */ jsx83(
                   "button",
                   {
                     type: "button",
@@ -23447,23 +23496,23 @@ function AppShellSettingsDialog({
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsxs69("div", { className: "mt-3 grid gap-2", children: [
-                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs69(
+              /* @__PURE__ */ jsxs70("div", { className: "mt-3 grid gap-2", children: [
+                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs70(
                   "div",
                   {
                     className: "flex items-start justify-between gap-3 rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2.5",
                     children: [
-                      /* @__PURE__ */ jsxs69("span", { className: "min-w-0", children: [
-                        /* @__PURE__ */ jsx82("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
-                        /* @__PURE__ */ jsx82("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
-                        /* @__PURE__ */ jsx82("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
+                      /* @__PURE__ */ jsxs70("span", { className: "min-w-0", children: [
+                        /* @__PURE__ */ jsx83("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
+                        /* @__PURE__ */ jsx83("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
+                        /* @__PURE__ */ jsx83("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
                           ...plugin.capabilities.artifactTypes.map((type) => type.type),
                           ...plugin.capabilities.threadPanels.map((panel) => panel.kind ?? panel.id)
                         ].join(", ") || translate("files.utility") }),
-                        /* @__PURE__ */ jsx82("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? translate("files.importedManifest") : translate("files.builtInModule") })
+                        /* @__PURE__ */ jsx83("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? translate("files.importedManifest") : translate("files.builtInModule") })
                       ] }),
-                      /* @__PURE__ */ jsxs69("span", { className: "flex shrink-0 items-center gap-2", children: [
-                        plugin.source === "imported" ? /* @__PURE__ */ jsx82(
+                      /* @__PURE__ */ jsxs70("span", { className: "flex shrink-0 items-center gap-2", children: [
+                        plugin.source === "imported" ? /* @__PURE__ */ jsx83(
                           "button",
                           {
                             type: "button",
@@ -23472,12 +23521,12 @@ function AppShellSettingsDialog({
                             children: translate("files.uninstall")
                           }
                         ) : null,
-                        /* @__PURE__ */ jsxs69("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
+                        /* @__PURE__ */ jsxs70("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
                           translate("files.toggle"),
                           " ",
                           plugin.name
                         ] }),
-                        /* @__PURE__ */ jsx82(
+                        /* @__PURE__ */ jsx83(
                           "input",
                           {
                             id: `plugin-toggle-${plugin.id}`,
@@ -23492,11 +23541,11 @@ function AppShellSettingsDialog({
                   },
                   plugin.id
                 )),
-                plugins.plugins.length === 0 && /* @__PURE__ */ jsx82("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: translate("files.noPluginsAreRegistered") })
+                plugins.plugins.length === 0 && /* @__PURE__ */ jsx83("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: translate("files.noPluginsAreRegistered") })
               ] }),
-              /* @__PURE__ */ jsxs69("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
-                /* @__PURE__ */ jsx82("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: translate("files.importPlugin") }),
-                /* @__PURE__ */ jsx82(
+              /* @__PURE__ */ jsxs70("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
+                /* @__PURE__ */ jsx83("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: translate("files.importPlugin") }),
+                /* @__PURE__ */ jsx83(
                   "textarea",
                   {
                     value: pluginImportDraft,
@@ -23511,9 +23560,9 @@ function AppShellSettingsDialog({
                     className: "mt-2 min-h-28 w-full resize-y rounded-[0.9rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2 font-mono text-xs leading-5 text-[var(--theme-fg)] outline-none transition placeholder:text-[var(--theme-fg-muted)] focus:border-[var(--theme-accent-border)]"
                   }
                 ),
-                /* @__PURE__ */ jsxs69("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
-                  /* @__PURE__ */ jsx82("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.importsRegisterManifestDeclaredArtifactTypesRendering") }),
-                  /* @__PURE__ */ jsx82(
+                /* @__PURE__ */ jsxs70("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
+                  /* @__PURE__ */ jsx83("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.importsRegisterManifestDeclaredArtifactTypesRendering") }),
+                  /* @__PURE__ */ jsx83(
                     "button",
                     {
                       type: "button",
@@ -23524,10 +23573,10 @@ function AppShellSettingsDialog({
                     }
                   )
                 ] }),
-                pluginImportState.error && /* @__PURE__ */ jsx82("p", { className: "mt-2 text-xs text-rose-300", children: pluginImportState.error }),
-                pluginImportState.message && /* @__PURE__ */ jsx82("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
+                pluginImportState.error && /* @__PURE__ */ jsx83("p", { className: "mt-2 text-xs text-rose-300", children: pluginImportState.error }),
+                pluginImportState.message && /* @__PURE__ */ jsx83("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
               ] }),
-              plugins.error && /* @__PURE__ */ jsx82("p", { className: "mt-2 text-xs text-rose-300", children: plugins.error })
+              plugins.error && /* @__PURE__ */ jsx83("p", { className: "mt-2 text-xs text-rose-300", children: plugins.error })
             ] }),
             extraContent
           ] }) })
@@ -23538,7 +23587,7 @@ function AppShellSettingsDialog({
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { useEffect as useEffect45, useLayoutEffect as useLayoutEffect13, useMemo as useMemo20, useRef as useRef37, useState as useState58 } from "react";
+import { useEffect as useEffect45, useLayoutEffect as useLayoutEffect13, useMemo as useMemo20, useRef as useRef38, useState as useState59 } from "react";
 import { ArrowLeft as ArrowLeft4, ArrowUpRight, ChevronRight as ChevronRight7, ChevronUp as ChevronUp4, Folder as Folder2, List, Monitor as Monitor2, Network as Network2, RotateCw as RotateCw2 } from "lucide-react";
 
 // src/components/threadMap/model.ts
@@ -23625,7 +23674,7 @@ function indexMap(root) {
 
 // src/components/threadMap/ThreadTile.tsx
 import { Network } from "lucide-react";
-import { jsx as jsx83, jsxs as jsxs70 } from "react/jsx-runtime";
+import { jsx as jsx84, jsxs as jsxs71 } from "react/jsx-runtime";
 var MINUTE2 = 6e4;
 var HOUR = 60 * MINUTE2;
 var DAY = 24 * HOUR;
@@ -23643,7 +23692,7 @@ var MONOGRAMS = {
 };
 var monogram = (agent) => MONOGRAMS[agent] ?? agent.replace(/[^a-z0-9]/gi, "").slice(0, 2).replace(/^./, (c) => c.toUpperCase());
 function AgentChip({ agent }) {
-  return agent ? /* @__PURE__ */ jsx83("span", { className: "thread-map-agent", "data-agent": agent, "aria-hidden": "true", children: monogram(agent) }) : null;
+  return agent ? /* @__PURE__ */ jsx84("span", { className: "thread-map-agent", "data-agent": agent, "aria-hidden": "true", children: monogram(agent) }) : null;
 }
 function formatRunTime(ms) {
   const minutes = Math.round(ms / MINUTE2);
@@ -23713,13 +23762,13 @@ function AgeGlyph({ tier }) {
   const fraction = (tier + 1) / 5;
   const angle = fraction * 2 * Math.PI;
   const x = 8 + 5 * Math.sin(angle), y = 8 - 5 * Math.cos(angle);
-  return /* @__PURE__ */ jsxs70("svg", { className: "thread-map-age-glyph", "data-age": tier, viewBox: "0 0 16 16", "aria-hidden": "true", children: [
-    /* @__PURE__ */ jsx83("circle", { cx: "8", cy: "8", r: "6.6", fill: "none", stroke: "currentColor", strokeWidth: "1.4" }),
-    fraction >= 1 ? /* @__PURE__ */ jsx83("circle", { cx: "8", cy: "8", r: "5", fill: "currentColor" }) : /* @__PURE__ */ jsx83("path", { d: `M8 8 L8 3 A5 5 0 ${fraction > 0.5 ? 1 : 0} 1 ${x.toFixed(2)} ${y.toFixed(2)} Z`, fill: "currentColor" })
+  return /* @__PURE__ */ jsxs71("svg", { className: "thread-map-age-glyph", "data-age": tier, viewBox: "0 0 16 16", "aria-hidden": "true", children: [
+    /* @__PURE__ */ jsx84("circle", { cx: "8", cy: "8", r: "6.6", fill: "none", stroke: "currentColor", strokeWidth: "1.4" }),
+    fraction >= 1 ? /* @__PURE__ */ jsx84("circle", { cx: "8", cy: "8", r: "5", fill: "currentColor" }) : /* @__PURE__ */ jsx84("path", { d: `M8 8 L8 3 A5 5 0 ${fraction > 0.5 ? 1 : 0} 1 ${x.toFixed(2)} ${y.toFixed(2)} Z`, fill: "currentColor" })
   ] });
 }
 function Spark({ hourly }) {
-  return /* @__PURE__ */ jsx83("span", { className: "thread-map-spark", "aria-hidden": "true", children: hourly.map((ms, hour) => /* @__PURE__ */ jsx83("i", { "data-zero": ms <= 0 || void 0, style: { "--h": Math.min(1, ms / HOUR).toFixed(3) } }, hour)) });
+  return /* @__PURE__ */ jsx84("span", { className: "thread-map-spark", "aria-hidden": "true", children: hourly.map((ms, hour) => /* @__PURE__ */ jsx84("i", { "data-zero": ms <= 0 || void 0, style: { "--h": Math.min(1, ms / HOUR).toFixed(3) } }, hour)) });
 }
 function tileTier(box) {
   const { width: w, height: h } = box;
@@ -23733,8 +23782,8 @@ function tileTier(box) {
 var FIT = { padding: 18, gap: 5, who: 14, grid: 32, column: 56, meta: 14, usage: 22, spark: 14, promptLine: 16 };
 function Usage({ thread }) {
   if (!thread.tokenUsage && !thread.priceEstimate) return null;
-  return /* @__PURE__ */ jsxs70("span", { className: "thread-map-usage", children: [
-    /* @__PURE__ */ jsx83(
+  return /* @__PURE__ */ jsxs71("span", { className: "thread-map-usage", children: [
+    /* @__PURE__ */ jsx84(
       TokenUsageCost,
       {
         usage: thread.tokenUsage,
@@ -23742,8 +23791,8 @@ function Usage({ thread }) {
         ...thread.pricePartial ? { detailsNote: translate("workbench.threadMapPricePartial") } : {}
       }
     ),
-    thread.tokenUsage ? /* @__PURE__ */ jsxs70("span", { className: "thread-map-tokens", title: translate("chat.totalTokens", { value1: thread.tokenUsage.totalTokens.toLocaleString(getLocale()) }), children: [
-      /* @__PURE__ */ jsx83(TokenMetricIcon, {}),
+    thread.tokenUsage ? /* @__PURE__ */ jsxs71("span", { className: "thread-map-tokens", title: translate("chat.totalTokens", { value1: thread.tokenUsage.totalTokens.toLocaleString(getLocale()) }), children: [
+      /* @__PURE__ */ jsx84(TokenMetricIcon, {}),
       formatCompactTokenCount(thread.tokenUsage.totalTokens)
     ] }) : null
   ] });
@@ -23754,7 +23803,7 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
   const tier = tileTier(box);
   const details = threadDetails(node, hours);
   const age = ageTier(thread.createdAt);
-  const chip = /* @__PURE__ */ jsx83(AgentChip, { agent: thread.agent });
+  const chip = /* @__PURE__ */ jsx84(AgentChip, { agent: thread.agent });
   const titled = tier !== "icon" && tier !== "dot";
   const lineHeight = tier === "card" ? 19 : tier === "large" ? 17 : 16;
   const childCount = thread.children?.length ?? 0;
@@ -23783,16 +23832,16 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
   const left = h - fixed - lines * lineHeight - (prompt ? promptLines * FIT.promptLine + FIT.gap : 0);
   const sparkHeight = FIT.spark + Math.max(0, Math.min(28, Math.floor(left * 0.4)));
   const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model].filter(Boolean).join(" \xB7 ") : "";
-  const status = thread.running ? /* @__PURE__ */ jsxs70("span", { className: "thread-map-tile-live", children: [
-    /* @__PURE__ */ jsx83("i", { className: "thread-map-running-dot" }),
+  const status = thread.running ? /* @__PURE__ */ jsxs71("span", { className: "thread-map-tile-live", children: [
+    /* @__PURE__ */ jsx84("i", { className: "thread-map-running-dot" }),
     translate("workbench.threadMapRunning")
-  ] }) : thread.lastActiveAt ? /* @__PURE__ */ jsx83("span", { children: translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) }) : null;
+  ] }) : thread.lastActiveAt ? /* @__PURE__ */ jsx84("span", { children: translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) }) : null;
   const short = [
     translate("workbench.threadMapTurns", { count: thread.turns ?? 0 }),
     thread.totalMs && w >= 110 ? translate("workbench.threadMapTotalShort", { duration: formatShortDuration(thread.totalMs) }) : null,
     thread.priceEstimate && w >= 170 ? formatCompactUsd(thread.priceEstimate.totalUsd) : null
   ].filter(Boolean).join(" \xB7 ");
-  const childrenButton = (count) => /* @__PURE__ */ jsxs70(
+  const childrenButton = (count) => /* @__PURE__ */ jsxs71(
     "button",
     {
       type: "button",
@@ -23801,12 +23850,12 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
       "aria-label": translate("workbench.threadMapShowChildren", { count: childCount, title: thread.title }),
       title: translate("workbench.threadMapShowChildren", { count: childCount, title: thread.title }),
       children: [
-        /* @__PURE__ */ jsx83(Network, { "aria-hidden": "true" }),
-        count && /* @__PURE__ */ jsx83("span", { children: childCount })
+        /* @__PURE__ */ jsx84(Network, { "aria-hidden": "true" }),
+        count && /* @__PURE__ */ jsx84("span", { children: childCount })
       ]
     }
   );
-  return /* @__PURE__ */ jsxs70(
+  return /* @__PURE__ */ jsxs71(
     "div",
     {
       className: "thread-map-tile",
@@ -23817,7 +23866,7 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
       "data-current": current || void 0,
       style: { left: box.x, top: box.y, width: w, height: h, "--lines": lines, "--prompt-lines": promptLines, "--spark-h": `${sparkHeight}px` },
       children: [
-        /* @__PURE__ */ jsx83(
+        /* @__PURE__ */ jsx84(
           "a",
           {
             href: thread.href,
@@ -23829,43 +23878,43 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
             ...hover
           }
         ),
-        tier !== "dot" && /* @__PURE__ */ jsxs70("span", { className: "thread-map-tile-head", children: [
+        tier !== "dot" && /* @__PURE__ */ jsxs71("span", { className: "thread-map-tile-head", children: [
           chip,
-          titled && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-title", children: thread.title }),
+          titled && /* @__PURE__ */ jsx84("span", { className: "thread-map-tile-title", children: thread.title }),
           showChildren && childrenButton(childrenWidth > 24),
-          showAge && /* @__PURE__ */ jsxs70("span", { className: "thread-map-age", title: thread.createdAt ? translate("workbench.threadMapCreated", { date: formatDate(thread.createdAt, { dateStyle: "medium" }) }) : void 0, children: [
-            /* @__PURE__ */ jsx83(AgeGlyph, { tier: age }),
-            showAgeText && /* @__PURE__ */ jsx83("span", { children: formatAge(thread.createdAt) })
+          showAge && /* @__PURE__ */ jsxs71("span", { className: "thread-map-age", title: thread.createdAt ? translate("workbench.threadMapCreated", { date: formatDate(thread.createdAt, { dateStyle: "medium" }) }) : void 0, children: [
+            /* @__PURE__ */ jsx84(AgeGlyph, { tier: age }),
+            showAgeText && /* @__PURE__ */ jsx84("span", { children: formatAge(thread.createdAt) })
           ] })
         ] }),
-        childrenRow && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-children-row", children: childrenButton(true) }),
-        showWho && (who || status || thread.failed) && /* @__PURE__ */ jsxs70("span", { className: "thread-map-tile-sub", children: [
-          who && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-who", children: who }),
-          thread.failed && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-failed", children: translate("workbench.threadMapFailedTurn") }),
+        childrenRow && /* @__PURE__ */ jsx84("span", { className: "thread-map-tile-children-row", children: childrenButton(true) }),
+        showWho && (who || status || thread.failed) && /* @__PURE__ */ jsxs71("span", { className: "thread-map-tile-sub", children: [
+          who && /* @__PURE__ */ jsx84("span", { className: "thread-map-tile-who", children: who }),
+          thread.failed && /* @__PURE__ */ jsx84("span", { className: "thread-map-tile-failed", children: translate("workbench.threadMapFailedTurn") }),
           status
         ] }),
-        prompt && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-prompt", children: prompt }),
-        (figures === "grid" || figures === "column") && /* @__PURE__ */ jsxs70("span", { className: "thread-map-stats", "data-layout": figures, children: [
-          /* @__PURE__ */ jsxs70("span", { children: [
-            /* @__PURE__ */ jsx83("b", { children: thread.turns }),
-            /* @__PURE__ */ jsx83("small", { children: translate("workbench.threadMapStatTurns") })
+        prompt && /* @__PURE__ */ jsx84("span", { className: "thread-map-tile-prompt", children: prompt }),
+        (figures === "grid" || figures === "column") && /* @__PURE__ */ jsxs71("span", { className: "thread-map-stats", "data-layout": figures, children: [
+          /* @__PURE__ */ jsxs71("span", { children: [
+            /* @__PURE__ */ jsx84("b", { children: thread.turns }),
+            /* @__PURE__ */ jsx84("small", { children: translate("workbench.threadMapStatTurns") })
           ] }),
-          /* @__PURE__ */ jsxs70("span", { children: [
-            /* @__PURE__ */ jsx83("b", { children: thread.totalMs ? formatShortDuration(thread.totalMs) : "\u2014" }),
-            /* @__PURE__ */ jsx83("small", { children: translate("workbench.threadMapStatTotal") })
+          /* @__PURE__ */ jsxs71("span", { children: [
+            /* @__PURE__ */ jsx84("b", { children: thread.totalMs ? formatShortDuration(thread.totalMs) : "\u2014" }),
+            /* @__PURE__ */ jsx84("small", { children: translate("workbench.threadMapStatTotal") })
           ] }),
-          /* @__PURE__ */ jsxs70("span", { children: [
-            /* @__PURE__ */ jsx83("b", { children: thread.activeMs ? formatShortDuration(thread.activeMs) : "\u2014" }),
-            /* @__PURE__ */ jsx83("small", { children: translate("workbench.threadMapStatRecent", { hours }) })
+          /* @__PURE__ */ jsxs71("span", { children: [
+            /* @__PURE__ */ jsx84("b", { children: thread.activeMs ? formatShortDuration(thread.activeMs) : "\u2014" }),
+            /* @__PURE__ */ jsx84("small", { children: translate("workbench.threadMapStatRecent", { hours }) })
           ] }),
-          usage === "cell" && /* @__PURE__ */ jsxs70("span", { className: "thread-map-stat-usage", children: [
-            /* @__PURE__ */ jsx83(Usage, { thread }),
-            /* @__PURE__ */ jsx83("small", { children: translate("workbench.threadMapStatCost") })
+          usage === "cell" && /* @__PURE__ */ jsxs71("span", { className: "thread-map-stat-usage", children: [
+            /* @__PURE__ */ jsx84(Usage, { thread }),
+            /* @__PURE__ */ jsx84("small", { children: translate("workbench.threadMapStatCost") })
           ] })
         ] }),
-        usage === "row" && /* @__PURE__ */ jsx83(Usage, { thread }),
-        figures === "line" && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-meta", children: short }),
-        showSpark && /* @__PURE__ */ jsx83(Spark, { hourly: thread.hourlyMs })
+        usage === "row" && /* @__PURE__ */ jsx84(Usage, { thread }),
+        figures === "line" && /* @__PURE__ */ jsx84("span", { className: "thread-map-tile-meta", children: short }),
+        showSpark && /* @__PURE__ */ jsx84(Spark, { hourly: thread.hourlyMs })
       ]
     }
   );
@@ -23912,7 +23961,7 @@ function squarify(items, weight, bounds) {
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { Fragment as Fragment27, jsx as jsx84, jsxs as jsxs71 } from "react/jsx-runtime";
+import { Fragment as Fragment27, jsx as jsx85, jsxs as jsxs72 } from "react/jsx-runtime";
 var HEADER = 26;
 function describe(node, hours) {
   if (node.thread) return threadDetails(node, hours);
@@ -23936,8 +23985,8 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
   const allLabel = translate("workbench.threadMapAll");
   const root = useMemo20(() => buildThreadMap(devices, allLabel), [devices, allLabel]);
   const nodes = useMemo20(() => indexMap(root), [root]);
-  const [focusId, setFocusId] = useState58(null);
-  const [openGroups, setOpenGroups] = useState58(() => /* @__PURE__ */ new Set());
+  const [focusId, setFocusId] = useState59(null);
+  const [openGroups, setOpenGroups] = useState59(() => /* @__PURE__ */ new Set());
   const toggleGroup = (key) => {
     setTip(null);
     setOpenGroups((current2) => {
@@ -23947,10 +23996,10 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     });
   };
   const current = (focusId ? nodes.get(focusId) : void 0) ?? root;
-  const canvas = useRef37(null);
-  const crumbs = useRef37(null);
-  const [size, setSize] = useState58({ width: 0, height: 0 });
-  const [tip, setTip] = useState58(null);
+  const canvas = useRef38(null);
+  const crumbs = useRef38(null);
+  const [size, setSize] = useState59({ width: 0, height: 0 });
+  const [tip, setTip] = useState59(null);
   useEffect45(() => {
     const node = canvas.current;
     if (!node) return;
@@ -24023,7 +24072,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
       tokens: child.tokenUsage?.totalTokens ?? 0
     })).sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
     const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
-    return /* @__PURE__ */ jsxs71(
+    return /* @__PURE__ */ jsxs72(
       "section",
       {
         className: "thread-map-section thread-map-group",
@@ -24032,8 +24081,8 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
         "aria-label": thread.title,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          /* @__PURE__ */ jsxs71("div", { className: "thread-map-group-head", children: [
-            /* @__PURE__ */ jsxs71(
+          /* @__PURE__ */ jsxs72("div", { className: "thread-map-group-head", children: [
+            /* @__PURE__ */ jsxs72(
               "button",
               {
                 type: "button",
@@ -24042,17 +24091,17 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
                 "aria-label": translate("workbench.threadMapHideChildren", { title: thread.title }),
                 onClick: () => toggleGroup(thread.key),
                 children: [
-                  /* @__PURE__ */ jsx84(AgentChip, { agent: thread.agent }),
-                  /* @__PURE__ */ jsx84("span", { className: "thread-map-section-label", children: thread.title }),
-                  box.width >= 110 && /* @__PURE__ */ jsxs71("span", { className: "thread-map-section-count", children: [
-                    /* @__PURE__ */ jsx84(Network2, { "aria-hidden": "true" }),
+                  /* @__PURE__ */ jsx85(AgentChip, { agent: thread.agent }),
+                  /* @__PURE__ */ jsx85("span", { className: "thread-map-section-label", children: thread.title }),
+                  box.width >= 110 && /* @__PURE__ */ jsxs72("span", { className: "thread-map-section-count", children: [
+                    /* @__PURE__ */ jsx85(Network2, { "aria-hidden": "true" }),
                     children2.length
                   ] }),
-                  /* @__PURE__ */ jsx84(ChevronUp4, { "aria-hidden": "true" })
+                  /* @__PURE__ */ jsx85(ChevronUp4, { "aria-hidden": "true" })
                 ]
               }
             ),
-            box.width >= 80 && /* @__PURE__ */ jsx84(
+            box.width >= 80 && /* @__PURE__ */ jsx85(
               "a",
               {
                 className: "thread-map-group-open",
@@ -24060,7 +24109,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
                 onClick: open(thread),
                 "aria-label": translate("workbench.threadMapOpenThread", { title: thread.title }),
                 title: translate("workbench.threadMapOpenThread", { title: thread.title }),
-                children: /* @__PURE__ */ jsx84(ArrowUpRight, { "aria-hidden": "true" })
+                children: /* @__PURE__ */ jsx85(ArrowUpRight, { "aria-hidden": "true" })
               }
             )
           ] }),
@@ -24077,7 +24126,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     if (item.kind === "thread") {
       const thread = item.thread;
       if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
-      return /* @__PURE__ */ jsx84(
+      return /* @__PURE__ */ jsx85(
         ThreadTile,
         {
           node: item,
@@ -24099,7 +24148,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     const preview = !unlisted && rendered < 600 && fits(item, inner, depth);
     const named = box.width >= 72;
     const Icon = item.kind === "device" ? Monitor2 : Folder2;
-    return /* @__PURE__ */ jsxs71(
+    return /* @__PURE__ */ jsxs72(
       "section",
       {
         className: "thread-map-section",
@@ -24112,7 +24161,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
         "aria-label": text,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          /* @__PURE__ */ jsxs71(
+          /* @__PURE__ */ jsxs72(
             "button",
             {
               type: "button",
@@ -24122,18 +24171,18 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
               onClick: () => unlisted ? state === "error" && onRetry?.(item.device.id) : navigate(item),
               ...hover(lines),
               children: [
-                named && /* @__PURE__ */ jsx84(Icon, { "aria-hidden": "true" }),
-                /* @__PURE__ */ jsx84("span", { className: "thread-map-section-label", children: item.label }),
-                unlisted ? named && /* @__PURE__ */ jsx84("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx84(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs71("span", { className: "thread-map-section-count", children: [
-                  item.running > 0 && /* @__PURE__ */ jsx84("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+                named && /* @__PURE__ */ jsx85(Icon, { "aria-hidden": "true" }),
+                /* @__PURE__ */ jsx85("span", { className: "thread-map-section-label", children: item.label }),
+                unlisted ? named && /* @__PURE__ */ jsx85("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx85(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs72("span", { className: "thread-map-section-count", children: [
+                  item.running > 0 && /* @__PURE__ */ jsx85("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
                   item.threads,
-                  item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx84("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
+                  item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx85("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
                 ] })
               ]
             }
           ),
           preview && render(item.children, inner, depth + 1),
-          !preview && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx84("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) })
+          !preview && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx85("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) })
         ]
       },
       item.id
@@ -24141,70 +24190,70 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
   });
   const children = current.children;
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
-  return /* @__PURE__ */ jsxs71("div", { className: "thread-map", children: [
-    /* @__PURE__ */ jsxs71("div", { className: "thread-map-bar", children: [
+  return /* @__PURE__ */ jsxs72("div", { className: "thread-map", children: [
+    /* @__PURE__ */ jsxs72("div", { className: "thread-map-bar", children: [
       heading,
-      /* @__PURE__ */ jsxs71("span", { className: "thread-map-summary", children: [
+      /* @__PURE__ */ jsxs72("span", { className: "thread-map-summary", children: [
         translate("workbench.threadMapThreads", { count: root.threads }),
-        root.running > 0 && /* @__PURE__ */ jsxs71(Fragment27, { children: [
+        root.running > 0 && /* @__PURE__ */ jsxs72(Fragment27, { children: [
           " \xB7 ",
-          /* @__PURE__ */ jsx84("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx85("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
           translate("workbench.threadMapRunningCount", { count: root.running })
         ] }),
-        root.usd > 0 && /* @__PURE__ */ jsxs71(Fragment27, { children: [
+        root.usd > 0 && /* @__PURE__ */ jsxs72(Fragment27, { children: [
           " \xB7 ",
           translate("workbench.threadMapCost", { usd: formatCompactUsd(root.usd) })
         ] })
       ] }),
       actions
     ] }),
-    /* @__PURE__ */ jsxs71("div", { className: "thread-map-bar thread-map-path", children: [
-      /* @__PURE__ */ jsx84("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx84(ArrowLeft4, { "aria-hidden": "true" }) }),
-      /* @__PURE__ */ jsx84("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => /* @__PURE__ */ jsxs71("span", { className: "thread-map-crumb", children: [
-        index > 0 && /* @__PURE__ */ jsx84(ChevronRight7, { "aria-hidden": "true" }),
-        /* @__PURE__ */ jsx84("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), title: node.label, children: node.label })
+    /* @__PURE__ */ jsxs72("div", { className: "thread-map-bar thread-map-path", children: [
+      /* @__PURE__ */ jsx85("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx85(ArrowLeft4, { "aria-hidden": "true" }) }),
+      /* @__PURE__ */ jsx85("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => /* @__PURE__ */ jsxs72("span", { className: "thread-map-crumb", children: [
+        index > 0 && /* @__PURE__ */ jsx85(ChevronRight7, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsx85("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), title: node.label, children: node.label })
       ] }, node.id)) }),
-      children.length > 0 && /* @__PURE__ */ jsxs71("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
-        /* @__PURE__ */ jsx84(List, { "aria-hidden": "true" }),
-        /* @__PURE__ */ jsxs71("select", { "aria-label": translate("workbench.threadMapGoTo"), value: "", onChange: (event) => {
+      children.length > 0 && /* @__PURE__ */ jsxs72("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
+        /* @__PURE__ */ jsx85(List, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsxs72("select", { "aria-label": translate("workbench.threadMapGoTo"), value: "", onChange: (event) => {
           const node = nodes.get(event.target.value);
           if (node?.thread) onOpen(node.thread);
           else if (node) navigate(node);
         }, children: [
-          /* @__PURE__ */ jsx84("option", { value: "", children: translate("workbench.threadMapGoTo") }),
-          children.map((node) => /* @__PURE__ */ jsx84("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
+          /* @__PURE__ */ jsx85("option", { value: "", children: translate("workbench.threadMapGoTo") }),
+          children.map((node) => /* @__PURE__ */ jsx85("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs71("div", { ref: canvas, className: "thread-map-canvas", role: "group", "aria-label": current.label, children: [
-      children.length ? size.width > 0 && render(children, bounds, 0) : /* @__PURE__ */ jsx84("p", { className: "thread-map-empty", role: "status", children: devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
-      tip && /* @__PURE__ */ jsx84("div", { className: "thread-map-tip", role: "tooltip", style: { left: tip.x, top: tip.y }, "data-above": tip.above || void 0, children: tip.lines.map((line, index) => index ? /* @__PURE__ */ jsx84("span", { children: line }, index) : /* @__PURE__ */ jsx84("b", { children: line }, index)) })
+    /* @__PURE__ */ jsxs72("div", { ref: canvas, className: "thread-map-canvas", role: "group", "aria-label": current.label, children: [
+      children.length ? size.width > 0 && render(children, bounds, 0) : /* @__PURE__ */ jsx85("p", { className: "thread-map-empty", role: "status", children: devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
+      tip && /* @__PURE__ */ jsx85("div", { className: "thread-map-tip", role: "tooltip", style: { left: tip.x, top: tip.y }, "data-above": tip.above || void 0, children: tip.lines.map((line, index) => index ? /* @__PURE__ */ jsx85("span", { children: line }, index) : /* @__PURE__ */ jsx85("b", { children: line }, index)) })
     ] }),
-    /* @__PURE__ */ jsxs71("div", { className: "thread-map-legend", children: [
-      /* @__PURE__ */ jsx84("span", { children: translate("workbench.threadMapLegendSize") }),
-      /* @__PURE__ */ jsxs71("span", { className: "thread-map-scale", children: [
+    /* @__PURE__ */ jsxs72("div", { className: "thread-map-legend", children: [
+      /* @__PURE__ */ jsx85("span", { children: translate("workbench.threadMapLegendSize") }),
+      /* @__PURE__ */ jsxs72("span", { className: "thread-map-scale", children: [
         translate("workbench.threadMapLegendColor", { hours }),
-        /* @__PURE__ */ jsx84("small", { children: translate("workbench.threadMapLess") }),
-        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx84("i", { "data-heat": level, "aria-hidden": "true" }, level)),
-        /* @__PURE__ */ jsx84("small", { children: translate("workbench.threadMapMore") })
+        /* @__PURE__ */ jsx85("small", { children: translate("workbench.threadMapLess") }),
+        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx85("i", { "data-heat": level, "aria-hidden": "true" }, level)),
+        /* @__PURE__ */ jsx85("small", { children: translate("workbench.threadMapMore") })
       ] }),
-      /* @__PURE__ */ jsxs71("span", { className: "thread-map-scale thread-map-ages", children: [
+      /* @__PURE__ */ jsxs72("span", { className: "thread-map-scale thread-map-ages", children: [
         translate("workbench.threadMapLegendAge"),
-        /* @__PURE__ */ jsx84("small", { children: translate("workbench.threadMapNewer") }),
-        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx84(AgeGlyph, { tier }, tier)),
-        /* @__PURE__ */ jsx84("small", { children: translate("workbench.threadMapOlder") })
+        /* @__PURE__ */ jsx85("small", { children: translate("workbench.threadMapNewer") }),
+        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx85(AgeGlyph, { tier }, tier)),
+        /* @__PURE__ */ jsx85("small", { children: translate("workbench.threadMapOlder") })
       ] }),
-      /* @__PURE__ */ jsxs71("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsxs71("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
-          /* @__PURE__ */ jsx84("i", {}),
-          /* @__PURE__ */ jsx84("i", {}),
-          /* @__PURE__ */ jsx84("i", {}),
-          /* @__PURE__ */ jsx84("i", {})
+      /* @__PURE__ */ jsxs72("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsxs72("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
+          /* @__PURE__ */ jsx85("i", {}),
+          /* @__PURE__ */ jsx85("i", {}),
+          /* @__PURE__ */ jsx85("i", {}),
+          /* @__PURE__ */ jsx85("i", {})
         ] }),
         translate("workbench.threadMapLegendHourly")
       ] }),
-      /* @__PURE__ */ jsxs71("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsx84("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxs72("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsx85("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
         translate("workbench.threadMapLegendRunning")
       ] })
     ] })
@@ -24213,10 +24262,10 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
 
 // src/components/threadMap/ThreadMapDialog.tsx
 import { X as X7 } from "lucide-react";
-import { jsx as jsx85 } from "react/jsx-runtime";
+import { jsx as jsx86 } from "react/jsx-runtime";
 function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }) {
   useI18n();
-  return /* @__PURE__ */ jsx85(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx85(
+  return /* @__PURE__ */ jsx86(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx86(
     DialogContent,
     {
       showCloseButton: false,
@@ -24225,12 +24274,12 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
       "data-theme-mode": themeMode,
       className: "thread-graph-dialog matter-settings-dialog thread-map-dialog",
       overlayClassName: "matter-settings-overlay",
-      children: /* @__PURE__ */ jsx85(
+      children: /* @__PURE__ */ jsx86(
         ThreadMap,
         {
           ...map,
-          heading: /* @__PURE__ */ jsx85(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
-          actions: /* @__PURE__ */ jsx85(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx85(X7, { "aria-hidden": "true" }) })
+          heading: /* @__PURE__ */ jsx86(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
+          actions: /* @__PURE__ */ jsx86(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx86(X7, { "aria-hidden": "true" }) })
         }
       )
     }
@@ -24239,7 +24288,7 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
 
 // src/components/PublicTranscript.tsx
 import { ChevronRight as ChevronRight8 } from "lucide-react";
-import { jsx as jsx86, jsxs as jsxs72 } from "react/jsx-runtime";
+import { jsx as jsx87, jsxs as jsxs73 } from "react/jsx-runtime";
 function transcriptSnapshot(title, turns, theme) {
   return {
     title,
@@ -24266,19 +24315,19 @@ function transcriptSnapshot(title, turns, theme) {
 }
 function PublicTranscript({ snapshot }) {
   useI18n();
-  const message = (item, index) => /* @__PURE__ */ jsx86(
+  const message = (item, index) => /* @__PURE__ */ jsx87(
     GraphChatMessageFrame,
     {
       kind: item.role === "user" ? "userMessage" : "agentMessage",
       timeLabel: item.createdAt ? formatMessageTimestamp(item.createdAt) : void 0,
-      children: item.role === "user" ? /* @__PURE__ */ jsx86(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx86("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx86(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
+      children: item.role === "user" ? /* @__PURE__ */ jsx87(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx87("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx87(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
     },
     index
   );
-  return /* @__PURE__ */ jsx86("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs72("div", { className: "public-transcript-content", children: [
-    /* @__PURE__ */ jsxs72("header", { className: "public-transcript-header", children: [
-      /* @__PURE__ */ jsx86("h1", { children: snapshot.title }),
-      /* @__PURE__ */ jsxs72("p", { children: [
+  return /* @__PURE__ */ jsx87("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs73("div", { className: "public-transcript-content", children: [
+    /* @__PURE__ */ jsxs73("header", { className: "public-transcript-header", children: [
+      /* @__PURE__ */ jsx87("h1", { children: snapshot.title }),
+      /* @__PURE__ */ jsxs73("p", { children: [
         snapshot.live ? translate("sharing.liveReadOnlyThread") : translate("sharing.readOnlySnapshot"),
         " \xB7 ",
         snapshot.turnCount,
@@ -24286,17 +24335,17 @@ function PublicTranscript({ snapshot }) {
         translate("sharing.turns_7cb1b2"),
         snapshot.live && snapshot.updatedAt ? translate("sharing.updated", { value1: new Date(snapshot.updatedAt).toLocaleString(getLocale()) }) : ""
       ] }),
-      snapshot.stale && /* @__PURE__ */ jsx86("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
+      snapshot.stale && /* @__PURE__ */ jsx87("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
     ] }),
     snapshot.turns.map((turn, index) => {
       const displayTurn = { id: `snapshot-${index}`, status: "completed", error: null, items: [], startedAt: turn.startedAt ?? null, completedAt: turn.completedAt ?? null, model: turn.model ?? null, reasoningEffort: turn.reasoningEffort ?? null, tokenUsage: turn.tokenUsage ?? null, priceEstimate: turn.priceEstimate ?? null };
-      return /* @__PURE__ */ jsxs72("section", { className: "thread-graph-turn public-transcript-turn", children: [
+      return /* @__PURE__ */ jsxs73("section", { className: "thread-graph-turn public-transcript-turn", children: [
         turn.messages.filter((item) => item.role === "user").map(message),
-        /* @__PURE__ */ jsxs72("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
-          /* @__PURE__ */ jsx86("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
-          /* @__PURE__ */ jsx86(ChevronRight8, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
-          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx86(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
-          /* @__PURE__ */ jsx86("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+        /* @__PURE__ */ jsxs73("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
+          /* @__PURE__ */ jsx87("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
+          /* @__PURE__ */ jsx87(ChevronRight8, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
+          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx87(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
+          /* @__PURE__ */ jsx87("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
         ] }),
         turn.messages.filter((item) => item.role === "assistant").map(message)
       ] }, index);
@@ -24305,9 +24354,9 @@ function PublicTranscript({ snapshot }) {
 }
 
 // src/components/ConversationSearchControls.tsx
-import { Fragment as Fragment28, jsx as jsx87, jsxs as jsxs73 } from "react/jsx-runtime";
+import { Fragment as Fragment28, jsx as jsx88, jsxs as jsxs74 } from "react/jsx-runtime";
 function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }) {
-  return /* @__PURE__ */ jsxs73(
+  return /* @__PURE__ */ jsxs74(
     "select",
     {
       className: "workbench-search-scope",
@@ -24315,10 +24364,10 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
       value,
       onChange: (event) => onChange(event.target.value),
       children: [
-        /* @__PURE__ */ jsx87("option", { value: "thread", children: labels.thread }),
-        allowGlobal && /* @__PURE__ */ jsxs73(Fragment28, { children: [
-          /* @__PURE__ */ jsx87("option", { value: "workspace", children: labels.workspace }),
-          /* @__PURE__ */ jsx87("option", { value: "device", children: labels.device })
+        /* @__PURE__ */ jsx88("option", { value: "thread", children: labels.thread }),
+        allowGlobal && /* @__PURE__ */ jsxs74(Fragment28, { children: [
+          /* @__PURE__ */ jsx88("option", { value: "workspace", children: labels.workspace }),
+          /* @__PURE__ */ jsx88("option", { value: "device", children: labels.device })
         ] })
       ]
     }
@@ -24346,15 +24395,15 @@ function searchHighlightParts(text, query) {
 }
 function ConversationSearchExcerpt({ text, query }) {
   const parts = searchHighlightParts(text, query);
-  return /* @__PURE__ */ jsxs73("p", { children: [
+  return /* @__PURE__ */ jsxs74("p", { children: [
     parts.before,
-    parts.match && /* @__PURE__ */ jsx87("mark", { children: parts.match }),
+    parts.match && /* @__PURE__ */ jsx88("mark", { children: parts.match }),
     parts.after
   ] });
 }
 
 // src/components/workbench/presentation.ts
-import { useCallback as useCallback23, useEffect as useEffect46, useRef as useRef38, useState as useState59 } from "react";
+import { useCallback as useCallback23, useEffect as useEffect46, useRef as useRef39, useState as useState60 } from "react";
 var defaultPresentation = {
   referenceId: null,
   mode: "focus",
@@ -24411,11 +24460,11 @@ function write(scope, value, patch) {
   }
 }
 function useWorkbenchPresentation(scope, contextKey = null) {
-  const owner = useRef38({ scope, contextKey });
+  const owner = useRef39({ scope, contextKey });
   if (owner.current.scope !== scope || owner.current.contextKey !== contextKey)
     owner.current = { scope, contextKey };
   const generation = owner.current;
-  const [stored, setStored] = useState59(() => ({
+  const [stored, setStored] = useState60(() => ({
     generation,
     value: read(scope),
     storageFailed: false,
@@ -24484,6 +24533,7 @@ export {
   PluginActionOutput,
   PluginContext,
   PluginProvider,
+  PluginSettingsButton,
   PublicTranscript,
   RenderErrorBoundary,
   RenderErrorFallback,

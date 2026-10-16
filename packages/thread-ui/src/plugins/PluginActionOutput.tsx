@@ -4,6 +4,7 @@ import { usePlugins } from './usePlugins';
 
 const OUTPUT_LIMIT = 24_000;
 
+/** A plugin's own report when it renders one, otherwise bounded JSON; raw JSON stays one click away. */
 export function PluginActionOutput({
   pluginId,
   action,
@@ -20,30 +21,19 @@ export function PluginActionOutput({
   }
   const raw = (
     <>
-      <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words text-xs">
-        {json.slice(0, OUTPUT_LIMIT)}
-      </pre>
-      {json.length > OUTPUT_LIMIT && <p>{t('automation.outputTruncated')}</p>}
+      <pre className="plugin-report-pre">{json.slice(0, OUTPUT_LIMIT)}</pre>
+      {json.length > OUTPUT_LIMIT && <p className="plugin-report-note">{t('automation.outputTruncated')}</p>}
     </>
   );
   return (
-    <details
-      open
-      className="plugin-action-output space-y-2"
-      aria-label={t('automation.pluginOutput')}
-    >
-      <summary className="cursor-pointer font-medium">
-        {t('automation.pluginOutput')}
-      </summary>
+    <section className="plugin-action-output" aria-label={t('automation.pluginOutput')}>
       {rendered ?? raw}
       {rendered && (
-        <details>
-          <summary className="cursor-pointer">
-            {t('automation.rawOutput')}
-          </summary>
+        <details className="plugin-report-disclosure">
+          <summary>{t('automation.rawOutput')}</summary>
           {raw}
         </details>
       )}
-    </details>
+    </section>
   );
 }

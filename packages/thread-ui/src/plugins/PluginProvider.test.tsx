@@ -74,6 +74,8 @@ describe('PluginProvider', () => {
     await act(async () => root?.render(<PluginProvider adapter={adapter} builtinPlugins={[module]}><Settings /></PluginProvider>));
     expect(latest!.plugins[0]?.enabled).toBe(false);
     expect(latest!.getSettingsSections()).toHaveLength(1);
+    expect(latest!.getSettingsSections(terminalPluginManifest.id).map(section => section.id)).toEqual([`plugin:${terminalPluginManifest.id}:test`]);
+    expect(latest!.getSettingsSections('other.plugin')).toEqual([]);
     await act(async () => { container!.querySelectorAll('button')[0]!.click(); });
     await act(async () => { container!.querySelectorAll('button')[1]!.click(); });
     expect(loadPluginSettings).toHaveBeenCalledWith(terminalPluginManifest.id);
@@ -103,6 +105,8 @@ describe('PluginProvider', () => {
     root = createRoot(container);
     await act(async () => root?.render(<PluginProvider adapter={adapter} builtinPlugins={[module]}><Capture onValue={value => { latest = value; }} /></PluginProvider>));
     expect(latest!.getSettingsSections().map(section => section.id)).toEqual([`plugin:${terminalPluginManifest.id}:clipboard`]);
+    expect(latest!.getSettingsSections(terminalPluginManifest.id).map(section => section.id)).toEqual([`plugin:${terminalPluginManifest.id}:clipboard`]);
+    expect(latest!.getSettingsSections('another.plugin')).toEqual([]);
     await act(async () => latest!.setPluginEnabled(terminalPluginManifest.id, false));
     expect(latest!.getSettingsSections()).toEqual([]);
     reported = [{ ...reported[0]!, enabled: true, available: false }];

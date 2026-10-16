@@ -230,7 +230,8 @@ export function PluginProvider({
     return null;
   }, [enabledModules]);
 
-  const getSettingsSections = useCallback(() => builtinPlugins.flatMap(module => {
+  const getSettingsSections = useCallback((pluginId?: string) => builtinPlugins.flatMap(module => {
+    if (pluginId !== undefined && module.manifest.id !== pluginId) return [];
     const devicePlugin = plugins.find(plugin => plugin.id === module.manifest.id);
     const browser = devicePlugin?.enabled && devicePlugin.available !== false
       ? (module.browserSettingsSections ?? []).map(section => ({

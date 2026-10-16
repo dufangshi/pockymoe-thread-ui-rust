@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-3QI7NBAZ.js";
+} from "./chunk-5SDT6AUF.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -418,36 +418,61 @@ var reasonKeys = {
   turnNotCompleted: "quality.report.turnNotCompleted",
   unsupportedMarkup: "quality.report.unsupportedMarkup"
 };
-function ReportStatus({ report }) {
+var statusTones = {
+  reviewed: "success",
+  completed: "success",
+  connected: "success",
+  failed: "danger"
+};
+function Tag({ tone = "neutral", children }) {
+  return /* @__PURE__ */ jsx2("span", { className: `plugin-report-tag is-${tone}`, children });
+}
+function ReportStatus({ report, hideCompleted = false }) {
   const { t } = useI18n();
-  const status = text(report.status);
-  const reason = text(report.reason);
+  const status = text(report.status, 200);
+  const reason = text(report.reason, 500);
   const statusKey = Object.hasOwn(statusKeys, status) ? statusKeys[status] : void 0;
   const reasonKey = Object.hasOwn(reasonKeys, reason) ? reasonKeys[reason] : void 0;
+  const showStatus = Boolean(status) && !(hideCompleted && status === "completed");
   return /* @__PURE__ */ jsxs2(Fragment, { children: [
-    status && /* @__PURE__ */ jsxs2("p", { children: [
-      statusKey ? t(statusKey) : status,
-      reason ? ` \xB7 ${reasonKey ? t(reasonKey) : reason}` : ""
+    (showStatus || reason) && /* @__PURE__ */ jsxs2("p", { className: "plugin-report-line", children: [
+      showStatus && /* @__PURE__ */ jsx2(Tag, { tone: Object.hasOwn(statusTones, status) ? statusTones[status] : "neutral", children: statusKey ? t(statusKey) : status }),
+      reason && /* @__PURE__ */ jsx2("span", { children: reasonKey ? t(reasonKey) : reason })
     ] }),
-    typeof report.model === "string" && /* @__PURE__ */ jsxs2("p", { children: [
-      t("quality.model"),
-      ": ",
-      text(report.model)
-    ] }),
-    typeof report.error === "string" && /* @__PURE__ */ jsx2("p", { role: "status", className: "plugin-settings-error", children: text(report.error) })
+    typeof report.error === "string" && /* @__PURE__ */ jsx2("p", { role: "status", className: "plugin-report-error", children: text(report.error) })
   ] });
+}
+function Model({ report }) {
+  const { t } = useI18n();
+  if (typeof report.model !== "string" || !report.model) return null;
+  return /* @__PURE__ */ jsxs2("span", { className: "plugin-report-meta", children: [
+    t("quality.model"),
+    ": ",
+    text(report.model, 200)
+  ] });
+}
+function diffTone(line) {
+  if (line.startsWith("@@")) return "is-hunk";
+  if (line.startsWith("+") && !line.startsWith("+++")) return "is-add";
+  if (line.startsWith("-") && !line.startsWith("---")) return "is-del";
+  return void 0;
 }
 function ReportText({
   label,
   value,
-  truncated
+  truncated,
+  diff = false
 }) {
   const { t } = useI18n();
   if (typeof value !== "string" || !value) return null;
-  return /* @__PURE__ */ jsxs2("details", { children: [
-    /* @__PURE__ */ jsx2("summary", { className: "cursor-pointer", children: label }),
-    /* @__PURE__ */ jsx2("pre", { className: "mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-xs", children: text(value, 12e3) }),
-    (truncated || value.length > 12e3) && /* @__PURE__ */ jsx2("p", { children: t("automation.outputTruncated") })
+  const shown = text(value, 12e3);
+  return /* @__PURE__ */ jsxs2("details", { className: "plugin-report-disclosure", children: [
+    /* @__PURE__ */ jsx2("summary", { children: label }),
+    /* @__PURE__ */ jsx2("pre", { className: `plugin-report-pre${diff ? " quality-diff" : ""}`, children: diff ? shown.split("\n").map((line, index) => /* @__PURE__ */ jsxs2("span", { className: diffTone(line), children: [
+      line,
+      "\n"
+    ] }, index)) : shown }),
+    (truncated || value.length > 12e3) && /* @__PURE__ */ jsx2("p", { className: "plugin-report-note", children: t("automation.outputTruncated") })
   ] });
 }
 function DocumentReport({ report }) {
@@ -455,33 +480,45 @@ function DocumentReport({ report }) {
   const findings = Array.isArray(report.findings) ? report.findings.filter(
     (finding) => typeof finding === "string"
   ) : [];
-  return /* @__PURE__ */ jsxs2("article", { className: "space-y-2 rounded border border-[var(--theme-border)] p-3", children: [
-    /* @__PURE__ */ jsx2("h4", { className: "break-words font-semibold", children: text(report.path, 4096) }),
-    /* @__PURE__ */ jsx2(ReportStatus, { report }),
-    typeof report.written === "boolean" && /* @__PURE__ */ jsx2("p", { children: t(
-      report.written ? "quality.report.fileWritten" : "quality.report.fileUnchanged"
-    ) }),
-    !!findings.length && /* @__PURE__ */ jsxs2("div", { children: [
-      /* @__PURE__ */ jsx2("p", { className: "font-medium", children: t("quality.report.findings") }),
-      /* @__PURE__ */ jsx2("ul", { className: "list-disc space-y-1 pl-5", children: findings.slice(0, 100).map((finding, index) => /* @__PURE__ */ jsx2("li", { className: "whitespace-pre-wrap break-words", children: text(finding) }, index)) })
+  const status = text(report.status, 200);
+  const statusKey = Object.hasOwn(statusKeys, status) ? statusKeys[status] : void 0;
+  const reason = text(report.reason, 500);
+  const reasonKey = Object.hasOwn(reasonKeys, reason) ? reasonKeys[reason] : void 0;
+  return /* @__PURE__ */ jsxs2("article", { className: "quality-doc", "data-status": status || void 0, children: [
+    /* @__PURE__ */ jsxs2("header", { className: "quality-doc-header", children: [
+      /* @__PURE__ */ jsx2("h4", { className: "quality-doc-path", children: text(report.path, 4096) }),
+      /* @__PURE__ */ jsxs2("span", { className: "quality-doc-tags", children: [
+        status && /* @__PURE__ */ jsx2(Tag, { tone: Object.hasOwn(statusTones, status) ? statusTones[status] : "neutral", children: statusKey ? t(statusKey) : status }),
+        typeof report.written === "boolean" && /* @__PURE__ */ jsx2(Tag, { tone: report.written ? "accent" : "neutral", children: t(
+          report.written ? "quality.report.fileWritten" : "quality.report.fileUnchanged"
+        ) }),
+        findings.length > 0 && /* @__PURE__ */ jsx2(Tag, { tone: "accent", children: t(findings.length === 1 ? "quality.report.findingOne" : "quality.report.findingCount", { value1: findings.length }) })
+      ] })
     ] }),
-    findings.length > 100 && /* @__PURE__ */ jsx2("p", { children: t("automation.outputTruncated") }),
-    Array.isArray(report.findings) && !findings.length && /* @__PURE__ */ jsx2("p", { children: t("quality.report.noFindings") }),
-    /* @__PURE__ */ jsx2(
-      ReportText,
-      {
-        label: t("quality.report.diff"),
-        value: report.diff,
-        truncated: report.diffTruncated === true
-      }
-    ),
-    /* @__PURE__ */ jsx2(
-      ReportText,
-      {
-        label: t("quality.report.proposal"),
-        value: report.proposedRewrite
-      }
-    )
+    reason && /* @__PURE__ */ jsx2("p", { className: "plugin-report-meta", children: reasonKey ? t(reasonKey) : reason }),
+    typeof report.error === "string" && /* @__PURE__ */ jsx2("p", { role: "status", className: "plugin-report-error", children: text(report.error) }),
+    !!findings.length && /* @__PURE__ */ jsx2("ul", { className: "quality-doc-findings", "aria-label": t("quality.report.findings"), children: findings.slice(0, 100).map((finding, index) => /* @__PURE__ */ jsx2("li", { children: text(finding) }, index)) }),
+    findings.length > 100 && /* @__PURE__ */ jsx2("p", { className: "plugin-report-note", children: t("automation.outputTruncated") }),
+    Array.isArray(report.findings) && !findings.length && /* @__PURE__ */ jsx2("p", { className: "plugin-report-meta", children: t("quality.report.noFindings") }),
+    /* @__PURE__ */ jsxs2("div", { className: "quality-doc-actions", children: [
+      /* @__PURE__ */ jsx2(
+        ReportText,
+        {
+          label: t("quality.report.diff"),
+          value: report.diff,
+          truncated: report.diffTruncated === true,
+          diff: true
+        }
+      ),
+      /* @__PURE__ */ jsx2(
+        ReportText,
+        {
+          label: t("quality.report.proposal"),
+          value: report.proposedRewrite
+        }
+      ),
+      /* @__PURE__ */ jsx2(Model, { report })
+    ] })
   ] });
 }
 function canRenderContentQualityActionOutput({
@@ -504,26 +541,32 @@ function ContentQualityActionOutput({
   if (action === "afterTurn" && Array.isArray(report.documents)) {
     const documents = report.documents.map(record).filter((value) => Boolean(value));
     const reply = record(report.reply);
-    return /* @__PURE__ */ jsxs2("div", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsx2(ReportStatus, { report }),
-      reply && /* @__PURE__ */ jsxs2("div", { children: [
-        /* @__PURE__ */ jsx2("p", { className: "font-medium", children: t("quality.report.reply") }),
-        /* @__PURE__ */ jsx2(ReportStatus, { report: reply })
+    return /* @__PURE__ */ jsxs2("div", { className: "quality-report", children: [
+      /* @__PURE__ */ jsx2(ReportStatus, { report, hideCompleted: true }),
+      reply && /* @__PURE__ */ jsxs2("div", { className: "quality-report-reply", children: [
+        /* @__PURE__ */ jsx2("span", { className: "quality-report-label", children: t("quality.report.reply") }),
+        /* @__PURE__ */ jsxs2("div", { children: [
+          /* @__PURE__ */ jsx2(ReportStatus, { report: reply }),
+          /* @__PURE__ */ jsx2(Model, { report: reply })
+        ] })
       ] }),
-      typeof report.documentScanError === "string" && /* @__PURE__ */ jsxs2("p", { role: "status", className: "plugin-settings-error", children: [
+      typeof report.documentScanError === "string" && /* @__PURE__ */ jsxs2("p", { role: "status", className: "plugin-report-error", children: [
         t("quality.report.scanError"),
         ": ",
         text(report.documentScanError)
       ] }),
-      !documents.length && /* @__PURE__ */ jsx2("p", { children: t("quality.report.noDocuments") }),
-      documents.slice(0, 5).map((document, index) => /* @__PURE__ */ jsx2(DocumentReport, { report: document }, index)),
-      (report.documentsTruncated === true || documents.length > 5) && /* @__PURE__ */ jsx2("p", { children: t("quality.report.moreDocuments") })
+      !documents.length && /* @__PURE__ */ jsx2("p", { className: "plugin-report-meta", children: t("quality.report.noDocuments") }),
+      !!documents.length && /* @__PURE__ */ jsx2("div", { className: "quality-docs", children: documents.slice(0, 5).map((document, index) => /* @__PURE__ */ jsx2(DocumentReport, { report: document }, index)) }),
+      (report.documentsTruncated === true || documents.length > 5) && /* @__PURE__ */ jsx2("p", { className: "plugin-report-note", children: t("quality.report.moreDocuments") })
     ] });
   }
   if (action === "reviewDocument" && typeof report.path === "string")
     return /* @__PURE__ */ jsx2(DocumentReport, { report });
   if ((action === "rewriteReply" || action === "testConnection") && typeof report.status === "string")
-    return /* @__PURE__ */ jsx2(ReportStatus, { report });
+    return /* @__PURE__ */ jsxs2("div", { className: "quality-report", children: [
+      /* @__PURE__ */ jsx2(ReportStatus, { report }),
+      /* @__PURE__ */ jsx2(Model, { report })
+    ] });
   return null;
 }
 

@@ -1,4 +1,5 @@
 export const settingsZhCN = {
+  "settings.pluginSettings": "{{value1}}设置",
   "settings.upstreamsTab": "上游",
   "settings.upstreamsDescription": "为此设备上已安装的 harness 切换 API 上游。",
   "settings.upstreamsChooseDevice": "请打开设备以管理其上游。",

@@ -122,7 +122,17 @@ var automationEn = {
   "automation.historyLimit": "Latest 100 execution records. Totals above include all historical runs.",
   "automation.nativeUnavailable": "Native watch history is unavailable; totals may omit native watches.",
   "automation.nativeCoverage": "USD priced for {{value1}} of {{value2}} recorded scheduled turns.",
-  "automation.nativeTokenCoverage": "Tokens available for {{value1}} of {{value2}} recorded scheduled turns."
+  "automation.nativeTokenCoverage": "Tokens available for {{value1}} of {{value2}} recorded scheduled turns.",
+  "automation.nextShort": "Next",
+  "automation.triggerCount": "{{value1}} triggers",
+  "automation.triggerCountOne": "1 trigger",
+  "automation.tokensValue": "{{value1}} tokens",
+  "automation.tokensUnknown": "Tokens unknown",
+  "automation.costUnknown": "Cost unknown",
+  "automation.runDetails": "Run details",
+  "automation.historyHelp": "About execution history",
+  "automation.everyMinute": "Every minute",
+  "automation.everyHour": "Every hour"
 };
 
 // src/i18n/content-quality.en.ts
@@ -135,8 +145,10 @@ var contentQualityEn = {
   "quality.report.alreadyPolished": "Reply is already polished",
   "quality.report.turnNotCompleted": "Turn did not complete successfully",
   "quality.report.unsupportedMarkup": "Document markup is unsupported",
-  "quality.report.fileWritten": "Revised file written",
+  "quality.report.fileWritten": "File written",
   "quality.report.fileUnchanged": "File unchanged",
+  "quality.report.findingOne": "1 finding",
+  "quality.report.findingCount": "{{value1}} findings",
   "quality.report.findings": "Findings",
   "quality.report.noFindings": "No findings reported.",
   "quality.report.diff": "Proposed diff",
@@ -2401,6 +2413,7 @@ var filesEn = {
 
 // src/i18n/settings.en.ts
 var settingsEn = {
+  "settings.pluginSettings": "{{value1}} settings",
   "settings.upstreamsTab": "Upstreams",
   "settings.upstreamsDescription": "Switch API providers for the harnesses installed on this device.",
   "settings.upstreamsChooseDevice": "Open a device to manage its upstreams.",
@@ -3608,7 +3621,17 @@ var automationZhCN = {
   "automation.historyLimit": "\u663E\u793A\u6700\u8FD1 100 \u6761\u6267\u884C\u8BB0\u5F55\uFF1B\u4E0A\u65B9\u7D2F\u8BA1\u7EDF\u8BA1\u5305\u542B\u5168\u90E8\u5386\u53F2\u6267\u884C\u3002",
   "automation.nativeUnavailable": "\u539F\u751F\u5B9A\u65F6\u4EFB\u52A1\u5386\u53F2\u6682\u4E0D\u53EF\u7528\uFF0C\u603B\u8BA1\u53EF\u80FD\u672A\u5305\u542B\u539F\u751F\u4EFB\u52A1\u3002",
   "automation.nativeCoverage": "{{value2}} \u4E2A\u5DF2\u8BB0\u5F55\u5B9A\u65F6\u56DE\u5408\u4E2D\uFF0C{{value1}} \u4E2A\u6709 USD \u4EF7\u683C\u3002",
-  "automation.nativeTokenCoverage": "{{value2}} \u4E2A\u5DF2\u8BB0\u5F55\u5B9A\u65F6\u56DE\u5408\u4E2D\uFF0C{{value1}} \u4E2A\u6709 token \u8BB0\u5F55\u3002"
+  "automation.nativeTokenCoverage": "{{value2}} \u4E2A\u5DF2\u8BB0\u5F55\u5B9A\u65F6\u56DE\u5408\u4E2D\uFF0C{{value1}} \u4E2A\u6709 token \u8BB0\u5F55\u3002",
+  "automation.nextShort": "\u4E0B\u6B21",
+  "automation.triggerCount": "\u89E6\u53D1 {{value1}} \u6B21",
+  "automation.triggerCountOne": "\u89E6\u53D1 1 \u6B21",
+  "automation.tokensValue": "{{value1}} token",
+  "automation.tokensUnknown": "Token \u672A\u77E5",
+  "automation.costUnknown": "\u8D39\u7528\u672A\u77E5",
+  "automation.runDetails": "\u8FD0\u884C\u8BE6\u60C5",
+  "automation.historyHelp": "\u5173\u4E8E\u6267\u884C\u5386\u53F2",
+  "automation.everyMinute": "\u6BCF\u5206\u949F",
+  "automation.everyHour": "\u6BCF\u5C0F\u65F6"
 };
 
 // src/i18n/content-quality.zh-CN.ts
@@ -3621,8 +3644,10 @@ var contentQualityZhCN = {
   "quality.report.alreadyPolished": "\u56DE\u590D\u5DF2\u6DA6\u8272",
   "quality.report.turnNotCompleted": "\u56DE\u5408\u672A\u6210\u529F\u5B8C\u6210",
   "quality.report.unsupportedMarkup": "\u4E0D\u652F\u6301\u8BE5\u6587\u6863\u6807\u8BB0\u683C\u5F0F",
-  "quality.report.fileWritten": "\u5DF2\u5199\u5165\u4FEE\u8BA2\u540E\u7684\u6587\u4EF6",
+  "quality.report.fileWritten": "\u5DF2\u5199\u5165\u6587\u4EF6",
   "quality.report.fileUnchanged": "\u6587\u4EF6\u672A\u66F4\u6539",
+  "quality.report.findingOne": "1 \u6761\u610F\u89C1",
+  "quality.report.findingCount": "{{value1}} \u6761\u610F\u89C1",
   "quality.report.findings": "\u5BA1\u9605\u610F\u89C1",
   "quality.report.noFindings": "\u672A\u62A5\u544A\u95EE\u9898\u3002",
   "quality.report.diff": "\u5EFA\u8BAE\u5DEE\u5F02",
@@ -5887,6 +5912,7 @@ var filesZhCN = {
 
 // src/i18n/settings.zh-CN.ts
 var settingsZhCN = {
+  "settings.pluginSettings": "{{value1}}\u8BBE\u7F6E",
   "settings.upstreamsTab": "\u4E0A\u6E38",
   "settings.upstreamsDescription": "\u4E3A\u6B64\u8BBE\u5907\u4E0A\u5DF2\u5B89\u88C5\u7684 harness \u5207\u6362 API \u4E0A\u6E38\u3002",
   "settings.upstreamsChooseDevice": "\u8BF7\u6253\u5F00\u8BBE\u5907\u4EE5\u7BA1\u7406\u5176\u4E0A\u6E38\u3002",

@@ -1,4 +1,5 @@
 export const settingsEn = {
+  "settings.pluginSettings": "{{value1}} settings",
   "settings.upstreamsTab": "Upstreams",
   "settings.upstreamsDescription": "Switch API providers for the harnesses installed on this device.",
   "settings.upstreamsChooseDevice": "Open a device to manage its upstreams.",

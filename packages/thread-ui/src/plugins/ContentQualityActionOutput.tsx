@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useI18n, type TranslationKey } from '../i18n';
 import type { PluginActionOutputContext } from './plugin-types';
 
@@ -30,31 +31,44 @@ const reasonKeys: Record<string, TranslationKey> = {
   unsupportedMarkup: 'quality.report.unsupportedMarkup',
 };
 
-function ReportStatus({ report }: { report: Report }) {
+type Tone = 'success' | 'danger' | 'accent' | 'neutral';
+const statusTones: Record<string, Tone> = {
+  reviewed: 'success',
+  completed: 'success',
+  connected: 'success',
+  failed: 'danger',
+};
+
+function Tag({ tone = 'neutral', children }: { tone?: Tone; children: ReactNode }) {
+  return <span className={`plugin-report-tag is-${tone}`}>{children}</span>;
+}
+
+/** Status tag, reason and error of one report object; `completed` is implied by the report itself. */
+function ReportStatus({ report, hideCompleted = false }: { report: Report; hideCompleted?: boolean }) {
   const { t } = useI18n();
-  const status = text(report.status);
-  const reason = text(report.reason);
+  const status = text(report.status, 200);
+  const reason = text(report.reason, 500);
   const statusKey = Object.hasOwn(statusKeys, status)
     ? statusKeys[status]
     : undefined;
   const reasonKey = Object.hasOwn(reasonKeys, reason)
     ? reasonKeys[reason]
     : undefined;
+  const showStatus = Boolean(status) && !(hideCompleted && status === 'completed');
   return (
     <>
-      {status && (
-        <p>
-          {statusKey ? t(statusKey) : status}
-          {reason ? ` · ${reasonKey ? t(reasonKey) : reason}` : ''}
-        </p>
-      )}
-      {typeof report.model === 'string' && (
-        <p>
-          {t('quality.model')}: {text(report.model)}
+      {(showStatus || reason) && (
+        <p className="plugin-report-line">
+          {showStatus && (
+            <Tag tone={Object.hasOwn(statusTones, status) ? statusTones[status] : 'neutral'}>
+              {statusKey ? t(statusKey) : status}
+            </Tag>
+          )}
+          {reason && <span>{reasonKey ? t(reasonKey) : reason}</span>}
         </p>
       )}
       {typeof report.error === 'string' && (
-        <p role="status" className="plugin-settings-error">
+        <p role="status" className="plugin-report-error">
           {text(report.error)}
         </p>
       )}
@@ -62,25 +76,52 @@ function ReportStatus({ report }: { report: Report }) {
   );
 }
 
+function Model({ report }: { report: Report }) {
+  const { t } = useI18n();
+  if (typeof report.model !== 'string' || !report.model) return null;
+  return (
+    <span className="plugin-report-meta">
+      {t('quality.model')}: {text(report.model, 200)}
+    </span>
+  );
+}
+
+function diffTone(line: string) {
+  if (line.startsWith('@@')) return 'is-hunk';
+  if (line.startsWith('+') && !line.startsWith('+++')) return 'is-add';
+  if (line.startsWith('-') && !line.startsWith('---')) return 'is-del';
+  return undefined;
+}
+
 function ReportText({
   label,
   value,
   truncated,
+  diff = false,
 }: {
   label: string;
   value: unknown;
   truncated?: boolean;
+  diff?: boolean;
 }) {
   const { t } = useI18n();
   if (typeof value !== 'string' || !value) return null;
+  const shown = text(value, 12000);
   return (
-    <details>
-      <summary className="cursor-pointer">{label}</summary>
-      <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-xs">
-        {text(value, 12000)}
+    <details className="plugin-report-disclosure">
+      <summary>{label}</summary>
+      <pre className={`plugin-report-pre${diff ? ' quality-diff' : ''}`}>
+        {diff
+          ? shown.split('\n').map((line, index) => (
+              <span key={index} className={diffTone(line)}>
+                {line}
+                {'\n'}
+              </span>
+            ))
+          : shown}
       </pre>
       {(truncated || value.length > 12000) && (
-        <p>{t('automation.outputTruncated')}</p>
+        <p className="plugin-report-note">{t('automation.outputTruncated')}</p>
       )}
     </details>
   );
@@ -93,44 +134,70 @@ function DocumentReport({ report }: { report: Report }) {
         (finding): finding is string => typeof finding === 'string',
       )
     : [];
+  const status = text(report.status, 200);
+  const statusKey = Object.hasOwn(statusKeys, status)
+    ? statusKeys[status]
+    : undefined;
+  const reason = text(report.reason, 500);
+  const reasonKey = Object.hasOwn(reasonKeys, reason)
+    ? reasonKeys[reason]
+    : undefined;
   return (
-    <article className="space-y-2 rounded border border-[var(--theme-border)] p-3">
-      <h4 className="break-words font-semibold">{text(report.path, 4096)}</h4>
-      <ReportStatus report={report} />
-      {typeof report.written === 'boolean' && (
-        <p>
-          {t(
-            report.written
-              ? 'quality.report.fileWritten'
-              : 'quality.report.fileUnchanged',
+    <article className="quality-doc" data-status={status || undefined}>
+      <header className="quality-doc-header">
+        <h4 className="quality-doc-path">{text(report.path, 4096)}</h4>
+        <span className="quality-doc-tags">
+          {status && (
+            <Tag tone={Object.hasOwn(statusTones, status) ? statusTones[status] : 'neutral'}>
+              {statusKey ? t(statusKey) : status}
+            </Tag>
           )}
+          {typeof report.written === 'boolean' && (
+            <Tag tone={report.written ? 'accent' : 'neutral'}>
+              {t(
+                report.written
+                  ? 'quality.report.fileWritten'
+                  : 'quality.report.fileUnchanged',
+              )}
+            </Tag>
+          )}
+          {findings.length > 0 && (
+            <Tag tone="accent">
+              {t(findings.length === 1 ? 'quality.report.findingOne' : 'quality.report.findingCount', { value1: findings.length })}
+            </Tag>
+          )}
+        </span>
+      </header>
+      {reason && <p className="plugin-report-meta">{reasonKey ? t(reasonKey) : reason}</p>}
+      {typeof report.error === 'string' && (
+        <p role="status" className="plugin-report-error">
+          {text(report.error)}
         </p>
       )}
       {!!findings.length && (
-        <div>
-          <p className="font-medium">{t('quality.report.findings')}</p>
-          <ul className="list-disc space-y-1 pl-5">
-            {findings.slice(0, 100).map((finding, index) => (
-              <li key={index} className="whitespace-pre-wrap break-words">
-                {text(finding)}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="quality-doc-findings" aria-label={t('quality.report.findings')}>
+          {findings.slice(0, 100).map((finding, index) => (
+            <li key={index}>{text(finding)}</li>
+          ))}
+        </ul>
       )}
-      {findings.length > 100 && <p>{t('automation.outputTruncated')}</p>}
+      {findings.length > 100 && <p className="plugin-report-note">{t('automation.outputTruncated')}</p>}
       {Array.isArray(report.findings) && !findings.length && (
-        <p>{t('quality.report.noFindings')}</p>
+        <p className="plugin-report-meta">{t('quality.report.noFindings')}</p>
       )}
-      <ReportText
-        label={t('quality.report.diff')}
-        value={report.diff}
-        truncated={report.diffTruncated === true}
-      />
-      <ReportText
-        label={t('quality.report.proposal')}
-        value={report.proposedRewrite}
-      />
+      <div className="quality-doc-actions">
+        <ReportText
+          label={t('quality.report.diff')}
+          value={report.diff}
+          truncated={report.diffTruncated === true}
+          diff
+        />
+        <ReportText
+          label={t('quality.report.proposal')}
+          value={report.proposedRewrite}
+        />
+        <Model report={report} />
+      </div>
     </article>
   );
 }
@@ -162,25 +229,32 @@ export function ContentQualityActionOutput({
       .filter((value): value is Report => Boolean(value));
     const reply = record(report.reply);
     return (
-      <div className="space-y-3">
-        <ReportStatus report={report} />
+      <div className="quality-report">
+        <ReportStatus report={report} hideCompleted />
         {reply && (
-          <div>
-            <p className="font-medium">{t('quality.report.reply')}</p>
-            <ReportStatus report={reply} />
+          <div className="quality-report-reply">
+            <span className="quality-report-label">{t('quality.report.reply')}</span>
+            <div>
+              <ReportStatus report={reply} />
+              <Model report={reply} />
+            </div>
           </div>
         )}
         {typeof report.documentScanError === 'string' && (
-          <p role="status" className="plugin-settings-error">
+          <p role="status" className="plugin-report-error">
             {t('quality.report.scanError')}: {text(report.documentScanError)}
           </p>
         )}
-        {!documents.length && <p>{t('quality.report.noDocuments')}</p>}
-        {documents.slice(0, 5).map((document, index) => (
-          <DocumentReport key={index} report={document} />
-        ))}
+        {!documents.length && <p className="plugin-report-meta">{t('quality.report.noDocuments')}</p>}
+        {!!documents.length && (
+          <div className="quality-docs">
+            {documents.slice(0, 5).map((document, index) => (
+              <DocumentReport key={index} report={document} />
+            ))}
+          </div>
+        )}
         {(report.documentsTruncated === true || documents.length > 5) && (
-          <p>{t('quality.report.moreDocuments')}</p>
+          <p className="plugin-report-note">{t('quality.report.moreDocuments')}</p>
         )}
       </div>
     );
@@ -191,6 +265,11 @@ export function ContentQualityActionOutput({
     (action === 'rewriteReply' || action === 'testConnection') &&
     typeof report.status === 'string'
   )
-    return <ReportStatus report={report} />;
+    return (
+      <div className="quality-report">
+        <ReportStatus report={report} />
+        <Model report={report} />
+      </div>
+    );
   return null;
 }

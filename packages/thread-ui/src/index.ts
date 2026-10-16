@@ -9,6 +9,7 @@ import './styles/phone-dock.css';
 import './styles/composer-compact.css';
 import './styles/composer-reasoning.css';
 import './styles/mermaid-diagrams.css';
+import './styles/plugin-reports.css';
 import './styles/terminal-panel.css';
 import './styles/transcript-log.css';
 import './styles/thread-map.css';
@@ -87,6 +88,7 @@ export {
 export { PluginProvider } from './plugins/PluginProvider';
 export { usePlugins } from './plugins/usePlugins';
 export { PluginActionOutput } from './plugins/PluginActionOutput';
+export { PluginSettingsButton } from './plugins/PluginSettingsButton';
 export type {
   ArtifactRenderContext,
   FrontendPluginModule,

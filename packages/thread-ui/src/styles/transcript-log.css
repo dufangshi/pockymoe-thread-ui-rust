@@ -524,7 +524,7 @@
    composer until the message's end scrolls into view, then rests in place. */
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true'] {
   position: sticky;
-  bottom: calc(var(--timeline-bottom-inset, 0px) + 10px);
+  bottom: calc(var(--sticky-inset, var(--timeline-bottom-inset, 0px)) + 10px);
   z-index: 6;
   padding: 0 10px 0 6px;
   border-radius: 999px;
@@ -533,11 +533,6 @@
   backdrop-filter: blur(12px);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-border) 80%, transparent), 0 4px 14px rgb(0 0 0 / 0.14);
   opacity: 1;
-}
-/* Under the phone dock the turn strip sits on the composer's top edge, on
-   either side by hand: ride above it instead. */
-.thread-ui-shell .matter-workbench.has-phone-dock .thread-graph-show-more[aria-expanded='true'] {
-  bottom: calc(var(--timeline-bottom-inset, 0px) + 50px);
 }
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:hover,
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:focus-visible {

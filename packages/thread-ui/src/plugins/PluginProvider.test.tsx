@@ -90,6 +90,26 @@ describe('PluginProvider', () => {
     expect(latest!.getSettingsSections()).toEqual([]);
   });
 
+  it('shows browser-only settings only while the plugin is enabled', async () => {
+    let reported: PluginDto[] = [{ ...terminalPluginManifest, enabled: true, available: true }];
+    const adapter: PluginProviderAdapter = { fetchPlugins: () => reported, updatePlugin: async (_id, input) => { reported = [{ ...reported[0]!, enabled: input.enabled }]; return reported[0]!; } };
+    const module: FrontendPluginModule = {
+      ...terminalModule,
+      browserSettingsSections: [{ id: 'clipboard', label: 'Terminal', render: () => <p>Copy on select</p> }],
+    };
+    let latest: PluginContextValue | null = null;
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    root = createRoot(container);
+    await act(async () => root?.render(<PluginProvider adapter={adapter} builtinPlugins={[module]}><Capture onValue={value => { latest = value; }} /></PluginProvider>));
+    expect(latest!.getSettingsSections().map(section => section.id)).toEqual([`plugin:${terminalPluginManifest.id}:clipboard`]);
+    await act(async () => latest!.setPluginEnabled(terminalPluginManifest.id, false));
+    expect(latest!.getSettingsSections()).toEqual([]);
+    reported = [{ ...reported[0]!, enabled: true, available: false }];
+    await act(async () => latest!.refresh());
+    expect(latest!.getSettingsSections()).toEqual([]);
+  });
+
   it('updates enabled state before the server request settles', async () => {
     let resolveUpdate: ((plugin: PluginDto) => void) | null = null;
     const updated = new Promise<PluginDto>((resolve) => {

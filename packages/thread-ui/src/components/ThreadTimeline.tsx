@@ -311,19 +311,36 @@ function ThreadTimelineComponent({
   }), [adapter?.getThreadHref, openThreadLink]);
   useEffect(() => {
     // A composer floating over the transcript hides its bottom; sticky controls
-    // (an opened message's "Show less") stop above it.
+    // (an opened message's "Show less") stop above it, and above the turn strip
+    // on its top edge only where the strip is actually under them.
     const container = scrollContainerRef.current;
     const composer = container?.closest('.thread-graph-chat-panel')?.querySelector<HTMLElement>(':scope > .thread-graph-composer-host');
     if (!container || typeof ResizeObserver === 'undefined') return;
+    const placeToggles = () => {
+      const strip = composer?.querySelector<HTMLElement>('.thread-jump-nav')?.getBoundingClientRect();
+      const bottom = container.getBoundingClientRect().bottom;
+      for (const toggle of container.querySelectorAll<HTMLElement>('.thread-graph-show-more[aria-expanded="true"]')) {
+        const box = toggle.getBoundingClientRect();
+        if (strip && strip.width > 0 && box.left < strip.right && box.right > strip.left) {
+          toggle.style.setProperty('--sticky-inset', `${Math.max(bottomSpacer, Math.round(bottom - strip.top))}px`);
+        } else toggle.style.removeProperty('--sticky-inset');
+      }
+    };
     const measure = () => {
       const overlap = composer ? container.getBoundingClientRect().bottom - composer.getBoundingClientRect().top : 0;
       container.style.setProperty('--timeline-bottom-inset', `${Math.max(bottomSpacer, Math.round(overlap))}px`);
+      placeToggles();
     };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(container);
     if (composer) observer.observe(composer);
-    return () => observer.disconnect();
+    // Opening a message, or switching hands (the strip changes sides).
+    const toggles = new MutationObserver(placeToggles);
+    toggles.observe(container, { subtree: true, attributes: true, attributeFilter: ['aria-expanded'] });
+    const workbench = container.closest('.matter-workbench');
+    if (workbench) toggles.observe(workbench, { attributes: true, attributeFilter: ['class'] });
+    return () => { observer.disconnect(); toggles.disconnect(); };
   }, [bottomSpacer, scrollContainerRef]);
 
 

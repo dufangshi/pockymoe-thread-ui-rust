@@ -887,6 +887,8 @@ export const ThreadShellPanel = forwardRef<
           onCtrl={() => { ctrlRef.current = !ctrlRef.current; setCtrlPressed(ctrlRef.current); }}
           onInput={data => { activePane()?.sendInput(transformInput(data)); }}
           onFocus={() => activePane()?.focus()}
+          onPaste={() => { void activePane()?.pasteFromClipboard(); }}
+          onSelect={() => activePane()?.startSelection()}
         />
       )}
       {renderMenu()}

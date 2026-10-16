@@ -28,13 +28,24 @@ function inset(rect: MapRect, gap: number): MapRect {
   return { x: rect.x + g, y: rect.y + g, width: Math.max(0, rect.width - g * 2), height: Math.max(0, rect.height - g * 2) };
 }
 
+type ZoomPlan = { kind: 'in'; rect: MapRect } | { kind: 'out'; childId: string } | { kind: 'fade' };
+
+/** The element of a block of the current level, by its map id. */
+const byMapId = (scope: ParentNode | null | undefined, id: string) =>
+  scope?.querySelector<HTMLElement>(`[data-map-id="${id.replace(/["\\]/g, '\\$&')}"]`) ?? null;
+
+const reducedMotion = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+  && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 /**
- * Every thread on every device as a treemap: devices hold workspaces, workspaces
- * hold threads. A thread's area follows its turns and its color the time it ran
- * in the last `hours`; running threads breathe. Device and workspace bars drill
- * in, a thread opens it.
+ * Every thread on every device as a zoomable treemap: devices hold workspaces,
+ * workspaces hold threads. A thread's area follows its turns and its color the
+ * time it ran in the last `hours`; running threads breathe. Tapping a device or a
+ * workspace fills the map with it (what is inside shows as a preview until
+ * then), tapping a thread opens it. On touch, pinching in goes up a level,
+ * spreading opens the block under the fingers and dragging down dismisses.
  */
-export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, onRetry }: {
+export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, onRetry, onDismiss }: {
   devices: ThreadMapDevice[];
   currentKey?: string | undefined;
   hours?: number;
@@ -42,6 +53,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   actions?: ReactNode;
   onOpen: (thread: ThreadMapThread) => void;
   onRetry?: ((deviceId: string) => void) | undefined;
+  /** Closes the map; a downward drag on it asks for this. */
+  onDismiss?: (() => void) | undefined;
 }) {
   useI18n();
   const allLabel = translate('workbench.threadMapAll');
@@ -60,7 +73,9 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   };
   const current = (focusId ? nodes.get(focusId) : undefined) ?? root;
   const canvas = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
   const crumbs = useRef<HTMLElement>(null);
+  const zoomPlan = useRef<ZoomPlan | null>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [tip, setTip] = useState<{ lines: string[]; x: number; y: number; above: boolean } | null>(null);
   useEffect(() => {
@@ -82,11 +97,148 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
 
   const chain: MapNode[] = [];
   for (let node: MapNode | undefined = current; node; node = node.parent) chain.unshift(node);
-  const navigate = (node: MapNode | undefined) => {
-    setFocusId(node && node !== root ? node.id : null);
+  // Moving between levels zooms: a block tapped grows from where it was to fill
+  // the map; going up, the level left shrinks back into its place.
+  const navigate = (node: MapNode | undefined, from?: Element | null, plan?: ZoomPlan) => {
+    const target = node ?? root;
+    if (target === current) return;
+    const box = canvas.current?.getBoundingClientRect();
+    // A child picked from the list grows from its block too.
+    from ??= target.parent === current ? byMapId(stage.current, target.id) : null;
+    if (plan) zoomPlan.current = plan;
+    else if (from && box) {
+      const rect = from.getBoundingClientRect();
+      zoomPlan.current = { kind: 'in', rect: { x: rect.left - box.left, y: rect.top - box.top, width: rect.width, height: rect.height } };
+    } else {
+      let child: MapNode | undefined = current;
+      while (child && child.parent !== target) child = child.parent;
+      zoomPlan.current = child ? { kind: 'out', childId: child.id } : { kind: 'fade' };
+    }
+    setFocusId(target === root ? null : target.id);
     setTip(null);
     crumbs.current?.focus({ preventScroll: true });
   };
+  useLayoutEffect(() => {
+    const plan = zoomPlan.current;
+    zoomPlan.current = null;
+    const element = stage.current, box = canvas.current;
+    if (!plan || !element || !box || typeof element.animate !== 'function' || reducedMotion()) return;
+    const { width, height } = box.getBoundingClientRect();
+    if (!width || !height) return;
+    let from = 'scale(1.06)';
+    if (plan.kind === 'in') {
+      const r = plan.rect;
+      from = `translate(${r.x}px, ${r.y}px) scale(${r.width / width}, ${r.height / height})`;
+    } else if (plan.kind === 'out') {
+      const child = byMapId(element, plan.childId);
+      if (child) {
+        const c = child.getBoundingClientRect(), b = box.getBoundingClientRect();
+        from = `scale(${width / c.width}, ${height / c.height}) translate(${b.left - c.left}px, ${b.top - c.top}px)`;
+      }
+    }
+    element.animate([{ transform: from, opacity: plan.kind === 'fade' ? 0 : 0.55 }, { transform: 'none', opacity: 1 }],
+      { duration: 280, easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)' });
+  }, [current.id]);
+
+  // Touch: two fingers pinch in for the level above or spread to open the block
+  // under them; one finger dragging down takes the map away.
+  const gesture = useRef({ navigate, current, root, nodes, onDismiss });
+  gesture.current = { navigate, current, root, nodes, onDismiss };
+  useEffect(() => {
+    const node = canvas.current;
+    if (!node) return;
+    let pinch: { d0: number; x: number; y: number; ratio: number } | null = null;
+    let drag: { x: number; y: number; t: number; dy: number; active: boolean } | null = null;
+    const sheet = () => node.closest<HTMLElement>('.thread-map-dialog');
+    const spread = (touches: TouchList) => Math.hypot(touches[0]!.clientX - touches[1]!.clientX, touches[0]!.clientY - touches[1]!.clientY);
+    const settleSheet = () => {
+      const dialog = sheet();
+      if (!dialog) return;
+      dialog.style.transition = 'transform 180ms ease-out, opacity 180ms ease-out';
+      dialog.style.transform = '';
+      dialog.style.opacity = '';
+      window.setTimeout(() => { dialog.style.transition = ''; }, 200);
+    };
+    const start = (event: TouchEvent) => {
+      if (event.touches.length === 2) {
+        if (drag?.active) settleSheet();
+        drag = null;
+        const box = node.getBoundingClientRect();
+        pinch = {
+          d0: spread(event.touches) || 1, ratio: 1,
+          x: (event.touches[0]!.clientX + event.touches[1]!.clientX) / 2 - box.left,
+          y: (event.touches[0]!.clientY + event.touches[1]!.clientY) / 2 - box.top,
+        };
+      } else if (event.touches.length === 1 && !pinch) {
+        drag = { x: event.touches[0]!.clientX, y: event.touches[0]!.clientY, t: event.timeStamp, dy: 0, active: false };
+      }
+    };
+    const move = (event: TouchEvent) => {
+      if (pinch && event.touches.length >= 2) {
+        event.preventDefault();
+        pinch.ratio = Math.max(0.6, Math.min(1.6, spread(event.touches) / pinch.d0));
+        if (stage.current) stage.current.style.transform = `translate(${pinch.x}px, ${pinch.y}px) scale(${pinch.ratio}) translate(${-pinch.x}px, ${-pinch.y}px)`;
+        return;
+      }
+      if (!drag || event.touches.length !== 1) return;
+      const dx = event.touches[0]!.clientX - drag.x, dy = event.touches[0]!.clientY - drag.y;
+      if (!drag.active) {
+        if (dy > 12 && dy > Math.abs(dx) * 1.3 && gesture.current.onDismiss) drag.active = true;
+        else if (Math.abs(dx) > 12 || dy < -12) { drag = null; return; } else return;
+      }
+      event.preventDefault();
+      drag.dy = Math.max(0, dy);
+      const dialog = sheet();
+      if (dialog) {
+        dialog.style.transition = 'none';
+        dialog.style.transform = `translateY(${drag.dy}px)`;
+      }
+    };
+    const end = (event: TouchEvent) => {
+      if (pinch) {
+        if (event.touches.length >= 2) return;
+        const { ratio, x, y } = pinch;
+        pinch = null;
+        drag = null;
+        if (stage.current) stage.current.style.transform = '';
+        const { navigate: go, current: at, root: top, nodes: all } = gesture.current;
+        if (ratio < 0.8 && at !== top) { go(at.parent, null, { kind: 'fade' }); return; }
+        if (ratio > 1.25) {
+          const box = node.getBoundingClientRect();
+          const target = document.elementFromPoint(box.left + x, box.top + y)?.closest<HTMLElement>('[data-zoomable]');
+          const next = target?.dataset.mapId ? all.get(target.dataset.mapId) : undefined;
+          if (next) { go(next, target); return; }
+        }
+        stage.current?.animate?.([{ transform: `translate(${x}px, ${y}px) scale(${ratio}) translate(${-x}px, ${-y}px)` }, { transform: 'none' }], { duration: 180, easing: 'ease-out' });
+        return;
+      }
+      const finished = drag;
+      drag = null;
+      if (!finished?.active) return;
+      const fast = finished.dy / Math.max(1, event.timeStamp - finished.t) > 0.6;
+      const dialog = sheet();
+      if (finished.dy > 110 || (fast && finished.dy > 40)) {
+        if (dialog) {
+          // Leave by the way the finger went, without the dialog's own exit animation.
+          dialog.setAttribute('data-swiped', '');
+          dialog.style.transition = 'transform 160ms ease-in, opacity 160ms ease-in';
+          dialog.style.transform = 'translateY(100%)';
+          dialog.style.opacity = '0';
+        }
+        window.setTimeout(() => gesture.current.onDismiss?.(), dialog ? 150 : 0);
+      } else settleSheet();
+    };
+    node.addEventListener('touchstart', start, { passive: true });
+    node.addEventListener('touchmove', move, { passive: false });
+    node.addEventListener('touchend', end);
+    node.addEventListener('touchcancel', end);
+    return () => {
+      node.removeEventListener('touchstart', start);
+      node.removeEventListener('touchmove', move);
+      node.removeEventListener('touchend', end);
+      node.removeEventListener('touchcancel', end);
+    };
+  }, []);
   const open = (thread: ThreadMapThread) => (event: ReactMouseEvent) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
     event.preventDefault();
@@ -145,22 +297,23 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             <ArrowUpRight aria-hidden="true" />
           </a>}
         </div>
-        {render(children, inner, depth + 1)}
+        {render(children, inner, depth + 1, true)}
       </section>
     );
   };
 
   let rendered = 0;
-  const render = (items: MapNode[], bounds: MapRect, depth: number): ReactNode[] =>
+  // Only the current level answers taps; what is inside a block is its preview.
+  const render = (items: MapNode[], bounds: MapRect, depth: number, interactive: boolean): ReactNode[] =>
     squarify(items, item => item.weight, bounds).map(({ item, rect }) => {
       rendered++;
       const box = inset(rect, depth ? 1.5 : 2.5);
       if (item.kind === 'thread') {
         const thread = item.thread!;
-        if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
+        if (interactive && thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
         return <ThreadTile key={item.id} node={item} box={box} hours={hours} current={thread.key === currentKey}
-          onOpen={open(thread)} hover={hover(describe(item, hours))}
-          onShowChildren={thread.children?.length ? () => toggleGroup(thread.key) : undefined} />;
+          onOpen={open(thread)} hover={interactive ? hover(describe(item, hours)) : {}}
+          onShowChildren={interactive && thread.children?.length ? () => toggleGroup(thread.key) : undefined} />;
       }
       const lines = describe(item, hours);
       const text = lines.join(' · ');
@@ -170,13 +323,12 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       const preview = !unlisted && rendered < 600 && fits(item, inner, depth);
       const named = box.width >= 72;
       const Icon = item.kind === 'device' ? Monitor : Folder;
+      const zoomable = interactive && !unlisted;
       return (
-        <section key={item.id} className="thread-map-section" data-kind={item.kind} data-depth={depth} data-state={unlisted ? state : undefined} data-collapsed={!preview || undefined}
+        <section key={item.id} data-map-id={item.id} className="thread-map-section" data-kind={item.kind} data-depth={depth} data-state={unlisted ? state : undefined} data-collapsed={!preview || undefined}
           data-heat={preview ? undefined : heatLevel(item.activeMs)} data-running={!preview && item.running ? true : undefined}
-          aria-label={text} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
-          <button type="button" className="thread-map-section-head" disabled={unlisted && !(state === 'error' && onRetry)}
-            aria-label={unlisted ? (state === 'error' ? translate('workbench.threadMapRetry') + ' · ' + text : text) : translate('workbench.threadMapExplore', { name: text })}
-            onClick={() => (unlisted ? state === 'error' && onRetry?.(item.device!.id) : navigate(item))} {...hover(lines)}>
+          data-zoomable={zoomable || undefined} aria-label={text} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
+          <div className="thread-map-section-head">
             {named && <Icon aria-hidden="true" />}
             <span className="thread-map-section-label">{item.label}</span>
             {unlisted
@@ -185,11 +337,15 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
                 {item.running > 0 && <i className="thread-map-running-dot" aria-hidden="true" />}{item.threads}
                 {item.usd > 0 && box.width >= 150 && <span className="thread-map-section-usd">{formatCompactUsd(item.usd)}</span>}
               </span>}
-          </button>
-          {preview && render(item.children, inner, depth + 1)}
+          </div>
+          {preview && <div className="thread-map-preview" inert>{render(item.children, inner, depth + 1, false)}</div>}
           {!preview && !unlisted && box.height >= HEADER + 18 && (
             <span className="thread-map-section-summary" aria-hidden="true">{translate('workbench.threadMapThreads', { count: item.threads })}</span>
           )}
+          {zoomable && <button type="button" className="thread-map-zoom" aria-label={translate('workbench.threadMapExplore', { name: text })}
+            onClick={event => navigate(item, event.currentTarget.parentElement)} {...hover(lines)} />}
+          {interactive && unlisted && state === 'error' && onRetry && <button type="button" className="thread-map-zoom"
+            aria-label={`${translate('workbench.threadMapRetry')} · ${text}`} onClick={() => onRetry(item.device!.id)} {...hover(lines)} />}
         </section>
       );
     });
@@ -233,7 +389,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       </div>
       <div ref={canvas} className="thread-map-canvas" role="group" aria-label={current.label}>
         {children.length
-          ? size.width > 0 && render(children, bounds, 0)
+          ? <div ref={stage} className="thread-map-stage">{size.width > 0 && render(children, bounds, 0, true)}</div>
           : <p className="thread-map-empty" role="status">{devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
         {tip && <div className="thread-map-tip" role="tooltip" style={{ left: tip.x, top: tip.y }} data-above={tip.above || undefined}>
           {tip.lines.map((line, index) => index ? <span key={index}>{line}</span> : <b key={index}>{line}</b>)}

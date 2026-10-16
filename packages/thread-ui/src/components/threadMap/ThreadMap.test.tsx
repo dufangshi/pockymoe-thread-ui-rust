@@ -100,12 +100,19 @@ describe('ThreadMap', () => {
     expect(current.dataset.heat).toBe('0');
     expect(host.querySelector('section[aria-label="Server · Offline"]')!.getAttribute('data-state')).toBe('offline');
     expect(host.querySelector('.thread-map-summary')!.textContent).toBe('3 threads · 1 running');
+    // Inside a device the threads are its preview: tapping the device fills the map with it.
+    expect(link('b')!.closest('[inert]')).not.toBeNull();
+    click(button(/^Open Laptop/));
+    expect(link('b')!.closest('[inert]')).not.toBeNull();
+    click(button(/^Open app/));
+    expect(link('b')!.closest('[inert]')).toBeNull();
     click(link('b')!);
     expect(onOpen).toHaveBeenCalledWith(expect.objectContaining({ key: 'b' }));
     // A block too small for its threads folds up and opens to them.
+    click(button('Up one level'));
     const docs = host.querySelector('section[aria-label^="docs"]')!;
     expect(docs.hasAttribute('data-collapsed')).toBe(true);
-    click(docs.querySelector('button')!);
+    click(docs.querySelector('button.thread-map-zoom')!);
     // Without activity from its device a thread still shows, unheated.
     expect(link('c')!.getAttribute('aria-label')).toBe('Thread c · Codex · docs');
     expect(tile('c')!.dataset.heat).toBe('0');
@@ -139,6 +146,7 @@ describe('ThreadMap', () => {
       thread('k2', { title: 'Worker two', turns: 4 }),
     ] });
     show([{ id: 'laptop', name: 'Laptop', state: 'ready', workspaces: [{ id: 'app', label: 'app', threads: [parentThread] }] }]);
+    click(button(/^Open app/));
     expect(link('k1')).toBeNull();
     click(button(/^Show the 2 agent threads Plan started/));
     const group = host.querySelector('section.thread-map-group')!;
@@ -149,6 +157,46 @@ describe('ThreadMap', () => {
     click(button('Fold the agent threads back into Plan'));
     expect(host.querySelector('section.thread-map-group')).toBeNull();
     expect(link('k1')).toBeNull();
+  });
+
+  // jsdom has no Touch: plain events carry the lists the handlers read.
+  const touch = (type: string, points: [number, number][]) => {
+    const event = new Event(type, { bubbles: true, cancelable: true });
+    const list = points.map(([clientX, clientY]) => ({ clientX, clientY }));
+    Object.assign(event, { touches: type === 'touchend' ? [] : list, changedTouches: list });
+    act(() => { host.querySelector('.thread-map-canvas')!.dispatchEvent(event); });
+  };
+
+  it('goes up a level when two fingers pinch in', () => {
+    show(devices);
+    click(button(/^Open Laptop/));
+    expect(crumbs()).toEqual(['All devices', 'Laptop*']);
+    touch('touchstart', [[100, 300], [500, 300]]);
+    touch('touchmove', [[250, 300], [350, 300]]);
+    touch('touchend', []);
+    expect(crumbs()).toEqual(['All devices*']);
+  });
+
+  it('closes when dragged down, and settles back after a short drag', () => {
+    vi.useFakeTimers();
+    try {
+      const onDismiss = vi.fn();
+      act(() => root.render(<div className="thread-map-dialog"><ThreadMap devices={devices} onOpen={() => {}} onDismiss={onDismiss} /></div>));
+      touch('touchstart', [[300, 200]]);
+      touch('touchmove', [[302, 240]]);
+      touch('touchend', []);
+      act(() => { vi.runAllTimers(); });
+      expect(onDismiss).not.toHaveBeenCalled();
+      expect(host.querySelector<HTMLElement>('.thread-map-dialog')!.style.transform).toBe('');
+      touch('touchstart', [[300, 200]]);
+      touch('touchmove', [[300, 260]]);
+      touch('touchmove', [[301, 360]]);
+      touch('touchend', []);
+      act(() => { vi.runAllTimers(); });
+      expect(onDismiss).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('says when there is nothing to show yet', () => {

@@ -1,4 +1,5 @@
 /** @vitest-environment jsdom */
+import { act } from 'react';
 import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import { describe, expect, it, vi } from 'vitest';
@@ -61,7 +62,9 @@ describe('turn usage in the visible timeline', () => {
       const summary = container.querySelector('.thread-graph-worked-summary [data-testid="turn-token-speed"]');
       const footer = container.querySelector('.thread-graph-turn-footer [data-testid="turn-token-speed"]');
       expect(summary).toBeNull();
-      expect(container.querySelector('.thread-turn-receipt')).toBeNull();
+      // The head says it is running; speed and cost wait for the turn to end.
+      expect(container.querySelector('.thread-turn-head-live')?.getAttribute('aria-label')).toMatch(/^running \d.*s$/);
+      expect(container.querySelector('.thread-turn-head-speed')).toBeNull();
       expect(footer?.textContent).toBe(`${measured ? '150.0' : '80.0'}`);
     } finally { flushSync(() => root.unmount()); }
   });
@@ -121,7 +124,7 @@ describe('turn usage in the visible timeline', () => {
     } finally { flushSync(() => root.unmount()); container.remove(); vi.unstubAllGlobals(); }
   });
   it.each([true, false])(
-    'keeps usage in the receipt below the answer when collapsed=%s',
+    'opens the turn with its time, model, cost and speed above the prompt when collapsed=%s',
     (collapsed) => {
       const container = document.createElement('div');
       document.body.append(container);
@@ -139,18 +142,23 @@ describe('turn usage in the visible timeline', () => {
         const summary = container.querySelector('.thread-graph-worked-summary');
         expect(summary?.textContent).toContain('Worked for 1m 12s');
         expect(summary?.querySelector('.thread-turn-usage')).toBeNull();
-        const receipt = container.querySelector('.thread-turn-receipt');
-        expect(receipt).not.toBeNull();
-        expect(container.querySelector('[data-role="assistant"]')!.compareDocumentPosition(receipt!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-        expect(receipt?.querySelector('time')).not.toBeNull();
-        expect(receipt?.textContent).toContain('gpt-6-astra · high');
-        expect(receipt?.textContent).toContain('3.5k');
-        expect(receipt?.querySelector('.thread-turn-usage-tokens')?.textContent).not.toMatch(/\b(in|out|cached|cache write)\b/);
-        expect(receipt?.textContent).toContain('$0.11');
-        expect(receipt?.textContent).toContain('100.0');
-        expect(receipt?.querySelector('button button')).toBeNull();
-        expect(receipt?.querySelectorAll('.thread-token-metric-icon')).toHaveLength(2);
-        expect(receipt?.querySelector('.thread-turn-usage-tokens')?.getAttribute('aria-label')).toContain('3,500');
+        expect(container.querySelector('.thread-turn-receipt')).toBeNull();
+        const head = container.querySelector('.thread-turn-head')!;
+        expect(head.compareDocumentPosition(container.querySelector('[data-role="user"]')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(head.querySelector('time')?.getAttribute('dateTime')).toBe(turn.startedAt);
+        expect(head.textContent).toContain('gpt-6-astra · high');
+        expect(head.textContent).toContain('$0.11');
+        expect(head.querySelector('.thread-turn-head-speed')?.textContent).toBe('100.0 tok/s');
+        expect(head.querySelector('button button')).toBeNull();
+        // Tapping the line shows when it started and ended, the time taken and the tokens.
+        const main = head.querySelector<HTMLButtonElement>('.thread-turn-head-main')!;
+        expect(main.getAttribute('aria-expanded')).toBe('false');
+        flushSync(() => main.click());
+        expect(main.getAttribute('aria-expanded')).toBe('true');
+        const rows = [...container.querySelectorAll('.thread-turn-head-detail dt')].map(node => node.textContent);
+        expect(rows).toEqual(['Started', 'Finished', 'Took', 'Model', 'Tokens', 'Speed']);
+        expect(container.querySelector('.thread-turn-head-detail')?.textContent).toContain('1m 12s');
+        expect(container.querySelector('.thread-turn-head-detail')?.textContent).toContain('3.5k');
       } finally {
         flushSync(() => root.unmount());
         container.remove();
@@ -158,16 +166,40 @@ describe('turn usage in the visible timeline', () => {
     },
   );
 
-  it.each(['failed', 'interrupted'] as const)('closes %s turns with an answer receipt', status => {
+  it('breaks the combined speed into first token, prefill and decode when tapped', async () => {
+    vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} });
+    const container = document.createElement('div');
+    document.body.append(container);
+    const root = createRoot(container);
+    const split: ThreadTurnDto = { ...turn, tokenUsage: { ...turn.tokenUsage!, generationSpeed: {
+      ...turn.tokenUsage!.generationSpeed!, averageOutputTokensPerSecond: 100, outputTimeMs: 20000,
+      firstTokenMs: 1500, firstTokenRequests: 2, prefillTokens: 5000, prefillCachedTokens: 18000, prefillTokensPerSecond: 1666.7,
+      decodeTokens: 1800, decodeMs: 12000, decodeTokensPerSecond: 150,
+    } } };
+    try {
+      flushSync(() => root.render(<ThreadTimeline turns={[split]} liveOutput="" />));
+      const speed = container.querySelector<HTMLButtonElement>('button.thread-turn-head-speed')!;
+      expect(speed.textContent).toBe('100.0 tok/s');
+      await act(async () => speed.click());
+      const details = document.querySelector('.thread-speed-details')!;
+      expect(details.textContent).toContain('First token');
+      expect(details.textContent).toContain('1.5 s average · 2 requests');
+      expect(details.textContent).toContain('Prefill');
+      expect(details.textContent).toContain('1,667 tok/s · 5k uncached');
+      expect(details.textContent).toContain('Decode');
+      expect(details.textContent).toContain('150.0 tok/s · 1.8k in 12 s');
+    } finally { flushSync(() => root.unmount()); container.remove(); vi.unstubAllGlobals(); }
+  });
+
+  it.each(['failed', 'interrupted'] as const)('opens %s turns with the same head', status => {
     const container = document.createElement('div');
     const root = createRoot(container);
     try {
       flushSync(() => root.render(<ThreadTimeline turns={[{ ...turn, status }]} liveOutput="" />));
-      const receipt = container.querySelector('.thread-turn-receipt');
-      expect(receipt?.textContent).toContain('gpt-6-astra · high');
-      expect(receipt?.querySelector('[data-testid="turn-token-speed"]')?.textContent).toBe('100.0');
+      const head = container.querySelector('.thread-turn-head');
+      expect(head?.textContent).toContain('gpt-6-astra · high');
+      expect(head?.querySelector('.thread-turn-head-speed')?.textContent).toBe('100.0 tok/s');
       expect(container.querySelector('.thread-graph-worked-summary [data-testid="turn-token-speed"]')).toBeNull();
-      expect(container.querySelector('[data-role="assistant"]')!.compareDocumentPosition(receipt!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     } finally { flushSync(() => root.unmount()); }
   });
 
@@ -201,7 +233,7 @@ describe('turn usage in the visible timeline', () => {
         ),
       );
       expect(
-        container.querySelector('.thread-turn-receipt')?.textContent,
+        container.querySelector('.thread-turn-head')?.textContent,
       ).toContain('gpt-6-astra · high');
     } finally {
       flushSync(() => root.unmount());

@@ -1,7 +1,7 @@
 import { translate, useI18n } from '../../i18n';
 import { useState, type MouseEvent, type ReactNode } from 'react';
 import { CheckCircle2, Circle, CircleAlert, Loader2, XCircle } from 'lucide-react';
-import { failureMessage } from './turnFailure';
+import { failureMessage } from './turnPrompts';
 
 type GraphChatMessageKind = 'userMessage' | 'agentMessage';
 
@@ -85,6 +85,7 @@ export function GraphChatMessageFrame({
   timeTitle,
   actionsTime,
   failure,
+  kicker,
   onBeforeResize,
   messageId,
   variant,
@@ -104,6 +105,8 @@ export function GraphChatMessageFrame({
   actionsTime?: string | null | undefined;
   /** The error of the failed turn this prompt started, behind a red mark. */
   failure?: string | null | undefined;
+  /** A small line above the message, such as when a prompt was added mid-turn. */
+  kicker?: ReactNode;
   onBeforeResize?: (() => void) | undefined;
 }) {
   const { locale: i18nLocale } = useI18n();
@@ -146,6 +149,7 @@ export function GraphChatMessageFrame({
       <div
         className={`thread-graph-message-stack min-w-0 ${isUser ? 'is-user' : 'is-assistant'}`}
       >
+        {kicker ? <div className="thread-graph-message-kicker">{kicker}</div> : null}
         {timeNode ? <div className={`thread-graph-message-time-row ${isUser ? 'is-user' : ''}`}>{timeNode}</div> : null}
         <div
           data-touch-actions={touchActionsVisible ? 'true' : 'false'}

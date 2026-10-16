@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ThreadHistoryItemDto, ThreadTurnDto } from '@pockymoe/shared';
 
 import { setLocale } from '../../i18n';
-import { failureMessage } from '../graph-chat/turnFailure';
+import { failureMessage } from '../graph-chat/turnPrompts';
 import { ThreadTimeline } from '../ThreadTimeline';
 
 vi.mock('../graph-chat/graphChatShiki', () => ({ getGraphChatHighlighter: async () => null }));
@@ -65,6 +65,18 @@ describe('a failed turn', () => {
   it('marks nothing on a turn that finished', async () => {
     await render({ ...failed, status: 'completed', error: null, items: [failed.items[0]!] });
     expect(container.querySelector('.thread-graph-message-failure')).toBeNull();
+  });
+});
+
+describe('a prompt added while the turn worked', () => {
+  it('says so with its own time, and the head counts it', async () => {
+    const added = { ...message('steer', 'userMessage', 'Also check the queue'), createdAt: '2026-10-16T20:53:30Z' };
+    await render({ ...failed, status: 'completed', error: null, model: 'gpt-6-astra', completedAt: '2026-10-16T20:55:00Z',
+      items: [failed.items[0]!, added, message('answer', 'agentMessage', 'Both are fine now.')] });
+    expect(container.querySelector('[data-message-id="prompt"] .thread-graph-message-kicker')).toBeNull();
+    expect(container.querySelector('[data-message-id="steer"] .thread-graph-message-kicker')?.textContent).toMatch(/^Added · /);
+    await act(async () => container.querySelector<HTMLButtonElement>('.thread-turn-head-main')!.click());
+    expect(container.querySelector('.thread-turn-head-detail')?.textContent).toContain('1 message while working');
   });
 });
 

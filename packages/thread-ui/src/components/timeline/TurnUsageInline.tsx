@@ -6,9 +6,13 @@ import type { TimelineTurn } from './timelineItems';
 import { formatCompactTokenCount } from './tokenFormatting';
 
 /** The model that ran; Claude names its API error replies' model "<synthetic>". */
-function turnModel(turn: TimelineTurn) {
+export function knownTurnModel(turn: TimelineTurn) {
   const model = turn.model?.trim();
-  return model && model !== '<synthetic>' ? model : translate("chat.modelUnavailable");
+  return model && model !== '<synthetic>' ? model : null;
+}
+
+function turnModel(turn: TimelineTurn) {
+  return knownTurnModel(turn) ?? translate("chat.modelUnavailable");
 }
 
 export function formatTurnRuntimeSummary(turn: TimelineTurn) {

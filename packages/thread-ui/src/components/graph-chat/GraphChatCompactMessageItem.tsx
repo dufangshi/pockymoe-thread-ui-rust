@@ -20,7 +20,7 @@ import {
 import { GraphChatMessageFrame } from './GraphChatMessageFrame';
 import { parsePromptEnvelope, PromptEnvelopeHeader, PromptNotice } from './PromptEnvelope';
 import { formatMessageTimestamp } from '../threadPresentation';
-import { useTurnFailure } from './turnFailure';
+import { useAddedPrompt, useTurnFailure } from './turnPrompts';
 import {
   Accordion,
   AccordionContent,
@@ -98,6 +98,7 @@ export const GraphChatCompactMessageItem = memo(
     );
     const [reasoningOpen, setReasoningOpen] = useState(false);
     const failure = useTurnFailure(item.id);
+    const added = useAddedPrompt(item.id) && item.kind === 'userMessage';
     const { presentation, text, showingOriginal, showOriginal } = useMessagePresentation({ item, streaming });
     const resetTimerRef = useRef<number | null>(null);
     const reasoningItems =
@@ -255,6 +256,7 @@ export const GraphChatCompactMessageItem = memo(
         timeTitle={timeTitle}
         actionsTime={item.createdAt ? formatMessageTimestamp(item.createdAt) : null}
         failure={item.kind === 'userMessage' ? failure : null}
+        kicker={added && item.createdAt ? translate('chat.promptAdded', { time: formatMessageTimestamp(item.createdAt) }) : null}
         onBeforeResize={onBeforeMessageResize}
       >
         {item.kind === 'agentMessage' ? (

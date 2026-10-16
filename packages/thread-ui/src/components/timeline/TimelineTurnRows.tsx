@@ -41,7 +41,8 @@ import { GraphChatCompactMessageItem as CompactMessageItem } from '../graph-chat
 import { MessageExpansionScope } from '../graph-chat/MessageExpansionScope';
 import { GraphChatTurnBody } from '../graph-chat/GraphChatTurnBody';
 import { GraphChatTurnFrame } from '../graph-chat/GraphChatTurnFrame';
-import { echoesFailure, TurnFailureContext } from '../graph-chat/turnFailure';
+import { echoesFailure, TurnPromptContext } from '../graph-chat/turnPrompts';
+import { TurnHead } from './TurnHead';
 import { TranscriptAgentByline } from '../graph-chat/TranscriptAgent';
 import {
   countTurnSteps,
@@ -59,7 +60,6 @@ import {
 import { groupAnswerSections, isSubstantiveAnswer } from './answerSections';
 import { TurnTokenSummary } from './tokenFormatting';
 import { TurnStatusBar } from './turnStatus';
-import { TurnUsageInline } from './TurnUsageInline';
 import { Collapse } from './Collapse';
 import { activityParts, hasActivity, storySegments, stretchBetween, stretchFromItems, turnActivity, turnChangedFiles } from './activity';
 import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff, Parts, RunPlaceholder } from './TranscriptLog';
@@ -627,10 +627,12 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       !(failedWith && item.kind === 'agentMessage' && echoesFailure(failedWith, item.text))),
     [activeForRendering, mergedItems, showReasoningSummaries, nestedPeerWork, omitAgentId, failedWith],
   );
-  const failedPromptId = failedWith ? preparedItems.find(item => item.kind === 'userMessage')?.id : undefined;
-  const failure = useMemo(
-    () => failedWith && failedPromptId ? { promptId: failedPromptId, error: failedWith } : null,
-    [failedWith, failedPromptId],
+  // The first prompt started the turn; any later one was added while it worked.
+  const prompts = preparedItems.filter(item => item.kind === 'userMessage');
+  const firstPromptId = prompts[0]?.id;
+  const promptContext = useMemo(
+    () => firstPromptId ? { firstPromptId, error: failedWith } : null,
+    [failedWith, firstPromptId],
   );
   const groupedItems = useMemo(
     () => groupTimelineHistoryItems(preparedItems),
@@ -792,13 +794,11 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const changedFiles = useMemo(() => turnChangedFiles(turn, mergedItems), [turn, mergedItems]);
   // Only a finished turn is told from its summary; a working one loads as it streams.
   const story = effectiveCollapsed || !narrationMode || !isTerminalTurnStatus(turn.status) ? null : storySegments(turn);
-  // Time and usage close the turn, under its answer, instead of crowding the work line.
-  const receiptNode = isTerminalTurnStatus(turn.status) ? (
-    <div className="thread-turn-receipt">
-      <time dateTime={turn.startedAt ?? undefined} title={turnTimeTitle}>{turnTimeLabel}</time>
-      <TurnUsageInline turn={turn} speedMode="average" />
-    </div>
-  ) : null;
+  // When the turn started, its model and usage open the turn, above its prompt.
+  const headNode = (
+    <TurnHead turn={turn} active={activeForRendering} added={Math.max(0, prompts.length - 1)}
+      {...(onBeforeMessageResize ? { onBeforeResize: onBeforeMessageResize } : {})} />
+  );
   const terminalWorkedNode =
     isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems ? (
       <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
@@ -949,7 +949,6 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
             livePlan={displayedLivePlan}
           />
         </Collapse>
-        {receiptNode}
       </div>
     ) : null;
   // Prompt, what the agent did, then its answer and the receipt.
@@ -959,10 +958,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
         {renderHistoryEntries(groupedItems.slice(0, leadingUserCount))}
         {terminalWorkedNode}
         {renderHistoryEntries(groupedItems.slice(leadingUserCount))}
-        {receiptNode}
       </>
     ) : (
-      <>{historyNode}{terminalWorkedNode}{receiptNode}</>
+      <>{historyNode}{terminalWorkedNode}</>
     );
   const turnBody = (
     <GraphChatTurnBody
@@ -982,13 +980,14 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
 
   return (
     <MessageExpansionScope key={`${threadId ?? ''}:${turn.id}`}>
-    <TurnFailureContext.Provider value={failure}>
+    <TurnPromptContext.Provider value={promptContext}>
     <GraphChatTurnFrame
       absoluteIndex={absoluteIndex}
       body={canToggleWorkedSummary ? collapsedSummaryNode : turnBody}
       collapsed={effectiveCollapsed}
       collapsedBody={collapsedSummaryNode}
-      error={failure ? null : turn.error}
+      error={failedWith && firstPromptId ? null : turn.error}
+      head={headNode}
       headerStatus={<TurnStatusBar turn={turn} />}
       isActive={activeForRendering}
       status={turn.status}
@@ -998,7 +997,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       timeTitle={turnTimeTitle}
       tokenSummary={<TurnTokenSummary turn={turn} />}
     />
-    </TurnFailureContext.Provider>
+    </TurnPromptContext.Provider>
     </MessageExpansionScope>
   );
 });

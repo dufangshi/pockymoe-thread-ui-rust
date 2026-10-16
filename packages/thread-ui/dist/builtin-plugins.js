@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-Y3Q5EHV2.js";
+} from "./chunk-EGGYRKSI.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";

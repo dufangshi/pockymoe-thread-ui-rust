@@ -1,11 +1,18 @@
 import { createContext, useContext } from 'react';
 
-/** A failed turn's error, shown on the turn's prompt. */
-export const TurnFailureContext = createContext<{ promptId: string; error: string } | null>(null);
+/** The turn a prompt belongs to: which prompt started it, and its error if it failed. */
+export const TurnPromptContext = createContext<{ firstPromptId: string; error: string | null } | null>(null);
 
+/** The error of the failed turn this prompt started. */
 export function useTurnFailure(itemId: string) {
-  const failure = useContext(TurnFailureContext);
-  return failure?.promptId === itemId ? failure.error : null;
+  const turn = useContext(TurnPromptContext);
+  return turn?.firstPromptId === itemId ? turn.error : null;
+}
+
+/** Whether this prompt was added while the turn was already working. */
+export function useAddedPrompt(itemId: string) {
+  const turn = useContext(TurnPromptContext);
+  return Boolean(turn && turn.firstPromptId !== itemId);
 }
 
 /** The readable part of an error such as `ACP session/prompt failed: {"code":…,"message":"Internal error: …"}`. */

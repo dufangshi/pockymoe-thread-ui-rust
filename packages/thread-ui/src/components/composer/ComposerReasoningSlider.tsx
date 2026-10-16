@@ -103,6 +103,7 @@ export function ComposerReasoningSlider({
       </div>
       <Slider.Root
         className="composer-reasoning-slider"
+        title={option.description || undefined}
         min={0}
         max={Math.max(1, options.length - 1)}
         step={1}
@@ -126,28 +127,24 @@ export function ComposerReasoningSlider({
           aria-label={translate('chat.effort')}
           aria-valuetext={label}
         />
+        {/* The level names are part of the slider: a press or drag anywhere on
+            the track or the names moves it, not only on the thin track. */}
+        <span className="composer-reasoning-stops" aria-hidden="true">
+          {options.map((entry, stop) => (
+            <span
+              key={entry.reasoningEffort}
+              data-current={entry.reasoningEffort === effort || undefined}
+              data-preview={stop === index || undefined}
+              style={{
+                left: `calc(${(stop / Math.max(1, options.length - 1)) * 100}% + ${11 - (22 * stop) / Math.max(1, options.length - 1)}px)`,
+              }}
+            >
+              <i />
+              {formatReasoningEffortLabel(entry.reasoningEffort)}
+            </span>
+          ))}
+        </span>
       </Slider.Root>
-      <div className="composer-reasoning-stops">
-        {options.map((entry, stop) => (
-          <button
-            key={entry.reasoningEffort}
-            type="button"
-            aria-pressed={entry.reasoningEffort === effort}
-            disabled={disabled}
-            style={{
-              left: `calc(${(stop / Math.max(1, options.length - 1)) * 100}% + ${11 - (22 * stop) / Math.max(1, options.length - 1)}px)`,
-            }}
-            title={
-              entry.description ||
-              formatReasoningEffortLabel(entry.reasoningEffort)
-            }
-            onClick={() => choose(stop)}
-          >
-            <i aria-hidden="true" />
-            {formatReasoningEffortLabel(entry.reasoningEffort)}
-          </button>
-        ))}
-      </div>
     </section>
   );
 }

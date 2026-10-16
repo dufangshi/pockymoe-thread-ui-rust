@@ -3141,6 +3141,40 @@ declare const en: {
     readonly "chat.hint.reasoningExample": "e.g. planning which file to change first";
     readonly "chat.turnFailedShow": "Why this turn failed";
     readonly "chat.turnFailedTitle": "This turn did not finish";
+    readonly "chat.turnHeadDetails": "Turn details";
+    readonly "chat.turnHeadRunning": "running {{elapsed}}";
+    readonly "chat.turnHeadSpeed": "{{value}} tok/s";
+    readonly "chat.turnHeadStarted": "Started";
+    readonly "chat.turnHeadFinished": "Finished";
+    readonly "chat.turnHeadTook": "Took";
+    readonly "chat.turnHeadTokens": "Tokens";
+    readonly "chat.turnHeadTokensValue": "{{total}} (in {{input}} · out {{output}})";
+    readonly "chat.turnHeadSpeedLabel": "Speed";
+    readonly "chat.turnHeadSpeedValue": "{{speed}} average output";
+    readonly "chat.turnHeadAdded": "Added";
+    readonly "chat.turnHeadAddedValue": {
+        readonly one: "{{count}} message while working";
+        readonly other: "{{count}} messages while working";
+    };
+    readonly "chat.promptAdded": "Added · {{time}}";
+    readonly "chat.showSpeedDetails": "{{speed}}, show the speed breakdown";
+    readonly "chat.speedCombined": "Combined output speed";
+    readonly "chat.speedCombinedBasis": "{{tokens}} output tokens over {{time}} of model time (tools and waits left out)";
+    readonly "chat.speedFirstToken": "First token";
+    readonly "chat.speedFirstTokenValue": {
+        readonly one: "{{time}} average · {{count}} request";
+        readonly other: "{{time}} average · {{count}} requests";
+    };
+    readonly "chat.speedPrefill": "Prefill";
+    readonly "chat.speedPrefillValue": "{{speed}} · {{tokens}} uncached";
+    readonly "chat.speedDecode": "Decode";
+    readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
+    readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed text, thought or tool call. It includes queueing, prefill and thinking that does not stream, so the prefill speed is a lower bound.";
+    readonly "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.";
+    readonly "chat.backgroundAgentsRunning": {
+        readonly one: "{{count}} background agent running";
+        readonly other: "{{count}} background agents running";
+    };
     readonly "auth.ui.signInTitle": "Sign in";
     readonly "auth.ui.registerTitle": "Create your account";
     readonly "auth.ui.or": "or";
@@ -6809,6 +6843,40 @@ declare const zhCN: {
     "chat.hint.reasoningExample": "例：先想好改哪个文件";
     "chat.turnFailedShow": "查看这一轮失败的原因";
     "chat.turnFailedTitle": "这一轮没有完成";
+    "chat.turnHeadDetails": "本轮详情";
+    "chat.turnHeadRunning": "运行中 {{elapsed}}";
+    "chat.turnHeadSpeed": "{{value}} tok/s";
+    "chat.turnHeadStarted": "开始";
+    "chat.turnHeadFinished": "结束";
+    "chat.turnHeadTook": "用时";
+    "chat.turnHeadTokens": "Token";
+    "chat.turnHeadTokensValue": "{{total}}（输入 {{input}} · 输出 {{output}}）";
+    "chat.turnHeadSpeedLabel": "速度";
+    "chat.turnHeadSpeedValue": "平均输出 {{speed}}";
+    "chat.turnHeadAdded": "追加";
+    "chat.turnHeadAddedValue": {
+        readonly one: "工作中追加了 {{count}} 条消息";
+        readonly other: "工作中追加了 {{count}} 条消息";
+    };
+    "chat.promptAdded": "追加 · {{time}}";
+    "chat.showSpeedDetails": "{{speed}}，查看速度明细";
+    "chat.speedCombined": "综合输出速度";
+    "chat.speedCombinedBasis": "{{time}} 模型时间内输出 {{tokens}} token（不含工具和等待）";
+    "chat.speedFirstToken": "首字时间";
+    "chat.speedFirstTokenValue": {
+        readonly one: "平均 {{time}} · {{count}} 次请求";
+        readonly other: "平均 {{time}} · {{count}} 次请求";
+    };
+    "chat.speedPrefill": "预填充";
+    "chat.speedPrefillValue": "{{speed}} · 未命中缓存 {{tokens}}";
+    "chat.speedDecode": "解码";
+    "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
+    "chat.speedNote": "首字时间从发出请求算到第一段流式文字、思考或工具调用，包含排队、预填充和不流式输出的思考，所以预填充速度是下限。";
+    "chat.speedNoSplit": "这一轮没有分请求的计时，只有综合速度。";
+    "chat.backgroundAgentsRunning": {
+        readonly one: "{{count}} 个后台智能体运行中";
+        readonly other: "{{count}} 个后台智能体运行中";
+    };
     "auth.ui.signInTitle": "登录";
     "auth.ui.registerTitle": "创建账号";
     "auth.ui.or": "或";
@@ -10499,6 +10567,40 @@ declare const resources: {
         readonly "chat.hint.reasoningExample": "e.g. planning which file to change first";
         readonly "chat.turnFailedShow": "Why this turn failed";
         readonly "chat.turnFailedTitle": "This turn did not finish";
+        readonly "chat.turnHeadDetails": "Turn details";
+        readonly "chat.turnHeadRunning": "running {{elapsed}}";
+        readonly "chat.turnHeadSpeed": "{{value}} tok/s";
+        readonly "chat.turnHeadStarted": "Started";
+        readonly "chat.turnHeadFinished": "Finished";
+        readonly "chat.turnHeadTook": "Took";
+        readonly "chat.turnHeadTokens": "Tokens";
+        readonly "chat.turnHeadTokensValue": "{{total}} (in {{input}} · out {{output}})";
+        readonly "chat.turnHeadSpeedLabel": "Speed";
+        readonly "chat.turnHeadSpeedValue": "{{speed}} average output";
+        readonly "chat.turnHeadAdded": "Added";
+        readonly "chat.turnHeadAddedValue": {
+            readonly one: "{{count}} message while working";
+            readonly other: "{{count}} messages while working";
+        };
+        readonly "chat.promptAdded": "Added · {{time}}";
+        readonly "chat.showSpeedDetails": "{{speed}}, show the speed breakdown";
+        readonly "chat.speedCombined": "Combined output speed";
+        readonly "chat.speedCombinedBasis": "{{tokens}} output tokens over {{time}} of model time (tools and waits left out)";
+        readonly "chat.speedFirstToken": "First token";
+        readonly "chat.speedFirstTokenValue": {
+            readonly one: "{{time}} average · {{count}} request";
+            readonly other: "{{time}} average · {{count}} requests";
+        };
+        readonly "chat.speedPrefill": "Prefill";
+        readonly "chat.speedPrefillValue": "{{speed}} · {{tokens}} uncached";
+        readonly "chat.speedDecode": "Decode";
+        readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
+        readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed text, thought or tool call. It includes queueing, prefill and thinking that does not stream, so the prefill speed is a lower bound.";
+        readonly "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.";
+        readonly "chat.backgroundAgentsRunning": {
+            readonly one: "{{count}} background agent running";
+            readonly other: "{{count}} background agents running";
+        };
         readonly "auth.ui.signInTitle": "Sign in";
         readonly "auth.ui.registerTitle": "Create your account";
         readonly "auth.ui.or": "or";
@@ -14166,6 +14268,40 @@ declare const resources: {
         "chat.hint.reasoningExample": "例：先想好改哪个文件";
         "chat.turnFailedShow": "查看这一轮失败的原因";
         "chat.turnFailedTitle": "这一轮没有完成";
+        "chat.turnHeadDetails": "本轮详情";
+        "chat.turnHeadRunning": "运行中 {{elapsed}}";
+        "chat.turnHeadSpeed": "{{value}} tok/s";
+        "chat.turnHeadStarted": "开始";
+        "chat.turnHeadFinished": "结束";
+        "chat.turnHeadTook": "用时";
+        "chat.turnHeadTokens": "Token";
+        "chat.turnHeadTokensValue": "{{total}}（输入 {{input}} · 输出 {{output}}）";
+        "chat.turnHeadSpeedLabel": "速度";
+        "chat.turnHeadSpeedValue": "平均输出 {{speed}}";
+        "chat.turnHeadAdded": "追加";
+        "chat.turnHeadAddedValue": {
+            readonly one: "工作中追加了 {{count}} 条消息";
+            readonly other: "工作中追加了 {{count}} 条消息";
+        };
+        "chat.promptAdded": "追加 · {{time}}";
+        "chat.showSpeedDetails": "{{speed}}，查看速度明细";
+        "chat.speedCombined": "综合输出速度";
+        "chat.speedCombinedBasis": "{{time}} 模型时间内输出 {{tokens}} token（不含工具和等待）";
+        "chat.speedFirstToken": "首字时间";
+        "chat.speedFirstTokenValue": {
+            readonly one: "平均 {{time}} · {{count}} 次请求";
+            readonly other: "平均 {{time}} · {{count}} 次请求";
+        };
+        "chat.speedPrefill": "预填充";
+        "chat.speedPrefillValue": "{{speed}} · 未命中缓存 {{tokens}}";
+        "chat.speedDecode": "解码";
+        "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
+        "chat.speedNote": "首字时间从发出请求算到第一段流式文字、思考或工具调用，包含排队、预填充和不流式输出的思考，所以预填充速度是下限。";
+        "chat.speedNoSplit": "这一轮没有分请求的计时，只有综合速度。";
+        "chat.backgroundAgentsRunning": {
+            readonly one: "{{count}} 个后台智能体运行中";
+            readonly other: "{{count}} 个后台智能体运行中";
+        };
         "auth.ui.signInTitle": "登录";
         "auth.ui.registerTitle": "创建账号";
         "auth.ui.or": "或";

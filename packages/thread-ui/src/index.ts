@@ -8,6 +8,7 @@ import './styles/matter-workbench.css';
 import './styles/composer-compact.css';
 import './styles/composer-reasoning.css';
 import './styles/mermaid-diagrams.css';
+import './styles/plugin-reports.css';
 import './styles/terminal-panel.css';
 
 export type {
@@ -84,6 +85,7 @@ export {
 export { PluginProvider } from './plugins/PluginProvider';
 export { usePlugins } from './plugins/usePlugins';
 export { PluginActionOutput } from './plugins/PluginActionOutput';
+export { PluginSettingsButton } from './plugins/PluginSettingsButton';
 export type {
   ArtifactRenderContext,
   FrontendPluginModule,

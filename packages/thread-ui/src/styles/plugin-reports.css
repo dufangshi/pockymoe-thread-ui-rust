@@ -1,0 +1,39 @@
+/* Plugin action reports (automation history and other receipts). */
+.plugin-action-output { display: grid; gap: 8px; min-width: 0; font-size: 12px; line-height: 1.55; color: var(--theme-fg); }
+.plugin-report-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; color: var(--theme-fg-muted); }
+.plugin-report-meta { color: var(--theme-fg-muted); font-size: 11px; }
+.plugin-report-note { color: var(--theme-fg-muted); font-size: 11px; }
+.plugin-report-error { padding: 6px 9px; border-radius: 7px; border: 1px solid var(--status-danger-border, color-mix(in srgb, #d85b64 35%, transparent)); background: var(--status-danger-bg, color-mix(in srgb, #d85b64 10%, transparent)); color: var(--status-danger-fg, #b4323d); overflow-wrap: anywhere; white-space: pre-wrap; }
+.plugin-report-tag { display: inline-flex; align-items: center; min-height: 18px; padding: 0 6px; border-radius: 5px; font-size: 10.5px; font-weight: 500; line-height: 1; white-space: nowrap; color: var(--theme-fg-muted); background: var(--theme-hover); }
+.plugin-report-tag.is-success { color: var(--status-success-fg, var(--theme-accent-strong)); background: var(--status-success-bg, var(--theme-accent-soft)); }
+.plugin-report-tag.is-accent { color: var(--theme-accent-strong); background: var(--theme-accent-soft); }
+.plugin-report-tag.is-danger { color: var(--status-danger-fg, #b4323d); background: var(--status-danger-bg, color-mix(in srgb, #d85b64 12%, transparent)); }
+.plugin-report-pre { max-height: 16rem; margin-top: 6px; padding: 8px 10px; overflow: auto; border-radius: 7px; background: color-mix(in srgb, var(--theme-fg) 5%, transparent); font: 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--theme-fg); }
+.plugin-report-disclosure > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none; font-size: 11px; color: var(--theme-fg-muted); }
+.plugin-report-disclosure > summary::-webkit-details-marker { display: none; }
+.plugin-report-disclosure > summary::before { content: ''; width: 5px; height: 5px; margin: 0 2px 0 1px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
+.plugin-report-disclosure[open] > summary::before { transform: rotate(45deg); }
+.plugin-report-disclosure > summary:hover { color: var(--theme-fg); }
+.plugin-report-disclosure > summary:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 2px; border-radius: 4px; }
+.quality-report { display: grid; gap: 10px; min-width: 0; }
+.quality-report-reply { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.quality-report-reply > div { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-width: 0; }
+.quality-report-label { font-size: 11px; font-weight: 500; color: var(--theme-fg-soft, var(--theme-fg-muted)); }
+.quality-docs { display: grid; min-width: 0; border: 1px solid var(--theme-border); border-radius: 9px; overflow: hidden; }
+.quality-doc { display: grid; gap: 6px; min-width: 0; padding: 10px 12px; }
+.quality-doc + .quality-doc { border-top: 1px solid var(--theme-border); }
+.quality-doc[data-status='failed'] { box-shadow: inset 2px 0 0 var(--status-danger-fg, #b4323d); }
+.quality-doc-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 10px; min-width: 0; }
+.quality-doc-path { min-width: 0; font: 500 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--theme-fg); overflow-wrap: anywhere; }
+.quality-doc-tags { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.quality-doc-findings { display: grid; gap: 3px; padding-left: 14px; list-style: disc; color: var(--theme-fg); }
+.quality-doc-findings li { white-space: pre-wrap; overflow-wrap: anywhere; }
+.quality-doc-findings li::marker { color: var(--theme-fg-muted); }
+.quality-doc-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 14px; }
+.quality-doc-actions:empty { display: none; }
+.quality-doc-actions > details[open] { flex-basis: 100%; }
+.quality-doc-actions > .plugin-report-meta { margin-left: auto; }
+.quality-diff .is-add { color: var(--status-success-fg, #1d7a4c); }
+.quality-diff .is-del { color: var(--status-danger-fg, #b4323d); }
+.quality-diff .is-hunk { color: var(--theme-fg-muted); }
+.plugin-settings-dialog:focus { outline: none; }

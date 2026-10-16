@@ -119,4 +119,12 @@ export const automationEn = {
   "automation.nativeUnavailable": "Native watch history is unavailable; totals may omit native watches.",
   "automation.nativeCoverage": "USD priced for {{value1}} of {{value2}} recorded scheduled turns.",
   "automation.nativeTokenCoverage": "Tokens available for {{value1}} of {{value2}} recorded scheduled turns.",
+  "automation.nextShort": "Next",
+  "automation.triggerCount": "{{value1}} triggers",
+  "automation.triggerCountOne": "1 trigger",
+  "automation.tokensValue": "{{value1}} tokens",
+  "automation.tokensUnknown": "Tokens unknown",
+  "automation.costUnknown": "Cost unknown",
+  "automation.runDetails": "Run details",
+  "automation.historyHelp": "About execution history",
 } as const;

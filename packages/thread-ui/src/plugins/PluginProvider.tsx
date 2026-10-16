@@ -230,9 +230,10 @@ export function PluginProvider({
     return null;
   }, [enabledModules]);
 
-  const getSettingsSections = useCallback(() => {
+  const getSettingsSections = useCallback((pluginId?: string) => {
     if (!adapter.loadPluginSettings || !adapter.savePluginSettings) return [];
     return builtinPlugins.flatMap(module => {
+      if (pluginId !== undefined && module.manifest.id !== pluginId) return [];
       const devicePlugin = plugins.find(plugin => plugin.id === module.manifest.id);
       if (!settingsPluginIds.has(module.manifest.id) || !devicePlugin || devicePlugin.available === false) return [];
       return (module.settingsSections ?? []).map(section => ({

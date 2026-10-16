@@ -859,6 +859,7 @@ declare const en: {
     readonly "sharing.reviewDifference": "Before (current device grant): {{value1}}\nAfter (dialog permissions): {{value2}}";
     readonly "sharing.dialogIncomplete": "The edit dialog did not provide every permission and target. Reopen the dialog before signing.";
     readonly "sharing.reviewChanges": "Changed fields (before → after): {{value1}}";
+    readonly "settings.pluginSettings": "{{value1}} settings";
     readonly "settings.upstreamsTab": "Upstreams";
     readonly "settings.upstreamsDescription": "Switch API providers for the harnesses installed on this device.";
     readonly "settings.upstreamsChooseDevice": "Open a device to manage its upstreams.";
@@ -3092,8 +3093,10 @@ declare const en: {
     readonly 'quality.report.alreadyPolished': "Reply is already polished";
     readonly 'quality.report.turnNotCompleted': "Turn did not complete successfully";
     readonly 'quality.report.unsupportedMarkup': "Document markup is unsupported";
-    readonly 'quality.report.fileWritten': "Revised file written";
+    readonly 'quality.report.fileWritten': "File written";
     readonly 'quality.report.fileUnchanged': "File unchanged";
+    readonly 'quality.report.findingOne': "1 finding";
+    readonly 'quality.report.findingCount': "{{value1}} findings";
     readonly 'quality.report.findings': "Findings";
     readonly 'quality.report.noFindings': "No findings reported.";
     readonly 'quality.report.diff': "Proposed diff";
@@ -3268,6 +3271,14 @@ declare const en: {
     readonly "automation.nativeUnavailable": "Native watch history is unavailable; totals may omit native watches.";
     readonly "automation.nativeCoverage": "USD priced for {{value1}} of {{value2}} recorded scheduled turns.";
     readonly "automation.nativeTokenCoverage": "Tokens available for {{value1}} of {{value2}} recorded scheduled turns.";
+    readonly "automation.nextShort": "Next";
+    readonly "automation.triggerCount": "{{value1}} triggers";
+    readonly "automation.triggerCountOne": "1 trigger";
+    readonly "automation.tokensValue": "{{value1}} tokens";
+    readonly "automation.tokensUnknown": "Tokens unknown";
+    readonly "automation.costUnknown": "Cost unknown";
+    readonly "automation.runDetails": "Run details";
+    readonly "automation.historyHelp": "About execution history";
 };
 
 declare const zhCN: {
@@ -4128,6 +4139,7 @@ declare const zhCN: {
     "sharing.reviewDifference": "修改前（设备当前授权）：{{value1}}\n修改后（对话框中的权限）：{{value2}}";
     "sharing.dialogIncomplete": "编辑对话框未提供完整的权限和目标。请重新打开对话框后再签名。";
     "sharing.reviewChanges": "变更字段（修改前 → 修改后）：{{value1}}";
+    "settings.pluginSettings": "{{value1}}设置";
     "settings.upstreamsTab": "上游";
     "settings.upstreamsDescription": "为此设备上已安装的 harness 切换 API 上游。";
     "settings.upstreamsChooseDevice": "请打开设备以管理其上游。";
@@ -6361,8 +6373,10 @@ declare const zhCN: {
     'quality.report.alreadyPolished': "回复已润色";
     'quality.report.turnNotCompleted': "回合未成功完成";
     'quality.report.unsupportedMarkup': "不支持该文档标记格式";
-    'quality.report.fileWritten': "已写入修订后的文件";
+    'quality.report.fileWritten': "已写入文件";
     'quality.report.fileUnchanged': "文件未更改";
+    'quality.report.findingOne': "1 条意见";
+    'quality.report.findingCount': "{{value1}} 条意见";
     'quality.report.findings': "审阅意见";
     'quality.report.noFindings': "未报告问题。";
     'quality.report.diff': "建议差异";
@@ -6537,6 +6551,14 @@ declare const zhCN: {
     "automation.nativeUnavailable": "原生定时任务历史暂不可用，总计可能未包含原生任务。";
     "automation.nativeCoverage": "{{value2}} 个已记录定时回合中，{{value1}} 个有 USD 价格。";
     "automation.nativeTokenCoverage": "{{value2}} 个已记录定时回合中，{{value1}} 个有 token 记录。";
+    "automation.nextShort": "下次";
+    "automation.triggerCount": "触发 {{value1}} 次";
+    "automation.triggerCountOne": "触发 1 次";
+    "automation.tokensValue": "{{value1}} token";
+    "automation.tokensUnknown": "Token 未知";
+    "automation.costUnknown": "费用未知";
+    "automation.runDetails": "运行详情";
+    "automation.historyHelp": "关于执行历史";
 };
 
 declare const SUPPORTED_LOCALES: readonly ["en", "zh-CN"];
@@ -7419,6 +7441,7 @@ declare const resources: {
         readonly "sharing.reviewDifference": "Before (current device grant): {{value1}}\nAfter (dialog permissions): {{value2}}";
         readonly "sharing.dialogIncomplete": "The edit dialog did not provide every permission and target. Reopen the dialog before signing.";
         readonly "sharing.reviewChanges": "Changed fields (before → after): {{value1}}";
+        readonly "settings.pluginSettings": "{{value1}} settings";
         readonly "settings.upstreamsTab": "Upstreams";
         readonly "settings.upstreamsDescription": "Switch API providers for the harnesses installed on this device.";
         readonly "settings.upstreamsChooseDevice": "Open a device to manage its upstreams.";
@@ -9652,8 +9675,10 @@ declare const resources: {
         readonly 'quality.report.alreadyPolished': "Reply is already polished";
         readonly 'quality.report.turnNotCompleted': "Turn did not complete successfully";
         readonly 'quality.report.unsupportedMarkup': "Document markup is unsupported";
-        readonly 'quality.report.fileWritten': "Revised file written";
+        readonly 'quality.report.fileWritten': "File written";
         readonly 'quality.report.fileUnchanged': "File unchanged";
+        readonly 'quality.report.findingOne': "1 finding";
+        readonly 'quality.report.findingCount': "{{value1}} findings";
         readonly 'quality.report.findings': "Findings";
         readonly 'quality.report.noFindings': "No findings reported.";
         readonly 'quality.report.diff': "Proposed diff";
@@ -9828,6 +9853,14 @@ declare const resources: {
         readonly "automation.nativeUnavailable": "Native watch history is unavailable; totals may omit native watches.";
         readonly "automation.nativeCoverage": "USD priced for {{value1}} of {{value2}} recorded scheduled turns.";
         readonly "automation.nativeTokenCoverage": "Tokens available for {{value1}} of {{value2}} recorded scheduled turns.";
+        readonly "automation.nextShort": "Next";
+        readonly "automation.triggerCount": "{{value1}} triggers";
+        readonly "automation.triggerCountOne": "1 trigger";
+        readonly "automation.tokensValue": "{{value1}} tokens";
+        readonly "automation.tokensUnknown": "Tokens unknown";
+        readonly "automation.costUnknown": "Cost unknown";
+        readonly "automation.runDetails": "Run details";
+        readonly "automation.historyHelp": "About execution history";
     };
     'zh-CN': {
         "tour.entry": "引导教程";
@@ -10687,6 +10720,7 @@ declare const resources: {
         "sharing.reviewDifference": "修改前（设备当前授权）：{{value1}}\n修改后（对话框中的权限）：{{value2}}";
         "sharing.dialogIncomplete": "编辑对话框未提供完整的权限和目标。请重新打开对话框后再签名。";
         "sharing.reviewChanges": "变更字段（修改前 → 修改后）：{{value1}}";
+        "settings.pluginSettings": "{{value1}}设置";
         "settings.upstreamsTab": "上游";
         "settings.upstreamsDescription": "为此设备上已安装的 harness 切换 API 上游。";
         "settings.upstreamsChooseDevice": "请打开设备以管理其上游。";
@@ -12920,8 +12954,10 @@ declare const resources: {
         'quality.report.alreadyPolished': "回复已润色";
         'quality.report.turnNotCompleted': "回合未成功完成";
         'quality.report.unsupportedMarkup': "不支持该文档标记格式";
-        'quality.report.fileWritten': "已写入修订后的文件";
+        'quality.report.fileWritten': "已写入文件";
         'quality.report.fileUnchanged': "文件未更改";
+        'quality.report.findingOne': "1 条意见";
+        'quality.report.findingCount': "{{value1}} 条意见";
         'quality.report.findings': "审阅意见";
         'quality.report.noFindings': "未报告问题。";
         'quality.report.diff': "建议差异";
@@ -13096,6 +13132,14 @@ declare const resources: {
         "automation.nativeUnavailable": "原生定时任务历史暂不可用，总计可能未包含原生任务。";
         "automation.nativeCoverage": "{{value2}} 个已记录定时回合中，{{value1}} 个有 USD 价格。";
         "automation.nativeTokenCoverage": "{{value2}} 个已记录定时回合中，{{value1}} 个有 token 记录。";
+        "automation.nextShort": "下次";
+        "automation.triggerCount": "触发 {{value1}} 次";
+        "automation.triggerCountOne": "触发 1 次";
+        "automation.tokensValue": "{{value1}} token";
+        "automation.tokensUnknown": "Token 未知";
+        "automation.costUnknown": "费用未知";
+        "automation.runDetails": "运行详情";
+        "automation.historyHelp": "关于执行历史";
     };
 };
 declare function initializeI18n(): "en" | "zh-CN";

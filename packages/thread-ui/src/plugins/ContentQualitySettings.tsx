@@ -10,7 +10,16 @@ import { useI18n } from '../i18n';
 import type {
   PluginSettingsContext,
   PluginSettingsSnapshot,
+  UpstreamConnectionProtocol,
 } from './plugin-types';
+
+/** Wire formats the Content Quality backend can call. */
+const connectionProtocols: UpstreamConnectionProtocol[] = [
+  'openai_chat',
+  'openai_responses',
+  'anthropic',
+  'gemini',
+];
 
 const presets = [
   'concise',
@@ -21,6 +30,7 @@ const presets = [
 ] as const;
 const details = ['short', 'balanced', 'detailed'] as const;
 type QualitySettings = {
+  connectionId: string;
   connectionFile: string;
   model: string;
   language: string;
@@ -34,6 +44,7 @@ type QualitySettings = {
 };
 
 const defaults: QualitySettings = {
+  connectionId: '',
   connectionFile: '',
   model: '',
   language: 'zh-CN',
@@ -58,6 +69,7 @@ function readValues(snapshot: PluginSettingsSnapshot): QualitySettings {
   }
   const values = { ...defaults };
   for (const key of [
+    'connectionId',
     'connectionFile',
     'model',
     'language',
@@ -96,10 +108,16 @@ function isConflict(error: unknown) {
   );
 }
 
-export function ContentQualitySettings({ load, save }: PluginSettingsContext) {
+export function ContentQualitySettings({
+  load,
+  save,
+  connections,
+}: PluginSettingsContext) {
   const { t } = useI18n();
   const scope = useId();
   const [values, setValues] = useState<QualitySettings | null>(null);
+  // Values this form does not edit are saved back unchanged.
+  const [stored, setStored] = useState<Record<string, unknown>>({});
   const [revision, setRevision] = useState(0);
   const [status, setStatus] = useState<
     | 'loading'
@@ -119,6 +137,7 @@ export function ContentQualitySettings({ load, save }: PluginSettingsContext) {
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
       setValues(next);
+      setStored(snapshot.values);
       setRevision(snapshot.revision);
       setStatus('ready');
     } catch {
@@ -156,10 +175,14 @@ export function ContentQualitySettings({ load, save }: PluginSettingsContext) {
     const id = ++requestId.current;
     setStatus('saving');
     try {
-      const snapshot = await save({ revision, values: { ...values } });
+      const snapshot = await save({
+        revision,
+        values: { ...stored, ...values },
+      });
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
       setValues(next);
+      setStored(snapshot.values);
       setRevision(snapshot.revision);
       setStatus('saved');
     } catch (error) {
@@ -197,33 +220,64 @@ export function ContentQualitySettings({ load, save }: PluginSettingsContext) {
     >
       {values && (
         <fieldset disabled={busy} className="plugin-settings-fields">
-          {field(
-            'connectionFile',
-            t('quality.connectionFile'),
-            <input
-              id={`${scope}-connectionFile`}
-              aria-describedby={`${scope}-connectionFile-hint`}
-              value={values.connectionFile}
-              maxLength={4096}
-              autoComplete="off"
-              spellCheck={false}
-              onChange={(event) => update('connectionFile', event.target.value)}
-            />,
-            t('quality.connectionFileHint'),
-          )}
-          {field(
-            'model',
-            t('quality.model'),
-            <input
-              id={`${scope}-model`}
-              aria-describedby={`${scope}-model-hint`}
-              value={values.model}
-              maxLength={200}
-              autoComplete="off"
-              spellCheck={false}
-              onChange={(event) => update('model', event.target.value)}
-            />,
-            t('quality.modelHint'),
+          {connections ? (
+            <div
+              className="plugin-settings-field"
+              role="group"
+              aria-labelledby={`${scope}-connection`}
+            >
+              <span id={`${scope}-connection`}>{t('quality.connection')}</span>
+              {connections.renderPicker({
+                connectionId: values.connectionId,
+                model: values.model,
+                protocols: connectionProtocols,
+                disabled: busy,
+                onChange: (next) => {
+                  update('connectionId', next.connectionId);
+                  update('model', next.model);
+                },
+              })}
+              <p>
+                {t(
+                  !values.connectionId && values.connectionFile
+                    ? 'quality.connectionLegacyHint'
+                    : 'quality.connectionHint',
+                )}
+              </p>
+            </div>
+          ) : (
+            <>
+              {field(
+                'connectionFile',
+                t('quality.connectionFile'),
+                <input
+                  id={`${scope}-connectionFile`}
+                  aria-describedby={`${scope}-connectionFile-hint`}
+                  value={values.connectionFile}
+                  maxLength={4096}
+                  autoComplete="off"
+                  spellCheck={false}
+                  onChange={(event) =>
+                    update('connectionFile', event.target.value)
+                  }
+                />,
+                t('quality.connectionFileHint'),
+              )}
+              {field(
+                'model',
+                t('quality.model'),
+                <input
+                  id={`${scope}-model`}
+                  aria-describedby={`${scope}-model-hint`}
+                  value={values.model}
+                  maxLength={200}
+                  autoComplete="off"
+                  spellCheck={false}
+                  onChange={(event) => update('model', event.target.value)}
+                />,
+                t('quality.modelHint'),
+              )}
+            </>
           )}
           {field(
             'language',

@@ -21,10 +21,30 @@ interface PluginSettingsSnapshot {
     revision: number;
     values: Record<string, unknown>;
 }
+/** Wire formats a saved upstream connection can speak; not a model brand. */
+type UpstreamConnectionProtocol = 'openai_chat' | 'openai_responses' | 'anthropic' | 'gemini';
+interface UpstreamConnectionPickerValue {
+    connectionId: string;
+    model: string;
+}
+interface UpstreamConnectionPickerProps extends UpstreamConnectionPickerValue {
+    /** Only connections speaking one of these protocols can be selected. */
+    protocols?: UpstreamConnectionProtocol[];
+    disabled?: boolean;
+    onChange: (value: UpstreamConnectionPickerValue) => void;
+}
+/**
+ * Optional host capability: the host renders its saved-connection selector, including
+ * its own add/edit form. Selecting or saving a connection never applies it anywhere.
+ */
+interface UpstreamConnectionHost {
+    renderPicker: (props: UpstreamConnectionPickerProps) => ReactNode;
+}
 interface PluginSettingsContext {
     pluginId: string;
     load: () => Promise<PluginSettingsSnapshot>;
     save: (settings: PluginSettingsSnapshot) => Promise<PluginSettingsSnapshot>;
+    connections?: UpstreamConnectionHost;
 }
 interface PluginSettingsContribution {
     id: string;
@@ -71,4 +91,4 @@ interface FrontendPluginModule {
     }>;
 }
 
-export type { ArtifactRenderContext as A, FrontendPluginModule as F, InlineCodeRenderContext as I, MessagePresentation as M, PluginSettingsSnapshot as P, ThreadPanelContribution as T, PluginActionOutputContext as a, MessagePresentationContext as b, PluginSettingsContext as c, PluginSettingsContribution as d };
+export type { ArtifactRenderContext as A, FrontendPluginModule as F, InlineCodeRenderContext as I, MessagePresentation as M, PluginSettingsSnapshot as P, ThreadPanelContribution as T, UpstreamConnectionHost as U, PluginActionOutputContext as a, MessagePresentationContext as b, PluginSettingsContext as c, PluginSettingsContribution as d, UpstreamConnectionPickerProps as e, UpstreamConnectionPickerValue as f, UpstreamConnectionProtocol as g };

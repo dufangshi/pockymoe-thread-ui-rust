@@ -100,7 +100,12 @@ export type {
   PluginActionOutputContext,
   InlineCodeRenderContext,
   ThreadPanelContribution,
+  UpstreamConnectionHost,
+  UpstreamConnectionPickerProps,
+  UpstreamConnectionPickerValue,
+  UpstreamConnectionProtocol,
 } from './plugins/plugin-types';
+export type { PluginProviderAdapter } from './plugins/PluginProvider';
 export {
   AppShellNavContext,
   useAppShellNav,

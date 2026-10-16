@@ -157,6 +157,7 @@ describe('Content Quality settings', () => {
       {
         revision: 3,
         values: {
+          connectionId: '',
           connectionFile: '/private/quality-profile.json',
           model: 'test-model',
           language: 'en',
@@ -174,6 +175,111 @@ describe('Content Quality settings', () => {
     await click('Save settings');
     expect(savePluginSettings.mock.calls[1]![1].revision).toBe(4);
     expect(container.querySelector('input[type="password"]')).toBeNull();
+  });
+
+  it('uses the host connection picker, hides the file path and saves compatibility values back', async () => {
+    const pickerProps: Array<Record<string, unknown>> = [];
+    const connections = {
+      renderPicker: (props: {
+        connectionId: string;
+        model: string;
+        protocols?: string[];
+        onChange: (value: { connectionId: string; model: string }) => void;
+      }) => {
+        pickerProps.push(props);
+        return (
+          <button
+            type="button"
+            onClick={() =>
+              props.onChange({ connectionId: 'conn-1', model: 'chat-model' })
+            }
+          >
+            {`picker:${props.connectionId || 'none'}:${props.model || 'none'}`}
+          </button>
+        );
+      },
+    };
+    const load = vi.fn().mockResolvedValue({
+      revision: 5,
+      values: {
+        connectionFile: '/legacy/profile.json',
+        model: 'old-model',
+        futureOption: { kept: true },
+      },
+    });
+    const save = vi
+      .fn()
+      .mockImplementation(async (snapshot) => ({ ...snapshot, revision: 6 }));
+    await act(async () =>
+      root.render(
+        <ContentQualitySettings
+          pluginId="quality"
+          load={load}
+          save={save}
+          connections={connections}
+        />,
+      ),
+    );
+    expect(container.textContent).not.toContain('Connection profile file');
+    expect(container.textContent).toContain(
+      'Currently using a connection profile file',
+    );
+    expect(pickerProps.at(-1)).toMatchObject({
+      connectionId: '',
+      model: 'old-model',
+      protocols: ['openai_chat', 'openai_responses', 'anthropic', 'gemini'],
+    });
+    await change('Reader background', 'Kept while choosing');
+    await click('picker:none:old-model');
+    expect(container.textContent).toContain('picker:conn-1:chat-model');
+    expect(control('Reader background').value).toBe('Kept while choosing');
+    await click('Save settings');
+    expect(save).toHaveBeenCalledWith({
+      revision: 5,
+      values: expect.objectContaining({
+        connectionId: 'conn-1',
+        model: 'chat-model',
+        connectionFile: '/legacy/profile.json',
+        readerBackground: 'Kept while choosing',
+        futureOption: { kept: true },
+      }),
+    });
+  });
+
+  it('passes the host connection capability through PluginProvider settings sections', async () => {
+    const renderPicker = vi.fn(() => <span>host picker</span>);
+    const adapter: PluginProviderAdapter = {
+      fetchPlugins: () => [
+        { ...contentQualityPlugin.manifest, enabled: true, available: true },
+      ],
+      loadPluginSettings: vi
+        .fn()
+        .mockResolvedValue({ revision: 0, values: {} }),
+      savePluginSettings: vi.fn(),
+      connections: { renderPicker },
+    };
+    function Sections() {
+      const plugins = usePlugins();
+      return (
+        <>
+          {plugins.getSettingsSections().map((section) => (
+            <div key={section.id}>{section.content}</div>
+          ))}
+        </>
+      );
+    }
+    await act(async () =>
+      root.render(
+        <PluginProvider
+          adapter={adapter}
+          builtinPlugins={[contentQualityPlugin]}
+        >
+          <Sections />
+        </PluginProvider>,
+      ),
+    );
+    expect(container.textContent).toContain('host picker');
+    expect(renderPicker).toHaveBeenCalled();
   });
 
   it('retains edits on save failure and conflict, then explicitly reloads the latest revision', async () => {

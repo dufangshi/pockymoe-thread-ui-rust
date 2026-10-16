@@ -30,10 +30,38 @@ export interface PluginSettingsSnapshot {
   values: Record<string, unknown>;
 }
 
+/** Wire formats a saved upstream connection can speak; not a model brand. */
+export type UpstreamConnectionProtocol =
+  | 'openai_chat'
+  | 'openai_responses'
+  | 'anthropic'
+  | 'gemini';
+
+export interface UpstreamConnectionPickerValue {
+  connectionId: string;
+  model: string;
+}
+
+export interface UpstreamConnectionPickerProps extends UpstreamConnectionPickerValue {
+  /** Only connections speaking one of these protocols can be selected. */
+  protocols?: UpstreamConnectionProtocol[];
+  disabled?: boolean;
+  onChange: (value: UpstreamConnectionPickerValue) => void;
+}
+
+/**
+ * Optional host capability: the host renders its saved-connection selector, including
+ * its own add/edit form. Selecting or saving a connection never applies it anywhere.
+ */
+export interface UpstreamConnectionHost {
+  renderPicker: (props: UpstreamConnectionPickerProps) => ReactNode;
+}
+
 export interface PluginSettingsContext {
   pluginId: string;
   load: () => Promise<PluginSettingsSnapshot>;
   save: (settings: PluginSettingsSnapshot) => Promise<PluginSettingsSnapshot>;
+  connections?: UpstreamConnectionHost;
 }
 
 export interface PluginSettingsContribution {

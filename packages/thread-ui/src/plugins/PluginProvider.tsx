@@ -26,9 +26,11 @@ import type {
   PluginSettingsContribution,
   MessagePresentationContext,
   PluginActionOutputContext,
+  UpstreamConnectionHost,
 } from './plugin-types';
 
 export interface PluginProviderAdapter {
+  connections?: UpstreamConnectionHost;
   loadPluginSettings?: (pluginId: string) => Promise<PluginSettingsSnapshot>;
   savePluginSettings?: (pluginId: string, settings: PluginSettingsSnapshot) => Promise<PluginSettingsSnapshot>;
   fetchPlugins?: () => Promise<PluginDto[]> | PluginDto[];
@@ -52,6 +54,7 @@ function PluginSettingsSection({ section, pluginId, adapter }: {
     pluginId,
     load: () => adapter.loadPluginSettings!(pluginId),
     save: (settings: PluginSettingsSnapshot) => adapter.savePluginSettings!(pluginId, settings),
+    ...(adapter.connections ? { connections: adapter.connections } : {}),
   }), [adapter, pluginId]);
   return section.render(context);
 }

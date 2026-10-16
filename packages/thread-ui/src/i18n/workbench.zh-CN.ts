@@ -515,6 +515,8 @@ export const workbenchZhCN = {
   'workbench.threadSheet': '线程',
   'workbench.thisWorkspace': '本工作区',
   'workbench.workspaceAndShortcuts': '工作区与快捷方式',
+  'workbench.drawerShort': '工作区',
+  'workbench.homeShort': '首页',
   'workbench.app': '应用',
   'workbench.closeSheet': '关闭',
   "workbench.phoneDockSetting": "手机单手模式",

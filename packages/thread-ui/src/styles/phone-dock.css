@@ -345,10 +345,11 @@
   .thread-ui-shell .matter-workbench .matter-phone-sheet-tools > button {
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     gap: 5px;
     width: auto;
-    height: 72px;
+    height: 64px;
     padding: 6px 2px;
     border-radius: 14px;
     color: var(--theme-fg);
@@ -364,10 +365,11 @@
   .thread-ui-shell .matter-workbench .matter-phone-sheet-host :is(button, a)[aria-label] {
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     gap: 5px;
     width: auto;
-    height: 72px;
+    height: 64px;
     padding: 6px 2px;
     border: 0;
     border-radius: 14px;
@@ -383,19 +385,32 @@
     background: var(--theme-surface-strong);
     color: var(--theme-fg);
   }
-  .matter-phone-sheet-list > :is(button, a, div) {
+  /* The app's destinations: one row of small tiles in the More sheet's footer. */
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer > .matter-phone-sheet-apps {
+    display: grid;
+    flex: 1;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    gap: 2px;
+    height: auto;
+    margin: 0 -6px;
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-apps > :is(button, a, div) {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    width: 100%;
-    min-height: 50px;
-    padding: 0 10px;
+    justify-content: center;
+    gap: 4px;
+    width: auto;
+    height: 54px;
+    padding: 4px 2px;
     border-radius: 12px;
     color: var(--theme-fg);
-    font-size: 14.5px;
-    text-align: left;
+    font-size: 11px;
+    line-height: 1.2;
+    text-align: center;
   }
-  .thread-ui-shell .matter-workbench .matter-phone-sheet-list > :is(button, a) { width: 100%; height: auto; justify-content: flex-start; }
+  .matter-phone-sheet-apps > * > span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* The running sheet's way to every thread. */
   .thread-ui-shell .matter-workbench .matter-phone-sheet-all {
     display: flex;
@@ -412,7 +427,7 @@
     font-weight: 600;
   }
   .matter-phone-sheet-all svg { width: 17px; height: 17px; color: var(--theme-fg-muted); }
-  .matter-phone-sheet-list svg { width: 20px; height: 20px; color: var(--theme-fg-muted); }
+  .matter-phone-sheet-apps svg { width: 20px; height: 20px; color: var(--theme-fg-muted); }
   .matter-phone-sheet-settings { position: relative; }
   /* The settings trigger is the host's own dialog button; stretch it over the row. */
   .thread-ui-shell .matter-workbench .matter-phone-sheet-settings > :first-child { position: static; width: 20px; min-width: 20px; height: 20px; }

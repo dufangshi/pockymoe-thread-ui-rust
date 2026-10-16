@@ -681,6 +681,8 @@ declare const en: {
     readonly 'workbench.threadSheet': "Threads";
     readonly 'workbench.thisWorkspace': "This workspace";
     readonly 'workbench.workspaceAndShortcuts': "Workspace and shortcuts";
+    readonly 'workbench.drawerShort': "Workspaces";
+    readonly 'workbench.homeShort': "Home";
     readonly 'workbench.app': "App";
     readonly 'workbench.closeSheet': "Close";
     readonly "workbench.phoneDockSetting": "One-handed phone layout";
@@ -1898,6 +1900,10 @@ declare const en: {
     readonly "files.terminalPasteWarning": "Confirm multi-line pastes";
     readonly "files.terminalPasteWarningHint": "Only when the shell would run the lines right away.";
     readonly "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a Mac, ⌘C and ⌘V copy and paste and Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select.";
+    readonly "files.askAttachments": {
+        readonly one: "{{count}} attached file goes with it";
+        readonly other: "{{count}} attached files go with it";
+    };
     readonly "devices.useOneClickProtectionInstead": "Use one-click protection instead";
     readonly "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.";
     readonly "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.";
@@ -3010,6 +3016,8 @@ declare const en: {
     readonly "chat.hint.toolsExample": "e.g. a browser screenshot, reading a GitHub issue";
     readonly "chat.hint.reasoning": "Summaries of the model's reasoning steps.";
     readonly "chat.hint.reasoningExample": "e.g. planning which file to change first";
+    readonly "chat.turnFailedShow": "Why this turn failed";
+    readonly "chat.turnFailedTitle": "This turn did not finish";
     readonly "auth.ui.signInTitle": "Sign in";
     readonly "auth.ui.registerTitle": "Create your account";
     readonly "auth.ui.or": "or";
@@ -4214,6 +4222,8 @@ declare const zhCN: {
     'workbench.threadSheet': "线程";
     'workbench.thisWorkspace': "本工作区";
     'workbench.workspaceAndShortcuts': "工作区与快捷方式";
+    'workbench.drawerShort': "工作区";
+    'workbench.homeShort': "首页";
     'workbench.app': "应用";
     'workbench.closeSheet': "关闭";
     "workbench.phoneDockSetting": "手机单手模式";
@@ -5431,6 +5441,10 @@ declare const zhCN: {
     "files.terminalPasteWarning": "粘贴多行前确认";
     "files.terminalPasteWarningHint": "只在 shell 会立刻逐行执行时提示。";
     "files.terminalKeysNote": "Ctrl+C：有选中时复制，没有时中断；Ctrl+Shift+V 始终粘贴。Mac 上用 ⌘C / ⌘V 复制粘贴，Ctrl 留给终端。手机上长按终端选择文字，按键条里有粘贴和选择。";
+    "files.askAttachments": {
+        readonly one: "将一并发送 {{count}} 个附件";
+        readonly other: "将一并发送 {{count}} 个附件";
+    };
     "devices.useOneClickProtectionInstead": "改用一键保护";
     "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。";
     "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。";
@@ -6543,6 +6557,8 @@ declare const zhCN: {
     "chat.hint.toolsExample": "例：浏览器截图、读取 GitHub issue";
     "chat.hint.reasoning": "模型推理步骤的摘要。";
     "chat.hint.reasoningExample": "例：先想好改哪个文件";
+    "chat.turnFailedShow": "查看这一轮失败的原因";
+    "chat.turnFailedTitle": "这一轮没有完成";
     "auth.ui.signInTitle": "登录";
     "auth.ui.registerTitle": "创建账号";
     "auth.ui.or": "或";
@@ -7769,6 +7785,8 @@ declare const resources: {
         readonly 'workbench.threadSheet': "Threads";
         readonly 'workbench.thisWorkspace': "This workspace";
         readonly 'workbench.workspaceAndShortcuts': "Workspace and shortcuts";
+        readonly 'workbench.drawerShort': "Workspaces";
+        readonly 'workbench.homeShort': "Home";
         readonly 'workbench.app': "App";
         readonly 'workbench.closeSheet': "Close";
         readonly "workbench.phoneDockSetting": "One-handed phone layout";
@@ -8986,6 +9004,10 @@ declare const resources: {
         readonly "files.terminalPasteWarning": "Confirm multi-line pastes";
         readonly "files.terminalPasteWarningHint": "Only when the shell would run the lines right away.";
         readonly "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a Mac, ⌘C and ⌘V copy and paste and Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select.";
+        readonly "files.askAttachments": {
+            readonly one: "{{count}} attached file goes with it";
+            readonly other: "{{count}} attached files go with it";
+        };
         readonly "devices.useOneClickProtectionInstead": "Use one-click protection instead";
         readonly "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.";
         readonly "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.";
@@ -10098,6 +10120,8 @@ declare const resources: {
         readonly "chat.hint.toolsExample": "e.g. a browser screenshot, reading a GitHub issue";
         readonly "chat.hint.reasoning": "Summaries of the model's reasoning steps.";
         readonly "chat.hint.reasoningExample": "e.g. planning which file to change first";
+        readonly "chat.turnFailedShow": "Why this turn failed";
+        readonly "chat.turnFailedTitle": "This turn did not finish";
         readonly "auth.ui.signInTitle": "Sign in";
         readonly "auth.ui.registerTitle": "Create your account";
         readonly "auth.ui.or": "or";
@@ -11301,6 +11325,8 @@ declare const resources: {
         'workbench.threadSheet': "线程";
         'workbench.thisWorkspace': "本工作区";
         'workbench.workspaceAndShortcuts': "工作区与快捷方式";
+        'workbench.drawerShort': "工作区";
+        'workbench.homeShort': "首页";
         'workbench.app': "应用";
         'workbench.closeSheet': "关闭";
         "workbench.phoneDockSetting": "手机单手模式";
@@ -12518,6 +12544,10 @@ declare const resources: {
         "files.terminalPasteWarning": "粘贴多行前确认";
         "files.terminalPasteWarningHint": "只在 shell 会立刻逐行执行时提示。";
         "files.terminalKeysNote": "Ctrl+C：有选中时复制，没有时中断；Ctrl+Shift+V 始终粘贴。Mac 上用 ⌘C / ⌘V 复制粘贴，Ctrl 留给终端。手机上长按终端选择文字，按键条里有粘贴和选择。";
+        "files.askAttachments": {
+            readonly one: "将一并发送 {{count}} 个附件";
+            readonly other: "将一并发送 {{count}} 个附件";
+        };
         "devices.useOneClickProtectionInstead": "改用一键保护";
         "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。";
         "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。";
@@ -13630,6 +13660,8 @@ declare const resources: {
         "chat.hint.toolsExample": "例：浏览器截图、读取 GitHub issue";
         "chat.hint.reasoning": "模型推理步骤的摘要。";
         "chat.hint.reasoningExample": "例：先想好改哪个文件";
+        "chat.turnFailedShow": "查看这一轮失败的原因";
+        "chat.turnFailedTitle": "这一轮没有完成";
         "auth.ui.signInTitle": "登录";
         "auth.ui.registerTitle": "创建账号";
         "auth.ui.or": "或";

@@ -41,6 +41,7 @@ import { GraphChatCompactMessageItem as CompactMessageItem } from '../graph-chat
 import { MessageExpansionScope } from '../graph-chat/MessageExpansionScope';
 import { GraphChatTurnBody } from '../graph-chat/GraphChatTurnBody';
 import { GraphChatTurnFrame } from '../graph-chat/GraphChatTurnFrame';
+import { echoesFailure, TurnFailureContext } from '../graph-chat/turnFailure';
 import { TranscriptAgentByline } from '../graph-chat/TranscriptAgent';
 import {
   countTurnSteps,
@@ -617,11 +618,19 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     () => getLiveOutputTailForTurn(liveOutput, mergedItems),
     [liveOutput, mergedItems],
   );
+  // A failed turn's error sits on its prompt; a reply that only repeats it is left out.
+  const failedWith = turn.status === 'failed' && turn.error ? turn.error : null;
   const preparedItems = useMemo(
     () => prepareTurnItemsForRendering(mergedItems, activeForRendering).filter(item =>
       (showReasoningSummaries || item.kind !== 'reasoning') &&
-      (!nestedPeerWork || item.kind !== 'userMessage') && item.id !== omitAgentId),
-    [activeForRendering, mergedItems, showReasoningSummaries, nestedPeerWork, omitAgentId],
+      (!nestedPeerWork || item.kind !== 'userMessage') && item.id !== omitAgentId &&
+      !(failedWith && item.kind === 'agentMessage' && echoesFailure(failedWith, item.text))),
+    [activeForRendering, mergedItems, showReasoningSummaries, nestedPeerWork, omitAgentId, failedWith],
+  );
+  const failedPromptId = failedWith ? preparedItems.find(item => item.kind === 'userMessage')?.id : undefined;
+  const failure = useMemo(
+    () => failedWith && failedPromptId ? { promptId: failedPromptId, error: failedWith } : null,
+    [failedWith, failedPromptId],
   );
   const groupedItems = useMemo(
     () => groupTimelineHistoryItems(preparedItems),
@@ -973,12 +982,13 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
 
   return (
     <MessageExpansionScope key={`${threadId ?? ''}:${turn.id}`}>
+    <TurnFailureContext.Provider value={failure}>
     <GraphChatTurnFrame
       absoluteIndex={absoluteIndex}
       body={canToggleWorkedSummary ? collapsedSummaryNode : turnBody}
       collapsed={effectiveCollapsed}
       collapsedBody={collapsedSummaryNode}
-      error={turn.error}
+      error={failure ? null : turn.error}
       headerStatus={<TurnStatusBar turn={turn} />}
       isActive={activeForRendering}
       status={turn.status}
@@ -988,6 +998,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       timeTitle={turnTimeTitle}
       tokenSummary={<TurnTokenSummary turn={turn} />}
     />
+    </TurnFailureContext.Provider>
     </MessageExpansionScope>
   );
 });

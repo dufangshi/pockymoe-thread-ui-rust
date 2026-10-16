@@ -765,7 +765,15 @@ export function MatterWorkbench({
             <div className="matter-thread-section">{unreadThreads.map(thread => renderThread(thread))}</div>
           </>}
         </PhoneSheet>
-        <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} onClose={() => setMoreOpen(false)}>
+        {/* The app's destinations sit in the footer, so Settings shows however many tools there are. */}
+        <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} onClose={() => setMoreOpen(false)}
+          footer={<nav className="matter-phone-sheet-apps" aria-label={translate('workbench.app')}>
+            {openThreadMap && <button type="button" onClick={() => { setMoreOpen(false); openThreadMap(); }}><LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span></button>}
+            <button type="button" aria-label={translate('workbench.workspaceAndShortcuts')} onClick={() => setSidebarOpen(true)}><PanelLeft data-icon="sidebar" /><span>{translate('workbench.drawerShort')}</span></button>
+            {homeHref && <a href={homeHref} aria-label={translate('workbench.backToWorkspaces')} onClick={goHome}><Home data-icon="home" /><span>{translate('workbench.homeShort')}</span></a>}
+            <button type="button" onClick={() => history.back()}><ArrowLeft data-icon="back" /><span>{translate('workbench.goBack')}</span></button>
+            <div className="matter-phone-sheet-settings">{settings}<span>{translate('workbench.settings')}</span></div>
+          </nav>}>
           <h3 title={title}>{title}</h3>
           <div className="matter-phone-sheet-tools">
             {!o.emptyWorkspace && <button type="button" onClick={o.onSearch}><Search data-icon="search" /><span>{translate('workbench.searchConversation')}</span></button>}
@@ -773,14 +781,6 @@ export function MatterWorkbench({
             {o.toolPanels?.map(panel => <button type="button" key={panel.id} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}<span>{panel.label}</span></button>)}
             {shellNav?.setPhoneHand && <button type="button" aria-pressed={leftHanded} onClick={() => shellNav.setPhoneHand?.(leftHanded ? 'right' : 'left')}><Hand className="matter-phone-hand-icon" /><span>{translate('workbench.leftHanded')}</span></button>}
             <div className="matter-phone-sheet-host">{actions}{threadMenu}{o.statusActions}</div>
-          </div>
-          <h3>{translate('workbench.app')}</h3>
-          <div className="matter-phone-sheet-list">
-            {openThreadMap && <button type="button" onClick={() => { setMoreOpen(false); openThreadMap(); }}><LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span></button>}
-            <button type="button" onClick={() => setSidebarOpen(true)}><PanelLeft data-icon="sidebar" /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>
-            {homeHref && <a href={homeHref} onClick={goHome}><Home data-icon="home" /><span>{translate('workbench.backToWorkspaces')}</span></a>}
-            <button type="button" onClick={() => history.back()}><ArrowLeft data-icon="back" /><span>{translate('workbench.goBack')}</span></button>
-            <div className="matter-phone-sheet-settings">{settings}<span>{translate('workbench.settings')}</span></div>
           </div>
         </PhoneSheet>
       </>}

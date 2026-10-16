@@ -515,6 +515,8 @@ export const workbenchEn = {
   'workbench.threadSheet': 'Threads',
   'workbench.thisWorkspace': 'This workspace',
   'workbench.workspaceAndShortcuts': 'Workspace and shortcuts',
+  'workbench.drawerShort': 'Workspaces',
+  'workbench.homeShort': 'Home',
   'workbench.app': 'App',
   'workbench.closeSheet': 'Close',
   "workbench.phoneDockSetting": "One-handed phone layout",

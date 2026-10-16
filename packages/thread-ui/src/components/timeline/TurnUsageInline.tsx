@@ -5,8 +5,14 @@ import { TokenUsageCost } from './TokenUsageCost';
 import type { TimelineTurn } from './timelineItems';
 import { formatCompactTokenCount } from './tokenFormatting';
 
+/** The model that ran; Claude names its API error replies' model "<synthetic>". */
+function turnModel(turn: TimelineTurn) {
+  const model = turn.model?.trim();
+  return model && model !== '<synthetic>' ? model : translate("chat.modelUnavailable");
+}
+
 export function formatTurnRuntimeSummary(turn: TimelineTurn) {
-  const model = turn.model?.trim() || translate("chat.modelUnavailable");
+  const model = turnModel(turn);
   const effort = turn.reasoningEffort?.trim();
   return effort ? `${model} · ${effort}` : model;
 }
@@ -45,7 +51,7 @@ export function TurnUsageInline({
         title={formatTurnRuntimeSummary(turn)}
       >
         <span className="thread-turn-usage-model-name">
-          {turn.model?.trim() || translate("chat.modelUnavailable")}
+          {turnModel(turn)}
         </span>
         {turn.reasoningEffort?.trim() ? (
           <span className="thread-turn-usage-effort">

@@ -509,4 +509,6 @@ export const chatEn = {
   "chat.hint.toolsExample": "e.g. a browser screenshot, reading a GitHub issue",
   "chat.hint.reasoning": "Summaries of the model's reasoning steps.",
   "chat.hint.reasoningExample": "e.g. planning which file to change first",
+  "chat.turnFailedShow": "Why this turn failed",
+  "chat.turnFailedTitle": "This turn did not finish",
 } as const;

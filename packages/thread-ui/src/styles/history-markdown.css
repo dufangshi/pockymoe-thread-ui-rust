@@ -3015,6 +3015,48 @@
   .thread-ui-shell .thread-graph-code-block:focus-within .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
 }
 
+/* A prompt's time and copy follow its text: beside a short line, else under its
+   right end. They never cover the text or a theme's prompt mark. */
+.thread-ui-shell .thread-graph-message-bubble.is-user {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: flex-end; column-gap: 8px;
+}
+.thread-ui-shell .thread-graph-message-bubble.is-user > .thread-graph-message-content { flex: 0 1 auto; min-width: 0; max-width: 100%; }
+/* As tall as a line of text, so the larger copy button does not push the text off the line. */
+.thread-ui-shell .thread-graph-message-bubble.is-user .thread-graph-message-copy-desktop { position: static; display: none; align-items: center; height: 1.25rem; }
+.thread-ui-shell .thread-graph-message-bubble.is-user[data-touch-actions="true"] .thread-graph-message-copy-desktop { display: flex; }
+@media (hover: hover) and (pointer: fine) {
+  .thread-ui-shell .thread-graph-message-bubble.is-user:is(:hover, :focus-within) .thread-graph-message-copy-desktop { display: flex; }
+}
+.thread-ui-shell .thread-graph-message-bubble.is-user .thread-graph-message-hover-time { margin-right: 2px; padding: 0; background: none; color: inherit; }
+
+/* A failed turn's prompt carries a red mark; tapping it shows the error under the prompt. */
+.thread-ui-shell .thread-graph-message-failure {
+  display: inline-flex; flex: none; align-items: center; justify-content: center;
+  width: 1.25rem; height: 1.25rem; padding: 0; border: 0; border-radius: 999px; background: none;
+  color: var(--theme-danger, #e5484d);
+}
+.thread-ui-shell .thread-graph-message-failure svg { width: 17px; height: 17px; }
+.thread-ui-shell .thread-graph-message-failure:focus-visible { outline: 2px solid var(--theme-danger, #e5484d); outline-offset: 1px; }
+.thread-ui-shell .thread-graph-message-failure-detail {
+  max-width: 100%;
+  margin-top: 6px;
+  padding: 7px 10px;
+  border: 1px solid color-mix(in srgb, var(--theme-danger, #e5484d) 32%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--theme-danger, #e5484d) 7%, transparent);
+  color: var(--theme-fg);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+}
+.thread-ui-shell .thread-graph-message-failure-detail strong { display: block; color: var(--theme-danger, #e5484d); font-size: 12px; font-weight: 600; }
+.thread-ui-shell .thread-graph-message-failure-detail p { margin: 2px 0 0; overflow-wrap: anywhere; }
+.thread-ui-shell .thread-graph-message-failure-detail pre {
+  max-height: 9rem; margin: 6px 0 0; overflow: auto;
+  color: var(--theme-fg-muted); font-size: 11px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+
 .thread-ui-shell .thread-graph-message-time-row + .thread-graph-message-bubble.is-assistant { padding-top: 0; }
 
 .thread-workspace-link-menu { position:fixed; z-index:120; min-width:180px; padding:4px; border:1px solid #49473e; border-radius:9px; background:#25241e; color:#e9e7df; box-shadow:0 8px 24px #0005; font-size:13px; }

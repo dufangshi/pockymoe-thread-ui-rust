@@ -15,13 +15,14 @@ const baseOptions: MatterWorkbenchOptions = {
 };
 let options = baseOptions;
 let phoneDock = true;
-function render(statusActions: React.ReactNode = null) {
+let nav: Partial<AppShellNavContextValue> = {};
+function render(statusActions: React.ReactNode = null, children: React.ReactNode = <p>Conversation</p>) {
   act(() => root.render(
-    <AppShellNavContext.Provider value={{ phoneDock } as AppShellNavContextValue}>
+    <AppShellNavContext.Provider value={{ phoneDock, ...nav } as AppShellNavContextValue}>
       <MatterWorkbench options={{ ...options, statusActions }} title="A" homeHref="/workspaces" settings={<button aria-label="Open settings" />}
         newThread={null} actions={null} threadMenu={null} connection={null}
         deviceMonitor={<button aria-label="Device monitor" />} explorer={null} revealExplorer={0}>
-        <p>Conversation</p>
+        {children}
       </MatterWorkbench>
     </AppShellNavContext.Provider>,
   ));
@@ -35,6 +36,7 @@ beforeEach(() => {
   setLocale('en', false);
   options = baseOptions;
   phoneDock = true;
+  nav = {};
   host = document.createElement('div');
   document.body.append(host);
   root = createRoot(host);
@@ -111,6 +113,13 @@ describe('phone files and conversation toggles', () => {
 
 const thread = (key: string, status = 'idle') => ({ key, title: key.toUpperCase(), subtitle: 'ws', href: `/threads/${key}`, status, favorite: false });
 const button = (label: string) => host.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`);
+/** jsdom has no Touch: a plain event carrying the touch lists the handlers read. */
+function touch(target: Element, type: string, clientY: number, clientX = 100) {
+  const event = new Event(type, { bubbles: true, cancelable: true });
+  const touches = type === 'touchend' ? [] : [{ clientX, clientY }];
+  Object.assign(event, { touches, changedTouches: [{ clientX, clientY }] });
+  act(() => { target.dispatchEvent(event); });
+}
 function pointer(target: Element, type: string, clientX: number, clientY = 10) {
   const event = new MouseEvent(type, { bubbles: true, cancelable: true, clientX, clientY });
   Object.assign(event, { pointerId: 1, pointerType: 'touch' });
@@ -209,6 +218,54 @@ describe('one-handed phone dock', () => {
     act(() => { button('Settings dialog')!.click(); vi.runAllTimers(); });
     expect(more.hasAttribute('data-open')).toBe(false);
     vi.useRealTimers();
+  });
+
+  it('opens the thread sheet with a swipe up on the composer, not with a sideways one', () => {
+    render(null, <div className="thread-graph-composer-host"><div role="textbox" aria-label="Prompt" /></div>);
+    const prompt = host.querySelector('[aria-label="Prompt"]')!;
+    const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Threads"]')!;
+    touch(prompt, 'touchstart', 500);
+    touch(prompt, 'touchend', 480, 200);
+    expect(sheet.hasAttribute('data-open')).toBe(false);
+    touch(prompt, 'touchstart', 500);
+    touch(prompt, 'touchend', 430);
+    expect(sheet.hasAttribute('data-open')).toBe(true);
+  });
+
+  it('mirrors the layout for the left hand and switches hands from More', () => {
+    const setPhoneHand = vi.fn();
+    nav = { phoneHand: 'left', setPhoneHand };
+    render();
+    expect(host.querySelector('.matter-workbench')!.classList.contains('is-left-handed')).toBe(true);
+    const more = host.querySelector('section.matter-phone-sheet[aria-label="More actions"]')!;
+    const toggle = [...more.querySelectorAll('button')].find(item => item.textContent === 'Left-handed')!;
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    act(() => toggle.click());
+    expect(setPhoneHand).toHaveBeenCalledWith('right');
+    nav = { phoneHand: 'right', setPhoneHand };
+    render();
+    expect(host.querySelector('.matter-workbench')!.classList.contains('is-left-handed')).toBe(false);
+  });
+
+  it('brings the dock back only after the tap that moved focus has clicked', () => {
+    vi.useFakeTimers();
+    try {
+      render(null, <><div role="textbox" contentEditable aria-label="Prompt" /><button aria-label="Send" /></>);
+      const workbench = host.querySelector('.matter-workbench')!;
+      act(() => host.querySelector<HTMLElement>('[aria-label="Prompt"]')!.focus());
+      expect(workbench.classList.contains('is-typing')).toBe(true);
+      // The tap's mousedown moves focus; the row must not return before its click.
+      act(() => { button('Send')!.focus(); vi.advanceTimersByTime(50); });
+      expect(workbench.classList.contains('is-typing')).toBe(true);
+      act(() => { button('Send')!.click(); vi.advanceTimersByTime(1); });
+      expect(workbench.classList.contains('is-typing')).toBe(false);
+      // Without a click (the keyboard's own close button) it returns shortly after.
+      act(() => host.querySelector<HTMLElement>('[aria-label="Prompt"]')!.focus());
+      act(() => { (document.activeElement as HTMLElement).blur(); vi.advanceTimersByTime(50); });
+      expect(workbench.classList.contains('is-typing')).toBe(true);
+      act(() => { vi.advanceTimersByTime(500); });
+      expect(workbench.classList.contains('is-typing')).toBe(false);
+    } finally { vi.useRealTimers(); }
   });
 
   it('hides the dock while a field in the conversation has focus', () => {

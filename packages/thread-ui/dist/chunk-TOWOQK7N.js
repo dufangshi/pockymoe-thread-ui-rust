@@ -3259,6 +3259,11 @@ var workbenchEn = {
   "workbench.phoneDockSetting": "One-handed phone layout",
   "workbench.phoneDockSettingHint": "On a phone, threads, views and actions sit in a dock at the bottom and the top bar only shows status. Off restores the top toolbar and thread tabs.",
   "workbench.phoneDockSettingToggle": "One-handed",
+  "workbench.phoneHand": "Hand",
+  "workbench.phoneHandRight": "Right",
+  "workbench.phoneHandLeft": "Left",
+  "workbench.phoneHandHint": "Left mirrors the dock, the composer buttons and the turn navigation.",
+  "workbench.leftHanded": "Left-handed",
   "workbench.pinnedThreads": "Pinned conversations"
 };
 
@@ -6535,6 +6540,11 @@ var workbenchZhCN = {
   "workbench.phoneDockSetting": "\u624B\u673A\u5355\u624B\u6A21\u5F0F",
   "workbench.phoneDockSettingHint": "\u5728\u624B\u673A\u4E0A\u628A\u7EBF\u7A0B\u3001\u89C6\u56FE\u548C\u64CD\u4F5C\u653E\u5230\u5E95\u90E8\uFF0C\u9876\u680F\u53EA\u663E\u793A\u72B6\u6001\u3002\u5173\u95ED\u540E\u6062\u590D\u539F\u6765\u7684\u9876\u90E8\u5DE5\u5177\u680F\u548C\u7EBF\u7A0B\u6807\u7B7E\u3002",
   "workbench.phoneDockSettingToggle": "\u5355\u624B\u6A21\u5F0F",
+  "workbench.phoneHand": "\u60EF\u7528\u624B",
+  "workbench.phoneHandRight": "\u53F3\u624B",
+  "workbench.phoneHandLeft": "\u5DE6\u624B",
+  "workbench.phoneHandHint": "\u5DE6\u624B\u628A\u5E95\u680F\u3001\u8F93\u5165\u6846\u6309\u94AE\u548C\u8F6E\u6B21\u5BFC\u822A\u955C\u50CF\u5230\u5DE6\u8FB9\u3002",
+  "workbench.leftHanded": "\u5DE6\u624B\u6A21\u5F0F",
   "workbench.pinnedThreads": "\u56FA\u5B9A\u7684\u5BF9\u8BDD"
 };
 

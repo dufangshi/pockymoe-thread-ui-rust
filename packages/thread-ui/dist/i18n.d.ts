@@ -686,6 +686,11 @@ declare const en: {
     readonly "workbench.phoneDockSetting": "One-handed phone layout";
     readonly "workbench.phoneDockSettingHint": "On a phone, threads, views and actions sit in a dock at the bottom and the top bar only shows status. Off restores the top toolbar and thread tabs.";
     readonly "workbench.phoneDockSettingToggle": "One-handed";
+    readonly "workbench.phoneHand": "Hand";
+    readonly "workbench.phoneHandRight": "Right";
+    readonly "workbench.phoneHandLeft": "Left";
+    readonly "workbench.phoneHandHint": "Left mirrors the dock, the composer buttons and the turn navigation.";
+    readonly "workbench.leftHanded": "Left-handed";
     readonly "workbench.pinnedThreads": "Pinned conversations";
     readonly "sharing.open": "Open";
     readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
@@ -3960,6 +3965,11 @@ declare const zhCN: {
     "workbench.phoneDockSetting": "手机单手模式";
     "workbench.phoneDockSettingHint": "在手机上把线程、视图和操作放到底部，顶栏只显示状态。关闭后恢复原来的顶部工具栏和线程标签。";
     "workbench.phoneDockSettingToggle": "单手模式";
+    "workbench.phoneHand": "惯用手";
+    "workbench.phoneHandRight": "右手";
+    "workbench.phoneHandLeft": "左手";
+    "workbench.phoneHandHint": "左手把底栏、输入框按钮和轮次导航镜像到左边。";
+    "workbench.leftHanded": "左手模式";
     "workbench.pinnedThreads": "固定的对话";
     "sharing.open": "打开";
     "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
@@ -7256,6 +7266,11 @@ declare const resources: {
         readonly "workbench.phoneDockSetting": "One-handed phone layout";
         readonly "workbench.phoneDockSettingHint": "On a phone, threads, views and actions sit in a dock at the bottom and the top bar only shows status. Off restores the top toolbar and thread tabs.";
         readonly "workbench.phoneDockSettingToggle": "One-handed";
+        readonly "workbench.phoneHand": "Hand";
+        readonly "workbench.phoneHandRight": "Right";
+        readonly "workbench.phoneHandLeft": "Left";
+        readonly "workbench.phoneHandHint": "Left mirrors the dock, the composer buttons and the turn navigation.";
+        readonly "workbench.leftHanded": "Left-handed";
         readonly "workbench.pinnedThreads": "Pinned conversations";
         readonly "sharing.open": "Open";
         readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
@@ -10529,6 +10544,11 @@ declare const resources: {
         "workbench.phoneDockSetting": "手机单手模式";
         "workbench.phoneDockSettingHint": "在手机上把线程、视图和操作放到底部，顶栏只显示状态。关闭后恢复原来的顶部工具栏和线程标签。";
         "workbench.phoneDockSettingToggle": "单手模式";
+        "workbench.phoneHand": "惯用手";
+        "workbench.phoneHandRight": "右手";
+        "workbench.phoneHandLeft": "左手";
+        "workbench.phoneHandHint": "左手把底栏、输入框按钮和轮次导航镜像到左边。";
+        "workbench.leftHanded": "左手模式";
         "workbench.pinnedThreads": "固定的对话";
         "sharing.open": "打开";
         "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";

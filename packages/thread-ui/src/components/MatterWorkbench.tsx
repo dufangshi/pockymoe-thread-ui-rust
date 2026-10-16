@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Home,
   FolderOpen,
+  Hand,
   LoaderCircle,
   MessageSquare,
   PanelLeft,
@@ -143,34 +144,91 @@ export function MatterWorkbench({
   const drawerTools = useThemeFeature('workbench.phoneDrawerTools') && mobile;
   // One-handed phone layout: status-only top bar, navigation at the bottom.
   // A setting (Settings → Preferences), on by default; off keeps the classic phone bars.
-  const phoneDockSetting = useAppShellNav()?.phoneDock ?? true;
-  const dock = mobile && phoneDockSetting;
+  const shellNav = useAppShellNav();
+  const dock = mobile && (shellNav?.phoneDock ?? true);
+  // Left-handed: the dock, the composer's buttons and the turn strip are mirrored.
+  const leftHanded = dock && shellNav?.phoneHand === 'left';
   const [threadsOpen, setThreadsOpen] = useState(false);
   // A phone split's pinned conversations, switched from the dock.
   const [paneSwitch, setPaneSwitch] = useState<WorkbenchPaneSwitch | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
   const [typing, setTyping] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!dock) return;
     // The keyboard needs the room: hide the navigation row while a field has focus.
     const editing = () => {
       const target = document.activeElement;
-      setTyping(target instanceof HTMLElement && !target.closest('.matter-phone-sheet, .matter-topbar')
-        && target.matches('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]), [contenteditable]:not([contenteditable="false"])'));
+      return target instanceof HTMLElement && !target.closest('.matter-phone-sheet, .matter-topbar')
+        && target.matches('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]), [contenteditable]:not([contenteditable="false"])');
     };
-    const blur = () => window.setTimeout(editing, 0);
-    document.addEventListener('focusin', editing);
-    document.addEventListener('focusout', blur);
+    let timer = 0;
+    const settle = () => {
+      window.clearTimeout(timer);
+      document.removeEventListener('click', afterTap, true);
+      setTyping(editing());
+    };
+    const afterTap = () => { window.clearTimeout(timer); timer = window.setTimeout(settle, 0); };
+    const focusIn = () => { if (editing()) settle(); };
+    // A tap moves focus on mousedown, before mouseup and click: bringing the row
+    // back then would move the tapped control (Send, New terminal) from under the
+    // finger. It returns once that tap has clicked, or shortly after a blur
+    // without one (the keyboard's own close button).
+    const focusOut = () => window.setTimeout(() => {
+      if (editing()) return;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(settle, 400);
+      document.addEventListener('click', afterTap, { capture: true, once: true });
+    }, 0);
+    document.addEventListener('focusin', focusIn);
+    document.addEventListener('focusout', focusOut);
     return () => {
-      document.removeEventListener('focusin', editing);
-      document.removeEventListener('focusout', blur);
+      window.clearTimeout(timer);
+      document.removeEventListener('click', afterTap, true);
+      document.removeEventListener('focusin', focusIn);
+      document.removeEventListener('focusout', focusOut);
+    };
+  }, [dock]);
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!dock || !root) return;
+    // Swiping up on the bottom panel (the composer or the dock) opens the thread
+    // sheet. A prompt that can scroll keeps the gesture for itself.
+    let start: { x: number; y: number } | null = null;
+    const begin = (event: TouchEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      start = null;
+      if (event.touches.length !== 1 || !target?.closest('.thread-graph-composer-host, .matter-phone-dock')) return;
+      if (target.closest('.matter-phone-thread, [role="menu"], [role="listbox"], [role="dialog"], .thread-jump-latest-cluster')) return;
+      const scroller = target.closest<HTMLElement>('[role="textbox"], textarea');
+      if (scroller && /auto|scroll/.test(getComputedStyle(scroller).overflowY) && scroller.scrollHeight > scroller.clientHeight + 1) return;
+      start = { x: event.touches[0]!.clientX, y: event.touches[0]!.clientY };
+    };
+    const end = (event: TouchEvent) => {
+      const from = start;
+      start = null;
+      const touch = event.changedTouches[0];
+      if (!from || !touch) return;
+      const dx = touch.clientX - from.x, dy = touch.clientY - from.y;
+      if (dy > -40 || Math.abs(dy) < Math.abs(dx) * 1.5) return;
+      if (document.activeElement instanceof HTMLElement && root.contains(document.activeElement)) document.activeElement.blur();
+      setMoreOpen(false);
+      setThreadsOpen(true);
+    };
+    const cancel = () => { start = null; };
+    root.addEventListener('touchstart', begin, { passive: true });
+    root.addEventListener('touchend', end);
+    root.addEventListener('touchcancel', cancel);
+    return () => {
+      root.removeEventListener('touchstart', begin);
+      root.removeEventListener('touchend', end);
+      root.removeEventListener('touchcancel', cancel);
     };
   }, [dock]);
   const toolPanel = useWorkbenchToolPanel();
   // With the bottom panel the conversation stays visible beside the terminal:
   // Chat is "pressed" unless a maximized terminal covers it.
   const chatCovered = Boolean(o.panels && o.activeView === 'shell' && toolPanel.maximized && !toolPanel.collapsed);
-  const rootRef = useRef<HTMLDivElement>(null);
   // A compact workbench draws Files over the conversation: Chat closes it.
   const filesCoverChat = () => explorerOpen && (mobile || Boolean(rootRef.current?.querySelector('.workbench-panels.is-compact')));
   const showChat = () => {
@@ -292,7 +350,7 @@ export function MatterWorkbench({
   return (
     <div
       ref={rootRef}
-      className={`matter-workbench ${sidebarHidden ? 'is-sidebar-hidden' : ''} ${dock ? 'has-phone-dock' : ''} ${dock && typing ? 'is-typing' : ''}`}
+      className={`matter-workbench ${sidebarHidden ? 'is-sidebar-hidden' : ''} ${dock ? 'has-phone-dock' : ''} ${leftHanded ? 'is-left-handed' : ''} ${dock && typing ? 'is-typing' : ''}`}
       onClick={(e) => {
         if (
           e.target instanceof Element &&
@@ -577,6 +635,7 @@ export function MatterWorkbench({
             {!o.emptyWorkspace && <button type="button" onClick={o.onSearch}><Search /><span>{translate('workbench.searchConversation')}</span></button>}
             {!o.emptyWorkspace && <button type="button" aria-pressed={o.favorite} disabled={o.favoriteBusy} onClick={o.onToggleFavorite}><Star fill={o.favorite ? 'currentColor' : 'none'} /><span>{o.favorite ? translate('workbench.removeShortcut') : translate('workbench.addShortcut')}</span></button>}
             {o.toolPanels?.map(panel => <button type="button" key={panel.id} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}<span>{panel.label}</span></button>)}
+            {shellNav?.setPhoneHand && <button type="button" aria-pressed={leftHanded} onClick={() => shellNav.setPhoneHand?.(leftHanded ? 'right' : 'left')}><Hand className="matter-phone-hand-icon" /><span>{translate('workbench.leftHanded')}</span></button>}
             <div className="matter-phone-sheet-host">{actions}{threadMenu}{o.statusActions}</div>
           </div>
           <h3>{translate('workbench.app')}</h3>

@@ -134,7 +134,8 @@ function PinnedThreads({ value, threadsOpen, onOpenThreads }: {
 }
 
 /** A bottom sheet that stays mounted while closed, so host controls inside it
-    (settings, automations, split picker) keep their dialogs open after it hides. */
+    (settings, automations, split picker) keep their dialogs open after it hides.
+    Dragging it down from the top of its list closes it. */
 export function PhoneSheet({ open, label, onClose, children, footer }: {
   open: boolean;
   label: string;
@@ -144,9 +145,62 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
 }) {
   useI18n();
   const sheet = useRef<HTMLElement>(null);
+  const close = useRef(onClose);
+  close.current = onClose;
   useEffect(() => {
     if (!open) return;
     sheet.current?.querySelector<HTMLElement>('[data-sheet-autofocus], button, a')?.focus({ preventScroll: true });
+  }, [open]);
+  useEffect(() => {
+    const node = sheet.current;
+    if (!open || !node) return;
+    node.style.transform = '';
+    const body = node.querySelector<HTMLElement>('.matter-phone-sheet-body');
+    let start: { x: number; y: number; time: number } | null = null;
+    let offset = 0;
+    const begin = (event: TouchEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      start = null;
+      // Inside the list a pull only drags the sheet once the list is at its top.
+      if (event.touches.length !== 1 || !target || target.closest('input, textarea, [contenteditable="true"]')) return;
+      if (body?.contains(target) && body.scrollTop > 0) return;
+      start = { x: event.touches[0]!.clientX, y: event.touches[0]!.clientY, time: event.timeStamp };
+      offset = 0;
+    };
+    const move = (event: TouchEvent) => {
+      if (!start) return;
+      const dx = event.touches[0]!.clientX - start.x, dy = event.touches[0]!.clientY - start.y;
+      if (!node.hasAttribute('data-dragging')) {
+        if (Math.abs(dx) > 10 || dy < -10) { start = null; return; }
+        if (dy < 10 || dy < Math.abs(dx) * 1.2 || (body && body.scrollTop > 0)) return;
+        node.setAttribute('data-dragging', '');
+      }
+      event.preventDefault();
+      offset = Math.max(0, dy);
+      node.style.transform = `translateY(${offset}px)`;
+    };
+    const end = (event: TouchEvent) => {
+      const from = start;
+      start = null;
+      if (!from || !node.hasAttribute('data-dragging')) return;
+      node.removeAttribute('data-dragging');
+      const fast = offset / Math.max(1, event.timeStamp - from.time) > 0.6;
+      if (offset > Math.min(100, node.offsetHeight * 0.2) || (fast && offset > 24)) {
+        // Slide on from where the finger left it.
+        node.style.transform = 'translateY(105%)';
+        close.current();
+      } else node.style.transform = '';
+    };
+    node.addEventListener('touchstart', begin, { passive: true });
+    node.addEventListener('touchmove', move, { passive: false });
+    node.addEventListener('touchend', end);
+    node.addEventListener('touchcancel', end);
+    return () => {
+      node.removeEventListener('touchstart', begin);
+      node.removeEventListener('touchmove', move);
+      node.removeEventListener('touchend', end);
+      node.removeEventListener('touchcancel', end);
+    };
   }, [open]);
   return (
     <>

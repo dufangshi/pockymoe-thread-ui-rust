@@ -520,5 +520,10 @@ export const workbenchZhCN = {
   "workbench.phoneDockSetting": "手机单手模式",
   "workbench.phoneDockSettingHint": "在手机上把线程、视图和操作放到底部，顶栏只显示状态。关闭后恢复原来的顶部工具栏和线程标签。",
   "workbench.phoneDockSettingToggle": "单手模式",
+  "workbench.phoneHand": "惯用手",
+  "workbench.phoneHandRight": "右手",
+  "workbench.phoneHandLeft": "左手",
+  "workbench.phoneHandHint": "左手把底栏、输入框按钮和轮次导航镜像到左边。",
+  "workbench.leftHanded": "左手模式",
   "workbench.pinnedThreads": "固定的对话",
 } as const;

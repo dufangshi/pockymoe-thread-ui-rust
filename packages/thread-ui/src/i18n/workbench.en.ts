@@ -520,5 +520,10 @@ export const workbenchEn = {
   "workbench.phoneDockSetting": "One-handed phone layout",
   "workbench.phoneDockSettingHint": "On a phone, threads, views and actions sit in a dock at the bottom and the top bar only shows status. Off restores the top toolbar and thread tabs.",
   "workbench.phoneDockSettingToggle": "One-handed",
+  "workbench.phoneHand": "Hand",
+  "workbench.phoneHandRight": "Right",
+  "workbench.phoneHandLeft": "Left",
+  "workbench.phoneHandHint": "Left mirrors the dock, the composer buttons and the turn navigation.",
+  "workbench.leftHanded": "Left-handed",
   "workbench.pinnedThreads": "Pinned conversations",
 } as const;

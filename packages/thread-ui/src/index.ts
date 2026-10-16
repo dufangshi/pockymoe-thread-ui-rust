@@ -96,8 +96,10 @@ export {
   useAppShellNav,
   type AgentBackendId,
   type AppShellNavContextValue,
+  type PhoneHand,
   type ThemeMode,
 } from './app-shell/AppShellNavContext';
+export { PhoneHandChoice } from './app-shell/PhoneHandChoice';
 export {
   AppShellMenuButton,
   AppShellNavigationMenu,

@@ -1,6 +1,11 @@
 /* One-handed phone layout (MatterWorkbench `has-phone-dock`): a status-only top
-   bar, the conversation, and a bottom navigation row under the composer. Every
-   control in the dock and the sheets is at least 44px. Desktop is untouched. */
+   bar, the conversation, and one bottom panel holding the composer and the
+   navigation row. Every control in the dock and the sheets is at least 44px.
+   Desktop is untouched.
+
+   Theme packs restyle these freely, but most give every top bar button an icon
+   slot (`.matter-topbar :where(button, a)`). The status readings are not icons,
+   so their sizes carry `:not(#_)` (id weight) to stay readable under any pack. */
 .matter-phone-dock,
 .matter-phone-sheet,
 .matter-phone-sheet-scrim {
@@ -25,27 +30,31 @@
     flex: none;
     align-items: center;
   }
-  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only .matter-topbar-status > button { width: auto; min-width: 0; height: 34px; }
+  .matter-topbar.is-status-only:not(#_) .matter-topbar-status > button { flex: none; width: auto; min-width: 0; height: 34px; }
   .matter-topbar-spacer { flex: 1; }
   .matter-topbar.is-status-only .matter-topbar-usage { display: flex; flex: none; align-items: center; }
-  .thread-ui-shell .matter-topbar.is-status-only .matter-topbar-usage .thread-subscription-usage { width: auto; min-width: 0; height: 30px; gap: 8px; padding: 0 6px; }
+  .matter-topbar.is-status-only:not(#_) .matter-topbar-usage .thread-subscription-usage { flex: none; width: auto; min-width: 0; height: 30px; gap: 8px; padding: 0 6px; }
   .matter-topbar.is-status-only.is-search-open .matter-topbar-usage { display: none; }
   .matter-topbar.is-status-only.is-search-open .matter-topbar-status,
   .matter-topbar.is-status-only.is-search-open .matter-topbar-spacer,
   .matter-topbar.is-status-only.is-search-open .matter-running-chip { display: none; }
   .matter-topbar.is-status-only.is-search-open .matter-topbar-search { flex: 1; min-width: 0; }
-  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > button,
-  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only .matter-connection > button {
+  .matter-topbar.is-status-only:not(#_) > button,
+  .matter-topbar.is-status-only:not(#_) .matter-connection > button {
+    flex: none;
     width: 34px;
     min-width: 34px;
     height: 34px;
   }
-  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > .matter-running-chip {
+  .matter-topbar.is-status-only:not(#_) > .matter-running-chip {
     width: auto;
+    min-width: 0;
     gap: 4px;
     padding: 0 9px;
     height: 26px;
     border-radius: 999px;
+  }
+  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > .matter-running-chip {
     background: color-mix(in oklch, var(--theme-accent-solid) 14%, transparent);
     color: var(--theme-accent-strong);
     font-weight: 600;
@@ -57,8 +66,8 @@
   @media (max-width: 419px) { .matter-running-label { display: none; } }
   @media (max-width: 379px) {
     .thread-ui-shell .matter-workbench .matter-topbar.is-status-only { gap: 3px; }
-    .thread-ui-shell .matter-topbar.is-status-only .matter-topbar-usage .thread-subscription-usage { gap: 6px; padding: 0 3px; }
-    .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > .matter-running-chip { padding: 0 7px; }
+    .matter-topbar.is-status-only:not(#_) .matter-topbar-usage .thread-subscription-usage { gap: 6px; padding: 0 3px; }
+    .matter-topbar.is-status-only:not(#_) > .matter-running-chip { padding: 0 7px; }
   }
   .matter-topbar.is-status-only .matter-connection:empty { display: none; }
 
@@ -69,9 +78,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 8px max(6px, env(safe-area-inset-bottom));
-    border-top: 1px solid var(--theme-border);
-    background: var(--matter-chrome);
+    padding: 4px 8px max(6px, env(safe-area-inset-bottom));
+    background: var(--matter-dock-surface, var(--matter-chrome));
   }
   .thread-ui-shell .matter-workbench.has-phone-dock.is-typing .matter-phone-dock { display: none; }
   .thread-ui-shell .matter-workbench .matter-phone-dock button {
@@ -153,9 +161,47 @@
     box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
   }
 
-  /* The composer sits right on top of the dock instead of the screen edge. */
-  .thread-ui-shell .matter-workbench.has-phone-dock:not(.is-typing) .thread-graph-composer-host { bottom: 8px; }
-  .matter-workbench.has-phone-dock:not(.is-typing) .file-ask-bar { padding-bottom: 8px; }
+  /* The composer (or the files prompt) and the dock are one bottom panel: one
+     surface from the composer's top edge down, which the conversation scrolls
+     under. While typing only the composer stays, on top of the keyboard.
+     Packs can set --matter-dock-surface and --matter-dock-edge. */
+  .thread-ui-shell .matter-workbench.has-phone-dock .thread-graph-composer-host {
+    bottom: var(--thread-composer-keyboard-inset, 0px);
+    padding: 8px 0 6px;
+    border-top: 1px solid var(--matter-dock-edge, var(--theme-border));
+    background: var(--matter-dock-surface, var(--matter-chrome));
+    pointer-events: auto;
+  }
+  .thread-ui-shell .matter-workbench.has-phone-dock:not(.is-typing) .thread-graph-composer-host { bottom: 0; padding-bottom: 0; }
+  .thread-ui-shell .matter-workbench.has-phone-dock .thread-graph-composer-form { padding-bottom: 0; }
+  .thread-ui-shell .matter-workbench.has-phone-dock .file-ask-bar {
+    margin-top: 0;
+    padding: 8px 10px max(8px, calc(var(--thread-detail-keyboard-inset, 0px) + 8px));
+    border-top: 1px solid var(--matter-dock-edge, var(--theme-border));
+    background: var(--matter-dock-surface, var(--matter-chrome));
+  }
+  .thread-ui-shell .matter-workbench.has-phone-dock:not(.is-typing) .file-ask-bar { padding-bottom: 0; }
+  .thread-ui-shell .matter-workbench.has-phone-dock .file-ask-bar-shell { box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+  /* Left-handed: the panel is mirrored, so the thumb finds More, the views,
+     Send and the turn strip on the left. Text still reads left to right. */
+  .thread-ui-shell .matter-workbench.is-left-handed .matter-phone-dock,
+  .thread-ui-shell .matter-workbench.is-left-handed .matter-phone-sheet-footer,
+  .thread-ui-shell .matter-workbench.is-left-handed .file-ask-bar-shell { flex-direction: row-reverse; }
+  .thread-ui-shell .matter-workbench.is-left-handed .file-ask-bar-shell { padding: 5px 14px 5px 5px; }
+  .thread-ui-shell .matter-workbench.is-left-handed .matter-phone-thread-title { text-align: left; }
+  .matter-workbench.is-left-handed .matter-phone-hand-icon { transform: scaleX(-1); }
+  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] .thread-graph-composer-input-group { grid-template-columns: max-content minmax(0, 1fr); }
+  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout]:not([data-composer-layout='expanded']) .thread-graph-composer-prompt-region { grid-column: 2; }
+  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] .thread-graph-composer-toolbar {
+    grid-column: 1;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    justify-self: start;
+  }
+  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] :is(.composer-tools, .composer-settings) { flex-direction: row-reverse; }
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.thread-jump-latest-cluster, .thread-jump-nav) { flex-direction: row-reverse; }
+  .thread-ui-shell .matter-workbench.is-left-handed .thread-jump-nav > .thread-jump-latest { margin: 0 3px 0 0; }
 
 
   /* Bottom sheets. Closed sheets stay mounted (inert) so host dialogs survive. */
@@ -186,6 +232,9 @@
     transform: none;
     transition: transform 180ms ease-out;
   }
+  /* Following the finger while it drags the sheet down. */
+  .thread-ui-shell .matter-workbench .matter-phone-sheet[data-dragging] { transition: none; }
+  .matter-phone-sheet-body { touch-action: pan-y; }
   .matter-phone-sheet-grabber { flex: none; width: 40px; height: 5px; margin: 2px auto 8px; border-radius: 3px; background: var(--theme-border-strong); }
   .matter-phone-sheet-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 10px 6px; }
   .matter-phone-sheet-body h3 {

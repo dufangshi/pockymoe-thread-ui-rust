@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { ImportPluginInput } from '@pockymoe/shared';
 import { usePlugins } from '../plugins/usePlugins';
 import { type ThemeMode, useAppShellNav } from './AppShellNavContext';
+import { PhoneHandChoice } from './PhoneHandChoice';
 
 function MenuIcon() {
   const { locale: i18nLocale } = useI18n();
@@ -378,6 +379,9 @@ export function AppShellSettingsDialog({
                     <span>{translate("workbench.phoneDockSettingToggle")}</span>
                   </label>
                 </div>
+                {shellNav.setPhoneHand && (shellNav.phoneDock ?? true) ? (
+                  <PhoneHandChoice hand={shellNav.phoneHand ?? 'right'} onChange={shellNav.setPhoneHand} />
+                ) : null}
               </div>
             ) : null}
 

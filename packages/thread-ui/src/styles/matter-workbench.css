@@ -1301,6 +1301,31 @@
 
 /* Keep the drawer boundary draggable even when its contents fill the panel. */
 .workbench-tool-resize { position: absolute; inset: 0 auto 0 -4px; width: 8px; z-index: 2; cursor: col-resize; touch-action: none; user-select: none; }
+/* Minimized, the files view is its tree in a strip at the right edge, and its editor
+   a tab on the strip's left edge that brings it back. */
+.workbench-tool-drawer[data-minimized] { flex: 0 0 236px; width: 236px; }
+.workbench-tool-drawer[data-minimized] > .workbench-tool-resize { display: none; }
+.workbench-files-restore {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 56px;
+  transform: translateY(-50%);
+  border: 1px solid var(--theme-border-strong);
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  background: var(--theme-panel);
+  color: var(--theme-fg-muted);
+  box-shadow: -2px 0 10px rgb(0 0 0 / 10%);
+  transition: width 120ms ease, color 120ms ease;
+}
+.workbench-files-restore:hover { width: 22px; color: var(--theme-fg); }
+.workbench-files-restore:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
 .workbench-tool-resize::after { content: ''; position: absolute; inset: 0 auto 0 3px; width: 2px; background: transparent; transition: background 120ms; }
 .workbench-tool-resize:hover::after, .workbench-tool-resize:focus-visible::after { background: var(--theme-accent-solid); }
 .workbench-tool-resize:focus-visible { outline: none; }

@@ -414,29 +414,26 @@ export const GraphChatUserMessageBody = memo(
             const label = basenameFromAssetPath(segment.path) || translate("chat.attachedImage");
 
             return (
+              // A thumbnail about three lines of text tall; its name is in the title and
+              // tapping it opens the photo at full size.
               <span
                 key={segment.key}
-                className="mx-[0.14rem] inline-flex align-middle"
+                className="thread-graph-user-photo mx-[0.14rem] inline-flex align-middle"
+                title={segment.path}
               >
-                <span className="inline-flex max-w-full flex-col rounded-[1rem] border border-sky-300/28 bg-sky-300/[0.08] p-1.5 shadow-sm shadow-stone-950/20">
+                <span className="inline-flex max-w-full flex-col rounded-[0.8rem] border border-sky-300/28 bg-sky-300/[0.08] p-1 shadow-sm shadow-stone-950/20">
                   {imageUrl ? (
                     <ZoomableImage
                       src={imageUrl}
                       fullSrc={fullImageUrl}
                       alt={label}
-                      className="h-[4.5rem] w-[6rem] rounded-[0.75rem] bg-stone-950 object-contain"
+                      className="rounded-[0.6rem] bg-stone-950 object-contain"
                       loading="lazy"
                     />
                   ) : (
-                    <span className="inline-flex h-[4.5rem] w-[6rem] items-center justify-center rounded-[0.75rem] bg-stone-950 text-[10px] text-sky-100">
+                    <span className="thread-graph-user-photo-missing inline-flex items-center justify-center rounded-[0.6rem] bg-stone-950 text-[10px] text-sky-100">
                       {translate("chat.pHOTO")}</span>
                   )}
-                  <span
-                    className="mt-1 max-w-[7rem] truncate text-[10px] font-medium tracking-[0.08em] text-sky-50"
-                    title={segment.path}
-                  >
-                    {label}
-                  </span>
                 </span>
               </span>
             );

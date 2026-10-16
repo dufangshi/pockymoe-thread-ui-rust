@@ -7,7 +7,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from 'react';
-import { FolderOpen, X } from 'lucide-react';
+import { ChevronLeft, FolderOpen, X } from 'lucide-react';
 import { translate as t, useI18n } from '../../i18n';
 import type { WorkbenchPresentation } from './presentation';
 import { FilePanelContext } from './FilePanelContext';
@@ -253,6 +253,11 @@ export function WorkbenchPanels({
   const showReference = showThread || mode === 'collaboration';
   const closeFiles = () =>
     o.onPresentationChange({ mode: referenceId ? 'thread' : 'focus' });
+  // Minimized, the files view keeps only its tree, a strip at the right edge, and
+  // folds its editor into a tab on the strip's left edge. Closing it, or a screen
+  // too narrow to dock it, ends that.
+  const [filesMinimized, setFilesMinimized] = useState(false);
+  useEffect(() => { if (mode !== 'files' || compact) setFilesMinimized(false); }, [mode, compact]);
   // A phone split of two conversations is switched from their composers.
   const paneSwitchEnabled = compact && showThread;
   const [switchClaims, setSwitchClaims] = useState<Record<WorkbenchPane, number>>({ primary: 0, reference: 0 });
@@ -531,6 +536,7 @@ export function WorkbenchPanels({
           role="region"
           aria-label={t('workbench.referenceFiles')}
           className="workbench-tool-drawer"
+          data-minimized={filesMinimized || undefined}
           hidden={mode !== 'files'}
           onKeyDown={(event) => {
             if (event.key === 'Escape' && !event.defaultPrevented) {
@@ -554,9 +560,19 @@ export function WorkbenchPanels({
               <X size={17} />
             </button>
           </header>}
-          <FilePanelContext.Provider value={o.inlineFilesHeader ? { close: closeFiles, ...(o.toolsTargetLabel ? { label: o.toolsTargetLabel } : {}) } : null}>
+          <FilePanelContext.Provider value={o.inlineFilesHeader ? {
+            close: closeFiles,
+            ...(o.toolsTargetLabel ? { label: o.toolsTargetLabel } : {}),
+            ...(compact ? {} : { minimized: filesMinimized, setMinimized: setFilesMinimized }),
+          } : null}>
             <div className="workbench-pane-body workbench-files">{explorer}</div>
           </FilePanelContext.Provider>
+          {filesMinimized && (
+            <button type="button" className="workbench-files-restore" aria-label={t('workbench.restoreFiles')} title={t('workbench.restoreFiles')}
+              onClick={() => setFilesMinimized(false)}>
+              <ChevronLeft size={15} aria-hidden="true" />
+            </button>
+          )}
         </aside>
       )}
       </div>

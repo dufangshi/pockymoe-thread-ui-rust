@@ -411,6 +411,8 @@ interface ThreadTurnRowProps {
   forceActive?: boolean;
   backgroundAgentCount?: number;
   onToggleCollapse: (turn: TimelineTurn, currentCollapsed: boolean, loadDetails?: boolean) => void;
+  /** Loads a folded turn's operations without opening the turn. */
+  onLoadTurnItems?: (turn: TimelineTurn) => void;
   /** Completed turns open as their narration (auto-collapse is off). */
   narrationMode?: boolean;
   deferredItemsLoading?: boolean;
@@ -571,6 +573,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   forceActive = false,
   backgroundAgentCount = 0,
   onToggleCollapse,
+  onLoadTurnItems,
   narrationMode = false,
   deferredItemsLoading = false,
   deferredItemsError,
@@ -651,6 +654,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   );
   // The run a reader opened from a folded turn's narration; null is the last run.
   const [openRunBefore, setOpenRunBefore] = useState<string | null | undefined>(undefined);
+  // Stretches of work opened in a folded turn, by the answer they precede ('end' for the last).
+  const [openStretches, setOpenStretches] = useState<Set<string>>(() => new Set());
   const revealedSearch = useRef<number | null>(null);
   useEffect(() => {
     if (!revealTarget || revealedSearch.current === revealTarget.key) return;
@@ -678,14 +683,16 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   }, [onBeforeMessageResize]);
 
   const renderHistoryEntries = (entries: TimelineHistoryEntry[], options?: {
-    collapsed: boolean;
-    onExpand: () => void;
+    collapsed?: boolean;
+    onExpand?: () => void;
+    /** Open the last run of these entries (a stretch of work opened by the reader). */
+    openLastRun?: boolean;
   }) => (
     <TimelineHistoryEntries
       entries={entries}
       expandedGroups={options?.collapsed ? {} : expandedGroups}
-      onToggleGroupedItem={options ? (key, current) => {
-        if (options.collapsed) options.onExpand();
+      onToggleGroupedItem={options?.onExpand ? (key, current) => {
+        if (options.collapsed) options.onExpand?.();
         toggleGroupedItem(key, options.collapsed ? false : current);
       } : toggleGroupedItem}
       threadId={threadId}
@@ -700,7 +707,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       fallbackTimeTitle={turnTimeTitle}
       turnStartedAt={turn.startedAt}
       autoOpenLatestToolDetails={autoOpenLatestToolDetails && entries.at(-1)?.key === groupedItems.at(-1)?.key}
-      {...(openRunBefore !== undefined ? { openRunBefore } : {})}
+      {...(options?.openLastRun ? { openRunBefore: null } : openRunBefore !== undefined ? { openRunBefore } : {})}
       {...(onSelectArtifact ? { onSelectArtifact } : {})}
       {...(adapter ? { adapter } : {})}
     />
@@ -842,24 +849,25 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const lastLogEntry = logEntries.at(-1);
   const answerInLog = Boolean(finalAnswer && lastLogEntry?.kind === 'item' && lastLogEntry.item.id === finalAnswer.id);
   const processEntries = answerInLog ? logEntries.slice(0, -1) : logEntries;
+  // Prompts that started the turn sit above its work line; prompts added while it
+  // worked sit below it when folded, so opening or folding the turn never moves
+  // what is above the line.
+  const leadingPrompts = leadingUserCount < 0 ? collapsedSummary.users.length : leadingUserCount;
+  const renderPrompt = (item: (typeof collapsedSummary.users)[number]) => (
+    <CompactMessageItem
+      key={item.id}
+      threadId={threadId}
+      item={item}
+      scrollRootRef={scrollRootRef}
+      timeTitle={item.createdAt ? formatLongTimestamp(item.createdAt) : turnTimeTitle}
+      {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+      {...(adapter ? { adapter } : {})}
+    />
+  );
   const collapsedSummaryNode =
     hasCollapsedHiddenItems ? (
       <div className="thread-graph-turn-collapsed-summary space-y-2">
-        {(effectiveCollapsed ? collapsedSummary.users : collapsedSummary.users.slice(0, Math.max(0, leadingUserCount))).map((item) => (
-          <CompactMessageItem
-            key={item.id}
-            threadId={threadId}
-            item={item}
-            scrollRootRef={scrollRootRef}
-            timeTitle={
-              item.createdAt
-                ? formatLongTimestamp(item.createdAt)
-                : turnTimeTitle
-            }
-            {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
-            {...(adapter ? { adapter } : {})}
-          />
-        ))}
+        {collapsedSummary.users.slice(0, leadingPrompts).map(renderPrompt)}
         <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
           <TranscriptAgentByline />
           <button
@@ -899,6 +907,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           />
         </div>
         <Collapse open={filesOpen}><ChangedFiles files={changedFiles} total={activityCounts?.fileCount} /></Collapse>
+        {effectiveCollapsed ? collapsedSummary.users.slice(leadingPrompts).map(renderPrompt) : null}
         {/* The work: folded into the line above when the turn ends, unfolded on request. */}
         <Collapse open={!effectiveCollapsed}>
           {story ? (
@@ -917,21 +926,32 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           )}
         </Collapse>
         {effectiveCollapsed && answerSections ? <div className="thread-answer-sequence">
-          {foldedAnswerBlocks(answerSections, turn.activity?.segments, finalAnswer?.id).map(block => block.kind === 'gap' ? (
-            <div className="thread-execution-timeline" key={`gap:${block.before ?? 'end'}`}>
-              <RunPlaceholder segment={block.stretch} loading={deferredItemsLoading}
-                onOpen={() => { setOpenRunBefore(block.before); onToggleCollapse(turn, true, true); }} />
-            </div>
-          ) : (
-            <div className="thread-answer-section" key={block.entry.key}>
-              {block.entry.item.kind !== 'agentMessage' ? renderHistoryEntries([block.entry]) : <CompactMessageItem threadId={threadId} item={block.entry.item as ThreadHistoryItemDto & { kind: 'agentMessage' }}
-                streaming={block.entry.item.id === visibleSummaryAgent?.id && activeForRendering && isRunningHistoryStatus(block.entry.item.status)}
-                scrollRootRef={scrollRootRef}
-                timeTitle={block.entry.item.createdAt ? formatLongTimestamp(block.entry.item.createdAt) : turnTimeTitle}
-                {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
-                {...(adapter ? { adapter } : {})} />}
-            </div>
-          ))}
+          {foldedAnswerBlocks(answerSections, turn.activity?.segments, finalAnswer?.id).map(block => {
+            if (block.kind === 'answer') return (
+              <div className="thread-answer-section" key={block.entry.key}>
+                {block.entry.item.kind !== 'agentMessage' ? renderHistoryEntries([block.entry]) : <CompactMessageItem threadId={threadId} item={block.entry.item as ThreadHistoryItemDto & { kind: 'agentMessage' }}
+                  streaming={block.entry.item.id === visibleSummaryAgent?.id && activeForRendering && isRunningHistoryStatus(block.entry.item.status)}
+                  scrollRootRef={scrollRootRef}
+                  timeTitle={block.entry.item.createdAt ? formatLongTimestamp(block.entry.item.createdAt) : turnTimeTitle}
+                  {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+                  {...(adapter ? { adapter } : {})} />}
+              </div>
+            );
+            // A stretch of work between two answers opens in place, under its line;
+            // the rest of the turn stays folded and nothing above it moves.
+            const key = block.before ?? 'end';
+            const open = openStretches.has(key);
+            return (
+              <div className="thread-execution-timeline" key={`gap:${key}`}>
+                <RunPlaceholder segment={block.stretch} loading={open && deferredItemsLoading} open={open && block.work.length > 0}
+                  onOpen={() => {
+                    setOpenStretches(current => { const next = new Set(current); if (!next.delete(key)) next.add(key); return next; });
+                    if (!open && turn.hasDeferredItems) onLoadTurnItems?.(turn);
+                  }} />
+                {open && block.work.length > 0 ? <div className="thread-stretch-work">{renderHistoryEntries(block.work, { openLastRun: true })}</div> : null}
+              </div>
+            );
+          })}
         </div> : null}
         {/* A finished turn's answer stays below its work, folded or not. */}
         {finalAnswer && (effectiveCollapsed || answerInLog || !mergedItems.some(item => item.id === finalAnswer.id))
@@ -1129,7 +1149,7 @@ function TimelineHistoryEntries({
 
 type FoldedAnswerBlock =
   | { kind: 'answer'; entry: TimelineHistoryEntry & { kind: 'item' } }
-  | { kind: 'gap'; before: string | null; stretch: ThreadTurnActivitySegmentDto };
+  | { kind: 'gap'; before: string | null; stretch: ThreadTurnActivitySegmentDto; work: TimelineHistoryEntry[] };
 
 function entryItems(entry: TimelineHistoryEntry): ThreadHistoryItemDto[] {
   if (entry.kind === 'item') return [entry.item];
@@ -1149,14 +1169,16 @@ function foldedAnswerBlocks(
   const blocks: FoldedAnswerBlock[] = [];
   let previous: string | null = null;
   let work: ThreadHistoryItemDto[] = [];
+  let workEntries: TimelineHistoryEntry[] = [];
   const gap = (before: string | null) => {
     if (previous === null) return;
     const stretch = stretchBetween(segments, previous, before) ?? stretchFromItems(work, before);
-    if (stretch) blocks.push({ kind: 'gap', before, stretch });
+    if (stretch) blocks.push({ kind: 'gap', before, stretch, work: workEntries });
   };
   for (const entry of sections) {
     if (entry.kind !== 'item') {
       work.push(...entryItems(entry));
+      workEntries.push(entry);
       continue;
     }
     gap(entry.item.id);
@@ -1164,6 +1186,7 @@ function foldedAnswerBlocks(
     blocks.push({ kind: 'answer', entry });
     previous = entry.item.id;
     work = [];
+    workEntries = [];
   }
   gap(null);
   return blocks;

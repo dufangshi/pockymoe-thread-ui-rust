@@ -7,6 +7,7 @@ import type { ThreadTurnDto } from '@pockymoe/shared';
 import { ThreadTimeline } from '../ThreadTimeline';
 import { TurnStatusBar } from './turnStatus';
 import { TurnUsageInline } from './TurnUsageInline';
+import { shortModelName } from './TurnHead';
 
 const total = {
   totalTokens: 3500,
@@ -49,6 +50,16 @@ const turn: ThreadTurnDto = {
   ],
 };
 
+describe('shortModelName', () => {
+  it('drops the vendor and a date stamp, and joins numbered parts into a version', () => {
+    expect(shortModelName('claude-opus-5-5')).toBe('opus 5.5');
+    expect(shortModelName('gpt-6-astra')).toBe('6 astra');
+    expect(shortModelName('claude-sonnet-4-5-20250929')).toBe('sonnet 4.5');
+    expect(shortModelName('gpt-6.1-sol')).toBe('6.1 sol');
+    expect(shortModelName('opus[1m]')).toBe('opus[1m]');
+  });
+});
+
 describe('turn usage in the visible timeline', () => {
   it.each([true, false])('keeps live usage only in the footer with recent speed (measured=%s)', measured => {
     const container = document.createElement('div');
@@ -63,7 +74,10 @@ describe('turn usage in the visible timeline', () => {
       const footer = container.querySelector('.thread-graph-turn-footer [data-testid="turn-token-speed"]');
       expect(summary).toBeNull();
       // The head says it is running; speed and cost wait for the turn to end.
-      expect(container.querySelector('.thread-turn-head-live')?.getAttribute('aria-label')).toMatch(/^running \d.*s$/);
+      // The head pulses with the time so far; its speed waits for the turn to end.
+      expect(container.querySelector('.thread-turn-head[data-active]')).not.toBeNull();
+      expect(container.querySelector('.thread-turn-head-main')?.getAttribute('aria-label')).toMatch(/^running \d.*s$/);
+      flushSync(() => container.querySelector<HTMLButtonElement>('.thread-turn-head-main')!.click());
       expect(container.querySelector('.thread-turn-head-speed')).toBeNull();
       expect(footer?.textContent).toBe(`${measured ? '150.0' : '80.0'}`);
     } finally { flushSync(() => root.unmount()); }
@@ -145,26 +159,48 @@ describe('turn usage in the visible timeline', () => {
         expect(container.querySelector('.thread-turn-receipt')).toBeNull();
         const head = container.querySelector('.thread-turn-head')!;
         expect(head.compareDocumentPosition(container.querySelector('[data-role="user"]')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-        expect(head.querySelector('time')?.getAttribute('dateTime')).toBe(turn.startedAt);
-        expect(head.textContent).toContain('gpt-6-astra · high');
-        expect(head.textContent).toContain('$0.11');
-        expect(head.querySelector('.thread-turn-head-speed')?.textContent).toBe('100.0 tok/s');
+        // Closed, the head holds only the time worked and the cost.
+        expect(head.querySelector('.thread-turn-head-took')?.textContent).toBe('1m 12s');
+        expect(head.querySelector('.thread-turn-usage-price')?.textContent).toBe('$0.11');
+        expect(head.textContent).not.toContain('astra');
         expect(head.querySelector('button button')).toBeNull();
-        // Tapping the line shows when it started and ended, the time taken and the tokens.
+        expect(container.querySelector('.thread-turn-head-more')).toBeNull();
+        // Tapping it opens one more line: start time, model, speed.
         const main = head.querySelector<HTMLButtonElement>('.thread-turn-head-main')!;
         expect(main.getAttribute('aria-expanded')).toBe('false');
         flushSync(() => main.click());
         expect(main.getAttribute('aria-expanded')).toBe('true');
-        const rows = [...container.querySelectorAll('.thread-turn-head-detail dt')].map(node => node.textContent);
-        expect(rows).toEqual(['Started', 'Finished', 'Took', 'Model', 'Tokens', 'Speed']);
-        expect(container.querySelector('.thread-turn-head-detail')?.textContent).toContain('1m 12s');
-        expect(container.querySelector('.thread-turn-head-detail')?.textContent).toContain('3.5k');
+        const more = container.querySelector('.thread-turn-head-more')!;
+        expect(more.querySelector('time')?.getAttribute('dateTime')).toBe(turn.startedAt);
+        expect(more.querySelector('.thread-turn-head-model')?.textContent).toBe('6 astra · high');
+        expect(more.querySelector('.thread-turn-head-speed')?.textContent).toBe('100.0 tok/s');
+        // The time shows its date when tapped.
+        const time = more.querySelector<HTMLButtonElement>('.thread-turn-head-time')!;
+        const clockOnly = time.textContent;
+        flushSync(() => time.click());
+        expect(time.textContent).not.toBe(clockOnly);
+        expect(time.textContent).toContain(clockOnly!);
       } finally {
         flushSync(() => root.unmount());
         container.remove();
       }
     },
   );
+
+  it('shows the whole head on one line on a wide screen', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({ matches: query === '(min-width: 640px)', addEventListener() {}, removeEventListener() {} }));
+    const container = document.createElement('div');
+    const root = createRoot(container);
+    try {
+      flushSync(() => root.render(<ThreadTimeline turns={[turn]} liveOutput="" />));
+      const head = container.querySelector('.thread-turn-head.is-wide')!;
+      expect(head.querySelector('.thread-turn-head-took')?.textContent).toBe('1m 12s');
+      expect(head.querySelector('.thread-turn-usage-price')?.textContent).toBe('$0.11');
+      expect(head.querySelector('.thread-turn-head-model')?.textContent).toBe('6 astra · high');
+      expect(head.querySelector('.thread-turn-head-speed')?.textContent).toBe('100.0 tok/s');
+      expect(head.querySelector('[aria-expanded]:not(.thread-turn-head-speed):not(.thread-turn-usage-price)')).toBeNull();
+    } finally { flushSync(() => root.unmount()); vi.unstubAllGlobals(); }
+  });
 
   it('breaks the combined speed into first token, prefill and decode when tapped', async () => {
     vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} });
@@ -178,6 +214,7 @@ describe('turn usage in the visible timeline', () => {
     } } };
     try {
       flushSync(() => root.render(<ThreadTimeline turns={[split]} liveOutput="" />));
+      flushSync(() => container.querySelector<HTMLButtonElement>('.thread-turn-head-main')!.click());
       const speed = container.querySelector<HTMLButtonElement>('button.thread-turn-head-speed')!;
       expect(speed.textContent).toBe('100.0 tok/s');
       await act(async () => speed.click());
@@ -196,9 +233,10 @@ describe('turn usage in the visible timeline', () => {
     const root = createRoot(container);
     try {
       flushSync(() => root.render(<ThreadTimeline turns={[{ ...turn, status }]} liveOutput="" />));
-      const head = container.querySelector('.thread-turn-head');
-      expect(head?.textContent).toContain('gpt-6-astra · high');
-      expect(head?.querySelector('.thread-turn-head-speed')?.textContent).toBe('100.0 tok/s');
+      expect(container.querySelector(`.thread-turn-head[data-status="${status}"]`)).not.toBeNull();
+      flushSync(() => container.querySelector<HTMLButtonElement>('.thread-turn-head-main')!.click());
+      expect(container.querySelector('.thread-turn-head-model')?.textContent).toBe('6 astra · high');
+      expect(container.querySelector('.thread-turn-head-speed')?.textContent).toBe('100.0 tok/s');
       expect(container.querySelector('.thread-graph-worked-summary [data-testid="turn-token-speed"]')).toBeNull();
     } finally { flushSync(() => root.unmount()); }
   });
@@ -232,9 +270,7 @@ describe('turn usage in the visible timeline', () => {
           />,
         ),
       );
-      expect(
-        container.querySelector('.thread-turn-head')?.textContent,
-      ).toContain('gpt-6-astra · high');
+      expect(container.querySelector('.thread-turn-head .thread-turn-usage-price')?.textContent).toBe('$0.11');
     } finally {
       flushSync(() => root.unmount());
     }

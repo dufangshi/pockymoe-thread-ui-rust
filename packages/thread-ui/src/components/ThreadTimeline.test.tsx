@@ -85,15 +85,19 @@ describe('collapsed answer sections', () => {
     expect(load).not.toHaveBeenCalled();
   });
 
-  it('opens the gap run on hydration and hides all loaded work when collapsed again', async () => {
+  it('opens a stretch of work in place, leaving the rest of the turn folded, and folds it back', async () => {
     const load = vi.fn(async () => detail);
     const el = render(<ThreadTimeline turns={[summary]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={load} />);
-    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-answer-sequence .tlog-run-head')!.click());
-    await vi.waitFor(() => expect(el.querySelector('.tlog-run[data-open] .tlog-title')?.textContent).toBe('hidden-gap-1'));
+    const stretch = () => el.querySelector<HTMLButtonElement>('.thread-answer-sequence .tlog-run[data-placeholder] .tlog-run-head')!;
+    flushSync(() => stretch().click());
+    // Its operations load and open under its line; the turn itself stays folded.
+    await vi.waitFor(() => expect(el.querySelector('.thread-stretch-work .tlog-run[data-open] .tlog-title')?.textContent).toBe('hidden-gap-1'));
     expect(load).toHaveBeenCalledTimes(1);
-    expect(el.textContent).not.toContain('hidden-leading-1');
-    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    expect(stretch().getAttribute('aria-expanded')).toBe('true');
     expect(el.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('false');
+    expect(el.textContent).not.toContain('hidden-leading-1');
+    flushSync(() => stretch().click());
+    expect(stretch().getAttribute('aria-expanded')).toBe('false');
     expect(el.querySelector('.tlog-row, .tlog-single, .tlog-run[data-open]')).toBeNull();
     expect(el.textContent).not.toContain('hidden-gap-1');
     expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(1);
@@ -238,7 +242,7 @@ describe('ThreadTimeline', () => {
     expect(toggle().getAttribute('aria-expanded')).toBe('false');
     expect(toggle().querySelector('.tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('2 commands');
     expect(element.querySelector('.tlog-single, .tlog-run, .tlog-current')).toBeNull();
-    expect(element.querySelector('.thread-turn-head time')).not.toBeNull();
+    expect(element.querySelector('.thread-turn-head')).not.toBeNull();
     expect(element.querySelector('.thread-graph-turn-footer')).toBeNull();
     expect(load).not.toHaveBeenCalled();
     flushSync(() => toggle().click());
@@ -695,7 +699,7 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain('Public-key identity');
     expect(element.textContent).toContain('Implementation complete');
     // Terminal rendering returns to the expanded chronological log.
-    expect(element.querySelector('.thread-turn-head time')).not.toBeNull();
+    expect(element.querySelector('.thread-turn-head')).not.toBeNull();
     expect(element.querySelectorAll('.tlog-single')).toHaveLength(2);
   });
 

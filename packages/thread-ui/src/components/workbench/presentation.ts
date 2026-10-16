@@ -71,7 +71,9 @@ function read(scope: string | null): WorkbenchPresentation {
       return null;
     }
   };
-  return normalizePresentation(parse('members'), parse('arrangement'));
+  const saved = normalizePresentation(parse('members'), parse('arrangement'));
+  // A thread always opens on its conversation: the files view is opened, not restored.
+  return saved.mode === 'files' ? { ...saved, mode: saved.referenceId ? 'thread' : 'focus' } : saved;
 }
 function write(
   scope: string,

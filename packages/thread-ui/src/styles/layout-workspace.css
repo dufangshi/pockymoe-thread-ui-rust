@@ -735,3 +735,24 @@
   .thread-ui-shell .workspace-file-actions { height: 30px; }
   .thread-ui-shell .workspace-file-actions button { width: 28px; height: 28px; }
 }
+
+/* Window controls at the start of the tree's toolbar, as on a Mac: close (red) and
+   minimize (amber). Their marks show when the pointer is on them. */
+.thread-ui-shell .thread-graph-window-controls { display: inline-flex; flex: none; align-items: center; gap: 8px; margin-right: 6px; padding-left: 3px; }
+.thread-ui-shell .thread-graph-window-controls > button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 0.5px solid rgb(0 0 0 / 22%);
+  border-radius: 50%;
+  color: transparent;
+}
+.thread-ui-shell .thread-graph-window-controls > button::after { content: ''; position: absolute; inset: -5px; }
+.thread-ui-shell .thread-graph-window-controls > .is-close { background: #ff5f57; }
+.thread-ui-shell .thread-graph-window-controls > .is-minimize { background: #febc2e; }
+.thread-ui-shell .thread-graph-window-controls svg { width: 8px; height: 8px; stroke-width: 3.2; }
+.thread-ui-shell .thread-graph-window-controls:is(:hover, :focus-within) > button { color: rgb(0 0 0 / 58%); }
+.thread-ui-shell .thread-graph-window-controls > button:focus-visible { outline: 2px solid var(--theme-accent-ring, var(--theme-accent-solid)); outline-offset: 2px; }

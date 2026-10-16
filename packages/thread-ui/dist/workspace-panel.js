@@ -45,7 +45,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-UZJMFWFW.js";
+} from "./chunk-TAG7YHZX.js";
 import {
   useThemeFeature
 } from "./chunk-QIOFPWO7.js";
@@ -54,7 +54,7 @@ import {
   getLocale,
   translate,
   useI18n
-} from "./chunk-BFXTUXHE.js";
+} from "./chunk-CCSUWJ6Z.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect12, useMemo as useMemo11, useState as useState12 } from "react";
@@ -1429,6 +1429,7 @@ import {
   FileCode2 as FileCode22,
   FilePlus2,
   ListCollapse,
+  Minus,
   MoreHorizontal as MoreHorizontal2,
   RefreshCw,
   Search,
@@ -2452,7 +2453,32 @@ function WorkspaceExplorerPanel({
     /* @__PURE__ */ jsxs3("div", { title: filePanel?.label, className: "thread-graph-explorer-header flex h-9 shrink-0 items-center justify-between border-b px-2", children: [
       /* @__PURE__ */ jsx4("h2", { className: "text-[11px] font-semibold uppercase text-slate-600 dark:text-slate-300", children: translate("files.explorer") }),
       /* @__PURE__ */ jsxs3("div", { className: "thread-graph-explorer-toolbar flex items-center gap-1", children: [
-        filePanel && onExpandViewer && /* @__PURE__ */ jsx4("button", { type: "button", "data-testid": "workbench-close-files", className: iconButtonClassName, onClick: filePanel.close, "aria-label": translate("workbench.closeFiles"), title: translate("workbench.closeFiles"), children: /* @__PURE__ */ jsx4(X, { "data-icon": "close", size: 16 }) }),
+        filePanel?.setMinimized ? /* @__PURE__ */ jsxs3("span", { className: "thread-graph-window-controls", children: [
+          /* @__PURE__ */ jsx4(
+            "button",
+            {
+              type: "button",
+              "data-testid": "workbench-close-files",
+              className: "is-close",
+              onClick: filePanel.close,
+              "aria-label": translate("workbench.closeFiles"),
+              title: translate("workbench.closeFiles"),
+              children: /* @__PURE__ */ jsx4(X, { "aria-hidden": "true" })
+            }
+          ),
+          /* @__PURE__ */ jsx4(
+            "button",
+            {
+              type: "button",
+              className: "is-minimize",
+              "aria-pressed": Boolean(filePanel.minimized),
+              onClick: () => filePanel.setMinimized?.(!filePanel.minimized),
+              "aria-label": translate(filePanel.minimized ? "workbench.restoreFiles" : "workbench.minimizeFiles"),
+              title: translate(filePanel.minimized ? "workbench.restoreFiles" : "workbench.minimizeFiles"),
+              children: /* @__PURE__ */ jsx4(Minus, { "aria-hidden": "true" })
+            }
+          )
+        ] }) : filePanel && onExpandViewer && /* @__PURE__ */ jsx4("button", { type: "button", "data-testid": "workbench-close-files", className: iconButtonClassName, onClick: filePanel.close, "aria-label": translate("workbench.closeFiles"), title: translate("workbench.closeFiles"), children: /* @__PURE__ */ jsx4(X, { "data-icon": "close", size: 16 }) }),
         onCreateFile && /* @__PURE__ */ jsx4(
           "button",
           {
@@ -4036,7 +4062,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment4, jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-JPDGGO53.js")
+  () => import("./GraphWorkspaceMonacoEditor-EYV3ZCRD.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4135,7 +4161,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-DBOTY6XE.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-PLM36APZ.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -5094,6 +5120,15 @@ function GraphWorkspaceExplorer({
       return [...current, { name: activeNode.name, path: activeNode.path, pinned: true }];
     });
   }, [activeNode]);
+  const filePanel = useFilePanel();
+  const minimized = Boolean(filePanel?.minimized);
+  const pathWhenMinimized = useRef10(null);
+  useEffect10(() => {
+    if (minimized) pathWhenMinimized.current = activeNode?.path ?? null;
+  }, [minimized]);
+  useEffect10(() => {
+    if (minimized && activeNode?.kind === "file" && activeNode.path !== pathWhenMinimized.current) filePanel?.setMinimized?.(false);
+  }, [activeNode?.path]);
   useEffect10(() => {
     if (focusPathRequest) {
       setFocusedLine(focusPathRequest.line ?? null);
@@ -5257,7 +5292,7 @@ function GraphWorkspaceExplorer({
       filterQuery,
       initialLoading: Boolean(workspaceAdapter && !adapterModel && loadingTree),
       rootError: workspaceAdapter && !adapterModel ? workspaceError : null,
-      ...collapsedPanel === "viewer" ? {
+      ...minimized ? {} : collapsedPanel === "viewer" ? {
         onExpandViewer: () => {
           if (!isMobileViewport || activeNode?.kind === "file") setCollapsedPanel(isMobileViewport ? "explorer" : null);
         },
@@ -5370,6 +5405,12 @@ function GraphWorkspaceExplorer({
     showGarbageDialog && /* @__PURE__ */ jsx18(GraphEmptyGarbageDialog, { files: garbageFiles, onCancel: () => setShowGarbageDialog(false), onConfirm: () => void handleConfirmEmptyGarbage() }),
     createDialog
   ] });
+  if (minimized) {
+    return /* @__PURE__ */ jsxs14("div", { "data-testid": "workspace-panel", "data-minimized": "true", className: "relative h-full min-h-0 w-full overflow-hidden p-1", children: [
+      explorerPanel,
+      overlays
+    ] });
+  }
   if (collapsedPanel === "explorer" || isMobileViewport && collapsedPanel === null && activeNode?.kind === "file") {
     return /* @__PURE__ */ jsxs14(
       "div",

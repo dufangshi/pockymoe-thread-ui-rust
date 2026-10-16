@@ -23,6 +23,7 @@ import {
   graphWorkspacePreviewTargetFromNode,
 } from './GraphWorkspacePreviewPane';
 import { GraphEmptyGarbageDialog } from './GraphEmptyGarbageDialog';
+import { useFilePanel } from '../workbench/FilePanelContext';
 import {
   ResizableHandle,
   ResizablePanel,
@@ -245,6 +246,15 @@ export function GraphWorkspaceExplorer({
     });
   }, [activeNode]);
 
+  // Minimized, only the tree shows; opening another file from it brings the editor back.
+  const filePanel = useFilePanel();
+  const minimized = Boolean(filePanel?.minimized);
+  const pathWhenMinimized = useRef<string | null>(null);
+  useEffect(() => { if (minimized) pathWhenMinimized.current = activeNode?.path ?? null; }, [minimized]);
+  useEffect(() => {
+    if (minimized && activeNode?.kind === 'file' && activeNode.path !== pathWhenMinimized.current) filePanel?.setMinimized?.(false);
+  }, [activeNode?.path]);
+
   useEffect(() => {
     if (focusPathRequest) {
       setFocusedLine(focusPathRequest.line ?? null);
@@ -431,7 +441,7 @@ export function GraphWorkspaceExplorer({
       filterQuery={filterQuery}
       initialLoading={Boolean(workspaceAdapter && !adapterModel && loadingTree)}
       rootError={workspaceAdapter && !adapterModel ? workspaceError : null}
-      {...(collapsedPanel === 'viewer'
+      {...(minimized ? {} : collapsedPanel === 'viewer'
         ? {
             onExpandViewer: () => { if (!isMobileViewport || activeNode?.kind === 'file') setCollapsedPanel(isMobileViewport ? 'explorer' : null); },
             // On phones the editor can only be shown for an open file.
@@ -546,6 +556,15 @@ export function GraphWorkspaceExplorer({
     {showGarbageDialog && <GraphEmptyGarbageDialog files={garbageFiles} onCancel={() => setShowGarbageDialog(false)} onConfirm={() => void handleConfirmEmptyGarbage()} />}
     {createDialog}
   </>;
+
+  if (minimized) {
+    return (
+      <div data-testid="workspace-panel" data-minimized="true" className="relative h-full min-h-0 w-full overflow-hidden p-1">
+        {explorerPanel}
+        {overlays}
+      </div>
+    );
+  }
 
   if (collapsedPanel === 'explorer' || (isMobileViewport && collapsedPanel === null && activeNode?.kind === 'file')) {
     return (

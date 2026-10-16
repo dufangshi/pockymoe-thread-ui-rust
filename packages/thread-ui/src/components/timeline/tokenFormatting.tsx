@@ -112,6 +112,12 @@ export function formatCompactTokenCount(value: number) {
     return '0';
   }
 
+  if (value >= 1_000_000_000) {
+    const rounded =
+      value >= 10_000_000_000 ? Math.round(value / 1_000_000_000) : value / 1_000_000_000;
+    return `${String(rounded.toFixed(1)).replace(/\.0$/, '')}b`;
+  }
+
   if (value >= 1_000_000) {
     const rounded =
       value >= 10_000_000 ? Math.round(value / 1_000_000) : value / 1_000_000;

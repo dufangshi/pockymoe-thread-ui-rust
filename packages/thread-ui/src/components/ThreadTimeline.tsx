@@ -158,6 +158,20 @@ function mergeOptimisticTurnItems(
   };
 }
 
+/**
+ * Turns a reader folded or opened, per thread, for as long as the page lives: a
+ * timeline that mounts again (another thread and back, a view that reloads) shows
+ * them as they were instead of falling back to the defaults.
+ */
+const foldChoices = new Map<string, Record<string, boolean>>();
+const FOLD_CHOICE_THREADS = 40;
+function rememberFoldChoices(threadId: string, choices: Record<string, boolean>) {
+  foldChoices.delete(threadId);
+  foldChoices.set(threadId, choices);
+  while (foldChoices.size > FOLD_CHOICE_THREADS) foldChoices.delete(foldChoices.keys().next().value!);
+}
+type FoldChoicesUpdate = Record<string, boolean> | ((current: Record<string, boolean>) => Record<string, boolean>);
+
 function ThreadTimelineComponent({
   threadId,
   turns,
@@ -203,9 +217,23 @@ function ThreadTimelineComponent({
     autoCollapseCompletedTurns ??
     shellNav?.autoCollapseCompletedTurns ??
     false;
-  const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState<Record<string, boolean>>(
-    {},
+  // The reader's choices belong to one thread; another thread starts from its own.
+  const [folds, setFolds] = useState(() => ({ threadId, choices: (threadId && foldChoices.get(threadId)) || {} }));
+  const foldThreadRef = useRef(threadId);
+  foldThreadRef.current = threadId;
+  const collapsedTurnOverrides = useMemo(
+    () => (folds.threadId === threadId ? folds.choices : (threadId && foldChoices.get(threadId)) || {}),
+    [folds, threadId],
   );
+  const setCollapsedTurnOverrides = useCallback((update: FoldChoicesUpdate) => {
+    setFolds(current => {
+      const owner = foldThreadRef.current;
+      const base = current.threadId === owner ? current.choices : (owner && foldChoices.get(owner)) || {};
+      const choices = typeof update === 'function' ? update(base) : update;
+      if (owner) rememberFoldChoices(owner, choices);
+      return { threadId: owner, choices };
+    });
+  }, []);
   const [cancelingSteerIds, setCancelingSteerIds] = useState<Set<string>>(
     () => new Set(),
   );
@@ -233,12 +261,15 @@ function ThreadTimelineComponent({
     Record<string, string | undefined>
   >({});
   const openLinkedThread = adapter?.onOpenLinkedThread;
+  // A search result opens its turn once; folding it again afterwards sticks, even
+  // while a running thread keeps refreshing its turns.
+  const openedSearchKeyRef = useRef<number | null>(null);
   useEffect(() => {
-    if (searchTarget) {
-      const parent = groupPeerWorkTurns(turns).find(group => group.continuations.some(turn => turn.id === searchTarget.turnId));
-      setCollapsedTurnOverrides(current => ({ ...current, [searchTarget.turnId]: false, ...(parent ? { [parent.turn.id]: false } : {}) }));
-    }
-  }, [searchTarget, turns]);
+    if (!searchTarget || openedSearchKeyRef.current === searchTarget.key || !turns.some(turn => turn.id === searchTarget.turnId)) return;
+    openedSearchKeyRef.current = searchTarget.key;
+    const parent = groupPeerWorkTurns(turns).find(group => group.continuations.some(turn => turn.id === searchTarget.turnId));
+    setCollapsedTurnOverrides(current => ({ ...current, [searchTarget.turnId]: false, ...(parent ? { [parent.turn.id]: false } : {}) }));
+  }, [searchTarget, turns, setCollapsedTurnOverrides]);
   const {
     expandedText,
     openExpandedText: handleOpenExpandedText,
@@ -346,7 +377,6 @@ function ThreadTimelineComponent({
 
 
   useEffect(() => {
-    setCollapsedTurnOverrides({});
     setLoadedTurnDetails({});
     setEndedLiveItems(null);
     setLoadingTurnDetailIds(new Set());
@@ -431,7 +461,7 @@ function ThreadTimelineComponent({
           return next;
         });
       });
-  }, [effectiveAutoCollapseCompletedTurns, loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize]);
+  }, [effectiveAutoCollapseCompletedTurns, loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize, setCollapsedTurnOverrides]);
 
   useEffect(() => {
     if (!loadTurnDetail) return;

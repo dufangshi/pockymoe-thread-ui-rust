@@ -1,7 +1,11 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import { formatDate, getLocale, translate } from '../../i18n';
 import { themeAgentName } from '../themeAgent';
-import { heatLevel, type MapNode } from './model';
+import { Network } from 'lucide-react';
+import { TokenMetricIcon } from '../timeline/TokenMetricIcon';
+import { TokenUsageCost } from '../timeline/TokenUsageCost';
+import { formatCompactTokenCount, formatCompactUsd } from '../timeline/tokenFormatting';
+import { heatLevel, type MapNode, type ThreadMapThread } from './model';
 import type { MapRect } from './squarify';
 
 const MINUTE = 60_000;
@@ -13,6 +17,11 @@ const MONOGRAMS: Record<string, string> = {
   claude: 'Cl', codex: 'Cx', copilot: 'Co', cursor: 'Cu', deepseek: 'DS', gemini: 'Ge', grok: 'Gk', kimi: 'Ki', opencode: 'OC', qwen: 'Qw',
 };
 const monogram = (agent: string) => MONOGRAMS[agent] ?? agent.replace(/[^a-z0-9]/gi, '').slice(0, 2).replace(/^./, c => c.toUpperCase());
+
+/** An agent's mark: the theme's art for it (filled in by the map), else a monogram. */
+export function AgentChip({ agent }: { agent: string | undefined }) {
+  return agent ? <span className="thread-map-agent" data-agent={agent} aria-hidden="true">{monogram(agent)}</span> : null;
+}
 
 /** A duration in words, for sentences: "4 h 12 min". */
 export function formatRunTime(ms: number) {
@@ -82,13 +91,18 @@ export function threadDetails(node: MapNode, hours: number) {
       : translate('workbench.threadMapNotRun', { hours })) : null,
     thread.agentThreads ? translate('workbench.threadMapAgentThreads', { count: thread.agentThreads }) : null,
   ].filter(Boolean).join(' · ');
+  const spend = [
+    thread.tokenUsage ? translate('workbench.threadMapTokens', { count: formatCompactTokenCount(thread.tokenUsage.totalTokens) }) : null,
+    thread.priceEstimate ? translate('workbench.threadMapCost', { usd: formatCompactUsd(thread.priceEstimate.totalUsd) })
+      + (thread.pricePartial ? ` (${translate('workbench.threadMapPricePartialShort')})` : '') : null,
+  ].filter(Boolean).join(' · ');
   const dates = [
     thread.createdAt ? translate('workbench.threadMapCreated', { date: formatDate(thread.createdAt, { dateStyle: 'medium' }) }) : null,
     thread.running ? translate('workbench.threadMapRunning')
       : thread.lastActiveAt ? translate('workbench.threadMapActiveAgo', { ago: ago(thread.lastActiveAt) }) : null,
     thread.failed ? translate('workbench.threadMapFailedTurn') : null,
   ].filter(Boolean).join(' · ');
-  return [node.label, who, figures, dates].filter(Boolean);
+  return [node.label, who, figures, spend, dates].filter(Boolean);
 }
 
 /** A pie that fills as the thread ages, colored from fresh to bronze. */
@@ -127,47 +141,74 @@ export function tileTier(box: MapRect) {
 }
 
 /** Line heights and gaps the parts of a tile take, for fitting them in. */
-const FIT = { padding: 18, gap: 5, who: 14, grid: 32, column: 56, meta: 14, spark: 14, promptLine: 16 };
+const FIT = { padding: 18, gap: 5, who: 14, grid: 32, column: 56, meta: 14, usage: 22, spark: 14, promptLine: 16 };
+
+/** Tokens and API price, as on a turn: the price opens its breakdown. */
+function Usage({ thread }: { thread: ThreadMapThread }) {
+  if (!thread.tokenUsage && !thread.priceEstimate) return null;
+  return (
+    <span className="thread-map-usage">
+      <TokenUsageCost usage={thread.tokenUsage} price={thread.priceEstimate}
+        {...(thread.pricePartial ? { detailsNote: translate('workbench.threadMapPricePartial') } : {})} />
+      {thread.tokenUsage ? <span className="thread-map-tokens" title={translate('chat.totalTokens', { value1: thread.tokenUsage.totalTokens.toLocaleString(getLocale()) })}>
+        <TokenMetricIcon />{formatCompactTokenCount(thread.tokenUsage.totalTokens)}
+      </span> : null}
+    </span>
+  );
+}
 
 /**
  * One thread on the map. Width and height each decide what fits: the agent and
- * model, the latest prompt, turns with total and recent run time, an hourly strip
- * and the age; what does not fit is left out, down to a colored speck.
+ * model, the latest prompt, turns with total and recent run time, tokens and API
+ * price, an hourly strip and the age; what does not fit is left out, down to a
+ * colored speck. The tile is one link; the price and the agent-thread button sit
+ * above it.
  */
-export function ThreadTile({ node, box, hours, current, onOpen, hover }: {
+export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }: {
   node: MapNode;
   box: MapRect;
   hours: number;
   current: boolean;
   onOpen: (event: ReactMouseEvent) => void;
   hover: Record<string, unknown>;
+  /** Opens the tile up into the agent threads the thread started. */
+  onShowChildren?: (() => void) | undefined;
 }) {
   const thread = node.thread!;
   const { width: w, height: h } = box;
   const tier = tileTier(box);
   const details = threadDetails(node, hours);
   const age = ageTier(thread.createdAt);
-  const chip = thread.agent
-    ? <span className="thread-map-agent" data-agent={thread.agent} aria-hidden="true">{monogram(thread.agent)}</span>
-    : null;
+  const chip = <AgentChip agent={thread.agent} />;
   const titled = tier !== 'icon' && tier !== 'dot';
   const lineHeight = tier === 'card' ? 19 : tier === 'large' ? 17 : 16;
+  const childCount = thread.children?.length ?? 0;
+  const canShowChildren = Boolean(onShowChildren && childCount) && w >= 60 && h >= 40;
+  // The title keeps room for a few characters: the age goes first, then the count beside the agent-thread icon;
+  // a narrow tall tile has the button on a line of its own under the title.
+  const headRoom = w - (tier === 'card' ? 22 : 14) - (thread.agent ? (tier === 'card' ? 25 : 22) : 0);
+  const showChildren = canShowChildren && headRoom - 24 >= 44;
+  const childrenRow = canShowChildren && !showChildren && h >= 80;
+  const childrenWidth = !showChildren ? 0 : headRoom - 36 >= 44 ? 36 : 24;
   // From the top: title, who; from the bottom: strip, figures; the prompt takes what is left.
-  const showAge = age !== null && w >= 110 && h >= 44;
-  const showAgeText = showAge && w >= 150;
+  const showAge = age !== null && w >= 110 && h >= 44 && headRoom - childrenWidth - 19 >= 52;
+  const showAgeText = showAge && headRoom - childrenWidth - 52 >= 80;
   const showWho = w >= 100 && h >= 80;
   const known = thread.turns !== null;
+  const priced = Boolean(thread.tokenUsage || thread.priceEstimate);
   // Figures side by side on a wide tile, stacked on a tall narrow one, else one line.
   const figures = known && w >= 176 && h >= 120 ? 'grid' : known && w >= 96 && h >= 170 ? 'column' : known && w >= 64 && h >= 46 ? 'line' : null;
+  // Price and tokens: a fourth figure on a wide grid, else a row of their own where it fits.
+  const usage = !priced ? null : figures === 'grid' && w >= 270 ? 'cell' : (figures === 'grid' || figures === 'column') && w >= 110 ? 'row' : null;
   const showSpark = Boolean(thread.hourlyMs?.some(ms => ms > 0)) && w >= 96 && h >= 100;
-  const fixed = FIT.padding + (showWho ? FIT.who + FIT.gap : 0) + (figures ? FIT[figures === 'line' ? 'meta' : figures] + FIT.gap : 0)
-    + (showSpark ? FIT.spark + FIT.gap : 0);
+  const fixed = FIT.padding + (childrenRow ? 19 + FIT.gap : 0) + (showWho ? FIT.who + FIT.gap : 0) + (figures ? FIT[figures === 'line' ? 'meta' : figures] + FIT.gap : 0)
+    + (usage === 'row' ? FIT.usage + FIT.gap : 0) + (showSpark ? FIT.spark + FIT.gap : 0);
   const titleLines = Math.max(1, Math.min(3, Math.floor((h - fixed) / lineHeight), h >= 56 ? 3 : 1));
   const promptRoom = h - fixed - Math.min(2, titleLines) * lineHeight - FIT.gap;
   const promptLines = w >= 100 && thread.lastPrompt ? Math.min(6, Math.floor(promptRoom / FIT.promptLine)) : 0;
   const prompt = promptLines >= 2 ? promptLine(thread.lastPrompt!) : '';
   // A Latin word wider than the title's line would be split mid-word; one line with an ellipsis reads better.
-  const titleWidth = w - (tier === 'card' ? 22 : 14) - (chip ? (tier === 'card' ? 25 : 22) : 0) - (showAge ? (showAgeText ? 52 : 19) : 0);
+  const titleWidth = headRoom - (showAge ? (showAgeText ? 52 : 19) : 0) - childrenWidth;
   const longest = Math.max(0, ...thread.title.split(/\s+/).map(word => (/^[\x21-\x7e]+$/.test(word) ? word.length : 0)));
   const wraps = longest * lineHeight * 0.42 <= titleWidth;
   const lines = !wraps ? 1 : prompt ? Math.min(2, titleLines) : titleLines;
@@ -182,17 +223,26 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover }: {
   const short = [
     translate('workbench.threadMapTurns', { count: thread.turns ?? 0 }),
     thread.totalMs && w >= 110 ? translate('workbench.threadMapTotalShort', { duration: formatShortDuration(thread.totalMs) }) : null,
+    thread.priceEstimate && w >= 170 ? formatCompactUsd(thread.priceEstimate.totalUsd) : null,
   ].filter(Boolean).join(' · ');
+  const childrenButton = (count: boolean) => (
+    <button type="button" className="thread-map-children" onClick={onShowChildren}
+      aria-label={translate('workbench.threadMapShowChildren', { count: childCount, title: thread.title })}
+      title={translate('workbench.threadMapShowChildren', { count: childCount, title: thread.title })}>
+      <Network aria-hidden="true" />{count && <span>{childCount}</span>}
+    </button>
+  );
   return (
-    <a href={thread.href} className="thread-map-tile" data-size={tier} data-heat={heatLevel(thread.activeMs)}
-      data-running={thread.running || undefined} data-failed={thread.failed || undefined} aria-current={current ? 'page' : undefined}
-      aria-label={details.join(' · ')} tabIndex={tier === 'dot' ? -1 : undefined}
-      style={{ left: box.x, top: box.y, width: w, height: h, '--lines': lines, '--prompt-lines': promptLines, '--spark-h': `${sparkHeight}px` } as CSSProperties}
-      onClick={onOpen} {...hover}>
+    <div className="thread-map-tile" data-size={tier} data-heat={heatLevel(thread.activeMs)}
+      data-running={thread.running || undefined} data-failed={thread.failed || undefined} data-current={current || undefined}
+      style={{ left: box.x, top: box.y, width: w, height: h, '--lines': lines, '--prompt-lines': promptLines, '--spark-h': `${sparkHeight}px` } as CSSProperties}>
+      <a href={thread.href} className="thread-map-tile-link" aria-label={details.join(' · ')} aria-current={current ? 'page' : undefined}
+        tabIndex={tier === 'dot' ? -1 : undefined} onClick={onOpen} {...hover} />
       {tier !== 'dot' && (
         <span className="thread-map-tile-head">
           {chip}
           {titled && <span className="thread-map-tile-title">{thread.title}</span>}
+          {showChildren && childrenButton(childrenWidth > 24)}
           {showAge && (
             <span className="thread-map-age" title={thread.createdAt ? translate('workbench.threadMapCreated', { date: formatDate(thread.createdAt, { dateStyle: 'medium' }) }) : undefined}>
               <AgeGlyph tier={age} />
@@ -201,6 +251,7 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover }: {
           )}
         </span>
       )}
+      {childrenRow && <span className="thread-map-tile-children-row">{childrenButton(true)}</span>}
       {showWho && (who || status || thread.failed) && (
         <span className="thread-map-tile-sub">
           {who && <span className="thread-map-tile-who">{who}</span>}
@@ -214,10 +265,12 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover }: {
           <span><b>{thread.turns}</b><small>{translate('workbench.threadMapStatTurns')}</small></span>
           <span><b>{thread.totalMs ? formatShortDuration(thread.totalMs) : '—'}</b><small>{translate('workbench.threadMapStatTotal')}</small></span>
           <span><b>{thread.activeMs ? formatShortDuration(thread.activeMs) : '—'}</b><small>{translate('workbench.threadMapStatRecent', { hours })}</small></span>
+          {usage === 'cell' && <span className="thread-map-stat-usage"><Usage thread={thread} /><small>{translate('workbench.threadMapStatCost')}</small></span>}
         </span>
       )}
+      {usage === 'row' && <Usage thread={thread} />}
       {figures === 'line' && <span className="thread-map-tile-meta">{short}</span>}
       {showSpark && <Spark hourly={thread.hourlyMs!} />}
-    </a>
+    </div>
   );
 }

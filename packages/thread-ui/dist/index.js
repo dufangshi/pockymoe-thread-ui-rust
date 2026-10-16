@@ -26,7 +26,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-YJ6BF75H.js";
+} from "./chunk-4WINRN6D.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -52,7 +52,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-MGIRSN4V.js";
+} from "./chunk-JIMGKAUL.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -97,7 +97,7 @@ styleInject('.terminal-panel {\n  --terminal-bg: #0f1317;\n  --terminal-header-h
 styleInject('.thread-ui-shell {\n  --tlog-font-mono:\n    ui-monospace,\n    "SF Mono",\n    "Cascadia Mono",\n    "JetBrains Mono",\n    Menlo,\n    Consolas,\n    "Liberation Mono",\n    monospace;\n  --tlog-add: light-dark(oklch(45% 0.13 150), oklch(78% 0.14 150));\n  --tlog-remove: light-dark(oklch(50% 0.17 25), oklch(76% 0.13 25));\n  --tlog-failed: light-dark(#b3302c, #f0847f);\n  --tlog-rule: color-mix(in srgb, var(--theme-fg-muted) 45%, transparent);\n  --tlog-row-height: 26px;\n}\n.thread-ui-shell .thread-graph-worked-summary {\n  min-width: 0;\n}\n.thread-ui-shell .thread-worked-toggle {\n  flex: 0 1 auto;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-worked-toggle:hover,\n.thread-ui-shell .thread-worked-toggle:focus-visible {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-worked-chevron {\n  width: 14px;\n  height: 14px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-worked-summary .thread-graph-worked-rule,\n.thread-ui-shell .matter-workbench .thread-graph-worked-summary .thread-graph-worked-rule {\n  display: block;\n  height: 0;\n  background: none;\n  border-top: 1px dashed var(--tlog-rule);\n  min-width: 16px;\n}\n.tlog-summary {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-variant-numeric: tabular-nums;\n}\n.tlog-part.is-add {\n  color: var(--tlog-add);\n}\n.tlog-part.is-remove {\n  color: var(--tlog-remove);\n}\n.tlog-part.is-failed {\n  color: inherit;\n  font-weight: inherit;\n}\n.tlog-sep {\n  margin: 0 0.4em;\n  color: var(--theme-fg-muted);\n}\n.tlog-sep.is-lead {\n  margin-left: 0;\n}\n.thread-ui-shell .thread-turn-receipt {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 10px;\n  margin-top: 2px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n  font-variant-numeric: tabular-nums;\n}\n.thread-ui-shell .thread-turn-receipt time {\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-turn-receipt .thread-turn-usage {\n  font-size: 11px;\n  opacity: 0.9;\n}\n.thread-ui-shell .thread-execution-timeline {\n  margin: 0 0 4px;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.thread-ui-shell .thread-execution-timeline > * {\n  margin: 0;\n}\n.tlog-run {\n  min-width: 0;\n}\n.tlog-run-head {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  width: 100%;\n  min-width: 0;\n  min-height: var(--tlog-row-height);\n  padding: 0;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  text-align: left;\n}\n.tlog-run-head:hover .tlog-summary,\n.tlog-run-head:focus-visible .tlog-summary {\n  color: var(--theme-fg);\n}\n.tlog-run-head .tlog-summary {\n  flex: 0 1 auto;\n  color: var(--theme-fg-soft);\n}\n.tlog-chev {\n  width: 13px;\n  height: 13px;\n  flex: none;\n  color: var(--theme-fg-muted);\n  transition: transform 120ms;\n}\n.tlog-run[data-open] > .tlog-run-head .tlog-chev {\n  transform: rotate(90deg);\n}\n.tlog-rule {\n  flex: 1;\n  min-width: 16px;\n  border-top: 1px dashed var(--tlog-rule);\n}\n.tlog-run-body {\n  display: flex;\n  flex-direction: column;\n  margin: 2px 0 6px 6px;\n  padding-left: 13px;\n  border-left: 1px solid var(--theme-border);\n}\n.tlog-row {\n  min-width: 0;\n}\n.tlog-row-line {\n  position: relative;\n  display: flex;\n  align-items: center;\n  min-width: 0;\n  margin-left: -6px;\n  border-radius: 5px;\n}\n.tlog-row-line:hover {\n  background: var(--theme-hover);\n}\n.tlog-row-head {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  min-height: var(--tlog-row-height);\n  padding: 0 6px;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  text-align: left;\n}\n.tlog-row-line:hover .tlog-row-head {\n  color: var(--theme-fg);\n}\n.tlog-copy {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 24px;\n  height: 22px;\n  margin-right: 2px;\n  border-radius: 4px;\n  color: var(--theme-fg-muted);\n  opacity: 0;\n  pointer-events: none;\n  transition: opacity 120ms;\n}\n.tlog-copy svg {\n  width: 13px;\n  height: 13px;\n}\n.tlog-row[data-open] .tlog-copy,\n.tlog-copy:focus-visible {\n  opacity: 0.55;\n  pointer-events: auto;\n}\n@media (hover: hover) {\n  .tlog-row-line:hover .tlog-copy {\n    opacity: 0.55;\n    pointer-events: auto;\n  }\n}\n.tlog-copy:hover {\n  opacity: 1;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.tlog-glyph {\n  flex: none;\n  width: 1.6ch;\n  font: 700 12px/1 var(--tlog-font-mono);\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n  text-align: center;\n}\n.tlog-row[data-kind=reasoning] .tlog-glyph,\n.tlog-row[data-kind=fileRead] .tlog-glyph,\n.tlog-row[data-kind=webSearch] .tlog-glyph {\n  color: var(--theme-fg-muted);\n}\n.tlog-row[data-status=failed] .tlog-glyph {\n  color: var(--tlog-failed);\n}\n.tlog-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.tlog-title.is-mono {\n  font-family: var(--tlog-font-mono);\n  font-size: 11.5px;\n}\n.tlog-row[data-kind=reasoning] .tlog-title {\n  font-style: italic;\n  color: var(--theme-fg-muted);\n}\n.tlog-row[data-kind=fileRead][data-batch] .tlog-title {\n  flex: none;\n}\n.tlog-batch-names {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font: 11px var(--tlog-font-mono);\n  color: var(--theme-fg-muted);\n}\n.tlog-delta {\n  display: inline-flex;\n  flex: none;\n  gap: 6px;\n  font: 600 11px var(--tlog-font-mono);\n}\n.tlog-delta .is-add {\n  color: var(--tlog-add);\n}\n.tlog-delta .is-remove {\n  color: var(--tlog-remove);\n}\n.tlog-tag {\n  flex: none;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.tlog-tag.is-failed {\n  color: var(--tlog-failed);\n  font-weight: 600;\n}\n.tlog-spinner {\n  flex: none;\n  width: 11px;\n  height: 11px;\n  border: 1.5px solid var(--theme-border-strong);\n  border-top-color: var(--theme-accent-solid);\n  border-radius: 50%;\n  animation: tlog-spin 0.9s linear infinite;\n}\n@keyframes tlog-spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .tlog-spinner {\n    animation: none;\n  }\n}\n.tlog-batch {\n  padding-left: 14px;\n}\n.tlog-more {\n  align-self: flex-start;\n  margin: 2px 0;\n  font-size: 11.5px;\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.tlog-more:hover {\n  text-decoration: underline;\n}\n.tlog-single {\n  min-width: 0;\n}\n.tlog-other {\n  min-width: 0;\n  margin: 2px 0;\n}\n.tlog-detail {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  margin: 2px 0 8px 1.6ch;\n  min-width: 0;\n}\n.tlog-detail.is-loading,\n.tlog-empty {\n  margin: 0;\n  font-size: 11.5px;\n  color: var(--theme-fg-muted);\n}\n.tlog-detail.is-loading {\n  margin: 2px 0 6px calc(1.6ch + 8px);\n}\n.tlog-detail.is-prose {\n  margin-left: calc(1.6ch + 8px);\n  font-size: 12.5px;\n  line-height: 1.6;\n  color: var(--theme-fg-soft);\n  white-space: pre-wrap;\n}\n.tlog-command,\n.tlog-output pre,\n.tlog-output {\n  margin: 0;\n  max-height: calc(16 * 1.55em);\n  overflow: auto;\n  padding: 6px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-surface);\n  font: 11.5px/1.55 var(--tlog-font-mono);\n  color: var(--theme-fg-soft);\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n}\n.tlog-command {\n  max-height: calc(6 * 1.55em);\n  color: var(--theme-fg);\n}\n.tlog-output.is-error {\n  color: var(--tlog-failed);\n}\n.tlog-diff {\n  max-height: calc(12 * 1.6em * 11.5 / 12 + 6px);\n  overflow: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-panel);\n}\n.tlog-diff .thread-diff {\n  font-size: 11.5px;\n  padding: 2px 0;\n}\n.tlog-diff .thread-diff-line {\n  min-height: 1.6em;\n}\n.thread-diff-line.is-file {\n  position: sticky;\n  left: 0;\n  padding: 2px 10px;\n  border-block: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n  font-weight: 600;\n}\n.thread-diff-line.is-file:first-child {\n  border-top: 0;\n}\n.thread-diff-line.is-file .thread-diff-number,\n.thread-diff-line.is-file .thread-diff-sign {\n  display: none;\n}\n.tlog-detail-foot {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.tlog-open {\n  font-size: 11px;\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.tlog-open:hover {\n  text-decoration: underline;\n}\n.thread-ui-shell .thread-execution-timeline .thread-graph-message[data-role=assistant] .thread-graph-message-content {\n  color: var(--theme-fg-soft);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell {\n    --tlog-row-height: 32px;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) {\n    row-gap: 0;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-worked-toggle {\n    flex: 1 1 0;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle)::after {\n    content: "";\n    order: 1;\n    flex-basis: 100%;\n    height: 0;\n  }\n  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle {\n    order: 2;\n    margin-left: 22px;\n  }\n  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle > .tlog-sep {\n    display: none;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-graph-worked-rule {\n    order: 3;\n  }\n  .tlog-run-body {\n    margin-left: 4px;\n    padding-left: 10px;\n  }\n  .tlog-detail {\n    margin-left: 0;\n  }\n}\n.tlog-current {\n  min-width: 0;\n  margin-top: -4px;\n}\n.thread-ui-shell .tlog-plan {\n  padding: 8px 12px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n}\n.tlog-plan-head {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n  margin-bottom: 4px;\n  font-size: 11px;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--theme-fg-muted);\n}\n.tlog-plan-title {\n  font-weight: 600;\n}\n.tlog-plan-count {\n  font-variant-numeric: tabular-nums;\n  letter-spacing: 0;\n}\n.tlog-plan-note {\n  margin: 0 0 4px;\n  font-size: 12.5px;\n  color: var(--theme-fg-soft);\n}\n.tlog-plan-list {\n  display: grid;\n  gap: 2px;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n.thread-ui-shell .tlog-plan .tlog-plan-step {\n  padding: 0;\n  border: 0;\n  border-radius: 0;\n  background: none;\n}\n.tlog-plan-step {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n  font-size: 13px;\n  line-height: 1.6;\n  color: var(--theme-fg);\n}\n.tlog-plan-mark {\n  flex: none;\n  width: 1.6ch;\n  font: 700 12px/1 var(--tlog-font-mono);\n  text-align: center;\n}\n.tlog-plan-mark::before {\n  content: "\\25cb";\n  color: var(--theme-fg-muted);\n}\n.tlog-plan-step[data-status=completed] {\n  color: var(--theme-fg-muted);\n}\n.tlog-plan-step[data-status=completed] .tlog-plan-mark::before {\n  content: "\\2713";\n  color: var(--tlog-add);\n}\n.tlog-plan-step[data-status=in_progress] {\n  font-weight: 600;\n}\n.tlog-plan-step[data-status=in_progress] .tlog-plan-mark::before {\n  content: "\\25b8";\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.tlog-plan-step[data-status=failed] .tlog-plan-mark::before {\n  content: "\\2715";\n  color: var(--tlog-failed);\n}\n@media (max-width: 639px) {\n  .tlog-output {\n    max-height: calc(10 * 1.55em);\n  }\n  .tlog-diff .thread-diff-line > .thread-diff-number:first-child {\n    display: none;\n  }\n}\n.thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable {\n  font-size: 0;\n}\n.thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable::before {\n  content: "$ \\2014";\n  font-size: 11px;\n}\n.thread-ui-shell .tlog-files-toggle {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  font-variant-numeric: tabular-nums;\n  text-decoration: underline dotted var(--tlog-rule);\n  text-underline-offset: 3px;\n}\n.thread-ui-shell .tlog-files-toggle:hover,\n.thread-ui-shell .tlog-files-toggle[aria-expanded=true] {\n  color: var(--theme-fg);\n  text-decoration-style: solid;\n}\n.tlog-files {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n  margin: -4px 0 4px 6px;\n  padding-left: 13px;\n  border-left: 1px solid var(--theme-border);\n}\n.tlog-files-more {\n  margin: 2px 0;\n  font-size: 11.5px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message:is([data-variant=envelope], [data-variant=notice]) {\n  justify-content: flex-start;\n}\n.thread-ui-shell .thread-graph-message:is([data-variant=envelope], [data-variant=notice]) :is(.thread-graph-message-stack, .thread-graph-message-bubble, .thread-graph-message-content) {\n  max-width: 100%;\n  width: 100%;\n  margin-left: 0;\n  align-items: stretch;\n}\n.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant=envelope] .thread-graph-message-bubble {\n  padding: 8px 12px;\n  border: 1px solid var(--theme-border);\n  border-left: 3px solid var(--theme-accent-solid);\n  border-radius: 6px;\n  background: var(--theme-panel);\n  box-shadow: none;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message[data-variant=envelope] .thread-graph-message-prose {\n  font-size: 13.5px;\n  line-height: 1.6;\n}\n.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant=notice] .thread-graph-message-bubble {\n  padding: 0;\n  border: 0;\n  background: none;\n  box-shadow: none;\n}\n.prompt-envelope-head,\n.prompt-notice-head {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n  min-width: 0;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n}\n.prompt-envelope-head {\n  margin-bottom: 4px;\n}\n.prompt-envelope-glyph {\n  flex: none;\n  width: 1.6ch;\n  text-align: center;\n  font: 700 12px var(--tlog-font-mono);\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.prompt-envelope-kind {\n  flex: none;\n  font-weight: 600;\n  color: var(--theme-fg-soft);\n}\n.prompt-envelope-from {\n  flex: none;\n  font-family: var(--tlog-font-mono);\n  font-size: 11.5px;\n}\n.prompt-envelope-link {\n  color: inherit;\n  text-decoration: underline dotted var(--tlog-rule);\n  text-underline-offset: 3px;\n  border-radius: 3px;\n}\n.prompt-envelope-link:hover {\n  color: var(--theme-accent-strong, var(--theme-fg));\n  text-decoration-style: solid;\n}\n.prompt-envelope-link:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.prompt-envelope-subject {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.prompt-envelope-head[data-kind=result] .prompt-envelope-glyph {\n  color: var(--tlog-add);\n}\n.prompt-envelope-head[data-kind=question] .prompt-envelope-glyph {\n  color: var(--tlog-failed);\n}\n.prompt-envelope-urgent {\n  margin: 0 0 4px;\n  font-size: 12px;\n  color: var(--tlog-failed);\n}\n.prompt-notice-head {\n  width: 100%;\n  min-height: var(--tlog-row-height);\n  text-align: left;\n}\n.prompt-notice-head:hover .prompt-notice-preview {\n  color: var(--theme-fg);\n}\n.prompt-notice-preview {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.prompt-notice-chev {\n  flex: none;\n  width: 12px;\n  height: 12px;\n  align-self: center;\n  transition: transform 120ms;\n}\n.prompt-notice[data-open] .prompt-notice-chev {\n  transform: rotate(90deg);\n}\n.prompt-notice-body {\n  margin: 2px 0 6px calc(1.6ch + 8px);\n  padding: 6px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-surface);\n  font-size: 12px;\n  line-height: 1.6;\n  color: var(--theme-fg-soft);\n  white-space: pre-wrap;\n}\n.tlog-notice {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  min-height: var(--tlog-row-height);\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n}\n.tlog-notice .tlog-glyph {\n  color: var(--theme-fg-muted);\n}\n.tlog-notice .tlog-title {\n  flex: 0 1 auto;\n}\n.tlog-notice-detail {\n  min-width: 0;\n  flex: 1;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  opacity: 0.8;\n}\n.thread-ui-shell .thread-graph-message-hover-time {\n  align-self: center;\n  margin-right: 6px;\n  padding: 0 4px;\n  border-radius: 4px;\n  background: var(--theme-bg);\n  font-size: 10.5px;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-variant-numeric: tabular-nums;\n}\n.tlog-output:has(> pre) {\n  padding: 0;\n  overflow: hidden;\n  max-height: none;\n}\n.tlog-output > pre {\n  border: 0;\n  border-radius: 0;\n  background: none;\n}\n.tlog-viewable {\n  position: relative;\n  cursor: zoom-in;\n}\n.tlog-viewable:hover {\n  border-color: var(--theme-border-strong);\n}\n.tlog-viewable:focus-visible {\n  outline: 2px solid var(--theme-accent-border);\n  outline-offset: 1px;\n}\n.tlog-more-lines {\n  position: sticky;\n  bottom: 0;\n  display: block;\n  padding: 2px 10px;\n  border-top: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n  text-align: right;\n}\n.tlog-collapse {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr);\n  grid-template-rows: 1fr;\n  opacity: 1;\n  transition:\n    grid-template-rows 260ms cubic-bezier(0.2, 0, 0, 1),\n    margin 260ms cubic-bezier(0.2, 0, 0, 1),\n    opacity 200ms ease;\n}\n.tlog-collapse[data-state=closed] {\n  grid-template-rows: 0fr;\n  opacity: 0;\n  margin-block: 0 !important;\n}\n.tlog-collapse-inner {\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.tlog-collapse[data-settled] > .tlog-collapse-inner {\n  overflow: visible;\n}\n@media (prefers-reduced-motion: reduce) {\n  .tlog-collapse {\n    transition: none;\n  }\n  .tlog-collapse[data-state=open] > .tlog-collapse-inner {\n    overflow: visible;\n  }\n}\n.thread-ui-shell .thread-graph-show-more[aria-expanded=true] {\n  position: sticky;\n  bottom: calc(var(--sticky-inset, var(--timeline-bottom-inset, 0px)) + 10px);\n  z-index: 6;\n  padding: 0 10px 0 6px;\n  border-radius: 999px;\n  background: color-mix(in srgb, var(--theme-panel) 90%, transparent);\n  -webkit-backdrop-filter: blur(12px);\n  backdrop-filter: blur(12px);\n  box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-border) 80%, transparent), 0 4px 14px rgb(0 0 0 / 0.14);\n  opacity: 1;\n}\n.thread-ui-shell .thread-graph-show-more[aria-expanded=true]:hover,\n.thread-ui-shell .thread-graph-show-more[aria-expanded=true]:focus-visible {\n  background: color-mix(in srgb, var(--theme-panel) 96%, transparent);\n}\n.tlog-part.is-count {\n  display: inline-flex;\n  align-items: center;\n}\n.tlog-part.is-count + .tlog-part.is-count {\n  margin-left: 0.7em;\n}\n.tlog-count {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n  font-variant-numeric: tabular-nums;\n  cursor: default;\n}\n.tlog-count-icon {\n  width: 12px;\n  height: 12px;\n  flex: none;\n  opacity: 0.75;\n}\n.tlog-count-icon.is-kind {\n  margin-right: 2px;\n  opacity: 0.6;\n}\n.tlog-part.is-count + .tlog-part.is-count:has(> .tlog-count[data-kind=failed]) {\n  margin-left: 0.45em;\n}\n.tlog-count[data-kind=failed] .tlog-count-icon {\n  stroke-width: 2.5;\n}\n.tlog-hint {\n  position: fixed;\n  z-index: 1000;\n  display: grid;\n  gap: 3px;\n  width: max-content;\n  max-width: 240px;\n  padding: 8px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);\n  font-size: 12px;\n  line-height: 1.45;\n  white-space: normal;\n  text-align: left;\n  pointer-events: none;\n  transform: translate(-50%, -100%);\n  animation: tlog-hint-in 140ms ease-out;\n}\n.tlog-hint[data-below] {\n  transform: translate(-50%, 0);\n}\n.tlog-hint-title {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  font-weight: 600;\n}\n.tlog-hint-body {\n  color: var(--theme-fg-soft);\n}\n.tlog-hint-example {\n  color: var(--theme-fg-muted);\n  font-family: var(--tlog-font-mono);\n  font-size: 11px;\n}\n@keyframes tlog-hint-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .tlog-hint {\n    animation: none;\n  }\n}\n.thread-ui-shell .thread-graph-worked-summary:has(> .thread-worked-toggle[aria-expanded=true]) {\n  position: sticky;\n  top: 0;\n  z-index: 5;\n  background: color-mix(in srgb, var(--theme-bg) 94%, transparent);\n  -webkit-backdrop-filter: blur(10px);\n  backdrop-filter: blur(10px);\n}\n.thread-worked-spinner {\n  width: 12px;\n  height: 12px;\n  flex: none;\n  margin: 2px;\n}\n.thread-ui-shell .workspace-missing-file {\n  display: flex;\n  flex: 1;\n  min-height: 0;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  padding: 24px 20px;\n  text-align: center;\n  color: var(--theme-fg-soft);\n}\n.workspace-missing-file-icon {\n  width: 28px;\n  height: 28px;\n  color: var(--theme-fg-muted);\n  opacity: 0.8;\n}\n.workspace-missing-file-title {\n  margin: 4px 0 0;\n  color: var(--theme-fg);\n  font-size: 14px;\n  font-weight: 600;\n  overflow-wrap: anywhere;\n}\n.workspace-missing-file-hint {\n  margin: 0;\n  max-width: 34ch;\n  font-size: 13px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .workspace-missing-file-path {\n  max-width: min(100%, 56ch);\n  padding: 6px 10px;\n  border-radius: 6px;\n  background: var(--theme-surface);\n  font-family: var(--tlog-font-mono);\n  font-size: 11.5px;\n  line-height: 1.5;\n  overflow-wrap: anywhere;\n  user-select: all;\n}\n.thread-ui-shell .workspace-missing-file-copy {\n  margin-top: 2px;\n  padding: 4px 12px;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.thread-ui-shell .workspace-missing-file-copy:hover {\n  color: var(--theme-fg);\n  background: var(--theme-hover);\n}\n.thread-ui-shell .workspace-file-alert-download {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 5px;\n  min-height: 30px;\n  padding: 3px 12px;\n  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);\n  border-radius: 999px;\n  background: transparent;\n  color: var(--theme-fg);\n  font-size: 12.5px;\n}\n.thread-ui-shell .workspace-file-alert-download:hover:not(:disabled) {\n  background: var(--theme-hover);\n}\n.workspace-loading-skeleton {\n  animation: workspace-skeleton-in 160ms ease-out 120ms both;\n}\n.workspace-loading-skeleton-bar {\n  height: 41px;\n  flex: none;\n  border-bottom: 1px solid var(--theme-border);\n}\n@keyframes workspace-skeleton-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .workspace-loading-skeleton {\n    animation: none;\n  }\n}\n');
 
 // src/styles/thread-map.css
-styleInject('.thread-graph-dialog.thread-map-dialog {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  width: min(1180px, calc(100vw - 48px));\n  max-width: none;\n  height: min(820px, calc(100dvh - 48px));\n  max-height: none;\n  padding: 0;\n  overflow: hidden;\n  border-radius: 16px;\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-graph-dialog.thread-map-dialog[data-theme-effective=dark] {\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n@media (max-width: 639px) {\n  .thread-graph-dialog.thread-map-dialog {\n    left: 0;\n    top: 0;\n    translate: none;\n    width: 100vw;\n    height: 100dvh;\n    border: 0;\n    border-radius: 0;\n    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);\n  }\n}\n.thread-map {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n}\n.thread-map-bar {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  padding: 10px 10px 4px 16px;\n}\n.thread-map-title {\n  flex: none;\n  margin: 0;\n  font-size: 15px;\n  font-weight: 650;\n  letter-spacing: -0.01em;\n}\n.thread-map-summary {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-summary .thread-map-running-dot {\n  margin-right: 4px;\n}\n.thread-map-icon-button,\n.thread-map-goto {\n  position: relative;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 32px;\n  height: 32px;\n  padding: 0;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-map-icon-button:hover:not(:disabled),\n.thread-map-goto:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-map-icon-button:disabled {\n  opacity: 0.35;\n}\n.thread-map-dialog [data-slot=dialog-close].thread-map-close {\n  top: auto;\n  right: auto;\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  opacity: 1;\n}\n.thread-map-icon-button:focus-visible,\n.thread-map-goto:focus-within {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-icon-button svg,\n.thread-map-goto svg {\n  width: 17px;\n  height: 17px;\n  pointer-events: none;\n}\n.thread-map-goto select {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 0;\n  font-size: 16px;\n  cursor: pointer;\n}\n.thread-map-path {\n  gap: 2px;\n  padding: 0 10px 6px 8px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.thread-map-crumbs {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  min-width: 0;\n  overflow: hidden;\n  border-radius: 6px;\n  outline: none;\n}\n.thread-map-crumbs:focus-visible {\n  box-shadow: 0 0 0 2px var(--theme-accent-solid);\n}\n.thread-map-crumb {\n  display: flex;\n  flex: 0 1 auto;\n  align-items: center;\n  min-width: 0;\n}\n.thread-map-crumb svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-crumb button {\n  min-width: 0;\n  max-width: 18em;\n  height: 30px;\n  padding: 0 6px;\n  overflow: hidden;\n  border: 0;\n  border-radius: 6px;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 12.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-crumb button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-map-crumb button[aria-current] {\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-canvas {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  margin: 8px 10px 0;\n  overflow: hidden;\n}\n.thread-map-empty {\n  display: grid;\n  place-items: center;\n  height: 100%;\n  margin: 0;\n  color: var(--theme-fg-muted);\n  font-size: 13px;\n}\n.thread-map-section,\n.thread-map-tile {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  isolation: isolate;\n}\n.thread-map-section {\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n}\n.thread-map-section[data-kind=device] {\n  background: var(--theme-bg);\n  border-color: var(--theme-border-strong);\n}\n.thread-map-section-head {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  width: 100%;\n  height: 26px;\n  padding: 0 7px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  font-weight: 600;\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-section[data-kind=device] > .thread-map-section-head {\n  color: var(--theme-fg);\n  font-size: 12px;\n}\n.thread-map-section-head:hover:not(:disabled) {\n  color: var(--theme-fg);\n  background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n}\n.thread-map-section-head:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section-head:disabled {\n  cursor: default;\n}\n.thread-map-section-head svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-section-label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-section-count {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-section[data-collapsed] > .thread-map-section-head {\n  position: absolute;\n  inset: 0;\n  height: auto;\n  align-items: flex-start;\n  padding-top: 6px;\n}\n.thread-map-section-summary {\n  position: absolute;\n  right: 9px;\n  bottom: 6px;\n  left: 9px;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section[data-state] {\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 7px,\n      color-mix(in oklab, var(--theme-border) 55%, transparent) 7px 8px),\n    var(--theme-surface);\n}\n.thread-map-section[data-state] > .thread-map-section-head {\n  color: var(--theme-fg-muted);\n}\n.thread-map-tile {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  padding: 6px 7px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 7px;\n  color: var(--theme-fg);\n  text-decoration: none;\n  transition: filter 120ms ease;\n}\n.thread-map-tile[data-size=card] {\n  gap: 6px;\n  padding: 10px 11px 9px;\n  border-radius: 10px;\n}\n.thread-map-tile[data-size=large] {\n  gap: 5px;\n  padding: 8px 9px;\n  border-radius: 9px;\n}\n.thread-map-tile[data-size=named] {\n  justify-content: center;\n  padding: 3px 5px;\n}\n.thread-map-tile[data-size=icon] {\n  align-items: center;\n  justify-content: center;\n  padding: 1px;\n}\n.thread-map-tile[data-size=dot] {\n  padding: 0;\n  border: 0;\n  border-radius: 2px;\n}\n.thread-map-tile:hover {\n  filter: brightness(0.96);\n}\n.thread-map-dialog[data-theme-effective=dark] .thread-map-tile:hover {\n  filter: brightness(1.18);\n}\n.thread-map-tile:focus-visible {\n  z-index: 2;\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-tile[aria-current=page] {\n  border-color: var(--theme-fg);\n  box-shadow: inset 0 0 0 1px var(--theme-fg);\n}\n.thread-map-tile-head {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-head {\n  align-items: flex-start;\n}\n.thread-map-tile-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 600;\n  line-height: 16px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-title {\n  display: -webkit-box;\n  white-space: normal;\n  overflow-wrap: anywhere;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--lines, 1);\n}\n.thread-map-tile[data-size=card] .thread-map-tile-title {\n  font-size: 14px;\n  line-height: 19px;\n  letter-spacing: -0.01em;\n}\n.thread-map-tile[data-size=large] .thread-map-tile-title {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-tile[data-size=card] .thread-map-agent {\n  width: 19px;\n  height: 19px;\n  border-radius: 5px;\n  font-size: 9.5px;\n}\n.thread-map-tile:is([data-size=card], [data-size=large]) .thread-map-agent {\n  margin-top: 0;\n}\n.thread-map-age {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  margin-left: auto;\n  padding: 2px;\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 72%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 13px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-age > span {\n  padding-right: 5px;\n}\n.thread-map-age-glyph {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-tile[data-size=card] .thread-map-age-glyph {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-age-glyph[data-age="0"] {\n  color: var(--thread-map-age-0);\n}\n.thread-map-age-glyph[data-age="1"] {\n  color: var(--thread-map-age-1);\n}\n.thread-map-age-glyph[data-age="2"] {\n  color: var(--thread-map-age-2);\n}\n.thread-map-age-glyph[data-age="3"] {\n  color: var(--thread-map-age-3);\n}\n.thread-map-age-glyph[data-age="4"] {\n  color: var(--thread-map-age-4);\n}\n.thread-map-tile-sub {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 14px;\n  white-space: nowrap;\n}\n.thread-map-tile-sub > * {\n  flex: none;\n}\n.thread-map-tile-sub > * + *::before {\n  margin-right: 6px;\n  opacity: 0.55;\n  content: "\\b7";\n}\n.thread-map-tile-who {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.thread-map-tile-live {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-tile-live .thread-map-running-dot {\n  margin-right: 0;\n}\n.thread-map-tile-failed {\n  color: var(--theme-danger, #c2410c);\n  font-weight: 600;\n}\n.thread-map-tile-prompt {\n  flex: none;\n  margin-top: 1px;\n  padding-left: 8px;\n  overflow: hidden;\n  border-left: 2px solid color-mix(in oklab, var(--theme-fg) 16%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  line-height: 16px;\n  overflow-wrap: anywhere;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--prompt-lines, 3);\n}\n.thread-map-stats {\n  display: flex;\n  gap: 14px;\n  min-width: 0;\n  margin-top: auto;\n  padding-top: 2px;\n}\n.thread-map-stats > span {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n}\n.thread-map-stats[data-layout=column] {\n  flex-direction: column;\n  gap: 2px;\n}\n.thread-map-stats[data-layout=column] > span {\n  flex-direction: row;\n  align-items: baseline;\n  gap: 5px;\n}\n.thread-map-stats[data-layout=column] b {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-stats b {\n  font-size: 14px;\n  font-weight: 650;\n  line-height: 18px;\n  letter-spacing: -0.01em;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-stats small {\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 9.5px;\n  line-height: 12px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-tile-meta {\n  margin-top: auto;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  line-height: 14px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-spark {\n  display: flex;\n  flex: none;\n  align-items: flex-end;\n  gap: 1px;\n  height: var(--spark-h, 14px);\n}\n.thread-map-spark i {\n  flex: 1 1 0;\n  min-width: 0;\n  height: max(2px, calc(var(--h) * 100%));\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-spark i[data-zero] {\n  height: 1px;\n  background: color-mix(in oklab, var(--theme-fg) 16%, transparent);\n}\n.thread-map [data-heat] {\n  --thread-map-fill: var(--thread-map-tile);\n}\n.thread-map [data-heat="1"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 14%, var(--thread-map-tile));\n}\n.thread-map [data-heat="2"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 26%, var(--thread-map-tile));\n}\n.thread-map [data-heat="3"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 39%, var(--thread-map-tile));\n}\n.thread-map [data-heat="4"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 52%, var(--thread-map-tile));\n}\n.thread-map :is(.thread-map-tile, .thread-map-section[data-heat], .thread-map-scale i) {\n  background-color: var(--thread-map-fill);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n  border-color: color-mix(in oklab, var(--thread-map-heat) 75%, transparent);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  border-radius: inherit;\n  background: var(--thread-map-heat);\n  content: "";\n  pointer-events: none;\n  animation: thread-map-breathe 3.2s ease-in-out infinite;\n}\n.thread-map-running-dot {\n  display: inline-block;\n  flex: none;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--thread-map-heat);\n  vertical-align: 0.05em;\n  animation: thread-map-breathe-dot 3.2s ease-in-out infinite;\n}\n@keyframes thread-map-breathe {\n  0%, 100% {\n    opacity: 0.04;\n  }\n  50% {\n    opacity: 0.3;\n  }\n}\n@keyframes thread-map-breathe-dot {\n  0%, 100% {\n    opacity: 0.35;\n  }\n  50% {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n    animation: none;\n    opacity: 0.16;\n  }\n  .thread-map-running-dot {\n    animation: none;\n  }\n}\n.thread-map-agent {\n  display: inline-grid;\n  flex: none;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n  border-radius: 4px;\n  background: var(--thread-map-agent, #64748b);\n  color: #fff;\n  font-size: 8.5px;\n  font-weight: 700;\n  letter-spacing: -0.03em;\n  line-height: 1;\n}\n.thread-map-agent[data-agent=claude] {\n  --thread-map-agent: #c96442;\n}\n.thread-map-agent[data-agent=codex] {\n  --thread-map-agent: #0f8a69;\n}\n.thread-map-agent[data-agent=gemini] {\n  --thread-map-agent: #3b78e7;\n}\n.thread-map-agent[data-agent=deepseek] {\n  --thread-map-agent: #4d6bfe;\n}\n.thread-map-agent[data-agent=copilot] {\n  --thread-map-agent: #8250df;\n}\n.thread-map-agent[data-agent=opencode] {\n  --thread-map-agent: #475569;\n}\n.thread-map-agent[data-agent=grok] {\n  --thread-map-agent: #3f3f46;\n}\n.thread-map-agent[data-agent=cursor] {\n  --thread-map-agent: #27272a;\n}\n.thread-map-agent[data-agent=qwen] {\n  --thread-map-agent: #615ced;\n}\n.thread-map-agent[data-agent=kimi] {\n  --thread-map-agent: #0b84c6;\n}\n.thread-map-agent[data-art] {\n  color: transparent;\n  background: var(--theme-panel) var(--theme-agent-avatar) center / cover no-repeat;\n  box-shadow: 0 0 0 1px color-mix(in oklab, var(--theme-border) 80%, transparent);\n}\n.thread-map-tip {\n  position: absolute;\n  z-index: 10;\n  max-width: min(300px, calc(100% - 16px));\n  padding: 7px 10px;\n  border-radius: 8px;\n  background: var(--theme-fg);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);\n  color: var(--theme-bg);\n  font-size: 11.5px;\n  line-height: 1.45;\n  pointer-events: none;\n}\n.thread-map-tip[data-above] {\n  transform: translateY(-100%);\n}\n.thread-map-tip > * {\n  display: block;\n}\n.thread-map-tip > b {\n  margin-bottom: 2px;\n  font-weight: 650;\n}\n.thread-map-tip > span {\n  opacity: 0.82;\n}\n.thread-map-legend {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 14px;\n  padding: 8px 14px 10px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-scale {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n.thread-map-scale small {\n  margin: 0 2px 0 6px;\n  font-size: 10.5px;\n}\n.thread-map-scale i + small {\n  margin: 0 0 0 2px;\n}\n.thread-map-scale i {\n  width: 11px;\n  height: 11px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 3px;\n}\n.thread-map-legend-item {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-ages .thread-map-age-glyph {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-legend-spark {\n  display: inline-flex;\n  align-items: flex-end;\n  gap: 1px;\n  height: 11px;\n}\n.thread-map-legend-spark i {\n  width: 3px;\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-legend-spark i:nth-child(1) {\n  height: 30%;\n}\n.thread-map-legend-spark i:nth-child(2) {\n  height: 100%;\n}\n.thread-map-legend-spark i:nth-child(3) {\n  height: 60%;\n}\n.thread-map-legend-spark i:nth-child(4) {\n  height: 15%;\n}\n@media (max-width: 639px) {\n  .thread-map-canvas {\n    margin: 6px 6px 0;\n  }\n  .thread-map-legend {\n    gap: 2px 10px;\n    padding: 6px 10px 8px;\n  }\n}\n');
+styleInject('.thread-graph-dialog.thread-map-dialog {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  width: min(1180px, calc(100vw - 48px));\n  max-width: none;\n  height: min(820px, calc(100dvh - 48px));\n  max-height: none;\n  padding: 0;\n  overflow: hidden;\n  border-radius: 16px;\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-graph-dialog.thread-map-dialog[data-theme-effective=dark] {\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n@media (max-width: 639px) {\n  .thread-graph-dialog.thread-map-dialog {\n    left: 0;\n    top: 0;\n    translate: none;\n    width: 100vw;\n    height: 100dvh;\n    border: 0;\n    border-radius: 0;\n    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);\n  }\n}\n.thread-map {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n}\n.thread-map-bar {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  padding: 10px 10px 4px 16px;\n}\n.thread-map-title {\n  flex: none;\n  margin: 0;\n  font-size: 15px;\n  font-weight: 650;\n  letter-spacing: -0.01em;\n}\n.thread-map-summary {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-summary .thread-map-running-dot {\n  margin-right: 4px;\n}\n.thread-map-icon-button,\n.thread-map-goto {\n  position: relative;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 32px;\n  height: 32px;\n  padding: 0;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-map-icon-button:hover:not(:disabled),\n.thread-map-goto:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-map-icon-button:disabled {\n  opacity: 0.35;\n}\n.thread-map-dialog [data-slot=dialog-close].thread-map-close {\n  top: auto;\n  right: auto;\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  opacity: 1;\n}\n.thread-map-icon-button:focus-visible,\n.thread-map-goto:focus-within {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-icon-button svg,\n.thread-map-goto svg {\n  width: 17px;\n  height: 17px;\n  pointer-events: none;\n}\n.thread-map-goto select {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 0;\n  font-size: 16px;\n  cursor: pointer;\n}\n.thread-map-path {\n  gap: 2px;\n  padding: 0 10px 6px 8px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.thread-map-crumbs {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  min-width: 0;\n  overflow: hidden;\n  border-radius: 6px;\n  outline: none;\n}\n.thread-map-crumbs:focus-visible {\n  box-shadow: 0 0 0 2px var(--theme-accent-solid);\n}\n.thread-map-crumb {\n  display: flex;\n  flex: 0 1 auto;\n  align-items: center;\n  min-width: 0;\n}\n.thread-map-crumb svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-crumb button {\n  min-width: 0;\n  max-width: 18em;\n  height: 30px;\n  padding: 0 6px;\n  overflow: hidden;\n  border: 0;\n  border-radius: 6px;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 12.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-crumb button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-map-crumb button[aria-current] {\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-canvas {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  margin: 8px 10px 0;\n  overflow: hidden;\n}\n.thread-map-empty {\n  display: grid;\n  place-items: center;\n  height: 100%;\n  margin: 0;\n  color: var(--theme-fg-muted);\n  font-size: 13px;\n}\n.thread-map-section,\n.thread-map-tile {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  isolation: isolate;\n}\n.thread-map-section {\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n}\n.thread-map-section[data-kind=device] {\n  background: var(--theme-bg);\n  border-color: var(--theme-border-strong);\n}\n.thread-map-section-head {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  width: 100%;\n  height: 26px;\n  padding: 0 7px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  font-weight: 600;\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-section[data-kind=device] > .thread-map-section-head {\n  color: var(--theme-fg);\n  font-size: 12px;\n}\n.thread-map-section-head:hover:not(:disabled) {\n  color: var(--theme-fg);\n  background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n}\n.thread-map-section-head:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section-head:disabled {\n  cursor: default;\n}\n.thread-map-section-head svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-section-label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-section-count {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-section[data-collapsed] > .thread-map-section-head {\n  position: absolute;\n  inset: 0;\n  height: auto;\n  align-items: flex-start;\n  padding-top: 6px;\n}\n.thread-map-section-summary {\n  position: absolute;\n  right: 9px;\n  bottom: 6px;\n  left: 9px;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section[data-state] {\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 7px,\n      color-mix(in oklab, var(--theme-border) 55%, transparent) 7px 8px),\n    var(--theme-surface);\n}\n.thread-map-section[data-state] > .thread-map-section-head {\n  color: var(--theme-fg-muted);\n}\n.thread-map-section-usd {\n  margin-left: 4px;\n  color: var(--theme-fg-soft);\n  font-weight: 600;\n}\n.thread-map-group {\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 45%, var(--theme-border));\n  background: var(--theme-panel);\n}\n.thread-map-group-head {\n  display: flex;\n  align-items: center;\n  height: 26px;\n}\n.thread-map-group-head > .thread-map-section-head {\n  flex: 1;\n  min-width: 0;\n  color: var(--theme-fg);\n}\n.thread-map-group-head .thread-map-agent {\n  width: 15px;\n  height: 15px;\n  border-radius: 4px;\n  font-size: 8px;\n}\n.thread-map-section-count svg {\n  width: 11px;\n  height: 11px;\n}\n.thread-map-group-open {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 26px;\n  height: 26px;\n  border-radius: 7px;\n  color: var(--theme-fg-soft);\n}\n.thread-map-group-open:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-map-group-open:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-group-open svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-tile {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  padding: 6px 7px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 7px;\n  color: var(--theme-fg);\n  text-decoration: none;\n  transition: filter 120ms ease;\n}\n.thread-map-tile[data-size=card] {\n  gap: 6px;\n  padding: 10px 11px 9px;\n  border-radius: 10px;\n}\n.thread-map-tile[data-size=large] {\n  gap: 5px;\n  padding: 8px 9px;\n  border-radius: 9px;\n}\n.thread-map-tile[data-size=named] {\n  justify-content: center;\n  padding: 3px 5px;\n}\n.thread-map-tile[data-size=icon] {\n  align-items: center;\n  justify-content: center;\n  padding: 1px;\n}\n.thread-map-tile[data-size=dot] {\n  padding: 0;\n  border: 0;\n  border-radius: 2px;\n}\n.thread-map-tile:hover {\n  filter: brightness(0.96);\n}\n.thread-map-dialog[data-theme-effective=dark] .thread-map-tile:hover {\n  filter: brightness(1.18);\n}\n.thread-map-tile-link {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  border-radius: inherit;\n}\n.thread-map-tile-link:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-tile > :not(.thread-map-tile-link) {\n  position: relative;\n  pointer-events: none;\n}\n.thread-map-tile :is(.thread-map-children, .thread-map-usage) {\n  pointer-events: auto;\n}\n.thread-map-tile:has(> .thread-map-tile-link:focus-visible) {\n  z-index: 2;\n}\n.thread-map-tile[data-current] {\n  border-color: var(--theme-fg);\n  box-shadow: inset 0 0 0 1px var(--theme-fg);\n}\n.thread-map-tile-head {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-head {\n  align-items: flex-start;\n}\n.thread-map-tile-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 600;\n  line-height: 16px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-title {\n  display: -webkit-box;\n  white-space: normal;\n  overflow-wrap: anywhere;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--lines, 1);\n}\n.thread-map-tile[data-size=card] .thread-map-tile-title {\n  font-size: 14px;\n  line-height: 19px;\n  letter-spacing: -0.01em;\n}\n.thread-map-tile[data-size=large] .thread-map-tile-title {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-tile[data-size=card] .thread-map-agent {\n  width: 19px;\n  height: 19px;\n  border-radius: 5px;\n  font-size: 9.5px;\n}\n.thread-map-tile:is([data-size=card], [data-size=large]) .thread-map-agent {\n  margin-top: 0;\n}\n.thread-map-age {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  margin-left: auto;\n  padding: 2px;\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 72%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 13px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-age > span {\n  padding-right: 5px;\n}\n.thread-map-children {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  height: 19px;\n  margin-left: auto;\n  padding: 0 6px 0 5px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 85%, transparent);\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 78%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 650;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-children:hover {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-map-children:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.thread-map-children svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-children + .thread-map-age {\n  margin-left: 4px;\n}\n.thread-map-tile-children-row {\n  display: flex;\n}\n.thread-map-tile-children-row .thread-map-children {\n  margin-left: 0;\n}\n.thread-map-age-glyph {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-tile[data-size=card] .thread-map-age-glyph {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-age-glyph[data-age="0"] {\n  color: var(--thread-map-age-0);\n}\n.thread-map-age-glyph[data-age="1"] {\n  color: var(--thread-map-age-1);\n}\n.thread-map-age-glyph[data-age="2"] {\n  color: var(--thread-map-age-2);\n}\n.thread-map-age-glyph[data-age="3"] {\n  color: var(--thread-map-age-3);\n}\n.thread-map-age-glyph[data-age="4"] {\n  color: var(--thread-map-age-4);\n}\n.thread-map-tile-sub {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 14px;\n  white-space: nowrap;\n}\n.thread-map-tile-sub > * {\n  flex: none;\n}\n.thread-map-tile-sub > * + *::before {\n  margin-right: 6px;\n  opacity: 0.55;\n  content: "\\b7";\n}\n.thread-map-tile-who {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.thread-map-tile-live {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-tile-live .thread-map-running-dot {\n  margin-right: 0;\n}\n.thread-map-tile-failed {\n  color: var(--theme-danger, #c2410c);\n  font-weight: 600;\n}\n.thread-map-tile-prompt {\n  flex: none;\n  margin-top: 1px;\n  padding-left: 8px;\n  overflow: hidden;\n  border-left: 2px solid color-mix(in oklab, var(--theme-fg) 16%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  line-height: 16px;\n  overflow-wrap: anywhere;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--prompt-lines, 3);\n}\n.thread-map-stats {\n  display: flex;\n  gap: 14px;\n  min-width: 0;\n  margin-top: auto;\n  padding-top: 2px;\n}\n.thread-map-stats > span {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n}\n.thread-map-stats[data-layout=column] {\n  flex-direction: column;\n  gap: 2px;\n}\n.thread-map-stats[data-layout=column] > span {\n  flex-direction: row;\n  align-items: baseline;\n  gap: 5px;\n}\n.thread-map-stats[data-layout=column] b {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-stats b {\n  font-size: 14px;\n  font-weight: 650;\n  line-height: 18px;\n  letter-spacing: -0.01em;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-stats small {\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 9.5px;\n  line-height: 12px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-usage {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  align-self: flex-start;\n  gap: 8px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 18px;\n}\n.thread-map-usage .thread-turn-usage-price {\n  padding: 0 6px;\n  background: color-mix(in oklab, var(--theme-panel) 85%, transparent);\n  color: var(--theme-accent-strong, var(--theme-fg));\n  font-size: 12px;\n  font-weight: 650;\n  line-height: 18px;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-usage .thread-turn-usage-price:hover {\n  border-color: var(--theme-border-strong);\n}\n.thread-map-tokens {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-tokens svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-stat-usage .thread-map-usage {\n  gap: 6px;\n}\n.thread-map-tile-meta {\n  margin-top: auto;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  line-height: 14px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-spark {\n  display: flex;\n  flex: none;\n  align-items: flex-end;\n  gap: 1px;\n  height: var(--spark-h, 14px);\n}\n.thread-map-spark i {\n  flex: 1 1 0;\n  min-width: 0;\n  height: max(2px, calc(var(--h) * 100%));\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-spark i[data-zero] {\n  height: 1px;\n  background: color-mix(in oklab, var(--theme-fg) 16%, transparent);\n}\n.thread-map [data-heat] {\n  --thread-map-fill: var(--thread-map-tile);\n}\n.thread-map [data-heat="1"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 14%, var(--thread-map-tile));\n}\n.thread-map [data-heat="2"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 26%, var(--thread-map-tile));\n}\n.thread-map [data-heat="3"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 39%, var(--thread-map-tile));\n}\n.thread-map [data-heat="4"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 52%, var(--thread-map-tile));\n}\n.thread-map :is(.thread-map-tile, .thread-map-section[data-heat], .thread-map-scale i) {\n  background-color: var(--thread-map-fill);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n  border-color: color-mix(in oklab, var(--thread-map-heat) 75%, transparent);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  border-radius: inherit;\n  background: var(--thread-map-heat);\n  content: "";\n  pointer-events: none;\n  animation: thread-map-breathe 3.2s ease-in-out infinite;\n}\n.thread-map-running-dot {\n  display: inline-block;\n  flex: none;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--thread-map-heat);\n  vertical-align: 0.05em;\n  animation: thread-map-breathe-dot 3.2s ease-in-out infinite;\n}\n@keyframes thread-map-breathe {\n  0%, 100% {\n    opacity: 0.04;\n  }\n  50% {\n    opacity: 0.3;\n  }\n}\n@keyframes thread-map-breathe-dot {\n  0%, 100% {\n    opacity: 0.35;\n  }\n  50% {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n    animation: none;\n    opacity: 0.16;\n  }\n  .thread-map-running-dot {\n    animation: none;\n  }\n}\n.thread-map-agent {\n  display: inline-grid;\n  flex: none;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n  border-radius: 4px;\n  background: var(--thread-map-agent, #64748b);\n  color: #fff;\n  font-size: 8.5px;\n  font-weight: 700;\n  letter-spacing: -0.03em;\n  line-height: 1;\n}\n.thread-map-agent[data-agent=claude] {\n  --thread-map-agent: #c96442;\n}\n.thread-map-agent[data-agent=codex] {\n  --thread-map-agent: #0f8a69;\n}\n.thread-map-agent[data-agent=gemini] {\n  --thread-map-agent: #3b78e7;\n}\n.thread-map-agent[data-agent=deepseek] {\n  --thread-map-agent: #4d6bfe;\n}\n.thread-map-agent[data-agent=copilot] {\n  --thread-map-agent: #8250df;\n}\n.thread-map-agent[data-agent=opencode] {\n  --thread-map-agent: #475569;\n}\n.thread-map-agent[data-agent=grok] {\n  --thread-map-agent: #3f3f46;\n}\n.thread-map-agent[data-agent=cursor] {\n  --thread-map-agent: #27272a;\n}\n.thread-map-agent[data-agent=qwen] {\n  --thread-map-agent: #615ced;\n}\n.thread-map-agent[data-agent=kimi] {\n  --thread-map-agent: #0b84c6;\n}\n.thread-map-agent[data-art] {\n  color: transparent;\n  background: var(--theme-panel) var(--theme-agent-avatar) center / cover no-repeat;\n  box-shadow: 0 0 0 1px color-mix(in oklab, var(--theme-border) 80%, transparent);\n}\n.thread-map-tip {\n  position: absolute;\n  z-index: 10;\n  max-width: min(300px, calc(100% - 16px));\n  padding: 7px 10px;\n  border-radius: 8px;\n  background: var(--theme-fg);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);\n  color: var(--theme-bg);\n  font-size: 11.5px;\n  line-height: 1.45;\n  pointer-events: none;\n}\n.thread-map-tip[data-above] {\n  transform: translateY(-100%);\n}\n.thread-map-tip > * {\n  display: block;\n}\n.thread-map-tip > b {\n  margin-bottom: 2px;\n  font-weight: 650;\n}\n.thread-map-tip > span {\n  opacity: 0.82;\n}\n.thread-map-legend {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 14px;\n  padding: 8px 14px 10px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-scale {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n.thread-map-scale small {\n  margin: 0 2px 0 6px;\n  font-size: 10.5px;\n}\n.thread-map-scale i + small {\n  margin: 0 0 0 2px;\n}\n.thread-map-scale i {\n  width: 11px;\n  height: 11px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 3px;\n}\n.thread-map-legend-item {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-ages .thread-map-age-glyph {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-legend-spark {\n  display: inline-flex;\n  align-items: flex-end;\n  gap: 1px;\n  height: 11px;\n}\n.thread-map-legend-spark i {\n  width: 3px;\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-legend-spark i:nth-child(1) {\n  height: 30%;\n}\n.thread-map-legend-spark i:nth-child(2) {\n  height: 100%;\n}\n.thread-map-legend-spark i:nth-child(3) {\n  height: 60%;\n}\n.thread-map-legend-spark i:nth-child(4) {\n  height: 15%;\n}\n@media (max-width: 639px) {\n  .thread-map-canvas {\n    margin: 6px 6px 0;\n  }\n  .thread-map-legend {\n    gap: 2px 10px;\n    padding: 6px 10px 8px;\n  }\n}\n');
 
 // src/components/ThreadComposer.tsx
 import {
@@ -6292,6 +6292,10 @@ function TokenReasonIcon() {
 function formatCompactTokenCount(value) {
   if (!Number.isFinite(value) || value <= 0) {
     return "0";
+  }
+  if (value >= 1e9) {
+    const rounded = value >= 1e10 ? Math.round(value / 1e9) : value / 1e9;
+    return `${String(rounded.toFixed(1)).replace(/\.0$/, "")}b`;
   }
   if (value >= 1e6) {
     const rounded = value >= 1e7 ? Math.round(value / 1e6) : value / 1e6;
@@ -17230,6 +17234,13 @@ function mergeOptimisticTurnItems(turn, optimisticTurn) {
     items: [...optimisticOnlyItems, ...turn.items]
   };
 }
+var foldChoices = /* @__PURE__ */ new Map();
+var FOLD_CHOICE_THREADS = 40;
+function rememberFoldChoices(threadId, choices) {
+  foldChoices.delete(threadId);
+  foldChoices.set(threadId, choices);
+  while (foldChoices.size > FOLD_CHOICE_THREADS) foldChoices.delete(foldChoices.keys().next().value);
+}
 function ThreadTimelineComponent({
   threadId,
   turns,
@@ -17272,9 +17283,22 @@ function ThreadTimelineComponent({
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
   const effectiveAutoCollapseCompletedTurns = autoCollapseCompletedTurns ?? shellNav?.autoCollapseCompletedTurns ?? false;
-  const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState49(
-    {}
+  const [folds, setFolds] = useState49(() => ({ threadId, choices: threadId && foldChoices.get(threadId) || {} }));
+  const foldThreadRef = useRef29(threadId);
+  foldThreadRef.current = threadId;
+  const collapsedTurnOverrides = useMemo12(
+    () => folds.threadId === threadId ? folds.choices : threadId && foldChoices.get(threadId) || {},
+    [folds, threadId]
   );
+  const setCollapsedTurnOverrides = useCallback18((update) => {
+    setFolds((current) => {
+      const owner = foldThreadRef.current;
+      const base = current.threadId === owner ? current.choices : owner && foldChoices.get(owner) || {};
+      const choices = typeof update === "function" ? update(base) : update;
+      if (owner) rememberFoldChoices(owner, choices);
+      return { threadId: owner, choices };
+    });
+  }, []);
   const [cancelingSteerIds, setCancelingSteerIds] = useState49(
     () => /* @__PURE__ */ new Set()
   );
@@ -17295,12 +17319,13 @@ function ThreadTimelineComponent({
   }
   const [turnDetailErrors, setTurnDetailErrors] = useState49({});
   const openLinkedThread = adapter?.onOpenLinkedThread;
+  const openedSearchKeyRef = useRef29(null);
   useEffect35(() => {
-    if (searchTarget) {
-      const parent = groupPeerWorkTurns(turns).find((group) => group.continuations.some((turn) => turn.id === searchTarget.turnId));
-      setCollapsedTurnOverrides((current) => ({ ...current, [searchTarget.turnId]: false, ...parent ? { [parent.turn.id]: false } : {} }));
-    }
-  }, [searchTarget, turns]);
+    if (!searchTarget || openedSearchKeyRef.current === searchTarget.key || !turns.some((turn) => turn.id === searchTarget.turnId)) return;
+    openedSearchKeyRef.current = searchTarget.key;
+    const parent = groupPeerWorkTurns(turns).find((group) => group.continuations.some((turn) => turn.id === searchTarget.turnId));
+    setCollapsedTurnOverrides((current) => ({ ...current, [searchTarget.turnId]: false, ...parent ? { [parent.turn.id]: false } : {} }));
+  }, [searchTarget, turns, setCollapsedTurnOverrides]);
   const {
     expandedText,
     openExpandedText: handleOpenExpandedText,
@@ -17404,7 +17429,6 @@ function ThreadTimelineComponent({
     };
   }, [bottomSpacer, scrollContainerRef]);
   useEffect35(() => {
-    setCollapsedTurnOverrides({});
     setLoadedTurnDetails({});
     setEndedLiveItems(null);
     setLoadingTurnDetailIds(/* @__PURE__ */ new Set());
@@ -17467,7 +17491,7 @@ function ThreadTimelineComponent({
         return next;
       });
     });
-  }, [effectiveAutoCollapseCompletedTurns, loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize]);
+  }, [effectiveAutoCollapseCompletedTurns, loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize, setCollapsedTurnOverrides]);
   useEffect35(() => {
     if (!loadTurnDetail) return;
     for (const turn of turns) {
@@ -23529,7 +23553,7 @@ function AppShellSettingsDialog({
 
 // src/components/threadMap/ThreadMap.tsx
 import { useEffect as useEffect45, useLayoutEffect as useLayoutEffect13, useMemo as useMemo20, useRef as useRef37, useState as useState58 } from "react";
-import { ArrowLeft as ArrowLeft4, ChevronRight as ChevronRight7, Folder as Folder2, List, Monitor as Monitor2, RotateCw as RotateCw2 } from "lucide-react";
+import { ArrowLeft as ArrowLeft4, ArrowUpRight, ChevronRight as ChevronRight7, ChevronUp as ChevronUp4, Folder as Folder2, List, Monitor as Monitor2, Network as Network2, RotateCw as RotateCw2 } from "lucide-react";
 
 // src/components/threadMap/model.ts
 var threadWeight = (turns) => 1 + Math.sqrt(Math.max(0, turns ?? 0));
@@ -23544,18 +23568,21 @@ function heatLevel(activeMs) {
 }
 var byWeight = (a, b) => b.weight - a.weight || a.label.localeCompare(b.label);
 function buildThreadMap(devices, rootLabel) {
-  const root = { id: "root", kind: "root", label: rootLabel, children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0 };
+  const blank = { children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0, usd: 0, tokens: 0 };
+  const root = { ...blank, children: [], id: "root", kind: "root", label: rootLabel };
   const add = (into, from) => {
     into.weight += from.weight;
     into.turns += from.turns;
     into.activeMs += from.activeMs;
     into.threads += from.threads;
     into.running += from.running;
+    into.usd += from.usd;
+    into.tokens += from.tokens;
   };
   const deviceNodes = devices.map((device) => {
-    const node = { id: `device:${device.id}`, kind: "device", label: device.name, children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0, device };
+    const node = { ...blank, children: [], id: `device:${device.id}`, kind: "device", label: device.name, device };
     for (const workspace of device.workspaces) {
-      const space = { id: `workspace:${device.id}:${workspace.id}`, kind: "workspace", label: workspace.label, parent: node, children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0, workspace, device };
+      const space = { ...blank, children: [], id: `workspace:${device.id}:${workspace.id}`, kind: "workspace", label: workspace.label, parent: node, workspace, device };
       for (const thread of workspace.threads) {
         const leaf = {
           id: `thread:${thread.key}`,
@@ -23570,7 +23597,9 @@ function buildThreadMap(devices, rootLabel) {
           turns: thread.turns ?? 0,
           activeMs: thread.activeMs ?? 0,
           threads: 1,
-          running: thread.running ? 1 : 0
+          running: thread.running ? 1 : 0,
+          usd: thread.priceEstimate?.totalUsd ?? 0,
+          tokens: thread.tokenUsage?.totalTokens ?? 0
         };
         space.children.push(leaf);
         add(space, leaf);
@@ -23609,6 +23638,7 @@ function indexMap(root) {
 }
 
 // src/components/threadMap/ThreadTile.tsx
+import { Network } from "lucide-react";
 import { jsx as jsx83, jsxs as jsxs70 } from "react/jsx-runtime";
 var MINUTE2 = 6e4;
 var HOUR = 60 * MINUTE2;
@@ -23626,6 +23656,9 @@ var MONOGRAMS = {
   qwen: "Qw"
 };
 var monogram = (agent) => MONOGRAMS[agent] ?? agent.replace(/[^a-z0-9]/gi, "").slice(0, 2).replace(/^./, (c) => c.toUpperCase());
+function AgentChip({ agent }) {
+  return agent ? /* @__PURE__ */ jsx83("span", { className: "thread-map-agent", "data-agent": agent, "aria-hidden": "true", children: monogram(agent) }) : null;
+}
 function formatRunTime(ms) {
   const minutes = Math.round(ms / MINUTE2);
   if (minutes < 1) return translate("workbench.threadMapUnderMinute");
@@ -23679,12 +23712,16 @@ function threadDetails(node, hours) {
     thread.activeMs !== null ? thread.activeMs > 0 ? translate("workbench.threadMapRan", { hours, duration: formatRunTime(thread.activeMs) }) : translate("workbench.threadMapNotRun", { hours }) : null,
     thread.agentThreads ? translate("workbench.threadMapAgentThreads", { count: thread.agentThreads }) : null
   ].filter(Boolean).join(" \xB7 ");
+  const spend = [
+    thread.tokenUsage ? translate("workbench.threadMapTokens", { count: formatCompactTokenCount(thread.tokenUsage.totalTokens) }) : null,
+    thread.priceEstimate ? translate("workbench.threadMapCost", { usd: formatCompactUsd(thread.priceEstimate.totalUsd) }) + (thread.pricePartial ? ` (${translate("workbench.threadMapPricePartialShort")})` : "") : null
+  ].filter(Boolean).join(" \xB7 ");
   const dates = [
     thread.createdAt ? translate("workbench.threadMapCreated", { date: formatDate(thread.createdAt, { dateStyle: "medium" }) }) : null,
     thread.running ? translate("workbench.threadMapRunning") : thread.lastActiveAt ? translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) : null,
     thread.failed ? translate("workbench.threadMapFailedTurn") : null
   ].filter(Boolean).join(" \xB7 ");
-  return [node.label, who, figures, dates].filter(Boolean);
+  return [node.label, who, figures, spend, dates].filter(Boolean);
 }
 function AgeGlyph({ tier }) {
   const fraction = (tier + 1) / 5;
@@ -23707,28 +23744,53 @@ function tileTier(box) {
   if (w >= 22 && h >= 20) return "icon";
   return "dot";
 }
-var FIT = { padding: 18, gap: 5, who: 14, grid: 32, column: 56, meta: 14, spark: 14, promptLine: 16 };
-function ThreadTile({ node, box, hours, current, onOpen, hover }) {
+var FIT = { padding: 18, gap: 5, who: 14, grid: 32, column: 56, meta: 14, usage: 22, spark: 14, promptLine: 16 };
+function Usage({ thread }) {
+  if (!thread.tokenUsage && !thread.priceEstimate) return null;
+  return /* @__PURE__ */ jsxs70("span", { className: "thread-map-usage", children: [
+    /* @__PURE__ */ jsx83(
+      TokenUsageCost,
+      {
+        usage: thread.tokenUsage,
+        price: thread.priceEstimate,
+        ...thread.pricePartial ? { detailsNote: translate("workbench.threadMapPricePartial") } : {}
+      }
+    ),
+    thread.tokenUsage ? /* @__PURE__ */ jsxs70("span", { className: "thread-map-tokens", title: translate("chat.totalTokens", { value1: thread.tokenUsage.totalTokens.toLocaleString(getLocale()) }), children: [
+      /* @__PURE__ */ jsx83(TokenMetricIcon, {}),
+      formatCompactTokenCount(thread.tokenUsage.totalTokens)
+    ] }) : null
+  ] });
+}
+function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }) {
   const thread = node.thread;
   const { width: w, height: h } = box;
   const tier = tileTier(box);
   const details = threadDetails(node, hours);
   const age = ageTier(thread.createdAt);
-  const chip = thread.agent ? /* @__PURE__ */ jsx83("span", { className: "thread-map-agent", "data-agent": thread.agent, "aria-hidden": "true", children: monogram(thread.agent) }) : null;
+  const chip = /* @__PURE__ */ jsx83(AgentChip, { agent: thread.agent });
   const titled = tier !== "icon" && tier !== "dot";
   const lineHeight = tier === "card" ? 19 : tier === "large" ? 17 : 16;
-  const showAge = age !== null && w >= 110 && h >= 44;
-  const showAgeText = showAge && w >= 150;
+  const childCount = thread.children?.length ?? 0;
+  const canShowChildren = Boolean(onShowChildren && childCount) && w >= 60 && h >= 40;
+  const headRoom = w - (tier === "card" ? 22 : 14) - (thread.agent ? tier === "card" ? 25 : 22 : 0);
+  const showChildren = canShowChildren && headRoom - 24 >= 44;
+  const childrenRow = canShowChildren && !showChildren && h >= 80;
+  const childrenWidth = !showChildren ? 0 : headRoom - 36 >= 44 ? 36 : 24;
+  const showAge = age !== null && w >= 110 && h >= 44 && headRoom - childrenWidth - 19 >= 52;
+  const showAgeText = showAge && headRoom - childrenWidth - 52 >= 80;
   const showWho = w >= 100 && h >= 80;
   const known = thread.turns !== null;
+  const priced = Boolean(thread.tokenUsage || thread.priceEstimate);
   const figures = known && w >= 176 && h >= 120 ? "grid" : known && w >= 96 && h >= 170 ? "column" : known && w >= 64 && h >= 46 ? "line" : null;
+  const usage = !priced ? null : figures === "grid" && w >= 270 ? "cell" : (figures === "grid" || figures === "column") && w >= 110 ? "row" : null;
   const showSpark = Boolean(thread.hourlyMs?.some((ms) => ms > 0)) && w >= 96 && h >= 100;
-  const fixed = FIT.padding + (showWho ? FIT.who + FIT.gap : 0) + (figures ? FIT[figures === "line" ? "meta" : figures] + FIT.gap : 0) + (showSpark ? FIT.spark + FIT.gap : 0);
+  const fixed = FIT.padding + (childrenRow ? 19 + FIT.gap : 0) + (showWho ? FIT.who + FIT.gap : 0) + (figures ? FIT[figures === "line" ? "meta" : figures] + FIT.gap : 0) + (usage === "row" ? FIT.usage + FIT.gap : 0) + (showSpark ? FIT.spark + FIT.gap : 0);
   const titleLines = Math.max(1, Math.min(3, Math.floor((h - fixed) / lineHeight), h >= 56 ? 3 : 1));
   const promptRoom = h - fixed - Math.min(2, titleLines) * lineHeight - FIT.gap;
   const promptLines = w >= 100 && thread.lastPrompt ? Math.min(6, Math.floor(promptRoom / FIT.promptLine)) : 0;
   const prompt = promptLines >= 2 ? promptLine(thread.lastPrompt) : "";
-  const titleWidth = w - (tier === "card" ? 22 : 14) - (chip ? tier === "card" ? 25 : 22 : 0) - (showAge ? showAgeText ? 52 : 19 : 0);
+  const titleWidth = headRoom - (showAge ? showAgeText ? 52 : 19 : 0) - childrenWidth;
   const longest = Math.max(0, ...thread.title.split(/\s+/).map((word) => /^[\x21-\x7e]+$/.test(word) ? word.length : 0));
   const wraps = longest * lineHeight * 0.42 <= titleWidth;
   const lines = !wraps ? 1 : prompt ? Math.min(2, titleLines) : titleLines;
@@ -23741,32 +23803,56 @@ function ThreadTile({ node, box, hours, current, onOpen, hover }) {
   ] }) : thread.lastActiveAt ? /* @__PURE__ */ jsx83("span", { children: translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) }) : null;
   const short = [
     translate("workbench.threadMapTurns", { count: thread.turns ?? 0 }),
-    thread.totalMs && w >= 110 ? translate("workbench.threadMapTotalShort", { duration: formatShortDuration(thread.totalMs) }) : null
+    thread.totalMs && w >= 110 ? translate("workbench.threadMapTotalShort", { duration: formatShortDuration(thread.totalMs) }) : null,
+    thread.priceEstimate && w >= 170 ? formatCompactUsd(thread.priceEstimate.totalUsd) : null
   ].filter(Boolean).join(" \xB7 ");
-  return /* @__PURE__ */ jsxs70(
-    "a",
+  const childrenButton = (count) => /* @__PURE__ */ jsxs70(
+    "button",
     {
-      href: thread.href,
+      type: "button",
+      className: "thread-map-children",
+      onClick: onShowChildren,
+      "aria-label": translate("workbench.threadMapShowChildren", { count: childCount, title: thread.title }),
+      title: translate("workbench.threadMapShowChildren", { count: childCount, title: thread.title }),
+      children: [
+        /* @__PURE__ */ jsx83(Network, { "aria-hidden": "true" }),
+        count && /* @__PURE__ */ jsx83("span", { children: childCount })
+      ]
+    }
+  );
+  return /* @__PURE__ */ jsxs70(
+    "div",
+    {
       className: "thread-map-tile",
       "data-size": tier,
       "data-heat": heatLevel(thread.activeMs),
       "data-running": thread.running || void 0,
       "data-failed": thread.failed || void 0,
-      "aria-current": current ? "page" : void 0,
-      "aria-label": details.join(" \xB7 "),
-      tabIndex: tier === "dot" ? -1 : void 0,
+      "data-current": current || void 0,
       style: { left: box.x, top: box.y, width: w, height: h, "--lines": lines, "--prompt-lines": promptLines, "--spark-h": `${sparkHeight}px` },
-      onClick: onOpen,
-      ...hover,
       children: [
+        /* @__PURE__ */ jsx83(
+          "a",
+          {
+            href: thread.href,
+            className: "thread-map-tile-link",
+            "aria-label": details.join(" \xB7 "),
+            "aria-current": current ? "page" : void 0,
+            tabIndex: tier === "dot" ? -1 : void 0,
+            onClick: onOpen,
+            ...hover
+          }
+        ),
         tier !== "dot" && /* @__PURE__ */ jsxs70("span", { className: "thread-map-tile-head", children: [
           chip,
           titled && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-title", children: thread.title }),
+          showChildren && childrenButton(childrenWidth > 24),
           showAge && /* @__PURE__ */ jsxs70("span", { className: "thread-map-age", title: thread.createdAt ? translate("workbench.threadMapCreated", { date: formatDate(thread.createdAt, { dateStyle: "medium" }) }) : void 0, children: [
             /* @__PURE__ */ jsx83(AgeGlyph, { tier: age }),
             showAgeText && /* @__PURE__ */ jsx83("span", { children: formatAge(thread.createdAt) })
           ] })
         ] }),
+        childrenRow && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-children-row", children: childrenButton(true) }),
         showWho && (who || status || thread.failed) && /* @__PURE__ */ jsxs70("span", { className: "thread-map-tile-sub", children: [
           who && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-who", children: who }),
           thread.failed && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-failed", children: translate("workbench.threadMapFailedTurn") }),
@@ -23785,8 +23871,13 @@ function ThreadTile({ node, box, hours, current, onOpen, hover }) {
           /* @__PURE__ */ jsxs70("span", { children: [
             /* @__PURE__ */ jsx83("b", { children: thread.activeMs ? formatShortDuration(thread.activeMs) : "\u2014" }),
             /* @__PURE__ */ jsx83("small", { children: translate("workbench.threadMapStatRecent", { hours }) })
+          ] }),
+          usage === "cell" && /* @__PURE__ */ jsxs70("span", { className: "thread-map-stat-usage", children: [
+            /* @__PURE__ */ jsx83(Usage, { thread }),
+            /* @__PURE__ */ jsx83("small", { children: translate("workbench.threadMapStatCost") })
           ] })
         ] }),
+        usage === "row" && /* @__PURE__ */ jsx83(Usage, { thread }),
         figures === "line" && /* @__PURE__ */ jsx83("span", { className: "thread-map-tile-meta", children: short }),
         showSpark && /* @__PURE__ */ jsx83(Spark, { hourly: thread.hourlyMs })
       ]
@@ -23846,7 +23937,8 @@ function describe(node, hours) {
   return [node.label, [
     translate("workbench.threadMapThreads", { count: node.threads }),
     node.running ? translate("workbench.threadMapRunningCount", { count: node.running }) : null,
-    node.activeMs > 0 ? translate("workbench.threadMapRan", { hours, duration: formatRunTime(node.activeMs) }) : null
+    node.activeMs > 0 ? translate("workbench.threadMapRan", { hours, duration: formatRunTime(node.activeMs) }) : null,
+    node.usd > 0 ? translate("workbench.threadMapCost", { usd: formatCompactUsd(node.usd) }) : null
   ].filter(Boolean).join(" \xB7 ")];
 }
 function inset(rect, gap) {
@@ -23859,6 +23951,15 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
   const root = useMemo20(() => buildThreadMap(devices, allLabel), [devices, allLabel]);
   const nodes = useMemo20(() => indexMap(root), [root]);
   const [focusId, setFocusId] = useState58(null);
+  const [openGroups, setOpenGroups] = useState58(() => /* @__PURE__ */ new Set());
+  const toggleGroup = (key) => {
+    setTip(null);
+    setOpenGroups((current2) => {
+      const next = new Set(current2);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
+  };
   const current = (focusId ? nodes.get(focusId) : void 0) ?? root;
   const canvas = useRef37(null);
   const crumbs = useRef37(null);
@@ -23916,20 +24017,90 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     if (depth > 2 || inner.width < 64 || inner.height < 40 || !node.children.length) return false;
     return node.children.length <= inner.width * inner.height / (node.children[0].kind === "thread" ? 90 : 900);
   };
+  const group = (item, box, depth) => {
+    const thread = item.thread;
+    const children2 = thread.children.map((child) => ({
+      id: `thread:${child.key}`,
+      kind: "thread",
+      label: child.title,
+      parent: item,
+      children: [],
+      thread: child,
+      device: item.device,
+      workspace: item.workspace,
+      weight: threadWeight(child.turns),
+      turns: child.turns ?? 0,
+      activeMs: child.activeMs ?? 0,
+      threads: 1,
+      running: child.running ? 1 : 0,
+      usd: child.priceEstimate?.totalUsd ?? 0,
+      tokens: child.tokenUsage?.totalTokens ?? 0
+    })).sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
+    const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
+    return /* @__PURE__ */ jsxs71(
+      "section",
+      {
+        className: "thread-map-section thread-map-group",
+        "data-kind": "group",
+        "data-depth": depth,
+        "aria-label": thread.title,
+        style: { left: box.x, top: box.y, width: box.width, height: box.height },
+        children: [
+          /* @__PURE__ */ jsxs71("div", { className: "thread-map-group-head", children: [
+            /* @__PURE__ */ jsxs71(
+              "button",
+              {
+                type: "button",
+                className: "thread-map-section-head",
+                "aria-expanded": "true",
+                "aria-label": translate("workbench.threadMapHideChildren", { title: thread.title }),
+                onClick: () => toggleGroup(thread.key),
+                children: [
+                  /* @__PURE__ */ jsx84(AgentChip, { agent: thread.agent }),
+                  /* @__PURE__ */ jsx84("span", { className: "thread-map-section-label", children: thread.title }),
+                  box.width >= 110 && /* @__PURE__ */ jsxs71("span", { className: "thread-map-section-count", children: [
+                    /* @__PURE__ */ jsx84(Network2, { "aria-hidden": "true" }),
+                    children2.length
+                  ] }),
+                  /* @__PURE__ */ jsx84(ChevronUp4, { "aria-hidden": "true" })
+                ]
+              }
+            ),
+            box.width >= 80 && /* @__PURE__ */ jsx84(
+              "a",
+              {
+                className: "thread-map-group-open",
+                href: thread.href,
+                onClick: open(thread),
+                "aria-label": translate("workbench.threadMapOpenThread", { title: thread.title }),
+                title: translate("workbench.threadMapOpenThread", { title: thread.title }),
+                children: /* @__PURE__ */ jsx84(ArrowUpRight, { "aria-hidden": "true" })
+              }
+            )
+          ] }),
+          render(children2, inner, depth + 1)
+        ]
+      },
+      item.id
+    );
+  };
   let rendered = 0;
   const render = (items, bounds2, depth) => squarify(items, (item) => item.weight, bounds2).map(({ item, rect }) => {
     rendered++;
     const box = inset(rect, depth ? 1.5 : 2.5);
     if (item.kind === "thread") {
+      const thread = item.thread;
+      if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
       return /* @__PURE__ */ jsx84(
         ThreadTile,
         {
           node: item,
           box,
           hours,
-          current: item.thread.key === currentKey,
-          onOpen: open(item.thread),
-          hover: hover(describe(item, hours))
+          current: thread.key === currentKey,
+          onOpen: open(thread),
+          hover: hover(describe(item, hours)),
+          onShowChildren: thread.children?.length ? () => toggleGroup(thread.key) : void 0
         },
         item.id
       );
@@ -23969,7 +24140,8 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
                 /* @__PURE__ */ jsx84("span", { className: "thread-map-section-label", children: item.label }),
                 unlisted ? named && /* @__PURE__ */ jsx84("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx84(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs71("span", { className: "thread-map-section-count", children: [
                   item.running > 0 && /* @__PURE__ */ jsx84("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
-                  item.threads
+                  item.threads,
+                  item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx84("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
                 ] })
               ]
             }
@@ -23992,6 +24164,10 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
           " \xB7 ",
           /* @__PURE__ */ jsx84("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
           translate("workbench.threadMapRunningCount", { count: root.running })
+        ] }),
+        root.usd > 0 && /* @__PURE__ */ jsxs71(Fragment27, { children: [
+          " \xB7 ",
+          translate("workbench.threadMapCost", { usd: formatCompactUsd(root.usd) })
         ] })
       ] }),
       actions

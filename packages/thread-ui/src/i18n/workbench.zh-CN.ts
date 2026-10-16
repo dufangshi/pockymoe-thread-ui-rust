@@ -580,4 +580,12 @@ export const workbenchZhCN = {
   "workbench.threadMapNewer": "新",
   "workbench.threadMapOlder": "旧",
   "workbench.threadMapLegendHourly": "每小时运行",
+  "workbench.threadMapTokens": "{{count}} tokens",
+  "workbench.threadMapCost": "API 费用 {{usd}}",
+  "workbench.threadMapPricePartial": "部分轮次的模型没有价格，未计入。",
+  "workbench.threadMapPricePartialShort": "部分轮次无价格",
+  "workbench.threadMapStatCost": "API 费用",
+  "workbench.threadMapShowChildren": { one: "展开 {{title}} 的 {{count}} 个子线程", other: "展开 {{title}} 的 {{count}} 个子线程" },
+  "workbench.threadMapHideChildren": "把子线程收回 {{title}}",
+  "workbench.threadMapOpenThread": "打开 {{title}}",
 } as const;

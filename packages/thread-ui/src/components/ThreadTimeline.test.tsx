@@ -952,6 +952,48 @@ describe('ThreadTimeline', () => {
     );
   });
 
+  const foldTurn = () => completedTurn([
+    { id: 'user-1', kind: 'userMessage', text: 'Keep prompt visible.', createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString() },
+    { id: 'agent-intermediate-1', kind: 'agentMessage', text: 'Intermediate note can be toggled.', createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 20)).toISOString() },
+    { id: 'agent-1', kind: 'agentMessage', text: 'Final reply stays visible.', createdAt: new Date(Date.UTC(2026, 6, 3, 20, 11, 21)).toISOString() },
+  ]);
+  const workToggle = (element: HTMLElement) => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!;
+
+  it('keeps a reader\'s folds when the timeline mounts again, per thread', () => {
+    let element = render(<ThreadTimeline threadId="fold-a" autoCollapseCompletedTurns liveOutput="" turns={[foldTurn()]} />);
+    flushSync(() => workToggle(element).click());
+    expect(element.textContent).toContain('Intermediate note can be toggled.');
+    flushSync(() => root?.unmount());
+    container?.remove();
+    element = render(<ThreadTimeline threadId="fold-a" autoCollapseCompletedTurns liveOutput="" turns={[foldTurn()]} />);
+    expect(workToggle(element).getAttribute('aria-expanded')).toBe('true');
+    // Another thread with the same turn ids starts from its defaults.
+    flushSync(() => root?.render(<ThreadTimeline threadId="fold-b" autoCollapseCompletedTurns liveOutput="" turns={[foldTurn()]} />));
+    expect(workToggle(element).getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('opens a search result once, so folding it again sticks while turns refresh', async () => {
+    // Revealing the result scrolls to it and flashes it.
+    Object.assign(HTMLElement.prototype, {
+      scrollTo: HTMLElement.prototype.scrollTo ?? (() => {}),
+      animate: HTMLElement.prototype.animate ?? (() => ({})),
+    });
+    const target = { turnId: 'turn-1', itemId: 'agent-intermediate-1', key: 7 };
+    const element = render(<ThreadTimeline threadId="fold-search" autoCollapseCompletedTurns liveOutput="" turns={[foldTurn()]} searchTarget={target} />);
+    await vi.waitFor(() => expect(workToggle(element).getAttribute('aria-expanded')).toBe('true'));
+    flushSync(() => workToggle(element).click());
+    expect(workToggle(element).getAttribute('aria-expanded')).toBe('false');
+    // A running thread refreshes its turns every few seconds.
+    for (let i = 0; i < 3; i++) {
+      flushSync(() => root?.render(<ThreadTimeline threadId="fold-search" autoCollapseCompletedTurns liveOutput="" turns={[foldTurn()]} searchTarget={target} />));
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }
+    expect(workToggle(element).getAttribute('aria-expanded')).toBe('false');
+    // A new search opens it again.
+    flushSync(() => root?.render(<ThreadTimeline threadId="fold-search" autoCollapseCompletedTurns liveOutput="" turns={[foldTurn()]} searchTarget={{ ...target, key: 8 }} />));
+    await vi.waitFor(() => expect(workToggle(element).getAttribute('aria-expanded')).toBe('true'));
+  });
+
   it('keeps message timestamps in hover titles and omits visible time labels', () => {
     const startedAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString();
     const agentAt = new Date(Date.UTC(2026, 6, 3, 20, 11, 21)).toISOString();

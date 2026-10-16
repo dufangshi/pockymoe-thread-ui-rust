@@ -3459,7 +3459,15 @@ var workbenchEn = {
   "workbench.threadMapLegendAge": "Age",
   "workbench.threadMapNewer": "new",
   "workbench.threadMapOlder": "old",
-  "workbench.threadMapLegendHourly": "run time per hour"
+  "workbench.threadMapLegendHourly": "run time per hour",
+  "workbench.threadMapTokens": "{{count}} tokens",
+  "workbench.threadMapCost": "API cost {{usd}}",
+  "workbench.threadMapPricePartial": "Some turns used a model without a known price and are left out.",
+  "workbench.threadMapPricePartialShort": "some turns unpriced",
+  "workbench.threadMapStatCost": "API cost",
+  "workbench.threadMapShowChildren": { one: "Show the {{count}} agent thread {{title}} started", other: "Show the {{count}} agent threads {{title}} started" },
+  "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}",
+  "workbench.threadMapOpenThread": "Open {{title}}"
 };
 
 // src/i18n/en.ts
@@ -6936,7 +6944,15 @@ var workbenchZhCN = {
   "workbench.threadMapLegendAge": "\u521B\u5EFA",
   "workbench.threadMapNewer": "\u65B0",
   "workbench.threadMapOlder": "\u65E7",
-  "workbench.threadMapLegendHourly": "\u6BCF\u5C0F\u65F6\u8FD0\u884C"
+  "workbench.threadMapLegendHourly": "\u6BCF\u5C0F\u65F6\u8FD0\u884C",
+  "workbench.threadMapTokens": "{{count}} tokens",
+  "workbench.threadMapCost": "API \u8D39\u7528 {{usd}}",
+  "workbench.threadMapPricePartial": "\u90E8\u5206\u8F6E\u6B21\u7684\u6A21\u578B\u6CA1\u6709\u4EF7\u683C\uFF0C\u672A\u8BA1\u5165\u3002",
+  "workbench.threadMapPricePartialShort": "\u90E8\u5206\u8F6E\u6B21\u65E0\u4EF7\u683C",
+  "workbench.threadMapStatCost": "API \u8D39\u7528",
+  "workbench.threadMapShowChildren": { one: "\u5C55\u5F00 {{title}} \u7684 {{count}} \u4E2A\u5B50\u7EBF\u7A0B", other: "\u5C55\u5F00 {{title}} \u7684 {{count}} \u4E2A\u5B50\u7EBF\u7A0B" },
+  "workbench.threadMapHideChildren": "\u628A\u5B50\u7EBF\u7A0B\u6536\u56DE {{title}}",
+  "workbench.threadMapOpenThread": "\u6253\u5F00 {{title}}"
 };
 
 // src/i18n/zh-CN.ts

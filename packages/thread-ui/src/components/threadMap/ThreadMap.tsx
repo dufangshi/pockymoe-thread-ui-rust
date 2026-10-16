@@ -1,8 +1,9 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
-import { ArrowLeft, ChevronRight, Folder, List, Monitor, RotateCw } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, ChevronRight, ChevronUp, Folder, List, Monitor, Network, RotateCw } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
-import { buildThreadMap, heatLevel, indexMap, type MapNode, type ThreadMapDevice, type ThreadMapThread } from './model';
-import { AgeGlyph, formatRunTime, threadDetails, ThreadTile } from './ThreadTile';
+import { buildThreadMap, heatLevel, indexMap, threadWeight, type MapNode, type ThreadMapDevice, type ThreadMapThread } from './model';
+import { AgeGlyph, AgentChip, formatRunTime, threadDetails, ThreadTile } from './ThreadTile';
+import { formatCompactUsd } from '../timeline/tokenFormatting';
 import { squarify, type MapRect } from './squarify';
 
 /** Height of a device or workspace title bar. */
@@ -18,6 +19,7 @@ function describe(node: MapNode, hours: number) {
     translate('workbench.threadMapThreads', { count: node.threads }),
     node.running ? translate('workbench.threadMapRunningCount', { count: node.running }) : null,
     node.activeMs > 0 ? translate('workbench.threadMapRan', { hours, duration: formatRunTime(node.activeMs) }) : null,
+    node.usd > 0 ? translate('workbench.threadMapCost', { usd: formatCompactUsd(node.usd) }) : null,
   ].filter(Boolean).join(' · ')];
 }
 
@@ -46,6 +48,16 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const root = useMemo(() => buildThreadMap(devices, allLabel), [devices, allLabel]);
   const nodes = useMemo(() => indexMap(root), [root]);
   const [focusId, setFocusId] = useState<string | null>(null);
+  // Threads opened up into the agent threads they started.
+  const [openGroups, setOpenGroups] = useState<ReadonlySet<string>>(() => new Set());
+  const toggleGroup = (key: string) => {
+    setTip(null);
+    setOpenGroups(current => {
+      const next = new Set(current);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
+  };
   const current = (focusId ? nodes.get(focusId) : undefined) ?? root;
   const canvas = useRef<HTMLDivElement>(null);
   const crumbs = useRef<HTMLElement>(null);
@@ -107,14 +119,48 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     return node.children.length <= (inner.width * inner.height) / (node.children[0]!.kind === 'thread' ? 90 : 900);
   };
 
+  // A thread opened up: its bar on top (tap to fold back, arrow to open it), its agent threads below.
+  const group = (item: MapNode, box: MapRect, depth: number) => {
+    const thread = item.thread!;
+    const children: MapNode[] = thread.children!.map(child => ({
+      id: `thread:${child.key}`, kind: 'thread', label: child.title, parent: item, children: [], thread: child,
+      device: item.device, workspace: item.workspace, weight: threadWeight(child.turns), turns: child.turns ?? 0,
+      activeMs: child.activeMs ?? 0, threads: 1, running: child.running ? 1 : 0,
+      usd: child.priceEstimate?.totalUsd ?? 0, tokens: child.tokenUsage?.totalTokens ?? 0,
+    } satisfies MapNode)).sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
+    const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
+    return (
+      <section key={item.id} className="thread-map-section thread-map-group" data-kind="group" data-depth={depth}
+        aria-label={thread.title} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
+        <div className="thread-map-group-head">
+          <button type="button" className="thread-map-section-head" aria-expanded="true"
+            aria-label={translate('workbench.threadMapHideChildren', { title: thread.title })} onClick={() => toggleGroup(thread.key)}>
+            <AgentChip agent={thread.agent} />
+            <span className="thread-map-section-label">{thread.title}</span>
+            {box.width >= 110 && <span className="thread-map-section-count"><Network aria-hidden="true" />{children.length}</span>}
+            <ChevronUp aria-hidden="true" />
+          </button>
+          {box.width >= 80 && <a className="thread-map-group-open" href={thread.href} onClick={open(thread)}
+            aria-label={translate('workbench.threadMapOpenThread', { title: thread.title })} title={translate('workbench.threadMapOpenThread', { title: thread.title })}>
+            <ArrowUpRight aria-hidden="true" />
+          </a>}
+        </div>
+        {render(children, inner, depth + 1)}
+      </section>
+    );
+  };
+
   let rendered = 0;
   const render = (items: MapNode[], bounds: MapRect, depth: number): ReactNode[] =>
     squarify(items, item => item.weight, bounds).map(({ item, rect }) => {
       rendered++;
       const box = inset(rect, depth ? 1.5 : 2.5);
       if (item.kind === 'thread') {
-        return <ThreadTile key={item.id} node={item} box={box} hours={hours} current={item.thread!.key === currentKey}
-          onOpen={open(item.thread!)} hover={hover(describe(item, hours))} />;
+        const thread = item.thread!;
+        if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
+        return <ThreadTile key={item.id} node={item} box={box} hours={hours} current={thread.key === currentKey}
+          onOpen={open(thread)} hover={hover(describe(item, hours))}
+          onShowChildren={thread.children?.length ? () => toggleGroup(thread.key) : undefined} />;
       }
       const lines = describe(item, hours);
       const text = lines.join(' · ');
@@ -135,7 +181,10 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             <span className="thread-map-section-label">{item.label}</span>
             {unlisted
               ? named && <span className="thread-map-section-count">{state === 'error' ? <RotateCw aria-hidden="true" /> : translate(state === 'offline' ? 'workbench.threadMapOffline' : 'workbench.threadMapLoading')}</span>
-              : named && <span className="thread-map-section-count">{item.running > 0 && <i className="thread-map-running-dot" aria-hidden="true" />}{item.threads}</span>}
+              : named && <span className="thread-map-section-count">
+                {item.running > 0 && <i className="thread-map-running-dot" aria-hidden="true" />}{item.threads}
+                {item.usd > 0 && box.width >= 150 && <span className="thread-map-section-usd">{formatCompactUsd(item.usd)}</span>}
+              </span>}
           </button>
           {preview && render(item.children, inner, depth + 1)}
           {!preview && !unlisted && box.height >= HEADER + 18 && (
@@ -154,6 +203,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         <span className="thread-map-summary">
           {translate('workbench.threadMapThreads', { count: root.threads })}
           {root.running > 0 && <> · <i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapRunningCount', { count: root.running })}</>}
+          {root.usd > 0 && <> · {translate('workbench.threadMapCost', { usd: formatCompactUsd(root.usd) })}</>}
         </span>
         {actions}
       </div>

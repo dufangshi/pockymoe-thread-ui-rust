@@ -755,6 +755,17 @@ declare const en: {
     readonly "workbench.threadMapNewer": "new";
     readonly "workbench.threadMapOlder": "old";
     readonly "workbench.threadMapLegendHourly": "run time per hour";
+    readonly "workbench.threadMapTokens": "{{count}} tokens";
+    readonly "workbench.threadMapCost": "API cost {{usd}}";
+    readonly "workbench.threadMapPricePartial": "Some turns used a model without a known price and are left out.";
+    readonly "workbench.threadMapPricePartialShort": "some turns unpriced";
+    readonly "workbench.threadMapStatCost": "API cost";
+    readonly "workbench.threadMapShowChildren": {
+        readonly one: "Show the {{count}} agent thread {{title}} started";
+        readonly other: "Show the {{count}} agent threads {{title}} started";
+    };
+    readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
+    readonly "workbench.threadMapOpenThread": "Open {{title}}";
     readonly "sharing.open": "Open";
     readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
     readonly "sharing.supervisorStatusUnavailable": "Supervisor status unavailable";
@@ -4234,6 +4245,17 @@ declare const zhCN: {
     "workbench.threadMapNewer": "新";
     "workbench.threadMapOlder": "旧";
     "workbench.threadMapLegendHourly": "每小时运行";
+    "workbench.threadMapTokens": "{{count}} tokens";
+    "workbench.threadMapCost": "API 费用 {{usd}}";
+    "workbench.threadMapPricePartial": "部分轮次的模型没有价格，未计入。";
+    "workbench.threadMapPricePartialShort": "部分轮次无价格";
+    "workbench.threadMapStatCost": "API 费用";
+    "workbench.threadMapShowChildren": {
+        readonly one: "展开 {{title}} 的 {{count}} 个子线程";
+        readonly other: "展开 {{title}} 的 {{count}} 个子线程";
+    };
+    "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
+    "workbench.threadMapOpenThread": "打开 {{title}}";
     "sharing.open": "打开";
     "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
     "sharing.supervisorStatusUnavailable": "Supervisor 状态不可用";
@@ -7735,6 +7757,17 @@ declare const resources: {
         readonly "workbench.threadMapNewer": "new";
         readonly "workbench.threadMapOlder": "old";
         readonly "workbench.threadMapLegendHourly": "run time per hour";
+        readonly "workbench.threadMapTokens": "{{count}} tokens";
+        readonly "workbench.threadMapCost": "API cost {{usd}}";
+        readonly "workbench.threadMapPricePartial": "Some turns used a model without a known price and are left out.";
+        readonly "workbench.threadMapPricePartialShort": "some turns unpriced";
+        readonly "workbench.threadMapStatCost": "API cost";
+        readonly "workbench.threadMapShowChildren": {
+            readonly one: "Show the {{count}} agent thread {{title}} started";
+            readonly other: "Show the {{count}} agent threads {{title}} started";
+        };
+        readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
+        readonly "workbench.threadMapOpenThread": "Open {{title}}";
         readonly "sharing.open": "Open";
         readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
         readonly "sharing.supervisorStatusUnavailable": "Supervisor status unavailable";
@@ -11213,6 +11246,17 @@ declare const resources: {
         "workbench.threadMapNewer": "新";
         "workbench.threadMapOlder": "旧";
         "workbench.threadMapLegendHourly": "每小时运行";
+        "workbench.threadMapTokens": "{{count}} tokens";
+        "workbench.threadMapCost": "API 费用 {{usd}}";
+        "workbench.threadMapPricePartial": "部分轮次的模型没有价格，未计入。";
+        "workbench.threadMapPricePartialShort": "部分轮次无价格";
+        "workbench.threadMapStatCost": "API 费用";
+        "workbench.threadMapShowChildren": {
+            readonly one: "展开 {{title}} 的 {{count}} 个子线程";
+            readonly other: "展开 {{title}} 的 {{count}} 个子线程";
+        };
+        "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
+        "workbench.threadMapOpenThread": "打开 {{title}}";
         "sharing.open": "打开";
         "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
         "sharing.supervisorStatusUnavailable": "Supervisor 状态不可用";

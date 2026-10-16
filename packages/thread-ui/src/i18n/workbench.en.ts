@@ -580,4 +580,12 @@ export const workbenchEn = {
   "workbench.threadMapNewer": "new",
   "workbench.threadMapOlder": "old",
   "workbench.threadMapLegendHourly": "run time per hour",
+  "workbench.threadMapTokens": "{{count}} tokens",
+  "workbench.threadMapCost": "API cost {{usd}}",
+  "workbench.threadMapPricePartial": "Some turns used a model without a known price and are left out.",
+  "workbench.threadMapPricePartialShort": "some turns unpriced",
+  "workbench.threadMapStatCost": "API cost",
+  "workbench.threadMapShowChildren": { one: "Show the {{count}} agent thread {{title}} started", other: "Show the {{count}} agent threads {{title}} started" },
+  "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}",
+  "workbench.threadMapOpenThread": "Open {{title}}",
 } as const;

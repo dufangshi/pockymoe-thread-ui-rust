@@ -1,3 +1,7 @@
+import type { ThreadTurnPriceEstimateDto, ThreadTurnTokenBreakdownDto } from '@pockymoe/shared';
+
+export type ThreadMapPrice = Pick<ThreadTurnPriceEstimateDto, 'inputUsd' | 'cachedInputUsd' | 'cacheWriteInputUsd' | 'outputUsd' | 'totalUsd'>;
+
 /** One conversation on the map: a root thread with its agent threads folded in. */
 export interface ThreadMapThread {
   key: string;
@@ -23,6 +27,14 @@ export interface ThreadMapThread {
   lastPrompt?: string | undefined;
   /** The last turn failed. */
   failed?: boolean | undefined;
+  /** Tokens of every turn, agent threads included. */
+  tokenUsage?: ThreadTurnTokenBreakdownDto | undefined;
+  /** The API price of those tokens. */
+  priceEstimate?: ThreadMapPrice | undefined;
+  /** Some turns had no known price; the price leaves them out. */
+  pricePartial?: boolean | undefined;
+  /** Agent threads this one started, each on its own; shown when the tile is opened up. */
+  children?: ThreadMapThread[] | undefined;
   /** Agent threads folded into this one. */
   agentThreads?: number | undefined;
 }
@@ -46,6 +58,9 @@ export interface MapNode {
   activeMs: number;
   threads: number;
   running: number;
+  /** API price and tokens of everything inside. */
+  usd: number;
+  tokens: number;
   thread?: ThreadMapThread;
   device?: ThreadMapDevice;
   workspace?: ThreadMapWorkspace;
@@ -75,19 +90,21 @@ const byWeight = (a: MapNode, b: MapNode) => b.weight - a.weight || a.label.loca
  * block so it is not silently missing.
  */
 export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: string): MapNode {
-  const root: MapNode = { id: 'root', kind: 'root', label: rootLabel, children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0 };
+  const blank = { children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0, usd: 0, tokens: 0 };
+  const root: MapNode = { ...blank, children: [], id: 'root', kind: 'root', label: rootLabel };
   const add = (into: MapNode, from: MapNode) => {
     into.weight += from.weight; into.turns += from.turns; into.activeMs += from.activeMs;
-    into.threads += from.threads; into.running += from.running;
+    into.threads += from.threads; into.running += from.running; into.usd += from.usd; into.tokens += from.tokens;
   };
   const deviceNodes = devices.map(device => {
-    const node: MapNode = { id: `device:${device.id}`, kind: 'device', label: device.name, children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0, device };
+    const node: MapNode = { ...blank, children: [], id: `device:${device.id}`, kind: 'device', label: device.name, device };
     for (const workspace of device.workspaces) {
-      const space: MapNode = { id: `workspace:${device.id}:${workspace.id}`, kind: 'workspace', label: workspace.label, parent: node, children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0, workspace, device };
+      const space: MapNode = { ...blank, children: [], id: `workspace:${device.id}:${workspace.id}`, kind: 'workspace', label: workspace.label, parent: node, workspace, device };
       for (const thread of workspace.threads) {
         const leaf: MapNode = {
           id: `thread:${thread.key}`, kind: 'thread', label: thread.title, parent: space, children: [], thread, device, workspace,
           weight: threadWeight(thread.turns), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0, threads: 1, running: thread.running ? 1 : 0,
+          usd: thread.priceEstimate?.totalUsd ?? 0, tokens: thread.tokenUsage?.totalTokens ?? 0,
         };
         space.children.push(leaf);
         add(space, leaf);

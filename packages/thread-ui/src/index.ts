@@ -120,7 +120,7 @@ export type { MatterWorkbenchOptions, WorkbenchThread, WorkbenchNotification, Wo
 export { MatterWorkbench } from './components/MatterWorkbench';
 export { ThreadMap } from './components/threadMap/ThreadMap';
 export { ThreadMapDialog } from './components/threadMap/ThreadMapDialog';
-export type { ThreadMapDevice, ThreadMapThread, ThreadMapWorkspace } from './components/threadMap/model';
+export type { ThreadMapDevice, ThreadMapPrice, ThreadMapThread, ThreadMapWorkspace } from './components/threadMap/model';
 export { PublicTranscript, transcriptSnapshot, type PublicTranscriptSnapshot } from './components/PublicTranscript';
 
 export { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./components/graph-ui/Dialog";

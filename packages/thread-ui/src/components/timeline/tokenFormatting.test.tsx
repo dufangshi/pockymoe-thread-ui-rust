@@ -35,6 +35,7 @@ describe('timeline token formatting', () => {
     expect(formatCompactTokenCount(1_250)).toBe('1.3k');
     expect(formatCompactTokenCount(12_500)).toBe('13k');
     expect(formatCompactTokenCount(1_250_000)).toBe('1.3m');
+    expect(formatCompactTokenCount(4_207_000_000)).toBe('4.2b');
     expect(formatCompactTokenCount(12_500_000)).toBe('13m');
   });
 

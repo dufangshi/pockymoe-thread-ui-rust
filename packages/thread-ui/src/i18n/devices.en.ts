@@ -516,4 +516,13 @@ export const devicesEn = {
   "devices.retryProtection": "Retry",
   "devices.onlineSince": "Online since {{value1}}",
   "devices.lastSeen": "Last seen {{value1}}",
+  "devices.agentIsolation": "Agent isolation",
+  "devices.agentIsolationMenu": "Agent isolation…",
+  "devices.isolateDevice": "Isolate this device",
+  "devices.deviceIsolated": "Isolated",
+  "devices.deviceIsolationDescription": "Agents on other devices cannot list, read or message this device's threads, or read its workspaces and files. You and the people you share with are not affected.",
+  "devices.deviceIsolationOffline": "The device is offline. Change this when it is online.",
+  "devices.deviceIsolationUpdate": "Update this device to change this.",
+  "devices.deviceIsolationLoading": "Loading…",
+  "devices.deviceIsolationSave": "Save",
 } as const;

@@ -1765,7 +1765,16 @@ var devicesEn = {
   "devices.learnMore": "Learn more",
   "devices.retryProtection": "Retry",
   "devices.onlineSince": "Online since {{value1}}",
-  "devices.lastSeen": "Last seen {{value1}}"
+  "devices.lastSeen": "Last seen {{value1}}",
+  "devices.agentIsolation": "Agent isolation",
+  "devices.agentIsolationMenu": "Agent isolation\u2026",
+  "devices.isolateDevice": "Isolate this device",
+  "devices.deviceIsolated": "Isolated",
+  "devices.deviceIsolationDescription": "Agents on other devices cannot list, read or message this device's threads, or read its workspaces and files. You and the people you share with are not affected.",
+  "devices.deviceIsolationOffline": "The device is offline. Change this when it is online.",
+  "devices.deviceIsolationUpdate": "Update this device to change this.",
+  "devices.deviceIsolationLoading": "Loading\u2026",
+  "devices.deviceIsolationSave": "Save"
 };
 
 // src/i18n/files.en.ts
@@ -1980,6 +1989,11 @@ var filesEn = {
   "files.pin": "Pin {{value1}}",
   "files.unpinWorkspace": "Unpin workspace",
   "files.pinWorkspace": "Pin workspace",
+  "files.isolateWorkspace": "Isolate workspace",
+  "files.stopIsolatingWorkspace": "Stop isolating",
+  "files.workspaceIsolated": "Isolated",
+  "files.workspaceIsolatedHint": "Agents outside this workspace cannot list, read or message its threads or read its files.",
+  "files.isolationFailed": "Could not change isolation: {{value1}}",
   "files.renameWorkspace": "Rename workspace",
   "files.workspaceLabel": "Workspace label",
   "files.workspacePath": "Workspace path",
@@ -5264,7 +5278,16 @@ var devicesZhCN = {
   "devices.learnMore": "\u4E86\u89E3\u66F4\u591A",
   "devices.retryProtection": "\u91CD\u8BD5",
   "devices.onlineSince": "{{value1}} \u8D77\u5728\u7EBF",
-  "devices.lastSeen": "\u6700\u540E\u5728\u7EBF {{value1}}"
+  "devices.lastSeen": "\u6700\u540E\u5728\u7EBF {{value1}}",
+  "devices.agentIsolation": "Agent \u9694\u79BB",
+  "devices.agentIsolationMenu": "Agent \u9694\u79BB\u2026",
+  "devices.isolateDevice": "\u9694\u79BB\u6B64\u8BBE\u5907",
+  "devices.deviceIsolated": "\u5DF2\u9694\u79BB",
+  "devices.deviceIsolationDescription": "\u5176\u4ED6\u8BBE\u5907\u4E0A\u7684 Agent \u65E0\u6CD5\u5217\u51FA\u3001\u8BFB\u53D6\u8FD9\u53F0\u8BBE\u5907\u7684\u7EBF\u7A0B\uFF0C\u65E0\u6CD5\u7ED9\u5B83\u4EEC\u53D1\u6D88\u606F\uFF0C\u4E5F\u65E0\u6CD5\u8BFB\u53D6\u5B83\u7684\u5DE5\u4F5C\u533A\u548C\u6587\u4EF6\u3002\u4E0D\u5F71\u54CD\u4F60\u81EA\u5DF1\u4F7F\u7528\uFF0C\u4E5F\u4E0D\u5F71\u54CD\u5171\u4EAB\u3002",
+  "devices.deviceIsolationOffline": "\u8BBE\u5907\u79BB\u7EBF\uFF0C\u4E0A\u7EBF\u540E\u624D\u80FD\u4FEE\u6539\u3002",
+  "devices.deviceIsolationUpdate": "\u8BF7\u5148\u66F4\u65B0\u8FD9\u53F0\u8BBE\u5907\u518D\u4FEE\u6539\u3002",
+  "devices.deviceIsolationLoading": "\u52A0\u8F7D\u4E2D\u2026",
+  "devices.deviceIsolationSave": "\u4FDD\u5B58"
 };
 
 // src/i18n/files.zh-CN.ts
@@ -5479,6 +5502,11 @@ var filesZhCN = {
   "files.pin": "\u7F6E\u9876 {{value1}}",
   "files.unpinWorkspace": "\u53D6\u6D88\u7F6E\u9876\u5DE5\u4F5C\u533A",
   "files.pinWorkspace": "\u7F6E\u9876\u5DE5\u4F5C\u533A",
+  "files.isolateWorkspace": "\u9694\u79BB\u6B64\u5DE5\u4F5C\u533A",
+  "files.stopIsolatingWorkspace": "\u53D6\u6D88\u9694\u79BB",
+  "files.workspaceIsolated": "\u5DF2\u9694\u79BB",
+  "files.workspaceIsolatedHint": "\u5DE5\u4F5C\u533A\u4EE5\u5916\u7684 Agent \u65E0\u6CD5\u5217\u51FA\u3001\u8BFB\u53D6\u5176\u4E2D\u7684\u7EBF\u7A0B\uFF0C\u65E0\u6CD5\u7ED9\u5B83\u4EEC\u53D1\u6D88\u606F\uFF0C\u4E5F\u65E0\u6CD5\u8BFB\u53D6\u5176\u4E2D\u7684\u6587\u4EF6\u3002",
+  "files.isolationFailed": "\u65E0\u6CD5\u4FEE\u6539\u9694\u79BB\uFF1A{{value1}}",
   "files.renameWorkspace": "\u91CD\u547D\u540D\u5DE5\u4F5C\u533A",
   "files.workspaceLabel": "\u5DE5\u4F5C\u533A\u6807\u7B7E",
   "files.workspacePath": "\u5DE5\u4F5C\u533A\u8DEF\u5F84",

@@ -516,4 +516,13 @@ export const devicesZhCN = {
   "devices.retryProtection": "重试",
   "devices.onlineSince": "{{value1}} 起在线",
   "devices.lastSeen": "最后在线 {{value1}}",
+  "devices.agentIsolation": "Agent 隔离",
+  "devices.agentIsolationMenu": "Agent 隔离…",
+  "devices.isolateDevice": "隔离此设备",
+  "devices.deviceIsolated": "已隔离",
+  "devices.deviceIsolationDescription": "其他设备上的 Agent 无法列出、读取这台设备的线程，无法给它们发消息，也无法读取它的工作区和文件。不影响你自己使用，也不影响共享。",
+  "devices.deviceIsolationOffline": "设备离线，上线后才能修改。",
+  "devices.deviceIsolationUpdate": "请先更新这台设备再修改。",
+  "devices.deviceIsolationLoading": "加载中…",
+  "devices.deviceIsolationSave": "保存",
 } as const;

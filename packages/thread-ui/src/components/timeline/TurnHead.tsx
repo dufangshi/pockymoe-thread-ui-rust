@@ -1,16 +1,38 @@
-import { useState, type ReactNode } from 'react';
+import { useState, type MouseEvent } from 'react';
 import { getLocale, translate, useI18n } from '../../i18n';
-import { formatLongTimestamp, formatMessageTimestamp } from '../threadPresentation';
+import { formatLongTimestamp } from '../threadPresentation';
+import { AddedPromptIcon } from './AddedPromptIcon';
 import { Collapse } from './Collapse';
 import type { TimelineTurn } from './timelineItems';
 import { TokenSpeedDetails } from './TokenSpeedDetails';
 import { TokenUsageCost } from './TokenUsageCost';
-import { formatCompactTokenCount } from './tokenFormatting';
 import { formatElapsedDuration, useSecondClock } from './turnStatus';
 import { knownTurnModel } from './TurnUsageInline';
 
-/** The top of a turn: when it started, the model, what it cost and how fast it
-    answered. Tapping it shows the start and end, the time taken and the tokens. */
+/** "claude-opus-5-5" reads "opus 5.5" and "gpt-6-astra" "6 astra": the vendor
+    part goes, a date stamp goes, and numbered parts join into a version. */
+export function shortModelName(model: string) {
+  const parts = model.split('-').filter(Boolean);
+  if (parts.length < 2) return model;
+  const words: string[] = [];
+  for (const part of parts.slice(1)) {
+    if (/^\d{8}$/.test(part)) continue;
+    const previous = words.at(-1);
+    if (previous && /^\d+(\.\d+)*$/.test(part) && /^\d+(\.\d+)*$/.test(previous)) words[words.length - 1] = `${previous}.${part}`;
+    else words.push(part);
+  }
+  return words.length ? words.join(' ') : model;
+}
+
+const clock = (at: string) => new Date(at).toLocaleTimeString(getLocale(), { hour: 'numeric', minute: '2-digit' });
+const dated = (at: string) => new Date(at).toLocaleString(getLocale(), {
+  month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
+  ...(new Date(at).getFullYear() !== new Date().getFullYear() ? { year: 'numeric' } : {}),
+});
+
+/** The top of a turn: a dot with the time it has worked, and its cost. Tapping
+    the line opens one more line with when it started, the model, the speed and
+    the prompts added while it worked. */
 export function TurnHead({ turn, active, added, onBeforeResize }: {
   turn: TimelineTurn;
   active: boolean;
@@ -20,51 +42,49 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
 }) {
   useI18n();
   const [open, setOpen] = useState(false);
+  const [withDate, setWithDate] = useState(false);
   const now = useSecondClock(active);
   const started = turn.startedAt;
+  const took = formatElapsedDuration(started, active ? now : Date.parse(turn.completedAt ?? ''));
   const model = knownTurnModel(turn);
   const effort = turn.reasoningEffort?.trim();
   const usage = turn.tokenUsage?.total;
   const speed = turn.tokenUsage?.generationSpeed;
   const rate = speed?.averageOutputTokensPerSecond ?? speed?.averageTokensPerSecond;
-  const rateText = rate != null && Number.isFinite(rate) && rate > 0
-    ? translate('chat.turnHeadSpeed', { value: rate.toLocaleString(getLocale(), { maximumFractionDigits: 1, minimumFractionDigits: 1 }) })
-    : null;
-  const took = formatElapsedDuration(started, active ? now : Date.parse(turn.completedAt ?? ''));
-  const runModel = model ? `${model}${effort ? ` · ${effort}` : ''}` : null;
-  const priced = !active && turn.priceEstimate;
-
-  const details: [string, ReactNode][] = [
-    ...(started ? [[translate('chat.turnHeadStarted'), formatLongTimestamp(started)] as [string, ReactNode]] : []),
-    ...(!active && turn.completedAt ? [[translate('chat.turnHeadFinished'), formatLongTimestamp(turn.completedAt)] as [string, ReactNode]] : []),
-    ...(took ? [[translate('chat.turnHeadTook'), took] as [string, ReactNode]] : []),
-    ...(runModel ? [[translate('chat.model'), runModel] as [string, ReactNode]] : []),
-    ...(usage ? [[translate('chat.turnHeadTokens'), translate('chat.turnHeadTokensValue', {
-      total: formatCompactTokenCount(usage.totalTokens),
-      input: formatCompactTokenCount(usage.inputTokens),
-      output: formatCompactTokenCount(usage.outputTokens),
-    })] as [string, ReactNode]] : []),
-    ...(rateText ? [[translate('chat.turnHeadSpeedLabel'), translate('chat.turnHeadSpeedValue', { speed: rateText })] as [string, ReactNode]] : []),
-    ...(added ? [[translate('chat.turnHeadAdded'), translate('chat.turnHeadAddedValue', { count: added })] as [string, ReactNode]] : []),
-  ];
+  const toggle = (event: MouseEvent<HTMLElement>) => {
+    // The cost is a control of its own.
+    if (event.target instanceof Element && event.target.closest('.thread-usage-cost')) return;
+    onBeforeResize?.(event.currentTarget);
+    setOpen(value => !value);
+  };
 
   return (
     <div className="thread-turn-head-block">
-      <div className="thread-turn-head" data-active={active || undefined}>
+      <div className="thread-turn-head" data-active={active || undefined} data-status={turn.status} onClick={toggle}>
         <button type="button" className="thread-turn-head-main" aria-expanded={open} title={translate('chat.turnHeadDetails')}
-          onClick={(event) => { onBeforeResize?.(event.currentTarget); setOpen(value => !value); }}>
-          {started ? <time dateTime={started}>{formatMessageTimestamp(started)}</time> : null}
-          {runModel ? <span className="thread-turn-head-model">{runModel}</span> : null}
-          {/* Running reads as a pulsing dot and the time so far. */}
-          {active && took ? <span className="thread-turn-head-live" role="timer" aria-label={translate('chat.turnHeadRunning', { elapsed: took })}><i aria-hidden="true" />{took}</span> : null}
+          aria-label={took ? translate(active ? 'chat.turnHeadRunning' : 'chat.turnHeadWorked', { elapsed: took }) : translate('chat.turnHeadDetails')}>
+          <i className="thread-turn-head-dot" aria-hidden="true" />
+          {took ? <span className="thread-turn-head-took">{took}</span> : null}
         </button>
-        {priced ? <span className="thread-turn-head-cost"><TokenUsageCost usage={usage} price={turn.priceEstimate} /></span> : null}
-        {!active && speed && rate != null && rateText ? <TokenSpeedDetails speed={speed} value={rate} /> : null}
+        {usage || turn.priceEstimate ? <TokenUsageCost usage={usage} price={turn.priceEstimate} /> : null}
       </div>
       <Collapse open={open}>
-        <dl className="thread-turn-head-detail">
-          {details.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
-        </dl>
+        <div className="thread-turn-head-more">
+          {started ? (
+            <button type="button" className="thread-turn-head-time" title={formatLongTimestamp(started)} aria-pressed={withDate}
+              onClick={() => setWithDate(value => !value)}>
+              <time dateTime={started}>{withDate ? dated(started) : clock(started)}</time>
+            </button>
+          ) : null}
+          {model ? <span className="thread-turn-head-model" title={model}>{shortModelName(model)}{effort ? ` · ${effort}` : ''}</span> : null}
+          {!active && speed && rate != null && Number.isFinite(rate) && rate > 0 ? <TokenSpeedDetails speed={speed} value={rate} /> : null}
+          {added ? (
+            <span className="thread-turn-head-added" role="img" title={translate('chat.turnHeadAddedValue', { count: added })}
+              aria-label={translate('chat.turnHeadAddedValue', { count: added })}>
+              <AddedPromptIcon />{added}
+            </span>
+          ) : null}
+        </div>
       </Collapse>
     </div>
   );

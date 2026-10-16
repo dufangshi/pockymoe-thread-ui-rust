@@ -3020,15 +3020,8 @@ declare const en: {
     readonly "chat.turnFailedTitle": "This turn did not finish";
     readonly "chat.turnHeadDetails": "Turn details";
     readonly "chat.turnHeadRunning": "running {{elapsed}}";
+    readonly "chat.turnHeadWorked": "worked {{elapsed}}";
     readonly "chat.turnHeadSpeed": "{{value}} tok/s";
-    readonly "chat.turnHeadStarted": "Started";
-    readonly "chat.turnHeadFinished": "Finished";
-    readonly "chat.turnHeadTook": "Took";
-    readonly "chat.turnHeadTokens": "Tokens";
-    readonly "chat.turnHeadTokensValue": "{{total}} (in {{input}} · out {{output}})";
-    readonly "chat.turnHeadSpeedLabel": "Speed";
-    readonly "chat.turnHeadSpeedValue": "{{speed}} average output";
-    readonly "chat.turnHeadAdded": "Added";
     readonly "chat.turnHeadAddedValue": {
         readonly one: "{{count}} message while working";
         readonly other: "{{count}} messages while working";
@@ -6595,15 +6588,8 @@ declare const zhCN: {
     "chat.turnFailedTitle": "这一轮没有完成";
     "chat.turnHeadDetails": "本轮详情";
     "chat.turnHeadRunning": "运行中 {{elapsed}}";
+    "chat.turnHeadWorked": "工作了 {{elapsed}}";
     "chat.turnHeadSpeed": "{{value}} tok/s";
-    "chat.turnHeadStarted": "开始";
-    "chat.turnHeadFinished": "结束";
-    "chat.turnHeadTook": "用时";
-    "chat.turnHeadTokens": "Token";
-    "chat.turnHeadTokensValue": "{{total}}（输入 {{input}} · 输出 {{output}}）";
-    "chat.turnHeadSpeedLabel": "速度";
-    "chat.turnHeadSpeedValue": "平均输出 {{speed}}";
-    "chat.turnHeadAdded": "追加";
     "chat.turnHeadAddedValue": {
         readonly one: "工作中追加了 {{count}} 条消息";
         readonly other: "工作中追加了 {{count}} 条消息";
@@ -10192,15 +10178,8 @@ declare const resources: {
         readonly "chat.turnFailedTitle": "This turn did not finish";
         readonly "chat.turnHeadDetails": "Turn details";
         readonly "chat.turnHeadRunning": "running {{elapsed}}";
+        readonly "chat.turnHeadWorked": "worked {{elapsed}}";
         readonly "chat.turnHeadSpeed": "{{value}} tok/s";
-        readonly "chat.turnHeadStarted": "Started";
-        readonly "chat.turnHeadFinished": "Finished";
-        readonly "chat.turnHeadTook": "Took";
-        readonly "chat.turnHeadTokens": "Tokens";
-        readonly "chat.turnHeadTokensValue": "{{total}} (in {{input}} · out {{output}})";
-        readonly "chat.turnHeadSpeedLabel": "Speed";
-        readonly "chat.turnHeadSpeedValue": "{{speed}} average output";
-        readonly "chat.turnHeadAdded": "Added";
         readonly "chat.turnHeadAddedValue": {
             readonly one: "{{count}} message while working";
             readonly other: "{{count}} messages while working";
@@ -13766,15 +13745,8 @@ declare const resources: {
         "chat.turnFailedTitle": "这一轮没有完成";
         "chat.turnHeadDetails": "本轮详情";
         "chat.turnHeadRunning": "运行中 {{elapsed}}";
+        "chat.turnHeadWorked": "工作了 {{elapsed}}";
         "chat.turnHeadSpeed": "{{value}} tok/s";
-        "chat.turnHeadStarted": "开始";
-        "chat.turnHeadFinished": "结束";
-        "chat.turnHeadTook": "用时";
-        "chat.turnHeadTokens": "Token";
-        "chat.turnHeadTokensValue": "{{total}}（输入 {{input}} · 输出 {{output}}）";
-        "chat.turnHeadSpeedLabel": "速度";
-        "chat.turnHeadSpeedValue": "平均输出 {{speed}}";
-        "chat.turnHeadAdded": "追加";
         "chat.turnHeadAddedValue": {
             readonly one: "工作中追加了 {{count}} 条消息";
             readonly other: "工作中追加了 {{count}} 条消息";

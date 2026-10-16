@@ -21,6 +21,7 @@ import { GraphChatMessageFrame } from './GraphChatMessageFrame';
 import { parsePromptEnvelope, PromptEnvelopeHeader, PromptNotice } from './PromptEnvelope';
 import { formatMessageTimestamp } from '../threadPresentation';
 import { useAddedPrompt, useTurnFailure } from './turnPrompts';
+import { AddedPromptIcon } from '../timeline/AddedPromptIcon';
 import {
   Accordion,
   AccordionContent,
@@ -256,7 +257,12 @@ export const GraphChatCompactMessageItem = memo(
         timeTitle={timeTitle}
         actionsTime={item.createdAt ? formatMessageTimestamp(item.createdAt) : null}
         failure={item.kind === 'userMessage' ? failure : null}
-        kicker={added && item.createdAt ? translate('chat.promptAdded', { time: formatMessageTimestamp(item.createdAt) }) : null}
+        kicker={added && item.createdAt ? (
+          <span className="thread-added-prompt" role="img" aria-label={translate('chat.promptAdded', { time: formatMessageTimestamp(item.createdAt) })}
+            title={translate('chat.promptAdded', { time: formatMessageTimestamp(item.createdAt) })}>
+            <AddedPromptIcon />{formatMessageTimestamp(item.createdAt)}
+          </span>
+        ) : null}
         onBeforeResize={onBeforeMessageResize}
       >
         {item.kind === 'agentMessage' ? (

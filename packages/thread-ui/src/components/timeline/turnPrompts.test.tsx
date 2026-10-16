@@ -74,9 +74,11 @@ describe('a prompt added while the turn worked', () => {
     await render({ ...failed, status: 'completed', error: null, model: 'gpt-6-astra', completedAt: '2026-10-16T20:55:00Z',
       items: [failed.items[0]!, added, message('answer', 'agentMessage', 'Both are fine now.')] });
     expect(container.querySelector('[data-message-id="prompt"] .thread-graph-message-kicker')).toBeNull();
-    expect(container.querySelector('[data-message-id="steer"] .thread-graph-message-kicker')?.textContent).toMatch(/^Added · /);
+    const kicker = container.querySelector('[data-message-id="steer"] .thread-graph-message-kicker .thread-added-prompt');
+    expect(kicker?.getAttribute('aria-label')).toMatch(/^Added · /);
+    expect(kicker?.querySelector('.thread-added-prompt-icon')).not.toBeNull();
     await act(async () => container.querySelector<HTMLButtonElement>('.thread-turn-head-main')!.click());
-    expect(container.querySelector('.thread-turn-head-detail')?.textContent).toContain('1 message while working');
+    expect(container.querySelector('.thread-turn-head-added')?.getAttribute('aria-label')).toBe('1 message while working');
   });
 });
 

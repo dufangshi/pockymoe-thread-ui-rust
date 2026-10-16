@@ -52,49 +52,78 @@
 .tlog-sep { margin: 0 0.4em; color: var(--theme-fg-muted); }
 .tlog-sep.is-lead { margin-left: 0; }
 
-/* The turn's head: a quiet line above its prompt, between two rules. It says
-   when the turn started, the model, the cost and the speed; tapping it opens the
-   details under it. */
+/* The turn's head: a quiet line above its prompt, between two rules, with only
+   a dot and the time the turn has worked (pulsing while it works) and its cost.
+   Tapping it opens one more line: when it started, the model, the speed and the
+   prompts added while it worked. */
 .thread-ui-shell .thread-turn-head {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
   margin: 4px 0 2px;
   color: var(--theme-fg-muted);
   font-size: 11px;
   line-height: 20px;
   font-variant-numeric: tabular-nums;
+  cursor: pointer;
 }
 .thread-ui-shell .thread-turn-head::before,
 .thread-ui-shell .thread-turn-head::after { content: ''; flex: 1 1 0; min-width: 12px; height: 1px; background: var(--theme-border); }
-/* On a narrow screen the closing rule gives way before the model name does. */
-.thread-ui-shell .thread-turn-head::after { min-width: 0; }
 .thread-ui-shell .thread-turn-head-main {
   display: inline-flex;
   align-items: center;
-  min-width: 0;
+  gap: 6px;
   padding: 0 3px;
   border-radius: 5px;
   color: inherit;
   white-space: nowrap;
 }
-.thread-ui-shell .thread-turn-head-main:hover,
-.thread-ui-shell .thread-turn-head-main[aria-expanded='true'] { color: var(--theme-fg); }
+.thread-ui-shell .thread-turn-head:hover .thread-turn-head-main,
+.thread-ui-shell .thread-turn-head-main[aria-expanded='true'],
+.thread-ui-shell .thread-turn-head[data-active] .thread-turn-head-main { color: var(--theme-fg); }
 .thread-ui-shell .thread-turn-head-main:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
-.thread-ui-shell .thread-turn-head-main > * + *::before,
-.thread-ui-shell :is(.thread-turn-head-cost, .thread-turn-head-speed)::before { content: '·'; margin-right: 6px; color: var(--theme-fg-muted); }
-.thread-ui-shell .thread-turn-head-main > * + *::before { margin-left: 6px; }
-.thread-ui-shell .thread-turn-head-model { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.thread-ui-shell .thread-turn-head-main > :not(.thread-turn-head-model) { flex: none; }
-.thread-ui-shell .thread-turn-head-live { display: inline-flex; align-items: center; gap: 5px; color: var(--theme-accent-strong, var(--theme-accent-solid)); }
-.thread-ui-shell .thread-turn-head-live > i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: thread-live-dot 1.6s ease-in-out infinite; }
-.thread-ui-shell :is(.thread-turn-head-cost, .thread-turn-head-speed) { flex: none; white-space: nowrap; }
-.thread-ui-shell button.thread-turn-head-speed { padding: 0 2px; border-radius: 4px; color: inherit; text-decoration: underline dotted; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); text-underline-offset: 3px; }
-.thread-ui-shell button.thread-turn-head-speed:hover,
-.thread-ui-shell button.thread-turn-head-speed[aria-expanded='true'] { color: var(--theme-fg); }
-.thread-ui-shell button.thread-turn-head-speed:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
+.thread-ui-shell .thread-turn-head-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--turn-head-dot, #2fb37a); opacity: 0.55; }
+.thread-ui-shell .thread-turn-head[data-active] .thread-turn-head-dot {
+  opacity: 1;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--turn-head-dot, #2fb37a) 20%, transparent);
+  animation: thread-live-dot 1.6s ease-in-out infinite;
+}
+.thread-ui-shell .thread-turn-head[data-status='failed']:not([data-active]) .thread-turn-head-dot { background: var(--theme-danger, #e5484d); opacity: 0.85; }
+.thread-ui-shell .thread-turn-head[data-status='interrupted']:not([data-active]) .thread-turn-head-dot { background: var(--theme-fg-muted); }
+.thread-ui-shell .thread-turn-head .thread-usage-cost { flex: none; }
+.thread-ui-shell .thread-turn-head .thread-turn-usage-price { font-size: 11px; line-height: 16px; }
+.thread-ui-shell .thread-turn-head .thread-turn-usage-unavailable { font-size: 0; }
+.thread-ui-shell .thread-turn-head .thread-turn-usage-unavailable::before { content: '$ —'; font-size: 11px; }
+.thread-ui-shell .thread-turn-head-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2px 12px;
+  min-width: 0;
+  margin: 0 0 6px;
+  color: var(--theme-fg-muted);
+  font-size: 11px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.thread-ui-shell .thread-turn-head-more > * { flex: none; white-space: nowrap; }
+.thread-ui-shell .thread-turn-head-more > .thread-turn-head-model { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* The time and the speed open more; a dotted underline says so. */
+.thread-ui-shell .thread-turn-head-more > :is(.thread-turn-head-time, .thread-turn-head-speed) {
+  padding: 0 2px;
+  border-radius: 4px;
+  color: inherit;
+  text-decoration: underline dotted;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 3px;
+}
+.thread-ui-shell .thread-turn-head-more > :is(.thread-turn-head-time, .thread-turn-head-speed):is(:hover, [aria-expanded='true'], [aria-pressed='true']) { color: var(--theme-fg); }
+.thread-ui-shell .thread-turn-head-more > :is(.thread-turn-head-time, .thread-turn-head-speed):focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
+.thread-ui-shell .thread-turn-head-added { display: inline-flex; align-items: center; gap: 3px; }
+.thread-ui-shell .thread-added-prompt-icon { flex: none; width: 13px; height: 13px; }
 
 /* Live marks on the working line instead of phrases: an hourglass that turns
    while waiting for a wake, a bot and its count that breathes while background
@@ -116,30 +145,11 @@
 @keyframes thread-hourglass { 0%, 40% { transform: rotate(0); } 50%, 90% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
 @keyframes thread-agent-breathe { 0%, 100% { opacity: 0.55; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-1px); } }
 @media (prefers-reduced-motion: reduce) {
-  .thread-ui-shell :is(.thread-turn-head-live > i, .thread-wait-mark svg, .thread-background-agent-status svg) { animation: none; }
+  .thread-ui-shell :is(.thread-turn-head-dot, .thread-wait-mark svg, .thread-background-agent-status svg) { animation: none; }
 }
-.thread-ui-shell .thread-turn-head .thread-turn-usage-price { font-size: 11px; line-height: 16px; }
-.thread-ui-shell .thread-turn-head-detail {
-  display: grid;
-  grid-template-columns: max-content minmax(0, auto);
-  gap: 3px 14px;
-  width: fit-content;
-  max-width: 100%;
-  margin: 2px auto 8px;
-  padding: 8px 12px;
-  border: 1px solid var(--theme-border);
-  border-radius: 10px;
-  background: var(--theme-surface);
-  font-size: 12px;
-  line-height: 1.5;
-  font-variant-numeric: tabular-nums;
-}
-.thread-ui-shell .thread-turn-head-detail > div { display: contents; }
-.thread-ui-shell .thread-turn-head-detail dt { color: var(--theme-fg-muted); }
-.thread-ui-shell .thread-turn-head-detail dd { margin: 0; color: var(--theme-fg); overflow-wrap: anywhere; }
-
-/* A prompt added while the turn worked says so, with its own time. */
+/* A prompt added while the turn worked carries the merge mark and its own time. */
 .thread-ui-shell .thread-graph-message-kicker { margin: 0 4px 3px; color: var(--theme-fg-muted); font-size: 11px; line-height: 14px; }
+.thread-ui-shell .thread-graph-message-kicker .thread-added-prompt { display: inline-flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
 
 /* The expanded log: messages and runs in order. */
 .thread-ui-shell .thread-execution-timeline {

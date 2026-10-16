@@ -221,3 +221,106 @@
 @media (prefers-reduced-motion: reduce) {
   .terminal-pane-status.is-connecting { animation: none; opacity: 1; }
 }
+
+/* Text selection for touch screens: the terminal's lines as plain text over the
+   pane, in the same font, so the phone's own selection handles and menu work. */
+.terminal-selection {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  background: var(--terminal-bg, var(--theme-panel));
+  color: var(--terminal-fg, var(--theme-fg));
+}
+/* The bar floats over the text, so the text keeps xterm's exact rows. */
+.terminal-selection-bar {
+  position: absolute;
+  inset: 6px 6px auto;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--theme-panel) 94%, transparent);
+  color: var(--theme-fg);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 22%);
+  font-size: 13px;
+}
+.terminal-selection-bar > span { flex: 1; min-width: 0; overflow: hidden; color: var(--theme-fg-muted); text-overflow: ellipsis; white-space: nowrap; }
+.terminal-panel .terminal-selection-bar > button,
+.terminal-selection-bar > button {
+  min-width: 44px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+  font-size: 13px;
+}
+.terminal-selection-bar > button.is-primary,
+.terminal-paste-confirm > button.is-primary,
+.terminal-paste-field button.is-primary { border-color: transparent; background: var(--theme-accent-solid); color: var(--theme-accent-solid-fg); }
+.terminal-selection-bar > button:disabled { opacity: .45; }
+.terminal-selection-text {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 4px 56px 0;
+  font-family: 'IBM Plex Mono', SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.25;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+/* A risky paste waits here; the paste field is the fallback where the
+   clipboard cannot be read. Both sit at the bottom of the pane. */
+.terminal-paste-confirm,
+.terminal-paste-field {
+  position: absolute;
+  inset: auto 8px 8px;
+  z-index: 21;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--theme-border-strong);
+  border-radius: 12px;
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
+  font-size: 13px;
+}
+.terminal-paste-confirm > span { flex: 1 1 200px; min-width: 0; }
+.terminal-paste-confirm > button,
+.terminal-paste-field button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+}
+.terminal-paste-field { flex-direction: column; align-items: stretch; }
+.terminal-paste-field textarea {
+  width: 100%;
+  min-height: 72px;
+  padding: 8px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+  font: 16px/1.4 'IBM Plex Mono', SFMono-Regular, Menlo, monospace;
+  resize: vertical;
+}
+.terminal-paste-field > div { display: flex; justify-content: flex-end; gap: 8px; }
+.terminal-paste-field button:disabled { opacity: .45; }

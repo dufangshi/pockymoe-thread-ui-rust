@@ -1,11 +1,29 @@
 import { translate, useI18n } from '../i18n';
-import { useId, useState, type ReactNode } from 'react';
+import { useId, useLayoutEffect, useRef, useState, type MutableRefObject, type ReactNode } from 'react';
 
 export type SettingsSection = { id: string; label: string; description?: string; content: ReactNode };
 
-export function SettingsPanels({ sections, initialId }: { sections: SettingsSection[]; initialId?: string }) {
+export function SettingsPanels({ sections, initialId, selected: selectedId, onSelect, scroll }: {
+  sections: SettingsSection[];
+  initialId?: string;
+  /** Held by the owner when the panels may remount while open. */
+  selected?: string | undefined;
+  onSelect?: ((id: string) => void) | undefined;
+  /** The panel's scroll offset, kept by the owner across such a remount. */
+  scroll?: MutableRefObject<number> | undefined;
+}) {
   useI18n();
-  const [selected, setSelected] = useState(initialId ?? sections[0]?.id);
+  const [ownSelected, setOwnSelected] = useState(initialId ?? sections[0]?.id);
+  const selected = selectedId ?? ownSelected;
+  const setSelected = (id: string) => {
+    if (scroll) scroll.current = 0;
+    setOwnSelected(id);
+    onSelect?.(id);
+  };
+  const panel = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    if (scroll?.current && panel.current) panel.current.scrollTop = scroll.current;
+  }, [scroll]);
   const scope = useId();
   const active = sections.find((section) => section.id === selected) ?? sections[0];
   if (!active) return null;
@@ -29,7 +47,8 @@ export function SettingsPanels({ sections, initialId }: { sections: SettingsSect
         }}
       ><span>{section.label}</span></button>)}
     </nav>
-    <section key={active.id} className="settings-panel" role="tabpanel" id={`${scope}-panel`} aria-labelledby={`${scope}-${active.id}`} tabIndex={0}>
+    <section key={active.id} ref={panel} className="settings-panel" role="tabpanel" id={`${scope}-panel`} aria-labelledby={`${scope}-${active.id}`} tabIndex={0}
+      onScroll={scroll ? (event) => { scroll.current = event.currentTarget.scrollTop; } : undefined}>
       <header className="settings-panel-heading"><h3>{active.label}</h3>{active.description && <p>{active.description}</p>}</header>
       {active.content}
     </section>

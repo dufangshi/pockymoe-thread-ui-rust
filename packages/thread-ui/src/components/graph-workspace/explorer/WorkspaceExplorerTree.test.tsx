@@ -7,6 +7,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { WorkspaceTreeNode } from '../workspaceTree';
 import { WorkspaceExplorerTree } from './WorkspaceExplorerTree';
 
+const { scrollToIndex } = vi.hoisted(() => ({ scrollToIndex: vi.fn() }));
+vi.mock('@tanstack/react-virtual', () => ({
+  measureElement: vi.fn(),
+  useVirtualizer: () => ({
+    scrollToIndex,
+    getVirtualItems: () => [],
+    getTotalSize: () => 2000,
+    measureElement: vi.fn(),
+  }),
+}));
+
 function directory(
   path: string,
   children: WorkspaceTreeNode[] = [],
@@ -64,6 +75,7 @@ describe('WorkspaceExplorerTree', () => {
     host?.remove();
     host = null;
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('renders one-tab-stop ARIA tree metadata', () => {
@@ -201,5 +213,46 @@ describe('WorkspaceExplorerTree', () => {
         ?.click(),
     );
     expect(onToggle).toHaveBeenCalledWith('src');
+  });
+
+  it('reveals a requested target at index minus one and uses auto for ordinary selection', () => {
+    vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+    const scrollerRef = createRef<HTMLDivElement>();
+    const renderTree = (selectedNodeId: string, revealRequestKey?: number) => act(() => root!.render(
+      <WorkspaceExplorerTree tree={tree} expandedPaths={new Set(['src'])} loadingPaths={new Set()}
+        selectedNodeId={selectedNodeId} revealRequestKey={revealRequestKey} scrollerRef={scrollerRef}
+        onSelect={vi.fn()} onToggle={vi.fn()} />,
+    ));
+    renderTree('workspace:src/index.ts', 1);
+    expect(scrollToIndex).toHaveBeenLastCalledWith(1, { align: 'start' });
+    scrollToIndex.mockClear();
+    renderTree('workspace:README.md', 1);
+    expect(scrollToIndex).toHaveBeenLastCalledWith(3, { align: 'auto' });
+    renderTree('workspace:README.md', 2);
+    expect(scrollToIndex).toHaveBeenLastCalledWith(2, { align: 'start' });
+    renderTree('workspace:', 3);
+    expect(scrollToIndex).toHaveBeenLastCalledWith(0, { align: 'start' });
+  });
+
+  it.each(['wheel', 'touchstart', 'keydown', 'expiry'])('repeats reveal during projection loading until %s', (stop) => {
+    vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+    let now = 100;
+    vi.spyOn(performance, 'now').mockImplementation(() => now);
+    const scrollerRef = createRef<HTMLDivElement>();
+    const renderTree = (extra: number) => act(() => root!.render(
+      <WorkspaceExplorerTree tree={directory('', [...tree.children, ...Array.from({ length: extra }, (_, i) => file(`z-${i}.ts`))])}
+        expandedPaths={new Set(['src'])} loadingPaths={new Set()} selectedNodeId="workspace:src/index.ts"
+        revealRequestKey={1} scrollerRef={scrollerRef} onSelect={vi.fn()} onToggle={vi.fn()} />,
+    ));
+    renderTree(0);
+    scrollToIndex.mockClear();
+    now = 1400;
+    renderTree(1);
+    expect(scrollToIndex).toHaveBeenCalledWith(1, { align: 'start' });
+    scrollToIndex.mockClear();
+    if (stop === 'expiry') now = 1601;
+    else act(() => scrollerRef.current!.dispatchEvent(new Event(stop)));
+    renderTree(2);
+    expect(scrollToIndex).not.toHaveBeenCalled();
   });
 });

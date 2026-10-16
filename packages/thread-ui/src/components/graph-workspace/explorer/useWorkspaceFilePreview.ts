@@ -35,6 +35,8 @@ export function useWorkspaceFilePreview({
   const [previewFile, setPreviewFile] =
     useState<ThreadWorkspaceFilePreview | null>(null);
   const [downloadOnly, setDownloadOnly] = useState(false);
+  // Why a file is offered as a download rather than shown, when that is known.
+  const [downloadReason, setDownloadReason] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -60,6 +62,7 @@ export function useWorkspaceFilePreview({
       setPreviewLoading(true);
       onError(null);
       setDownloadOnly(false);
+      setDownloadReason(null);
       setPreviewFile(null);
       setImageUrl(null);
       setPdfUrl(null);
@@ -106,12 +109,17 @@ export function useWorkspaceFilePreview({
           limit: isDrawioPath(currentPath) ? DRAWIO_MAX_BYTES : PREVIEW_CHUNK_BYTES,
         });
         if (!cancelled) {
-          if (isBinaryPreview(file.content)) setDownloadOnly(true);
+          if (isBinaryPreview(file.content)) { setDownloadOnly(true); setDownloadReason('unsupportedEncodingOrBinaryFile'); }
           else setPreviewFile(file);
         }
       } catch (error) {
         if (!cancelled) {
-          onError(
+          // A file that is not text cannot be previewed: offer the download
+          // instead of an error.
+          if (error instanceof Error && /unsupportedEncodingOrBinaryFile/.test(error.message)) {
+            setDownloadOnly(true);
+            setDownloadReason('unsupportedEncodingOrBinaryFile');
+          } else onError(
             error instanceof Error ? error.message : translate("files.failedToReadFile"),
           );
         }
@@ -169,6 +177,7 @@ export function useWorkspaceFilePreview({
 
   return {
     downloadOnly,
+    downloadReason,
     imageUrl,
     loadingMore,
     loadMore,

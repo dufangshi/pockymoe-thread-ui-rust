@@ -398,3 +398,46 @@ it('renders draw.io in a sandbox by default and preserves source/preview switchi
   act(() => element.querySelector<HTMLButtonElement>('[aria-label="Diagram preview"]')!.click());
   expect(element.querySelector('iframe')).toBeTruthy();
 });
+
+describe('missing linked file', () => {
+  it('names a linked file that is not on this device and copies its path, without an error banner', async () => {
+    const writeText = vi.fn(async () => undefined);
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } });
+    const path = '/home/me/other-worktree/.scratch/review/REPORT.md';
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()} selectedTarget={null} missingPath={path} />);
+    expect(element.querySelector('[role=alert]')).toBeNull();
+    expect(element.querySelector('.workspace-missing-file-title')?.textContent).toBe('REPORT.md is not on this device');
+    expect(element.querySelector('.workspace-missing-file-path')?.textContent).toBe(path);
+    await act(async () => { element.querySelector<HTMLButtonElement>('.workspace-missing-file-copy')!.click(); });
+    expect(writeText).toHaveBeenCalledWith(path);
+    expect(element.querySelector('.workspace-missing-file-copy')?.textContent).toBe('Copied');
+  });
+
+  it('shows the plain empty state when nothing is selected or missing', () => {
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()} selectedTarget={null} />);
+    expect(element.textContent).toContain('Choose a file to view.');
+    expect(element.querySelector('.workspace-missing-file')).toBeNull();
+  });
+});
+
+describe('files that cannot be previewed', () => {
+  const themeNode: WorkspaceTreeNode = { id: 'theme', path: '.scratch/elysia.pockytheme', name: 'elysia.pockytheme', kind: 'file', size: 241855, children: [] };
+
+  it('offers the download of a file that is not text, with that reason', () => {
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
+      selectedTarget={{ kind: 'workspace-file', node: themeNode }} downloadOnly downloadReason="unsupportedEncodingOrBinaryFile" onDownloadFile={() => undefined} />);
+    expect(element.querySelector('[role=alert]')).toBeNull();
+    expect(element.textContent).toContain('This file is not text, so it cannot be previewed.');
+    expect(element.querySelector('button[aria-label="Download elysia.pockytheme"]')).not.toBeNull();
+  });
+
+  it('puts the download beside a file error', async () => {
+    const onDownloadFile = vi.fn(async () => undefined);
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
+      selectedTarget={{ kind: 'workspace-file', node: themeNode }} error="unsupportedEncodingOrBinaryFile" onDownloadFile={onDownloadFile} />);
+    const alert = element.querySelector('[role=alert]')!;
+    expect(alert.textContent).toContain('This file is not text, so it cannot be previewed.');
+    await act(async () => { alert.querySelector<HTMLButtonElement>('.workspace-file-alert-download')!.click(); });
+    expect(onDownloadFile).toHaveBeenCalledTimes(1);
+  });
+});

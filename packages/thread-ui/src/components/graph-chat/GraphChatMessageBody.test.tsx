@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { expect, it } from 'vitest';
-import { GraphChatUserMessageBody } from './GraphChatMessageBody';
+import { expect, it, vi } from 'vitest';
+import { GraphChatMarkdownAwareBody, GraphChatUserMessageBody } from './GraphChatMessageBody';
+
+(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
 it('opens attachments and closes only outside the image or with Escape', () => {
   const container = document.createElement('div');
@@ -92,4 +94,25 @@ it('folds long prompts, keeps late attachments accessible, and resets disclosure
     act(() => root.unmount());
     container.remove();
   }
+});
+
+it.each(['user', 'markdown'])('anchors the %s message top on expansion and its toggle on collapse', (kind) => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  const root = createRoot(container);
+  const onBeforeResize = vi.fn();
+  const text = 'A long readable paragraph for checking message disclosure anchors.\n'.repeat(100);
+  try {
+    act(() => root.render(kind === 'user'
+      ? <GraphChatUserMessageBody messageId="anchor-user" text={text} onBeforeResize={onBeforeResize} />
+      : <GraphChatMarkdownAwareBody messageId="anchor-markdown" text={text} onBeforeResize={onBeforeResize} scrollRootRef={{ current: null }} />));
+    const toggle = container.querySelector<HTMLButtonElement>('.thread-graph-show-more')!;
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    act(() => toggle.click());
+    expect(onBeforeResize).toHaveBeenLastCalledWith(toggle.parentElement);
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    act(() => toggle.click());
+    expect(onBeforeResize).toHaveBeenLastCalledWith(toggle);
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+  } finally { act(() => root.unmount()); container.remove(); }
 });

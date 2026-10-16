@@ -3,11 +3,8 @@ import { Hourglass } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../graph-ui/Tooltip';
 
-import type { ThreadHistoryItemDto } from '@pockymoe/shared';
-
 import {
   isActiveTurnStatus,
-  isRunningHistoryStatus,
   type TimelineTurn,
 } from './timelineItems';
 import { formatTurnRuntimeSummary, TurnUsageInline } from './TurnUsageInline';
@@ -111,73 +108,6 @@ export function normalizePlanStepStatus(status: string) {
   }
 
   return 'other' as const;
-}
-
-function isLivePlanExecutionEvidence(item: ThreadHistoryItemDto) {
-  switch (item.kind) {
-    case 'fileChange':
-    case 'webSearch':
-    case 'image':
-    case 'contextCompaction':
-      return true;
-    case 'commandExecution':
-    case 'toolCall':
-      return !isRunningHistoryStatus(item.status);
-    default:
-      return false;
-  }
-}
-
-export function deriveDisplayedLivePlan(
-  livePlan: {
-    turnId: string;
-    explanation: string | null;
-    plan: Array<{ step: string; status: string }>;
-  } | null,
-  items: ThreadHistoryItemDto[],
-  turnStatus: TimelineTurn['status'],
-) {
-  if (!livePlan || !isActiveTurnStatus(turnStatus)) {
-    return livePlan;
-  }
-
-  const firstInProgressIndex = livePlan.plan.findIndex(
-    (step) => normalizePlanStepStatus(step.status) === 'in_progress',
-  );
-  if (firstInProgressIndex < 0) {
-    return livePlan;
-  }
-
-  const nextPendingIndex = livePlan.plan.findIndex(
-    (step, index) =>
-      index > firstInProgressIndex &&
-      normalizePlanStepStatus(step.status) === 'pending',
-  );
-  if (nextPendingIndex < 0) {
-    return livePlan;
-  }
-
-  const hasExecutionEvidence = items.some((item) =>
-    isLivePlanExecutionEvidence(item),
-  );
-  if (!hasExecutionEvidence) {
-    return livePlan;
-  }
-
-  const nextPlan = livePlan.plan.map((step, index) => {
-    if (index === firstInProgressIndex) {
-      return { ...step, status: 'completed' };
-    }
-    if (index === nextPendingIndex) {
-      return { ...step, status: 'in_progress' };
-    }
-    return step;
-  });
-
-  return {
-    ...livePlan,
-    plan: nextPlan,
-  };
 }
 
 function useSecondClock(enabled: boolean) {

@@ -1,0 +1,659 @@
+/* Transcript log: work summaries, runs of operations and their rows.
+   Glyphs mark the kind of each operation ($ command, ± edit, → read, ? search,
+   ◇ tool, » subagent, ✦ skill, ∴ thought); themes may redraw them. */
+
+.thread-ui-shell {
+  --tlog-font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --tlog-add: light-dark(oklch(45% 0.13 150), oklch(78% 0.14 150));
+  --tlog-remove: light-dark(oklch(50% 0.17 25), oklch(76% 0.13 25));
+  --tlog-failed: light-dark(#b3302c, #f0847f);
+  --tlog-rule: color-mix(in srgb, var(--theme-fg-muted) 45%, transparent);
+  --tlog-row-height: 26px;
+}
+
+/* Turn summary: "› Worked for 51s · edited 2 files +64 −3 · 6 commands ┄┄┄" */
+.thread-ui-shell .thread-graph-worked-summary {
+  min-width: 0;
+}
+.thread-ui-shell .thread-worked-toggle {
+  flex: 0 1 auto;
+  min-width: 0;
+  color: var(--theme-fg-soft);
+}
+.thread-ui-shell .thread-worked-toggle:hover,
+.thread-ui-shell .thread-worked-toggle:focus-visible {
+  color: var(--theme-fg);
+}
+.thread-ui-shell .thread-worked-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--theme-fg-muted);
+}
+.thread-ui-shell .thread-graph-worked-summary .thread-graph-worked-rule,
+.thread-ui-shell .matter-workbench .thread-graph-worked-summary .thread-graph-worked-rule {
+  display: block;
+  height: 0;
+  background: none;
+  border-top: 1px dashed var(--tlog-rule);
+  min-width: 16px;
+}
+
+.tlog-summary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--theme-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.tlog-part.is-add { color: var(--tlog-add); }
+.tlog-part.is-remove { color: var(--tlog-remove); }
+.tlog-part.is-failed { color: inherit; font-weight: inherit; }
+.tlog-sep { margin: 0 0.4em; color: var(--theme-fg-muted); }
+.tlog-sep.is-lead { margin-left: 0; }
+
+/* Receipt: time and usage under the answer. */
+.thread-ui-shell .thread-turn-receipt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--theme-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.thread-ui-shell .thread-turn-receipt time { white-space: nowrap; }
+.thread-ui-shell .thread-turn-receipt .thread-turn-usage { font-size: 11px; opacity: 0.9; }
+
+/* The expanded log: messages and runs in order. */
+.thread-ui-shell .thread-execution-timeline {
+  margin: 0 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.thread-ui-shell .thread-execution-timeline > * { margin: 0; }
+
+/* A run of operations */
+.tlog-run { min-width: 0; }
+.tlog-run-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--tlog-row-height);
+  padding: 0;
+  font-size: 12px;
+  color: var(--theme-fg-soft);
+  text-align: left;
+}
+.tlog-run-head:hover .tlog-summary,
+.tlog-run-head:focus-visible .tlog-summary { color: var(--theme-fg); }
+.tlog-run-head .tlog-summary { flex: 0 1 auto; color: var(--theme-fg-soft); }
+.tlog-chev {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  color: var(--theme-fg-muted);
+  transition: transform 120ms;
+}
+.tlog-run[data-open] > .tlog-run-head .tlog-chev { transform: rotate(90deg); }
+.tlog-rule {
+  flex: 1;
+  min-width: 16px;
+  border-top: 1px dashed var(--tlog-rule);
+}
+
+.tlog-run-body {
+  display: flex;
+  flex-direction: column;
+  margin: 2px 0 6px 6px;
+  padding-left: 13px;
+  border-left: 1px solid var(--theme-border);
+}
+
+/* A row: glyph, title, delta and status on one line */
+.tlog-row { min-width: 0; }
+.tlog-row-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin-left: -6px;
+  border-radius: 5px;
+}
+.tlog-row-line:hover { background: var(--theme-hover); }
+.tlog-row-head {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: var(--tlog-row-height);
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--theme-fg-soft);
+  text-align: left;
+}
+.tlog-row-line:hover .tlog-row-head { color: var(--theme-fg); }
+/* Copy: a faint key beside a command on hover; on phones once the row is open. */
+.tlog-copy {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 22px;
+  margin-right: 2px;
+  border-radius: 4px;
+  color: var(--theme-fg-muted);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms;
+}
+.tlog-copy svg { width: 13px; height: 13px; }
+.tlog-row[data-open] .tlog-copy,
+.tlog-copy:focus-visible { opacity: 0.55; pointer-events: auto; }
+@media (hover: hover) {
+  .tlog-row-line:hover .tlog-copy { opacity: 0.55; pointer-events: auto; }
+}
+.tlog-copy:hover { opacity: 1; background: var(--theme-surface); color: var(--theme-fg); }
+.tlog-glyph {
+  flex: none;
+  width: 1.6ch;
+  font: 700 12px/1 var(--tlog-font-mono);
+  color: var(--theme-accent-strong, var(--theme-accent-solid));
+  text-align: center;
+}
+.tlog-row[data-kind='reasoning'] .tlog-glyph,
+.tlog-row[data-kind='fileRead'] .tlog-glyph,
+.tlog-row[data-kind='webSearch'] .tlog-glyph { color: var(--theme-fg-muted); }
+.tlog-row[data-status='failed'] .tlog-glyph { color: var(--tlog-failed); }
+.tlog-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tlog-title.is-mono { font-family: var(--tlog-font-mono); font-size: 11.5px; }
+.tlog-row[data-kind='reasoning'] .tlog-title { font-style: italic; color: var(--theme-fg-muted); }
+.tlog-row[data-kind='fileRead'][data-batch] .tlog-title { flex: none; }
+.tlog-batch-names {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 11px var(--tlog-font-mono);
+  color: var(--theme-fg-muted);
+}
+.tlog-delta {
+  display: inline-flex;
+  flex: none;
+  gap: 6px;
+  font: 600 11px var(--tlog-font-mono);
+}
+.tlog-delta .is-add { color: var(--tlog-add); }
+.tlog-delta .is-remove { color: var(--tlog-remove); }
+.tlog-tag {
+  flex: none;
+  font-size: 11px;
+  color: var(--theme-fg-muted);
+}
+.tlog-tag.is-failed { color: var(--tlog-failed); font-weight: 600; }
+.tlog-spinner {
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--theme-border-strong);
+  border-top-color: var(--theme-accent-solid);
+  border-radius: 50%;
+  animation: tlog-spin 0.9s linear infinite;
+}
+@keyframes tlog-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .tlog-spinner { animation: none; } }
+
+.tlog-batch { padding-left: 14px; }
+.tlog-more {
+  align-self: flex-start;
+  margin: 2px 0;
+  font-size: 11.5px;
+  color: var(--theme-accent-strong, var(--theme-accent-solid));
+}
+.tlog-more:hover { text-decoration: underline; }
+.tlog-single { min-width: 0; }
+.tlog-other { min-width: 0; margin: 2px 0; }
+
+/* Output and diffs, opened in place */
+.tlog-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 2px 0 8px 1.6ch;
+  min-width: 0;
+}
+.tlog-detail.is-loading,
+.tlog-empty {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--theme-fg-muted);
+}
+.tlog-detail.is-loading { margin: 2px 0 6px calc(1.6ch + 8px); }
+.tlog-detail.is-prose {
+  margin-left: calc(1.6ch + 8px);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--theme-fg-soft);
+  white-space: pre-wrap;
+}
+.tlog-command,
+.tlog-output pre,
+.tlog-output {
+  margin: 0;
+  max-height: calc(16 * 1.55em);
+  overflow: auto;
+  padding: 6px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-surface);
+  font: 11.5px/1.55 var(--tlog-font-mono);
+  color: var(--theme-fg-soft);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.tlog-command { max-height: calc(6 * 1.55em); color: var(--theme-fg); }
+.tlog-output.is-error { color: var(--tlog-failed); }
+.tlog-diff {
+  max-height: calc(12 * 1.6em * 11.5 / 12 + 6px);
+  overflow: auto;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-panel);
+}
+.tlog-diff .thread-diff { font-size: 11.5px; padding: 2px 0; }
+.tlog-diff .thread-diff-line { min-height: 1.6em; }
+.thread-diff-line.is-file {
+  position: sticky;
+  left: 0;
+  padding: 2px 10px;
+  border-block: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-fg-soft);
+  font-weight: 600;
+}
+.thread-diff-line.is-file:first-child { border-top: 0; }
+.thread-diff-line.is-file .thread-diff-number,
+.thread-diff-line.is-file .thread-diff-sign { display: none; }
+.tlog-detail-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--theme-fg-muted);
+}
+.tlog-open {
+  font-size: 11px;
+  color: var(--theme-accent-strong, var(--theme-accent-solid));
+}
+.tlog-open:hover { text-decoration: underline; }
+
+/* Narration between runs reads as the agent talking, a step quieter than the answer. */
+.thread-ui-shell .thread-execution-timeline .thread-graph-message[data-role='assistant'] .thread-graph-message-content {
+  color: var(--theme-fg-soft);
+}
+
+@media (max-width: 639px) {
+  .thread-ui-shell { --tlog-row-height: 32px; }
+  /* A phone puts the file counts on their own line under the label, not after a stray "·". */
+  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) { row-gap: 0; }
+  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-worked-toggle { flex: 1 1 0; }
+  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle)::after { content: ''; order: 1; flex-basis: 100%; height: 0; }
+  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle { order: 2; margin-left: 22px; }
+  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle > .tlog-sep { display: none; }
+  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-graph-worked-rule { order: 3; }
+  .tlog-run-body { margin-left: 4px; padding-left: 10px; }
+  .tlog-detail { margin-left: 0; }
+}
+
+/* The operation a folded, working turn is running now. */
+.tlog-current { min-width: 0; margin-top: -4px; }
+
+/* Plan: a compact checklist */
+.thread-ui-shell .tlog-plan {
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-panel);
+}
+.tlog-plan-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--theme-fg-muted);
+}
+.tlog-plan-title { font-weight: 600; }
+.tlog-plan-count { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.tlog-plan-note { margin: 0 0 4px; font-size: 12.5px; color: var(--theme-fg-soft); }
+.tlog-plan-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.thread-ui-shell .tlog-plan .tlog-plan-step { padding: 0; border: 0; border-radius: 0; background: none; }
+.tlog-plan-step { display: flex; align-items: baseline; gap: 8px; font-size: 13px; line-height: 1.6; color: var(--theme-fg); }
+.tlog-plan-mark { flex: none; width: 1.6ch; font: 700 12px/1 var(--tlog-font-mono); text-align: center; }
+.tlog-plan-mark::before { content: '○'; color: var(--theme-fg-muted); }
+.tlog-plan-step[data-status='completed'] { color: var(--theme-fg-muted); }
+.tlog-plan-step[data-status='completed'] .tlog-plan-mark::before { content: '✓'; color: var(--tlog-add); }
+.tlog-plan-step[data-status='in_progress'] { font-weight: 600; }
+.tlog-plan-step[data-status='in_progress'] .tlog-plan-mark::before { content: '▸'; color: var(--theme-accent-strong, var(--theme-accent-solid)); }
+.tlog-plan-step[data-status='failed'] .tlog-plan-mark::before { content: '✕'; color: var(--tlog-failed); }
+
+@media (max-width: 639px) {
+  .tlog-output { max-height: calc(10 * 1.55em); }
+  .tlog-diff .thread-diff-line > .thread-diff-number:first-child { display: none; }
+}
+
+/* An unknown price is a dash in the receipt; its button still opens the token details. */
+.thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable { font-size: 0; }
+.thread-ui-shell .thread-turn-receipt .thread-turn-usage-unavailable::before { content: '$ —'; font-size: 11px; }
+
+/* The work line's edit counts open the changed files on their own. */
+.thread-ui-shell .tlog-files-toggle {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--theme-fg-soft);
+  font-variant-numeric: tabular-nums;
+  text-decoration: underline dotted var(--tlog-rule);
+  text-underline-offset: 3px;
+}
+.thread-ui-shell .tlog-files-toggle:hover,
+.thread-ui-shell .tlog-files-toggle[aria-expanded='true'] { color: var(--theme-fg); text-decoration-style: solid; }
+.tlog-files {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: -4px 0 4px 6px;
+  padding-left: 13px;
+  border-left: 1px solid var(--theme-border);
+}
+.tlog-files-more { margin: 2px 0; font-size: 11.5px; color: var(--theme-fg-muted); }
+
+/* Prompts written on an agent's behalf: an envelope header, or a one-line notice.
+   They sit on the reader's side, not in the person's bubble. */
+.thread-ui-shell .thread-graph-message:is([data-variant='envelope'], [data-variant='notice']) { justify-content: flex-start; }
+.thread-ui-shell .thread-graph-message:is([data-variant='envelope'], [data-variant='notice']) :is(.thread-graph-message-stack, .thread-graph-message-bubble, .thread-graph-message-content) {
+  max-width: 100%;
+  width: 100%;
+  margin-left: 0;
+  align-items: stretch;
+}
+.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant='envelope'] .thread-graph-message-bubble {
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border);
+  border-left: 3px solid var(--theme-accent-solid);
+  border-radius: 6px;
+  background: var(--theme-panel);
+  box-shadow: none;
+  color: var(--theme-fg);
+}
+.thread-ui-shell .thread-graph-message[data-variant='envelope'] .thread-graph-message-prose { font-size: 13.5px; line-height: 1.6; }
+.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant='notice'] .thread-graph-message-bubble {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.prompt-envelope-head,
+.prompt-notice-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--theme-fg-muted);
+}
+.prompt-envelope-head { margin-bottom: 4px; }
+.prompt-envelope-glyph { flex: none; width: 1.6ch; text-align: center; font: 700 12px var(--tlog-font-mono); color: var(--theme-accent-strong, var(--theme-accent-solid)); }
+.prompt-envelope-kind { flex: none; font-weight: 600; color: var(--theme-fg-soft); }
+.prompt-envelope-from { flex: none; font-family: var(--tlog-font-mono); font-size: 11.5px; }
+.prompt-envelope-link {
+  color: inherit;
+  text-decoration: underline dotted var(--tlog-rule);
+  text-underline-offset: 3px;
+  border-radius: 3px;
+}
+.prompt-envelope-link:hover { color: var(--theme-accent-strong, var(--theme-fg)); text-decoration-style: solid; }
+.prompt-envelope-link:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
+.prompt-envelope-subject { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--theme-fg); font-weight: 600; }
+.prompt-envelope-head[data-kind='result'] .prompt-envelope-glyph { color: var(--tlog-add); }
+.prompt-envelope-head[data-kind='question'] .prompt-envelope-glyph { color: var(--tlog-failed); }
+.prompt-envelope-urgent { margin: 0 0 4px; font-size: 12px; color: var(--tlog-failed); }
+.prompt-notice-head {
+  width: 100%;
+  min-height: var(--tlog-row-height);
+  text-align: left;
+}
+.prompt-notice-head:hover .prompt-notice-preview { color: var(--theme-fg); }
+.prompt-notice-preview { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prompt-notice-chev { flex: none; width: 12px; height: 12px; align-self: center; transition: transform 120ms; }
+.prompt-notice[data-open] .prompt-notice-chev { transform: rotate(90deg); }
+.prompt-notice-body {
+  margin: 2px 0 6px calc(1.6ch + 8px);
+  padding: 6px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-surface);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--theme-fg-soft);
+  white-space: pre-wrap;
+}
+
+/* One-line notices in the log (context compaction) */
+.tlog-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: var(--tlog-row-height);
+  font-size: 12px;
+  color: var(--theme-fg-muted);
+}
+.tlog-notice .tlog-glyph { color: var(--theme-fg-muted); }
+.tlog-notice .tlog-title { flex: 0 1 auto; }
+.tlog-notice-detail { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.8; }
+
+/* A message's time appears beside its copy button on hover. */
+.thread-ui-shell .thread-graph-message-hover-time {
+  align-self: center;
+  margin-right: 6px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--theme-bg);
+  font-size: 10.5px;
+  white-space: nowrap;
+  color: var(--theme-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* Output and diff blocks open the floating viewer. */
+.tlog-output:has(> pre) { padding: 0; overflow: hidden; max-height: none; }
+.tlog-output > pre { border: 0; border-radius: 0; background: none; }
+.tlog-viewable { position: relative; cursor: zoom-in; }
+.tlog-viewable:hover { border-color: var(--theme-border-strong); }
+.tlog-viewable:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
+.tlog-more-lines {
+  position: sticky;
+  bottom: 0;
+  display: block;
+  padding: 2px 10px;
+  border-top: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  font-size: 11px;
+  color: var(--theme-fg-muted);
+  text-align: right;
+}
+
+/* A turn's work folds into its work line when the turn ends, and unfolds from it. */
+.tlog-collapse {
+  display: grid;
+  /* Long commands must not widen the column past the transcript. */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 1fr;
+  opacity: 1;
+  /* The gap to its neighbours opens and closes with it, so nothing jumps first. */
+  transition: grid-template-rows 260ms cubic-bezier(0.2, 0, 0, 1), margin 260ms cubic-bezier(0.2, 0, 0, 1), opacity 200ms ease;
+}
+.tlog-collapse[data-state='closed'] { grid-template-rows: 0fr; opacity: 0; margin-block: 0 !important; }
+.tlog-collapse-inner { min-width: 0; min-height: 0; overflow: hidden; }
+.tlog-collapse[data-settled] > .tlog-collapse-inner { overflow: visible; }
+@media (prefers-reduced-motion: reduce) {
+  .tlog-collapse { transition: none; }
+  .tlog-collapse[data-state='open'] > .tlog-collapse-inner { overflow: visible; }
+}
+
+/* An opened long message keeps "Show less" in reach: it rides just above the
+   composer until the message's end scrolls into view, then rests in place. */
+.thread-ui-shell .thread-graph-show-more[aria-expanded='true'] {
+  position: sticky;
+  bottom: calc(var(--sticky-inset, var(--timeline-bottom-inset, 0px)) + 10px);
+  z-index: 6;
+  padding: 0 10px 0 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme-panel) 90%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-border) 80%, transparent), 0 4px 14px rgb(0 0 0 / 0.14);
+  opacity: 1;
+}
+.thread-ui-shell .thread-graph-show-more[aria-expanded='true']:hover,
+.thread-ui-shell .thread-graph-show-more[aria-expanded='true']:focus-visible {
+  background: color-mix(in srgb, var(--theme-panel) 96%, transparent);
+}
+
+/* Counts: an icon and a number each, quiet; failures are not a headline. */
+.tlog-part.is-count { display: inline-flex; align-items: center; }
+.tlog-part.is-count + .tlog-part.is-count { margin-left: 0.7em; }
+.tlog-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+}
+.tlog-count-icon { width: 12px; height: 12px; flex: none; opacity: 0.75; }
+.tlog-count-icon.is-kind { margin-right: 2px; opacity: 0.6; }
+/* The failures sit right after the commands they belong to. */
+.tlog-part.is-count + .tlog-part.is-count:has(> .tlog-count[data-kind='failed']) { margin-left: 0.45em; }
+.tlog-count[data-kind='failed'] .tlog-count-icon { stroke-width: 2.5; }
+
+/* The explanation that appears after the pointer rests on a count. */
+.tlog-hint {
+  position: fixed;
+  z-index: 1000;
+  display: grid;
+  gap: 3px;
+  width: max-content;
+  max-width: 240px;
+  padding: 8px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: normal;
+  text-align: left;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  animation: tlog-hint-in 140ms ease-out;
+}
+.tlog-hint[data-below] { transform: translate(-50%, 0); }
+.tlog-hint-title { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
+.tlog-hint-body { color: var(--theme-fg-soft); }
+.tlog-hint-example { color: var(--theme-fg-muted); font-family: var(--tlog-font-mono); font-size: 11px; }
+@keyframes tlog-hint-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tlog-hint { animation: none; } }
+
+/* An opened turn keeps its work line in reach: it rides at the top while the
+   turn scrolls past, so it folds from anywhere and stays where it was clicked. */
+.thread-ui-shell .thread-graph-worked-summary:has(> .thread-worked-toggle[aria-expanded='true']) {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in srgb, var(--theme-bg) 94%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* The work line's chevron, while the turn's operations load. */
+.thread-worked-spinner { width: 12px; height: 12px; flex: none; margin: 2px; }
+
+/* A linked file that is not on this device. */
+.thread-ui-shell .workspace-missing-file {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 20px;
+  text-align: center;
+  color: var(--theme-fg-soft);
+}
+.workspace-missing-file-icon { width: 28px; height: 28px; color: var(--theme-fg-muted); opacity: 0.8; }
+.workspace-missing-file-title { margin: 4px 0 0; color: var(--theme-fg); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.workspace-missing-file-hint { margin: 0; max-width: 34ch; font-size: 13px; color: var(--theme-fg-muted); }
+.thread-ui-shell .workspace-missing-file-path {
+  max-width: min(100%, 56ch);
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--theme-surface);
+  font-family: var(--tlog-font-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.thread-ui-shell .workspace-missing-file-copy {
+  margin-top: 2px;
+  padding: 4px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-fg-soft);
+  font-size: 12px;
+}
+.thread-ui-shell .workspace-missing-file-copy:hover { color: var(--theme-fg); background: var(--theme-hover); }
+
+/* A file's error keeps its download one tap away. */
+.thread-ui-shell .workspace-file-alert-download {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 3px 12px;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-fg);
+  font-size: 12.5px;
+}
+.thread-ui-shell .workspace-file-alert-download:hover:not(:disabled) { background: var(--theme-hover); }
+
+/* Loading Files: one skeleton, shown only if loading takes a moment. */
+.workspace-loading-skeleton { animation: workspace-skeleton-in 160ms ease-out 120ms both; }
+.workspace-loading-skeleton-bar { height: 41px; flex: none; border-bottom: 1px solid var(--theme-border); }
+@keyframes workspace-skeleton-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .workspace-loading-skeleton { animation: none; } }

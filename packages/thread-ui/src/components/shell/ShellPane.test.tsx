@@ -16,6 +16,7 @@ import {
   type ShellPaneHandle,
 } from './ShellPane';
 import { SHELL_ATTACH_TIMEOUT_MS } from './shellEvents';
+import { DEFAULT_TERMINAL_PREFERENCES, setTerminalPreferences } from './terminalPreferences';
 
 const terminalInstances: FakeTerminal[] = [];
 
@@ -38,7 +39,24 @@ class FakeTerminal {
     host.innerHTML = '<div class="xterm-rows"><div></div></div>';
   }
 
-  attachCustomKeyEventHandler() {}
+  keyHandler: ((event: KeyboardEvent) => boolean) | null = null;
+  selection = '';
+  pastes: string[] = [];
+  modes = { bracketedPasteMode: false };
+  bufferLines = ['$ ls', 'README.md  src', '$ '];
+  buffer = { active: {
+    type: 'normal' as 'normal' | 'alternate',
+    viewportY: 0,
+    get length() { return terminalInstances.at(-1)!.bufferLines.length; },
+    getLine: (row: number) => this.bufferLines[row] === undefined ? undefined : { isWrapped: false, translateToString: () => this.bufferLines[row]! },
+  } };
+
+  attachCustomKeyEventHandler(handler: (event: KeyboardEvent) => boolean) { this.keyHandler = handler; }
+  hasSelection() { return this.selection !== ''; }
+  getSelection() { return this.selection; }
+  clearSelection() { this.selection = ''; }
+  selectAll() { this.selection = this.bufferLines.join('\n'); }
+  paste(data: string) { this.pastes.push(data); }
 
   onRender() { return {dispose() {}}; }
 
@@ -462,6 +480,135 @@ describe('ShellPane', () => {
       viewerId: 'viewer-1',
       cols: 132,
       rows: 42,
+    });
+  });
+
+  describe('clipboard', () => {
+    let writeText: ReturnType<typeof vi.fn>;
+    let readText: ReturnType<typeof vi.fn>;
+    const key = (init: KeyboardEventInit) => new KeyboardEvent('keydown', { cancelable: true, ...init });
+    const host = () => container!.querySelector('.shell-pane-host')!;
+    const flush = async () => { for (let i = 0; i < 3; i += 1) await new Promise(resolve => window.setTimeout(resolve, 0)); };
+
+    beforeEach(() => {
+      writeText = vi.fn().mockResolvedValue(undefined);
+      readText = vi.fn().mockResolvedValue('echo hi');
+      Object.defineProperty(navigator, 'clipboard', { value: { writeText, readText }, configurable: true });
+      localStorage.clear();
+      setTerminalPreferences(DEFAULT_TERMINAL_PREFERENCES);
+    });
+
+    it('copies a selection with Ctrl+C and interrupts without one', async () => {
+      const { adapter, sockets } = makeShellAdapter();
+      renderShellPane({ adapter });
+      const socket = await attachShell(adapter, sockets);
+      const terminal = terminalInstances[0]!;
+      terminal.selection = 'README.md';
+      expect(terminal.keyHandler!(key({ key: 'c', ctrlKey: true }))).toBe(false);
+      expect(writeText).toHaveBeenCalledWith('README.md');
+      expect(terminal.selection).toBe('');
+      expect(socket.sentMessages).not.toContainEqual(expect.objectContaining({ data: '\x03' }));
+      expect(terminal.keyHandler!(key({ key: 'c', ctrlKey: true }))).toBe(false);
+      expect(socket.sentMessages).toContainEqual(expect.objectContaining({ type: 'shell.input', data: '\x03' }));
+    });
+
+    it('pastes with Ctrl+V at a prompt and keeps it a key in full-screen programs', async () => {
+      const { adapter, sockets } = makeShellAdapter();
+      renderShellPane({ adapter });
+      const socket = await attachShell(adapter, sockets);
+      const terminal = terminalInstances[0]!;
+      const ctrlV = key({ key: 'v', ctrlKey: true });
+      // False without preventDefault: the browser's own paste reaches xterm.
+      expect(terminal.keyHandler!(ctrlV)).toBe(false);
+      expect(ctrlV.defaultPrevented).toBe(false);
+      expect(socket.sentMessages).not.toContainEqual(expect.objectContaining({ data: '\x16' }));
+      terminal.buffer.active.type = 'alternate';
+      terminal.keyHandler!(key({ key: 'v', ctrlKey: true }));
+      expect(socket.sentMessages).toContainEqual(expect.objectContaining({ type: 'shell.input', data: '\x16' }));
+      setTerminalPreferences({ ctrlV: 'paste' });
+      const count = socket.sentMessages.length;
+      expect(terminal.keyHandler!(key({ key: 'v', ctrlKey: true }))).toBe(false);
+      expect(socket.sentMessages).toHaveLength(count);
+    });
+
+    it('confirms a multi-line paste a shell would run, and lets bracketed paste through', async () => {
+      const { adapter, sockets } = makeShellAdapter();
+      renderShellPane({ adapter });
+      await attachShell(adapter, sockets);
+      const terminal = terminalInstances[0]!;
+      const paste = (text: string) => {
+        const event = new Event('paste', { bubbles: true, cancelable: true });
+        Object.defineProperty(event, 'clipboardData', { value: { getData: () => text } });
+        flushSync(() => { host().querySelector('.xterm-rows')!.dispatchEvent(event); });
+        return event;
+      };
+      expect(paste('make\nmake install\n').defaultPrevented).toBe(true);
+      const confirm = container!.querySelector('[role="alertdialog"]')!;
+      expect(confirm.textContent).toContain('2 lines');
+      flushSync(() => { [...confirm.querySelectorAll('button')].find(button => button.textContent === 'Paste')!.click(); });
+      expect(terminal.pastes).toEqual(['make\nmake install\n']);
+      terminal.modes.bracketedPasteMode = true;
+      expect(paste('a\nb').defaultPrevented).toBe(false);
+      expect(paste('one line\n').defaultPrevented).toBe(false);
+    });
+
+    it('copies a mouse selection on release unless turned off', async () => {
+      const { adapter, sockets } = makeShellAdapter();
+      renderShellPane({ adapter });
+      await attachShell(adapter, sockets);
+      terminalInstances[0]!.selection = 'src';
+      host().dispatchEvent(new MouseEvent('mouseup', { bubbles: true, button: 0 }));
+      await flush();
+      expect(writeText).toHaveBeenCalledWith('src');
+      writeText.mockClear();
+      setTerminalPreferences({ copyOnSelect: false });
+      host().dispatchEvent(new MouseEvent('mouseup', { bubbles: true, button: 0 }));
+      await flush();
+      expect(writeText).not.toHaveBeenCalled();
+    });
+
+    it('opens a menu on right-click, or copies and pastes directly when set to', async () => {
+      const { adapter, sockets } = makeShellAdapter();
+      renderShellPane({ adapter });
+      await attachShell(adapter, sockets);
+      const terminal = terminalInstances[0]!;
+      flushSync(() => { host().dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 20, clientY: 20 })); });
+      const menu = container!.querySelector('[role="menu"]')!;
+      expect([...menu.querySelectorAll('[role="menuitem"]')].map(item => item.textContent)).toEqual(['Copy', 'Paste', 'Select all', 'Copy last output', 'Clear']);
+      expect(menu.querySelector<HTMLButtonElement>('[role="menuitem"]')!.disabled).toBe(true);
+      flushSync(() => { menu.querySelectorAll<HTMLButtonElement>('[role="menuitem"]')[1]!.click(); });
+      await flush();
+      expect(terminal.pastes).toEqual(['echo hi']);
+      setTerminalPreferences({ rightClick: 'copyPaste' });
+      terminal.selection = 'README.md';
+      flushSync(() => { host().dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })); });
+      await flush();
+      expect(writeText).toHaveBeenCalledWith('README.md');
+      expect(container!.querySelector('[role="menu"]')).toBeNull();
+    });
+
+    it('shows the lines as selectable text on a phone and offers a paste field without clipboard access', async () => {
+      const { adapter, sockets } = makeShellAdapter();
+      const { handleRef } = renderShellPane({ adapter, mobile: true });
+      await attachShell(adapter, sockets);
+      const terminal = terminalInstances[0]!;
+      flushSync(() => handleRef.current!.startSelection());
+      const overlay = container!.querySelector('[role="dialog"][aria-label="Select text"]')!;
+      expect(overlay.querySelector('.terminal-selection-text')!.textContent).toContain('README.md  src');
+      flushSync(() => { [...overlay.querySelectorAll('button')].find(button => button.textContent === 'Done')!.click(); });
+      expect(container!.querySelector('.terminal-selection')).toBeNull();
+      readText.mockRejectedValue(new Error('denied'));
+      await handleRef.current!.pasteFromClipboard();
+      await flush();
+      const field = container!.querySelector<HTMLTextAreaElement>('.terminal-paste-field textarea')!;
+      expect(field).not.toBeNull();
+      flushSync(() => {
+        const setValue = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')!.set!;
+        setValue.call(field, 'git status');
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      flushSync(() => { container!.querySelector<HTMLButtonElement>('.terminal-paste-field button[type="submit"]')!.click(); });
+      expect(terminal.pastes).toEqual(['git status']);
     });
   });
 });

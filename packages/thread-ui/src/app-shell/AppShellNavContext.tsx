@@ -4,6 +4,7 @@ import type { AgentBackendIdDto } from '@pockymoe/shared';
 import type { ComposerSendShortcut } from '../components/composer/composerUtils';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
+export type PhoneHand = 'right' | 'left';
 export type AgentBackendId = AgentBackendIdDto;
 
 export interface AppShellNavContextValue {
@@ -25,6 +26,12 @@ export interface AppShellNavContextValue {
   setDefaultBackend: (backend: AgentBackendId) => void;
   autoCollapseCompletedTurns?: boolean;
   setAutoCollapseCompletedTurns?: (enabled: boolean) => void;
+  /** One-handed phone layout: status-only top bar, controls in a bottom dock. */
+  phoneDock?: boolean;
+  setPhoneDock?: (enabled: boolean) => void;
+  /** The thumb the one-handed layout is arranged for; left mirrors it. */
+  phoneHand?: PhoneHand;
+  setPhoneHand?: (hand: PhoneHand) => void;
   showReasoningSummaries?: boolean;
   setShowReasoningSummaries?: (enabled: boolean) => void;
   sendShortcut?: ComposerSendShortcut;

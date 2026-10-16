@@ -66,9 +66,9 @@ export function useDeferredHistoryDetail({
     setExpandedText(null);
   }, [loadHistoryItemDetail]);
 
-  const openExpandedText = useCallback((title: string, text: string) => {
+  const openExpandedText = useCallback((title: string, text: string, kind?: string) => {
     requestIdRef.current += 1;
-    setExpandedText({ title, text });
+    setExpandedText({ title, text, ...(kind ? { kind } : {}) });
   }, []);
 
   const resolveDetail = useCallback(

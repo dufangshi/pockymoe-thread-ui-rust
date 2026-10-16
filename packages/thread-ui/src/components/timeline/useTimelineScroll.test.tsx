@@ -32,8 +32,12 @@ function HookHarness(
       ref={latestResult.scrollContainerRef}
       data-testid="scroll-container"
       onScroll={latestResult.handleScroll}
+      onWheel={latestResult.handleWheel}
+      onTouchStart={latestResult.handleTouchStart}
+      onTouchMove={latestResult.handleTouchMove}
     >
       <div ref={latestResult.scrollContentRef}>
+        <button data-anchor>Toggle</button>
         <div ref={latestResult.topSentinelRef} />
         <div ref={latestResult.tailSentinelRef} />
       </div>
@@ -100,6 +104,8 @@ describe('useTimelineScroll', () => {
 
   afterEach(() => {
     latestResult = null;
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('derives local hidden counts and loads earlier turns in fixed steps', () => {
@@ -311,5 +317,110 @@ describe('useTimelineScroll', () => {
       expect(onTailVisibilityChange).toHaveBeenCalledWith(false);
     });
     harness.unmount();
+  });
+
+  function anchoredHarness() {
+    const frames = new Map<number, FrameRequestCallback>();
+    let id = 0;
+    let now = 0;
+    let resize!: ResizeObserverCallback;
+    vi.spyOn(performance, 'now').mockImplementation(() => now);
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { frames.set(++id, callback); return id; });
+    vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(key => { frames.delete(key); });
+    vi.stubGlobal('ResizeObserver', class {
+      constructor(callback: ResizeObserverCallback) { resize ??= callback; }
+      observe() {} disconnect() {}
+    });
+    const input = { ...baseInput(), renderNodes: true };
+    const harness = renderHookHarness(input);
+    frames.clear();
+    const scroller = harness.container.querySelector<HTMLElement>('[data-testid=scroll-container]')!;
+    const anchor = harness.container.querySelector<HTMLElement>('[data-anchor]')!;
+    let layoutTop = 400;
+    let scrollTop = 200;
+    let scrollHeight = 1000;
+    Object.defineProperties(scroller, {
+      scrollTop: { configurable: true, get: () => scrollTop, set: value => { scrollTop = Math.max(0, value); } },
+      scrollHeight: { configurable: true, get: () => scrollHeight },
+      clientHeight: { configurable: true, value: 800 },
+    });
+    vi.spyOn(anchor, 'getBoundingClientRect').mockImplementation(() => ({ top: layoutTop - scrollTop }) as DOMRect);
+    const frame = (time: number) => {
+      now = time;
+      const pending = [...frames.values()];
+      frames.clear();
+      flushSync(() => pending.forEach(callback => callback(time)));
+    };
+    return { ...harness, scroller, anchor, frame,
+      move: (delta: number) => { layoutTop += delta; scrollHeight += delta; },
+      resize: () => resize([], {} as ResizeObserver),
+      revise: () => harness.rerender({ ...input, contentRevisionInputs: ['changed'] }),
+    };
+  }
+
+  it('holds the anchor through expansion, collapse and content revisions even when initially at the tail', () => {
+    const h = anchoredHarness();
+    try {
+      latestResult!.preserveScrollPositionForResize(h.anchor);
+      h.move(150); h.revise(); h.resize(); h.frame(16);
+      expect(h.scroller.scrollTop).toBe(350);
+      expect(h.anchor.getBoundingClientRect().top).toBe(200);
+      h.move(-100); h.frame(32);
+      expect(h.scroller.scrollTop).toBe(250);
+      expect(h.anchor.getBoundingClientRect().top).toBe(200);
+      h.frame(901);
+      h.move(50); h.frame(920);
+      expect(h.scroller.scrollTop).toBe(250);
+    } finally { h.unmount(); }
+  });
+
+  it('extends the hold by 500 ms when deferred content resizes', () => {
+    const h = anchoredHarness();
+    try {
+      latestResult!.preserveScrollPositionForResize(h.anchor);
+      h.frame(800); h.resize();
+      h.move(40); h.frame(1000);
+      expect(h.anchor.getBoundingClientRect().top).toBe(200);
+      h.frame(1301); h.move(40); h.frame(1320);
+      expect(h.anchor.getBoundingClientRect().top).toBe(240);
+    } finally { h.unmount(); }
+  });
+
+  it('stops at the top of the history instead of leaving a blank above it', () => {
+    const h = anchoredHarness();
+    try {
+      latestResult!.preserveScrollPositionForResize(h.anchor);
+      h.move(-300); h.frame(16);
+      expect(h.scroller.scrollTop).toBe(0);
+      expect(h.container.querySelector('.thread-scroll-slack')).toBeNull();
+      expect(h.anchor.getBoundingClientRect().top).toBe(100);
+    } finally { h.unmount(); }
+  });
+
+  const touch = (type: string, clientY: number) => {
+    const event = new Event(type, { bubbles: true });
+    Object.defineProperty(event, 'touches', { value: { item: () => ({ clientY }) } });
+    return event;
+  };
+
+  it.each(['wheel', 'touch drag'])('releases the anchor on %s', (gesture) => {
+    const h = anchoredHarness();
+    try {
+      latestResult!.preserveScrollPositionForResize(h.anchor);
+      if (gesture === 'wheel') flushSync(() => h.scroller.dispatchEvent(new window.WheelEvent('wheel', { bubbles: true, deltaY: 20 })));
+      else flushSync(() => { h.scroller.dispatchEvent(touch('touchstart', 10)); h.scroller.dispatchEvent(touch('touchmove', 30)); });
+      h.move(100); h.frame(16);
+      expect(h.scroller.scrollTop).toBe(200);
+    } finally { h.unmount(); }
+  });
+
+  it('keeps holding through a tap: a touch that does not move is not a scroll', () => {
+    const h = anchoredHarness();
+    try {
+      latestResult!.preserveScrollPositionForResize(h.anchor);
+      flushSync(() => { h.scroller.dispatchEvent(touch('touchstart', 10)); h.scroller.dispatchEvent(touch('touchmove', 13)); });
+      h.move(100); h.frame(16);
+      expect(h.anchor.getBoundingClientRect().top).toBe(200);
+    } finally { h.unmount(); }
   });
 });

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { ImportPluginInput } from '@pockymoe/shared';
 import { usePlugins } from '../plugins/usePlugins';
 import { type ThemeMode, useAppShellNav } from './AppShellNavContext';
+import { PhoneHandChoice } from './PhoneHandChoice';
 
 function MenuIcon() {
   const { locale: i18nLocale } = useI18n();
@@ -363,6 +364,26 @@ export function AppShellSettingsDialog({
                 })}
               </div>
             </div>
+
+            {shellNav?.setPhoneDock ? (
+              <div className="rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-[var(--theme-fg)]">{translate("workbench.phoneDockSetting")}</p>
+                    <p className="mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]">{translate("workbench.phoneDockSettingHint")}</p>
+                  </div>
+                  <label className="inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]">
+                    <input type="checkbox" checked={shellNav.phoneDock ?? true}
+                      onChange={(event) => shellNav.setPhoneDock?.(event.currentTarget.checked)}
+                      className="h-4 w-4 accent-[var(--theme-accent-solid)]" />
+                    <span>{translate("workbench.phoneDockSettingToggle")}</span>
+                  </label>
+                </div>
+                {shellNav.setPhoneHand && (shellNav.phoneDock ?? true) ? (
+                  <PhoneHandChoice hand={shellNav.phoneHand ?? 'right'} onChange={shellNav.setPhoneHand} />
+                ) : null}
+              </div>
+            ) : null}
 
             {shellNav?.setAutoCollapseCompletedTurns ? (
               <div className="rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3">

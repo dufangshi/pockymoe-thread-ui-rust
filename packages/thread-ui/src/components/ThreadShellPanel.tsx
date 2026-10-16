@@ -135,7 +135,7 @@ type TerminalMenuState =
   | { kind: 'switcher'; anchor: DOMRect }
   | { kind: 'actions'; anchor: DOMRect | { x: number; y: number }; shellId: string };
 
-function IconButton({ label, onClick, disabled, pressed, expanded, children, testId }: {
+function IconButton({ label, onClick, disabled, pressed, expanded, children, testId, keepFocus }: {
   label: string;
   onClick: (event: ReactMouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
@@ -143,6 +143,9 @@ function IconButton({ label, onClick, disabled, pressed, expanded, children, tes
   expanded?: boolean;
   children: ReactNode;
   testId?: string;
+  /** A layout-only control: a focused terminal keeps focus (and a phone its
+      keyboard), so the panel does not resize twice under the reader. */
+  keepFocus?: boolean;
 }) {
   return (
     <button
@@ -154,6 +157,9 @@ function IconButton({ label, onClick, disabled, pressed, expanded, children, tes
       {...(pressed !== undefined ? { 'aria-pressed': pressed } : {})}
       {...(expanded !== undefined ? { 'aria-expanded': expanded, 'aria-haspopup': 'menu' as const } : {})}
       {...(testId ? { 'data-testid': testId } : {})}
+      {...(keepFocus ? { onPointerDown: (event: ReactPointerEvent<HTMLButtonElement>) => {
+        if (document.activeElement?.closest('.xterm')) event.preventDefault();
+      } } : {})}
       onClick={onClick}
     >
       {children}
@@ -719,12 +725,12 @@ export const ThreadShellPanel = forwardRef<
               </IconButton>
             )}
             {(!compact || !panelControls.collapsed) && (
-              <IconButton label={panelControls.maximized ? t('workbench.terminalRestore') : t('workbench.terminalMaximize')} pressed={panelControls.maximized} onClick={panelControls.toggleMaximized} testId="terminal-maximize">
+              <IconButton label={panelControls.maximized ? t('workbench.terminalRestore') : t('workbench.terminalMaximize')} pressed={panelControls.maximized} onClick={panelControls.toggleMaximized} testId="terminal-maximize" keepFocus>
                 {panelControls.maximized ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
               </IconButton>
             )}
             {compact && panelControls.collapsed && (
-              <IconButton label={t('workbench.terminalExpand')} onClick={panelControls.toggleCollapsed} testId="terminal-collapse">
+              <IconButton label={t('workbench.terminalExpand')} onClick={panelControls.toggleCollapsed} testId="terminal-collapse" keepFocus>
                 <PanelBottomOpen size={16} />
               </IconButton>
             )}
@@ -887,6 +893,8 @@ export const ThreadShellPanel = forwardRef<
           onCtrl={() => { ctrlRef.current = !ctrlRef.current; setCtrlPressed(ctrlRef.current); }}
           onInput={data => { activePane()?.sendInput(transformInput(data)); }}
           onFocus={() => activePane()?.focus()}
+          onPaste={() => { void activePane()?.pasteFromClipboard(); }}
+          onSelect={() => activePane()?.startSelection()}
         />
       )}
       {renderMenu()}

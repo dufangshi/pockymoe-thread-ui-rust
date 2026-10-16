@@ -69,6 +69,8 @@ export interface FrontendPluginModule {
   presentMessage?: (context: MessagePresentationContext) => MessagePresentation | null;
   /** Available even when disabled so the plugin can be configured before enabling. */
   settingsSections?: PluginSettingsContribution[];
+  /** Preferences kept in this browser, shown in settings only while the plugin is enabled. */
+  browserSettingsSections?: Array<{ id: string; readonly label: string; readonly description?: string; render: () => ReactNode }>;
   manifest: PluginManifestDto;
   threadPanels?: ThreadPanelContribution[];
   renderArtifact?: (context: ArtifactRenderContext) => ReactNode;

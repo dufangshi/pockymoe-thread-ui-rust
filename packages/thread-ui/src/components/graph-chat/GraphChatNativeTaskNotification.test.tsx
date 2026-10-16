@@ -68,7 +68,7 @@ it('replaces waiting with the wake cause using the same timeline anchor', async 
   expect(container.querySelectorAll('.thread-graph-task-notice')).toHaveLength(1);
 });
 
-it.each([['final', true], ['commentary', false], [undefined, false]] as const)('folds every wake and progress row and exposes only confirmed final replies (%s)', async (responsePhase, hasFinalReply) => {
+it.each([['final', true], ['commentary', false], [undefined, false]] as const)('keeps notices top-level in the expanded chronological log and exposes only confirmed final replies when folded (%s)', async (responsePhase, hasFinalReply) => {
   const { ThreadTimeline } = await import('../ThreadTimeline');
   const container=document.createElement('div');
   document.body.appendChild(container);
@@ -101,13 +101,12 @@ it.each([['final', true], ['commentary', false], [undefined, false]] as const)('
     expect(container.textContent).toContain('Waiting for the build');
     expect(container.textContent).toContain('Checking intermediate results');
     expect(container.textContent).toContain('Verified report');
-    expect(container.querySelectorAll('.thread-graph-task-notice')).toHaveLength(0);
-    const groups = Array.from(container.querySelectorAll<HTMLButtonElement>('.thread-graph-history-group-activity > .thread-graph-history-group-card > button'));
-    expect(groups).toHaveLength(2);
-    for (const group of groups) await act(async () => group.click());
     expect(container.querySelectorAll('.thread-graph-task-notice')).toHaveLength(2);
-    expect(container.textContent).toContain('verify command');
-    for (const group of groups) await act(async () => group.click());
+    expect(container.querySelectorAll('.tlog-single')).toHaveLength(1);
+    expect(container.querySelector('.tlog-single')?.textContent).toContain('verify command');
+    expect(container.querySelector('.thread-graph-history-group')).toBeNull();
+    const notices = [...container.querySelectorAll('.thread-graph-task-notice')];
+    expect(notices[0]!.compareDocumentPosition(notices[1]!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     await act(async () => toggle.click());
     expect(container.textContent).not.toContain('Waiting for the build');
     expect(container.textContent).not.toContain('Checking intermediate results');

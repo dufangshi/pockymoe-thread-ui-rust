@@ -1,4 +1,7 @@
-.settings-workspace { display: grid; grid-template-columns: 168px minmax(0, 1fr); min-height: 0; flex: 1; overflow: hidden; color: var(--theme-fg); }
+/* `clip`, not `hidden`: a hidden box can still be scrolled by focus or
+   scrollIntoView, which pushed the header and its close button off the dialog
+   and left a blank band at the bottom. Only the panel scrolls. */
+.settings-workspace { display: grid; grid-template-columns: 168px minmax(0, 1fr); min-height: 0; flex: 1; overflow: clip; color: var(--theme-fg); }
 .settings-navigation { display: flex; flex-direction: column; gap: 5px; padding: 20px 12px; border-right: 1px solid var(--theme-border); background: var(--theme-surface); overflow: auto; scrollbar-width: none; }
 .settings-navigation::-webkit-scrollbar { display: none; }
 .settings-navigation button { display: flex; align-items: center; min-height: 40px; padding: 9px 13px; border-radius: 9px; font-size: 13px; font-weight: 500; text-align: left; color: var(--theme-fg-muted); white-space: nowrap; transition: background .15s, color .15s; }
@@ -27,7 +30,7 @@
 .plugin-settings-actions .plugin-settings-save { background: var(--theme-accent-solid); color: var(--theme-accent-solid-fg); border-color: transparent; }
 .plugin-settings-form :disabled { cursor: default; opacity: .55; }
 .plugin-settings-error { color: var(--theme-danger, #d85b64); font-size: 13px; line-height: 1.6; }
-.thread-graph-dialog.thread-graph-settings-dialog[data-slot='dialog-content'] { display: flex; flex-direction: column; gap: 0; width: min(940px, calc(100vw - 40px)); max-width: 940px; height: min(740px, calc(100dvh - 64px)); max-height: calc(100dvh - 32px); padding: 0; overflow: hidden; border-radius: 18px; }
+.thread-graph-dialog.thread-graph-settings-dialog[data-slot='dialog-content'] { display: flex; flex-direction: column; gap: 0; width: min(940px, calc(100vw - 40px)); max-width: 940px; height: min(740px, calc(100dvh - 64px)); max-height: calc(100dvh - 32px); padding: 0; overflow: clip; border-radius: 18px; }
 .thread-graph-dialog.thread-graph-settings-dialog > [data-slot='dialog-header'] { padding: 22px 54px 18px 26px; border-bottom: 1px solid var(--theme-border); text-align: left; }
 .thread-graph-dialog.thread-graph-settings-dialog > [data-slot='dialog-close'] { top: 17px; right: 16px; width: 32px; height: 32px; display: grid; place-items: center; }
 @media (max-width: 639px) {
@@ -39,3 +42,15 @@
   .settings-panel { flex: 1; padding: 20px 16px max(20px, env(safe-area-inset-bottom)); scrollbar-width: none; }
   .settings-panel::-webkit-scrollbar { display: none; }
 }
+
+/* Settings > Terminal. */
+.terminal-settings { display: grid; gap: 18px; max-width: 640px; font-size: 13px; }
+.terminal-settings-toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; }
+.terminal-settings-toggle b { display: block; font-weight: 600; }
+.terminal-settings-toggle small { display: block; margin-top: 3px; color: var(--theme-fg-muted); font-size: 12px; line-height: 1.55; }
+.terminal-settings-toggle input { flex: none; width: 18px; height: 18px; accent-color: var(--theme-accent-solid); }
+.terminal-settings-choice { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.terminal-settings-choice legend { margin-bottom: 8px; font-weight: 600; }
+.terminal-settings-choice label { display: flex; align-items: flex-start; gap: 9px; min-height: 32px; line-height: 1.5; }
+.terminal-settings-choice input { flex: none; width: 17px; height: 17px; margin-top: 2px; accent-color: var(--theme-accent-solid); }
+.terminal-settings-note { color: var(--theme-fg-muted); font-size: 12px; line-height: 1.65; }

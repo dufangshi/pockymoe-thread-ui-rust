@@ -1,5 +1,5 @@
 import { translate, useI18n } from '../i18n';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { DiffDetail } from './DiffDetail';
 
@@ -19,6 +19,8 @@ export function LongTextDialog({
   onClose,
 }: LongTextDialogProps) {
   useI18n();
+  const [copied, setCopied] = useState(false);
+  useEffect(() => setCopied(false), [text]);
   useEffect(() => {
     if (!open) {
       return;
@@ -55,7 +57,16 @@ export function LongTextDialog({
         className="thread-detail-dialog relative z-[1] flex max-h-[min(82vh,52rem)] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] text-[var(--theme-fg)] shadow-2xl"
       >
         <div className="flex items-center justify-between gap-3 border-b border-[var(--theme-border)] px-4 py-3 sm:px-5">
-          <p className="truncate text-sm font-medium">{title}</p>
+          <p className="min-w-0 flex-1 truncate text-sm font-medium">{title}</p>
+          <button
+            type="button"
+            aria-label={translate('chat.copy')}
+            title={copied ? translate('chat.copied') : translate('chat.copy')}
+            onClick={() => void navigator.clipboard?.writeText(text).then(() => setCopied(true), () => undefined)}
+            className="inline-flex h-9 shrink-0 items-center justify-center rounded-md px-2 text-xs text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)]"
+          >
+            {copied ? translate('chat.copied') : translate('chat.copy')}
+          </button>
           <button
             type="button"
             aria-label={translate("workbench.closeDialog")}

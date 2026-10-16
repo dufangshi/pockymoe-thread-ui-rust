@@ -81,7 +81,11 @@
     padding: 4px 8px max(6px, env(safe-area-inset-bottom));
     background: var(--matter-dock-surface, var(--matter-chrome));
   }
-  .thread-ui-shell .matter-workbench.has-phone-dock.is-typing .matter-phone-dock { display: none; }
+  /* While typing the row stays, right above the keyboard: where the keyboard
+     overlays the page (iOS) it rises with the composer by the keyboard's height. */
+  .thread-ui-shell .matter-workbench.has-phone-dock.is-typing .matter-phone-dock {
+    transform: translateY(calc(-1 * var(--thread-detail-keyboard-inset, 0px)));
+  }
   .thread-ui-shell .matter-workbench .matter-phone-dock button {
     display: inline-flex;
     align-items: center;
@@ -156,7 +160,7 @@
 
   /* The composer (or the files prompt) and the dock are one bottom panel: one
      surface from the composer's top edge down, which the conversation scrolls
-     under. While typing only the composer stays, on top of the keyboard.
+     under, also while typing, on top of the keyboard.
      Packs can set --matter-dock-surface and --matter-dock-edge. */
   .thread-ui-shell .matter-workbench.has-phone-dock .thread-graph-composer-host {
     bottom: var(--thread-composer-keyboard-inset, 0px);
@@ -241,10 +245,6 @@
   }
   .matter-phone-sheet .matter-thread-row { min-height: 52px; font-size: 14px; }
   .matter-phone-sheet .matter-thread-entry { position: relative; }
-  .matter-phone-sheet-notices a { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 10px; border-radius: 10px; color: var(--theme-fg); }
-  .matter-phone-sheet-notices a > span:last-child { min-width: 0; }
-  .matter-phone-sheet-notices b { display: block; overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-  .matter-phone-sheet-notices small { display: block; overflow: hidden; color: var(--theme-fg-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
   .matter-phone-sheet-footer { display: flex; flex: none; gap: 8px; align-items: center; padding: 8px 12px 0; border-top: 1px solid var(--theme-border); }
   .thread-ui-shell .matter-workbench .matter-phone-sheet-footer > * { height: 46px; min-width: 46px; }
   /* New thread spans the footer, an accent tint like the strip's latest button. */

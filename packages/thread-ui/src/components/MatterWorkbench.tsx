@@ -730,17 +730,6 @@ export function MatterWorkbench({
           threadsOpen={threadsOpen} moreOpen={moreOpen} />
         <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
           footer={newThread}>
-          {o.unreadCount > 0 && <>
-            <h3>{translate('workbench.notifications')}</h3>
-            <div className="matter-phone-sheet-notices">
-              {[...o.notifications].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).slice(0, 3).map(n => (
-                <a key={n.id} href={n.href} onClick={e => { e.preventDefault(); o.onReadNotifications(); navigate(n.href); }}>
-                  <span className="matter-status-dot" data-status="completed" />
-                  <span><b>{n.title}</b>{n.summary && <small>{n.summary}</small>}</span>
-                </a>
-              ))}
-            </div>
-          </>}
           <h3>{translate('workbench.thisWorkspace')}</h3>
           <div className="matter-thread-section">{renderThreadGroups([...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)))}</div>
           {o.threads.some(thread => !tabs.some(tab => tab.key === thread.key)) && <>

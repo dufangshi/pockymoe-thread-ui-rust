@@ -225,6 +225,7 @@ export const authZhCN = {
   "auth.deviceIdentityChanged": "设备身份已更改",
   "auth.connectionIsNotEndToEndEncrypted": "连接未进行端到端加密",
   "auth.deviceEncryptionNotVerified": "设备加密未验证",
+  "auth.checkingDeviceEncryption": "正在验证设备加密…",
   "auth.unableToLogOutTryAgain": "无法退出登录，请重试。",
   "auth.supervisorAccess": "Supervisor 访问",
   "auth.unableToChangeYourPassword": "无法修改密码。",

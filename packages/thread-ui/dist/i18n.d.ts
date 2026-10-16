@@ -3206,6 +3206,7 @@ declare const en: {
     readonly "auth.deviceIdentityChanged": "Device identity changed";
     readonly "auth.connectionIsNotEndToEndEncrypted": "Connection is not end-to-end encrypted";
     readonly "auth.deviceEncryptionNotVerified": "Device encryption not verified";
+    readonly "auth.checkingDeviceEncryption": "Checking device encryption…";
     readonly "auth.unableToLogOutTryAgain": "Unable to log out. Try again.";
     readonly "auth.supervisorAccess": "Supervisor Access";
     readonly "auth.unableToChangeYourPassword": "Unable to change your password.";
@@ -6696,6 +6697,7 @@ declare const zhCN: {
     "auth.deviceIdentityChanged": "设备身份已更改";
     "auth.connectionIsNotEndToEndEncrypted": "连接未进行端到端加密";
     "auth.deviceEncryptionNotVerified": "设备加密未验证";
+    "auth.checkingDeviceEncryption": "正在验证设备加密…";
     "auth.unableToLogOutTryAgain": "无法退出登录，请重试。";
     "auth.supervisorAccess": "Supervisor 访问";
     "auth.unableToChangeYourPassword": "无法修改密码。";
@@ -10208,6 +10210,7 @@ declare const resources: {
         readonly "auth.deviceIdentityChanged": "Device identity changed";
         readonly "auth.connectionIsNotEndToEndEncrypted": "Connection is not end-to-end encrypted";
         readonly "auth.deviceEncryptionNotVerified": "Device encryption not verified";
+        readonly "auth.checkingDeviceEncryption": "Checking device encryption…";
         readonly "auth.unableToLogOutTryAgain": "Unable to log out. Try again.";
         readonly "auth.supervisorAccess": "Supervisor Access";
         readonly "auth.unableToChangeYourPassword": "Unable to change your password.";
@@ -13697,6 +13700,7 @@ declare const resources: {
         "auth.deviceIdentityChanged": "设备身份已更改";
         "auth.connectionIsNotEndToEndEncrypted": "连接未进行端到端加密";
         "auth.deviceEncryptionNotVerified": "设备加密未验证";
+        "auth.checkingDeviceEncryption": "正在验证设备加密…";
         "auth.unableToLogOutTryAgain": "无法退出登录，请重试。";
         "auth.supervisorAccess": "Supervisor 访问";
         "auth.unableToChangeYourPassword": "无法修改密码。";

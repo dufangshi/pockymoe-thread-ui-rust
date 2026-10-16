@@ -819,6 +819,7 @@ function ThreadTimelineComponent({
         <div
           ref={scrollContainerRef}
           data-testid="thread-scroll-container"
+          data-thread-transcript=""
           onScroll={handleTimelineScroll}
           onWheel={(event) => { resetNavigation(); handleWheel(event); }}
           onTouchStart={(event) => { resetNavigation(); handleTouchStart(event); }}

@@ -104,22 +104,28 @@ export function useCompactComposer(
     const ownsEvent = (event: Event) =>
       ownedEvents.current.has(event) || ownsTarget(event.target);
     let focusWithin = ownsTarget(document.activeElement);
-    let pointerWithin = false;
+    // Once open, the composer stays open (other controls, the dock, a menu or the
+    // keyboard closing do not fold it) until the reader taps the conversation or
+    // the prompt is emptied. Scrolling the conversation is not a tap.
+    let opened = false;
     let pendingPointerEvent: PointerEvent | null = null;
     const measure = () => {
-      if (!alive || editor.dataset.imeComposing === "true") return;
+      if (!alive) return;
       if (pendingPointerEvent) {
-        pointerWithin = ownsEvent(pendingPointerEvent);
-        focusWithin = pointerWithin;
+        if (ownsEvent(pendingPointerEvent)) focusWithin = true;
         pendingPointerEvent = null;
       }
-      const focused = focusWithin;
       const overflowing = promptExceedsCompactLine(editor, group, toolbar);
       // Apply the fade only when real content exceeds the compact budget.
       form.toggleAttribute("data-composer-overflow", overflowing);
-      const next = focused && overflowing;
-      setExpanded((current) => (current === next ? current : next));
-      if (!focused) {
+      if (focusWithin && overflowing) opened = true;
+      if (!overflowing && !serializeEditorPrompt(editor).trim()) opened = false;
+      const next = overflowing && opened;
+      // A composition (dictation, an IME's underlined candidates) only ever opens
+      // the composer: folding it mid-word could cancel the composition.
+      const composing = editor.dataset.imeComposing === "true";
+      setExpanded((current) => (current === next || (composing && current) ? current : next));
+      if (!next && !composing) {
         editor.scrollTop = 0;
         if (editor.parentElement) editor.parentElement.scrollTop = 0;
       }
@@ -128,12 +134,18 @@ export function useCompactComposer(
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(measure);
     };
-    // Track the complete interaction area, including buttons and owned portals.
-    // Outside pointerdown also handles non-focusable timeline/background targets.
+    // A press inside the composer (its buttons, owned portals) counts as being in it.
     const onPointerDown = (event: PointerEvent) => {
       // Read after React capture has marked portal events, even if a menu
       // stops native propagation before it can reach document's bubble phase.
       pendingPointerEvent = event;
+      schedule();
+    };
+    const onClick = (event: MouseEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target?.closest("[data-thread-transcript]") || ownsEvent(event)) return;
+      opened = false;
+      focusWithin = ownsTarget(document.activeElement);
       schedule();
     };
     const onFocusIn = (event: globalThis.FocusEvent) => {
@@ -142,26 +154,15 @@ export function useCompactComposer(
     };
     const onFocusOut = (event: globalThis.FocusEvent) => {
       if (!ownsEvent(event)) return;
-      focusWithin =
-        ownsTarget(event.relatedTarget) ||
-        (!event.relatedTarget && pointerWithin);
-      schedule();
-    };
-    const onKeyDown = () => {
-      pointerWithin = false;
-      pendingPointerEvent = null;
-    };
-    const onWindowBlur = () => {
-      focusWithin = false;
-      pendingPointerEvent = null;
+      focusWithin = ownsTarget(event.relatedTarget);
       schedule();
     };
     document.addEventListener("pointerdown", onPointerDown, true);
+    document.addEventListener("click", onClick, true);
     document.addEventListener("focusin", onFocusIn);
     document.addEventListener("focusout", onFocusOut);
-    document.addEventListener("keydown", onKeyDown, true);
-    window.addEventListener("blur", onWindowBlur);
     editor.addEventListener("input", schedule);
+    editor.addEventListener("compositionupdate", schedule);
     editor.addEventListener("compositionend", schedule);
     editor.addEventListener("load", schedule, true);
     const mutation = new MutationObserver(schedule);
@@ -189,11 +190,11 @@ export function useCompactComposer(
       mutation.disconnect();
       resize?.disconnect();
       document.removeEventListener("pointerdown", onPointerDown, true);
+      document.removeEventListener("click", onClick, true);
       document.removeEventListener("focusin", onFocusIn);
       document.removeEventListener("focusout", onFocusOut);
-      document.removeEventListener("keydown", onKeyDown, true);
-      window.removeEventListener("blur", onWindowBlur);
       editor.removeEventListener("input", schedule);
+      editor.removeEventListener("compositionupdate", schedule);
       editor.removeEventListener("compositionend", schedule);
       editor.removeEventListener("load", schedule, true);
       window.removeEventListener("resize", schedule);

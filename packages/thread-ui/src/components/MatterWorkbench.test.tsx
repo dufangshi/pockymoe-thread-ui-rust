@@ -267,6 +267,14 @@ describe('one-handed phone dock', () => {
     expect(host.querySelector('.matter-workbench')!.classList.contains('is-left-handed')).toBe(false);
   });
 
+  it('keeps notifications on the bell, out of the thread sheet', () => {
+    options = { ...baseOptions, unreadCount: 1, notifications: [{ id: 'n1', title: 'Build finished', href: '/threads/x', occurredAt: '2026-10-16T10:00:00Z' }] };
+    render();
+    const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Threads"]')!;
+    expect(sheet.textContent).not.toContain('Build finished');
+    expect(button('Notifications')).not.toBeNull();
+  });
+
   it('opens the thread map from More and from the drawer when the host has one', () => {
     const openThreadMap = vi.fn();
     nav = { openThreadMap };

@@ -31,6 +31,7 @@ function Fixture() {
         {createPortal(<button type="button">Portal action</button>, portal)}
       </form>
       <button type="button">Outside</button>
+      <div data-thread-transcript=""><p>Conversation</p></div>
     </>
   );
 }
@@ -70,52 +71,65 @@ afterEach(async () => {
   vi.unstubAllGlobals();
 });
 
+const tap = (target: Element) => {
+  target.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+  target.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+};
+
 describe("composer interaction scope", () => {
-  it("retains multiline expansion through toolbar and React portal focus, then collapses on outside keyboard focus", async () => {
+  it("opens with focus on overflowing text and stays open through other controls, outside focus and outside presses", async () => {
     const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
     const form = host.querySelector("form")!;
     await settle(() => editor.focus());
     expect(form.dataset.expanded).toBe("true");
     await settle(() => button("Tool").focus());
-    expect(form.dataset.expanded).toBe("true");
     await settle(() => button("Portal action").focus());
     expect(form.dataset.expanded).toBe("true");
-    await settle(() => button("Outside").focus());
-    expect(form.dataset.expanded).toBe("false");
+    await settle(() => { tap(button("Outside")); button("Outside").focus(); });
+    expect(form.dataset.expanded).toBe("true");
+    await settle(() => document.body.dispatchEvent(new Event("pointerdown", { bubbles: true })));
+    expect(form.dataset.expanded).toBe("true");
   });
 
-  it("owns external dialog roots by composer identity and collapses for a non-focusable outside click", async () => {
+  it("folds only when the conversation is tapped, and opens again from the composer", async () => {
     const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
     const form = host.querySelector("form")!;
-    const dialog = document.createElement("div");
-    dialog.dataset.composerFocusOwner = form.dataset.composerFocusOwner;
-    dialog.innerHTML = "<button>Owned settings</button>";
-    document.body.append(dialog);
+    const conversation = host.querySelector("[data-thread-transcript] p")!;
     await settle(() => editor.focus());
-    await settle(() => dialog.querySelector("button")!.focus());
     expect(form.dataset.expanded).toBe("true");
-    await settle(() =>
-      document.body.dispatchEvent(new Event("pointerdown", { bubbles: true })),
-    );
+    // A drag that scrolls the conversation has no click.
+    await settle(() => conversation.dispatchEvent(new Event("pointerdown", { bubbles: true })));
+    expect(form.dataset.expanded).toBe("true");
+    await settle(() => { tap(conversation); editor.blur(); });
     expect(form.dataset.expanded).toBe("false");
-    dialog.remove();
+    await settle(() => tap(button("Tool")));
+    expect(form.dataset.expanded).toBe("true");
   });
 
-  it("collapses after keyboard focus leaves the document and keeps empty content on one line", async () => {
+  it("opens while a dictation or IME composition is still underlined", async () => {
     const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
     const form = host.querySelector("form")!;
-    await settle(() => editor.focus());
-    expect(form.dataset.expanded).toBe("true");
-    await settle(() => {
-      document.dispatchEvent(
-        new KeyboardEvent("keydown", { key: "Tab", bubbles: true }),
-      );
-      editor.blur();
-    });
-    expect(form.dataset.expanded).toBe("false");
     await settle(() => {
       editor.textContent = "";
-      editor.focus();
+      editor.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await settle(() => editor.focus());
+    expect(form.dataset.expanded).toBe("false");
+    await settle(() => {
+      editor.dataset.imeComposing = "true";
+      editor.textContent = "a long dictated sentence\nthat runs past one line";
+      editor.dispatchEvent(new Event("compositionupdate", { bubbles: true }));
+    });
+    expect(form.dataset.expanded).toBe("true");
+  });
+
+  it("returns to one line when the prompt is emptied", async () => {
+    const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
+    const form = host.querySelector("form")!;
+    await settle(() => editor.focus());
+    expect(form.dataset.expanded).toBe("true");
+    await settle(() => {
+      editor.textContent = "";
       editor.dispatchEvent(new Event("input", { bubbles: true }));
     });
     expect(form.dataset.expanded).toBe("false");

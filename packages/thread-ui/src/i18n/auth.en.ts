@@ -225,6 +225,7 @@ export const authEn = {
   "auth.deviceIdentityChanged": "Device identity changed",
   "auth.connectionIsNotEndToEndEncrypted": "Connection is not end-to-end encrypted",
   "auth.deviceEncryptionNotVerified": "Device encryption not verified",
+  "auth.checkingDeviceEncryption": "Checking device encryption…",
   "auth.unableToLogOutTryAgain": "Unable to log out. Try again.",
   "auth.supervisorAccess": "Supervisor Access",
   "auth.unableToChangeYourPassword": "Unable to change your password.",

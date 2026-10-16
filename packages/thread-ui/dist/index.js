@@ -19642,7 +19642,9 @@ var ShellPane = forwardRef(
         }
         const dimensions = fitAddon.proposeDimensions();
         if (dimensions && dimensions.cols > 0 && dimensions.rows > 0 && (dimensions.cols !== terminal.cols || dimensions.rows !== terminal.rows)) {
+          const following = terminal.buffer.active.viewportY >= terminal.buffer.active.baseY;
           terminal.resize(dimensions.cols, dimensions.rows);
+          if (following) terminal.scrollToBottom();
         }
         if (terminal.cols <= 0 || terminal.rows <= 0) {
           return null;
@@ -20587,7 +20589,7 @@ function readTabsWidth() {
     return TERMINAL_TABS_DEFAULT;
   }
 }
-function IconButton({ label, onClick, disabled, pressed, expanded, children, testId }) {
+function IconButton({ label, onClick, disabled, pressed, expanded, children, testId, keepFocus }) {
   return /* @__PURE__ */ jsx71(
     "button",
     {
@@ -20599,6 +20601,9 @@ function IconButton({ label, onClick, disabled, pressed, expanded, children, tes
       ...pressed !== void 0 ? { "aria-pressed": pressed } : {},
       ...expanded !== void 0 ? { "aria-expanded": expanded, "aria-haspopup": "menu" } : {},
       ...testId ? { "data-testid": testId } : {},
+      ...keepFocus ? { onPointerDown: (event) => {
+        if (document.activeElement?.closest(".xterm")) event.preventDefault();
+      } } : {},
       onClick,
       children
     }
@@ -21139,8 +21144,8 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       panelControls && /* @__PURE__ */ jsxs59(Fragment24, { children: [
         /* @__PURE__ */ jsx71("span", { className: "terminal-actions-separator", "aria-hidden": "true" }),
         !compact && /* @__PURE__ */ jsx71(IconButton, { label: panelControls.collapsed ? translate("workbench.terminalExpand") : translate("workbench.terminalCollapse"), pressed: panelControls.collapsed, onClick: panelControls.toggleCollapsed, testId: "terminal-collapse", children: panelControls.collapsed ? /* @__PURE__ */ jsx71(PanelBottomOpen, { size: 16 }) : /* @__PURE__ */ jsx71(PanelBottomClose, { size: 16 }) }),
-        (!compact || !panelControls.collapsed) && /* @__PURE__ */ jsx71(IconButton, { label: panelControls.maximized ? translate("workbench.terminalRestore") : translate("workbench.terminalMaximize"), pressed: panelControls.maximized, onClick: panelControls.toggleMaximized, testId: "terminal-maximize", children: panelControls.maximized ? /* @__PURE__ */ jsx71(ChevronDown7, { size: 16 }) : /* @__PURE__ */ jsx71(ChevronUp3, { size: 16 }) }),
-        compact && panelControls.collapsed && /* @__PURE__ */ jsx71(IconButton, { label: translate("workbench.terminalExpand"), onClick: panelControls.toggleCollapsed, testId: "terminal-collapse", children: /* @__PURE__ */ jsx71(PanelBottomOpen, { size: 16 }) }),
+        (!compact || !panelControls.collapsed) && /* @__PURE__ */ jsx71(IconButton, { label: panelControls.maximized ? translate("workbench.terminalRestore") : translate("workbench.terminalMaximize"), pressed: panelControls.maximized, onClick: panelControls.toggleMaximized, testId: "terminal-maximize", keepFocus: true, children: panelControls.maximized ? /* @__PURE__ */ jsx71(ChevronDown7, { size: 16 }) : /* @__PURE__ */ jsx71(ChevronUp3, { size: 16 }) }),
+        compact && panelControls.collapsed && /* @__PURE__ */ jsx71(IconButton, { label: translate("workbench.terminalExpand"), onClick: panelControls.toggleCollapsed, testId: "terminal-collapse", keepFocus: true, children: /* @__PURE__ */ jsx71(PanelBottomOpen, { size: 16 }) }),
         /* @__PURE__ */ jsx71(IconButton, { label: translate("workbench.terminalHide"), onClick: panelControls.close, testId: "workbench-close-tools", children: /* @__PURE__ */ jsx71(X6, { size: 16 }) })
       ] }),
       !panelControls && onBackToChat && /* @__PURE__ */ jsx71(IconButton, { label: translate("workbench.terminalBackToChat"), onClick: onBackToChat, children: /* @__PURE__ */ jsx71(MessageSquare4, { size: 16 }) })

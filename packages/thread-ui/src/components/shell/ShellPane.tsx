@@ -346,7 +346,10 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
           dimensions.rows > 0 &&
           (dimensions.cols !== terminal.cols || dimensions.rows !== terminal.rows)
         ) {
+          // A terminal showing its newest line keeps showing it at any size.
+          const following = terminal.buffer.active.viewportY >= terminal.buffer.active.baseY;
           terminal.resize(dimensions.cols, dimensions.rows);
+          if (following) terminal.scrollToBottom();
         }
         if (terminal.cols <= 0 || terminal.rows <= 0) {
           return null;

@@ -1221,7 +1221,9 @@ var chatEn = {
   "chat.hint.tools": "Calls to MCP servers or built-in tools, not terminal commands.",
   "chat.hint.toolsExample": "e.g. a browser screenshot, reading a GitHub issue",
   "chat.hint.reasoning": "Summaries of the model's reasoning steps.",
-  "chat.hint.reasoningExample": "e.g. planning which file to change first"
+  "chat.hint.reasoningExample": "e.g. planning which file to change first",
+  "chat.turnFailedShow": "Why this turn failed",
+  "chat.turnFailedTitle": "This turn did not finish"
 };
 
 // src/i18n/common.en.ts
@@ -2425,7 +2427,8 @@ var filesEn = {
   "files.terminalRightClickCopyPaste": "Copy the selection, otherwise paste",
   "files.terminalPasteWarning": "Confirm multi-line pastes",
   "files.terminalPasteWarningHint": "Only when the shell would run the lines right away.",
-  "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a Mac, \u2318C and \u2318V copy and paste and Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select."
+  "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a Mac, \u2318C and \u2318V copy and paste and Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select.",
+  "files.askAttachments": { one: "{{count}} attached file goes with it", other: "{{count}} attached files go with it" }
 };
 
 // src/i18n/settings.en.ts
@@ -3549,6 +3552,8 @@ var workbenchEn = {
   "workbench.threadSheet": "Threads",
   "workbench.thisWorkspace": "This workspace",
   "workbench.workspaceAndShortcuts": "Workspace and shortcuts",
+  "workbench.drawerShort": "Workspaces",
+  "workbench.homeShort": "Home",
   "workbench.app": "App",
   "workbench.closeSheet": "Close",
   "workbench.phoneDockSetting": "One-handed phone layout",
@@ -3621,7 +3626,16 @@ var workbenchEn = {
   "workbench.threadMapStatCost": "API cost",
   "workbench.threadMapShowChildren": { one: "Show the {{count}} agent thread {{title}} started", other: "Show the {{count}} agent threads {{title}} started" },
   "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}",
-  "workbench.threadMapOpenThread": "Open {{title}}"
+  "workbench.threadMapOpenThread": "Open {{title}}",
+  "workbench.runningChip": { one: "{{count}} thread is running on this account. Show it", other: "{{count}} threads are running on this account. Show them" },
+  "workbench.runningSheet": "Running threads",
+  "workbench.runningNow": "Running",
+  "workbench.finishedUnread": "Finished, not read yet",
+  "workbench.noRunningThreads": "No thread is running.",
+  "workbench.allThreads": "All threads",
+  "workbench.runningJustNow": "just started",
+  "workbench.runningForMinutes": { one: "running {{count}} min", other: "running {{count}} min" },
+  "workbench.runningForHours": "running {{hours}} h {{minutes}} min"
 };
 
 // src/i18n/en.ts
@@ -4860,7 +4874,9 @@ var chatZhCN = {
   "chat.hint.tools": "MCP \u670D\u52A1\u5668\u6216\u5185\u7F6E\u5DE5\u5177\u7684\u8C03\u7528\uFF0C\u4E0D\u542B\u7EC8\u7AEF\u547D\u4EE4\u3002",
   "chat.hint.toolsExample": "\u4F8B\uFF1A\u6D4F\u89C8\u5668\u622A\u56FE\u3001\u8BFB\u53D6 GitHub issue",
   "chat.hint.reasoning": "\u6A21\u578B\u63A8\u7406\u6B65\u9AA4\u7684\u6458\u8981\u3002",
-  "chat.hint.reasoningExample": "\u4F8B\uFF1A\u5148\u60F3\u597D\u6539\u54EA\u4E2A\u6587\u4EF6"
+  "chat.hint.reasoningExample": "\u4F8B\uFF1A\u5148\u60F3\u597D\u6539\u54EA\u4E2A\u6587\u4EF6",
+  "chat.turnFailedShow": "\u67E5\u770B\u8FD9\u4E00\u8F6E\u5931\u8D25\u7684\u539F\u56E0",
+  "chat.turnFailedTitle": "\u8FD9\u4E00\u8F6E\u6CA1\u6709\u5B8C\u6210"
 };
 
 // src/i18n/common.zh-CN.ts
@@ -6064,7 +6080,8 @@ var filesZhCN = {
   "files.terminalRightClickCopyPaste": "\u6709\u9009\u4E2D\u5C31\u590D\u5236\uFF0C\u5426\u5219\u7C98\u8D34",
   "files.terminalPasteWarning": "\u7C98\u8D34\u591A\u884C\u524D\u786E\u8BA4",
   "files.terminalPasteWarningHint": "\u53EA\u5728 shell \u4F1A\u7ACB\u523B\u9010\u884C\u6267\u884C\u65F6\u63D0\u793A\u3002",
-  "files.terminalKeysNote": "Ctrl+C\uFF1A\u6709\u9009\u4E2D\u65F6\u590D\u5236\uFF0C\u6CA1\u6709\u65F6\u4E2D\u65AD\uFF1BCtrl+Shift+V \u59CB\u7EC8\u7C98\u8D34\u3002Mac \u4E0A\u7528 \u2318C / \u2318V \u590D\u5236\u7C98\u8D34\uFF0CCtrl \u7559\u7ED9\u7EC8\u7AEF\u3002\u624B\u673A\u4E0A\u957F\u6309\u7EC8\u7AEF\u9009\u62E9\u6587\u5B57\uFF0C\u6309\u952E\u6761\u91CC\u6709\u7C98\u8D34\u548C\u9009\u62E9\u3002"
+  "files.terminalKeysNote": "Ctrl+C\uFF1A\u6709\u9009\u4E2D\u65F6\u590D\u5236\uFF0C\u6CA1\u6709\u65F6\u4E2D\u65AD\uFF1BCtrl+Shift+V \u59CB\u7EC8\u7C98\u8D34\u3002Mac \u4E0A\u7528 \u2318C / \u2318V \u590D\u5236\u7C98\u8D34\uFF0CCtrl \u7559\u7ED9\u7EC8\u7AEF\u3002\u624B\u673A\u4E0A\u957F\u6309\u7EC8\u7AEF\u9009\u62E9\u6587\u5B57\uFF0C\u6309\u952E\u6761\u91CC\u6709\u7C98\u8D34\u548C\u9009\u62E9\u3002",
+  "files.askAttachments": { one: "\u5C06\u4E00\u5E76\u53D1\u9001 {{count}} \u4E2A\u9644\u4EF6", other: "\u5C06\u4E00\u5E76\u53D1\u9001 {{count}} \u4E2A\u9644\u4EF6" }
 };
 
 // src/i18n/settings.zh-CN.ts
@@ -7188,6 +7205,8 @@ var workbenchZhCN = {
   "workbench.threadSheet": "\u7EBF\u7A0B",
   "workbench.thisWorkspace": "\u672C\u5DE5\u4F5C\u533A",
   "workbench.workspaceAndShortcuts": "\u5DE5\u4F5C\u533A\u4E0E\u5FEB\u6377\u65B9\u5F0F",
+  "workbench.drawerShort": "\u5DE5\u4F5C\u533A",
+  "workbench.homeShort": "\u9996\u9875",
   "workbench.app": "\u5E94\u7528",
   "workbench.closeSheet": "\u5173\u95ED",
   "workbench.phoneDockSetting": "\u624B\u673A\u5355\u624B\u6A21\u5F0F",
@@ -7260,7 +7279,16 @@ var workbenchZhCN = {
   "workbench.threadMapStatCost": "API \u8D39\u7528",
   "workbench.threadMapShowChildren": { one: "\u5C55\u5F00 {{title}} \u7684 {{count}} \u4E2A\u5B50\u7EBF\u7A0B", other: "\u5C55\u5F00 {{title}} \u7684 {{count}} \u4E2A\u5B50\u7EBF\u7A0B" },
   "workbench.threadMapHideChildren": "\u628A\u5B50\u7EBF\u7A0B\u6536\u56DE {{title}}",
-  "workbench.threadMapOpenThread": "\u6253\u5F00 {{title}}"
+  "workbench.threadMapOpenThread": "\u6253\u5F00 {{title}}",
+  "workbench.runningChip": { one: "\u672C\u5E10\u53F7\u6709 {{count}} \u4E2A\u7EBF\u7A0B\u6B63\u5728\u8FD0\u884C\uFF0C\u70B9\u6309\u67E5\u770B", other: "\u672C\u5E10\u53F7\u6709 {{count}} \u4E2A\u7EBF\u7A0B\u6B63\u5728\u8FD0\u884C\uFF0C\u70B9\u6309\u67E5\u770B" },
+  "workbench.runningSheet": "\u8FD0\u884C\u4E2D\u7684\u7EBF\u7A0B",
+  "workbench.runningNow": "\u6B63\u5728\u8FD0\u884C",
+  "workbench.finishedUnread": "\u5DF2\u5B8C\u6210\uFF0C\u672A\u8BFB",
+  "workbench.noRunningThreads": "\u6CA1\u6709\u6B63\u5728\u8FD0\u884C\u7684\u7EBF\u7A0B\u3002",
+  "workbench.allThreads": "\u6240\u6709\u7EBF\u7A0B",
+  "workbench.runningJustNow": "\u521A\u5F00\u59CB\u8FD0\u884C",
+  "workbench.runningForMinutes": { one: "\u5DF2\u8FD0\u884C {{count}} \u5206\u949F", other: "\u5DF2\u8FD0\u884C {{count}} \u5206\u949F" },
+  "workbench.runningForHours": "\u5DF2\u8FD0\u884C {{hours}} \u5C0F\u65F6 {{minutes}} \u5206\u949F"
 };
 
 // src/i18n/zh-CN.ts

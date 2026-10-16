@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../../i18n';
 import { useState, type MouseEvent, type ReactNode } from 'react';
-import { CheckCircle2, Circle, Loader2, XCircle } from 'lucide-react';
+import { CheckCircle2, Circle, CircleAlert, Loader2, XCircle } from 'lucide-react';
+import { failureMessage } from './turnFailure';
 
 type GraphChatMessageKind = 'userMessage' | 'agentMessage';
 
@@ -82,6 +83,9 @@ export function GraphChatMessageFrame({
   status,
   timeLabel,
   timeTitle,
+  actionsTime,
+  failure,
+  onBeforeResize,
   messageId,
   variant,
 }: {
@@ -96,10 +100,17 @@ export function GraphChatMessageFrame({
   status?: string | null | undefined;
   timeLabel?: ReactNode;
   timeTitle?: string | null | undefined;
+  /** A short time beside the copy button; the full one stays in its title. */
+  actionsTime?: string | null | undefined;
+  /** The error of the failed turn this prompt started, behind a red mark. */
+  failure?: string | null | undefined;
+  onBeforeResize?: (() => void) | undefined;
 }) {
   const { locale: i18nLocale } = useI18n();
   const isUser = kind === 'userMessage';
   const [touchActionsVisible, setTouchActionsVisible] = useState(false);
+  const [failureOpen, setFailureOpen] = useState(false);
+  const failureText = failure ? failureMessage(failure) : null;
   const normalizedStatus = status?.trim().toLowerCase() ?? '';
   const showStatus = Boolean(
     isUser && status &&
@@ -152,14 +163,28 @@ export function GraphChatMessageFrame({
           >
             {children}
           </div>
+          {isUser && failure ? (
+            <button type="button" className="thread-graph-message-failure" aria-expanded={failureOpen}
+              aria-label={translate('chat.turnFailedShow')} title={translate('chat.turnFailedShow')}
+              onClick={() => { onBeforeResize?.(); setFailureOpen(open => !open); }}>
+              <CircleAlert aria-hidden="true" />
+            </button>
+          ) : null}
           {copyButton || (!timeNode && timeTitle) ? (
             <div className="thread-graph-message-copy-desktop">
               {/* Without a visible label the time appears with the hover actions. */}
-              {!timeNode && timeTitle ? <span className="thread-graph-message-hover-time" title={timeTitle}>{timeTitle}</span> : null}
+              {!timeNode && timeTitle ? <span className="thread-graph-message-hover-time" title={timeTitle}>{actionsTime || timeTitle}</span> : null}
               {copyButton}
             </div>
           ) : null}
         </div>
+        {isUser && failure && failureOpen ? (
+          <div className="thread-graph-message-failure-detail" role="note">
+            <strong>{translate('chat.turnFailedTitle')}</strong>
+            <p>{failureText}</p>
+            {failureText !== failure.trim() ? <pre>{failure}</pre> : null}
+          </div>
+        ) : null}
         {isUser && showStatus ? (
           <div
             className={`thread-graph-message-user-meta flex items-center justify-end gap-2 ${showStatus || timeNode ? 'has-persistent-meta' : ''}`}

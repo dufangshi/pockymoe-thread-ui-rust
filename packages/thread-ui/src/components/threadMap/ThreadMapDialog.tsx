@@ -17,7 +17,7 @@ export function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme,
       <DialogContent showCloseButton={false} aria-describedby={undefined}
         data-theme-effective={effectiveTheme} data-theme-mode={themeMode}
         className="thread-graph-dialog matter-settings-dialog thread-map-dialog" overlayClassName="matter-settings-overlay">
-        <ThreadMap {...map}
+        <ThreadMap {...map} onDismiss={() => onOpenChange(false)}
           heading={<DialogTitle className="thread-map-title">{translate('workbench.threadMap')}</DialogTitle>}
           actions={<DialogClose className="thread-map-icon-button thread-map-close" aria-label={translate('workbench.close')}><X aria-hidden="true" /></DialogClose>} />
       </DialogContent>

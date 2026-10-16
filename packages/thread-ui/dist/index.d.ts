@@ -235,6 +235,10 @@ interface MatterWorkbenchOptions {
     harnessSessionUrl?: string | null;
     threads: WorkbenchThread[];
     workspaceThreads?: WorkbenchThread[];
+    /** Threads that want the reader, for the running count and its sheet: running
+        ones beyond `threads` (other workspaces and devices, threads never opened)
+        and finished ones the reader opened before and has not read since. */
+    activeThreads?: WorkbenchThread[];
     currentKey: string;
     favorite: boolean;
     favoriteBusy?: boolean;
@@ -842,12 +846,14 @@ interface ThreadMapDevice {
 }
 
 /**
- * Every thread on every device as a treemap: devices hold workspaces, workspaces
- * hold threads. A thread's area follows its turns and its color the time it ran
- * in the last `hours`; running threads breathe. Device and workspace bars drill
- * in, a thread opens it.
+ * Every thread on every device as a zoomable treemap: devices hold workspaces,
+ * workspaces hold threads. A thread's area follows its turns and its color the
+ * time it ran in the last `hours`; running threads breathe. Tapping a device or a
+ * workspace fills the map with it (what is inside shows as a preview until
+ * then), tapping a thread opens it. On touch, pinching in goes up a level,
+ * spreading opens the block under the fingers and dragging down dismisses.
  */
-declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onRetry }: {
+declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onRetry, onDismiss }: {
     devices: ThreadMapDevice[];
     currentKey?: string | undefined;
     hours?: number;
@@ -855,6 +861,8 @@ declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpe
     actions?: ReactNode;
     onOpen: (thread: ThreadMapThread) => void;
     onRetry?: ((deviceId: string) => void) | undefined;
+    /** Closes the map; a downward drag on it asks for this. */
+    onDismiss?: (() => void) | undefined;
 }): react.JSX.Element;
 
 /** The thread map in a dialog: full screen on a phone, a large panel elsewhere. */

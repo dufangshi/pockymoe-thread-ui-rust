@@ -2,7 +2,7 @@ import * as react from 'react';
 import { ReactNode, MutableRefObject } from 'react';
 import * as _pockymoe_shared from '@pockymoe/shared';
 import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
-import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, b as MessagePresentationContext, M as MessagePresentation, a as PluginActionOutputContext, F as FrontendPluginModule } from './plugin-types-CgVfWBnd.js';
+import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, b as MessagePresentationContext, M as MessagePresentation, a as PluginActionOutputContext, F as FrontendPluginModule } from './plugin-types-CXhGM6t7.js';
 
 interface PromptAttachmentUpload extends PromptAttachmentManifestEntryDto {
     file: File;

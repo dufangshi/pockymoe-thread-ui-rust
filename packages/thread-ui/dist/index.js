@@ -26,7 +26,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-DPC6ESRV.js";
+} from "./chunk-PKOXR2VA.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -52,7 +52,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-AZC45AHO.js";
+} from "./chunk-VGKBLK2S.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -23165,7 +23165,8 @@ function PluginSettingsSection({ section, pluginId, adapter }) {
   const context = useMemo19(() => ({
     pluginId,
     load: () => adapter.loadPluginSettings(pluginId),
-    save: (settings) => adapter.savePluginSettings(pluginId, settings)
+    save: (settings) => adapter.savePluginSettings(pluginId, settings),
+    ...adapter.connections ? { connections: adapter.connections } : {}
   }), [adapter, pluginId]);
   return section.render(context);
 }

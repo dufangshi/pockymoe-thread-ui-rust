@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-AZC45AHO.js";
+} from "./chunk-VGKBLK2S.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -49,7 +49,13 @@ import {
   useRef,
   useState
 } from "react";
-import { jsx, jsxs } from "react/jsx-runtime";
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+var connectionProtocols = [
+  "openai_chat",
+  "openai_responses",
+  "anthropic",
+  "gemini"
+];
 var presets = [
   "concise",
   "clear",
@@ -59,6 +65,7 @@ var presets = [
 ];
 var details = ["short", "balanced", "detailed"];
 var defaults = {
+  connectionId: "",
   connectionFile: "",
   model: "",
   language: "zh-CN",
@@ -76,6 +83,7 @@ function readValues(snapshot) {
   }
   const values = { ...defaults };
   for (const key of [
+    "connectionId",
     "connectionFile",
     "model",
     "language",
@@ -102,10 +110,15 @@ function isConflict(error) {
   if (!error || typeof error !== "object") return false;
   return "statusCode" in error && error.statusCode === 409 || "status" in error && error.status === 409;
 }
-function ContentQualitySettings({ load, save }) {
+function ContentQualitySettings({
+  load,
+  save,
+  connections
+}) {
   const { t } = useI18n();
   const scope = useId();
   const [values, setValues] = useState(null);
+  const [stored, setStored] = useState({});
   const [revision, setRevision] = useState(0);
   const [status, setStatus] = useState("loading");
   const requestId = useRef(0);
@@ -117,6 +130,7 @@ function ContentQualitySettings({ load, save }) {
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
       setValues(next);
+      setStored(snapshot.values);
       setRevision(snapshot.revision);
       setStatus("ready");
     } catch {
@@ -142,10 +156,14 @@ function ContentQualitySettings({ load, save }) {
     const id = ++requestId.current;
     setStatus("saving");
     try {
-      const snapshot = await save({ revision, values: { ...values } });
+      const body = { ...stored, ...values };
+      if (!values.connectionId && !("connectionId" in stored))
+        delete body.connectionId;
+      const snapshot = await save({ revision, values: body });
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
       setValues(next);
+      setStored(snapshot.values);
       setRevision(snapshot.revision);
       setStatus("saved");
     } catch (error2) {
@@ -161,6 +179,40 @@ function ContentQualitySettings({ load, save }) {
     ] });
   }
   const busy = status === "loading" || status === "saving";
+  const fileField = values && field(
+    "connectionFile",
+    t("quality.connectionFile"),
+    /* @__PURE__ */ jsx(
+      "input",
+      {
+        id: `${scope}-connectionFile`,
+        "aria-describedby": `${scope}-connectionFile-hint`,
+        value: values.connectionFile,
+        maxLength: 4096,
+        autoComplete: "off",
+        spellCheck: false,
+        onChange: (event) => update("connectionFile", event.target.value)
+      }
+    ),
+    t("quality.connectionFileHint")
+  );
+  const modelField = values && field(
+    "model",
+    t("quality.model"),
+    /* @__PURE__ */ jsx(
+      "input",
+      {
+        id: `${scope}-model`,
+        "aria-describedby": `${scope}-model-hint`,
+        value: values.model,
+        maxLength: 200,
+        autoComplete: "off",
+        spellCheck: false,
+        onChange: (event) => update("model", event.target.value)
+      }
+    ),
+    t("quality.modelHint")
+  );
   const error = status === "loadError" || status === "saveError" || status === "conflict";
   return /* @__PURE__ */ jsxs(
     "form",
@@ -173,40 +225,40 @@ function ContentQualitySettings({ load, save }) {
       "aria-busy": busy,
       children: [
         values && /* @__PURE__ */ jsxs("fieldset", { disabled: busy, className: "plugin-settings-fields", children: [
-          field(
-            "connectionFile",
-            t("quality.connectionFile"),
-            /* @__PURE__ */ jsx(
-              "input",
+          connections ? /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs(
+              "div",
               {
-                id: `${scope}-connectionFile`,
-                "aria-describedby": `${scope}-connectionFile-hint`,
-                value: values.connectionFile,
-                maxLength: 4096,
-                autoComplete: "off",
-                spellCheck: false,
-                onChange: (event) => update("connectionFile", event.target.value)
+                className: "plugin-settings-field",
+                role: "group",
+                "aria-labelledby": `${scope}-connection`,
+                children: [
+                  /* @__PURE__ */ jsx("span", { id: `${scope}-connection`, children: t("quality.connection") }),
+                  connections.renderPicker({
+                    connectionId: values.connectionId,
+                    model: values.model,
+                    protocols: connectionProtocols,
+                    disabled: busy,
+                    onChange: (next) => {
+                      update("connectionId", next.connectionId);
+                      update("model", next.model);
+                    }
+                  }),
+                  /* @__PURE__ */ jsx("p", { children: t(
+                    !values.connectionId && values.connectionFile ? "quality.connectionLegacyHint" : "quality.connectionHint"
+                  ) })
+                ]
               }
             ),
-            t("quality.connectionFileHint")
-          ),
-          field(
-            "model",
-            t("quality.model"),
-            /* @__PURE__ */ jsx(
-              "input",
-              {
-                id: `${scope}-model`,
-                "aria-describedby": `${scope}-model-hint`,
-                value: values.model,
-                maxLength: 200,
-                autoComplete: "off",
-                spellCheck: false,
-                onChange: (event) => update("model", event.target.value)
-              }
-            ),
-            t("quality.modelHint")
-          ),
+            !values.connectionId && modelField,
+            /* @__PURE__ */ jsxs("details", { className: "plugin-settings-legacy", children: [
+              /* @__PURE__ */ jsx("summary", { children: t("quality.connectionLegacy") }),
+              fileField
+            ] })
+          ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+            fileField,
+            modelField
+          ] }),
           field(
             "language",
             t("quality.language"),
@@ -396,7 +448,7 @@ function ContentQualitySettings({ load, save }) {
 }
 
 // src/plugins/ContentQualityActionOutput.tsx
-import { Fragment, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function record(value) {
   return value && typeof value === "object" && !Array.isArray(value) ? value : null;
 }
@@ -434,7 +486,7 @@ function ReportStatus({ report, hideCompleted = false }) {
   const statusKey = Object.hasOwn(statusKeys, status) ? statusKeys[status] : void 0;
   const reasonKey = Object.hasOwn(reasonKeys, reason) ? reasonKeys[reason] : void 0;
   const showStatus = Boolean(status) && !(hideCompleted && status === "completed");
-  return /* @__PURE__ */ jsxs2(Fragment, { children: [
+  return /* @__PURE__ */ jsxs2(Fragment2, { children: [
     (showStatus || reason) && /* @__PURE__ */ jsxs2("p", { className: "plugin-report-line", children: [
       showStatus && /* @__PURE__ */ jsx2(Tag, { tone: Object.hasOwn(statusTones, status) ? statusTones[status] : "neutral", children: statusKey ? t(statusKey) : status }),
       reason && /* @__PURE__ */ jsx2("span", { children: reasonKey ? t(reasonKey) : reason })

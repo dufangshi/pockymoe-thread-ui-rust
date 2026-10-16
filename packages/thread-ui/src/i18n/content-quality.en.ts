@@ -25,6 +25,12 @@ export const contentQualityEn = {
   'quality.connectionFile': 'Connection profile file',
   'quality.connectionFileHint':
     'Path to a private connection profile on the Supervisor device. Configure credentials in that file; only its path is stored here.',
+  'quality.connection': 'Connection',
+  'quality.connectionLegacy': 'Connection profile file (legacy)',
+  'quality.connectionHint':
+    'A saved upstream connection on this device. Choosing one does not change any harness.',
+  'quality.connectionLegacyHint':
+    'Currently using a connection profile file. Choose a saved connection to replace it.',
   'quality.model': 'Model',
   'quality.modelHint': 'Model identifier supported by your connection profile.',
   'quality.language': 'Output language',

@@ -25,6 +25,10 @@ export const contentQualityZhCN = {
   'quality.connectionFile': '连接配置文件',
   'quality.connectionFileHint':
     'Supervisor 设备上私有连接配置文件的路径。请在该文件中配置凭据；这里只保存路径。',
+  'quality.connection': '连接',
+  'quality.connectionLegacy': '连接配置文件（旧方式）',
+  'quality.connectionHint': '本设备上保存的上游连接。选择它不会改动任何 harness。',
+  'quality.connectionLegacyHint': '当前使用连接配置文件。选择一个已保存的连接即可替换。',
   'quality.model': '模型',
   'quality.modelHint': '连接配置支持的模型标识。',
   'quality.language': '输出语言',

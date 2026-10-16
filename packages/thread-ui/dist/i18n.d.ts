@@ -766,6 +766,21 @@ declare const en: {
     };
     readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
     readonly "workbench.threadMapOpenThread": "Open {{title}}";
+    readonly "workbench.runningChip": {
+        readonly one: "{{count}} thread is running on this account. Show it";
+        readonly other: "{{count}} threads are running on this account. Show them";
+    };
+    readonly "workbench.runningSheet": "Running threads";
+    readonly "workbench.runningNow": "Running";
+    readonly "workbench.finishedUnread": "Finished, not read yet";
+    readonly "workbench.noRunningThreads": "No thread is running.";
+    readonly "workbench.allThreads": "All threads";
+    readonly "workbench.runningJustNow": "just started";
+    readonly "workbench.runningForMinutes": {
+        readonly one: "running {{count}} min";
+        readonly other: "running {{count}} min";
+    };
+    readonly "workbench.runningForHours": "running {{hours}} h {{minutes}} min";
     readonly "sharing.open": "Open";
     readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
     readonly "sharing.supervisorStatusUnavailable": "Supervisor status unavailable";
@@ -4284,6 +4299,21 @@ declare const zhCN: {
     };
     "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
     "workbench.threadMapOpenThread": "打开 {{title}}";
+    "workbench.runningChip": {
+        readonly one: "本帐号有 {{count}} 个线程正在运行，点按查看";
+        readonly other: "本帐号有 {{count}} 个线程正在运行，点按查看";
+    };
+    "workbench.runningSheet": "运行中的线程";
+    "workbench.runningNow": "正在运行";
+    "workbench.finishedUnread": "已完成，未读";
+    "workbench.noRunningThreads": "没有正在运行的线程。";
+    "workbench.allThreads": "所有线程";
+    "workbench.runningJustNow": "刚开始运行";
+    "workbench.runningForMinutes": {
+        readonly one: "已运行 {{count}} 分钟";
+        readonly other: "已运行 {{count}} 分钟";
+    };
+    "workbench.runningForHours": "已运行 {{hours}} 小时 {{minutes}} 分钟";
     "sharing.open": "打开";
     "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
     "sharing.supervisorStatusUnavailable": "Supervisor 状态不可用";
@@ -7824,6 +7854,21 @@ declare const resources: {
         };
         readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
         readonly "workbench.threadMapOpenThread": "Open {{title}}";
+        readonly "workbench.runningChip": {
+            readonly one: "{{count}} thread is running on this account. Show it";
+            readonly other: "{{count}} threads are running on this account. Show them";
+        };
+        readonly "workbench.runningSheet": "Running threads";
+        readonly "workbench.runningNow": "Running";
+        readonly "workbench.finishedUnread": "Finished, not read yet";
+        readonly "workbench.noRunningThreads": "No thread is running.";
+        readonly "workbench.allThreads": "All threads";
+        readonly "workbench.runningJustNow": "just started";
+        readonly "workbench.runningForMinutes": {
+            readonly one: "running {{count}} min";
+            readonly other: "running {{count}} min";
+        };
+        readonly "workbench.runningForHours": "running {{hours}} h {{minutes}} min";
         readonly "sharing.open": "Open";
         readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
         readonly "sharing.supervisorStatusUnavailable": "Supervisor status unavailable";
@@ -11341,6 +11386,21 @@ declare const resources: {
         };
         "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
         "workbench.threadMapOpenThread": "打开 {{title}}";
+        "workbench.runningChip": {
+            readonly one: "本帐号有 {{count}} 个线程正在运行，点按查看";
+            readonly other: "本帐号有 {{count}} 个线程正在运行，点按查看";
+        };
+        "workbench.runningSheet": "运行中的线程";
+        "workbench.runningNow": "正在运行";
+        "workbench.finishedUnread": "已完成，未读";
+        "workbench.noRunningThreads": "没有正在运行的线程。";
+        "workbench.allThreads": "所有线程";
+        "workbench.runningJustNow": "刚开始运行";
+        "workbench.runningForMinutes": {
+            readonly one: "已运行 {{count}} 分钟";
+            readonly other: "已运行 {{count}} 分钟";
+        };
+        "workbench.runningForHours": "已运行 {{hours}} 小时 {{minutes}} 分钟";
         "sharing.open": "打开";
         "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
         "sharing.supervisorStatusUnavailable": "Supervisor 状态不可用";

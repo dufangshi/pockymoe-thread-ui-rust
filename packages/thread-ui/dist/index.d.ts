@@ -235,6 +235,10 @@ interface MatterWorkbenchOptions {
     harnessSessionUrl?: string | null;
     threads: WorkbenchThread[];
     workspaceThreads?: WorkbenchThread[];
+    /** Threads that want the reader, for the running count and its sheet: running
+        ones beyond `threads` (other workspaces and devices, threads never opened)
+        and finished ones the reader opened before and has not read since. */
+    activeThreads?: WorkbenchThread[];
     currentKey: string;
     favorite: boolean;
     favoriteBusy?: boolean;

@@ -3495,7 +3495,16 @@ var workbenchEn = {
   "workbench.threadMapStatCost": "API cost",
   "workbench.threadMapShowChildren": { one: "Show the {{count}} agent thread {{title}} started", other: "Show the {{count}} agent threads {{title}} started" },
   "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}",
-  "workbench.threadMapOpenThread": "Open {{title}}"
+  "workbench.threadMapOpenThread": "Open {{title}}",
+  "workbench.runningChip": { one: "{{count}} thread is running on this account. Show it", other: "{{count}} threads are running on this account. Show them" },
+  "workbench.runningSheet": "Running threads",
+  "workbench.runningNow": "Running",
+  "workbench.finishedUnread": "Finished, not read yet",
+  "workbench.noRunningThreads": "No thread is running.",
+  "workbench.allThreads": "All threads",
+  "workbench.runningJustNow": "just started",
+  "workbench.runningForMinutes": { one: "running {{count}} min", other: "running {{count}} min" },
+  "workbench.runningForHours": "running {{hours}} h {{minutes}} min"
 };
 
 // src/i18n/en.ts
@@ -7008,7 +7017,16 @@ var workbenchZhCN = {
   "workbench.threadMapStatCost": "API \u8D39\u7528",
   "workbench.threadMapShowChildren": { one: "\u5C55\u5F00 {{title}} \u7684 {{count}} \u4E2A\u5B50\u7EBF\u7A0B", other: "\u5C55\u5F00 {{title}} \u7684 {{count}} \u4E2A\u5B50\u7EBF\u7A0B" },
   "workbench.threadMapHideChildren": "\u628A\u5B50\u7EBF\u7A0B\u6536\u56DE {{title}}",
-  "workbench.threadMapOpenThread": "\u6253\u5F00 {{title}}"
+  "workbench.threadMapOpenThread": "\u6253\u5F00 {{title}}",
+  "workbench.runningChip": { one: "\u672C\u5E10\u53F7\u6709 {{count}} \u4E2A\u7EBF\u7A0B\u6B63\u5728\u8FD0\u884C\uFF0C\u70B9\u6309\u67E5\u770B", other: "\u672C\u5E10\u53F7\u6709 {{count}} \u4E2A\u7EBF\u7A0B\u6B63\u5728\u8FD0\u884C\uFF0C\u70B9\u6309\u67E5\u770B" },
+  "workbench.runningSheet": "\u8FD0\u884C\u4E2D\u7684\u7EBF\u7A0B",
+  "workbench.runningNow": "\u6B63\u5728\u8FD0\u884C",
+  "workbench.finishedUnread": "\u5DF2\u5B8C\u6210\uFF0C\u672A\u8BFB",
+  "workbench.noRunningThreads": "\u6CA1\u6709\u6B63\u5728\u8FD0\u884C\u7684\u7EBF\u7A0B\u3002",
+  "workbench.allThreads": "\u6240\u6709\u7EBF\u7A0B",
+  "workbench.runningJustNow": "\u521A\u5F00\u59CB\u8FD0\u884C",
+  "workbench.runningForMinutes": { one: "\u5DF2\u8FD0\u884C {{count}} \u5206\u949F", other: "\u5DF2\u8FD0\u884C {{count}} \u5206\u949F" },
+  "workbench.runningForHours": "\u5DF2\u8FD0\u884C {{hours}} \u5C0F\u65F6 {{minutes}} \u5206\u949F"
 };
 
 // src/i18n/zh-CN.ts

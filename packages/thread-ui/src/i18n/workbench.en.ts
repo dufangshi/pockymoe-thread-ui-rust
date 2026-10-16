@@ -588,4 +588,13 @@ export const workbenchEn = {
   "workbench.threadMapShowChildren": { one: "Show the {{count}} agent thread {{title}} started", other: "Show the {{count}} agent threads {{title}} started" },
   "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}",
   "workbench.threadMapOpenThread": "Open {{title}}",
+  "workbench.runningChip": { one: "{{count}} thread is running on this account. Show it", other: "{{count}} threads are running on this account. Show them" },
+  "workbench.runningSheet": "Running threads",
+  "workbench.runningNow": "Running",
+  "workbench.finishedUnread": "Finished, not read yet",
+  "workbench.noRunningThreads": "No thread is running.",
+  "workbench.allThreads": "All threads",
+  "workbench.runningJustNow": "just started",
+  "workbench.runningForMinutes": { one: "running {{count}} min", other: "running {{count}} min" },
+  "workbench.runningForHours": "running {{hours}} h {{minutes}} min",
 } as const;

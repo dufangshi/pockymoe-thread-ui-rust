@@ -133,7 +133,7 @@ describe('one-handed phone dock', () => {
     expect(topbar().classList.contains('is-status-only')).toBe(true);
     expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
     expect(topbar().querySelector('button[aria-label="Notifications"]')).not.toBeNull();
-    expect(topbar().querySelector('.matter-running-chip')?.getAttribute('aria-label')).toBe('2 other threads running');
+    expect(topbar().querySelector('.matter-running-chip')?.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
     for (const label of ['Chat', 'Terminal', 'Toggle Explorer', 'Open settings', 'Go back']) {
       expect(topbar().querySelector(`button[aria-label="${label}"]`)).toBeNull();
     }
@@ -265,6 +265,31 @@ describe('one-handed phone dock', () => {
     nav = { phoneHand: 'right', setPhoneHand };
     render();
     expect(host.querySelector('.matter-workbench')!.classList.contains('is-left-handed')).toBe(false);
+  });
+
+  it('counts the account\'s running threads and opens them, then finished unread ones', () => {
+    options = {
+      ...baseOptions,
+      threads: [thread('a', 'running'), thread('b', 'unread'), thread('c'), thread('e', 'unread')],
+      // A thread never opened, on another device, one already listed, and the
+      // one finished thread the host knows was read before (e was never opened).
+      activeThreads: [{ ...thread('d', 'running'), key: 'mac:d', title: 'D elsewhere' }, thread('a', 'running'), thread('b', 'unread')],
+    };
+    render();
+    const chip = topbar().querySelector<HTMLButtonElement>('.matter-running-chip')!;
+    expect(chip.textContent).toContain('2');
+    expect(chip.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
+    act(() => chip.click());
+    const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Running threads"]')!;
+    expect(sheet.hasAttribute('data-open')).toBe(true);
+    const sections = [...sheet.querySelectorAll('h3')].map(heading => heading.textContent);
+    expect(sections).toEqual(['Running 2', 'Finished, not read yet 1']);
+    const rows = [...sheet.querySelectorAll('.matter-thread-row .matter-thread-copy > span')].map(row => row.textContent);
+    expect(rows).toEqual(['A', 'D elsewhere', 'B']);
+    expect(host.querySelector('section.matter-phone-sheet[aria-label="Threads"]')!.hasAttribute('data-open')).toBe(false);
+    act(() => [...sheet.querySelectorAll('button')].find(item => item.textContent === 'All threads')!.click());
+    expect(sheet.hasAttribute('data-open')).toBe(false);
+    expect(host.querySelector('section.matter-phone-sheet[aria-label="Threads"]')!.hasAttribute('data-open')).toBe(true);
   });
 
   it('keeps notifications on the bell, out of the thread sheet', () => {

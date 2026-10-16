@@ -13,8 +13,8 @@ import {
   FolderOpen,
   Hand,
   LayoutDashboard,
-  LoaderCircle,
   MessageSquare,
+  MessagesSquare,
   PanelLeft,
   Search,
   SlidersHorizontal,
@@ -76,6 +76,10 @@ export interface MatterWorkbenchOptions {
   harnessSessionUrl?: string | null;
   threads: WorkbenchThread[];
   workspaceThreads?: WorkbenchThread[];
+  /** Threads that want the reader, for the running count and its sheet: running
+      ones beyond `threads` (other workspaces and devices, threads never opened)
+      and finished ones the reader opened before and has not read since. */
+  activeThreads?: WorkbenchThread[];
   currentKey: string;
   favorite: boolean;
   favoriteBusy?: boolean;
@@ -162,6 +166,7 @@ export function MatterWorkbench({
   // A phone split's pinned conversations, switched from the dock.
   const [paneSwitch, setPaneSwitch] = useState<WorkbenchPaneSwitch | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [runningOpen, setRunningOpen] = useState(false);
   const [typing, setTyping] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -392,7 +397,13 @@ export function MatterWorkbench({
   };
   const currentThread = o.threads.find(thread => thread.key === o.currentKey) ?? tabs.find(thread => thread.key === o.currentKey);
   const knownThreads = [...o.threads, ...tabs.filter(tab => !o.threads.some(thread => thread.key === tab.key))];
-  const othersRunning = knownThreads.filter(thread => thread.status === 'running' && thread.key !== o.currentKey).length;
+  // The account's running threads, then finished ones not read yet: what the
+  // running count in the status bar counts and opens.
+  const accountThreads = [...knownThreads, ...(o.activeThreads ?? []).filter(thread => !knownThreads.some(known => known.key === thread.key))];
+  const runningThreads = accountThreads.filter(thread => thread.status === 'running');
+  // A host that names the unread threads knows which were read before; without
+  // it, the listed threads stand in.
+  const unreadThreads = (o.activeThreads ?? o.threads).filter(thread => thread.status === 'unread' && thread.key !== o.currentKey);
   const favorites = o.threads.filter(thread => thread.favorite);
   const attention = (thread: WorkbenchThread) => thread.status === 'running' ? 0 : thread.status === 'unread' || thread.status === 'failed' ? 1 : 2;
   // The thread sheet lists the current thread's group first, then by attention.
@@ -469,6 +480,7 @@ export function MatterWorkbench({
           setSidebarOpen(false);
           setThreadsOpen(false);
           setMoreOpen(false);
+          setRunningOpen(false);
           e.currentTarget
             .querySelector('.matter-thread-menu[open]')
             ?.removeAttribute('open');
@@ -515,8 +527,11 @@ export function MatterWorkbench({
         <span className="matter-topbar-spacer" />
         {/* Usage windows are read, rarely touched: they live in the status bar. */}
         {visibleSubscriptionWindows(o.subscriptionUsage).length > 0 && <div className="matter-topbar-usage"><ComposerSubscriptionUsage usage={o.subscriptionUsage} /></div>}
-        {othersRunning > 0 && <button className="matter-running-chip" aria-label={translate('workbench.runningCount', { count: othersRunning })} onClick={() => setThreadsOpen(true)}>
-          <LoaderCircle aria-hidden="true" /><span>{othersRunning}</span><span className="matter-running-label">{translate('workbench.running')}</span>
+        {runningThreads.length > 0 && <button className="matter-running-chip" aria-expanded={runningOpen}
+          aria-label={translate('workbench.runningChip', { count: runningThreads.length })} title={translate('workbench.runningChip', { count: runningThreads.length })}
+          onClick={() => { setThreadsOpen(false); setMoreOpen(false); setRunningOpen(true); }}>
+          <span className="matter-running-icon" aria-hidden="true"><MessagesSquare /><i /></span>
+          <span>{runningThreads.length}</span><span className="matter-running-label">{translate('workbench.running')}</span>
         </button>}
         <div className="matter-connection">{connection}</div>
         {bell}
@@ -735,6 +750,19 @@ export function MatterWorkbench({
           {o.threads.some(thread => !tabs.some(tab => tab.key === thread.key)) && <>
             <h3>{translate('workbench.recentChats')}</h3>
             <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>
+          </>}
+        </PhoneSheet>
+        <PhoneSheet open={runningOpen} label={translate('workbench.runningSheet')} onClose={() => setRunningOpen(false)}
+          footer={<button type="button" className="matter-phone-sheet-all" onClick={() => { setRunningOpen(false); setThreadsOpen(true); }}>
+            <MessagesSquare aria-hidden="true" /><span>{translate('workbench.allThreads')}</span>
+          </button>}>
+          <h3>{translate('workbench.runningNow')} <span className="matter-section-count">{runningThreads.length}</span></h3>
+          {runningThreads.length
+            ? <div className="matter-thread-section">{runningThreads.map(thread => renderThread(thread))}</div>
+            : <p className="matter-sidebar-hint">{translate('workbench.noRunningThreads')}</p>}
+          {unreadThreads.length > 0 && <>
+            <h3>{translate('workbench.finishedUnread')} <span className="matter-section-count">{unreadThreads.length}</span></h3>
+            <div className="matter-thread-section">{unreadThreads.map(thread => renderThread(thread))}</div>
           </>}
         </PhoneSheet>
         <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} onClose={() => setMoreOpen(false)}>

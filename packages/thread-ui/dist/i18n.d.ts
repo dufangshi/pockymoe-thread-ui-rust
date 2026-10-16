@@ -3165,9 +3165,7 @@ declare const en: {
     readonly "automation.emptyTitle": "No automations yet";
     readonly "automation.emptyHint": "Ask your agent to schedule a task.";
     readonly "automation.hourly": "Every {{value1}} hours";
-    readonly "automation.hourlyOne": "Every hour";
     readonly "automation.minutely": "Every {{value1}} minutes";
-    readonly "automation.minutelyOne": "Every minute";
     readonly "automation.sourceNative": "Claude";
     readonly "automation.sourceDevice": "Device";
     readonly "automation.ruleDetails": "Details";
@@ -6449,9 +6447,7 @@ declare const zhCN: {
     "automation.emptyTitle": "还没有自动化";
     "automation.emptyHint": "让 Agent 帮你安排一个任务。";
     "automation.hourly": "每 {{value1}} 小时";
-    "automation.hourlyOne": "每小时";
     "automation.minutely": "每 {{value1}} 分钟";
-    "automation.minutelyOne": "每分钟";
     "automation.sourceNative": "Claude";
     "automation.sourceDevice": "设备";
     "automation.ruleDetails": "详情";
@@ -9755,9 +9751,7 @@ declare const resources: {
         readonly "automation.emptyTitle": "No automations yet";
         readonly "automation.emptyHint": "Ask your agent to schedule a task.";
         readonly "automation.hourly": "Every {{value1}} hours";
-        readonly "automation.hourlyOne": "Every hour";
         readonly "automation.minutely": "Every {{value1}} minutes";
-        readonly "automation.minutelyOne": "Every minute";
         readonly "automation.sourceNative": "Claude";
         readonly "automation.sourceDevice": "Device";
         readonly "automation.ruleDetails": "Details";
@@ -13038,9 +13032,7 @@ declare const resources: {
         "automation.emptyTitle": "还没有自动化";
         "automation.emptyHint": "让 Agent 帮你安排一个任务。";
         "automation.hourly": "每 {{value1}} 小时";
-        "automation.hourlyOne": "每小时";
         "automation.minutely": "每 {{value1}} 分钟";
-        "automation.minutelyOne": "每分钟";
         "automation.sourceNative": "Claude";
         "automation.sourceDevice": "设备";
         "automation.ruleDetails": "详情";

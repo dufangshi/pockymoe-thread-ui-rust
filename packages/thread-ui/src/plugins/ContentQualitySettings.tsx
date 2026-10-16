@@ -175,10 +175,11 @@ export function ContentQualitySettings({
     const id = ++requestId.current;
     setStatus('saving');
     try {
-      const snapshot = await save({
-        revision,
-        values: { ...stored, ...values },
-      });
+      const body: Record<string, unknown> = { ...stored, ...values };
+      // Supervisors before saved connections reject an unknown connectionId.
+      if (!values.connectionId && !('connectionId' in stored))
+        delete body.connectionId;
+      const snapshot = await save({ revision, values: body });
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
       setValues(next);
@@ -207,6 +208,38 @@ export function ContentQualitySettings({
   }
 
   const busy = status === 'loading' || status === 'saving';
+  const fileField =
+    values &&
+    field(
+      'connectionFile',
+      t('quality.connectionFile'),
+      <input
+        id={`${scope}-connectionFile`}
+        aria-describedby={`${scope}-connectionFile-hint`}
+        value={values.connectionFile}
+        maxLength={4096}
+        autoComplete="off"
+        spellCheck={false}
+        onChange={(event) => update('connectionFile', event.target.value)}
+      />,
+      t('quality.connectionFileHint'),
+    );
+  const modelField =
+    values &&
+    field(
+      'model',
+      t('quality.model'),
+      <input
+        id={`${scope}-model`}
+        aria-describedby={`${scope}-model-hint`}
+        value={values.model}
+        maxLength={200}
+        autoComplete="off"
+        spellCheck={false}
+        onChange={(event) => update('model', event.target.value)}
+      />,
+      t('quality.modelHint'),
+    );
   const error =
     status === 'loadError' || status === 'saveError' || status === 'conflict';
   return (
@@ -221,62 +254,44 @@ export function ContentQualitySettings({
       {values && (
         <fieldset disabled={busy} className="plugin-settings-fields">
           {connections ? (
-            <div
-              className="plugin-settings-field"
-              role="group"
-              aria-labelledby={`${scope}-connection`}
-            >
-              <span id={`${scope}-connection`}>{t('quality.connection')}</span>
-              {connections.renderPicker({
-                connectionId: values.connectionId,
-                model: values.model,
-                protocols: connectionProtocols,
-                disabled: busy,
-                onChange: (next) => {
-                  update('connectionId', next.connectionId);
-                  update('model', next.model);
-                },
-              })}
-              <p>
-                {t(
-                  !values.connectionId && values.connectionFile
-                    ? 'quality.connectionLegacyHint'
-                    : 'quality.connectionHint',
-                )}
-              </p>
-            </div>
+            <>
+              <div
+                className="plugin-settings-field"
+                role="group"
+                aria-labelledby={`${scope}-connection`}
+              >
+                <span id={`${scope}-connection`}>
+                  {t('quality.connection')}
+                </span>
+                {connections.renderPicker({
+                  connectionId: values.connectionId,
+                  model: values.model,
+                  protocols: connectionProtocols,
+                  disabled: busy,
+                  onChange: (next) => {
+                    update('connectionId', next.connectionId);
+                    update('model', next.model);
+                  },
+                })}
+                <p>
+                  {t(
+                    !values.connectionId && values.connectionFile
+                      ? 'quality.connectionLegacyHint'
+                      : 'quality.connectionHint',
+                  )}
+                </p>
+              </div>
+              {/* Without a saved connection the file (or its default path) still runs. */}
+              {!values.connectionId && modelField}
+              <details className="plugin-settings-legacy">
+                <summary>{t('quality.connectionLegacy')}</summary>
+                {fileField}
+              </details>
+            </>
           ) : (
             <>
-              {field(
-                'connectionFile',
-                t('quality.connectionFile'),
-                <input
-                  id={`${scope}-connectionFile`}
-                  aria-describedby={`${scope}-connectionFile-hint`}
-                  value={values.connectionFile}
-                  maxLength={4096}
-                  autoComplete="off"
-                  spellCheck={false}
-                  onChange={(event) =>
-                    update('connectionFile', event.target.value)
-                  }
-                />,
-                t('quality.connectionFileHint'),
-              )}
-              {field(
-                'model',
-                t('quality.model'),
-                <input
-                  id={`${scope}-model`}
-                  aria-describedby={`${scope}-model-hint`}
-                  value={values.model}
-                  maxLength={200}
-                  autoComplete="off"
-                  spellCheck={false}
-                  onChange={(event) => update('model', event.target.value)}
-                />,
-                t('quality.modelHint'),
-              )}
+              {fileField}
+              {modelField}
             </>
           )}
           {field(

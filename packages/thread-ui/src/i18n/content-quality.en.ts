@@ -26,6 +26,7 @@ export const contentQualityEn = {
   'quality.connectionFileHint':
     'Path to a private connection profile on the Supervisor device. Configure credentials in that file; only its path is stored here.',
   'quality.connection': 'Connection',
+  'quality.connectionLegacy': 'Connection profile file (legacy)',
   'quality.connectionHint':
     'A saved upstream connection on this device. Choosing one does not change any harness.',
   'quality.connectionLegacyHint':

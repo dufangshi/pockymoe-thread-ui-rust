@@ -157,7 +157,6 @@ describe('Content Quality settings', () => {
       {
         revision: 3,
         values: {
-          connectionId: '',
           connectionFile: '/private/quality-profile.json',
           model: 'test-model',
           language: 'en',
@@ -220,10 +219,19 @@ describe('Content Quality settings', () => {
         />,
       ),
     );
-    expect(container.textContent).not.toContain('Connection profile file');
+    const legacy = container.querySelector('details')!;
+    expect(legacy.open).toBe(false);
+    expect(legacy.querySelector('summary')?.textContent).toBe(
+      'Connection profile file (legacy)',
+    );
+    expect(control('Connection profile file').value).toBe(
+      '/legacy/profile.json',
+    );
     expect(container.textContent).toContain(
       'Currently using a connection profile file',
     );
+    // Without a chosen connection the legacy path still needs its model.
+    expect(control('Model').value).toBe('old-model');
     expect(pickerProps.at(-1)).toMatchObject({
       connectionId: '',
       model: 'old-model',
@@ -232,6 +240,12 @@ describe('Content Quality settings', () => {
     await change('Reader background', 'Kept while choosing');
     await click('picker:none:old-model');
     expect(container.textContent).toContain('picker:conn-1:chat-model');
+    // The picker owns the model once a connection is chosen.
+    expect(
+      [...container.querySelectorAll('label')].some(
+        (label) => label.textContent === 'Model',
+      ),
+    ).toBe(false);
     expect(control('Reader background').value).toBe('Kept while choosing');
     await click('Save settings');
     expect(save).toHaveBeenCalledWith({
@@ -244,6 +258,37 @@ describe('Content Quality settings', () => {
         futureOption: { kept: true },
       }),
     });
+  });
+
+  it('omits an empty connectionId unless it was stored, so older Supervisors accept the save', async () => {
+    const connections = { renderPicker: () => <span>picker</span> };
+    const save = vi
+      .fn()
+      .mockImplementation(async (snapshot) => ({ ...snapshot, revision: 2 }));
+    const load = vi
+      .fn()
+      .mockResolvedValueOnce({ revision: 1, values: { model: 'm' } })
+      .mockResolvedValue({
+        revision: 3,
+        values: { model: 'm', connectionId: '' },
+      });
+    await act(async () =>
+      root.render(
+        <ContentQualitySettings
+          pluginId="quality"
+          load={load}
+          save={save}
+          connections={connections}
+        />,
+      ),
+    );
+    await change('Model', 'edited');
+    await click('Save settings');
+    expect(save.mock.calls[0]![0].values).not.toHaveProperty('connectionId');
+    expect(save.mock.calls[0]![0].values.model).toBe('edited');
+    await click('Reload saved settings');
+    await click('Save settings');
+    expect(save.mock.calls[1]![0].values).toHaveProperty('connectionId', '');
   });
 
   it('passes the host connection capability through PluginProvider settings sections', async () => {

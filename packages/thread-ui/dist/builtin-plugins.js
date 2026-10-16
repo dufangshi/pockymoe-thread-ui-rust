@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-TQRMYL4O.js";
+} from "./chunk-Y3Q5EHV2.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -156,10 +156,10 @@ function ContentQualitySettings({
     const id = ++requestId.current;
     setStatus("saving");
     try {
-      const snapshot = await save({
-        revision,
-        values: { ...stored, ...values }
-      });
+      const body = { ...stored, ...values };
+      if (!values.connectionId && !("connectionId" in stored))
+        delete body.connectionId;
+      const snapshot = await save({ revision, values: body });
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
       setValues(next);
@@ -179,6 +179,40 @@ function ContentQualitySettings({
     ] });
   }
   const busy = status === "loading" || status === "saving";
+  const fileField = values && field(
+    "connectionFile",
+    t("quality.connectionFile"),
+    /* @__PURE__ */ jsx(
+      "input",
+      {
+        id: `${scope}-connectionFile`,
+        "aria-describedby": `${scope}-connectionFile-hint`,
+        value: values.connectionFile,
+        maxLength: 4096,
+        autoComplete: "off",
+        spellCheck: false,
+        onChange: (event) => update("connectionFile", event.target.value)
+      }
+    ),
+    t("quality.connectionFileHint")
+  );
+  const modelField = values && field(
+    "model",
+    t("quality.model"),
+    /* @__PURE__ */ jsx(
+      "input",
+      {
+        id: `${scope}-model`,
+        "aria-describedby": `${scope}-model-hint`,
+        value: values.model,
+        maxLength: 200,
+        autoComplete: "off",
+        spellCheck: false,
+        onChange: (event) => update("model", event.target.value)
+      }
+    ),
+    t("quality.modelHint")
+  );
   const error = status === "loadError" || status === "saveError" || status === "conflict";
   return /* @__PURE__ */ jsxs(
     "form",
@@ -191,64 +225,39 @@ function ContentQualitySettings({
       "aria-busy": busy,
       children: [
         values && /* @__PURE__ */ jsxs("fieldset", { disabled: busy, className: "plugin-settings-fields", children: [
-          connections ? /* @__PURE__ */ jsxs(
-            "div",
-            {
-              className: "plugin-settings-field",
-              role: "group",
-              "aria-labelledby": `${scope}-connection`,
-              children: [
-                /* @__PURE__ */ jsx("span", { id: `${scope}-connection`, children: t("quality.connection") }),
-                connections.renderPicker({
-                  connectionId: values.connectionId,
-                  model: values.model,
-                  protocols: connectionProtocols,
-                  disabled: busy,
-                  onChange: (next) => {
-                    update("connectionId", next.connectionId);
-                    update("model", next.model);
-                  }
-                }),
-                /* @__PURE__ */ jsx("p", { children: t(
-                  !values.connectionId && values.connectionFile ? "quality.connectionLegacyHint" : "quality.connectionHint"
-                ) })
-              ]
-            }
-          ) : /* @__PURE__ */ jsxs(Fragment, { children: [
-            field(
-              "connectionFile",
-              t("quality.connectionFile"),
-              /* @__PURE__ */ jsx(
-                "input",
-                {
-                  id: `${scope}-connectionFile`,
-                  "aria-describedby": `${scope}-connectionFile-hint`,
-                  value: values.connectionFile,
-                  maxLength: 4096,
-                  autoComplete: "off",
-                  spellCheck: false,
-                  onChange: (event) => update("connectionFile", event.target.value)
-                }
-              ),
-              t("quality.connectionFileHint")
+          connections ? /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs(
+              "div",
+              {
+                className: "plugin-settings-field",
+                role: "group",
+                "aria-labelledby": `${scope}-connection`,
+                children: [
+                  /* @__PURE__ */ jsx("span", { id: `${scope}-connection`, children: t("quality.connection") }),
+                  connections.renderPicker({
+                    connectionId: values.connectionId,
+                    model: values.model,
+                    protocols: connectionProtocols,
+                    disabled: busy,
+                    onChange: (next) => {
+                      update("connectionId", next.connectionId);
+                      update("model", next.model);
+                    }
+                  }),
+                  /* @__PURE__ */ jsx("p", { children: t(
+                    !values.connectionId && values.connectionFile ? "quality.connectionLegacyHint" : "quality.connectionHint"
+                  ) })
+                ]
+              }
             ),
-            field(
-              "model",
-              t("quality.model"),
-              /* @__PURE__ */ jsx(
-                "input",
-                {
-                  id: `${scope}-model`,
-                  "aria-describedby": `${scope}-model-hint`,
-                  value: values.model,
-                  maxLength: 200,
-                  autoComplete: "off",
-                  spellCheck: false,
-                  onChange: (event) => update("model", event.target.value)
-                }
-              ),
-              t("quality.modelHint")
-            )
+            !values.connectionId && modelField,
+            /* @__PURE__ */ jsxs("details", { className: "plugin-settings-legacy", children: [
+              /* @__PURE__ */ jsx("summary", { children: t("quality.connectionLegacy") }),
+              fileField
+            ] })
+          ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+            fileField,
+            modelField
           ] }),
           field(
             "language",

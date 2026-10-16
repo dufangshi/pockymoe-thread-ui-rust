@@ -72,7 +72,7 @@ export const settingsEn = {
   "settings.connBaseUrl": "Base URL",
   "settings.connApiKey": "API key",
   "settings.connApiKeyKeep": "Leave empty to keep the saved key",
-  "settings.connApiKeyEndpointChanged": "The URL changed, so enter the key again.",
+  "settings.connApiKeyEndpointChanged": "The URL or API format changed, so enter the key again.",
   "settings.connAuth": "Authentication",
   "settings.connAuthKey": "API key (x-api-key)",
   "settings.connAuthBearer": "Bearer token",

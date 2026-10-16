@@ -72,7 +72,7 @@ export const settingsZhCN = {
   "settings.connBaseUrl": "Base URL",
   "settings.connApiKey": "API 密钥",
   "settings.connApiKeyKeep": "留空则保留已保存的密钥",
-  "settings.connApiKeyEndpointChanged": "URL 已更改，请重新输入密钥。",
+  "settings.connApiKeyEndpointChanged": "URL 或 API 格式已更改，请重新输入密钥。",
   "settings.connAuth": "认证方式",
   "settings.connAuthKey": "API 密钥（x-api-key）",
   "settings.connAuthBearer": "Bearer 令牌",

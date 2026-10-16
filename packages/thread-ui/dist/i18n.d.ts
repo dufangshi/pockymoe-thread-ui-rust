@@ -1066,7 +1066,7 @@ declare const en: {
     readonly "settings.connBaseUrl": "Base URL";
     readonly "settings.connApiKey": "API key";
     readonly "settings.connApiKeyKeep": "Leave empty to keep the saved key";
-    readonly "settings.connApiKeyEndpointChanged": "The URL changed, so enter the key again.";
+    readonly "settings.connApiKeyEndpointChanged": "The URL or API format changed, so enter the key again.";
     readonly "settings.connAuth": "Authentication";
     readonly "settings.connAuthKey": "API key (x-api-key)";
     readonly "settings.connAuthBearer": "Bearer token";
@@ -3492,6 +3492,7 @@ declare const en: {
     readonly 'quality.connectionFile': "Connection profile file";
     readonly 'quality.connectionFileHint': "Path to a private connection profile on the Supervisor device. Configure credentials in that file; only its path is stored here.";
     readonly 'quality.connection': "Connection";
+    readonly 'quality.connectionLegacy': "Connection profile file (legacy)";
     readonly 'quality.connectionHint': "A saved upstream connection on this device. Choosing one does not change any harness.";
     readonly 'quality.connectionLegacyHint': "Currently using a connection profile file. Choose a saved connection to replace it.";
     readonly 'quality.model': "Model";
@@ -4733,7 +4734,7 @@ declare const zhCN: {
     "settings.connBaseUrl": "Base URL";
     "settings.connApiKey": "API 密钥";
     "settings.connApiKeyKeep": "留空则保留已保存的密钥";
-    "settings.connApiKeyEndpointChanged": "URL 已更改，请重新输入密钥。";
+    "settings.connApiKeyEndpointChanged": "URL 或 API 格式已更改，请重新输入密钥。";
     "settings.connAuth": "认证方式";
     "settings.connAuthKey": "API 密钥（x-api-key）";
     "settings.connAuthBearer": "Bearer 令牌";
@@ -7159,6 +7160,7 @@ declare const zhCN: {
     'quality.connectionFile': "连接配置文件";
     'quality.connectionFileHint': "Supervisor 设备上私有连接配置文件的路径。请在该文件中配置凭据；这里只保存路径。";
     'quality.connection': "连接";
+    'quality.connectionLegacy': "连接配置文件（旧方式）";
     'quality.connectionHint': "本设备上保存的上游连接。选择它不会改动任何 harness。";
     'quality.connectionLegacyHint': "当前使用连接配置文件。选择一个已保存的连接即可替换。";
     'quality.model': "模型";
@@ -8422,7 +8424,7 @@ declare const resources: {
         readonly "settings.connBaseUrl": "Base URL";
         readonly "settings.connApiKey": "API key";
         readonly "settings.connApiKeyKeep": "Leave empty to keep the saved key";
-        readonly "settings.connApiKeyEndpointChanged": "The URL changed, so enter the key again.";
+        readonly "settings.connApiKeyEndpointChanged": "The URL or API format changed, so enter the key again.";
         readonly "settings.connAuth": "Authentication";
         readonly "settings.connAuthKey": "API key (x-api-key)";
         readonly "settings.connAuthBearer": "Bearer token";
@@ -10848,6 +10850,7 @@ declare const resources: {
         readonly 'quality.connectionFile': "Connection profile file";
         readonly 'quality.connectionFileHint': "Path to a private connection profile on the Supervisor device. Configure credentials in that file; only its path is stored here.";
         readonly 'quality.connection': "Connection";
+        readonly 'quality.connectionLegacy': "Connection profile file (legacy)";
         readonly 'quality.connectionHint': "A saved upstream connection on this device. Choosing one does not change any harness.";
         readonly 'quality.connectionLegacyHint': "Currently using a connection profile file. Choose a saved connection to replace it.";
         readonly 'quality.model': "Model";
@@ -12088,7 +12091,7 @@ declare const resources: {
         "settings.connBaseUrl": "Base URL";
         "settings.connApiKey": "API 密钥";
         "settings.connApiKeyKeep": "留空则保留已保存的密钥";
-        "settings.connApiKeyEndpointChanged": "URL 已更改，请重新输入密钥。";
+        "settings.connApiKeyEndpointChanged": "URL 或 API 格式已更改，请重新输入密钥。";
         "settings.connAuth": "认证方式";
         "settings.connAuthKey": "API 密钥（x-api-key）";
         "settings.connAuthBearer": "Bearer 令牌";
@@ -14514,6 +14517,7 @@ declare const resources: {
         'quality.connectionFile': "连接配置文件";
         'quality.connectionFileHint': "Supervisor 设备上私有连接配置文件的路径。请在该文件中配置凭据；这里只保存路径。";
         'quality.connection': "连接";
+        'quality.connectionLegacy': "连接配置文件（旧方式）";
         'quality.connectionHint': "本设备上保存的上游连接。选择它不会改动任何 harness。";
         'quality.connectionLegacyHint': "当前使用连接配置文件。选择一个已保存的连接即可替换。";
         'quality.model': "模型";

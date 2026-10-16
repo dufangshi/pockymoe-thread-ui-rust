@@ -3388,7 +3388,7 @@ var workbenchEn = {
   "workbench.subagentUpdated": "Updated",
   "workbench.subagentLoadEarlier": "Load earlier activity",
   "workbench.phoneDock": "Thread navigation",
-  "workbench.phoneDockThread": "{{title}}. Tap for threads, swipe sideways to switch",
+  "workbench.phoneDockThread": "{{title}}. Tap for threads",
   "workbench.phoneDockPanes": "Views",
   "workbench.moreActions": "More actions",
   "workbench.runningCount": "{{count}} other threads running",
@@ -3405,7 +3405,11 @@ var workbenchEn = {
   "workbench.phoneHandLeft": "Left",
   "workbench.phoneHandHint": "Left mirrors the dock, the composer buttons and the turn navigation.",
   "workbench.leftHanded": "Left-handed",
-  "workbench.pinnedThreads": "Pinned conversations"
+  "workbench.pinnedThreads": "Pinned conversations",
+  "workbench.shortcutMoved": "{{title}} moved to {{position}} of {{count}}",
+  "workbench.shortcutReorderHint": "Drag to reorder",
+  "workbench.shortcutReorderHintTouch": "Long-press and drag to reorder",
+  "workbench.allWorkspaces": "All workspaces"
 };
 
 // src/i18n/en.ts
@@ -6811,7 +6815,7 @@ var workbenchZhCN = {
   "workbench.subagentUpdated": "\u66F4\u65B0\u4E8E",
   "workbench.subagentLoadEarlier": "\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55",
   "workbench.phoneDock": "\u7EBF\u7A0B\u5BFC\u822A",
-  "workbench.phoneDockThread": "{{title}}\u3002\u8F7B\u70B9\u6253\u5F00\u7EBF\u7A0B\u5217\u8868\uFF0C\u5DE6\u53F3\u6ED1\u52A8\u5207\u6362",
+  "workbench.phoneDockThread": "{{title}}\u3002\u8F7B\u70B9\u6253\u5F00\u7EBF\u7A0B\u5217\u8868",
   "workbench.phoneDockPanes": "\u89C6\u56FE",
   "workbench.moreActions": "\u66F4\u591A\u64CD\u4F5C",
   "workbench.runningCount": "\u53E6\u6709 {{count}} \u4E2A\u7EBF\u7A0B\u8FD0\u884C\u4E2D",
@@ -6828,7 +6832,11 @@ var workbenchZhCN = {
   "workbench.phoneHandLeft": "\u5DE6\u624B",
   "workbench.phoneHandHint": "\u5DE6\u624B\u628A\u5E95\u680F\u3001\u8F93\u5165\u6846\u6309\u94AE\u548C\u8F6E\u6B21\u5BFC\u822A\u955C\u50CF\u5230\u5DE6\u8FB9\u3002",
   "workbench.leftHanded": "\u5DE6\u624B\u6A21\u5F0F",
-  "workbench.pinnedThreads": "\u56FA\u5B9A\u7684\u5BF9\u8BDD"
+  "workbench.pinnedThreads": "\u56FA\u5B9A\u7684\u5BF9\u8BDD",
+  "workbench.shortcutMoved": "{{title}} \u5DF2\u79FB\u5230\u7B2C {{position}} \u4F4D\uFF0C\u5171 {{count}} \u4E2A",
+  "workbench.shortcutReorderHint": "\u62D6\u52A8\u8C03\u6574\u987A\u5E8F",
+  "workbench.shortcutReorderHintTouch": "\u957F\u6309\u62D6\u52A8\u8C03\u6574\u987A\u5E8F",
+  "workbench.allWorkspaces": "\u6240\u6709\u5DE5\u4F5C\u533A"
 };
 
 // src/i18n/zh-CN.ts

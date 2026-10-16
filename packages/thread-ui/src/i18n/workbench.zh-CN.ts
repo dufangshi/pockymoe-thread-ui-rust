@@ -508,7 +508,7 @@ export const workbenchZhCN = {
   'workbench.subagentUpdated': '更新于',
   'workbench.subagentLoadEarlier': '加载更早记录',
   'workbench.phoneDock': '线程导航',
-  'workbench.phoneDockThread': '{{title}}。轻点打开线程列表，左右滑动切换',
+  'workbench.phoneDockThread': '{{title}}。轻点打开线程列表',
   'workbench.phoneDockPanes': '视图',
   'workbench.moreActions': '更多操作',
   'workbench.runningCount': '另有 {{count}} 个线程运行中',
@@ -526,4 +526,8 @@ export const workbenchZhCN = {
   "workbench.phoneHandHint": "左手把底栏、输入框按钮和轮次导航镜像到左边。",
   "workbench.leftHanded": "左手模式",
   "workbench.pinnedThreads": "固定的对话",
+  "workbench.shortcutMoved": "{{title}} 已移到第 {{position}} 位，共 {{count}} 个",
+  "workbench.shortcutReorderHint": "拖动调整顺序",
+  "workbench.shortcutReorderHintTouch": "长按拖动调整顺序",
+  "workbench.allWorkspaces": "所有工作区",
 } as const;

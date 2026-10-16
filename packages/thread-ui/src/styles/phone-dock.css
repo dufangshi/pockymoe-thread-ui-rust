@@ -106,17 +106,10 @@
     color: var(--theme-fg);
     font-size: 14px;
     font-weight: 600;
-    touch-action: pan-y;
-    transition: transform 120ms;
   }
-  .matter-phone-thread[data-nudge='1'] { transform: translateX(10px); }
-  .matter-phone-thread[data-nudge='-1'] { transform: translateX(-10px); }
   .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread svg { width: 16px; height: 16px; flex: none; color: var(--theme-fg-muted); }
   .matter-phone-thread .matter-status-dot { flex: none; }
   .matter-phone-thread-title { flex: 1; min-width: 0; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
-  .matter-phone-thread-dots { position: absolute; bottom: 4px; left: 50%; display: flex; gap: 3px; transform: translateX(-50%); }
-  .matter-phone-thread-dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--theme-border-strong); }
-  .matter-phone-thread-dots i[data-on] { background: var(--theme-fg-muted); }
   /* A split's two conversations, as a segmented control in the thread slot. */
   .matter-phone-pins {
     display: flex;
@@ -293,6 +286,39 @@
   }
   .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar-scrim[data-open] { opacity: 1; pointer-events: auto; }
   .matter-workbench.has-phone-dock .matter-sidebar-scrim[data-dragging]:not(#_) { transition: none; }
+  /* The drawer itself: the app's mark and close on top, then all workspaces,
+     shortcuts (in their own order) and recent conversations. */
+  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar { width: min(320px, calc(100vw - 48px)); }
+  .matter-drawer-brand { display: flex; align-items: center; gap: 10px; min-width: 0; font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+  .matter-drawer-brand b {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: var(--theme-surface-strong);
+    font-size: 15px;
+    letter-spacing: -1.5px;
+  }
+  .matter-drawer-brand i { color: var(--theme-accent-strong, var(--theme-accent-solid)); font-style: normal; }
+  .thread-ui-shell .matter-workbench .matter-drawer-home {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 46px;
+    margin: 2px 0 10px;
+    padding: 0 12px;
+    border: 1px solid var(--theme-border);
+    border-radius: 12px;
+    background: var(--theme-surface);
+    color: var(--theme-fg);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .matter-drawer-home > span { flex: 1; min-width: 0; }
+  .matter-drawer-home svg { width: 18px; height: 18px; flex: none; color: var(--theme-fg-muted); }
   /* Sideways drags are the drawer's; the browser's own swipe-back stays out. */
   .thread-ui-shell .matter-workbench.has-phone-dock .matter-main { overscroll-behavior-x: none; }
 

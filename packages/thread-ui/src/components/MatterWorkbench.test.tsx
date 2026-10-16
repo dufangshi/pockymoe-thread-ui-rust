@@ -183,7 +183,29 @@ describe('one-handed phone dock', () => {
     expect(sheet.hasAttribute('data-open')).toBe(false);
   });
 
-  it('switches to the neighbouring open thread with a sideways swipe', () => {
+  it('lists the current thread first in the sheet, then by attention', () => {
+    options = { ...baseOptions, currentKey: 'c', workspaceThreads: [thread('a'), thread('b', 'running'), thread('c')] };
+    render();
+    const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Threads"]')!;
+    expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['Cws', 'Bws', 'Aws']);
+  });
+
+  it('opens a drawer with the app mark, all workspaces and ordered shortcuts, without a Files button', () => {
+    const onReorderShortcuts = vi.fn();
+    options = { ...baseOptions, onReorderShortcuts, threads: [
+      { ...thread('a'), favorite: true }, { ...thread('b'), favorite: true, shortcutOrder: 0 }, thread('c'),
+    ] };
+    render();
+    const drawer = host.querySelector('aside.matter-sidebar')!;
+    expect(drawer.querySelector('.matter-drawer-brand')?.textContent).toContain('Pockymoe');
+    expect(drawer.querySelector('button[aria-label="Open Explorer"]')).toBeNull();
+    expect(drawer.querySelector('a.matter-drawer-home')?.getAttribute('href')).toBe('/workspaces');
+    expect([...drawer.querySelectorAll('[data-testid="shortcuts"] [data-shortcut]')].map(row => row.getAttribute('data-shortcut'))).toEqual(['b', 'a']);
+    expect(drawer.querySelector('.matter-shortcut-hint')?.textContent).toBe('Long-press and drag to reorder');
+    expect(drawer.querySelector('.matter-sidebar-footer')).toBeNull();
+  });
+
+  it('does not switch threads with a sideways swipe on the dock', () => {
     const onNavigate = vi.fn();
     options = { ...baseOptions, currentKey: 'b', onNavigate, workspaceThreads: [thread('a'), thread('b'), thread('c')] };
     render();
@@ -191,10 +213,8 @@ describe('one-handed phone dock', () => {
     pointer(chip, 'pointerdown', 200);
     pointer(chip, 'pointermove', 140);
     pointer(chip, 'pointerup', 120);
-    act(() => (chip as HTMLButtonElement).click());
-    expect(onNavigate).toHaveBeenCalledTimes(1);
-    expect(onNavigate).toHaveBeenCalledWith('/threads/c');
-    expect(host.querySelector('section.matter-phone-sheet[aria-label="Threads"]')!.hasAttribute('data-open')).toBe(false);
+    expect(onNavigate).not.toHaveBeenCalled();
+    expect(host.querySelector('.matter-phone-thread-dots')).toBeNull();
   });
 
   it('keeps the moved actions mounted in the More sheet', () => {

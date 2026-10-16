@@ -508,7 +508,7 @@ export const workbenchEn = {
   'workbench.subagentUpdated': 'Updated',
   'workbench.subagentLoadEarlier': 'Load earlier activity',
   'workbench.phoneDock': 'Thread navigation',
-  'workbench.phoneDockThread': '{{title}}. Tap for threads, swipe sideways to switch',
+  'workbench.phoneDockThread': '{{title}}. Tap for threads',
   'workbench.phoneDockPanes': 'Views',
   'workbench.moreActions': 'More actions',
   'workbench.runningCount': '{{count}} other threads running',
@@ -526,4 +526,8 @@ export const workbenchEn = {
   "workbench.phoneHandHint": "Left mirrors the dock, the composer buttons and the turn navigation.",
   "workbench.leftHanded": "Left-handed",
   "workbench.pinnedThreads": "Pinned conversations",
+  "workbench.shortcutMoved": "{{title}} moved to {{position}} of {{count}}",
+  "workbench.shortcutReorderHint": "Drag to reorder",
+  "workbench.shortcutReorderHintTouch": "Long-press and drag to reorder",
+  "workbench.allWorkspaces": "All workspaces",
 } as const;

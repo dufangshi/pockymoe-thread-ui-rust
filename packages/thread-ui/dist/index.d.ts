@@ -206,6 +206,8 @@ interface WorkbenchThread {
     rootKey?: string;
     /** Harness id such as `codex` or `claude`; themes may show it as an avatar. */
     agent?: string;
+    /** A shortcut's place in the account's own order; unordered ones follow by recency. */
+    shortcutOrder?: number;
 }
 interface WorkbenchNotification {
     id: string;
@@ -247,6 +249,8 @@ interface MatterWorkbenchOptions {
     /** Warm a thread's detail before it is opened (a row is pressed, or it is a
         dock swipe away), so opening it shows the conversation at once. */
     onPrefetchThread?: (href: string) => void;
+    /** Store a new shortcut order (thread keys, first to last). */
+    onReorderShortcuts?: (keys: string[]) => void;
     onSearch: () => void;
     search?: ReactNode;
     searchOpen?: boolean;

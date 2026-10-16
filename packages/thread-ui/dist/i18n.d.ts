@@ -674,7 +674,7 @@ declare const en: {
     readonly 'workbench.subagentUpdated': "Updated";
     readonly 'workbench.subagentLoadEarlier': "Load earlier activity";
     readonly 'workbench.phoneDock': "Thread navigation";
-    readonly 'workbench.phoneDockThread': "{{title}}. Tap for threads, swipe sideways to switch";
+    readonly 'workbench.phoneDockThread': "{{title}}. Tap for threads";
     readonly 'workbench.phoneDockPanes': "Views";
     readonly 'workbench.moreActions': "More actions";
     readonly 'workbench.runningCount': "{{count}} other threads running";
@@ -692,6 +692,10 @@ declare const en: {
     readonly "workbench.phoneHandHint": "Left mirrors the dock, the composer buttons and the turn navigation.";
     readonly "workbench.leftHanded": "Left-handed";
     readonly "workbench.pinnedThreads": "Pinned conversations";
+    readonly "workbench.shortcutMoved": "{{title}} moved to {{position}} of {{count}}";
+    readonly "workbench.shortcutReorderHint": "Drag to reorder";
+    readonly "workbench.shortcutReorderHintTouch": "Long-press and drag to reorder";
+    readonly "workbench.allWorkspaces": "All workspaces";
     readonly "sharing.open": "Open";
     readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
     readonly "sharing.supervisorStatusUnavailable": "Supervisor status unavailable";
@@ -4090,7 +4094,7 @@ declare const zhCN: {
     'workbench.subagentUpdated': "更新于";
     'workbench.subagentLoadEarlier': "加载更早记录";
     'workbench.phoneDock': "线程导航";
-    'workbench.phoneDockThread': "{{title}}。轻点打开线程列表，左右滑动切换";
+    'workbench.phoneDockThread': "{{title}}。轻点打开线程列表";
     'workbench.phoneDockPanes': "视图";
     'workbench.moreActions': "更多操作";
     'workbench.runningCount': "另有 {{count}} 个线程运行中";
@@ -4108,6 +4112,10 @@ declare const zhCN: {
     "workbench.phoneHandHint": "左手把底栏、输入框按钮和轮次导航镜像到左边。";
     "workbench.leftHanded": "左手模式";
     "workbench.pinnedThreads": "固定的对话";
+    "workbench.shortcutMoved": "{{title}} 已移到第 {{position}} 位，共 {{count}} 个";
+    "workbench.shortcutReorderHint": "拖动调整顺序";
+    "workbench.shortcutReorderHintTouch": "长按拖动调整顺序";
+    "workbench.allWorkspaces": "所有工作区";
     "sharing.open": "打开";
     "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
     "sharing.supervisorStatusUnavailable": "Supervisor 状态不可用";
@@ -7528,7 +7536,7 @@ declare const resources: {
         readonly 'workbench.subagentUpdated': "Updated";
         readonly 'workbench.subagentLoadEarlier': "Load earlier activity";
         readonly 'workbench.phoneDock': "Thread navigation";
-        readonly 'workbench.phoneDockThread': "{{title}}. Tap for threads, swipe sideways to switch";
+        readonly 'workbench.phoneDockThread': "{{title}}. Tap for threads";
         readonly 'workbench.phoneDockPanes': "Views";
         readonly 'workbench.moreActions': "More actions";
         readonly 'workbench.runningCount': "{{count}} other threads running";
@@ -7546,6 +7554,10 @@ declare const resources: {
         readonly "workbench.phoneHandHint": "Left mirrors the dock, the composer buttons and the turn navigation.";
         readonly "workbench.leftHanded": "Left-handed";
         readonly "workbench.pinnedThreads": "Pinned conversations";
+        readonly "workbench.shortcutMoved": "{{title}} moved to {{position}} of {{count}}";
+        readonly "workbench.shortcutReorderHint": "Drag to reorder";
+        readonly "workbench.shortcutReorderHintTouch": "Long-press and drag to reorder";
+        readonly "workbench.allWorkspaces": "All workspaces";
         readonly "sharing.open": "Open";
         readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
         readonly "sharing.supervisorStatusUnavailable": "Supervisor status unavailable";
@@ -10943,7 +10955,7 @@ declare const resources: {
         'workbench.subagentUpdated': "更新于";
         'workbench.subagentLoadEarlier': "加载更早记录";
         'workbench.phoneDock': "线程导航";
-        'workbench.phoneDockThread': "{{title}}。轻点打开线程列表，左右滑动切换";
+        'workbench.phoneDockThread': "{{title}}。轻点打开线程列表";
         'workbench.phoneDockPanes': "视图";
         'workbench.moreActions': "更多操作";
         'workbench.runningCount': "另有 {{count}} 个线程运行中";
@@ -10961,6 +10973,10 @@ declare const resources: {
         "workbench.phoneHandHint": "左手把底栏、输入框按钮和轮次导航镜像到左边。";
         "workbench.leftHanded": "左手模式";
         "workbench.pinnedThreads": "固定的对话";
+        "workbench.shortcutMoved": "{{title}} 已移到第 {{position}} 位，共 {{count}} 个";
+        "workbench.shortcutReorderHint": "拖动调整顺序";
+        "workbench.shortcutReorderHintTouch": "长按拖动调整顺序";
+        "workbench.allWorkspaces": "所有工作区";
         "sharing.open": "打开";
         "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
         "sharing.supervisorStatusUnavailable": "Supervisor 状态不可用";

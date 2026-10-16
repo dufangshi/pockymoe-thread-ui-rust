@@ -28,6 +28,7 @@ import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedT
 import { useThemeFeature } from './themeHooks';
 import { PhoneDock, PhoneSheet, type PhonePane } from './workbench/PhoneDock';
 import { PhoneDockContext } from './workbench/phoneDockContext';
+import { ShortcutList } from './workbench/ShortcutList';
 import type { WorkbenchPaneSwitch } from './workbench/paneSwitch';
 import { ComposerSubscriptionUsage, visibleSubscriptionWindows } from './composer/ComposerSubscriptionUsage';
 import type { AgentSubscriptionUsageDto } from '@pockymoe/shared';
@@ -45,6 +46,8 @@ export interface WorkbenchThread {
   rootKey?: string;
   /** Harness id such as `codex` or `claude`; themes may show it as an avatar. */
   agent?: string;
+  /** A shortcut's place in the account's own order; unordered ones follow by recency. */
+  shortcutOrder?: number;
 }
 export interface WorkbenchNotification {
   id: string;
@@ -86,6 +89,8 @@ export interface MatterWorkbenchOptions {
   /** Warm a thread's detail before it is opened (a row is pressed, or it is a
       dock swipe away), so opening it shows the conversation at once. */
   onPrefetchThread?: (href: string) => void;
+  /** Store a new shortcut order (thread keys, first to last). */
+  onReorderShortcuts?: (keys: string[]) => void;
   onSearch: () => void;
   search?: ReactNode;
   searchOpen?: boolean;
@@ -283,7 +288,7 @@ export function MatterWorkbench({
       const target = event.target instanceof Element ? event.target : null;
       start = null;
       if (event.touches.length !== 1 || !target?.closest('.thread-graph-composer-host, .matter-phone-dock')) return;
-      if (target.closest('.matter-phone-thread, [role="menu"], [role="listbox"], [role="dialog"], .thread-jump-latest-cluster')) return;
+      if (target.closest('[role="menu"], [role="listbox"], [role="dialog"], .thread-jump-latest-cluster')) return;
       const scroller = target.closest<HTMLElement>('[role="textbox"], textarea');
       if (scroller && /auto|scroll/.test(getComputedStyle(scroller).overflowY) && scroller.scrollHeight > scroller.clientHeight + 1) return;
       start = { x: event.touches[0]!.clientX, y: event.touches[0]!.clientY };
@@ -384,22 +389,13 @@ export function MatterWorkbench({
     if ((next === 'shell') !== (o.activeView === 'shell')) o.onViewChange('shell');
   };
   const currentThread = o.threads.find(thread => thread.key === o.currentKey) ?? tabs.find(thread => thread.key === o.currentKey);
-  const tabRoots = groupThreads(tabs).map(group => group.root);
-  const swipeSiblings = tabRoots.some(thread => thread.key === o.currentKey) ? tabRoots : tabs;
-  const prefetchThread = o.onPrefetchThread;
-  const swipeNeighbours = (() => {
-    const index = swipeSiblings.findIndex(thread => thread.key === o.currentKey);
-    return index < 0 ? '' : [swipeSiblings[index - 1]?.href, swipeSiblings[index + 1]?.href].filter(Boolean).join(' ');
-  })();
-  useEffect(() => {
-    // The threads a sideways swipe on the dock opens, warmed once the page is idle.
-    if (!dock || !prefetchThread || !swipeNeighbours || typeof window.requestIdleCallback !== 'function') return;
-    const handle = window.requestIdleCallback(() => { for (const href of swipeNeighbours.split(' ')) prefetchThread(href); });
-    return () => window.cancelIdleCallback(handle);
-  }, [dock, prefetchThread, swipeNeighbours]);
   const knownThreads = [...o.threads, ...tabs.filter(tab => !o.threads.some(thread => thread.key === tab.key))];
   const othersRunning = knownThreads.filter(thread => thread.status === 'running' && thread.key !== o.currentKey).length;
+  const favorites = o.threads.filter(thread => thread.favorite);
   const attention = (thread: WorkbenchThread) => thread.status === 'running' ? 0 : thread.status === 'unread' || thread.status === 'failed' ? 1 : 2;
+  // The thread sheet lists the current thread's group first, then by attention.
+  const currentRootKey = tabs.find(thread => thread.key === o.currentKey)?.rootKey ?? o.currentKey;
+  const inCurrentGroup = (thread: WorkbenchThread) => thread.key === o.currentKey || thread.key === currentRootKey || thread.rootKey === currentRootKey;
   const bell = (
     <button
       aria-label={translate("workbench.notifications")}
@@ -589,8 +585,9 @@ export function MatterWorkbench({
         aria-label={translate("workbench.threadNavigation")}
       >
         <div className="matter-sidebar-heading">
-          <span>{translate("workbench.workspace")}</span>
-          <button className="matter-mobile-close" aria-label={translate("workbench.openExplorer")} onClick={() => {setExplorerOpen(true);setSidebarOpen(false);}}><FolderOpen data-icon="explorer" /></button>
+          {dock
+            ? <span className="matter-drawer-brand"><b aria-hidden="true">p<i>m</i></b>Pockymoe</span>
+            : <span>{translate("workbench.workspace")}</span>}
           <button
             className="matter-mobile-close"
             aria-label={translate("workbench.closeSidebar")}
@@ -599,11 +596,17 @@ export function MatterWorkbench({
             <X data-icon="close" />
           </button>
         </div>
-        {drawerTools && (
+        {/* Under the dock, Chat lives in the dock and Home in the row below. */}
+        {drawerTools && !dock && (
           <div className="matter-drawer-tools" role="group" aria-label={translate("workbench.workspaceTools")}>
             {homeHref && <a href={homeHref} onClick={goHome}><Home data-icon="home" /><span>{translate("workbench.workspaces")}</span></a>}
             <button aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={() => { showChat(); setSidebarOpen(false); }}><MessageSquare data-icon="chat" /><span>{translate("workbench.chat")}</span></button>
           </div>
+        )}
+        {dock && homeHref && (
+          <a className="matter-drawer-home" href={homeHref} onClick={goHome}>
+            <Home data-icon="home" /><span>{translate("workbench.allWorkspaces")}</span><ChevronRight aria-hidden="true" />
+          </a>
         )}
         {o.error && (
           <p className="matter-sidebar-error" role="alert">
@@ -617,13 +620,15 @@ export function MatterWorkbench({
         >
           {shortcutsOpen ? <ChevronDown /> : <ChevronRight />}
           <span>{translate("workbench.shortcuts")}</span>
-          <Star data-icon="shortcuts" />
+          {favorites.length > 0 ? <span className="matter-section-count">{favorites.length}</span> : <Star data-icon="shortcuts" />}
         </button>
         {shortcutsOpen && (
           <div className="matter-thread-section" data-testid="shortcuts">
-            {o.threads.filter((t) => t.favorite).map(thread => renderThread(
-              thread, threadGroupActivity(thread, o.threads.filter(child => child.rootKey === thread.key && child.key !== thread.key)),
-            ))}
+            {favorites.length > 1 && o.onReorderShortcuts && (
+              <p className="matter-shortcut-hint">{translate(mobile ? "workbench.shortcutReorderHintTouch" : "workbench.shortcutReorderHint")}</p>
+            )}
+            <ShortcutList threads={favorites} onReorder={o.onReorderShortcuts}
+              renderRow={thread => renderThread(thread, threadGroupActivity(thread, o.threads.filter(child => child.rootKey === thread.key && child.key !== thread.key)))} />
             {!o.threads.some((t) => t.favorite) && (
               <p className="matter-sidebar-hint">
                 {translate("workbench.starAThreadToKeepItClose")}<br />
@@ -645,8 +650,8 @@ export function MatterWorkbench({
             {renderThreadGroups(o.threads)}
           </div>
         )}
-        <div className="matter-sidebar-footer">
-          {translate("workbench.yourConversationsTogether")}</div>
+        {!dock && <div className="matter-sidebar-footer">
+          {translate("workbench.yourConversationsTogether")}</div>}
       </aside>
       <main className="matter-main">
         {!dock && <div className="matter-tabs-row">
@@ -711,8 +716,8 @@ export function MatterWorkbench({
         </PhoneDockContext.Provider>
       </main>
       {dock && <>
-        <PhoneDock title={title} thread={currentThread} paneSwitch={paneSwitch} siblings={swipeSiblings} currentKey={o.currentKey} pane={pane}
-          terminalEnabled={o.terminalEnabled} onPane={choosePane} onNavigate={navigate}
+        <PhoneDock title={title} thread={currentThread} paneSwitch={paneSwitch} pane={pane}
+          terminalEnabled={o.terminalEnabled} onPane={choosePane}
           onOpenThreads={() => { setMoreOpen(false); setThreadsOpen(true); }} onOpenMore={() => { setThreadsOpen(false); setMoreOpen(true); }}
           threadsOpen={threadsOpen} moreOpen={moreOpen} />
         <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
@@ -729,7 +734,7 @@ export function MatterWorkbench({
             </div>
           </>}
           <h3>{translate('workbench.thisWorkspace')}</h3>
-          <div className="matter-thread-section">{renderThreadGroups([...tabs].sort((a, b) => attention(a) - attention(b)))}</div>
+          <div className="matter-thread-section">{renderThreadGroups([...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)))}</div>
           {o.threads.some(thread => !tabs.some(tab => tab.key === thread.key)) && <>
             <h3>{translate('workbench.recentChats')}</h3>
             <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>

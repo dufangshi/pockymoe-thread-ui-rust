@@ -1329,3 +1329,19 @@
 @media (prefers-reduced-motion: reduce) {
   .workbench-panel-sash::after { transition: none; }
 }
+
+/* Shortcuts can be put in order: a dragged row lifts and follows the pointer,
+   the others make room. A long press is the drag on touch, not a link menu. */
+.matter-shortcut-list { position: relative; }
+.matter-shortcut { position: relative; -webkit-touch-callout: none; user-select: none; }
+.matter-shortcut-list[data-reordering] .matter-shortcut { transition: transform 160ms ease; }
+.matter-shortcut-list[data-reordering] .matter-shortcut[data-dragging] { z-index: 2; transition: none; }
+.thread-ui-shell .matter-workbench .matter-shortcut[data-dragging] .matter-thread-row {
+  background: var(--theme-panel);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 24%), 0 0 0 1px var(--theme-border);
+}
+.matter-shortcut-list[data-reordering] { cursor: grabbing; }
+.matter-shortcut-hint { margin: 0 10px 4px; color: var(--theme-fg-muted); font-size: 11.5px; }
+@media (prefers-reduced-motion: reduce) {
+  .matter-shortcut-list[data-reordering] .matter-shortcut { transition: none; }
+}

@@ -3,6 +3,7 @@ import {
   Copy,
   ClipboardCopy,
   Download,
+  Info,
   MoreHorizontal,
   Pencil,
   Trash2,
@@ -12,7 +13,7 @@ import { createPortal } from 'react-dom';
 import { RenameDialog } from '../../RenameDialog';
 import { ConfirmDialog } from '../../ConfirmDialog';
 import type { WorkspaceTreeNode } from '../workspaceTree';
-import { useThemeFeature } from '../../themeHooks';
+import { WorkspaceNodeProperties } from './WorkspaceNodeProperties';
 
 export interface WorkspaceNodeActionProps {
   onCopyPath?: (
@@ -32,10 +33,8 @@ export function WorkspaceNodeActions({
   onDelete,
 }: WorkspaceNodeActionProps & { node: WorkspaceTreeNode }) {
   useI18n();
-  // A theme can keep menu labels short; the node name stays in the accessible name.
-  const shortLabels = useThemeFeature('explorer.shortMenuLabels');
   const [menu, setMenu] = useState<{ left: number; top: number } | null>(null);
-  const [dialog, setDialog] = useState<'rename' | 'delete' | null>(null);
+  const [dialog, setDialog] = useState<'rename' | 'delete' | 'properties' | null>(null);
   const [name, setName] = useState(node.name);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -156,8 +155,10 @@ export function WorkspaceNodeActions({
               left: menu.left,
               top: menu.top,
               zIndex: 1000,
-              width: 208,
+              minWidth: 176,
+              maxWidth: 260,
               maxHeight: 'calc(100dvh - 16px)',
+              overflowX: 'hidden',
               overflowY: 'auto',
               background: 'var(--theme-panel)',
               color: 'var(--theme-fg)',
@@ -167,10 +168,11 @@ export function WorkspaceNodeActions({
               boxShadow: '0 8px 24px #0004',
             }}
           >
-            {onDownload && <button role="menuitem" type="button" onClick={() => { onDownload(node); close(); }}><Download data-icon="download" size={16} />{translate('files.downloadFile')}</button>}
+            {/* Short one-line labels; the node's name stays in each accessible name. */}
+            {onDownload && <button role="menuitem" type="button" onClick={() => { onDownload(node); close(); }}><Download data-icon="download" size={14} />{translate('files.downloadFile')}</button>}
             {onCopyPath && <>
-              <button role="menuitem" type="button" aria-label={shortLabels ? translate('files.copyRelativePathFor', { value1: node.name }) : undefined} onClick={() => { onCopyPath(node, 'relative'); close(); }}><Copy data-icon="copy-path" size={16} />{shortLabels ? translate('files.copyRelativePath') : translate('files.copyRelativePathFor', { value1: node.name })}</button>
-              <button role="menuitem" type="button" aria-label={shortLabels ? translate('files.copyAbsolutePathFor', { value1: node.name }) : undefined} onClick={() => { onCopyPath(node, 'absolute'); close(); }}><ClipboardCopy data-icon="copy-absolute-path" size={16} />{shortLabels ? translate('files.copyAbsolutePath') : translate('files.copyAbsolutePathFor', { value1: node.name })}</button>
+              <button role="menuitem" type="button" aria-label={translate('files.copyRelativePathFor', { value1: node.name })} onClick={() => { onCopyPath(node, 'relative'); close(); }}><Copy data-icon="copy-path" size={14} />{translate('files.copyRelativePath')}</button>
+              <button role="menuitem" type="button" aria-label={translate('files.copyAbsolutePathFor', { value1: node.name })} onClick={() => { onCopyPath(node, 'absolute'); close(); }}><ClipboardCopy data-icon="copy-absolute-path" size={14} />{translate('files.copyAbsolutePath')}</button>
             </>}
             {onRename && (
               <button
@@ -197,9 +199,13 @@ export function WorkspaceNodeActions({
               >
                 <Trash2 data-icon="delete" size={14} /> {translate("files.delete")}</button>
             )}
+            <div role="separator" className="workspace-node-menu-separator" />
+            <button role="menuitem" type="button" onClick={() => { setDialog('properties'); setMenu(null); }}>
+              <Info data-icon="properties" size={14} />{translate('files.propertiesMenu')}</button>
           </div>,
           document.body,
         )}
+      <WorkspaceNodeProperties node={node} open={dialog === 'properties'} onOpenChange={(next) => { if (!next) { setDialog(null); trigger.current?.focus(); } }} />
       <RenameDialog
         open={dialog === 'rename'}
         title={translate("files.rename", { value1: node.kind === 'directory' ? 'folder' : 'file' })}

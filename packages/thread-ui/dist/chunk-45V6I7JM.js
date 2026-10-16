@@ -1,7 +1,136 @@
 import {
   translate,
   useI18n
-} from "./chunk-2MLHOSIJ.js";
+} from "./chunk-LEL5WBWP.js";
+
+// src/components/graph-ui/Dialog.tsx
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { XIcon } from "lucide-react";
+
+// src/components/graph-ui/utils.ts
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+
+// src/components/graph-ui/Dialog.tsx
+import { jsx, jsxs } from "react/jsx-runtime";
+function Dialog({ ...props }) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx(DialogPrimitive.Root, { "data-slot": "dialog", ...props });
+}
+function DialogTrigger({
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx(DialogPrimitive.Trigger, { "data-slot": "dialog-trigger", ...props });
+}
+function DialogPortal({
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx(DialogPrimitive.Portal, { "data-slot": "dialog-portal", ...props });
+}
+function DialogClose({
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx(DialogPrimitive.Close, { "data-slot": "dialog-close", ...props });
+}
+function DialogOverlay({
+  className,
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx(
+    DialogPrimitive.Overlay,
+    {
+      "data-slot": "dialog-overlay",
+      className: cn(
+        "fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        className
+      ),
+      ...props
+    }
+  );
+}
+function DialogContent({
+  children,
+  className,
+  showCloseButton = true,
+  overlayClassName,
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsxs(DialogPortal, { "data-slot": "dialog-portal", children: [
+    /* @__PURE__ */ jsx(DialogOverlay, { className: overlayClassName }),
+    /* @__PURE__ */ jsxs(
+      DialogPrimitive.Content,
+      {
+        "data-slot": "dialog-content",
+        className: cn(
+          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
+          className
+        ),
+        ...props,
+        children: [
+          children,
+          showCloseButton ? /* @__PURE__ */ jsxs(
+            DialogPrimitive.Close,
+            {
+              "data-slot": "dialog-close",
+              className: "absolute right-4 top-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+              children: [
+                /* @__PURE__ */ jsx(XIcon, { "data-icon": "close" }),
+                /* @__PURE__ */ jsx("span", { className: "sr-only", children: translate("workbench.close") })
+              ]
+            }
+          ) : null
+        ]
+      }
+    )
+  ] });
+}
+function DialogHeader({ className, ...props }) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx(
+    "div",
+    {
+      "data-slot": "dialog-header",
+      className: cn("flex flex-col gap-2 text-center sm:text-left", className),
+      ...props
+    }
+  );
+}
+function DialogTitle({
+  className,
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx(
+    DialogPrimitive.Title,
+    {
+      "data-slot": "dialog-title",
+      className: cn("text-lg font-semibold leading-none", className),
+      ...props
+    }
+  );
+}
+function DialogDescription({
+  className,
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx(
+    DialogPrimitive.Description,
+    {
+      "data-slot": "dialog-description",
+      className: cn("text-sm text-muted-foreground", className),
+      ...props
+    }
+  );
+}
 
 // src/components/graph-workspace/explorer/workspaceDocuments.ts
 var storeKey = /* @__PURE__ */ Symbol.for("remote-codex.workspace-documents");
@@ -135,7 +264,7 @@ function downloadDraft(doc, disk = false) {
 // src/components/ConfirmDialog.tsx
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { jsx, jsxs } from "react/jsx-runtime";
+import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function ConfirmDialog({
   open,
   title,
@@ -166,8 +295,8 @@ function ConfirmDialog({
     return null;
   }
   return createPortal(
-    /* @__PURE__ */ jsxs("div", { className: "fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6", children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxs2("div", { className: "fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6", children: [
+      /* @__PURE__ */ jsx2(
         "button",
         {
           type: "button",
@@ -177,7 +306,7 @@ function ConfirmDialog({
           className: "absolute inset-0 bg-[var(--overlay-scrim)] backdrop-blur-sm disabled:cursor-not-allowed"
         }
       ),
-      /* @__PURE__ */ jsxs(
+      /* @__PURE__ */ jsxs2(
         "div",
         {
           role: "dialog",
@@ -185,13 +314,13 @@ function ConfirmDialog({
           "aria-label": title,
           className: "relative z-[1] w-full max-w-md rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:p-6",
           children: [
-            /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs("div", { className: "min-w-0 flex-1", children: [
-                /* @__PURE__ */ jsx("p", { className: "text-sm font-medium", children: title }),
-                /* @__PURE__ */ jsx("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-muted)]", children: description }),
-                error ? /* @__PURE__ */ jsx("p", { role: "alert", className: "mt-2 text-sm text-rose-500", children: error }) : null
+            /* @__PURE__ */ jsxs2("div", { className: "flex items-start justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs2("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsx2("p", { className: "text-sm font-medium", children: title }),
+                /* @__PURE__ */ jsx2("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-muted)]", children: description }),
+                error ? /* @__PURE__ */ jsx2("p", { role: "alert", className: "mt-2 text-sm text-rose-500", children: error }) : null
               ] }),
-              /* @__PURE__ */ jsx(
+              /* @__PURE__ */ jsx2(
                 "button",
                 {
                   type: "button",
@@ -199,12 +328,12 @@ function ConfirmDialog({
                   onClick: onCancel,
                   disabled: busy,
                   className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
-                  children: /* @__PURE__ */ jsx("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                  children: /* @__PURE__ */ jsx2("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx2("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxs("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
-              /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxs2("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
+              /* @__PURE__ */ jsx2(
                 "button",
                 {
                   type: "button",
@@ -214,7 +343,7 @@ function ConfirmDialog({
                   children: translate("workbench.cancel")
                 }
               ),
-              /* @__PURE__ */ jsx(
+              /* @__PURE__ */ jsx2(
                 "button",
                 {
                   type: "button",
@@ -233,21 +362,14 @@ function ConfirmDialog({
   );
 }
 
-// src/components/graph-ui/utils.ts
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-function cn(...inputs) {
-  return twMerge(clsx(inputs));
-}
-
 // src/components/graph-ui/Tooltip.tsx
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
-import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
+import { jsx as jsx3, jsxs as jsxs3 } from "react/jsx-runtime";
 function TooltipProvider({
   delayDuration = 0,
   ...props
 }) {
-  return /* @__PURE__ */ jsx2(
+  return /* @__PURE__ */ jsx3(
     TooltipPrimitive.Provider,
     {
       "data-slot": "tooltip-provider",
@@ -257,12 +379,12 @@ function TooltipProvider({
   );
 }
 function Tooltip({ ...props }) {
-  return /* @__PURE__ */ jsx2(TooltipProvider, { children: /* @__PURE__ */ jsx2(TooltipPrimitive.Root, { "data-slot": "tooltip", ...props }) });
+  return /* @__PURE__ */ jsx3(TooltipProvider, { children: /* @__PURE__ */ jsx3(TooltipPrimitive.Root, { "data-slot": "tooltip", ...props }) });
 }
 function TooltipTrigger({
   ...props
 }) {
-  return /* @__PURE__ */ jsx2(TooltipPrimitive.Trigger, { "data-slot": "tooltip-trigger", ...props });
+  return /* @__PURE__ */ jsx3(TooltipPrimitive.Trigger, { "data-slot": "tooltip-trigger", ...props });
 }
 function TooltipContent({
   children,
@@ -271,7 +393,7 @@ function TooltipContent({
   arrowStyle,
   ...props
 }) {
-  return /* @__PURE__ */ jsx2(TooltipPrimitive.Portal, { children: /* @__PURE__ */ jsxs2(
+  return /* @__PURE__ */ jsx3(TooltipPrimitive.Portal, { children: /* @__PURE__ */ jsxs3(
     TooltipPrimitive.Content,
     {
       "data-slot": "tooltip-content",
@@ -283,7 +405,7 @@ function TooltipContent({
       ...props,
       children: [
         children,
-        /* @__PURE__ */ jsx2(TooltipPrimitive.Arrow, { "data-slot": "tooltip-arrow", width: 10, height: 5, className: "fill-foreground", style: arrowStyle })
+        /* @__PURE__ */ jsx3(TooltipPrimitive.Arrow, { "data-slot": "tooltip-arrow", width: 10, height: 5, className: "fill-foreground", style: arrowStyle })
       ]
     }
   ) });
@@ -292,7 +414,7 @@ function TooltipContent({
 // src/components/RenameDialog.tsx
 import { useEffect as useEffect2 } from "react";
 import { createPortal as createPortal2 } from "react-dom";
-import { jsx as jsx3, jsxs as jsxs3 } from "react/jsx-runtime";
+import { jsx as jsx4, jsxs as jsxs4 } from "react/jsx-runtime";
 function RenameDialog({
   open,
   title,
@@ -329,8 +451,8 @@ function RenameDialog({
     void onSubmit();
   }
   return createPortal2(
-    /* @__PURE__ */ jsxs3("div", { className: "fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6", children: [
-      /* @__PURE__ */ jsx3(
+    /* @__PURE__ */ jsxs4("div", { className: "fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6", children: [
+      /* @__PURE__ */ jsx4(
         "button",
         {
           type: "button",
@@ -340,7 +462,7 @@ function RenameDialog({
           className: "absolute inset-0 bg-[var(--overlay-scrim)] backdrop-blur-sm disabled:cursor-not-allowed"
         }
       ),
-      /* @__PURE__ */ jsxs3(
+      /* @__PURE__ */ jsxs4(
         "form",
         {
           role: "dialog",
@@ -355,12 +477,12 @@ function RenameDialog({
           },
           className: "relative z-[1] w-full max-w-md rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:p-6",
           children: [
-            /* @__PURE__ */ jsxs3("div", { className: "flex items-start justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs3("div", { className: "min-w-0 flex-1", children: [
-                /* @__PURE__ */ jsx3("p", { className: "text-sm font-medium", children: title }),
-                /* @__PURE__ */ jsx3("p", { className: "mt-1 text-sm text-[var(--theme-fg-muted)]", children: description ?? translate("workbench.changesAreSavedOnlyAfterConfirmation") })
+            /* @__PURE__ */ jsxs4("div", { className: "flex items-start justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs4("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsx4("p", { className: "text-sm font-medium", children: title }),
+                /* @__PURE__ */ jsx4("p", { className: "mt-1 text-sm text-[var(--theme-fg-muted)]", children: description ?? translate("workbench.changesAreSavedOnlyAfterConfirmation") })
               ] }),
-              /* @__PURE__ */ jsx3(
+              /* @__PURE__ */ jsx4(
                 "button",
                 {
                   type: "button",
@@ -368,13 +490,13 @@ function RenameDialog({
                   onClick: onCancel,
                   disabled: busy,
                   className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
-                  children: /* @__PURE__ */ jsx3("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx3("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                  children: /* @__PURE__ */ jsx4("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx4("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxs3("div", { className: "mt-5", children: [
-              /* @__PURE__ */ jsx3("label", { htmlFor: "rename-dialog-input", className: "text-sm font-medium", children: label }),
-              /* @__PURE__ */ jsx3(
+            /* @__PURE__ */ jsxs4("div", { className: "mt-5", children: [
+              /* @__PURE__ */ jsx4("label", { htmlFor: "rename-dialog-input", className: "text-sm font-medium", children: label }),
+              /* @__PURE__ */ jsx4(
                 "input",
                 {
                   id: "rename-dialog-input",
@@ -386,9 +508,9 @@ function RenameDialog({
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxs3("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
-              error ? /* @__PURE__ */ jsx3("p", { role: "alert", className: "text-sm text-rose-500", children: error }) : null,
-              /* @__PURE__ */ jsx3(
+            /* @__PURE__ */ jsxs4("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
+              error ? /* @__PURE__ */ jsx4("p", { role: "alert", className: "text-sm text-rose-500", children: error }) : null,
+              /* @__PURE__ */ jsx4(
                 "button",
                 {
                   type: "button",
@@ -398,7 +520,7 @@ function RenameDialog({
                   children: translate("workbench.cancel")
                 }
               ),
-              /* @__PURE__ */ jsx3(
+              /* @__PURE__ */ jsx4(
                 "button",
                 {
                   type: "submit",
@@ -448,7 +570,7 @@ function useTabScrollEdges(ref) {
 // src/components/graph-workspace/GraphResizablePanels.tsx
 import { GripVerticalIcon } from "lucide-react";
 import * as ResizablePrimitive from "react-resizable-panels";
-import { jsx as jsx4 } from "react/jsx-runtime";
+import { jsx as jsx5 } from "react/jsx-runtime";
 function classNames(...values) {
   return values.filter(Boolean).join(" ");
 }
@@ -456,7 +578,7 @@ function ResizablePanelGroup({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx4(
+  return /* @__PURE__ */ jsx5(
     ResizablePrimitive.PanelGroup,
     {
       "data-slot": "resizable-panel-group",
@@ -471,14 +593,14 @@ function ResizablePanelGroup({
 function ResizablePanel({
   ...props
 }) {
-  return /* @__PURE__ */ jsx4(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
+  return /* @__PURE__ */ jsx5(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
 }
 function ResizableHandle({
   withHandle,
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx4(
+  return /* @__PURE__ */ jsx5(
     ResizablePrimitive.PanelResizeHandle,
     {
       "data-slot": "resizable-handle",
@@ -487,7 +609,7 @@ function ResizableHandle({
         className
       ),
       ...props,
-      children: withHandle ? /* @__PURE__ */ jsx4("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx4(GripVerticalIcon, { className: "size-2.5" }) }) : null
+      children: withHandle ? /* @__PURE__ */ jsx5("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx5(GripVerticalIcon, { className: "size-2.5" }) }) : null
     }
   );
 }
@@ -850,7 +972,7 @@ function collectAncestorPaths(path) {
 // src/components/graph-ui/Button.tsx
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { jsx as jsx5 } from "react/jsx-runtime";
+import { jsx as jsx6 } from "react/jsx-runtime";
 var buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
   {
@@ -884,7 +1006,7 @@ function Button({
   ...props
 }) {
   const Comp = asChild ? Slot : "button";
-  return /* @__PURE__ */ jsx5(
+  return /* @__PURE__ */ jsx6(
     Comp,
     {
       "data-slot": "button",
@@ -1001,7 +1123,7 @@ function useImageViewport() {
 
 // src/components/ZoomableImage.tsx
 import { Maximize2, Minus, Plus, RotateCcw, X } from "lucide-react";
-import { Fragment, jsx as jsx6, jsxs as jsxs4 } from "react/jsx-runtime";
+import { Fragment, jsx as jsx7, jsxs as jsxs5 } from "react/jsx-runtime";
 var MarkdownImageLinkContext = createContext(false);
 var IMAGE_LIGHTBOX_MIN_SCALE = 0.5;
 var IMAGE_LIGHTBOX_MAX_SCALE = 5;
@@ -1032,7 +1154,7 @@ function GraphWorkspaceImageLightbox({
     };
   }, [onClose]);
   return createPortal3(
-    /* @__PURE__ */ jsxs4(
+    /* @__PURE__ */ jsxs5(
       "div",
       {
         className: "thread-graph-image-lightbox",
@@ -1041,14 +1163,14 @@ function GraphWorkspaceImageLightbox({
         "aria-modal": "true",
         "aria-label": translate("files.imagePreview", { value1: alt || translate("files.workspaceImage") }),
         children: [
-          /* @__PURE__ */ jsxs4(
+          /* @__PURE__ */ jsxs5(
             "div",
             {
               className: "thread-graph-image-lightbox-toolbar",
               role: "toolbar",
               "aria-label": translate("files.imageZoomControls"),
               children: [
-                /* @__PURE__ */ jsx6(
+                /* @__PURE__ */ jsx7(
                   "button",
                   {
                     type: "button",
@@ -1056,10 +1178,10 @@ function GraphWorkspaceImageLightbox({
                     disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE,
                     title: translate("files.zoomOut"),
                     "aria-label": translate("files.zoomOut"),
-                    children: /* @__PURE__ */ jsx6(Minus, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx7(Minus, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsxs4(
+                /* @__PURE__ */ jsxs5(
                   "button",
                   {
                     type: "button",
@@ -1068,15 +1190,15 @@ function GraphWorkspaceImageLightbox({
                     title: translate("files.resetZoom"),
                     "aria-label": translate("files.resetZoomCurrently", { value1: Math.round(scale * 100) }),
                     children: [
-                      /* @__PURE__ */ jsx6(RotateCcw, { className: "h-3.5 w-3.5" }),
-                      /* @__PURE__ */ jsxs4("span", { children: [
+                      /* @__PURE__ */ jsx7(RotateCcw, { className: "h-3.5 w-3.5" }),
+                      /* @__PURE__ */ jsxs5("span", { children: [
                         Math.round(scale * 100),
                         "%"
                       ] })
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsx6(
+                /* @__PURE__ */ jsx7(
                   "button",
                   {
                     type: "button",
@@ -1084,17 +1206,17 @@ function GraphWorkspaceImageLightbox({
                     disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE,
                     title: translate("files.zoomIn"),
                     "aria-label": translate("files.zoomIn"),
-                    children: /* @__PURE__ */ jsx6(Plus, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx7(Plus, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsx6(
+                /* @__PURE__ */ jsx7(
                   "span",
                   {
                     className: "thread-graph-image-lightbox-divider",
                     "aria-hidden": "true"
                   }
                 ),
-                /* @__PURE__ */ jsx6(
+                /* @__PURE__ */ jsx7(
                   "button",
                   {
                     ref: closeButtonRef,
@@ -1102,13 +1224,13 @@ function GraphWorkspaceImageLightbox({
                     onClick: onClose,
                     title: translate("files.closeImagePreview"),
                     "aria-label": translate("files.closeImagePreview"),
-                    children: /* @__PURE__ */ jsx6(X, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx7(X, { className: "h-4 w-4" })
                   }
                 )
               ]
             }
           ),
-          /* @__PURE__ */ jsx6(
+          /* @__PURE__ */ jsx7(
             "div",
             {
               ref: viewportRef,
@@ -1123,7 +1245,7 @@ function GraphWorkspaceImageLightbox({
                 backdropPointer.current = event.target === event.currentTarget;
                 handlers.onPointerDown(event);
               },
-              children: /* @__PURE__ */ jsx6(
+              children: /* @__PURE__ */ jsx7(
                 "img",
                 {
                   src,
@@ -1158,14 +1280,14 @@ function ZoomableImage({
   const insideLink = useContext(MarkdownImageLinkContext);
   const dimension = (value) => typeof value === "number" ? value : value && /^\d+(?:\.\d+)?%?$/.test(value) ? value.endsWith("%") ? value : Number(value) : void 0;
   const imageStyle = { width: dimension(width), height: dimension(height) };
-  const image = /* @__PURE__ */ jsx6("img", { src, alt, className, loading, style: imageStyle });
+  const image = /* @__PURE__ */ jsx7("img", { src, alt, className, loading, style: imageStyle });
   function closeLightbox() {
     setOpen(false);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   }
   if (insideLink) return image;
-  return /* @__PURE__ */ jsxs4(Fragment, { children: [
-    /* @__PURE__ */ jsx6(
+  return /* @__PURE__ */ jsxs5(Fragment, { children: [
+    /* @__PURE__ */ jsx7(
       "button",
       {
         ref: triggerRef,
@@ -1178,7 +1300,7 @@ function ZoomableImage({
         children: image
       }
     ),
-    open ? /* @__PURE__ */ jsx6(
+    open ? /* @__PURE__ */ jsx7(
       GraphWorkspaceImageLightbox,
       {
         src: fullSrc || src,
@@ -1192,18 +1314,18 @@ function WorkspaceImagePreview({ src, alt }) {
   useI18n();
   const { viewportRef, scale, dragging, transform, reset, updateScale, handlers } = useImageViewport();
   const [open, setOpen] = useState3(false);
-  return /* @__PURE__ */ jsxs4("div", { className: "workspace-image-preview", children: [
-    /* @__PURE__ */ jsxs4("div", { className: "workspace-image-controls", role: "toolbar", "aria-label": translate("files.imageZoomControls"), children: [
-      /* @__PURE__ */ jsx6("button", { type: "button", onClick: () => updateScale(scale - 0.25), disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE, "aria-label": translate("files.zoomOut"), children: /* @__PURE__ */ jsx6(Minus, { size: 14 }) }),
-      /* @__PURE__ */ jsx6("button", { type: "button", onClick: reset, "aria-label": translate("files.resetZoom"), children: /* @__PURE__ */ jsxs4("span", { children: [
+  return /* @__PURE__ */ jsxs5("div", { className: "workspace-image-preview", children: [
+    /* @__PURE__ */ jsxs5("div", { className: "workspace-image-controls", role: "toolbar", "aria-label": translate("files.imageZoomControls"), children: [
+      /* @__PURE__ */ jsx7("button", { type: "button", onClick: () => updateScale(scale - 0.25), disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE, "aria-label": translate("files.zoomOut"), children: /* @__PURE__ */ jsx7(Minus, { size: 14 }) }),
+      /* @__PURE__ */ jsx7("button", { type: "button", onClick: reset, "aria-label": translate("files.resetZoom"), children: /* @__PURE__ */ jsxs5("span", { children: [
         Math.round(scale * 100),
         "%"
       ] }) }),
-      /* @__PURE__ */ jsx6("button", { type: "button", onClick: () => updateScale(scale + 0.25), disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE, "aria-label": translate("files.zoomIn"), children: /* @__PURE__ */ jsx6(Plus, { size: 14 }) }),
-      /* @__PURE__ */ jsx6("button", { type: "button", onClick: () => setOpen(true), "aria-label": translate("files.openImagePreview"), children: /* @__PURE__ */ jsx6(Maximize2, { size: 14 }) })
+      /* @__PURE__ */ jsx7("button", { type: "button", onClick: () => updateScale(scale + 0.25), disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE, "aria-label": translate("files.zoomIn"), children: /* @__PURE__ */ jsx7(Plus, { size: 14 }) }),
+      /* @__PURE__ */ jsx7("button", { type: "button", onClick: () => setOpen(true), "aria-label": translate("files.openImagePreview"), children: /* @__PURE__ */ jsx7(Maximize2, { size: 14 }) })
     ] }),
-    /* @__PURE__ */ jsx6("div", { ref: viewportRef, className: "workspace-image-viewport", ...handlers, children: /* @__PURE__ */ jsx6("img", { src, alt, draggable: false, className: dragging ? "is-dragging" : "", style: { transform } }) }),
-    open && /* @__PURE__ */ jsx6(GraphWorkspaceImageLightbox, { src, alt, onClose: () => setOpen(false) })
+    /* @__PURE__ */ jsx7("div", { ref: viewportRef, className: "workspace-image-viewport", ...handlers, children: /* @__PURE__ */ jsx7("img", { src, alt, draggable: false, className: dragging ? "is-dragging" : "", style: { transform } }) }),
+    open && /* @__PURE__ */ jsx7(GraphWorkspaceImageLightbox, { src, alt, onClose: () => setOpen(false) })
   ] });
 }
 
@@ -1257,7 +1379,7 @@ function getGraphChatHighlighter() {
       javascript,
       typescript,
       tsx,
-      jsx8,
+      jsx9,
       python,
       json,
       bash,
@@ -1288,7 +1410,7 @@ function getGraphChatHighlighter() {
         javascript.default,
         typescript.default,
         tsx.default,
-        jsx8.default,
+        jsx9.default,
         python.default,
         json.default,
         bash.default,
@@ -1352,7 +1474,7 @@ var markdownHtmlPlugins = [rehypeRaw, [rehypeSanitize, schema]];
 // src/components/WorkspaceFileLink.tsx
 import { useEffect as useEffect4, useRef as useRef3, useState as useState4 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
-import { Fragment as Fragment2, jsx as jsx7, jsxs as jsxs5 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx8, jsxs as jsxs6 } from "react/jsx-runtime";
 function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-inline-link" }) {
   useI18n();
   const [menu, setMenu] = useState4(null);
@@ -1382,8 +1504,8 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
     setMenu(null);
     onOpen({ path, ...line ? { line } : {} });
   };
-  return /* @__PURE__ */ jsxs5(Fragment2, { children: [
-    /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsxs6(Fragment2, { children: [
+    /* @__PURE__ */ jsx8(
       "a",
       {
         href: displayPath.split("/").map(encodeURIComponent).join("/") + (line ? `#L${line}` : ""),
@@ -1401,12 +1523,12 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
         children
       }
     ),
-    menu && createPortal4(/* @__PURE__ */ jsxs5("div", { ref: menuRef, role: "menu", "aria-label": translate("files.fileLink"), className: "thread-workspace-link-menu", style: { left: Math.max(8, menu.x), top: Math.max(8, menu.y) }, children: [
-      /* @__PURE__ */ jsx7("button", { role: "menuitem", onClick: open, children: translate("files.openFile") }),
-      /* @__PURE__ */ jsx7("button", { role: "menuitem", onClick: () => {
+    menu && createPortal4(/* @__PURE__ */ jsxs6("div", { ref: menuRef, role: "menu", "aria-label": translate("files.fileLink"), className: "thread-workspace-link-menu", style: { left: Math.max(8, menu.x), top: Math.max(8, menu.y) }, children: [
+      /* @__PURE__ */ jsx8("button", { role: "menuitem", onClick: open, children: translate("files.openFile") }),
+      /* @__PURE__ */ jsx8("button", { role: "menuitem", onClick: () => {
         void navigator.clipboard.writeText(address).then(() => setMenu(null)).catch(() => setCopyError(true));
       }, children: translate("files.copyLinkAddress") }),
-      copyError && /* @__PURE__ */ jsx7("span", { role: "alert", children: translate("files.couldNotCopyPath") })
+      copyError && /* @__PURE__ */ jsx8("span", { role: "alert", children: translate("files.couldNotCopyPath") })
     ] }), document.body)
   ] });
 }
@@ -1421,6 +1543,13 @@ export {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
+  Dialog,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
   RenameDialog,
   FilePanelContext,
   useFilePanel,

@@ -2447,7 +2447,27 @@ var filesEn = {
   "files.terminalPasteWarning": "Confirm multi-line pastes",
   "files.terminalPasteWarningHint": "Only when the shell would run the lines right away.",
   "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a Mac, \u2318C and \u2318V copy and paste and Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select.",
-  "files.askAttachments": { one: "{{count}} attached file goes with it", other: "{{count}} attached files go with it" }
+  "files.askAttachments": { one: "{{count}} attached file goes with it", other: "{{count}} attached files go with it" },
+  "files.propertiesMenu": "Properties",
+  "files.propertiesKind": "Kind",
+  "files.propertiesFolder": "Folder",
+  "files.propertiesFile": "File",
+  "files.propertiesFileOf": "{{kind}} file",
+  "files.propertiesLocation": "Location",
+  "files.propertiesRoot": "Workspace root",
+  "files.propertiesSize": "Size",
+  "files.propertiesBytes": "{{size}} ({{bytes}} bytes)",
+  "files.propertiesContains": "Contains",
+  "files.propertiesItems": { one: "{{count}} item", other: "{{count}} items" },
+  "files.propertiesCreated": "Created",
+  "files.propertiesModified": "Modified",
+  "files.propertiesAccessed": "Last opened",
+  "files.propertiesPermissions": "Permissions",
+  "files.propertiesReadonly": "Read-only",
+  "files.propertiesLink": "Symbolic link",
+  "files.propertiesLinkYes": "Yes, listed as what it points to",
+  "files.propertiesClose": "Close",
+  "files.propertiesOlderDevice": "This device's Supervisor does not report file times yet; they show after it updates."
 };
 
 // src/i18n/settings.en.ts
@@ -6121,7 +6141,27 @@ var filesZhCN = {
   "files.terminalPasteWarning": "\u7C98\u8D34\u591A\u884C\u524D\u786E\u8BA4",
   "files.terminalPasteWarningHint": "\u53EA\u5728 shell \u4F1A\u7ACB\u523B\u9010\u884C\u6267\u884C\u65F6\u63D0\u793A\u3002",
   "files.terminalKeysNote": "Ctrl+C\uFF1A\u6709\u9009\u4E2D\u65F6\u590D\u5236\uFF0C\u6CA1\u6709\u65F6\u4E2D\u65AD\uFF1BCtrl+Shift+V \u59CB\u7EC8\u7C98\u8D34\u3002Mac \u4E0A\u7528 \u2318C / \u2318V \u590D\u5236\u7C98\u8D34\uFF0CCtrl \u7559\u7ED9\u7EC8\u7AEF\u3002\u624B\u673A\u4E0A\u957F\u6309\u7EC8\u7AEF\u9009\u62E9\u6587\u5B57\uFF0C\u6309\u952E\u6761\u91CC\u6709\u7C98\u8D34\u548C\u9009\u62E9\u3002",
-  "files.askAttachments": { one: "\u5C06\u4E00\u5E76\u53D1\u9001 {{count}} \u4E2A\u9644\u4EF6", other: "\u5C06\u4E00\u5E76\u53D1\u9001 {{count}} \u4E2A\u9644\u4EF6" }
+  "files.askAttachments": { one: "\u5C06\u4E00\u5E76\u53D1\u9001 {{count}} \u4E2A\u9644\u4EF6", other: "\u5C06\u4E00\u5E76\u53D1\u9001 {{count}} \u4E2A\u9644\u4EF6" },
+  "files.propertiesMenu": "\u5C5E\u6027",
+  "files.propertiesKind": "\u7C7B\u578B",
+  "files.propertiesFolder": "\u6587\u4EF6\u5939",
+  "files.propertiesFile": "\u6587\u4EF6",
+  "files.propertiesFileOf": "{{kind}} \u6587\u4EF6",
+  "files.propertiesLocation": "\u4F4D\u7F6E",
+  "files.propertiesRoot": "\u5DE5\u4F5C\u533A\u6839\u76EE\u5F55",
+  "files.propertiesSize": "\u5927\u5C0F",
+  "files.propertiesBytes": "{{size}}\uFF08{{bytes}} \u5B57\u8282\uFF09",
+  "files.propertiesContains": "\u5305\u542B",
+  "files.propertiesItems": { one: "{{count}} \u9879", other: "{{count}} \u9879" },
+  "files.propertiesCreated": "\u521B\u5EFA\u65F6\u95F4",
+  "files.propertiesModified": "\u4FEE\u6539\u65F6\u95F4",
+  "files.propertiesAccessed": "\u8BBF\u95EE\u65F6\u95F4",
+  "files.propertiesPermissions": "\u6743\u9650",
+  "files.propertiesReadonly": "\u53EA\u8BFB",
+  "files.propertiesLink": "\u7B26\u53F7\u94FE\u63A5",
+  "files.propertiesLinkYes": "\u662F\uFF0C\u663E\u793A\u4E3A\u5B83\u6307\u5411\u7684\u5185\u5BB9",
+  "files.propertiesClose": "\u5173\u95ED",
+  "files.propertiesOlderDevice": "\u8FD9\u53F0\u8BBE\u5907\u7684 Supervisor \u8FD8\u4E0D\u63D0\u4F9B\u6587\u4EF6\u65F6\u95F4\uFF0C\u66F4\u65B0\u540E\u53EF\u89C1\u3002"
 };
 
 // src/i18n/settings.zh-CN.ts

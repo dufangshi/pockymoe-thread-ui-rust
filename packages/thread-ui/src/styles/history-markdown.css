@@ -2443,8 +2443,17 @@
 }
 
 .thread-ui-shell .thread-graph-message-leading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 0.6rem;
 }
+
+.thread-message-presentation { display: inline-flex; flex-wrap: wrap; gap: 3px; padding: 2px; border: 1px solid var(--theme-border); border-radius: 8px; font-size: 12px; }
+.thread-message-presentation button { min-height: 28px; padding: 3px 9px; border-radius: 5px; color: var(--theme-fg-muted); }
+.thread-message-presentation button[aria-pressed='true'] { background: var(--theme-panel); color: var(--theme-accent-strong); }
+.thread-message-presentation button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
 
 .thread-ui-shell .thread-graph-message-copy {
   height: 1.75rem;

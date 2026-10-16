@@ -89,11 +89,11 @@ export function PhoneDock({
         {dots.length > 0 && <span className="matter-phone-thread-dots" aria-hidden="true">{dots.map((on, i) => <i key={i} data-on={on || undefined} />)}</span>}
       </button>}
       <div className="matter-phone-panes" role="group" aria-label={translate('workbench.phoneDockPanes')}>
-        <button type="button" aria-label={translate('workbench.chat')} aria-pressed={pane === 'chat'} onClick={() => onPane('chat')}><MessageSquare /></button>
-        <button type="button" aria-label={translate('workbench.toggleExplorer')} aria-pressed={pane === 'files'} onClick={() => onPane('files')}><FolderOpen /></button>
-        {terminalEnabled && <button type="button" aria-label={translate('workbench.terminal')} aria-pressed={pane === 'shell'} onClick={() => onPane('shell')}><Terminal /></button>}
+        <button type="button" aria-label={translate('workbench.chat')} aria-pressed={pane === 'chat'} onClick={() => onPane('chat')}><MessageSquare data-icon="chat" /></button>
+        <button type="button" aria-label={translate('workbench.toggleExplorer')} aria-pressed={pane === 'files'} onClick={() => onPane('files')}><FolderOpen data-icon="explorer" /></button>
+        {terminalEnabled && <button type="button" aria-label={translate('workbench.terminal')} aria-pressed={pane === 'shell'} onClick={() => onPane('shell')}><Terminal data-icon="terminal" /></button>}
       </div>
-      <button type="button" className="matter-phone-more" aria-label={translate('workbench.moreActions')} aria-haspopup="dialog" aria-expanded={moreOpen} onClick={onOpenMore}><Ellipsis /></button>
+      <button type="button" className="matter-phone-more" aria-label={translate('workbench.moreActions')} aria-haspopup="dialog" aria-expanded={moreOpen} onClick={onOpenMore}><Ellipsis data-icon="more" /></button>
     </nav>
   );
 }

@@ -388,7 +388,7 @@ export function MatterWorkbench({
         o.onReadNotifications();
       }}
     >
-      <Bell />
+      <Bell data-icon="notifications" />
       {o.unreadCount > 0 && <span className="matter-unread" />}
     </button>
   );
@@ -467,7 +467,7 @@ export function MatterWorkbench({
           aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'}
           onClick={showChat}
         >
-          <MessageSquare />
+          <MessageSquare data-icon="chat" />
         </button>
         {o.terminalEnabled && (
           <button
@@ -476,7 +476,7 @@ export function MatterWorkbench({
             title={`${translate("workbench.terminal")} (Ctrl+\`)`}
             onClick={() => o.onViewChange('shell')}
           >
-            <Terminal />
+            <Terminal data-icon="terminal" />
           </button>
         )}
         {o.toolPanels?.map(panel => (
@@ -484,7 +484,7 @@ export function MatterWorkbench({
             aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>
         ))}
         <button aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen}
-          title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen /></button>
+          title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
         <div className="matter-rail-bottom">{deviceMonitor}{settings}</div>
       </nav>}
       {dock ? <header className={`matter-topbar is-status-only ${o.searchOpen ? 'is-search-open' : ''}`}>
@@ -507,18 +507,18 @@ export function MatterWorkbench({
             else setSidebarHidden(!sidebarHidden);
           }}
         >
-          <PanelLeft />
+          <PanelLeft data-icon="sidebar" />
         </button>
         <span className="matter-topbar-brand">Pockymoe</span>
         <span className="matter-topbar-separator" />
         <button aria-label={translate("workbench.goBack")} onClick={() => history.back()}>
-          <ArrowLeft />
+          <ArrowLeft data-icon="back" />
         </button>
         <button data-action="go-forward" aria-label={translate("workbench.goForward")} onClick={() => history.forward()}>
-          <ArrowRight />
+          <ArrowRight data-icon="forward" />
         </button>
         {!drawerTools && homeHref && <a href={homeHref} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}>
-          <Home />
+          <Home data-icon="home" />
         </a>}
         <div className="matter-topbar-search">{o.search ?? <button
           className="matter-search-trigger"
@@ -526,13 +526,13 @@ export function MatterWorkbench({
           disabled={o.emptyWorkspace}
           onClick={o.onSearch}
         >
-          <Search />
+          <Search data-icon="search" />
           <span>{translate("workbench.searchConversation")}</span>
         </button>}</div>
         <div className="matter-topbar-end">
           {mobile && deviceMonitor}
           {mobile && <>
-            {!drawerTools && <button aria-label={translate("workbench.chat")} aria-pressed={!explorerOpen && (o.panels ? !chatCovered : o.activeView === 'chat')} onClick={showChat}><MessageSquare /></button>}
+            {!drawerTools && <button aria-label={translate("workbench.chat")} aria-pressed={!explorerOpen && (o.panels ? !chatCovered : o.activeView === 'chat')} onClick={showChat}><MessageSquare data-icon="chat" /></button>}
             {o.terminalEnabled && <button aria-label={translate("workbench.terminal")} aria-pressed={!explorerOpen && o.activeView === 'shell'} onClick={() => {
               // Over Files, the terminal button shows the terminal rather than hiding it unseen.
               if (explorerOpen) {
@@ -540,9 +540,9 @@ export function MatterWorkbench({
                 if (o.activeView === 'shell') return;
               }
               o.onViewChange('shell');
-            }}><Terminal /></button>}
+            }}><Terminal data-icon="terminal" /></button>}
             {o.toolPanels?.map(panel => <button key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
-            <button aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen /></button>
+            <button aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
             {settings}
           </>}
           <div className="matter-connection">{connection}</div>
@@ -567,19 +567,19 @@ export function MatterWorkbench({
       >
         <div className="matter-sidebar-heading">
           <span>{translate("workbench.workspace")}</span>
-          <button className="matter-mobile-close" aria-label={translate("workbench.openExplorer")} onClick={() => {setExplorerOpen(true);setSidebarOpen(false);}}><FolderOpen /></button>
+          <button className="matter-mobile-close" aria-label={translate("workbench.openExplorer")} onClick={() => {setExplorerOpen(true);setSidebarOpen(false);}}><FolderOpen data-icon="explorer" /></button>
           <button
             className="matter-mobile-close"
             aria-label={translate("workbench.closeSidebar")}
             onClick={() => setSidebarOpen(false)}
           >
-            <X />
+            <X data-icon="close" />
           </button>
         </div>
         {drawerTools && (
           <div className="matter-drawer-tools" role="group" aria-label={translate("workbench.workspaceTools")}>
-            {homeHref && <a href={homeHref}><Home /><span>{translate("workbench.workspaces")}</span></a>}
-            <button aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={() => { showChat(); setSidebarOpen(false); }}><MessageSquare /><span>{translate("workbench.chat")}</span></button>
+            {homeHref && <a href={homeHref}><Home data-icon="home" /><span>{translate("workbench.workspaces")}</span></a>}
+            <button aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={() => { showChat(); setSidebarOpen(false); }}><MessageSquare data-icon="chat" /><span>{translate("workbench.chat")}</span></button>
           </div>
         )}
         {o.error && (
@@ -594,7 +594,7 @@ export function MatterWorkbench({
         >
           {shortcutsOpen ? <ChevronDown /> : <ChevronRight />}
           <span>{translate("workbench.shortcuts")}</span>
-          <Star />
+          <Star data-icon="shortcuts" />
         </button>
         {shortcutsOpen && (
           <div className="matter-thread-section" data-testid="shortcuts">
@@ -633,7 +633,7 @@ export function MatterWorkbench({
           {newThread}
         </nav>
         </div>
-        {!o.emptyWorkspace && <button className="matter-toolbar-toggle" aria-label={translate("workbench.threadTools")} aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal /></button>}
+        {!o.emptyWorkspace && <button className="matter-toolbar-toggle" aria-label={translate("workbench.threadTools")} aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal data-icon="thread-tools" /></button>}
         {o.statusActions}
         {toolbarOpen && <div className="matter-breadcrumb" id="matter-thread-tools">
           <WorkbenchPath path={o.workspacePath} />
@@ -647,7 +647,7 @@ export function MatterWorkbench({
             disabled={o.favoriteBusy}
             onClick={o.onToggleFavorite}
           >
-            <Star fill={o.favorite ? 'currentColor' : 'none'} />
+            <Star data-icon="shortcut" fill={o.favorite ? 'currentColor' : 'none'} />
           </button>
           <div className="matter-thread-actions">
             {actions}
@@ -677,7 +677,7 @@ export function MatterWorkbench({
                   aria-label={translate("workbench.closeExplorer")}
                   onClick={() => setExplorerOpen(false)}
                 >
-                  <X />
+                  <X data-icon="close" />
                 </button>
               </div>
               {explorer}
@@ -715,17 +715,17 @@ export function MatterWorkbench({
         <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} onClose={() => setMoreOpen(false)}>
           <h3 title={title}>{title}</h3>
           <div className="matter-phone-sheet-tools">
-            {!o.emptyWorkspace && <button type="button" onClick={o.onSearch}><Search /><span>{translate('workbench.searchConversation')}</span></button>}
-            {!o.emptyWorkspace && <button type="button" aria-pressed={o.favorite} disabled={o.favoriteBusy} onClick={o.onToggleFavorite}><Star fill={o.favorite ? 'currentColor' : 'none'} /><span>{o.favorite ? translate('workbench.removeShortcut') : translate('workbench.addShortcut')}</span></button>}
+            {!o.emptyWorkspace && <button type="button" onClick={o.onSearch}><Search data-icon="search" /><span>{translate('workbench.searchConversation')}</span></button>}
+            {!o.emptyWorkspace && <button type="button" aria-pressed={o.favorite} disabled={o.favoriteBusy} onClick={o.onToggleFavorite}><Star data-icon="shortcut" fill={o.favorite ? 'currentColor' : 'none'} /><span>{o.favorite ? translate('workbench.removeShortcut') : translate('workbench.addShortcut')}</span></button>}
             {o.toolPanels?.map(panel => <button type="button" key={panel.id} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}<span>{panel.label}</span></button>)}
             {shellNav?.setPhoneHand && <button type="button" aria-pressed={leftHanded} onClick={() => shellNav.setPhoneHand?.(leftHanded ? 'right' : 'left')}><Hand className="matter-phone-hand-icon" /><span>{translate('workbench.leftHanded')}</span></button>}
             <div className="matter-phone-sheet-host">{actions}{threadMenu}{o.statusActions}</div>
           </div>
           <h3>{translate('workbench.app')}</h3>
           <div className="matter-phone-sheet-list">
-            <button type="button" onClick={() => setSidebarOpen(true)}><PanelLeft /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>
-            {homeHref && <a href={homeHref}><Home /><span>{translate('workbench.backToWorkspaces')}</span></a>}
-            <button type="button" onClick={() => history.back()}><ArrowLeft /><span>{translate('workbench.goBack')}</span></button>
+            <button type="button" onClick={() => setSidebarOpen(true)}><PanelLeft data-icon="sidebar" /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>
+            {homeHref && <a href={homeHref}><Home data-icon="home" /><span>{translate('workbench.backToWorkspaces')}</span></a>}
+            <button type="button" onClick={() => history.back()}><ArrowLeft data-icon="back" /><span>{translate('workbench.goBack')}</span></button>
             <div className="matter-phone-sheet-settings">{settings}<span>{translate('workbench.settings')}</span></div>
           </div>
         </PhoneSheet>
@@ -749,7 +749,7 @@ export function MatterWorkbench({
                 aria-label={translate("workbench.closeNotificationPanel")}
                 onClick={() => setBellOpen(false)}
               >
-                <X />
+                <X data-icon="close" />
               </button>
             </div>
             {o.notifications.length ? (

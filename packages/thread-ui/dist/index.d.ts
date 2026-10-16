@@ -1,10 +1,10 @@
-import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as ThreadWorkspaceAdapter } from './workspace-panel-CUOWenfH.js';
-export { h as PluginContext, S as SendPromptInput, i as ShellSocketConnection, j as ShellSocketHandlers, k as ThreadImageAssetVariant, W as WorkspaceDocumentSaveInput, l as WorkspaceDocumentSnapshot, m as WorkspaceSaveReceipt, n as WorkspaceTab, o as createDefaultPluginContextValue, p as mergePluginState } from './workspace-panel-CUOWenfH.js';
+import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-DGXE2G3k.js';
+export { i as PluginContext, j as SendPromptInput, k as ShellSocketConnection, l as ShellSocketHandlers, m as ThreadImageAssetVariant, W as WorkspaceDocumentSaveInput, n as WorkspaceDocumentSnapshot, o as WorkspaceSaveReceipt, p as WorkspaceTab, q as createDefaultPluginContextValue, r as mergePluginState } from './workspace-panel-DGXE2G3k.js';
 import * as react from 'react';
-import { Dispatch, SetStateAction, ReactNode, MutableRefObject, Component, ErrorInfo, RefObject, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
+import { Dispatch, SetStateAction, ReactNode, Component, ErrorInfo, RefObject, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
 import { ReasoningEffortDto, CollaborationModeDto, SandboxModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput, UpdatePluginInput } from '@pockymoe/shared';
-import { F as FrontendPluginModule } from './plugin-types-DBa9QrHM.js';
-export { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution } from './plugin-types-DBa9QrHM.js';
+import { P as PluginSettingsSnapshot, F as FrontendPluginModule, a as PluginActionOutputContext } from './plugin-types-iEH-4_I_.js';
+export { A as ArtifactRenderContext, I as InlineCodeRenderContext, M as MessagePresentation, b as MessagePresentationContext, c as PluginSettingsContext, d as PluginSettingsContribution, T as ThreadPanelContribution } from './plugin-types-iEH-4_I_.js';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 export { DEFAULT_LOCALE, I18nProvider, LOCALE_OPTIONS, LOCALE_STORAGE_KEY, LanguageSwitcher, Locale, SUPPORTED_LOCALES, TranslationKey, TranslationValues, detectLocale, formatDate, formatNumber, getLocale, initializeI18n, normalizeLocale, setLocale, t, translate, useI18n } from './i18n.js';
 
@@ -126,22 +126,6 @@ interface TokenUsageCostProps {
     tooltipZIndex?: number;
 }
 declare function TokenUsageCost({ usage, price, readOnly, costLabel, detailsNote, tooltipZIndex, }: TokenUsageCostProps): react.JSX.Element;
-
-type SettingsSection = {
-    id: string;
-    label: string;
-    description?: string;
-    content: ReactNode;
-};
-declare function SettingsPanels({ sections, initialId, selected: selectedId, onSelect, scroll }: {
-    sections: SettingsSection[];
-    initialId?: string;
-    /** Held by the owner when the panels may remount while open. */
-    selected?: string | undefined;
-    onSelect?: ((id: string) => void) | undefined;
-    /** The panel's scroll offset, kept by the owner across such a remount. */
-    scroll?: MutableRefObject<number> | undefined;
-}): react.JSX.Element | null;
 
 type ReferenceMode = 'focus' | 'thread' | 'files' | 'collaboration';
 interface WorkbenchPresentation {
@@ -740,6 +724,8 @@ interface ThreadDetailSurfaceProps {
 declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsSections, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, restrictedNavigation, onWorkspaceReturn, threadActionsButton, surfaceActions, workbench, deviceMonitor, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, presentation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
 
 interface PluginProviderAdapter {
+    loadPluginSettings?: (pluginId: string) => Promise<PluginSettingsSnapshot>;
+    savePluginSettings?: (pluginId: string, settings: PluginSettingsSnapshot) => Promise<PluginSettingsSnapshot>;
     fetchPlugins?: () => Promise<PluginDto[]> | PluginDto[];
     importPlugin?: (input: ImportPluginInput) => Promise<PluginDto> | PluginDto;
     updatePlugin?: (pluginId: string, input: UpdatePluginInput) => Promise<PluginDto> | PluginDto;
@@ -752,6 +738,10 @@ declare function PluginProvider({ adapter, builtinPlugins, children, }: {
 }): react.JSX.Element;
 
 declare function usePlugins(): PluginContextValue;
+
+declare function PluginActionOutput({ pluginId, action, output, }: PluginActionOutputContext & {
+    pluginId: string;
+}): react.JSX.Element;
 
 /** Right or left thumb for the one-handed phone layout, as a two-way switch. */
 declare function PhoneHandChoice({ hand, onChange }: {
@@ -907,4 +897,4 @@ declare function ThreadLoadingIndicator({ inline, label }: {
     label?: string;
 }): react.JSX.Element;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ExportTranscriptDialog, FrontendPluginModule, GraphChatThreadChatPanel, LongTextDialog, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, type PhoneHand, PhoneHandChoice, PluginContextValue, PluginProvider, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, type SettingsSection, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, confirmWorkspaceDocumentLeave, createWorkspacePathResolver, documentThemeFeatures, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, usePlugins, useThemeFeature, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ExportTranscriptDialog, FrontendPluginModule, GraphChatThreadChatPanel, LongTextDialog, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginProvider, PluginSettingsSnapshot, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, SettingsSection, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, confirmWorkspaceDocumentLeave, createWorkspacePathResolver, documentThemeFeatures, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, usePlugins, useThemeFeature, useWorkbenchPresentation };

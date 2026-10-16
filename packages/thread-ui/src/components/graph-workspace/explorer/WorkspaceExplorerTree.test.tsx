@@ -109,6 +109,26 @@ describe('WorkspaceExplorerTree', () => {
     expect(rows[2]?.getAttribute('aria-selected')).toBe('true');
   });
 
+  it('names node icons with data-icon for theme packs', () => {
+    act(() => {
+      root?.render(
+        <WorkspaceExplorerTree
+          tree={directory('', [directory('src', [file('src/index.ts')]), directory('docs'), file('notes.txt')])}
+          expandedPaths={new Set(['src'])}
+          loadingPaths={new Set()}
+          selectedNodeId={null}
+          scrollerRef={createRef<HTMLDivElement>()}
+          onSelect={() => undefined}
+          onToggle={() => undefined}
+          virtualize={false}
+        />,
+      );
+    });
+    const icons = [...(host?.querySelectorAll('[role="treeitem"] svg.workspace-node-icon') ?? [])]
+      .map((icon) => icon.getAttribute('data-icon'));
+    expect(icons.slice(1)).toEqual(['folder', 'folder-open', 'code', 'file']);
+  });
+
   it('supports VS Code-style focus, expand, collapse, and activation keys', () => {
     const onSelect = vi.fn();
     const onToggle = vi.fn();

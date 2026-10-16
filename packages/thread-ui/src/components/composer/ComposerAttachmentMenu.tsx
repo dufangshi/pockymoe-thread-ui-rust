@@ -37,7 +37,7 @@ export function ComposerAttachmentMenu({
         onClick={onToggle}
         className={`${iconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`}
       >
-        {rich ? <Paperclip aria-hidden="true" className="h-4 w-4" strokeWidth={2} /> : <PlusIcon />}
+        {rich ? <Paperclip data-icon="attach" aria-hidden="true" className="h-4 w-4" strokeWidth={2} /> : <PlusIcon />}
       </InputGroupButton>
 
       {open && (
@@ -51,14 +51,14 @@ export function ComposerAttachmentMenu({
               onClick={onPickPhoto}
               className={`${menuItemClassName} block w-full rounded-xl px-3 py-2 text-left text-sm transition`}
             >
-              {rich ? <ImageIcon aria-hidden="true" className="composer-attach-icon" /> : null}
+              {rich ? <ImageIcon data-icon="photo" aria-hidden="true" className="composer-attach-icon" /> : null}
               {translate("chat.photo")}</button>
             <button
               type="button"
               onClick={onPickFile}
               className={`${menuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition`}
             >
-              {rich ? <FileText aria-hidden="true" className="composer-attach-icon" /> : null}
+              {rich ? <FileText data-icon="file" aria-hidden="true" className="composer-attach-icon" /> : null}
               {translate("chat.file")}</button>
           </div>
         </ComposerMenuSurface>

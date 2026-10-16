@@ -685,7 +685,7 @@ export function GraphWorkspacePreviewPane({
       <div className="flex shrink-0 items-center gap-1">
         {(isMarkdownFile || isDrawioFile) && !editing ? (
           <button type="button" className="thread-graph-editor-toolbar-button workspace-mobile-view-toggle" aria-label={translate(markdownView==='preview' ? 'files.source' : 'files.preview', { value1: renderedViewLabel })} title={translate(markdownView==='preview' ? 'files.source' : 'files.preview', { value1: renderedViewLabel })} onClick={() => setMarkdownView(view => view==='preview'?'source':'preview')}>
-            {markdownView==='preview' ? <Code2 size={16}/> : <BookOpen size={16}/>}
+            {markdownView==='preview' ? <Code2 data-icon="source" size={16}/> : <BookOpen data-icon="preview" size={16}/>}
           </button>
         ) : null}
         {canEditFile ? (
@@ -704,7 +704,7 @@ export function GraphWorkspacePreviewPane({
                   title={translate("files.cancelEdits")}
                   aria-label={translate("files.cancelEdits")}
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X data-icon="close" className="h-3.5 w-3.5" />
                 </button>
                 <button
                   type="button"
@@ -714,7 +714,7 @@ export function GraphWorkspacePreviewPane({
                   title={translate("files.saveFile")}
                   aria-label={translate("files.saveFile")}
                 >
-                  <Save className="h-3.5 w-3.5" />
+                  <Save data-icon="save" className="h-3.5 w-3.5" />
                 </button>
               </>
             ) : (
@@ -728,7 +728,7 @@ export function GraphWorkspacePreviewPane({
                 title={translate("files.editFile")}
                 aria-label={translate("files.editFile")}
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil data-icon="edit" className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
@@ -740,7 +740,7 @@ export function GraphWorkspacePreviewPane({
   const inlineStatus = document && <span role="status" data-testid="workspace-document-status" className="sr-only" data-phase={document.phase}>{documentState}</span>;
   const backLabel = previousFilePath ? translate('files.backToDocument', { name: previousFilePath.split('/').pop() ?? previousFilePath }) : translate('workbench.goBack');
   const navigationControls = <>
-    {onNavigateForward && <button type="button" onClick={onNavigateForward} aria-label={translate('files.goForward')} title={translate('files.goForward')} className="thread-graph-editor-toolbar-button flex h-6 w-6 shrink-0 items-center justify-center rounded"><ArrowRight size={14} /></button>}
+    {onNavigateForward && <button type="button" onClick={onNavigateForward} aria-label={translate('files.goForward')} title={translate('files.goForward')} className="thread-graph-editor-toolbar-button flex h-6 w-6 shrink-0 items-center justify-center rounded"><ArrowRight data-icon="forward" size={14} /></button>}
   </>;
   const copyPath = activeNode?.path && !/^(?:\/|[a-z]:[\\/])/i.test(activeNode.path) && workspaceRootPath ? `${workspaceRootPath.replace(/[\\/]+$/, '')}/${activeNode.path}` : activeNode?.path ?? '';
   const fileActions = activeNode && <WorkspaceFileActions path={copyPath} key={activeNode.path} {...((documentMetadata || filePanel?.label) ? { metadata:[filePanel?.label, documentMetadata].filter(Boolean).join(' · ') } : {})}
@@ -760,7 +760,7 @@ export function GraphWorkspacePreviewPane({
       title={translate("files.showExplorer")}
       aria-label={translate("files.showExplorer")}
     >
-      <PanelLeftOpen className="h-3.5 w-3.5" />
+      <PanelLeftOpen data-icon="expand-explorer" className="h-3.5 w-3.5" />
     </button>
   ) : onCollapse ? (
     <button
@@ -771,12 +771,12 @@ export function GraphWorkspacePreviewPane({
       title={translate("files.hideEditor")}
       aria-label={translate("files.hideEditor")}
     >
-      <PanelRightClose className="h-3.5 w-3.5" />
+      <PanelRightClose data-icon="collapse-viewer" className="h-3.5 w-3.5" />
     </button>
   ) : null;
 
-  const previewNavigation = (onNavigateBack || onReturnToFiles || onExpandExplorer) && <button type="button" className="workspace-preview-back" onClick={onNavigateBack ?? onReturnToFiles ?? onExpandExplorer} aria-label={onNavigateBack ? backLabel : translate('files.backToFiles')} title={onNavigateBack ? backLabel : translate('files.backToFiles')} data-testid="expand-explorer"><ArrowLeft size={18}/></button>;
-  const previewActions = <button ref={actionTrigger} type="button" className="thread-graph-editor-toolbar-button workspace-file-more" aria-label={translate('files.fileActions')} title={translate('files.fileActions')} aria-expanded={actionsOpen} onClick={() => setActionsOpen(open => !open)}><MoreHorizontal size={18}/></button>;
+  const previewNavigation = (onNavigateBack || onReturnToFiles || onExpandExplorer) && <button type="button" className="workspace-preview-back" onClick={onNavigateBack ?? onReturnToFiles ?? onExpandExplorer} aria-label={onNavigateBack ? backLabel : translate('files.backToFiles')} title={onNavigateBack ? backLabel : translate('files.backToFiles')} data-testid="expand-explorer"><ArrowLeft data-icon="back" size={18}/></button>;
+  const previewActions = <button ref={actionTrigger} type="button" className="thread-graph-editor-toolbar-button workspace-file-more" aria-label={translate('files.fileActions')} title={translate('files.fileActions')} aria-expanded={actionsOpen} onClick={() => setActionsOpen(open => !open)}><MoreHorizontal data-icon="more" size={18}/></button>;
 
   return (
     <section

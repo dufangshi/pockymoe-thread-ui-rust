@@ -319,4 +319,9 @@ export const authZhCN = {
   "auth.reauthentication_required": "请通过 OAuth 提供方重新登录，或验证已有的身份验证器或通行密钥，然后重试此更改。",
   "auth.accountVaultMissing": "此浏览器已验证过账户保险库，但中继现在声称保险库不存在。连接已阻止。仅在确定要重置账户密钥时重新开始。",
   "auth.accountKeyIdLabel": "账户 ID",
+  "auth.passcodeTitle": "输入访问口令",
+  "auth.passcodeDescription": "这台电脑上的 Pockymoe 设置了访问口令。",
+  "auth.passcodeLabel": "访问口令",
+  "auth.passcodeWrong": "口令不对。",
+  "auth.passcodeRateLimited": "错误次数过多，请一分钟后再试。",
 } as const;

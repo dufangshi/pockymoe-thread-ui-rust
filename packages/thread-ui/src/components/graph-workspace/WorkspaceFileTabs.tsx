@@ -78,7 +78,7 @@ export function WorkspaceFileTabs({
                   onClick={() => onSelect(tab.path)}
                   className={`flex h-full min-w-0 flex-1 items-center gap-1.5 px-2.5 text-left text-xs ${tab.pinned ? '' : 'italic'}`}
                 >
-                  <FileCode2 className="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  <FileCode2 data-icon="code" className="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
                   <span className="workspace-file-tab-name" dir="rtl"><bdi dir="ltr">{tab.name}</bdi></span>
                 </button>
                 <button
@@ -89,9 +89,9 @@ export function WorkspaceFileTabs({
                   aria-label={translate("files.close_069e97", { value1: tab.name })}
                 >
                   {dirty ? (
-                    <Circle className="h-2.5 w-2.5 fill-current" />
+                    <Circle data-icon="unsaved" className="h-2.5 w-2.5 fill-current" />
                   ) : (
-                    <X className="h-3.5 w-3.5" />
+                    <X data-icon="close" className="h-3.5 w-3.5" />
                   )}
                 </button>
               </div>

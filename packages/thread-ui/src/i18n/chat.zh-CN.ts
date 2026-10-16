@@ -1,4 +1,5 @@
 export const chatZhCN = {
+  'chat.replyVersion': '回复版本',
   "chat.peerAgent": "智能体",
   "chat.peerQuestion": "提问",
   "chat.peerUpdates": "子线程汇报",

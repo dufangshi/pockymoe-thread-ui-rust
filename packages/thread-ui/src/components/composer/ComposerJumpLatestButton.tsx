@@ -54,7 +54,7 @@ function JumpLatestStrip({
             disabled={!canJumpToPreviousTurn}
             onClick={() => onJumpToPreviousTurn?.()}
           >
-            <ChevronUp aria-hidden="true" />
+            <ChevronUp data-icon="previous-turn" aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -64,7 +64,7 @@ function JumpLatestStrip({
             disabled={!canJumpToNextTurn}
             onClick={() => onJumpToNextTurn?.()}
           >
-            <ChevronDown aria-hidden="true" />
+            <ChevronDown data-icon="next-turn" aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -74,7 +74,7 @@ function JumpLatestStrip({
             title={followTail ? translate("chat.latestMessagesAreInView") : translate("chat.jumpToTheBottom")}
             onClick={() => onToggleFollow?.()}
           >
-            <ArrowDown aria-hidden="true" />
+            <ArrowDown data-icon="latest" aria-hidden="true" />
           </button>
         </div>
       </div>

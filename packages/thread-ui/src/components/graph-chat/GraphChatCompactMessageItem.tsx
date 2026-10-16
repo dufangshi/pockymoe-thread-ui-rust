@@ -11,6 +11,7 @@ import { Brain, Check, Copy } from 'lucide-react';
 
 import type { ThreadHistoryItemDto } from '@pockymoe/shared';
 import type { ThreadTimelineAdapter } from '../../adapters';
+import { useMessagePresentation } from '../../plugins/useMessagePresentation';
 import {
   GraphChatAgentMessageBody,
   GraphChatLinkifiedPlainText,
@@ -94,6 +95,7 @@ export const GraphChatCompactMessageItem = memo(
       'idle',
     );
     const [reasoningOpen, setReasoningOpen] = useState(false);
+    const { presentation, text, showingOriginal, showOriginal } = useMessagePresentation({ item, streaming });
     const resetTimerRef = useRef<number | null>(null);
     const reasoningItems =
       item.kind === 'agentMessage' ? (item.reasoningItems ?? []) : [];
@@ -117,7 +119,7 @@ export const GraphChatCompactMessageItem = memo(
 
     async function handleCopy() {
       try {
-        await navigator.clipboard.writeText(item.text);
+        await navigator.clipboard.writeText(text);
         setCopyState('copied');
         if (resetTimerRef.current !== null) {
           window.clearTimeout(resetTimerRef.current);
@@ -165,9 +167,9 @@ export const GraphChatCompactMessageItem = memo(
         }`}
       >
         {copyState === 'copied' ? (
-          <Check className="h-3.5 w-3.5" />
+          <Check data-icon="copied" className="h-3.5 w-3.5" />
         ) : (
-          <Copy className="h-3.5 w-3.5" />
+          <Copy data-icon="copy" className="h-3.5 w-3.5" />
         )}
       </button>
     );
@@ -190,6 +192,7 @@ export const GraphChatCompactMessageItem = memo(
           }`}
         >
           <Brain
+            data-icon="think"
             className={`h-3.5 w-3.5 ${hasRunningReasoning ? 'animate-pulse' : ''}`}
           />
           <span>{translate("chat.coT")}</span>
@@ -235,7 +238,15 @@ export const GraphChatCompactMessageItem = memo(
         // Execution status belongs to the turn summary, not every emitted reply.
         status={queuedLikeStatus ? item.status : null}
         copyButton={copyButton}
-        metaControl={reasoningToggle}
+        metaControl={reasoningToggle || presentation ? <>
+          {reasoningToggle}
+          {presentation && <span className="thread-message-presentation" role="group" aria-label={translate('chat.replyVersion')}>
+            {[false, true].map(original => <button
+              key={String(original)} type="button" aria-pressed={showingOriginal === original}
+              onClick={() => { onBeforeMessageResize?.(); showOriginal(original); }}
+            >{original ? presentation.originalLabel : presentation.label}</button>)}
+          </span>}
+        </> : null}
         reasoning={reasoning}
         timeLabel={timeLabel}
         timeTitle={timeTitle}
@@ -245,7 +256,7 @@ export const GraphChatCompactMessageItem = memo(
             workspaceRootPath={adapter?.workspaceRootPath}
             resolveWorkspacePath={adapter?.resolveWorkspacePath}
             messageId={item.id}
-            text={item.text}
+            text={text}
             scrollRootRef={scrollRootRef}
             streaming={streaming}
             {...(onBeforeMessageResize

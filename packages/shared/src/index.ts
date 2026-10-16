@@ -387,6 +387,7 @@ export interface ThreadPeerWorkDto {
 }
 
 export interface ThreadHistoryItemDto {
+  polishedReply?: PolishedReplyDto | null;
   peerWork?: ThreadPeerWorkDto | null;
   id: string;
   kind:
@@ -441,6 +442,15 @@ export interface ThreadHistoryItemDto {
   artifact?: ThreadArtifactDto | null;
 }
 
+export interface PolishedReplyDto {
+  text: string;
+  preset: string;
+  language: string;
+  model: string;
+  sourceHash: string;
+  createdAt: string;
+}
+
 export interface ThreadHistoryItemDetailDto {
   id: string;
   kind: ThreadHistoryItemDto['kind'];
@@ -493,6 +503,7 @@ export interface PluginMcpServerDto {
 }
 
 export interface PluginCapabilitiesDto {
+  actions?: string[];
   artifactTypes: PluginArtifactTypeDto[];
   timelineRenderers: string[];
   threadPanels: PluginThreadPanelDto[];
@@ -519,6 +530,9 @@ export interface PluginManifestDto {
 export interface PluginDto extends PluginManifestDto {
   enabled: boolean;
   source?: 'builtin' | 'imported' | null;
+  available?: boolean;
+  unavailableReasonCode?: string | null;
+  unavailableReason?: string | null;
 }
 
 export interface UpdatePluginInput {

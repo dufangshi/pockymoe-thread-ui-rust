@@ -15,6 +15,21 @@
 .settings-detail { margin-top: 12px; border: 1px solid var(--theme-border); border-radius: 10px; }
 .settings-detail > summary { padding: 13px 15px; cursor: pointer; font-size: 12px; font-weight: 500; }
 .settings-detail > div { padding: 0 15px 15px; }
+.plugin-settings-form { display: grid; gap: 18px; max-width: 640px; }
+.plugin-settings-fields { display: grid; gap: 20px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.plugin-settings-field { display: grid; gap: 7px; min-width: 0; font-size: 13px; }
+.plugin-settings-field > label { font-weight: 500; }
+.plugin-settings-field input:not([type='checkbox']), .plugin-settings-field select, .plugin-settings-field textarea { width: 100%; min-width: 0; min-height: 40px; padding: 9px 11px; border: 1px solid var(--theme-border); border-radius: 8px; background: var(--theme-panel); color: var(--theme-fg); font: inherit; }
+.plugin-settings-field textarea { resize: vertical; }
+.plugin-settings-field :is(input, select, textarea):focus-visible, .plugin-settings-actions button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 2px; }
+.plugin-settings-field p, .plugin-settings-hint { color: var(--theme-fg-muted); font-size: 12px; line-height: 1.6; }
+.plugin-settings-checkbox { display: flex; align-items: center; gap: 9px; }
+.plugin-settings-checkbox input { width: 17px; height: 17px; accent-color: var(--theme-accent-solid); }
+.plugin-settings-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.plugin-settings-actions button { min-height: 40px; padding: 9px 14px; border: 1px solid var(--theme-border); border-radius: 8px; font-size: 13px; background: var(--theme-panel); }
+.plugin-settings-actions .plugin-settings-save { background: var(--theme-accent-solid); color: var(--theme-accent-solid-fg); border-color: transparent; }
+.plugin-settings-form :disabled { cursor: default; opacity: .55; }
+.plugin-settings-error { color: var(--theme-danger, #d85b64); font-size: 13px; line-height: 1.6; }
 .thread-graph-dialog.thread-graph-settings-dialog[data-slot='dialog-content'] { display: flex; flex-direction: column; gap: 0; width: min(940px, calc(100vw - 40px)); max-width: 940px; height: min(740px, calc(100dvh - 64px)); max-height: calc(100dvh - 32px); padding: 0; overflow: clip; border-radius: 18px; }
 .thread-graph-dialog.thread-graph-settings-dialog > [data-slot='dialog-header'] { padding: 22px 54px 18px 26px; border-bottom: 1px solid var(--theme-border); text-align: left; }
 .thread-graph-dialog.thread-graph-settings-dialog > [data-slot='dialog-close'] { top: 17px; right: 16px; width: 32px; height: 32px; display: grid; place-items: center; }

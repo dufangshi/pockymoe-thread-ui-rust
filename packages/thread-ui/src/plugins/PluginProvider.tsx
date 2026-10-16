@@ -22,9 +22,15 @@ import type {
   ArtifactRenderContext,
   FrontendPluginModule,
   InlineCodeRenderContext,
+  PluginSettingsSnapshot,
+  PluginSettingsContribution,
+  MessagePresentationContext,
+  PluginActionOutputContext,
 } from './plugin-types';
 
 export interface PluginProviderAdapter {
+  loadPluginSettings?: (pluginId: string) => Promise<PluginSettingsSnapshot>;
+  savePluginSettings?: (pluginId: string, settings: PluginSettingsSnapshot) => Promise<PluginSettingsSnapshot>;
   fetchPlugins?: () => Promise<PluginDto[]> | PluginDto[];
   importPlugin?: (input: ImportPluginInput) => Promise<PluginDto> | PluginDto;
   updatePlugin?: (
@@ -36,6 +42,19 @@ export interface PluginProviderAdapter {
 
 const DEFAULT_PLUGIN_PROVIDER_ADAPTER: PluginProviderAdapter = {};
 const DEFAULT_BUILTIN_PLUGINS: FrontendPluginModule[] = [];
+
+function PluginSettingsSection({ section, pluginId, adapter }: {
+  section: PluginSettingsContribution;
+  pluginId: string;
+  adapter: PluginProviderAdapter;
+}) {
+  const context = useMemo(() => ({
+    pluginId,
+    load: () => adapter.loadPluginSettings!(pluginId),
+    save: (settings: PluginSettingsSnapshot) => adapter.savePluginSettings!(pluginId, settings),
+  }), [adapter, pluginId]);
+  return section.render(context);
+}
 
 export function PluginProvider({
   adapter = DEFAULT_PLUGIN_PROVIDER_ADAPTER,
@@ -50,6 +69,7 @@ export function PluginProvider({
   const [plugins, setPlugins] = useState<PluginDto[]>(() =>
     mergePluginState(builtinPlugins, []),
   );
+  const [settingsPluginIds, setSettingsPluginIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,6 +81,7 @@ export function PluginProvider({
         ? await adapter.fetchPlugins()
         : [];
       setPlugins(mergePluginState(builtinPlugins, serverPlugins));
+      setSettingsPluginIds(new Set(serverPlugins.filter(plugin => plugin.available !== false).map(plugin => plugin.id)));
     } catch (err) {
       setError(err instanceof Error ? err.message : translate("workbench.unableToLoadPlugins"));
     } finally {
@@ -119,6 +140,7 @@ export function PluginProvider({
       }
 
       const imported = await adapter.importPlugin(input);
+      setSettingsPluginIds(current => new Set([...current, imported.id]));
       setPlugins((current) => {
         const next = current.filter((plugin) => plugin.id !== imported.id);
         return [...next, imported];
@@ -134,6 +156,7 @@ export function PluginProvider({
       }
 
       const removed = await adapter.deletePlugin(pluginId);
+      setSettingsPluginIds(current => new Set([...current].filter(id => id !== removed.id)));
       setPlugins((current) =>
         current.filter((plugin) => plugin.id !== removed.id),
       );
@@ -143,7 +166,7 @@ export function PluginProvider({
 
   const enabledModules = useMemo(() => {
     const enabledIds = new Set(
-      plugins.filter((plugin) => plugin.enabled).map((plugin) => plugin.id),
+      plugins.filter((plugin) => plugin.enabled && plugin.available !== false).map((plugin) => plugin.id),
     );
     return builtinPlugins.filter((module) =>
       enabledIds.has(module.manifest.id),
@@ -199,6 +222,32 @@ export function PluginProvider({
     [enabledModules],
   );
 
+  const presentMessage = useCallback((context: MessagePresentationContext) => {
+    for (const module of enabledModules) {
+      const presentation = module.presentMessage?.(context);
+      if (presentation) return presentation;
+    }
+    return null;
+  }, [enabledModules]);
+
+  const getSettingsSections = useCallback(() => {
+    if (!adapter.loadPluginSettings || !adapter.savePluginSettings) return [];
+    return builtinPlugins.flatMap(module => {
+      const devicePlugin = plugins.find(plugin => plugin.id === module.manifest.id);
+      if (!settingsPluginIds.has(module.manifest.id) || !devicePlugin || devicePlugin.available === false) return [];
+      return (module.settingsSections ?? []).map(section => ({
+        id: `plugin:${module.manifest.id}:${section.id}`,
+        label: section.label,
+        description: section.description,
+        content: <PluginSettingsSection section={section} pluginId={module.manifest.id} adapter={adapter} />,
+      }));
+    });
+  }, [adapter, builtinPlugins, plugins, settingsPluginIds]);
+
+  const renderActionOutput = useCallback((pluginId: string, context: PluginActionOutputContext) =>
+    builtinPlugins.find(module => module.manifest.id === pluginId)?.renderActionOutput?.(context) ?? null,
+  [builtinPlugins]);
+
   const value = useMemo<PluginContextValue>(
     () => ({
       plugins,
@@ -212,10 +261,16 @@ export function PluginProvider({
       renderInlineCode,
       hasRendererForArtifact,
       getThreadPanels,
+      getSettingsSections,
+      presentMessage,
+      renderActionOutput,
     }),
     [
       error,
       getThreadPanels,
+      getSettingsSections,
+      presentMessage,
+      renderActionOutput,
       hasRendererForArtifact,
       importPluginManifest,
       loading,

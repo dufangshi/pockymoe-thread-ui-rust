@@ -46,6 +46,11 @@ var automationEn = {
   "automation.action": "Action",
   "automation.prompt": "Prompt / wake",
   "automation.notifyInbox": "Passive inbox",
+  "automation.pluginAction": "Plugin action",
+  "automation.pluginOutput": "Plugin report",
+  "automation.rawOutput": "Raw report (JSON)",
+  "automation.outputTruncated": "Output truncated for display.",
+  "automation.pluginCharge": "Plugin actions may incur model charges. Their model usage and cost are not included in these totals.",
   "automation.runScript": "Run script / command",
   "automation.text": "Text",
   "automation.subject": "Subject",
@@ -118,6 +123,74 @@ var automationEn = {
   "automation.nativeUnavailable": "Native watch history is unavailable; totals may omit native watches.",
   "automation.nativeCoverage": "USD priced for {{value1}} of {{value2}} recorded scheduled turns.",
   "automation.nativeTokenCoverage": "Tokens available for {{value1}} of {{value2}} recorded scheduled turns."
+};
+
+// src/i18n/content-quality.en.ts
+var contentQualityEn = {
+  "quality.report.reviewed": "Reviewed",
+  "quality.report.connected": "Connection succeeded",
+  "quality.report.repliesDisabled": "Automatic reply polishing is disabled",
+  "quality.report.noReply": "No reply to polish",
+  "quality.report.shortReply": "Reply is below the minimum length",
+  "quality.report.alreadyPolished": "Reply is already polished",
+  "quality.report.turnNotCompleted": "Turn did not complete successfully",
+  "quality.report.unsupportedMarkup": "Document markup is unsupported",
+  "quality.report.fileWritten": "Revised file written",
+  "quality.report.fileUnchanged": "File unchanged",
+  "quality.report.findings": "Findings",
+  "quality.report.noFindings": "No findings reported.",
+  "quality.report.diff": "Proposed diff",
+  "quality.report.proposal": "Proposed revised text",
+  "quality.report.reply": "Reply polishing",
+  "quality.report.scanError": "Document scan failed",
+  "quality.report.noDocuments": "No documents reviewed.",
+  "quality.report.moreDocuments": "Additional eligible documents were not reviewed in this run.",
+  "quality.name": "Content Quality",
+  "quality.description": "Polish long agent replies and review or rewrite documents with your chosen model.",
+  "quality.connectionFile": "Connection profile file",
+  "quality.connectionFileHint": "Path to a private connection profile on the Supervisor device. Configure credentials in that file; only its path is stored here.",
+  "quality.model": "Model",
+  "quality.modelHint": "Model identifier supported by your connection profile.",
+  "quality.language": "Output language",
+  "quality.languageHint": "Language tag, for example zh-CN or en.",
+  "quality.preset": "Writing preset",
+  "quality.preset.concise": "Concise",
+  "quality.preset.concise.description": "Lead with the answer and remove repetition.",
+  "quality.preset.clear": "Clear",
+  "quality.preset.clear.description": "Improve structure and readability while preserving meaning.",
+  "quality.preset.technical": "Technical",
+  "quality.preset.technical.description": "Keep precise terminology, implementation details and constraints.",
+  "quality.preset.beginner": "Beginner friendly",
+  "quality.preset.beginner.description": "Explain unfamiliar terms and add approachable context.",
+  "quality.preset.copyedit": "Copyedit",
+  "quality.preset.copyedit.description": "Correct grammar and wording with minimal changes to voice.",
+  "quality.detail": "Level of detail",
+  "quality.detail.short": "Short",
+  "quality.detail.balanced": "Balanced",
+  "quality.detail.detailed": "Detailed",
+  "quality.readerBackground": "Reader background",
+  "quality.readerBackgroundHint": "Optional context about the reader\u2019s experience and needs.",
+  "quality.minReplyChars": "Minimum reply length (characters)",
+  "quality.autoReplies": "Automatically polish long replies",
+  "quality.autoRepliesHint": "Applies when this plugin is enabled. Original replies are always retained. Polishing may incur model usage charges.",
+  "quality.autoDocuments": "Automatically review changed documents",
+  "quality.autoDocumentsHint": "With this plugin enabled, review up to 5 modified or untracked documents after a successful turn. Findings appear in automation history. Automatic review does not rewrite files or block commits and may incur model charges.",
+  "quality.documentMode": "Default manual document action",
+  "quality.documentMode.review": "Review \u2014 findings and proposed changes",
+  "quality.documentMode.rewrite": "Rewrite \u2014 write the revised file",
+  "quality.documentModeHint": "Manual review returns findings and a proposal. Manual rewrite writes the revised file. Automatic document reviews always use review mode.",
+  "quality.loading": "Loading settings\u2026",
+  "quality.saving": "Saving\u2026",
+  "quality.save": "Save settings",
+  "quality.saved": "Settings saved.",
+  "quality.reload": "Reload saved settings",
+  "quality.reloadHint": "Reloading replaces your edits with the latest saved settings.",
+  "quality.loadError": "Unable to load settings. Reload to try again.",
+  "quality.saveError": "Unable to save settings. Your edits are retained; try saving again.",
+  "quality.conflict": "Settings changed elsewhere. Your edits are retained. Reload the latest settings before saving again.",
+  "quality.polished": "Polished",
+  "quality.original": "Original",
+  "quality.replyVersion": "Reply version"
 };
 
 // src/i18n/search.en.ts
@@ -613,11 +686,17 @@ var authEn = {
   "auth.user_id_taken": "That account identifier was taken. Try registering again to generate a new account key and recovery code.",
   "auth.reauthentication_required": "Sign in again with your OAuth provider or verify an existing authenticator or passkey, then retry this change.",
   "auth.accountVaultMissing": "This browser already verified an account vault, but the relay now says it is missing. Connection blocked. Start over only if you intend to reset your account key.",
-  "auth.accountKeyIdLabel": "Account ID"
+  "auth.accountKeyIdLabel": "Account ID",
+  "auth.passcodeTitle": "Enter passcode",
+  "auth.passcodeDescription": "Pockymoe on this computer requires a passcode.",
+  "auth.passcodeLabel": "Passcode",
+  "auth.passcodeWrong": "Wrong passcode.",
+  "auth.passcodeRateLimited": "Too many wrong passcodes. Wait a minute and try again."
 };
 
 // src/i18n/chat.en.ts
 var chatEn = {
+  "chat.replyVersion": "Reply version",
   "chat.peerAgent": "Agent",
   "chat.peerQuestion": "Question",
   "chat.peerUpdates": "Delegate update",
@@ -2544,7 +2623,20 @@ var settingsEn = {
   "settings.resourcesMinutesRange": "Enter 1\u20131440 minutes.",
   "settings.resourcesThreadsRange": "Enter 1\u2013200 threads.",
   "settings.resourcesMemoryRange": "Enter at least 0.25 GiB.",
-  "settings.resourcesSaved": "Saved."
+  "settings.resourcesSaved": "Saved.",
+  "settings.passcodeTitle": "Access passcode",
+  "settings.passcodeOffDescription": "Anyone who can open this address can use Pockymoe. Set a passcode to make other browsers enter it first.",
+  "settings.passcodeOnDescription": "On. Other browsers enter the passcode once before using Pockymoe.",
+  "settings.passcodeLabel": "Passcode",
+  "settings.passcodeNewLabel": "New passcode",
+  "settings.passcodeEnable": "Turn on",
+  "settings.passcodeChange": "Change",
+  "settings.passcodeDisable": "Turn off",
+  "settings.passcodeDisableConfirm": "Turn off the passcode? Anyone who can open this address can use Pockymoe again.",
+  "settings.passcodeSaved": "Passcode saved. Other browsers are signed out.",
+  "settings.passcodeRemoved": "Passcode turned off.",
+  "settings.passcodeForgot": "Forgot it? Run pockymoe passcode off on this computer.",
+  "settings.passcodeTooShort": "Use at least 4 characters."
 };
 
 // src/i18n/sharing.en.ts
@@ -3270,6 +3362,7 @@ var workbenchEn = {
 // src/i18n/en.ts
 var en = {
   ...automationEn,
+  ...contentQualityEn,
   ...authEn,
   ...chatEn,
   ...commonEn,
@@ -3327,6 +3420,11 @@ var automationZhCN = {
   "automation.action": "\u52A8\u4F5C",
   "automation.prompt": "Prompt / \u5524\u9192",
   "automation.notifyInbox": "\u88AB\u52A8\u6536\u4EF6\u7BB1",
+  "automation.pluginAction": "\u63D2\u4EF6\u52A8\u4F5C",
+  "automation.pluginOutput": "\u63D2\u4EF6\u62A5\u544A",
+  "automation.rawOutput": "\u539F\u59CB\u62A5\u544A\uFF08JSON\uFF09",
+  "automation.outputTruncated": "\u663E\u793A\u5185\u5BB9\u5DF2\u622A\u65AD\u3002",
+  "automation.pluginCharge": "\u63D2\u4EF6\u52A8\u4F5C\u53EF\u80FD\u4EA7\u751F\u6A21\u578B\u8D39\u7528\uFF0C\u5176\u6A21\u578B\u7528\u91CF\u548C\u8D39\u7528\u4E0D\u8BA1\u5165\u8FD9\u4E9B\u5408\u8BA1\u3002",
   "automation.runScript": "\u8FD0\u884C\u811A\u672C / \u547D\u4EE4",
   "automation.text": "\u6587\u672C",
   "automation.subject": "\u4E3B\u9898",
@@ -3399,6 +3497,74 @@ var automationZhCN = {
   "automation.nativeUnavailable": "\u539F\u751F\u5B9A\u65F6\u4EFB\u52A1\u5386\u53F2\u6682\u4E0D\u53EF\u7528\uFF0C\u603B\u8BA1\u53EF\u80FD\u672A\u5305\u542B\u539F\u751F\u4EFB\u52A1\u3002",
   "automation.nativeCoverage": "{{value2}} \u4E2A\u5DF2\u8BB0\u5F55\u5B9A\u65F6\u56DE\u5408\u4E2D\uFF0C{{value1}} \u4E2A\u6709 USD \u4EF7\u683C\u3002",
   "automation.nativeTokenCoverage": "{{value2}} \u4E2A\u5DF2\u8BB0\u5F55\u5B9A\u65F6\u56DE\u5408\u4E2D\uFF0C{{value1}} \u4E2A\u6709 token \u8BB0\u5F55\u3002"
+};
+
+// src/i18n/content-quality.zh-CN.ts
+var contentQualityZhCN = {
+  "quality.report.reviewed": "\u5DF2\u5BA1\u9605",
+  "quality.report.connected": "\u8FDE\u63A5\u6210\u529F",
+  "quality.report.repliesDisabled": "\u81EA\u52A8\u56DE\u590D\u6DA6\u8272\u5DF2\u5173\u95ED",
+  "quality.report.noReply": "\u6CA1\u6709\u53EF\u6DA6\u8272\u7684\u56DE\u590D",
+  "quality.report.shortReply": "\u56DE\u590D\u672A\u8FBE\u5230\u6700\u77ED\u957F\u5EA6",
+  "quality.report.alreadyPolished": "\u56DE\u590D\u5DF2\u6DA6\u8272",
+  "quality.report.turnNotCompleted": "\u56DE\u5408\u672A\u6210\u529F\u5B8C\u6210",
+  "quality.report.unsupportedMarkup": "\u4E0D\u652F\u6301\u8BE5\u6587\u6863\u6807\u8BB0\u683C\u5F0F",
+  "quality.report.fileWritten": "\u5DF2\u5199\u5165\u4FEE\u8BA2\u540E\u7684\u6587\u4EF6",
+  "quality.report.fileUnchanged": "\u6587\u4EF6\u672A\u66F4\u6539",
+  "quality.report.findings": "\u5BA1\u9605\u610F\u89C1",
+  "quality.report.noFindings": "\u672A\u62A5\u544A\u95EE\u9898\u3002",
+  "quality.report.diff": "\u5EFA\u8BAE\u5DEE\u5F02",
+  "quality.report.proposal": "\u5EFA\u8BAE\u4FEE\u8BA2\u6587\u672C",
+  "quality.report.reply": "\u56DE\u590D\u6DA6\u8272",
+  "quality.report.scanError": "\u6587\u6863\u626B\u63CF\u5931\u8D25",
+  "quality.report.noDocuments": "\u672A\u5BA1\u9605\u4EFB\u4F55\u6587\u6863\u3002",
+  "quality.report.moreDocuments": "\u672C\u6B21\u8FD8\u6709\u7B26\u5408\u6761\u4EF6\u7684\u6587\u6863\u672A\u88AB\u5BA1\u9605\u3002",
+  "quality.name": "\u5185\u5BB9\u8D28\u91CF",
+  "quality.description": "\u4F7F\u7528\u4F60\u9009\u62E9\u7684\u6A21\u578B\u6DA6\u8272\u8F83\u957F\u7684\u667A\u80FD\u4F53\u56DE\u590D\uFF0C\u5E76\u5BA1\u9605\u6216\u6539\u5199\u6587\u6863\u3002",
+  "quality.connectionFile": "\u8FDE\u63A5\u914D\u7F6E\u6587\u4EF6",
+  "quality.connectionFileHint": "Supervisor \u8BBE\u5907\u4E0A\u79C1\u6709\u8FDE\u63A5\u914D\u7F6E\u6587\u4EF6\u7684\u8DEF\u5F84\u3002\u8BF7\u5728\u8BE5\u6587\u4EF6\u4E2D\u914D\u7F6E\u51ED\u636E\uFF1B\u8FD9\u91CC\u53EA\u4FDD\u5B58\u8DEF\u5F84\u3002",
+  "quality.model": "\u6A21\u578B",
+  "quality.modelHint": "\u8FDE\u63A5\u914D\u7F6E\u652F\u6301\u7684\u6A21\u578B\u6807\u8BC6\u3002",
+  "quality.language": "\u8F93\u51FA\u8BED\u8A00",
+  "quality.languageHint": "\u8BED\u8A00\u6807\u7B7E\uFF0C\u4F8B\u5982 zh-CN \u6216 en\u3002",
+  "quality.preset": "\u5199\u4F5C\u9884\u8BBE",
+  "quality.preset.concise": "\u7B80\u6D01",
+  "quality.preset.concise.description": "\u5148\u7ED9\u51FA\u7B54\u6848\uFF0C\u53BB\u9664\u91CD\u590D\u5185\u5BB9\u3002",
+  "quality.preset.clear": "\u6E05\u6670",
+  "quality.preset.clear.description": "\u4FDD\u7559\u539F\u610F\uFF0C\u6539\u5584\u7ED3\u6784\u548C\u53EF\u8BFB\u6027\u3002",
+  "quality.preset.technical": "\u6280\u672F",
+  "quality.preset.technical.description": "\u4FDD\u7559\u51C6\u786E\u672F\u8BED\u3001\u5B9E\u73B0\u7EC6\u8282\u548C\u7EA6\u675F\u3002",
+  "quality.preset.beginner": "\u65B0\u624B\u53CB\u597D",
+  "quality.preset.beginner.description": "\u89E3\u91CA\u964C\u751F\u672F\u8BED\uFF0C\u8865\u5145\u6613\u61C2\u7684\u80CC\u666F\u3002",
+  "quality.preset.copyedit": "\u6587\u5B57\u6821\u8BA2",
+  "quality.preset.copyedit.description": "\u4FEE\u6B63\u8BED\u6CD5\u548C\u63AA\u8F9E\uFF0C\u5C3D\u91CF\u4FDD\u7559\u539F\u6709\u98CE\u683C\u3002",
+  "quality.detail": "\u8BE6\u7EC6\u7A0B\u5EA6",
+  "quality.detail.short": "\u7B80\u77ED",
+  "quality.detail.balanced": "\u9002\u4E2D",
+  "quality.detail.detailed": "\u8BE6\u7EC6",
+  "quality.readerBackground": "\u8BFB\u8005\u80CC\u666F",
+  "quality.readerBackgroundHint": "\u53EF\u9009\uFF1A\u8BFB\u8005\u7684\u7ECF\u9A8C\u4E0E\u9700\u6C42\u3002",
+  "quality.minReplyChars": "\u6700\u77ED\u56DE\u590D\u957F\u5EA6\uFF08\u5B57\u7B26\u6570\uFF09",
+  "quality.autoReplies": "\u81EA\u52A8\u6DA6\u8272\u8F83\u957F\u7684\u56DE\u590D",
+  "quality.autoRepliesHint": "\u63D2\u4EF6\u542F\u7528\u65F6\u751F\u6548\u3002\u59CB\u7EC8\u4FDD\u7559\u539F\u59CB\u56DE\u590D\u3002\u6DA6\u8272\u53EF\u80FD\u4EA7\u751F\u6A21\u578B\u4F7F\u7528\u8D39\u7528\u3002",
+  "quality.autoDocuments": "\u81EA\u52A8\u5BA1\u9605\u5DF2\u66F4\u6539\u7684\u6587\u6863",
+  "quality.autoDocumentsHint": "\u63D2\u4EF6\u542F\u7528\u65F6\uFF0C\u5728\u6BCF\u6B21\u6210\u529F\u7684\u56DE\u5408\u7ED3\u675F\u65F6\u5BA1\u9605\u6700\u591A 5 \u4E2A\u5DF2\u4FEE\u6539\u6216\u672A\u8DDF\u8E2A\u7684\u6587\u6863\uFF0C\u7ED3\u679C\u663E\u793A\u5728\u81EA\u52A8\u5316\u5386\u53F2\u4E2D\u3002\u81EA\u52A8\u5BA1\u9605\u4E0D\u4F1A\u6539\u5199\u6587\u4EF6\u6216\u963B\u6B62\u63D0\u4EA4\uFF0C\u53EF\u80FD\u4EA7\u751F\u6A21\u578B\u8D39\u7528\u3002",
+  "quality.documentMode": "\u9ED8\u8BA4\u624B\u52A8\u6587\u6863\u64CD\u4F5C",
+  "quality.documentMode.review": "\u5BA1\u9605\uFF1A\u8FD4\u56DE\u610F\u89C1\u548C\u4FEE\u6539\u5EFA\u8BAE",
+  "quality.documentMode.rewrite": "\u6539\u5199\uFF1A\u76F4\u63A5\u5199\u5165\u4FEE\u8BA2\u540E\u7684\u6587\u4EF6",
+  "quality.documentModeHint": "\u624B\u52A8\u5BA1\u9605\u8FD4\u56DE\u610F\u89C1\u548C\u4FEE\u6539\u5EFA\u8BAE\uFF0C\u624B\u52A8\u6539\u5199\u4F1A\u76F4\u63A5\u5199\u5165\u4FEE\u8BA2\u540E\u7684\u6587\u4EF6\u3002\u81EA\u52A8\u6587\u6863\u5BA1\u9605\u59CB\u7EC8\u4F7F\u7528\u5BA1\u9605\u6A21\u5F0F\u3002",
+  "quality.loading": "\u6B63\u5728\u52A0\u8F7D\u8BBE\u7F6E\u2026",
+  "quality.saving": "\u6B63\u5728\u4FDD\u5B58\u2026",
+  "quality.save": "\u4FDD\u5B58\u8BBE\u7F6E",
+  "quality.saved": "\u8BBE\u7F6E\u5DF2\u4FDD\u5B58\u3002",
+  "quality.reload": "\u91CD\u65B0\u52A0\u8F7D\u5DF2\u4FDD\u5B58\u7684\u8BBE\u7F6E",
+  "quality.reloadHint": "\u91CD\u65B0\u52A0\u8F7D\u4F1A\u7528\u6700\u65B0\u4FDD\u5B58\u7684\u8BBE\u7F6E\u66FF\u6362\u5F53\u524D\u4FEE\u6539\u3002",
+  "quality.loadError": "\u65E0\u6CD5\u52A0\u8F7D\u8BBE\u7F6E\uFF0C\u8BF7\u91CD\u65B0\u52A0\u8F7D\u4EE5\u91CD\u8BD5\u3002",
+  "quality.saveError": "\u65E0\u6CD5\u4FDD\u5B58\u8BBE\u7F6E\u3002\u5DF2\u4FDD\u7559\u5F53\u524D\u4FEE\u6539\uFF0C\u8BF7\u91CD\u8BD5\u4FDD\u5B58\u3002",
+  "quality.conflict": "\u8BBE\u7F6E\u5DF2\u5728\u5176\u4ED6\u4F4D\u7F6E\u66F4\u6539\u3002\u5DF2\u4FDD\u7559\u5F53\u524D\u4FEE\u6539\uFF0C\u8BF7\u91CD\u65B0\u52A0\u8F7D\u6700\u65B0\u8BBE\u7F6E\u540E\u518D\u4FDD\u5B58\u3002",
+  "quality.polished": "\u6DA6\u8272\u540E",
+  "quality.original": "\u539F\u6587",
+  "quality.replyVersion": "\u56DE\u590D\u7248\u672C"
 };
 
 // src/i18n/search.zh-CN.ts
@@ -3894,11 +4060,17 @@ var authZhCN = {
   "auth.user_id_taken": "\u8BE5\u8D26\u6237\u6807\u8BC6\u5DF2\u88AB\u5360\u7528\u3002\u8BF7\u91CD\u65B0\u6CE8\u518C\uFF0C\u4EE5\u751F\u6210\u65B0\u7684\u8D26\u6237\u5BC6\u94A5\u548C\u6062\u590D\u7801\u3002",
   "auth.reauthentication_required": "\u8BF7\u901A\u8FC7 OAuth \u63D0\u4F9B\u65B9\u91CD\u65B0\u767B\u5F55\uFF0C\u6216\u9A8C\u8BC1\u5DF2\u6709\u7684\u8EAB\u4EFD\u9A8C\u8BC1\u5668\u6216\u901A\u884C\u5BC6\u94A5\uFF0C\u7136\u540E\u91CD\u8BD5\u6B64\u66F4\u6539\u3002",
   "auth.accountVaultMissing": "\u6B64\u6D4F\u89C8\u5668\u5DF2\u9A8C\u8BC1\u8FC7\u8D26\u6237\u4FDD\u9669\u5E93\uFF0C\u4F46\u4E2D\u7EE7\u73B0\u5728\u58F0\u79F0\u4FDD\u9669\u5E93\u4E0D\u5B58\u5728\u3002\u8FDE\u63A5\u5DF2\u963B\u6B62\u3002\u4EC5\u5728\u786E\u5B9A\u8981\u91CD\u7F6E\u8D26\u6237\u5BC6\u94A5\u65F6\u91CD\u65B0\u5F00\u59CB\u3002",
-  "auth.accountKeyIdLabel": "\u8D26\u6237 ID"
+  "auth.accountKeyIdLabel": "\u8D26\u6237 ID",
+  "auth.passcodeTitle": "\u8F93\u5165\u8BBF\u95EE\u53E3\u4EE4",
+  "auth.passcodeDescription": "\u8FD9\u53F0\u7535\u8111\u4E0A\u7684 Pockymoe \u8BBE\u7F6E\u4E86\u8BBF\u95EE\u53E3\u4EE4\u3002",
+  "auth.passcodeLabel": "\u8BBF\u95EE\u53E3\u4EE4",
+  "auth.passcodeWrong": "\u53E3\u4EE4\u4E0D\u5BF9\u3002",
+  "auth.passcodeRateLimited": "\u9519\u8BEF\u6B21\u6570\u8FC7\u591A\uFF0C\u8BF7\u4E00\u5206\u949F\u540E\u518D\u8BD5\u3002"
 };
 
 // src/i18n/chat.zh-CN.ts
 var chatZhCN = {
+  "chat.replyVersion": "\u56DE\u590D\u7248\u672C",
   "chat.peerAgent": "\u667A\u80FD\u4F53",
   "chat.peerQuestion": "\u63D0\u95EE",
   "chat.peerUpdates": "\u5B50\u7EBF\u7A0B\u6C47\u62A5",
@@ -5825,7 +5997,20 @@ var settingsZhCN = {
   "settings.resourcesMinutesRange": "\u8BF7\u8F93\u5165 1\u20131440 \u5206\u949F\u3002",
   "settings.resourcesThreadsRange": "\u8BF7\u8F93\u5165 1\u2013200 \u4E2A\u3002",
   "settings.resourcesMemoryRange": "\u8BF7\u8F93\u5165\u81F3\u5C11 0.25 GiB\u3002",
-  "settings.resourcesSaved": "\u5DF2\u4FDD\u5B58\u3002"
+  "settings.resourcesSaved": "\u5DF2\u4FDD\u5B58\u3002",
+  "settings.passcodeTitle": "\u8BBF\u95EE\u53E3\u4EE4",
+  "settings.passcodeOffDescription": "\u73B0\u5728\u4EFB\u4F55\u80FD\u6253\u5F00\u8FD9\u4E2A\u5730\u5740\u7684\u4EBA\u90FD\u80FD\u4F7F\u7528 Pockymoe\u3002\u8BBE\u7F6E\u53E3\u4EE4\u540E\uFF0C\u5176\u4ED6\u6D4F\u89C8\u5668\u9700\u8981\u5148\u8F93\u5165\u53E3\u4EE4\u3002",
+  "settings.passcodeOnDescription": "\u5DF2\u5F00\u542F\u3002\u5176\u4ED6\u6D4F\u89C8\u5668\u9700\u8981\u5148\u8F93\u5165\u4E00\u6B21\u53E3\u4EE4\u624D\u80FD\u4F7F\u7528\u3002",
+  "settings.passcodeLabel": "\u53E3\u4EE4",
+  "settings.passcodeNewLabel": "\u65B0\u53E3\u4EE4",
+  "settings.passcodeEnable": "\u5F00\u542F",
+  "settings.passcodeChange": "\u4FEE\u6539",
+  "settings.passcodeDisable": "\u5173\u95ED",
+  "settings.passcodeDisableConfirm": "\u5173\u95ED\u8BBF\u95EE\u53E3\u4EE4\uFF1F\u5173\u95ED\u540E\uFF0C\u4EFB\u4F55\u80FD\u6253\u5F00\u8FD9\u4E2A\u5730\u5740\u7684\u4EBA\u90FD\u80FD\u518D\u6B21\u4F7F\u7528 Pockymoe\u3002",
+  "settings.passcodeSaved": "\u53E3\u4EE4\u5DF2\u4FDD\u5B58\uFF0C\u5176\u4ED6\u6D4F\u89C8\u5668\u5DF2\u9000\u51FA\u767B\u5F55\u3002",
+  "settings.passcodeRemoved": "\u8BBF\u95EE\u53E3\u4EE4\u5DF2\u5173\u95ED\u3002",
+  "settings.passcodeForgot": "\u5FD8\u8BB0\u53E3\u4EE4\uFF1F\u5728\u8FD9\u53F0\u7535\u8111\u4E0A\u8FD0\u884C pockymoe passcode off\u3002",
+  "settings.passcodeTooShort": "\u81F3\u5C11 4 \u4E2A\u5B57\u7B26\u3002"
 };
 
 // src/i18n/sharing.zh-CN.ts
@@ -6551,6 +6736,7 @@ var workbenchZhCN = {
 // src/i18n/zh-CN.ts
 var zhCN = {
   ...automationZhCN,
+  ...contentQualityZhCN,
   ...authZhCN,
   ...chatZhCN,
   ...commonZhCN,

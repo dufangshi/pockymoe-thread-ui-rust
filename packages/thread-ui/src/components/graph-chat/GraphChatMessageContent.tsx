@@ -396,9 +396,9 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
             aria-label={translate("chat.copyCode")}
           >
             {copyState[id] === 'copied' ? (
-              <Check className="h-3.5 w-3.5" />
+              <Check data-icon="copied" className="h-3.5 w-3.5" />
             ) : (
-              <Copy className="h-3.5 w-3.5" />
+              <Copy data-icon="copy" className="h-3.5 w-3.5" />
             )}
           </Button>}
           {html ? (

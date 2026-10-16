@@ -11,6 +11,7 @@ import './styles/composer-reasoning.css';
 import './styles/mermaid-diagrams.css';
 import './styles/terminal-panel.css';
 import './styles/transcript-log.css';
+import './styles/thread-map.css';
 
 export type {
   ShellSocketConnection,
@@ -117,6 +118,9 @@ export {
 } from './app-shell/AppShellNavigation';
 export type { MatterWorkbenchOptions, WorkbenchThread, WorkbenchNotification, WorkbenchToolPanel } from './components/MatterWorkbench';
 export { MatterWorkbench } from './components/MatterWorkbench';
+export { ThreadMap } from './components/threadMap/ThreadMap';
+export { ThreadMapDialog } from './components/threadMap/ThreadMapDialog';
+export type { ThreadMapDevice, ThreadMapThread, ThreadMapWorkspace } from './components/threadMap/model';
 export { PublicTranscript, transcriptSnapshot, type PublicTranscriptSnapshot } from './components/PublicTranscript';
 
 export { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./components/graph-ui/Dialog";

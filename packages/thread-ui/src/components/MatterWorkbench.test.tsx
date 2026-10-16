@@ -267,6 +267,22 @@ describe('one-handed phone dock', () => {
     expect(host.querySelector('.matter-workbench')!.classList.contains('is-left-handed')).toBe(false);
   });
 
+  it('opens the thread map from More and from the drawer when the host has one', () => {
+    const openThreadMap = vi.fn();
+    nav = { openThreadMap };
+    render();
+    const more = host.querySelector('section.matter-phone-sheet[aria-label="More actions"]')!;
+    act(() => button('More actions')!.click());
+    act(() => [...more.querySelectorAll('button')].find(item => item.textContent === 'Thread map')!.click());
+    expect(openThreadMap).toHaveBeenCalledTimes(1);
+    expect(more.hasAttribute('data-open')).toBe(false);
+    act(() => [...drawer().querySelectorAll('button')].find(item => item.textContent === 'Thread map')!.click());
+    expect(openThreadMap).toHaveBeenCalledTimes(2);
+    nav = {};
+    render();
+    expect(host.textContent).not.toContain('Thread map');
+  });
+
   it('brings the dock back only after the tap that moved focus has clicked', () => {
     vi.useFakeTimers();
     try {
@@ -366,6 +382,10 @@ describe('icon hooks', () => {
     expect(icon('.matter-rail button[aria-label="Chat"]')).toBe('chat');
     expect(icon('.matter-rail button[aria-label="Terminal"]')).toBe('terminal');
     expect(icon('.matter-rail button[aria-label="Toggle Explorer"]')).toBe('explorer');
+    expect(host.querySelector('.matter-rail button[aria-label="Thread map"]')).toBeNull();
+    nav = { openThreadMap: () => {} };
+    render();
+    expect(icon('.matter-rail button[aria-label="Thread map"]')).toBe('thread-map');
     expect(icon('.matter-toolbar-toggle')).toBe('thread-tools');
     // The hook is an attribute only: Classic renders the same lucide glyph.
     expect(host.querySelector('[data-icon="back"]')?.classList.contains('lucide')).toBe(true);

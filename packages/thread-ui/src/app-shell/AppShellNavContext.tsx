@@ -32,6 +32,8 @@ export interface AppShellNavContextValue {
   /** The thumb the one-handed layout is arranged for; left mirrors it. */
   phoneHand?: PhoneHand;
   setPhoneHand?: (hand: PhoneHand) => void;
+  /** Opens the map of every thread on the account's devices. */
+  openThreadMap?: () => void;
   showReasoningSummaries?: boolean;
   setShowReasoningSummaries?: (enabled: boolean) => void;
   sendShortcut?: ComposerSendShortcut;

@@ -307,6 +307,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    width: 100%;
     min-height: 46px;
     margin: 2px 0 10px;
     padding: 0 12px;
@@ -317,7 +318,9 @@
     font-size: 14px;
     font-weight: 600;
   }
-  .matter-drawer-home > span { flex: 1; min-width: 0; }
+  .matter-drawer-home > span { flex: 1; min-width: 0; text-align: left; }
+  /* Rows of the drawer's own destinations sit together. */
+  .thread-ui-shell .matter-workbench .matter-drawer-home + .matter-drawer-home { margin-top: -4px; }
   .matter-drawer-home svg { width: 18px; height: 18px; flex: none; color: var(--theme-fg-muted); }
   /* Sideways drags are the drawer's; the browser's own swipe-back stays out. */
   .thread-ui-shell .matter-workbench.has-phone-dock .matter-main { overscroll-behavior-x: none; }

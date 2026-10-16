@@ -12,6 +12,7 @@ import {
   Home,
   FolderOpen,
   Hand,
+  LayoutDashboard,
   LoaderCircle,
   MessageSquare,
   PanelLeft,
@@ -156,6 +157,7 @@ export function MatterWorkbench({
   const dock = mobile && (shellNav?.phoneDock ?? true);
   // Left-handed: the dock, the composer's buttons and the turn strip are mirrored.
   const leftHanded = dock && shellNav?.phoneHand === 'left';
+  const openThreadMap = shellNav?.openThreadMap;
   const [threadsOpen, setThreadsOpen] = useState(false);
   // A phone split's pinned conversations, switched from the dock.
   const [paneSwitch, setPaneSwitch] = useState<WorkbenchPaneSwitch | null>(null);
@@ -504,6 +506,7 @@ export function MatterWorkbench({
         ))}
         <button aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen}
           title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
+        {openThreadMap && <button aria-label={translate('workbench.threadMap')} title={translate('workbench.threadMap')} onClick={openThreadMap}><LayoutDashboard data-icon="thread-map" /></button>}
         <div className="matter-rail-bottom">{deviceMonitor}{settings}</div>
       </nav>}
       {dock ? <header className={`matter-topbar is-status-only ${o.searchOpen ? 'is-search-open' : ''}`}>
@@ -607,6 +610,11 @@ export function MatterWorkbench({
           <a className="matter-drawer-home" href={homeHref} onClick={goHome}>
             <Home data-icon="home" /><span>{translate("workbench.allWorkspaces")}</span><ChevronRight aria-hidden="true" />
           </a>
+        )}
+        {mobile && openThreadMap && (
+          <button type="button" className="matter-drawer-home" onClick={() => { setSidebarOpen(false); openThreadMap(); }}>
+            <LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span><ChevronRight aria-hidden="true" />
+          </button>
         )}
         {o.error && (
           <p className="matter-sidebar-error" role="alert">
@@ -751,6 +759,7 @@ export function MatterWorkbench({
           </div>
           <h3>{translate('workbench.app')}</h3>
           <div className="matter-phone-sheet-list">
+            {openThreadMap && <button type="button" onClick={() => { setMoreOpen(false); openThreadMap(); }}><LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span></button>}
             <button type="button" onClick={() => setSidebarOpen(true)}><PanelLeft data-icon="sidebar" /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>
             {homeHref && <a href={homeHref} onClick={goHome}><Home data-icon="home" /><span>{translate('workbench.backToWorkspaces')}</span></a>}
             <button type="button" onClick={() => history.back()}><ArrowLeft data-icon="back" /><span>{translate('workbench.goBack')}</span></button>

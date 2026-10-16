@@ -517,6 +517,8 @@ export const workbenchEn = {
   'workbench.workspaceAndShortcuts': 'Workspace and shortcuts',
   'workbench.drawerShort': 'Workspaces',
   'workbench.homeShort': 'Home',
+  'workbench.minimizeFiles': 'Minimize: keep only the file tree, on the left',
+  'workbench.restoreFiles': 'Show the file editor again',
   'workbench.app': 'App',
   'workbench.closeSheet': 'Close',
   "workbench.phoneDockSetting": "One-handed phone layout",

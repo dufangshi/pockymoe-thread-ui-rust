@@ -785,6 +785,13 @@
   height: auto;
   object-fit: contain;
 }
+/* A photo in a prompt is at most three lines of its text tall, frame included. */
+.thread-ui-shell .thread-graph-user-photo :is(.thread-graph-zoomable-image-trigger > img, .thread-graph-user-photo-missing) {
+  max-width: min(100%, 12rem);
+  max-height: 4rem;
+  max-height: calc(3lh - 10px);
+}
+.thread-ui-shell .thread-graph-user-photo .thread-graph-user-photo-missing { width: 5rem; height: 4rem; height: calc(3lh - 10px); }
 
 .thread-graph-image-lightbox {
   position: fixed;
@@ -2999,35 +3006,36 @@
 .thread-ui-shell .thread-graph-message-time-row { margin: 0; line-height: 10px; }
 .thread-ui-shell .thread-graph-message-time-row.is-user { text-align: right; }
 .thread-ui-shell .thread-graph-message-time-row .thread-graph-message-time { font-size: 10px; line-height: 10px; color: var(--theme-fg-muted); opacity: .65; }
+/* A message's time and copy float at its bottom right when it is hovered or tapped,
+   never moving the text. A fade of the message's own surface behind them keeps
+   them readable over the text they cover. */
 .thread-ui-shell .thread-graph-message-bubble .thread-graph-message-copy-desktop {
-  display: flex; position: absolute; left: auto; right: 0; bottom: 0; z-index: 10;
+  display: flex; align-items: center; position: absolute; left: auto; right: 0; bottom: 0; z-index: 10;
+  padding-left: 26px;
+  background: linear-gradient(to right, transparent, var(--message-surface, var(--theme-bg)) 22px);
   opacity: 0; pointer-events: none; transition: opacity 140ms ease;
 }
+.thread-ui-shell .thread-graph-message-bubble .thread-graph-message-copy-desktop > * { opacity: 0.7; transition: opacity 120ms ease; }
+.thread-ui-shell .thread-graph-message-bubble .thread-graph-message-copy-desktop > :is(:hover, :focus-visible) { opacity: 1; }
 .thread-ui-shell .thread-graph-code-copy { opacity: 0; pointer-events: none; transition: opacity 140ms ease; }
-.thread-ui-shell .thread-graph-message-bubble[data-touch-actions="true"] .thread-graph-message-copy-desktop,
-.thread-ui-shell .thread-graph-code-block[data-touch-actions="true"] .thread-graph-code-copy {
-  opacity: .6; pointer-events: auto;
-}
+.thread-ui-shell .thread-graph-message-bubble[data-touch-actions="true"] .thread-graph-message-copy-desktop { opacity: 1; pointer-events: auto; }
+.thread-ui-shell .thread-graph-code-block[data-touch-actions="true"] .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
 @media (hover: hover) and (pointer: fine) {
-  .thread-ui-shell .thread-graph-message-bubble:hover .thread-graph-message-copy-desktop,
-  .thread-ui-shell .thread-graph-message-bubble:focus-within .thread-graph-message-copy-desktop,
+  .thread-ui-shell .thread-graph-message-bubble:is(:hover, :focus-within) .thread-graph-message-copy-desktop { opacity: 1; pointer-events: auto; }
   .thread-ui-shell .thread-graph-code-block:hover .thread-graph-code-copy,
   .thread-ui-shell .thread-graph-code-block:focus-within .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
 }
+/* The surface the fade blends into: the prompt bubble's own color, else the page. */
+.thread-ui-shell .thread-graph-message-bubble.is-user { --message-surface: oklch(0.925 0.004 255); }
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-bubble.is-user,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-message-bubble.is-user,
+.thread-ui-shell.dark .thread-graph-message-bubble.is-user { --message-surface: oklch(0.265 0.005 255); }
 
-/* A prompt's time and copy follow its text: beside a short line, else under its
-   right end. They never cover the text or a theme's prompt mark. */
+/* A prompt's failure mark sits after its text: beside a short line, else under its right end. */
 .thread-ui-shell .thread-graph-message-bubble.is-user {
   display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: flex-end; column-gap: 8px;
 }
 .thread-ui-shell .thread-graph-message-bubble.is-user > .thread-graph-message-content { flex: 0 1 auto; min-width: 0; max-width: 100%; }
-/* As tall as a line of text, so the larger copy button does not push the text off the line. */
-.thread-ui-shell .thread-graph-message-bubble.is-user .thread-graph-message-copy-desktop { position: static; display: none; align-items: center; height: 1.25rem; }
-.thread-ui-shell .thread-graph-message-bubble.is-user[data-touch-actions="true"] .thread-graph-message-copy-desktop { display: flex; }
-@media (hover: hover) and (pointer: fine) {
-  .thread-ui-shell .thread-graph-message-bubble.is-user:is(:hover, :focus-within) .thread-graph-message-copy-desktop { display: flex; }
-}
-.thread-ui-shell .thread-graph-message-bubble.is-user .thread-graph-message-hover-time { margin-right: 2px; padding: 0; background: none; color: inherit; }
 
 /* A failed turn's prompt carries a red mark; tapping it shows the error under the prompt. */
 .thread-ui-shell .thread-graph-message-failure {

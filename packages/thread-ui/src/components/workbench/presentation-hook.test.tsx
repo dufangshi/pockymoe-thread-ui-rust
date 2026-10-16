@@ -104,10 +104,11 @@ describe('device-aware presentation persistence', () => {
     );
     render('other-scope', 'other-host/workspace');
     render('account-host-workspace', 'host/workspace');
+    // The split and its size come back; the files view does not reopen by itself.
     expect(current.value).toMatchObject({
       referenceId: 'peer',
       referenceDeviceId: 'remote-device',
-      mode: 'files',
+      mode: 'thread',
       ratio: 40,
     });
     act(() => current.update({ referenceDeviceId: null }));

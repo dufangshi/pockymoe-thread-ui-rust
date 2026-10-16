@@ -100,14 +100,16 @@ describe('ThreadMap', () => {
     expect(current.dataset.heat).toBe('0');
     expect(host.querySelector('section[aria-label="Server · Offline"]')!.getAttribute('data-state')).toBe('offline');
     expect(host.querySelector('.thread-map-summary')!.textContent).toBe('3 threads · 1 running');
-    // Inside a device the threads are its preview: tapping the device fills the map with it.
-    expect(link('b')!.closest('[inert]')).not.toBeNull();
-    click(button(/^Open Laptop/));
-    expect(link('b')!.closest('[inert]')).not.toBeNull();
-    click(button(/^Open app/));
-    expect(link('b')!.closest('[inert]')).toBeNull();
+    // Every level answers: a thread opens from its tile inside its device...
+    expect(host.querySelector('[inert]')).toBeNull();
     click(link('b')!);
     expect(onOpen).toHaveBeenCalledWith(expect.objectContaining({ key: 'b' }));
+    // ...and a workspace inside a device opens from its header row, straight from the top.
+    const appHead = button(/^Open app/);
+    expect(appHead.classList.contains('thread-map-section-head')).toBe(true);
+    click(appHead);
+    expect(crumbs()).toEqual(['All devices', 'Laptop', 'app*']);
+    click(button('Up one level'));
     // A block too small for its threads folds up and opens to them.
     click(button('Up one level'));
     const docs = host.querySelector('section[aria-label^="docs"]')!;

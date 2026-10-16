@@ -683,6 +683,8 @@ declare const en: {
     readonly 'workbench.workspaceAndShortcuts': "Workspace and shortcuts";
     readonly 'workbench.drawerShort': "Workspaces";
     readonly 'workbench.homeShort': "Home";
+    readonly 'workbench.minimizeFiles': "Minimize: keep only the file tree, on the left";
+    readonly 'workbench.restoreFiles': "Show the file editor again";
     readonly 'workbench.app': "App";
     readonly 'workbench.closeSheet': "Close";
     readonly "workbench.phoneDockSetting": "One-handed phone layout";
@@ -4378,6 +4380,8 @@ declare const zhCN: {
     'workbench.workspaceAndShortcuts': "工作区与快捷方式";
     'workbench.drawerShort': "工作区";
     'workbench.homeShort': "首页";
+    'workbench.minimizeFiles': "最小化：只在左侧保留文件树";
+    'workbench.restoreFiles': "重新展开文件编辑器";
     'workbench.app': "应用";
     'workbench.closeSheet': "关闭";
     "workbench.phoneDockSetting": "手机单手模式";
@@ -8095,6 +8099,8 @@ declare const resources: {
         readonly 'workbench.workspaceAndShortcuts': "Workspace and shortcuts";
         readonly 'workbench.drawerShort': "Workspaces";
         readonly 'workbench.homeShort': "Home";
+        readonly 'workbench.minimizeFiles': "Minimize: keep only the file tree, on the left";
+        readonly 'workbench.restoreFiles': "Show the file editor again";
         readonly 'workbench.app': "App";
         readonly 'workbench.closeSheet': "Close";
         readonly "workbench.phoneDockSetting": "One-handed phone layout";
@@ -11789,6 +11795,8 @@ declare const resources: {
         'workbench.workspaceAndShortcuts': "工作区与快捷方式";
         'workbench.drawerShort': "工作区";
         'workbench.homeShort': "首页";
+        'workbench.minimizeFiles': "最小化：只在左侧保留文件树";
+        'workbench.restoreFiles': "重新展开文件编辑器";
         'workbench.app': "应用";
         'workbench.closeSheet': "关闭";
         "workbench.phoneDockSetting": "手机单手模式";

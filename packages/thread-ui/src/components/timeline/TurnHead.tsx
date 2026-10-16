@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from 'react';
+import { useState, useSyncExternalStore, type MouseEvent } from 'react';
 import { getLocale, translate, useI18n } from '../../i18n';
 import { formatLongTimestamp } from '../threadPresentation';
 import { AddedPromptIcon } from './AddedPromptIcon';
@@ -24,15 +24,27 @@ export function shortModelName(model: string) {
   return words.length ? words.join(' ') : model;
 }
 
+// A wide screen has room for the whole head on one line; a phone opens the rest on tap.
+const wideQuery = '(min-width: 640px)';
+const subscribeWide = (change: () => void) => {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return () => {};
+  const query = window.matchMedia(wideQuery);
+  query.addEventListener('change', change);
+  return () => query.removeEventListener('change', change);
+};
+const readWide = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia(wideQuery).matches;
+const useWideScreen = () => useSyncExternalStore(subscribeWide, readWide, () => false);
+
 const clock = (at: string) => new Date(at).toLocaleTimeString(getLocale(), { hour: 'numeric', minute: '2-digit' });
 const dated = (at: string) => new Date(at).toLocaleString(getLocale(), {
   month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
   ...(new Date(at).getFullYear() !== new Date().getFullYear() ? { year: 'numeric' } : {}),
 });
 
-/** The top of a turn: a dot with the time it has worked, and its cost. Tapping
-    the line opens one more line with when it started, the model, the speed and
-    the prompts added while it worked. */
+/** The top of a turn: a dot with the time it has worked, its cost, when it
+    started, the model, the speed and the prompts added while it worked. On a
+    phone only the dot, time and cost show; tapping the line opens the rest on
+    one more line. */
 export function TurnHead({ turn, active, added, onBeforeResize }: {
   turn: TimelineTurn;
   active: boolean;
@@ -41,6 +53,7 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
   onBeforeResize?: ((anchor?: Element | null) => void) | undefined;
 }) {
   useI18n();
+  const wide = useWideScreen();
   const [open, setOpen] = useState(false);
   const [withDate, setWithDate] = useState(false);
   const now = useSecondClock(active);
@@ -58,33 +71,50 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
     setOpen(value => !value);
   };
 
+  const worked = took ? translate(active ? 'chat.turnHeadRunning' : 'chat.turnHeadWorked', { elapsed: took }) : null;
+  const dot = <>
+    <i className="thread-turn-head-dot" aria-hidden="true" />
+    {took ? <span className="thread-turn-head-took">{took}</span> : null}
+  </>;
+  const cost = usage || turn.priceEstimate ? <TokenUsageCost usage={usage} price={turn.priceEstimate} /> : null;
+  const more = <>
+    {started ? (
+      <button type="button" className="thread-turn-head-time" title={formatLongTimestamp(started)} aria-pressed={withDate}
+        onClick={() => setWithDate(value => !value)}>
+        <time dateTime={started}>{withDate ? dated(started) : clock(started)}</time>
+      </button>
+    ) : null}
+    {model ? <span className="thread-turn-head-model" title={model}>{shortModelName(model)}{effort ? ` · ${effort}` : ''}</span> : null}
+    {!active && speed && rate != null && Number.isFinite(rate) && rate > 0 ? <TokenSpeedDetails speed={speed} value={rate} /> : null}
+    {added ? (
+      <span className="thread-turn-head-added" role="img" title={translate('chat.turnHeadAddedValue', { count: added })}
+        aria-label={translate('chat.turnHeadAddedValue', { count: added })}>
+        <AddedPromptIcon />{added}
+      </span>
+    ) : null}
+  </>;
+
+  if (wide) return (
+    <div className="thread-turn-head-block">
+      <div className="thread-turn-head is-wide" data-active={active || undefined} data-status={turn.status}>
+        <span className="thread-turn-head-main" role={worked ? 'img' : undefined} aria-label={worked ?? undefined}>{dot}</span>
+        {cost}
+        {more}
+      </div>
+    </div>
+  );
+
   return (
     <div className="thread-turn-head-block">
       <div className="thread-turn-head" data-active={active || undefined} data-status={turn.status} onClick={toggle}>
         <button type="button" className="thread-turn-head-main" aria-expanded={open} title={translate('chat.turnHeadDetails')}
-          aria-label={took ? translate(active ? 'chat.turnHeadRunning' : 'chat.turnHeadWorked', { elapsed: took }) : translate('chat.turnHeadDetails')}>
-          <i className="thread-turn-head-dot" aria-hidden="true" />
-          {took ? <span className="thread-turn-head-took">{took}</span> : null}
+          aria-label={worked ?? translate('chat.turnHeadDetails')}>
+          {dot}
         </button>
-        {usage || turn.priceEstimate ? <TokenUsageCost usage={usage} price={turn.priceEstimate} /> : null}
+        {cost}
       </div>
       <Collapse open={open}>
-        <div className="thread-turn-head-more">
-          {started ? (
-            <button type="button" className="thread-turn-head-time" title={formatLongTimestamp(started)} aria-pressed={withDate}
-              onClick={() => setWithDate(value => !value)}>
-              <time dateTime={started}>{withDate ? dated(started) : clock(started)}</time>
-            </button>
-          ) : null}
-          {model ? <span className="thread-turn-head-model" title={model}>{shortModelName(model)}{effort ? ` · ${effort}` : ''}</span> : null}
-          {!active && speed && rate != null && Number.isFinite(rate) && rate > 0 ? <TokenSpeedDetails speed={speed} value={rate} /> : null}
-          {added ? (
-            <span className="thread-turn-head-added" role="img" title={translate('chat.turnHeadAddedValue', { count: added })}
-              aria-label={translate('chat.turnHeadAddedValue', { count: added })}>
-              <AddedPromptIcon />{added}
-            </span>
-          ) : null}
-        </div>
+        <div className="thread-turn-head-more">{more}</div>
       </Collapse>
     </div>
   );

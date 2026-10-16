@@ -297,23 +297,25 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             <ArrowUpRight aria-hidden="true" />
           </a>}
         </div>
-        {render(children, inner, depth + 1, true)}
+        {render(children, inner, depth + 1)}
       </section>
     );
   };
 
   let rendered = 0;
-  // Only the current level answers taps; what is inside a block is its preview.
-  const render = (items: MapNode[], bounds: MapRect, depth: number, interactive: boolean): ReactNode[] =>
+  // Every level answers: a thread opens from its tile wherever it shows, and a
+  // device or workspace opens from its header row (or anywhere, when it is too
+  // small to show what is inside).
+  const render = (items: MapNode[], bounds: MapRect, depth: number): ReactNode[] =>
     squarify(items, item => item.weight, bounds).map(({ item, rect }) => {
       rendered++;
       const box = inset(rect, depth ? 1.5 : 2.5);
       if (item.kind === 'thread') {
         const thread = item.thread!;
-        if (interactive && thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
+        if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
         return <ThreadTile key={item.id} node={item} box={box} hours={hours} current={thread.key === currentKey}
-          onOpen={open(thread)} hover={interactive ? hover(describe(item, hours)) : {}}
-          onShowChildren={interactive && thread.children?.length ? () => toggleGroup(thread.key) : undefined} />;
+          onOpen={open(thread)} hover={hover(describe(item, hours))}
+          onShowChildren={thread.children?.length ? () => toggleGroup(thread.key) : undefined} />;
       }
       const lines = describe(item, hours);
       const text = lines.join(' · ');
@@ -323,28 +325,33 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       const preview = !unlisted && rendered < 600 && fits(item, inner, depth);
       const named = box.width >= 72;
       const Icon = item.kind === 'device' ? Monitor : Folder;
-      const zoomable = interactive && !unlisted;
+      const zoomable = !unlisted;
+      const head = <>
+        {named && <Icon aria-hidden="true" />}
+        <span className="thread-map-section-label">{item.label}</span>
+        {unlisted
+          ? named && <span className="thread-map-section-count">{state === 'error' ? <RotateCw aria-hidden="true" /> : translate(state === 'offline' ? 'workbench.threadMapOffline' : 'workbench.threadMapLoading')}</span>
+          : named && <span className="thread-map-section-count">
+            {item.running > 0 && <i className="thread-map-running-dot" aria-hidden="true" />}{item.threads}
+            {item.usd > 0 && box.width >= 150 && <span className="thread-map-section-usd">{formatCompactUsd(item.usd)}</span>}
+          </span>}
+      </>;
+      const zoom = (event: ReactMouseEvent<HTMLElement>) => navigate(item, event.currentTarget.closest('section'));
       return (
         <section key={item.id} data-map-id={item.id} className="thread-map-section" data-kind={item.kind} data-depth={depth} data-state={unlisted ? state : undefined} data-collapsed={!preview || undefined}
           data-heat={preview ? undefined : heatLevel(item.activeMs)} data-running={!preview && item.running ? true : undefined}
           data-zoomable={zoomable || undefined} aria-label={text} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
-          <div className="thread-map-section-head">
-            {named && <Icon aria-hidden="true" />}
-            <span className="thread-map-section-label">{item.label}</span>
-            {unlisted
-              ? named && <span className="thread-map-section-count">{state === 'error' ? <RotateCw aria-hidden="true" /> : translate(state === 'offline' ? 'workbench.threadMapOffline' : 'workbench.threadMapLoading')}</span>
-              : named && <span className="thread-map-section-count">
-                {item.running > 0 && <i className="thread-map-running-dot" aria-hidden="true" />}{item.threads}
-                {item.usd > 0 && box.width >= 150 && <span className="thread-map-section-usd">{formatCompactUsd(item.usd)}</span>}
-              </span>}
-          </div>
-          {preview && <div className="thread-map-preview" inert>{render(item.children, inner, depth + 1, false)}</div>}
+          {preview && zoomable
+            ? <button type="button" className="thread-map-section-head" aria-label={translate('workbench.threadMapExplore', { name: text })}
+              onClick={zoom} {...hover(lines)}>{head}</button>
+            : <div className="thread-map-section-head">{head}</div>}
+          {preview && <div className="thread-map-preview">{render(item.children, inner, depth + 1)}</div>}
           {!preview && !unlisted && box.height >= HEADER + 18 && (
             <span className="thread-map-section-summary" aria-hidden="true">{translate('workbench.threadMapThreads', { count: item.threads })}</span>
           )}
-          {zoomable && <button type="button" className="thread-map-zoom" aria-label={translate('workbench.threadMapExplore', { name: text })}
-            onClick={event => navigate(item, event.currentTarget.parentElement)} {...hover(lines)} />}
-          {interactive && unlisted && state === 'error' && onRetry && <button type="button" className="thread-map-zoom"
+          {!preview && zoomable && <button type="button" className="thread-map-zoom" aria-label={translate('workbench.threadMapExplore', { name: text })}
+            onClick={zoom} {...hover(lines)} />}
+          {unlisted && state === 'error' && onRetry && <button type="button" className="thread-map-zoom"
             aria-label={`${translate('workbench.threadMapRetry')} · ${text}`} onClick={() => onRetry(item.device!.id)} {...hover(lines)} />}
         </section>
       );
@@ -389,7 +396,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       </div>
       <div ref={canvas} className="thread-map-canvas" role="group" aria-label={current.label}>
         {children.length
-          ? <div ref={stage} className="thread-map-stage">{size.width > 0 && render(children, bounds, 0, true)}</div>
+          ? <div ref={stage} className="thread-map-stage">{size.width > 0 && render(children, bounds, 0)}</div>
           : <p className="thread-map-empty" role="status">{devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
         {tip && <div className="thread-map-tip" role="tooltip" style={{ left: tip.x, top: tip.y }} data-above={tip.above || undefined}>
           {tip.lines.map((line, index) => index ? <span key={index}>{line}</span> : <b key={index}>{line}</b>)}

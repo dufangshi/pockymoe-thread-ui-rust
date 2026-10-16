@@ -161,8 +161,9 @@
 }
 /* The current level; zooming scales it from or into a block. */
 .thread-map-stage { position: absolute; inset: 0; transform-origin: 0 0; }
-/* What is inside a block of the current level: shown, not tapped. */
+/* What is inside a block: its own blocks and tiles answer, the space between them does not. */
 .thread-map-preview { position: absolute; inset: 0; pointer-events: none; }
+.thread-map-preview > * { pointer-events: auto; }
 .thread-map-zoom {
   position: absolute;
   inset: 0;
@@ -174,7 +175,8 @@
   cursor: zoom-in;
 }
 .thread-map-zoom:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
-.thread-map-section[data-zoomable]:hover { border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border)); }
+.thread-map-section[data-zoomable]:has(> :is(.thread-map-zoom, button.thread-map-section-head):hover) { border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border)); }
+.thread-map-section > button.thread-map-section-head { cursor: zoom-in; }
 .thread-map-section[data-zoomable] > .thread-map-section-head { color: var(--theme-fg); }
 .thread-map-dialog[data-swiped] { animation: none !important; }
 .thread-map-empty {

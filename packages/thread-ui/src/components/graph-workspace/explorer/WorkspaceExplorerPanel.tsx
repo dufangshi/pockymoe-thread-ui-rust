@@ -4,6 +4,7 @@ import {
   FileCode2,
   FilePlus2,
   ListCollapse,
+  Minus,
   MoreHorizontal,
   RefreshCw,
   Search,
@@ -144,7 +145,17 @@ export function WorkspaceExplorerPanel({
         <h2 className="text-[11px] font-semibold uppercase text-slate-600 dark:text-slate-300">
           {translate("files.explorer")}</h2>
         <div className="thread-graph-explorer-toolbar flex items-center gap-1">
-          {filePanel && onExpandViewer && <button type="button" data-testid="workbench-close-files" className={iconButtonClassName} onClick={filePanel.close} aria-label={translate('workbench.closeFiles')} title={translate('workbench.closeFiles')}><X data-icon="close" size={16} /></button>}
+          {/* Window controls, as on a Mac: close the files view, or minimize it to its tree. */}
+          {filePanel?.setMinimized ? (
+            <span className="thread-graph-window-controls">
+              <button type="button" data-testid="workbench-close-files" className="is-close" onClick={filePanel.close}
+                aria-label={translate('workbench.closeFiles')} title={translate('workbench.closeFiles')}><X aria-hidden="true" /></button>
+              <button type="button" className="is-minimize" aria-pressed={Boolean(filePanel.minimized)}
+                onClick={() => filePanel.setMinimized?.(!filePanel.minimized)}
+                aria-label={translate(filePanel.minimized ? 'workbench.restoreFiles' : 'workbench.minimizeFiles')}
+                title={translate(filePanel.minimized ? 'workbench.restoreFiles' : 'workbench.minimizeFiles')}><Minus aria-hidden="true" /></button>
+            </span>
+          ) : filePanel && onExpandViewer && <button type="button" data-testid="workbench-close-files" className={iconButtonClassName} onClick={filePanel.close} aria-label={translate('workbench.closeFiles')} title={translate('workbench.closeFiles')}><X data-icon="close" size={16} /></button>}
           {onCreateFile && <button type="button" onClick={onCreateFile}
             className={iconButtonClassName} title={translate('files.newFile')}
             aria-label={translate('files.newFile')}>

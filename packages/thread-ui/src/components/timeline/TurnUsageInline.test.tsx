@@ -187,6 +187,21 @@ describe('turn usage in the visible timeline', () => {
     },
   );
 
+  it('shows the whole head on one line on a wide screen', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({ matches: query === '(min-width: 640px)', addEventListener() {}, removeEventListener() {} }));
+    const container = document.createElement('div');
+    const root = createRoot(container);
+    try {
+      flushSync(() => root.render(<ThreadTimeline turns={[turn]} liveOutput="" />));
+      const head = container.querySelector('.thread-turn-head.is-wide')!;
+      expect(head.querySelector('.thread-turn-head-took')?.textContent).toBe('1m 12s');
+      expect(head.querySelector('.thread-turn-usage-price')?.textContent).toBe('$0.11');
+      expect(head.querySelector('.thread-turn-head-model')?.textContent).toBe('6 astra · high');
+      expect(head.querySelector('.thread-turn-head-speed')?.textContent).toBe('100.0 tok/s');
+      expect(head.querySelector('[aria-expanded]:not(.thread-turn-head-speed):not(.thread-turn-usage-price)')).toBeNull();
+    } finally { flushSync(() => root.unmount()); vi.unstubAllGlobals(); }
+  });
+
   it('breaks the combined speed into first token, prefill and decode when tapped', async () => {
     vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} });
     const container = document.createElement('div');

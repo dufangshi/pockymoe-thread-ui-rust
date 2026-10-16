@@ -85,15 +85,19 @@ describe('collapsed answer sections', () => {
     expect(load).not.toHaveBeenCalled();
   });
 
-  it('opens the gap run on hydration and hides all loaded work when collapsed again', async () => {
+  it('opens a stretch of work in place, leaving the rest of the turn folded, and folds it back', async () => {
     const load = vi.fn(async () => detail);
     const el = render(<ThreadTimeline turns={[summary]} liveOutput="" autoCollapseCompletedTurns onLoadTurnDetail={load} />);
-    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-answer-sequence .tlog-run-head')!.click());
-    await vi.waitFor(() => expect(el.querySelector('.tlog-run[data-open] .tlog-title')?.textContent).toBe('hidden-gap-1'));
+    const stretch = () => el.querySelector<HTMLButtonElement>('.thread-answer-sequence .tlog-run[data-placeholder] .tlog-run-head')!;
+    flushSync(() => stretch().click());
+    // Its operations load and open under its line; the turn itself stays folded.
+    await vi.waitFor(() => expect(el.querySelector('.thread-stretch-work .tlog-run[data-open] .tlog-title')?.textContent).toBe('hidden-gap-1'));
     expect(load).toHaveBeenCalledTimes(1);
-    expect(el.textContent).not.toContain('hidden-leading-1');
-    flushSync(() => el.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    expect(stretch().getAttribute('aria-expanded')).toBe('true');
     expect(el.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('false');
+    expect(el.textContent).not.toContain('hidden-leading-1');
+    flushSync(() => stretch().click());
+    expect(stretch().getAttribute('aria-expanded')).toBe('false');
     expect(el.querySelector('.tlog-row, .tlog-single, .tlog-run[data-open]')).toBeNull();
     expect(el.textContent).not.toContain('hidden-gap-1');
     expect(el.querySelectorAll('.thread-answer-section')).toHaveLength(1);

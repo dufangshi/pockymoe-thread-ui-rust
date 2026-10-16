@@ -253,8 +253,8 @@ export function WorkbenchPanels({
   const showReference = showThread || mode === 'collaboration';
   const closeFiles = () =>
     o.onPresentationChange({ mode: referenceId ? 'thread' : 'focus' });
-  // Minimized, the files view keeps its tree in a strip left of the conversation
-  // and folds its editor into a tab on the right edge. Closing it, or a screen
+  // Minimized, the files view keeps only its tree, a strip at the right edge, and
+  // folds its editor into a tab on the strip's left edge. Closing it, or a screen
   // too narrow to dock it, ends that.
   const [filesMinimized, setFilesMinimized] = useState(false);
   useEffect(() => { if (mode !== 'files' || compact) setFilesMinimized(false); }, [mode, compact]);
@@ -567,13 +567,13 @@ export function WorkbenchPanels({
           } : null}>
             <div className="workbench-pane-body workbench-files">{explorer}</div>
           </FilePanelContext.Provider>
+          {filesMinimized && (
+            <button type="button" className="workbench-files-restore" aria-label={t('workbench.restoreFiles')} title={t('workbench.restoreFiles')}
+              onClick={() => setFilesMinimized(false)}>
+              <ChevronLeft size={15} aria-hidden="true" />
+            </button>
+          )}
         </aside>
-      )}
-      {mode === 'files' && filesMinimized && (
-        <button type="button" className="workbench-files-restore" aria-label={t('workbench.restoreFiles')} title={t('workbench.restoreFiles')}
-          onClick={() => setFilesMinimized(false)}>
-          <ChevronLeft size={15} aria-hidden="true" />
-        </button>
       )}
       </div>
     </div>

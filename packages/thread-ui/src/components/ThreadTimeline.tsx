@@ -425,7 +425,13 @@ function ThreadTimelineComponent({
       return;
     }
 
-    if (loadingTurnDetailIds.has(turn.id)) {
+    fetchTurnDetail(turn, true);
+  }, [effectiveAutoCollapseCompletedTurns, loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize, setCollapsedTurnOverrides]);
+
+  // A turn's full history, for opening it (`open`) or for one stretch of its work
+  // while the rest of the turn stays folded.
+  function fetchTurnDetail(turn: TimelineTurn, open: boolean) {
+    if (!loadTurnDetail || loadingTurnDetailIds.has(turn.id)) {
       return;
     }
 
@@ -440,7 +446,7 @@ function ThreadTimelineComponent({
           ...current,
           [turn.id]: loadedTurn,
         }));
-        setCollapsedTurnOverrides((current) => ({
+        if (open) setCollapsedTurnOverrides((current) => ({
           ...current,
           [turn.id]: false,
         }));
@@ -461,7 +467,11 @@ function ThreadTimelineComponent({
           return next;
         });
       });
-  }, [effectiveAutoCollapseCompletedTurns, loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, preserveScrollPositionForResize, setCollapsedTurnOverrides]);
+  }
+  const handleLoadTurnItems = useCallback((turn: TimelineTurn) => {
+    if (!turn.hasDeferredItems || loadedTurnDetails[turn.id]) return;
+    fetchTurnDetail(turn, false);
+  }, [loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds]);
 
   useEffect(() => {
     if (!loadTurnDetail) return;
@@ -796,6 +806,7 @@ function ThreadTimelineComponent({
         liveOutput={rowLiveOutput}
         forceActive={rowForceActive}
         onToggleCollapse={handleToggleCollapse}
+        onLoadTurnItems={handleLoadTurnItems}
         narrationMode={!effectiveAutoCollapseCompletedTurns}
         deferredItemsLoading={loadingTurnDetailIds.has(turn.id)}
         deferredItemsError={turnDetailErrors[turn.id]}
@@ -984,6 +995,7 @@ function ThreadTimelineComponent({
                     liveOutput={rowLiveOutput}
                     forceActive={rowForceActive}
                     onToggleCollapse={handleToggleCollapse}
+        onLoadTurnItems={handleLoadTurnItems}
                     onOpenExpandedText={handleOpenExpandedText}
                     onOpenCommandDetail={handleOpenCommandDetail}
                     onOpenToolCallDetail={handleOpenToolCallDetail}
@@ -1102,6 +1114,7 @@ function ThreadTimelineComponent({
               liveOutput=""
               forceActive
               onToggleCollapse={handleToggleCollapse}
+        onLoadTurnItems={handleLoadTurnItems}
               onOpenExpandedText={handleOpenExpandedText}
               onOpenCommandDetail={handleOpenCommandDetail}
               onOpenToolCallDetail={handleOpenToolCallDetail}

@@ -471,18 +471,20 @@ export function ChangedFiles({ files, total }: { files: ThreadTurnChangedFileDto
 
 /** A run of a folded turn whose operations are not loaded yet: its summary line
     only. Opening it loads the turn and opens the matching run in place. */
-export function RunPlaceholder({ segment, loading, onOpen }: {
+export function RunPlaceholder({ segment, loading, onOpen, open = false }: {
   segment: ThreadTurnActivitySegmentDto;
   loading: boolean;
   onOpen: () => void;
+  /** Its work is shown under it (a folded turn's stretch opened in place). */
+  open?: boolean;
 }) {
   useI18n();
   const actions = useContext(TranscriptLogContext);
   const parts = activityParts(segmentCounts(segment));
   const duration = segmentDuration(segment);
   return (
-    <section className="tlog-run" data-placeholder="true">
-      <button type="button" className="tlog-run-head" aria-expanded={false} aria-busy={loading} disabled={loading} onClick={(event) => { actions?.anchor?.(event.currentTarget); onOpen(); }}>
+    <section className="tlog-run" data-placeholder="true" data-open={open || undefined}>
+      <button type="button" className="tlog-run-head" aria-expanded={open} aria-busy={loading} disabled={loading} onClick={(event) => { actions?.anchor?.(event.currentTarget); onOpen(); }}>
         <ChevronRight className="tlog-chev" aria-hidden="true" />
         <span className="tlog-summary">
           {parts.length ? <Parts parts={parts} /> : translate('chat.logActivity')}

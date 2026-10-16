@@ -44,7 +44,8 @@ function JumpLatestStrip({
           <WorkbenchPaneSwitchButton target="primary" value={paneSwitch} />
           <WorkbenchPaneSwitchButton target="reference" value={paneSwitch} />
         </div>}
-        <div role="group" aria-label={translate("chat.timelineNavigation")} className="thread-jump-nav" data-following={followTail || undefined}>
+        {/* thread-jump-latest-badge: the old name, kept for imported theme packs. */}
+        <div role="group" aria-label={translate("chat.timelineNavigation")} className="thread-jump-nav thread-jump-latest-badge" data-following={followTail || undefined}>
           <button
             type="button"
             className="thread-jump-turn"

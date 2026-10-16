@@ -903,13 +903,22 @@
   transition: background-color 150ms ease, color 150ms ease;
 }
 .thread-ui-shell .thread-jump-nav > button svg { width: 15px; height: 15px; }
-.thread-ui-shell .thread-jump-nav > button:hover:not(:disabled) { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-ui-shell .thread-jump-nav > button:hover:not(:disabled) { background: var(--theme-hover); color: var(--theme-fg); }
+}
 .thread-ui-shell .thread-jump-nav > button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
 .thread-ui-shell .thread-jump-nav > button:disabled { opacity: 0.32; cursor: default; }
-/* The latest reply: a quiet circle at the tail, the accent once the reader is away. */
+/* The latest reply: a quiet circle at the tail, an accent tint once the reader
+   is away. Tinted, not filled: the filled accent is Send's, right beside it. */
 .thread-ui-shell .thread-jump-nav > .thread-jump-latest { width: 24px; height: 24px; margin-left: 3px; }
-.thread-ui-shell .thread-jump-nav:not([data-following]) > .thread-jump-latest { background: var(--theme-accent-solid); color: var(--theme-accent-solid-fg); }
-.thread-ui-shell .thread-jump-nav:not([data-following]) > .thread-jump-latest:hover { background: var(--theme-accent-solid-hover, var(--theme-accent-solid)); color: var(--theme-accent-solid-fg); }
+.thread-ui-shell .thread-jump-nav:not([data-following]) > .thread-jump-latest {
+  background: color-mix(in oklch, var(--theme-accent-solid) 16%, transparent);
+  color: var(--theme-accent-strong, var(--theme-accent-solid));
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--theme-accent-solid) 38%, transparent);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-jump-nav:not([data-following]) > .thread-jump-latest:hover { background: color-mix(in oklch, var(--theme-accent-solid) 26%, transparent); }
+}
 @media (max-width: 639px) {
   /* Touch: 36px row, 44px-wide targets through their hit areas. */
   .thread-ui-shell .thread-jump-nav { height: 36px; }

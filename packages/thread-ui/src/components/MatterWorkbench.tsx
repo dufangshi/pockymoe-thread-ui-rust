@@ -155,7 +155,9 @@ export function MatterWorkbench({
   const [typing, setTyping] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (!dock) return;
+    // A dock switched off and on (crossing 640px, or the setting) starts from the
+    // focus as it is now, not from a stale typing state.
+    if (!dock) { setTyping(false); return; }
     // The keyboard needs the room: hide the navigation row while a field has focus.
     const editing = () => {
       const target = document.activeElement;
@@ -163,6 +165,7 @@ export function MatterWorkbench({
         && target.matches('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]), [contenteditable]:not([contenteditable="false"])');
     };
     let timer = 0;
+    setTyping(editing());
     const settle = () => {
       window.clearTimeout(timer);
       document.removeEventListener('click', afterTap, true);
@@ -189,6 +192,84 @@ export function MatterWorkbench({
       document.removeEventListener('focusout', focusOut);
     };
   }, [dock]);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const scrimRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const root = rootRef.current, drawer = sidebarRef.current;
+    if (!dock || !root || !drawer) return;
+    // The workspace drawer follows a sideways drag: rightwards from the left part
+    // of the conversation opens it, leftwards on it or on the dimmed page closes
+    // it. Browsers give pages no way to reserve the screen edge from the system
+    // back gesture, so the drag may start anywhere in the left 40%, not only at
+    // the edge. The right side and the bottom panel keep their own gestures.
+    let start: { x: number; y: number; time: number } | null = null;
+    let dragging = false, offset = 0;
+    const width = () => drawer.getBoundingClientRect().width || 270;
+    const paint = (shown: number) => {
+      drawer.style.transform = `translateX(${Math.round(shown - width())}px)`;
+      if (scrimRef.current) scrimRef.current.style.opacity = String(Math.max(0, Math.min(1, shown / width())));
+    };
+    const reset = () => {
+      drawer.removeAttribute('data-dragging');
+      drawer.style.transform = '';
+      if (scrimRef.current) { scrimRef.current.removeAttribute('data-dragging'); scrimRef.current.style.opacity = ''; }
+    };
+    const begin = (event: TouchEvent) => {
+      start = null; dragging = false; offset = 0;
+      const target = event.target instanceof Element ? event.target : null;
+      if (event.touches.length !== 1 || !target) return;
+      const x = event.touches[0]!.clientX;
+      if (sidebarOpen) {
+        if (!target.closest('.matter-sidebar, .matter-sidebar-scrim')) return;
+      } else {
+        if (x > window.innerWidth * 0.4 || !target.closest('.matter-main')) return;
+        if (target.closest('.thread-graph-composer-host, .file-ask-bar, .matter-phone-dock, .xterm, .terminal-panel, input, textarea, [contenteditable="true"], [contenteditable="plaintext-only"], [role="dialog"], [data-no-swipe]')) return;
+        // A row that can still scroll back to its start keeps the swipe.
+        for (let node: Element | null = target; node && node !== root; node = node.parentElement) {
+          if (node.scrollLeft > 0 && node.scrollWidth > node.clientWidth) return;
+        }
+      }
+      start = { x, y: event.touches[0]!.clientY, time: event.timeStamp };
+    };
+    const move = (event: TouchEvent) => {
+      if (!start) return;
+      const dx = event.touches[0]!.clientX - start.x, dy = event.touches[0]!.clientY - start.y;
+      if (!dragging) {
+        if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { start = null; return; }
+        // A long press before moving is a text selection, not a drag.
+        if (Math.abs(dx) < 12 || Math.abs(dx) < Math.abs(dy) * 1.3 || (sidebarOpen ? dx > 0 : dx < 0) || event.timeStamp - start.time > 450) return;
+        if (window.getSelection()?.toString()) { start = null; return; }
+        dragging = true;
+        drawer.setAttribute('data-dragging', '');
+        scrimRef.current?.setAttribute('data-dragging', '');
+      }
+      event.preventDefault();
+      offset = dx;
+      paint(sidebarOpen ? Math.max(0, width() + dx) : Math.min(width(), Math.max(0, dx)));
+    };
+    const end = (event: TouchEvent) => {
+      const from = start;
+      start = null;
+      if (!from || !dragging) return;
+      dragging = false;
+      const fast = Math.abs(offset) / Math.max(1, event.timeStamp - from.time) > 0.5;
+      const far = Math.abs(offset) > width() * 0.3;
+      reset();
+      if (sidebarOpen && offset < 0 && (far || fast)) setSidebarOpen(false);
+      else if (!sidebarOpen && offset > 0 && (far || fast)) setSidebarOpen(true);
+    };
+    root.addEventListener('touchstart', begin, { passive: true });
+    root.addEventListener('touchmove', move, { passive: false });
+    root.addEventListener('touchend', end);
+    root.addEventListener('touchcancel', end);
+    return () => {
+      reset();
+      root.removeEventListener('touchstart', begin);
+      root.removeEventListener('touchmove', move);
+      root.removeEventListener('touchend', end);
+      root.removeEventListener('touchcancel', end);
+    };
+  }, [dock, sidebarOpen]);
   useEffect(() => {
     const root = rootRef.current;
     if (!dock || !root) return;
@@ -468,14 +549,19 @@ export function MatterWorkbench({
           {bell}
         </div>
       </header>}
-      {sidebarOpen && (
+      {/* Under the dock the scrim stays mounted so a drag can fade it in. */}
+      {(sidebarOpen || dock) && (
         <button
+          ref={scrimRef}
           className="matter-sidebar-scrim"
           aria-label={translate("workbench.closeNavigation")}
+          data-open={sidebarOpen || undefined}
+          {...(sidebarOpen ? {} : { 'aria-hidden': true, tabIndex: -1 })}
           onClick={() => setSidebarOpen(false)}
         />
       )}
       <aside
+        ref={sidebarRef}
         className={`matter-sidebar ${sidebarOpen ? 'is-open' : ''}`}
         aria-label={translate("workbench.threadNavigation")}
       >
@@ -607,10 +693,7 @@ export function MatterWorkbench({
           onOpenThreads={() => { setMoreOpen(false); setThreadsOpen(true); }} onOpenMore={() => { setThreadsOpen(false); setMoreOpen(true); }}
           threadsOpen={threadsOpen} moreOpen={moreOpen} />
         <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
-          footer={<>
-            <button type="button" className="matter-phone-sheet-wide" onClick={() => { setThreadsOpen(false); setSidebarOpen(true); }}><PanelLeft /><span>{translate('workbench.workspaceAndShortcuts')}</span></button>
-            {newThread}
-          </>}>
+          footer={newThread}>
           {o.unreadCount > 0 && <>
             <h3>{translate('workbench.notifications')}</h3>
             <div className="matter-phone-sheet-notices">

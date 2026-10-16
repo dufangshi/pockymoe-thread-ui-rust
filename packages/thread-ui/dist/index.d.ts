@@ -1,7 +1,7 @@
 import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as ThreadWorkspaceAdapter } from './workspace-panel-CUOWenfH.js';
 export { h as PluginContext, S as SendPromptInput, i as ShellSocketConnection, j as ShellSocketHandlers, k as ThreadImageAssetVariant, W as WorkspaceDocumentSaveInput, l as WorkspaceDocumentSnapshot, m as WorkspaceSaveReceipt, n as WorkspaceTab, o as createDefaultPluginContextValue, p as mergePluginState } from './workspace-panel-CUOWenfH.js';
 import * as react from 'react';
-import { Dispatch, SetStateAction, ReactNode, Component, ErrorInfo, RefObject, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
+import { Dispatch, SetStateAction, ReactNode, MutableRefObject, Component, ErrorInfo, RefObject, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
 import { ReasoningEffortDto, CollaborationModeDto, SandboxModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput, UpdatePluginInput } from '@pockymoe/shared';
 import { F as FrontendPluginModule } from './plugin-types-DBa9QrHM.js';
 export { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution } from './plugin-types-DBa9QrHM.js';
@@ -133,9 +133,14 @@ type SettingsSection = {
     description?: string;
     content: ReactNode;
 };
-declare function SettingsPanels({ sections, initialId }: {
+declare function SettingsPanels({ sections, initialId, selected: selectedId, onSelect, scroll }: {
     sections: SettingsSection[];
     initialId?: string;
+    /** Held by the owner when the panels may remount while open. */
+    selected?: string | undefined;
+    onSelect?: ((id: string) => void) | undefined;
+    /** The panel's scroll offset, kept by the owner across such a remount. */
+    scroll?: MutableRefObject<number> | undefined;
 }): react.JSX.Element | null;
 
 type ReferenceMode = 'focus' | 'thread' | 'files' | 'collaboration';
@@ -835,8 +840,11 @@ declare function ConversationSearchExcerpt({ text, query }: {
 declare function confirmWorkspaceDocumentLeave(): boolean;
 
 /** One settings shell for the workbench and pages outside conversations. */
-declare function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId, contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
+declare function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId, section, onSectionChange, panelScroll, contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
     sections: SettingsSection[];
+    section?: string | undefined;
+    onSectionChange?: ((id: string) => void) | undefined;
+    panelScroll?: ComponentProps<typeof SettingsPanels>['scroll'];
     themeMode?: string;
     effectiveTheme?: 'light' | 'dark';
     trigger?: ReactNode;

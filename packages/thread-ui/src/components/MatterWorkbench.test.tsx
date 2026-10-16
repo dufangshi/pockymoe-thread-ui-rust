@@ -268,6 +268,58 @@ describe('one-handed phone dock', () => {
     } finally { vi.useRealTimers(); }
   });
 
+  it('pulls the workspace drawer in from the left part of the page and pushes it back', () => {
+    render(null, <p>Conversation</p>);
+    const page = host.querySelector('main p')!;
+    const drawer = host.querySelector('aside.matter-sidebar')!;
+    // The right side is left alone.
+    touch(page, 'touchstart', 300, 700);
+    touch(page, 'touchmove', 302, 800);
+    touch(page, 'touchend', 302, 800);
+    expect(drawer.classList.contains('is-open')).toBe(false);
+    touch(page, 'touchstart', 300, 40);
+    touch(page, 'touchmove', 302, 70);
+    expect(drawer.hasAttribute('data-dragging')).toBe(true);
+    touch(page, 'touchmove', 304, 200);
+    touch(page, 'touchend', 304, 200);
+    expect(drawer.classList.contains('is-open')).toBe(true);
+    expect(drawer.hasAttribute('data-dragging')).toBe(false);
+    const scrim = host.querySelector('.matter-sidebar-scrim')!;
+    touch(scrim, 'touchstart', 300, 320);
+    touch(scrim, 'touchmove', 300, 280);
+    touch(scrim, 'touchmove', 300, 150);
+    touch(scrim, 'touchend', 300, 150);
+    expect(drawer.classList.contains('is-open')).toBe(false);
+  });
+
+  it('leaves vertical scrolling and the bottom panel to themselves', () => {
+    render(null, <><p>Conversation</p><div className="thread-graph-composer-host"><div role="textbox" aria-label="Prompt" /></div></>);
+    const drawer = host.querySelector('aside.matter-sidebar')!;
+    const page = host.querySelector('main p')!;
+    touch(page, 'touchstart', 300, 40);
+    touch(page, 'touchmove', 380, 60);
+    touch(page, 'touchmove', 460, 200);
+    touch(page, 'touchend', 460, 200);
+    expect(drawer.classList.contains('is-open')).toBe(false);
+    const prompt = host.querySelector('[aria-label="Prompt"]')!;
+    touch(prompt, 'touchstart', 600, 40);
+    touch(prompt, 'touchmove', 602, 200);
+    touch(prompt, 'touchend', 602, 200);
+    expect(drawer.classList.contains('is-open')).toBe(false);
+  });
+
+  it('starts from the current focus when the dock comes back', () => {
+    render(null, <div role="textbox" contentEditable aria-label="Prompt" />);
+    act(() => host.querySelector<HTMLElement>('[aria-label="Prompt"]')!.focus());
+    expect(host.querySelector('.matter-workbench')!.classList.contains('is-typing')).toBe(true);
+    phoneDock = false;
+    render(null, <div role="textbox" contentEditable aria-label="Prompt" />);
+    act(() => (document.activeElement as HTMLElement).blur());
+    phoneDock = true;
+    render(null, <div role="textbox" contentEditable aria-label="Prompt" />);
+    expect(host.querySelector('.matter-workbench')!.classList.contains('is-typing')).toBe(false);
+  });
+
   it('hides the dock while a field in the conversation has focus', () => {
     act(() => root.render(
       <MatterWorkbench options={options} title="A" settings={null} newThread={null} actions={null} threadMenu={null} connection={null} explorer={null} revealExplorer={0}>

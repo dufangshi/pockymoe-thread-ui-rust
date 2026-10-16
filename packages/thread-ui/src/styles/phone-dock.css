@@ -254,24 +254,47 @@
   .matter-phone-sheet-notices small { display: block; overflow: hidden; color: var(--theme-fg-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
   .matter-phone-sheet-footer { display: flex; flex: none; gap: 8px; align-items: center; padding: 8px 12px 0; border-top: 1px solid var(--theme-border); }
   .thread-ui-shell .matter-workbench .matter-phone-sheet-footer > * { height: 46px; min-width: 46px; }
-  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer .matter-phone-sheet-wide {
+  /* New thread spans the footer, an accent tint like the strip's latest button. */
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer .matter-new-thread {
     display: flex;
     flex: 1;
     align-items: center;
+    justify-content: center;
+    gap: 8px;
     width: auto;
-    justify-content: flex-start;
-    gap: 10px;
-    padding: 0 14px;
-    border: 1px solid var(--theme-border);
+    border: 1px solid color-mix(in oklch, var(--theme-accent-solid) 38%, transparent);
     border-radius: 14px;
+    background: color-mix(in oklch, var(--theme-accent-solid) 14%, transparent);
+    color: var(--theme-accent-strong, var(--theme-accent-solid));
     font-size: 14px;
+    font-weight: 600;
   }
-  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer .matter-new-thread {
-    width: 46px;
-    border-radius: 14px;
-    background: var(--theme-fg);
-    color: var(--theme-panel);
+  .matter-phone-sheet-footer .matter-new-thread::after { content: attr(aria-label); }
+  .matter-phone-sheet-footer .matter-new-thread svg { width: 18px; height: 18px; }
+
+  /* The workspace drawer, full height over the dock, pulled in from the left. */
+  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar {
+    top: 0;
+    z-index: 96;
+    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border-right: 1px solid var(--theme-border);
+    box-shadow: 12px 0 40px rgb(0 0 0 / 28%);
   }
+  /* While dragged it follows the finger, whatever transition a pack gives it. */
+  .matter-workbench.has-phone-dock .matter-sidebar[data-dragging]:not(#_) { visibility: visible; transition: none; }
+  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar-scrim {
+    inset: 0;
+    z-index: 95;
+    background: rgb(0 0 0 / 42%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms;
+  }
+  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar-scrim[data-open] { opacity: 1; pointer-events: auto; }
+  .matter-workbench.has-phone-dock .matter-sidebar-scrim[data-dragging]:not(#_) { transition: none; }
+  /* Sideways drags are the drawer's; the browser's own swipe-back stays out. */
+  .thread-ui-shell .matter-workbench.has-phone-dock .matter-main { overscroll-behavior-x: none; }
 
   /* More: one grid of labelled tiles, our own actions first, then host controls. */
   .matter-phone-sheet-tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }

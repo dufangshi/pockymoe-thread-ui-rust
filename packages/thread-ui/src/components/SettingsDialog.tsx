@@ -4,8 +4,11 @@ import { SettingsPanels, type SettingsSection } from './SettingsPanels';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './graph-ui/Dialog';
 
 /** One settings shell for the workbench and pages outside conversations. */
-export function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId = 'preferences', contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
+export function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId = 'preferences', section, onSectionChange, panelScroll, contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
   sections: SettingsSection[];
+  section?: string | undefined;
+  onSectionChange?: ((id: string) => void) | undefined;
+  panelScroll?: ComponentProps<typeof SettingsPanels>['scroll'];
   themeMode?: string;
   effectiveTheme?: 'light' | 'dark';
   trigger?: ReactNode;
@@ -24,7 +27,7 @@ export function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, e
         <DialogDescription>{translate('files.yourWorkspaceConnectedDeviceAndPersonalPreferences')}</DialogDescription>
       </DialogHeader>
       {extraContent}
-      <SettingsPanels sections={sections} initialId={initialId} />
+      <SettingsPanels sections={sections} initialId={initialId} selected={section} onSelect={onSectionChange} scroll={panelScroll} />
     </DialogContent>
   </Dialog>;
 }

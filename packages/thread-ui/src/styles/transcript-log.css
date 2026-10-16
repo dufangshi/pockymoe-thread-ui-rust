@@ -534,6 +534,11 @@
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-border) 80%, transparent), 0 4px 14px rgb(0 0 0 / 0.14);
   opacity: 1;
 }
+/* Under the phone dock the turn strip sits on the composer's top edge, on
+   either side by hand: ride above it instead. */
+.thread-ui-shell .matter-workbench.has-phone-dock .thread-graph-show-more[aria-expanded='true'] {
+  bottom: calc(var(--timeline-bottom-inset, 0px) + 50px);
+}
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:hover,
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:focus-visible {
   background: color-mix(in srgb, var(--theme-panel) 96%, transparent);

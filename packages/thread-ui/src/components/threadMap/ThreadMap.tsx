@@ -1,48 +1,24 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
 import { ArrowLeft, ChevronRight, Folder, List, Monitor, RotateCw } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
-import { themeAgentName } from '../themeAgent';
 import { buildThreadMap, heatLevel, indexMap, type MapNode, type ThreadMapDevice, type ThreadMapThread } from './model';
+import { AgeGlyph, formatRunTime, threadDetails, ThreadTile } from './ThreadTile';
 import { squarify, type MapRect } from './squarify';
 
 /** Height of a device or workspace title bar. */
 const HEADER = 26;
-/** Monograms for agents a theme gives no art. */
-const MONOGRAMS: Record<string, string> = {
-  claude: 'Cl', codex: 'Cx', copilot: 'Co', cursor: 'Cu', deepseek: 'DS', gemini: 'Ge', grok: 'Gk', kimi: 'Ki', opencode: 'OC', qwen: 'Qw',
-};
-const monogram = (agent: string) => MONOGRAMS[agent] ?? agent.replace(/[^a-z0-9]/gi, '').slice(0, 2).replace(/^./, c => c.toUpperCase());
-
-export function formatRunTime(ms: number) {
-  const minutes = Math.round(ms / 60_000);
-  if (minutes < 1) return translate('workbench.threadMapUnderMinute');
-  if (minutes < 60) return translate('workbench.threadMapMinutes', { count: minutes });
-  return translate('workbench.threadMapHoursMinutes', { hours: Math.floor(minutes / 60), minutes: minutes % 60 });
-}
-
+/** A block's lines for its tooltip and label: a thread's details, or a device's or workspace's totals. */
 function describe(node: MapNode, hours: number) {
-  const parts = [node.label];
-  const thread = node.thread;
-  if (thread) {
-    if (thread.agent) parts.push(thread.agentName ?? themeAgentName(thread.agent));
-    if (node.parent && node.parent.kind !== 'root') parts.push(node.parent.label);
-    if (thread.turns !== null) parts.push(translate('workbench.threadMapTurns', { count: thread.turns }));
-    if (thread.activeMs !== null) parts.push(thread.activeMs > 0
-      ? translate('workbench.threadMapRan', { hours, duration: formatRunTime(thread.activeMs) })
-      : translate('workbench.threadMapNotRun', { hours }));
-    if (thread.agentThreads) parts.push(translate('workbench.threadMapAgentThreads', { count: thread.agentThreads }));
-    if (thread.running) parts.push(translate('workbench.threadMapRunning'));
-    return parts.join(' · ');
-  }
+  if (node.thread) return threadDetails(node, hours);
   const state = node.device?.state;
   if (node.kind === 'device' && state && state !== 'ready') {
-    parts.push(translate(state === 'offline' ? 'workbench.threadMapOffline' : state === 'loading' ? 'workbench.threadMapLoading' : 'workbench.threadMapFailed'));
-    return parts.join(' · ');
+    return [node.label, translate(state === 'offline' ? 'workbench.threadMapOffline' : state === 'loading' ? 'workbench.threadMapLoading' : 'workbench.threadMapFailed')];
   }
-  parts.push(translate('workbench.threadMapThreads', { count: node.threads }));
-  if (node.running) parts.push(translate('workbench.threadMapRunningCount', { count: node.running }));
-  if (node.activeMs > 0) parts.push(translate('workbench.threadMapRan', { hours, duration: formatRunTime(node.activeMs) }));
-  return parts.join(' · ');
+  return [node.label, [
+    translate('workbench.threadMapThreads', { count: node.threads }),
+    node.running ? translate('workbench.threadMapRunningCount', { count: node.running }) : null,
+    node.activeMs > 0 ? translate('workbench.threadMapRan', { hours, duration: formatRunTime(node.activeMs) }) : null,
+  ].filter(Boolean).join(' · ')];
 }
 
 function inset(rect: MapRect, gap: number): MapRect {
@@ -74,7 +50,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const canvas = useRef<HTMLDivElement>(null);
   const crumbs = useRef<HTMLElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
-  const [tip, setTip] = useState<{ text: string; x: number; y: number; above: boolean } | null>(null);
+  const [tip, setTip] = useState<{ lines: string[]; x: number; y: number; above: boolean } | null>(null);
   useEffect(() => {
     const node = canvas.current;
     if (!node) return;
@@ -104,54 +80,25 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     event.preventDefault();
     onOpen(thread);
   };
-  const showTip = (text: string, target: HTMLElement) => {
+  const showTip = (lines: string[], target: HTMLElement) => {
     const box = canvas.current?.getBoundingClientRect();
     if (!box) return;
     const anchor = target.getBoundingClientRect();
     const width = Math.min(300, box.width - 16);
     const below = anchor.top - box.top < box.height / 2;
     setTip({
-      text,
+      lines,
       above: !below,
       x: Math.max(8, Math.min(box.width - width - 8, anchor.left - box.left)),
       y: below ? Math.min(box.height - 8, anchor.bottom - box.top + 6) : Math.max(8, anchor.top - box.top - 6),
     });
   };
-  const hover = (text: string) => ({
-    onPointerEnter: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse') showTip(text, event.currentTarget); },
+  const hover = (lines: string[]) => ({
+    onPointerEnter: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse') showTip(lines, event.currentTarget); },
     onPointerLeave: () => setTip(null),
-    onFocus: (event: { currentTarget: HTMLElement }) => showTip(text, event.currentTarget),
+    onFocus: (event: { currentTarget: HTMLElement }) => showTip(lines, event.currentTarget),
     onBlur: () => setTip(null),
   });
-
-  const agentChip = (thread: ThreadMapThread) => thread.agent
-    ? <span className="thread-map-agent" data-agent={thread.agent} aria-hidden="true">{monogram(thread.agent)}</span>
-    : null;
-
-  const tile = (node: MapNode, box: MapRect) => {
-    const thread = node.thread!;
-    const text = describe(node, hours);
-    const full = box.width >= 112 && box.height >= 50;
-    const named = box.width >= 60 && box.height >= 28;
-    const icon = box.width >= 22 && box.height >= 20;
-    const meta = [
-      thread.turns !== null ? translate('workbench.threadMapTurns', { count: thread.turns }) : null,
-      thread.activeMs ? formatRunTime(thread.activeMs) : null,
-    ].filter(Boolean).join(' · ');
-    return (
-      <a key={node.id} href={thread.href} className="thread-map-tile" data-heat={heatLevel(thread.activeMs)} data-size={full ? 'full' : named ? 'named' : icon ? 'icon' : 'dot'}
-        data-running={thread.running || undefined} aria-current={thread.key === currentKey ? 'page' : undefined}
-        aria-label={text} tabIndex={icon ? undefined : -1}
-        style={{ left: box.x, top: box.y, width: box.width, height: box.height }}
-        onClick={open(thread)} {...hover(text)}>
-        {icon && <span className="thread-map-tile-head">
-          {agentChip(thread)}
-          {named && <span className="thread-map-tile-title">{thread.title}</span>}
-        </span>}
-        {full && meta && <span className="thread-map-tile-meta">{meta}{thread.agentThreads ? ` · +${thread.agentThreads}` : ''}</span>}
-      </a>
-    );
-  };
 
   // A block shows what is inside it while each thread can be more than a speck
   // and each inner block about a label; smaller inner blocks fold up themselves.
@@ -165,8 +112,12 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     squarify(items, item => item.weight, bounds).map(({ item, rect }) => {
       rendered++;
       const box = inset(rect, depth ? 1.5 : 2.5);
-      if (item.kind === 'thread') return tile(item, box);
-      const text = describe(item, hours);
+      if (item.kind === 'thread') {
+        return <ThreadTile key={item.id} node={item} box={box} hours={hours} current={item.thread!.key === currentKey}
+          onOpen={open(item.thread!)} hover={hover(describe(item, hours))} />;
+      }
+      const lines = describe(item, hours);
+      const text = lines.join(' · ');
       const state = item.device?.state;
       const unlisted = item.kind === 'device' && state !== 'ready';
       const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
@@ -179,7 +130,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           aria-label={text} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
           <button type="button" className="thread-map-section-head" disabled={unlisted && !(state === 'error' && onRetry)}
             aria-label={unlisted ? (state === 'error' ? translate('workbench.threadMapRetry') + ' · ' + text : text) : translate('workbench.threadMapExplore', { name: text })}
-            onClick={() => (unlisted ? state === 'error' && onRetry?.(item.device!.id) : navigate(item))} {...hover(text)}>
+            onClick={() => (unlisted ? state === 'error' && onRetry?.(item.device!.id) : navigate(item))} {...hover(lines)}>
             {named && <Icon aria-hidden="true" />}
             <span className="thread-map-section-label">{item.label}</span>
             {unlisted
@@ -226,7 +177,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             else if (node) navigate(node);
           }}>
             <option value="">{translate('workbench.threadMapGoTo')}</option>
-            {children.map(node => <option key={node.id} value={node.id} disabled={node.kind === 'device' && node.device?.state !== 'ready'}>{describe(node, hours)}</option>)}
+            {children.map(node => <option key={node.id} value={node.id} disabled={node.kind === 'device' && node.device?.state !== 'ready'}>{describe(node, hours).join(' · ')}</option>)}
           </select>
         </label>}
       </div>
@@ -234,7 +185,9 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         {children.length
           ? size.width > 0 && render(children, bounds, 0)
           : <p className="thread-map-empty" role="status">{devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
-        {tip && <div className="thread-map-tip" role="tooltip" style={{ left: tip.x, top: tip.y }} data-above={tip.above || undefined}>{tip.text}</div>}
+        {tip && <div className="thread-map-tip" role="tooltip" style={{ left: tip.x, top: tip.y }} data-above={tip.above || undefined}>
+          {tip.lines.map((line, index) => index ? <span key={index}>{line}</span> : <b key={index}>{line}</b>)}
+        </div>}
       </div>
       <div className="thread-map-legend">
         <span>{translate('workbench.threadMapLegendSize')}</span>
@@ -244,7 +197,14 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           {[0, 1, 2, 3, 4].map(level => <i key={level} data-heat={level} aria-hidden="true" />)}
           <small>{translate('workbench.threadMapMore')}</small>
         </span>
-        <span className="thread-map-legend-running"><i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapLegendRunning')}</span>
+        <span className="thread-map-scale thread-map-ages">
+          {translate('workbench.threadMapLegendAge')}
+          <small>{translate('workbench.threadMapNewer')}</small>
+          {[0, 1, 2, 3, 4].map(tier => <AgeGlyph key={tier} tier={tier} />)}
+          <small>{translate('workbench.threadMapOlder')}</small>
+        </span>
+        <span className="thread-map-legend-item"><span className="thread-map-legend-spark" aria-hidden="true"><i /><i /><i /><i /></span>{translate('workbench.threadMapLegendHourly')}</span>
+        <span className="thread-map-legend-item"><i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapLegendRunning')}</span>
       </div>
     </div>
   );

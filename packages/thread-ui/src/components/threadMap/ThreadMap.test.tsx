@@ -4,7 +4,8 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { setLocale } from '../../i18n';
 import { ThreadMap } from './ThreadMap';
-import { buildThreadMap, heatLevel, threadWeight, type ThreadMapDevice, type ThreadMapThread } from './model';
+import { buildThreadMap, heatLevel, threadWeight, type MapNode, type ThreadMapDevice, type ThreadMapThread } from './model';
+import { ageTier, formatAge, formatShortDuration, promptLine, ThreadTile } from './ThreadTile';
 import { squarify } from './squarify';
 
 const thread = (key: string, extra: Partial<ThreadMapThread> = {}): ThreadMapThread => ({
@@ -136,5 +137,70 @@ describe('ThreadMap', () => {
     expect(host.querySelector('section[aria-label="D · Loading…"]')).not.toBeNull();
     show([{ id: 'd', name: 'D', state: 'ready', workspaces: [] }]);
     expect(host.querySelector('[role="status"]')!.textContent).toBe('No threads yet');
+  });
+});
+
+describe('ThreadTile', () => {
+  Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
+  let host: HTMLDivElement, root: Root;
+  const now = Date.parse('2026-10-16T12:00:00Z');
+  beforeEach(() => {
+    setLocale('zh-CN', false);
+    vi.useFakeTimers({ now, toFake: ['Date'] });
+    host = document.createElement('div');
+    document.body.append(host);
+    root = createRoot(host);
+  });
+  afterEach(() => {
+    act(() => root.unmount());
+    host.remove();
+    vi.useRealTimers();
+    setLocale('en', false);
+  });
+  const busy = thread('a', {
+    agent: 'claude', agentName: 'Claude', model: 'opus', running: true, turns: 69, totalMs: 25 * 3_600_000, activeMs: 2 * 3_600_000,
+    hourlyMs: [...Array(22).fill(0), 3_600_000, 3_600_000], createdAt: '2026-10-09T08:00:00Z', lastActiveAt: '2026-10-16T11:58:00Z',
+    lastPrompt: '[PHOTO ./a.png] 看一下 这个  页面',
+  });
+  const show = (box: { width: number; height: number }, item = busy) => {
+    const parent = { id: 'w', kind: 'workspace', label: 'app', children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0 } as MapNode;
+    const node: MapNode = { id: 'thread:a', kind: 'thread', label: item.title, parent, children: [], weight: 1, turns: 0, activeMs: 0, threads: 1, running: 0, thread: item };
+    act(() => root.render(<ThreadTile node={node} box={{ x: 0, y: 0, ...box }} hours={24} current={false} onOpen={() => {}} hover={{}} />));
+    return host.querySelector<HTMLAnchorElement>('.thread-map-tile')!;
+  };
+  const text = (tile: Element, selector: string) => tile.querySelector(selector)?.textContent ?? null;
+
+  it('fills a big tile: who and what, the latest prompt, total and recent run time, an hourly strip and the age', () => {
+    const tile = show({ width: 300, height: 260 });
+    expect(tile.dataset.size).toBe('card');
+    expect(text(tile, '.thread-map-tile-who')).toBe('Claude · opus');
+    expect(text(tile, '.thread-map-tile-live')).toBe('运行中');
+    expect(text(tile, '.thread-map-tile-prompt')).toBe('[图片] 看一下 这个 页面');
+    expect([...tile.querySelectorAll('.thread-map-stats > span')].map(cell => cell.textContent)).toEqual(['69轮', '25 小时总运行', '2 小时近 24 小时']);
+    expect(tile.querySelectorAll('.thread-map-spark i')).toHaveLength(24);
+    expect(tile.querySelector('.thread-map-age-glyph')!.getAttribute('data-age')).toBe('2');
+    expect(text(tile, '.thread-map-age')).toBe('7 天');
+    expect(tile.getAttribute('aria-label')).toContain('总运行 25 小时 0 分钟 · 近 24 小时运行 2 小时 0 分钟');
+  });
+
+  it('drops details as the tile shrinks, keeping what fits', () => {
+    const tall = show({ width: 110, height: 220 });
+    expect(tall.querySelector('.thread-map-stats')!.getAttribute('data-layout')).toBe('column');
+    expect(tall.querySelector('.thread-map-tile-who')).toBeNull();
+    const medium = show({ width: 120, height: 60 });
+    expect(text(medium, '.thread-map-tile-meta')).toBe('69 轮 · 共 25 小时');
+    expect(medium.querySelector('.thread-map-age-glyph')).not.toBeNull();
+    expect(medium.querySelector('.thread-map-tile-prompt, .thread-map-spark, .thread-map-stats')).toBeNull();
+    const small = show({ width: 70, height: 30 });
+    expect(small.dataset.size).toBe('named');
+    expect(small.querySelector('.thread-map-age, .thread-map-tile-meta')).toBeNull();
+    expect(show({ width: 12, height: 12 }).textContent).toBe('');
+  });
+
+  it('formats figures, ages and prompts', () => {
+    expect([30_000, 37 * 60_000, 4.24 * 3_600_000, 37 * 3_600_000, 300 * 3_600_000].map(formatShortDuration)).toEqual(['<1 分', '37 分', '4.2 小时', '37 小时', '13 天']);
+    expect(['2026-10-16T01:00:00Z', '2026-10-12T00:00:00Z', '2026-09-30T00:00:00Z', '2026-08-01T00:00:00Z', '2025-01-01T00:00:00Z', 'bad'].map(at => ageTier(at, now))).toEqual([0, 1, 2, 3, 4, null]);
+    expect(formatAge('2026-08-01T00:00:00Z', now)).toBe('2 个月');
+    expect(promptLine('fix [FILE /tmp/a.log]\n now')).toBe('fix [文件] now');
   });
 });

@@ -11,6 +11,18 @@ export interface ThreadMapThread {
   turns: number | null;
   /** Time turns ran inside the activity window; null when the device cannot say. */
   activeMs: number | null;
+  /** Time every turn ever ran; null when the device cannot say. */
+  totalMs?: number | null | undefined;
+  /** The window's running time hour by hour, oldest first. */
+  hourlyMs?: number[] | undefined;
+  createdAt?: string | undefined;
+  /** When a turn last started or finished. */
+  lastActiveAt?: string | undefined;
+  model?: string | undefined;
+  /** The person's latest prompt. */
+  lastPrompt?: string | undefined;
+  /** The last turn failed. */
+  failed?: boolean | undefined;
   /** Agent threads folded into this one. */
   agentThreads?: number | undefined;
 }

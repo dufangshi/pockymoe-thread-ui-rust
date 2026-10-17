@@ -591,7 +591,7 @@ export const workbenchZhCN = {
   "workbench.threadMapShowChildren": { one: "展开 {{title}} 的 {{count}} 个子线程", other: "展开 {{title}} 的 {{count}} 个子线程" },
   "workbench.threadMapHideChildren": "把子线程收回 {{title}}",
   "workbench.threadMapOpenThread": "打开 {{title}}",
-  "workbench.runningChip": { one: "本帐号有 {{count}} 个线程正在运行，点按查看", other: "本帐号有 {{count}} 个线程正在运行，点按查看" },
+  "workbench.runningChip": { one: "本帐号有 {{count}} 个对话正在运行，点按查看", other: "本帐号有 {{count}} 个对话正在运行，点按查看" },
   "workbench.runningSheet": "运行中的线程",
   "workbench.runningNow": "正在运行",
   "workbench.finishedUnread": "已完成，未读",

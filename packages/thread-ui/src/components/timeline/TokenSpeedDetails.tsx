@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ArrowDownToLine, ArrowUpFromLine, Gauge, Timer } from 'lucide-react';
+import { ArrowDownToLine, ArrowUpFromLine, Gauge, Repeat, Timer } from 'lucide-react';
 import type { ThreadTurnTokenUsageDto } from '@pockymoe/shared';
 import { getLocale, translate, useI18n } from '../../i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../graph-ui/Tooltip';
@@ -27,9 +27,13 @@ export function TokenSpeedDetails({ speed, value }: { speed: Speed; value: numbe
   const modelMs = speed.outputTimeMs || speed.llmTimeMs;
   // Earlier snapshots timed replies that arrived in one piece as if they streamed.
   const measured = speed.splitMethod === 'streamedRequests';
-  const split = measured && (known(speed.firstTokenMs) || known(speed.decodeTokensPerSecond));
+  const split = measured && (known(speed.llmRequests) || known(speed.firstTokenMs) || known(speed.decodeTokensPerSecond));
   const bursts = measured ? speed.burstRequests ?? 0 : 0;
   const rows = !measured ? [] : [
+    ...(known(speed.llmRequests) ? [{
+      icon: Repeat, label: translate('chat.speedRequests'),
+      value: translate('chat.speedRequestsValue', { count: speed.llmRequests }),
+    }] : []),
     ...(known(speed.firstTokenMs) ? [{
       icon: Timer, label: translate('chat.speedFirstToken'),
       value: translate('chat.speedFirstTokenValue', { time: seconds(speed.firstTokenMs), count: speed.firstTokenRequests ?? 1 }),

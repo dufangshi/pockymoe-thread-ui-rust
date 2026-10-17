@@ -215,6 +215,12 @@ interface WorkbenchNotification {
     href: string;
     occurredAt: string;
     summary?: string;
+    /** The thread it is about, and for an agent thread its conversation's root:
+        such notifications are listed under that conversation. */
+    threadKey?: string;
+    rootKey?: string;
+    rootTitle?: string;
+    rootHref?: string;
 }
 /** A plugin's thread panel in the workbench rail (it opens in the tools drawer). */
 interface WorkbenchToolPanel {

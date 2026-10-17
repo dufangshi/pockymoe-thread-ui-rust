@@ -50,12 +50,33 @@ export interface WorkbenchThread {
   /** A shortcut's place in the account's own order; unordered ones follow by recency. */
   shortcutOrder?: number;
 }
+/** The latest notifications, those of a conversation's agent threads listed
+    together under its root (titled), the rest alone. */
+export function notificationGroups(notifications: WorkbenchNotification[]) {
+  const groups: { key: string; title?: string; href?: string; items: WorkbenchNotification[] }[] = [];
+  for (const n of [...notifications].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).slice(0, 10)) {
+    const key = n.rootKey ?? n.threadKey ?? n.id;
+    const group = groups.find(item => item.key === key);
+    if (group) group.items.push(n);
+    else groups.push({ key, items: [n] });
+    const target = group ?? groups.at(-1)!;
+    if (n.rootKey && n.rootTitle) { target.title = n.rootTitle; target.href = n.rootHref; }
+  }
+  return groups;
+}
+
 export interface WorkbenchNotification {
   id: string;
   title: string;
   href: string;
   occurredAt: string;
   summary?: string;
+  /** The thread it is about, and for an agent thread its conversation's root:
+      such notifications are listed under that conversation. */
+  threadKey?: string;
+  rootKey?: string;
+  rootTitle?: string;
+  rootHref?: string;
 }
 /** A plugin's thread panel in the workbench rail (it opens in the tools drawer). */
 export interface WorkbenchToolPanel {
@@ -406,9 +427,24 @@ export function MatterWorkbench({
   // running count in the status bar counts and opens.
   const accountThreads = [...knownThreads, ...(o.activeThreads ?? []).filter(thread => !knownThreads.some(known => known.key === thread.key))];
   const runningThreads = accountThreads.filter(thread => thread.status === 'running');
+  const threadByKey = new Map(accountThreads.map(thread => [thread.key, thread]));
+  // An agent thread is never listed alone: its conversation's root comes first.
+  const inConversations = (list: WorkbenchThread[]) => {
+    const shown: WorkbenchThread[] = [];
+    const add = (thread: WorkbenchThread) => { if (!shown.some(item => item.key === thread.key)) shown.push(thread); };
+    for (const thread of list) {
+      const root = thread.rootKey && thread.rootKey !== thread.key ? threadByKey.get(thread.rootKey) : undefined;
+      if (root) add(list.find(item => item.key === root.key) ?? root);
+      add(thread);
+    }
+    return shown;
+  };
+  const runningConversations = inConversations(runningThreads);
+  const runningCount = groupThreads(runningConversations).length;
   // A host that names the unread threads knows which were read before; without
   // it, the listed threads stand in.
-  const unreadThreads = (o.activeThreads ?? o.threads).filter(thread => thread.status === 'unread' && thread.key !== o.currentKey);
+  const unreadThreads = inConversations((o.activeThreads ?? o.threads).filter(thread => thread.status === 'unread' && thread.key !== o.currentKey));
+  const unreadCount = groupThreads(unreadThreads).length;
   const favorites = o.threads.filter(thread => thread.favorite);
   // The sidebar and the thread sheet list this workspace's threads apart from
   // the recent ones elsewhere.
@@ -430,6 +466,23 @@ export function MatterWorkbench({
       <Bell data-icon="notifications" />
       {o.unreadCount > 0 && <span className="matter-unread" />}
     </button>
+  );
+  const renderNotification = (n: WorkbenchNotification) => (
+    <a
+      key={n.id}
+      href={n.href}
+      onClick={(e) => {
+        e.preventDefault();
+        navigate(n.href);
+      }}
+    >
+      <span className="matter-status-dot" data-status="completed" />
+      <span>
+        {n.title}
+        {n.summary && <p className="matter-notification-summary">{n.summary}</p>}
+        <small>{new Date(n.occurredAt).toLocaleString(getLocale())}</small>
+      </span>
+    </a>
   );
   const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread)) => (
     <div key={thread.key} className="matter-thread-entry">
@@ -536,11 +589,11 @@ export function MatterWorkbench({
         <span className="matter-topbar-spacer" />
         {/* Usage windows are read, rarely touched: they live in the status bar. */}
         {visibleSubscriptionWindows(o.subscriptionUsage).length > 0 && <div className="matter-topbar-usage"><ComposerSubscriptionUsage usage={o.subscriptionUsage} /></div>}
-        {runningThreads.length > 0 && <button className="matter-running-chip" aria-expanded={runningOpen}
-          aria-label={translate('workbench.runningChip', { count: runningThreads.length })} title={translate('workbench.runningChip', { count: runningThreads.length })}
+        {runningCount > 0 && <button className="matter-running-chip" aria-expanded={runningOpen}
+          aria-label={translate('workbench.runningChip', { count: runningCount })} title={translate('workbench.runningChip', { count: runningCount })}
           onClick={() => { setThreadsOpen(false); setMoreOpen(false); setRunningOpen(true); }}>
           <span className="matter-running-icon" aria-hidden="true"><MessagesSquare /><i /></span>
-          <span>{runningThreads.length}</span><span className="matter-running-label">{translate('workbench.running')}</span>
+          <span>{runningCount}</span><span className="matter-running-label">{translate('workbench.running')}</span>
         </button>}
         <div className="matter-connection">{connection}</div>
         {bell}
@@ -786,13 +839,13 @@ export function MatterWorkbench({
           footer={<button type="button" className="matter-phone-sheet-all" onClick={() => { setRunningOpen(false); setThreadsOpen(true); }}>
             <MessagesSquare aria-hidden="true" /><span>{translate('workbench.allThreads')}</span>
           </button>}>
-          <h3>{translate('workbench.runningNow')} <span className="matter-section-count">{runningThreads.length}</span></h3>
-          {runningThreads.length
-            ? <div className="matter-thread-section">{runningThreads.map(thread => renderThread(thread))}</div>
+          <h3>{translate('workbench.runningNow')} <span className="matter-section-count">{runningCount}</span></h3>
+          {runningCount
+            ? <div className="matter-thread-section">{renderThreadGroups(runningConversations)}</div>
             : <p className="matter-sidebar-hint">{translate('workbench.noRunningThreads')}</p>}
-          {unreadThreads.length > 0 && <>
-            <h3>{translate('workbench.finishedUnread')} <span className="matter-section-count">{unreadThreads.length}</span></h3>
-            <div className="matter-thread-section">{unreadThreads.map(thread => renderThread(thread))}</div>
+          {unreadCount > 0 && <>
+            <h3>{translate('workbench.finishedUnread')} <span className="matter-section-count">{unreadCount}</span></h3>
+            <div className="matter-thread-section">{renderThreadGroups(unreadThreads)}</div>
           </>}
         </PhoneSheet>
         {/* The app's destinations sit in the footer, so Settings shows however many tools there are. */}
@@ -837,23 +890,14 @@ export function MatterWorkbench({
               </button>
             </div>
             {o.notifications.length ? (
-              [...o.notifications].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt)).slice(0, 10).map((n) => (
-                <a
-                  key={n.id}
-                  href={n.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(n.href);
-                  }}
-                >
-                  <span className="matter-status-dot" data-status="completed" />
-                  <span>
-                    {n.title}
-                    {n.summary && <p className="matter-notification-summary">{n.summary}</p>}
-                    <small>{new Date(n.occurredAt).toLocaleString(getLocale())}</small>
-                  </span>
-                </a>
-              ))
+              notificationGroups(o.notifications).map(group => group.title
+                ? <div key={group.key} className="matter-notification-group">
+                  <a className="matter-notification-root" href={group.href} onClick={(e) => { e.preventDefault(); navigate(group.href!); }}>
+                    <MessagesSquare aria-hidden="true" /><span>{group.title}</span>
+                  </a>
+                  {group.items.map(renderNotification)}
+                </div>
+                : group.items.map(renderNotification))
             ) : (
               <p>{translate("workbench.allCaughtUpCompletedThreadsWillAppear")}</p>
             )}

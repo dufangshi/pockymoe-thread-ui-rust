@@ -358,11 +358,13 @@
     text-align: center;
   }
   .matter-phone-sheet-tools svg { width: 22px; height: 22px; }
-  /* Host controls arrive as icon buttons; label them from their accessible names. */
+  /* Host controls arrive as icon buttons; label them from their accessible names.
+     A window a control opens is never flattened into the grid; such windows
+     float over the page as their own sheet. */
   .matter-phone-sheet-host { display: contents; }
-  .matter-phone-sheet-host :is(div, span):not(:has(svg)) { display: none; }
-  .matter-phone-sheet-host :is(div, span):has(> :is(button, a)) { display: contents; }
-  .thread-ui-shell .matter-workbench .matter-phone-sheet-host :is(button, a)[aria-label] {
+  .matter-phone-sheet-host :is(div, span):not(:has(svg)):not(.matter-phone-sheet-host [role=dialog] *, [role=dialog]) { display: none; }
+  .matter-phone-sheet-host :is(div, span):has(> :is(button, a)):not(.matter-phone-sheet-host [role=dialog] *, [role=dialog]) { display: contents; }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-host :is(button, a)[aria-label]:not(.matter-phone-sheet-host [role=dialog] *) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -379,7 +381,7 @@
     line-height: 1.2;
     text-align: center;
   }
-  .matter-phone-sheet-host :is(button, a)[aria-label]::after { content: attr(aria-label); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .matter-phone-sheet-host :is(button, a)[aria-label]:not(.matter-phone-sheet-host [role=dialog] *)::after { content: attr(aria-label); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .thread-ui-shell .matter-workbench .matter-phone-sheet-host svg { width: 22px; height: 22px; }
   .thread-ui-shell .matter-workbench .matter-phone-sheet-tools :is(button, a)[aria-pressed='true'] {
     background: var(--theme-surface-strong);

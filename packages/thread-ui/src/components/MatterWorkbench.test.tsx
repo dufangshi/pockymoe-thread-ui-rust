@@ -133,7 +133,7 @@ describe('one-handed phone dock', () => {
     expect(topbar().classList.contains('is-status-only')).toBe(true);
     expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
     expect(topbar().querySelector('button[aria-label="Notifications"]')).not.toBeNull();
-    expect(topbar().querySelector('.matter-running-chip')?.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
+    expect(topbar().querySelector('.matter-running-chip')?.getAttribute('aria-label')).toBe('2 conversations are running on this account. Show them');
     for (const label of ['Chat', 'Terminal', 'Toggle Explorer', 'Open settings', 'Go back']) {
       expect(topbar().querySelector(`button[aria-label="${label}"]`)).toBeNull();
     }
@@ -292,7 +292,7 @@ describe('one-handed phone dock', () => {
     render();
     const chip = topbar().querySelector<HTMLButtonElement>('.matter-running-chip')!;
     expect(chip.textContent).toContain('2');
-    expect(chip.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
+    expect(chip.getAttribute('aria-label')).toBe('2 conversations are running on this account. Show them');
     act(() => chip.click());
     const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Running threads"]')!;
     expect(sheet.hasAttribute('data-open')).toBe(true);
@@ -304,6 +304,43 @@ describe('one-handed phone dock', () => {
     act(() => [...sheet.querySelectorAll('button')].find(item => item.textContent === 'All threads')!.click());
     expect(sheet.hasAttribute('data-open')).toBe(false);
     expect(host.querySelector('section.matter-phone-sheet[aria-label="Threads"]')!.hasAttribute('data-open')).toBe(true);
+  });
+
+  it('lists running and unread agent threads inside their conversations, counting conversations', () => {
+    const agent = (key: string, status: string) => ({ ...thread(key, status), rootKey: 'root', parentKey: 'root' });
+    options = {
+      ...baseOptions,
+      threads: [thread('x')],
+      activeThreads: [agent('w1', 'running'), agent('w2', 'running'), thread('solo', 'running'), thread('root'), agent('w3', 'unread')],
+    };
+    render();
+    const chip = topbar().querySelector<HTMLButtonElement>('.matter-running-chip')!;
+    expect(chip.getAttribute('aria-label')).toBe('2 conversations are running on this account. Show them');
+    act(() => chip.click());
+    const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Running threads"]')!;
+    expect([...sheet.querySelectorAll('h3')].map(heading => heading.textContent)).toEqual(['Running 2', 'Finished, not read yet 1']);
+    const [running, unread] = [...sheet.querySelectorAll('.matter-thread-section')];
+    // The root leads its group (its dot says its agent threads run); the agents fold under it.
+    expect([...running!.querySelectorAll(':scope > div > .matter-thread-entry .matter-thread-copy > span')].map(row => row.textContent)).toEqual(['ROOT', 'SOLO']);
+    expect(running!.querySelector('.matter-agent-threads-summary')?.textContent).toBe('2 agent threads');
+    expect(running!.querySelector('.matter-status-dot')?.getAttribute('data-status')).toBe('agents-running');
+    expect([...unread!.querySelectorAll(':scope > div > .matter-thread-entry .matter-thread-copy > span')].map(row => row.textContent)).toEqual(['ROOT']);
+  });
+
+  it('lists an agent thread\'s notifications under its conversation', () => {
+    const at = (minute: number) => `2026-10-16T10:${String(minute).padStart(2, '0')}:00Z`;
+    options = { ...baseOptions, unreadCount: 3, notifications: [
+      { id: 'n1', title: 'Worker done', href: '/threads/w1', occurredAt: at(3), threadKey: 'w1', rootKey: 'r', rootTitle: 'Main task', rootHref: '/threads/r' },
+      { id: 'n2', title: 'Other done', href: '/threads/o', occurredAt: at(2), threadKey: 'o' },
+      { id: 'n3', title: 'Helper done', href: '/threads/w2', occurredAt: at(1), threadKey: 'w2', rootKey: 'r', rootTitle: 'Main task', rootHref: '/threads/r' },
+    ] };
+    render();
+    act(() => button('Notifications')!.click());
+    const panel = host.querySelector('section.matter-notifications')!;
+    const group = panel.querySelector('.matter-notification-group')!;
+    expect(group.querySelector('.matter-notification-root')?.textContent).toBe('Main task');
+    expect([...group.querySelectorAll(':scope > a:not(.matter-notification-root)')].map(item => item.textContent?.slice(0, 11))).toEqual(['Worker done', 'Helper done']);
+    expect([...panel.querySelectorAll(':scope > a')].map(item => item.textContent?.slice(0, 10))).toEqual(['Other done']);
   });
 
   it('keeps notifications on the bell, out of the thread sheet', () => {

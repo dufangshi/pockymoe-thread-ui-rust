@@ -26,6 +26,25 @@ function item(
 }
 
 describe("timeline item utilities", () => {
+  it('places a prompt added mid-turn by its time while live items arrive after it', () => {
+    const at = (second: number) => `2026-10-17T16:45:${String(second).padStart(2, '0')}.000Z`;
+    const persisted = [
+      item('first', 'userMessage', { createdAt: at(0) }),
+      item('reply', 'agentMessage', { sequence: 12, createdAt: at(14) }),
+      item('search', 'commandExecution', { sequence: 14, createdAt: at(25) }),
+    ];
+    // Live: the steered prompt (no sequence) is appended after the work it preceded.
+    const live = [
+      item('read', 'commandExecution', { sequence: 15, createdAt: at(34) }),
+      item('answer', 'agentMessage', { sequence: 17, createdAt: at(50) }),
+      item('added', 'userMessage', { createdAt: at(26) }),
+    ];
+    const merged = mergeLiveTurnItems(persisted, live);
+    expect(merged.map(entry => entry.id)).toEqual(['first', 'reply', 'search', 'added', 'read', 'answer']);
+    // With work after it, the added prompt is not left awaiting a response.
+    expect(prepareTurnItemsForRendering(merged, true).find(entry => entry.id === 'added')?.status).toBeUndefined();
+  });
+
   it('counts loaded work plus deferred operations in a running summary', () => {
     const items = [item('prompt','userMessage'), item('progress','agentMessage'), item('checkpoint','agentMessage')];
     expect(countTurnSteps({hasDeferredItems:true,deferredItemCount:4},items)).toBe(5);

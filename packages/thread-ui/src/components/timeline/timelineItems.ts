@@ -265,6 +265,12 @@ export function sortTurnItemsByRecordedSequence(items: ThreadHistoryItemDto[]) {
     index: number;
     order: number;
   }> = [];
+  // Sequenced items by time, for placing unsequenced ones that carry a time.
+  const timed = trailingItems
+    .filter(hasHistoryItemSequence)
+    .map((item) => ({ at: Date.parse(item.createdAt ?? ''), order: historyItemSequence(item) }))
+    .filter((entry) => Number.isFinite(entry.at))
+    .sort((left, right) => left.at - right.at || left.order - right.order);
 
   let cursor = 0;
   while (cursor < trailingItems.length) {
@@ -288,6 +294,18 @@ export function sortTurnItemsByRecordedSequence(items: ThreadHistoryItemDto[]) {
     }
 
     const block = trailingItems.slice(blockStart, cursor);
+    // An item with a time but no sequence (a prompt added mid-turn) goes where
+    // its time falls among the sequenced items, not where it happened to arrive:
+    // live, it arrives after items recorded later than it.
+    const timedOrder = (blockItem: ThreadHistoryItemDto) => {
+      const at = Date.parse(blockItem.createdAt ?? '');
+      if (!Number.isFinite(at) || timed.length === 0) return null;
+      const before = timed.filter((entry) => entry.at <= at).at(-1);
+      const after = timed.find((entry) => entry.at > at);
+      if (before && after) return before.order + (after.order - before.order) * ((at - before.at) / Math.max(1, after.at - before.at) * 0.98 + 0.01);
+      if (before) return before.order + 0.5;
+      return after ? after.order - 0.5 : null;
+    };
     const previousSequenced = [...trailingItems.slice(0, blockStart)]
       .reverse()
       .find(hasHistoryItemSequence);
@@ -303,7 +321,10 @@ export function sortTurnItemsByRecordedSequence(items: ThreadHistoryItemDto[]) {
 
     block.forEach((blockItem, blockIndex) => {
       let order: number;
-      if (previousSequence === null && nextSequence !== null) {
+      const byTime = timedOrder(blockItem);
+      if (byTime !== null) {
+        order = byTime;
+      } else if (previousSequence === null && nextSequence !== null) {
         order = nextSequence - (block.length - blockIndex) / (block.length + 1);
       } else if (
         previousSequence !== null &&

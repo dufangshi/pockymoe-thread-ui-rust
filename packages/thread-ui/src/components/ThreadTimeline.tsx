@@ -615,6 +615,7 @@ function ThreadTimelineComponent({
       status: 'Accepted',
       createdAt: steer.createdAt,
       canCancel: true,
+      sender: steer.sender ?? null,
     })),
     ...optimisticSteers.map((steer) => ({
       id: steer.id,
@@ -622,6 +623,7 @@ function ThreadTimelineComponent({
       status: steer.status === 'steering' ? 'Steering' : null,
       createdAt: steer.createdAt,
       canCancel: false,
+      sender: null,
     })),
   ].sort((left, right) => left.createdAt.localeCompare(right.createdAt));
   const requestEntryAnchors = useMemo(
@@ -1029,6 +1031,7 @@ function ThreadTimelineComponent({
                       kind: 'userMessage',
                       text: steer.prompt,
                       status: steer.status,
+                      sender: steer.sender,
                     }}
                     scrollRootRef={scrollContainerRef}
                     onBeforeMessageResize={preserveScrollPositionForResize}

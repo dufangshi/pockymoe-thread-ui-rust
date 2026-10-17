@@ -2,6 +2,7 @@ import { translate, useI18n } from '../../i18n';
 import { useState, type MouseEvent, type ReactNode } from 'react';
 import { CheckCircle2, Circle, CircleAlert, Loader2, XCircle } from 'lucide-react';
 import { failureMessage } from './turnPrompts';
+import { MessageSenderMark, type MessageSenderView } from './MessageSenderMark';
 
 type GraphChatMessageKind = 'userMessage' | 'agentMessage';
 
@@ -89,6 +90,7 @@ export function GraphChatMessageFrame({
   onBeforeResize,
   messageId,
   variant,
+  sender,
 }: {
   children: ReactNode;
   messageId?: string;
@@ -108,6 +110,8 @@ export function GraphChatMessageFrame({
   /** A small line above the message, such as when a prompt was added mid-turn. */
   kicker?: ReactNode;
   onBeforeResize?: (() => void) | undefined;
+  /** Who sent a prompt when it was not the device owner. */
+  sender?: MessageSenderView | null | undefined;
 }) {
   const { locale: i18nLocale } = useI18n();
   const isUser = kind === 'userMessage';
@@ -156,6 +160,7 @@ export function GraphChatMessageFrame({
           className={`thread-graph-message-bubble relative min-w-0 ${isUser ? 'is-user' : 'is-assistant'}`}
           onClick={handleMessageClick}
         >
+          {isUser && sender ? <MessageSenderMark sender={sender} /> : null}
           {!isUser && metaControl ? (
             <div className="thread-graph-message-leading-actions">
               {metaControl}

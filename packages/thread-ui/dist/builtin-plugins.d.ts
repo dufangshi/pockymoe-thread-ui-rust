@@ -1,4 +1,4 @@
-import { F as FrontendPluginModule } from './plugin-types-CXhGM6t7.js';
+import { F as FrontendPluginModule } from './plugin-types-Ct5yq4qu.js';
 import 'react';
 import '@pockymoe/shared';
 

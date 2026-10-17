@@ -11,26 +11,25 @@ import type {
   ImportPluginInput,
   PluginDto,
   UpdatePluginInput,
-  ThreadArtifactDto,
 } from '@pockymoe/shared';
 import {
   PluginContext,
   mergePluginState,
+  pluginCapabilities,
   type PluginContextValue,
 } from './plugin-context';
 import type {
-  ArtifactRenderContext,
   FrontendPluginModule,
-  InlineCodeRenderContext,
   PluginSettingsSnapshot,
   PluginSettingsContribution,
-  MessagePresentationContext,
-  PluginActionOutputContext,
+  ThreadPluginAdapter,
   UpstreamConnectionHost,
 } from './plugin-types';
 
 export interface PluginProviderAdapter {
   connections?: UpstreamConnectionHost;
+  /** Per-conversation plugin switches and settings, when the device supports them. */
+  threads?: ThreadPluginAdapter;
   loadPluginSettings?: (pluginId: string) => Promise<PluginSettingsSnapshot>;
   savePluginSettings?: (pluginId: string, settings: PluginSettingsSnapshot) => Promise<PluginSettingsSnapshot>;
   fetchPlugins?: () => Promise<PluginDto[]> | PluginDto[];
@@ -45,17 +44,22 @@ export interface PluginProviderAdapter {
 const DEFAULT_PLUGIN_PROVIDER_ADAPTER: PluginProviderAdapter = {};
 const DEFAULT_BUILTIN_PLUGINS: FrontendPluginModule[] = [];
 
-function PluginSettingsSection({ section, pluginId, adapter }: {
+function PluginSettingsSection({ section, pluginId, adapter, onSaved }: {
   section: PluginSettingsContribution;
   pluginId: string;
   adapter: PluginProviderAdapter;
+  onSaved: () => void;
 }) {
   const context = useMemo(() => ({
     pluginId,
     load: () => adapter.loadPluginSettings!(pluginId),
-    save: (settings: PluginSettingsSnapshot) => adapter.savePluginSettings!(pluginId, settings),
+    save: async (settings: PluginSettingsSnapshot) => {
+      const saved = await adapter.savePluginSettings!(pluginId, settings);
+      onSaved();
+      return saved;
+    },
     ...(adapter.connections ? { connections: adapter.connections } : {}),
-  }), [adapter, pluginId]);
+  }), [adapter, pluginId, onSaved]);
   return section.render(context);
 }
 
@@ -73,6 +77,10 @@ export function PluginProvider({
     mergePluginState(builtinPlugins, []),
   );
   const [settingsPluginIds, setSettingsPluginIds] = useState<Set<string>>(new Set());
+  // Bumped after device-wide settings are saved, so conversation scopes that inherit
+  // them can refresh without depending on adapter identity.
+  const [settingsVersion, setSettingsVersion] = useState(0);
+  const settingsSaved = useCallback(() => setSettingsVersion(value => value + 1), []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -167,71 +175,10 @@ export function PluginProvider({
     [adapter],
   );
 
-  const enabledModules = useMemo(() => {
-    const enabledIds = new Set(
-      plugins.filter((plugin) => plugin.enabled && plugin.available !== false).map((plugin) => plugin.id),
-    );
-    return builtinPlugins.filter((module) =>
-      enabledIds.has(module.manifest.id),
-    );
-  }, [builtinPlugins, plugins]);
-
-  const renderArtifact = useCallback(
-    (context: ArtifactRenderContext) => {
-      const module = enabledModules.find(
-        (entry) =>
-          entry.renderArtifact &&
-          entry.manifest.capabilities.artifactTypes.some(
-            (type) => type.type === context.artifact.type,
-          ),
-      );
-      return module?.renderArtifact?.(context) ?? null;
-    },
-    [enabledModules],
+  const capabilities = useMemo(
+    () => pluginCapabilities(builtinPlugins, plugins),
+    [builtinPlugins, plugins],
   );
-
-  const renderInlineCode = useCallback(
-    (context: InlineCodeRenderContext) => {
-      for (const module of enabledModules) {
-        for (const renderer of module.inlineCodeRenderers ?? []) {
-          if (!renderer.languages.includes(context.language.trim().toLowerCase())) {
-            continue;
-          }
-          const rendered = renderer.render(context);
-          if (rendered) {
-            return rendered;
-          }
-        }
-      }
-      return null;
-    },
-    [enabledModules],
-  );
-
-  const hasRendererForArtifact = useCallback(
-    (artifact: ThreadArtifactDto) =>
-      enabledModules.some(
-        (entry) =>
-          Boolean(entry.renderArtifact) &&
-          entry.manifest.capabilities.artifactTypes.some(
-            (type) => type.type === artifact.type,
-          ),
-      ),
-    [enabledModules],
-  );
-
-  const getThreadPanels = useCallback(
-    () => enabledModules.flatMap((module) => module.threadPanels ?? []),
-    [enabledModules],
-  );
-
-  const presentMessage = useCallback((context: MessagePresentationContext) => {
-    for (const module of enabledModules) {
-      const presentation = module.presentMessage?.(context);
-      if (presentation) return presentation;
-    }
-    return null;
-  }, [enabledModules]);
 
   const getSettingsSections = useCallback((pluginId?: string) => builtinPlugins.flatMap(module => {
     if (pluginId !== undefined && module.manifest.id !== pluginId) return [];
@@ -250,13 +197,9 @@ export function PluginProvider({
       id: `plugin:${module.manifest.id}:${section.id}`,
       label: section.label,
       description: section.description,
-      content: <PluginSettingsSection section={section} pluginId={module.manifest.id} adapter={adapter} />,
+      content: <PluginSettingsSection section={section} pluginId={module.manifest.id} adapter={adapter} onSaved={settingsSaved} />,
     }))];
-  }), [adapter, builtinPlugins, plugins, settingsPluginIds]);
-
-  const renderActionOutput = useCallback((pluginId: string, context: PluginActionOutputContext) =>
-    builtinPlugins.find(module => module.manifest.id === pluginId)?.renderActionOutput?.(context) ?? null,
-  [builtinPlugins]);
+  }), [adapter, builtinPlugins, plugins, settingsPluginIds, settingsSaved]);
 
   const value = useMemo<PluginContextValue>(
     () => ({
@@ -267,28 +210,24 @@ export function PluginProvider({
       importPluginManifest,
       setPluginEnabled,
       uninstallPlugin,
-      renderArtifact,
-      renderInlineCode,
-      hasRendererForArtifact,
-      getThreadPanels,
       getSettingsSections,
-      presentMessage,
-      renderActionOutput,
+      ...capabilities,
+      modules: builtinPlugins,
+      adapter,
+      settingsVersion,
     }),
     [
+      adapter,
+      builtinPlugins,
+      capabilities,
       error,
-      getThreadPanels,
       getSettingsSections,
-      presentMessage,
-      renderActionOutput,
-      hasRendererForArtifact,
       importPluginManifest,
       loading,
       plugins,
       refresh,
-      renderArtifact,
-      renderInlineCode,
       setPluginEnabled,
+      settingsVersion,
       uninstallPlugin,
     ],
   );

@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import type { PluginDto } from '@pockymoe/shared';
 import { useI18n } from '../i18n';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/graph-ui/Dialog';
-import { usePlugins } from './usePlugins';
+import { useDevicePlugins } from './ThreadPluginScope';
 
 /**
  * Opens one plugin's settings above the host dialog. Renders nothing for plugins that
@@ -12,7 +12,8 @@ import { usePlugins } from './usePlugins';
  */
 export function PluginSettingsButton({ plugin, className }: { plugin: Pick<PluginDto, 'id' | 'name' | 'description'>; className?: string }) {
   const { t } = useI18n();
-  const plugins = usePlugins();
+  // Device-wide settings, even when opened from inside a conversation.
+  const plugins = useDevicePlugins();
   const trigger = useRef<HTMLButtonElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);

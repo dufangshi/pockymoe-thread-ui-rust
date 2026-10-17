@@ -1,5 +1,41 @@
 export const settingsEn = {
   'settings.pluginSettings': '{{value1}} settings',
+  'settings.threadPluginsTitle': 'Plugins in this conversation',
+  'settings.threadPluginsHint':
+    'Choose whether each plugin works in this conversation.',
+  'settings.threadPluginsCustomized': 'customized here',
+  'settings.threadPluginsInherit': 'Use global',
+  'settings.threadPluginsOn': 'On',
+  'settings.threadPluginsOff': 'Off',
+  'settings.threadPluginsInheritAria': 'Use the global setting',
+  'settings.threadPluginsOnAria': 'On in this conversation',
+  'settings.threadPluginsOffAria': 'Off in this conversation',
+  'settings.threadPluginsChoiceLabel': '{{name}} in this conversation',
+  'settings.threadPluginsActive': 'Active',
+  'settings.threadPluginsInactive': 'Not active',
+  'settings.threadPluginsGlobalOff':
+    'Off globally, so it cannot be turned on for one conversation.',
+  'settings.threadPluginsOpenGlobal': 'Global plugin settings',
+  'settings.threadPluginsSettings': 'Settings here',
+  'settings.threadPluginsSettingsTitle': '{{name}} · this conversation',
+  'settings.threadPluginsSettingsHint':
+    'Saved for this conversation only; the global settings stay as they are.',
+  'settings.threadPluginsCustom': 'Custom settings',
+  'settings.threadPluginsReset': 'Restore global settings',
+  'settings.threadPluginsReload': 'Reload',
+  'settings.threadPluginsConflict':
+    'Changed elsewhere. Reload, then try again.',
+  'settings.threadPluginsSaveFailed': 'Unable to save this change.',
+  'settings.threadPluginsLoadFailed':
+    "Unable to load this conversation's plugins.",
+  'settings.threadPluginsLoading': 'Loading…',
+  'settings.threadPluginsUnsupported':
+    'Update this Supervisor to set plugins per conversation.',
+  'settings.threadPluginsForbidden':
+    "This conversation's plugin settings cannot be read here.",
+  'settings.threadPluginsReadOnly':
+    'View only: plugin settings cannot be changed here.',
+  'settings.threadPluginsEmpty': 'No plugins can be set per conversation.',
   'settings.pluginNotEnabled':
     'This plugin is off. Turn it on in the plugin list for these settings to take effect.',
   'settings.connTitle': 'Connections',

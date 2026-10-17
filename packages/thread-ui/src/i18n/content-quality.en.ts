@@ -22,7 +22,7 @@ export const contentQualityEn = {
     'Additional eligible documents were not reviewed in this run.',
   'quality.name': 'Content Quality',
   'quality.description':
-    'Polish long agent replies and review or rewrite documents with your chosen model.',
+    'Rewrite long agent replies for readers and review or rewrite documents with your chosen model.',
   'quality.connection': 'Connection',
   'quality.connectionEmpty': 'Choose a saved connection, or add one with +.',
   'quality.connectionUnavailable': 'Saved connections cannot be chosen here.',
@@ -36,19 +36,19 @@ export const contentQualityEn = {
   'quality.preset': 'Writing preset',
   'quality.preset.concise': 'Concise',
   'quality.preset.concise.description':
-    'Lead with the answer and remove repetition.',
+    'Lead with the answer; drop repetition and the steps taken to get there.',
   'quality.preset.clear': 'Clear',
   'quality.preset.clear.description':
-    'Improve structure and readability while preserving meaning.',
+    'Reorganize freely for readability: lead with the result, drop process notes, keep every fact.',
   'quality.preset.technical': 'Technical',
   'quality.preset.technical.description':
     'Keep precise terminology, implementation details and constraints.',
   'quality.preset.beginner': 'Beginner friendly',
   'quality.preset.beginner.description':
-    'Explain unfamiliar terms and add approachable context.',
+    'Rewrite for newcomers: reorganize, explain terms and add analogies where they help.',
   'quality.preset.copyedit': 'Copyedit',
   'quality.preset.copyedit.description':
-    'Correct grammar and wording with minimal changes to voice.',
+    'Light touch: fix grammar and wording, keep structure and voice.',
   'quality.detail': 'Level of detail',
   'quality.detail.short': 'Short',
   'quality.detail.balanced': 'Balanced',

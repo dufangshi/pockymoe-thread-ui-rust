@@ -406,7 +406,7 @@ describe('Content Quality settings', () => {
     expect(control('默认手动文档操作').textContent).toContain(
       '直接写入修订后的文件',
     );
-    expect(container.textContent).toContain('保留原意，改善结构和可读性');
+    expect(container.textContent).toContain('可自由重组以便阅读');
     expect(
       [...container.querySelectorAll('button')].some(
         (button) => button.textContent === '保存设置',

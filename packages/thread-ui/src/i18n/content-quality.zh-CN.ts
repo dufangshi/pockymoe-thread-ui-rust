@@ -21,7 +21,7 @@ export const contentQualityZhCN = {
   'quality.report.moreDocuments': '本次还有符合条件的文档未被审阅。',
   'quality.name': '内容质量',
   'quality.description':
-    '使用你选择的模型润色较长的智能体回复，并审阅或改写文档。',
+    '用你选择的模型为读者重写较长的智能体回复，并审阅或改写文档。',
   'quality.connection': '连接',
   'quality.connectionEmpty': '选择一个已保存的连接，或用 + 添加。',
   'quality.connectionUnavailable': '此处无法选择已保存的连接。',
@@ -34,15 +34,18 @@ export const contentQualityZhCN = {
   'quality.languageHint': '语言标签，例如 zh-CN 或 en。',
   'quality.preset': '写作预设',
   'quality.preset.concise': '简洁',
-  'quality.preset.concise.description': '先给出答案，去除重复内容。',
+  'quality.preset.concise.description': '先给结论，去掉重复和求解过程。',
   'quality.preset.clear': '清晰',
-  'quality.preset.clear.description': '保留原意，改善结构和可读性。',
+  'quality.preset.clear.description':
+    '可自由重组以便阅读：先讲结果，删去过程性叙述，事实一条不丢。',
   'quality.preset.technical': '技术',
   'quality.preset.technical.description': '保留准确术语、实现细节和约束。',
   'quality.preset.beginner': '新手友好',
-  'quality.preset.beginner.description': '解释陌生术语，补充易懂的背景。',
+  'quality.preset.beginner.description':
+    '面向新手重写：可重组结构，解释术语，必要时补充比喻。',
   'quality.preset.copyedit': '文字校订',
-  'quality.preset.copyedit.description': '修正语法和措辞，尽量保留原有风格。',
+  'quality.preset.copyedit.description':
+    '轻度改动：只修正语法和措辞，保留原有结构和风格。',
   'quality.detail': '详细程度',
   'quality.detail.short': '简短',
   'quality.detail.balanced': '适中',

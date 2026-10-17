@@ -33,7 +33,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-WUZYVLYE.js";
+} from "./chunk-MWHAMXQX.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -60,7 +60,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-EXUMO23H.js";
+} from "./chunk-5SETNE4N.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -11064,13 +11064,53 @@ import { useContext as useContext5 } from "react";
 
 // src/plugins/plugin-context.ts
 import { createContext as createContext7 } from "react";
+function pluginCapabilities(modules, plugins) {
+  const enabledIds = new Set(
+    plugins.filter((plugin) => plugin.enabled && plugin.available !== false).map((plugin) => plugin.id)
+  );
+  const enabledModules = modules.filter(
+    (module) => enabledIds.has(module.manifest.id)
+  );
+  const artifactModule = (type) => enabledModules.find(
+    (entry) => Boolean(entry.renderArtifact) && entry.manifest.capabilities.artifactTypes.some(
+      (artifactType) => artifactType.type === type
+    )
+  );
+  return {
+    renderArtifact: (context) => artifactModule(context.artifact.type)?.renderArtifact?.(context) ?? null,
+    renderInlineCode: (context) => {
+      for (const module of enabledModules) {
+        for (const renderer of module.inlineCodeRenderers ?? []) {
+          if (!renderer.languages.includes(context.language.trim().toLowerCase()))
+            continue;
+          const rendered = renderer.render(context);
+          if (rendered) return rendered;
+        }
+      }
+      return null;
+    },
+    hasRendererForArtifact: (artifact) => Boolean(artifactModule(artifact.type)),
+    getThreadPanels: () => enabledModules.flatMap((module) => module.threadPanels ?? []),
+    presentMessage: (context) => {
+      for (const module of modules) {
+        const presentation = module.presentMessage?.(context);
+        if (presentation) return presentation;
+      }
+      return null;
+    },
+    renderActionOutput: (pluginId, context) => modules.find((module) => module.manifest.id === pluginId)?.renderActionOutput?.(context) ?? null
+  };
+}
 function mergePluginState(modules, serverPlugins) {
   const byId = new Map(serverPlugins.map((plugin) => [plugin.id, plugin]));
   const merged = modules.map((module) => ({
     // Keep the device's availability report (for example a missing harness).
     ...byId.get(module.manifest.id),
     ...module.manifest,
-    capabilities: { ...module.manifest.capabilities, ...byId.get(module.manifest.id)?.capabilities },
+    capabilities: {
+      ...module.manifest.capabilities,
+      ...byId.get(module.manifest.id)?.capabilities
+    },
     enabled: byId.get(module.manifest.id)?.enabled ?? module.defaultEnabled ?? true,
     source: byId.get(module.manifest.id)?.source ?? "builtin"
   }));
@@ -11084,29 +11124,6 @@ function mergePluginState(modules, serverPlugins) {
 }
 function createDefaultPluginContextValue(modules = []) {
   const plugins = mergePluginState(modules, []);
-  const enabledModules = modules.filter((module) => plugins.some((plugin) => plugin.id === module.manifest.id && plugin.enabled && plugin.available !== false));
-  const renderArtifact = (context) => {
-    const module = enabledModules.find(
-      (entry) => entry.renderArtifact && entry.manifest.capabilities.artifactTypes.some(
-        (type) => type.type === context.artifact.type
-      )
-    );
-    return module?.renderArtifact?.(context) ?? null;
-  };
-  const renderInlineCode = (context) => {
-    for (const module of enabledModules) {
-      for (const renderer of module.inlineCodeRenderers ?? []) {
-        if (!renderer.languages.includes(context.language.trim().toLowerCase())) {
-          continue;
-        }
-        const rendered = renderer.render(context);
-        if (rendered) {
-          return rendered;
-        }
-      }
-    }
-    return null;
-  };
   return {
     plugins,
     loading: false,
@@ -11119,23 +11136,10 @@ function createDefaultPluginContextValue(modules = []) {
     },
     async uninstallPlugin() {
     },
-    renderArtifact,
-    renderInlineCode,
-    hasRendererForArtifact: (artifact) => enabledModules.some(
-      (entry) => Boolean(entry.renderArtifact) && entry.manifest.capabilities.artifactTypes.some(
-        (type) => type.type === artifact.type
-      )
-    ),
     getSettingsSections: () => [],
-    renderActionOutput: (pluginId, context) => modules.find((module) => module.manifest.id === pluginId)?.renderActionOutput?.(context) ?? null,
-    presentMessage: (context) => {
-      for (const module of enabledModules) {
-        const presentation = module.presentMessage?.(context);
-        if (presentation) return presentation;
-      }
-      return null;
-    },
-    getThreadPanels: () => enabledModules.flatMap((module) => module.threadPanels ?? [])
+    ...pluginCapabilities(modules, plugins),
+    modules,
+    adapter: {}
   };
 }
 var PluginContext = createContext7(createDefaultPluginContextValue());
@@ -23541,13 +23545,17 @@ import {
 import { jsx as jsx83 } from "react/jsx-runtime";
 var DEFAULT_PLUGIN_PROVIDER_ADAPTER = {};
 var DEFAULT_BUILTIN_PLUGINS = [];
-function PluginSettingsSection({ section, pluginId, adapter }) {
+function PluginSettingsSection({ section, pluginId, adapter, onSaved }) {
   const context = useMemo19(() => ({
     pluginId,
     load: () => adapter.loadPluginSettings(pluginId),
-    save: (settings) => adapter.savePluginSettings(pluginId, settings),
+    save: async (settings) => {
+      const saved = await adapter.savePluginSettings(pluginId, settings);
+      onSaved();
+      return saved;
+    },
     ...adapter.connections ? { connections: adapter.connections } : {}
-  }), [adapter, pluginId]);
+  }), [adapter, pluginId, onSaved]);
   return section.render(context);
 }
 function PluginProvider({
@@ -23560,6 +23568,8 @@ function PluginProvider({
     () => mergePluginState(builtinPlugins, [])
   );
   const [settingsPluginIds, setSettingsPluginIds] = useState60(/* @__PURE__ */ new Set());
+  const [settingsVersion, setSettingsVersion] = useState60(0);
+  const settingsSaved = useCallback22(() => setSettingsVersion((value2) => value2 + 1), []);
   const [loading, setLoading] = useState60(false);
   const [error, setError] = useState60(null);
   const refresh = useCallback22(async () => {
@@ -23640,61 +23650,10 @@ function PluginProvider({
     },
     [adapter]
   );
-  const enabledModules = useMemo19(() => {
-    const enabledIds = new Set(
-      plugins.filter((plugin) => plugin.enabled && plugin.available !== false).map((plugin) => plugin.id)
-    );
-    return builtinPlugins.filter(
-      (module) => enabledIds.has(module.manifest.id)
-    );
-  }, [builtinPlugins, plugins]);
-  const renderArtifact = useCallback22(
-    (context) => {
-      const module = enabledModules.find(
-        (entry) => entry.renderArtifact && entry.manifest.capabilities.artifactTypes.some(
-          (type) => type.type === context.artifact.type
-        )
-      );
-      return module?.renderArtifact?.(context) ?? null;
-    },
-    [enabledModules]
+  const capabilities = useMemo19(
+    () => pluginCapabilities(builtinPlugins, plugins),
+    [builtinPlugins, plugins]
   );
-  const renderInlineCode = useCallback22(
-    (context) => {
-      for (const module of enabledModules) {
-        for (const renderer of module.inlineCodeRenderers ?? []) {
-          if (!renderer.languages.includes(context.language.trim().toLowerCase())) {
-            continue;
-          }
-          const rendered = renderer.render(context);
-          if (rendered) {
-            return rendered;
-          }
-        }
-      }
-      return null;
-    },
-    [enabledModules]
-  );
-  const hasRendererForArtifact = useCallback22(
-    (artifact) => enabledModules.some(
-      (entry) => Boolean(entry.renderArtifact) && entry.manifest.capabilities.artifactTypes.some(
-        (type) => type.type === artifact.type
-      )
-    ),
-    [enabledModules]
-  );
-  const getThreadPanels = useCallback22(
-    () => enabledModules.flatMap((module) => module.threadPanels ?? []),
-    [enabledModules]
-  );
-  const presentMessage = useCallback22((context) => {
-    for (const module of enabledModules) {
-      const presentation = module.presentMessage?.(context);
-      if (presentation) return presentation;
-    }
-    return null;
-  }, [enabledModules]);
   const getSettingsSections = useCallback22((pluginId) => builtinPlugins.flatMap((module) => {
     if (pluginId !== void 0 && module.manifest.id !== pluginId) return [];
     const devicePlugin = plugins.find((plugin) => plugin.id === module.manifest.id);
@@ -23710,13 +23669,9 @@ function PluginProvider({
       id: `plugin:${module.manifest.id}:${section.id}`,
       label: section.label,
       description: section.description,
-      content: /* @__PURE__ */ jsx83(PluginSettingsSection, { section, pluginId: module.manifest.id, adapter })
+      content: /* @__PURE__ */ jsx83(PluginSettingsSection, { section, pluginId: module.manifest.id, adapter, onSaved: settingsSaved })
     }))];
-  }), [adapter, builtinPlugins, plugins, settingsPluginIds]);
-  const renderActionOutput = useCallback22(
-    (pluginId, context) => builtinPlugins.find((module) => module.manifest.id === pluginId)?.renderActionOutput?.(context) ?? null,
-    [builtinPlugins]
-  );
+  }), [adapter, builtinPlugins, plugins, settingsPluginIds, settingsSaved]);
   const value = useMemo19(
     () => ({
       plugins,
@@ -23726,28 +23681,24 @@ function PluginProvider({
       importPluginManifest,
       setPluginEnabled,
       uninstallPlugin,
-      renderArtifact,
-      renderInlineCode,
-      hasRendererForArtifact,
-      getThreadPanels,
       getSettingsSections,
-      presentMessage,
-      renderActionOutput
+      ...capabilities,
+      modules: builtinPlugins,
+      adapter,
+      settingsVersion
     }),
     [
+      adapter,
+      builtinPlugins,
+      capabilities,
       error,
-      getThreadPanels,
       getSettingsSections,
-      presentMessage,
-      renderActionOutput,
-      hasRendererForArtifact,
       importPluginManifest,
       loading,
       plugins,
       refresh,
-      renderArtifact,
-      renderInlineCode,
       setPluginEnabled,
+      settingsVersion,
       uninstallPlugin
     ]
   );
@@ -23786,15 +23737,223 @@ function PluginActionOutput({
 
 // src/plugins/PluginSettingsButton.tsx
 import { Settings as Settings2 } from "lucide-react";
-import { useRef as useRef39, useState as useState61 } from "react";
-import { jsx as jsx85, jsxs as jsxs72 } from "react/jsx-runtime";
+import { useRef as useRef40, useState as useState62 } from "react";
+
+// src/plugins/ThreadPluginScope.tsx
+import {
+  useCallback as useCallback23,
+  useContext as useContext13,
+  useEffect as useEffect46,
+  useMemo as useMemo20,
+  useRef as useRef39,
+  useState as useState61
+} from "react";
+import { jsx as jsx85 } from "react/jsx-runtime";
+function errorStatus(error) {
+  if (!error || typeof error !== "object") return void 0;
+  if ("statusCode" in error && typeof error.statusCode === "number")
+    return error.statusCode;
+  if ("status" in error && typeof error.status === "number")
+    return error.status;
+  return void 0;
+}
+function useDevicePlugins() {
+  const context = useContext13(PluginContext);
+  return context.device ?? context;
+}
+function ThreadPluginScope({
+  threadId,
+  adapter,
+  children
+}) {
+  const parent = useContext13(PluginContext);
+  const device = parent.device ?? parent;
+  const threadsRef = useRef39(adapter ?? device.adapter?.threads);
+  threadsRef.current = adapter ?? device.adapter?.threads;
+  const supported = Boolean(threadsRef.current);
+  const [loaded, setLoaded] = useState61({
+    status: supported ? "loading" : "unsupported",
+    plugins: [],
+    error: null
+  });
+  const [pluginErrors, setPluginErrors] = useState61({});
+  const [pending, setPending] = useState61({});
+  const request = useRef39(0);
+  const reload = useCallback23(async () => {
+    const threads = threadsRef.current;
+    if (!threads) {
+      setLoaded({ status: "unsupported", plugins: [], error: null });
+      return;
+    }
+    const id = ++request.current;
+    setLoaded((current) => ({ ...current, status: "loading", error: null }));
+    try {
+      const plugins2 = await threads.fetchPlugins(threadId);
+      if (id !== request.current) return;
+      setLoaded({
+        status: "ready",
+        plugins: Array.isArray(plugins2) ? plugins2 : [],
+        error: null
+      });
+    } catch (error) {
+      if (id !== request.current) return;
+      const status = errorStatus(error);
+      setLoaded({
+        status: status === 404 || status === 405 ? "unsupported" : status === 401 || status === 403 ? "forbidden" : "error",
+        plugins: [],
+        error: error instanceof Error && error.message ? error.message : translate("settings.threadPluginsLoadFailed")
+      });
+    }
+  }, [supported, threadId]);
+  useEffect46(() => {
+    void reload();
+    return () => {
+      ++request.current;
+    };
+  }, [reload]);
+  const deviceState = `${device.plugins.map((plugin) => `${plugin.id}:${plugin.enabled}`).join("|")}#${device.settingsVersion ?? 0}`;
+  const seenDeviceState = useRef39(deviceState);
+  useEffect46(() => {
+    if (seenDeviceState.current === deviceState) return;
+    seenDeviceState.current = deviceState;
+    void reload();
+  }, [deviceState, reload]);
+  const failed = useCallback23((pluginId, error) => {
+    const conflict = errorStatus(error) === 409;
+    setPluginErrors((current) => ({
+      ...current,
+      [pluginId]: {
+        conflict,
+        message: conflict ? translate("settings.threadPluginsConflict") : error instanceof Error && error.message ? error.message : translate("settings.threadPluginsSaveFailed")
+      }
+    }));
+  }, []);
+  const change = useCallback23(
+    async (pluginId, build, optimistic) => {
+      const threads = threadsRef.current;
+      if (!threads) return;
+      const before = loaded.plugins;
+      setPending((current) => ({ ...current, [pluginId]: true }));
+      setPluginErrors(({ [pluginId]: _, ...rest }) => rest);
+      if (optimistic)
+        setLoaded((current) => ({
+          ...current,
+          plugins: current.plugins.map(
+            (plugin) => plugin.id === pluginId ? optimistic(plugin) : plugin
+          )
+        }));
+      try {
+        const snapshot = await threads.loadSettings(threadId, pluginId);
+        await threads.saveSettings(threadId, pluginId, build(snapshot));
+        await reload();
+      } catch (error) {
+        setLoaded((current) => ({ ...current, plugins: before }));
+        failed(pluginId, error);
+      } finally {
+        setPending(({ [pluginId]: _, ...rest }) => rest);
+      }
+    },
+    [threadId, loaded.plugins, reload, failed]
+  );
+  const setEnabledOverride = useCallback23(
+    (pluginId, enabled) => change(
+      pluginId,
+      (snapshot) => ({
+        revision: snapshot.revision,
+        enabled,
+        values: snapshot.values
+      }),
+      (plugin) => ({
+        ...plugin,
+        enabledOverride: enabled,
+        // A conversation can never switch on what the device has off.
+        enabled: plugin.globalEnabled && (enabled ?? plugin.globalEnabled)
+      })
+    ),
+    [change]
+  );
+  const resetSettings = useCallback23(
+    (pluginId) => change(pluginId, (snapshot) => ({
+      revision: snapshot.revision,
+      enabled: snapshot.enabled,
+      values: null
+    })),
+    [change]
+  );
+  const loadSettings = useCallback23(
+    (pluginId) => {
+      const threads = threadsRef.current;
+      if (!threads) return Promise.reject(new Error("unsupported"));
+      return threads.loadSettings(threadId, pluginId);
+    },
+    [threadId]
+  );
+  const saveSettings = useCallback23(
+    async (pluginId, input) => {
+      const threads = threadsRef.current;
+      if (!threads) throw new Error("unsupported");
+      const saved = await threads.saveSettings(threadId, pluginId, input);
+      void reload();
+      return saved;
+    },
+    [threadId, reload]
+  );
+  const plugins = useMemo20(() => {
+    if (loaded.status !== "ready") return device.plugins;
+    const scoped = new Map(loaded.plugins.map((plugin) => [plugin.id, plugin]));
+    return device.plugins.map((plugin) => {
+      const own = scoped.get(plugin.id);
+      return own ? { ...plugin, enabled: plugin.enabled && own.enabled } : plugin;
+    });
+  }, [device.plugins, loaded]);
+  const thread = useMemo20(
+    () => ({
+      threadId,
+      status: loaded.status,
+      plugins: loaded.plugins,
+      error: loaded.error,
+      pluginErrors,
+      pending,
+      reload,
+      setEnabledOverride,
+      resetSettings,
+      loadSettings,
+      saveSettings
+    }),
+    [
+      threadId,
+      loaded,
+      pluginErrors,
+      pending,
+      reload,
+      setEnabledOverride,
+      resetSettings,
+      loadSettings,
+      saveSettings
+    ]
+  );
+  const value = useMemo20(
+    () => ({
+      ...device,
+      plugins,
+      ...pluginCapabilities(device.modules ?? [], plugins),
+      device,
+      thread
+    }),
+    [device, plugins, thread]
+  );
+  return /* @__PURE__ */ jsx85(PluginContext.Provider, { value, children });
+}
+
+// src/plugins/PluginSettingsButton.tsx
+import { jsx as jsx86, jsxs as jsxs72 } from "react/jsx-runtime";
 function PluginSettingsButton({ plugin, className }) {
   const { t: t2 } = useI18n();
-  const plugins = usePlugins();
-  const trigger = useRef39(null);
-  const content = useRef39(null);
-  const [open, setOpen] = useState61(false);
-  const [theme, setTheme] = useState61({});
+  const plugins = useDevicePlugins();
+  const trigger = useRef40(null);
+  const content = useRef40(null);
+  const [open, setOpen] = useState62(false);
+  const [theme, setTheme] = useState62({});
   const sections = plugins.getSettingsSections(plugin.id);
   const off = plugins.plugins.find((item) => item.id === plugin.id)?.enabled === false;
   if (!sections.length) return null;
@@ -23807,7 +23966,7 @@ function PluginSettingsButton({ plugin, className }) {
     }
     setOpen(next);
   }, children: [
-    /* @__PURE__ */ jsx85(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx85("button", { ref: trigger, type: "button", className: className ?? "plugin-settings-trigger", "aria-label": label, title: label, children: /* @__PURE__ */ jsx85(Settings2, { "data-icon": "settings", size: 15, "aria-hidden": "true" }) }) }),
+    /* @__PURE__ */ jsx86(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx86("button", { ref: trigger, type: "button", className: className ?? "plugin-settings-trigger", "aria-label": label, title: label, children: /* @__PURE__ */ jsx86(Settings2, { "data-icon": "settings", size: 15, "aria-hidden": "true" }) }) }),
     /* @__PURE__ */ jsxs72(
       DialogContent,
       {
@@ -23823,15 +23982,15 @@ function PluginSettingsButton({ plugin, className }) {
         },
         children: [
           /* @__PURE__ */ jsxs72(DialogHeader, { className: "plugin-settings-dialog-header", children: [
-            /* @__PURE__ */ jsx85(DialogTitle, { children: label }),
-            /* @__PURE__ */ jsx85(DialogDescription, { children: single?.description ?? plugin.description })
+            /* @__PURE__ */ jsx86(DialogTitle, { children: label }),
+            /* @__PURE__ */ jsx86(DialogDescription, { children: single?.description ?? plugin.description })
           ] }),
           /* @__PURE__ */ jsxs72("div", { className: "plugin-settings-dialog-body", children: [
-            off && /* @__PURE__ */ jsx85("p", { role: "note", className: "plugin-settings-off", children: t2("settings.pluginNotEnabled") }),
+            off && /* @__PURE__ */ jsx86("p", { role: "note", className: "plugin-settings-off", children: t2("settings.pluginNotEnabled") }),
             single ? single.content : sections.map((section) => /* @__PURE__ */ jsxs72("section", { className: "plugin-settings-dialog-section", "aria-labelledby": `${section.id}-heading`, children: [
               /* @__PURE__ */ jsxs72("header", { children: [
-                /* @__PURE__ */ jsx85("h3", { id: `${section.id}-heading`, children: section.label }),
-                section.description && /* @__PURE__ */ jsx85("p", { children: section.description })
+                /* @__PURE__ */ jsx86("h3", { id: `${section.id}-heading`, children: section.label }),
+                section.description && /* @__PURE__ */ jsx86("p", { children: section.description })
               ] }),
               section.content
             ] }, section.id))
@@ -23842,22 +24001,359 @@ function PluginSettingsButton({ plugin, className }) {
   ] });
 }
 
+// src/plugins/ThreadPluginsControl.tsx
+import { Puzzle, RotateCcw, Settings as Settings3 } from "lucide-react";
+import { useEffect as useEffect47, useId as useId4, useMemo as useMemo21, useRef as useRef41, useState as useState63 } from "react";
+import { Fragment as Fragment31, jsx as jsx87, jsxs as jsxs73 } from "react/jsx-runtime";
+var choiceOf = (plugin) => plugin.enabledOverride === null ? "inherit" : plugin.enabledOverride ? "on" : "off";
+var overrideOf = (choice) => choice === "inherit" ? null : choice === "on";
+function threadScoped(plugin) {
+  const scopes = plugin.capabilities.scopes;
+  return !Array.isArray(scopes) || scopes.includes("thread");
+}
+function ThreadPluginsControl({
+  readOnly = false,
+  onOpenGlobalSettings
+}) {
+  const { t: t2 } = useI18n();
+  const scope = usePlugins().thread;
+  const device = useDevicePlugins();
+  const nav = useAppShellNav();
+  const openGlobal = onOpenGlobalSettings ?? (nav?.openSettingsSection ? () => nav.openSettingsSection("plugins") : void 0);
+  const trigger = useRef41(null);
+  const title = useRef41(null);
+  const [open, setOpen] = useState63(false);
+  const [editing, setEditing] = useState63(null);
+  const visible = useMemo21(
+    () => (scope?.plugins ?? []).filter(threadScoped),
+    [scope?.plugins]
+  );
+  if (!scope) return null;
+  const customized = visible.some(
+    (plugin) => plugin.enabledOverride !== null || plugin.settingsOverridden
+  );
+  const label = t2("settings.threadPluginsTitle");
+  return /* @__PURE__ */ jsxs73(Fragment31, { children: [
+    /* @__PURE__ */ jsxs73(
+      "button",
+      {
+        ref: trigger,
+        type: "button",
+        className: "matter-watches-toggle thread-plugins-toggle",
+        "aria-label": customized ? `${label} \xB7 ${t2("settings.threadPluginsCustomized")}` : label,
+        title: label,
+        "aria-haspopup": "dialog",
+        "aria-expanded": open,
+        onClick: () => setOpen(true),
+        children: [
+          /* @__PURE__ */ jsx87(Puzzle, { "data-icon": "plugins", size: 14 }),
+          customized && /* @__PURE__ */ jsx87("span", { className: "thread-plugins-dot", "aria-hidden": true })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsx87(Dialog, { open, onOpenChange: setOpen, children: /* @__PURE__ */ jsxs73(
+      DialogContent,
+      {
+        className: "thread-plugins-panel",
+        overlayClassName: "thread-plugins-overlay",
+        onOpenAutoFocus: (event) => {
+          event.preventDefault();
+          title.current?.focus();
+        },
+        onCloseAutoFocus: (event) => {
+          event.preventDefault();
+          trigger.current?.focus();
+        },
+        children: [
+          /* @__PURE__ */ jsxs73(DialogHeader, { className: "thread-plugins-header", children: [
+            /* @__PURE__ */ jsx87(DialogTitle, { ref: title, tabIndex: -1, className: "outline-none", children: label }),
+            /* @__PURE__ */ jsx87(DialogDescription, { children: t2("settings.threadPluginsHint") })
+          ] }),
+          /* @__PURE__ */ jsx87(
+            ScopeBody,
+            {
+              scope,
+              plugins: visible,
+              modules: device.modules ?? [],
+              readOnly,
+              ...openGlobal ? {
+                onOpenGlobal: () => {
+                  setOpen(false);
+                  openGlobal();
+                }
+              } : {},
+              onEdit: setEditing
+            }
+          )
+        ]
+      }
+    ) }),
+    editing && /* @__PURE__ */ jsx87(
+      ThreadPluginSettingsDialog,
+      {
+        scope,
+        plugin: scope.plugins.find((plugin) => plugin.id === editing.id) ?? editing,
+        module: device.modules?.find(
+          (module) => module.manifest.id === editing.id
+        ),
+        onClose: () => setEditing(null)
+      }
+    )
+  ] });
+}
+function ScopeBody({
+  scope,
+  plugins,
+  modules,
+  readOnly,
+  onOpenGlobal,
+  onEdit
+}) {
+  const { t: t2 } = useI18n();
+  if (scope.status !== "ready" && !scope.plugins.length) {
+    const message = scope.status === "loading" ? t2("settings.threadPluginsLoading") : scope.status === "unsupported" ? t2("settings.threadPluginsUnsupported") : scope.status === "forbidden" ? t2("settings.threadPluginsForbidden") : t2("settings.threadPluginsLoadFailed");
+    return /* @__PURE__ */ jsxs73(
+      "div",
+      {
+        className: "thread-plugins-message",
+        role: scope.status === "error" ? "alert" : "status",
+        children: [
+          /* @__PURE__ */ jsx87("p", { children: message }),
+          scope.status === "error" && /* @__PURE__ */ jsx87("button", { type: "button", onClick: () => void scope.reload(), children: t2("settings.threadPluginsReload") })
+        ]
+      }
+    );
+  }
+  if (!plugins.length)
+    return /* @__PURE__ */ jsx87("p", { className: "thread-plugins-message", role: "status", children: t2("settings.threadPluginsEmpty") });
+  return /* @__PURE__ */ jsxs73("div", { className: "thread-plugins-body", children: [
+    readOnly && /* @__PURE__ */ jsx87("p", { className: "thread-plugins-note", role: "note", children: t2("settings.threadPluginsReadOnly") }),
+    /* @__PURE__ */ jsx87("ul", { className: "thread-plugins-list", children: plugins.map((plugin) => /* @__PURE__ */ jsx87(
+      PluginRow,
+      {
+        scope,
+        plugin,
+        hasSettings: Boolean(
+          modules.find((module) => module.manifest.id === plugin.id)?.settingsSections?.length
+        ),
+        readOnly,
+        ...onOpenGlobal ? { onOpenGlobal } : {},
+        onEdit: () => onEdit(plugin)
+      },
+      plugin.id
+    )) })
+  ] });
+}
+function PluginRow({
+  scope,
+  plugin,
+  hasSettings,
+  readOnly,
+  onOpenGlobal,
+  onEdit
+}) {
+  const { t: t2 } = useI18n();
+  const id = useId4();
+  const choice = choiceOf(plugin);
+  const busy = Boolean(scope.pending[plugin.id]);
+  const failure = scope.pluginErrors[plugin.id];
+  const unavailable = plugin.available === false;
+  const locked = readOnly || busy || unavailable;
+  const options = [
+    {
+      value: "inherit",
+      label: t2("settings.threadPluginsInherit"),
+      aria: t2("settings.threadPluginsInheritAria")
+    },
+    {
+      value: "on",
+      label: t2("settings.threadPluginsOn"),
+      aria: t2("settings.threadPluginsOnAria")
+    },
+    {
+      value: "off",
+      label: t2("settings.threadPluginsOff"),
+      aria: t2("settings.threadPluginsOffAria")
+    }
+  ];
+  return /* @__PURE__ */ jsxs73("li", { className: "thread-plugins-row", "aria-label": plugin.name, children: [
+    /* @__PURE__ */ jsxs73("div", { className: "thread-plugins-row-head", children: [
+      /* @__PURE__ */ jsx87("strong", { children: plugin.name }),
+      /* @__PURE__ */ jsx87(
+        "span",
+        {
+          className: `thread-plugins-state ${plugin.enabled ? "is-on" : "is-off"}`,
+          children: t2(
+            plugin.enabled ? "settings.threadPluginsActive" : "settings.threadPluginsInactive"
+          )
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsx87(
+      "div",
+      {
+        role: "radiogroup",
+        "aria-label": t2("settings.threadPluginsChoiceLabel", {
+          name: plugin.name
+        }),
+        className: "thread-plugins-choice",
+        children: options.map((option) => {
+          const blocked = option.value === "on" && !plugin.globalEnabled;
+          return /* @__PURE__ */ jsxs73(
+            "label",
+            {
+              className: blocked ? "is-blocked" : void 0,
+              title: blocked ? t2("settings.threadPluginsGlobalOff") : void 0,
+              children: [
+                /* @__PURE__ */ jsx87(
+                  "input",
+                  {
+                    type: "radio",
+                    name: `${id}-choice`,
+                    value: option.value,
+                    checked: choice === option.value,
+                    disabled: locked || blocked,
+                    "aria-label": option.aria,
+                    onChange: () => void scope.setEnabledOverride(
+                      plugin.id,
+                      overrideOf(option.value)
+                    )
+                  }
+                ),
+                /* @__PURE__ */ jsx87("span", { "aria-hidden": true, children: option.label })
+              ]
+            },
+            option.value
+          );
+        })
+      }
+    ),
+    !plugin.globalEnabled && /* @__PURE__ */ jsxs73("p", { className: "thread-plugins-note", children: [
+      t2("settings.threadPluginsGlobalOff"),
+      onOpenGlobal && /* @__PURE__ */ jsx87("button", { type: "button", onClick: onOpenGlobal, children: t2("settings.threadPluginsOpenGlobal") })
+    ] }),
+    unavailable && plugin.unavailableReason && /* @__PURE__ */ jsx87("p", { className: "thread-plugins-note", children: plugin.unavailableReason }),
+    (hasSettings || plugin.settingsOverridden) && /* @__PURE__ */ jsxs73("div", { className: "thread-plugins-actions", children: [
+      hasSettings && !readOnly && /* @__PURE__ */ jsxs73("button", { type: "button", disabled: busy, onClick: onEdit, children: [
+        /* @__PURE__ */ jsx87(Settings3, { size: 13, "aria-hidden": true }),
+        t2("settings.threadPluginsSettings")
+      ] }),
+      plugin.settingsOverridden && /* @__PURE__ */ jsxs73(Fragment31, { children: [
+        /* @__PURE__ */ jsx87("span", { className: "thread-plugins-tag", children: t2("settings.threadPluginsCustom") }),
+        !readOnly && /* @__PURE__ */ jsxs73(
+          "button",
+          {
+            type: "button",
+            disabled: busy,
+            onClick: () => void scope.resetSettings(plugin.id),
+            children: [
+              /* @__PURE__ */ jsx87(RotateCcw, { size: 13, "aria-hidden": true }),
+              t2("settings.threadPluginsReset")
+            ]
+          }
+        )
+      ] })
+    ] }),
+    failure && /* @__PURE__ */ jsxs73("p", { className: "thread-plugins-error", role: "alert", children: [
+      failure.message,
+      failure.conflict && /* @__PURE__ */ jsx87("button", { type: "button", onClick: () => void scope.reload(), children: t2("settings.threadPluginsReload") })
+    ] })
+  ] });
+}
+function ThreadPluginSettingsDialog({
+  scope,
+  plugin,
+  module,
+  onClose
+}) {
+  const { t: t2 } = useI18n();
+  const device = useDevicePlugins();
+  const [generation, setGeneration] = useState63(0);
+  const enabled = useRef41(null);
+  const overridden = useRef41(plugin.settingsOverridden);
+  useEffect47(() => {
+    if (overridden.current && !plugin.settingsOverridden)
+      setGeneration((value) => value + 1);
+    overridden.current = plugin.settingsOverridden;
+  }, [plugin.settingsOverridden]);
+  const context = useMemo21(
+    () => ({
+      pluginId: plugin.id,
+      load: async () => {
+        const snapshot = await scope.loadSettings(plugin.id);
+        enabled.current = snapshot.enabled;
+        return {
+          revision: snapshot.revision,
+          values: snapshot.effective.values
+        };
+      },
+      save: async (settings) => {
+        const saved = await scope.saveSettings(plugin.id, {
+          revision: settings.revision,
+          enabled: enabled.current,
+          values: settings.values
+        });
+        enabled.current = saved.enabled;
+        return { revision: saved.revision, values: saved.effective.values };
+      },
+      ...device.adapter?.connections ? { connections: device.adapter.connections } : {}
+    }),
+    // A new generation reloads the editor after its values were reset.
+    [
+      scope.loadSettings,
+      scope.saveSettings,
+      plugin.id,
+      device.adapter,
+      generation
+    ]
+  );
+  const sections = module?.settingsSections ?? [];
+  return /* @__PURE__ */ jsx87(Dialog, { open: true, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxs73(
+    DialogContent,
+    {
+      className: "thread-graph-dialog matter-settings-dialog plugin-settings-dialog",
+      overlayClassName: "plugin-settings-overlay",
+      children: [
+        /* @__PURE__ */ jsxs73(DialogHeader, { className: "plugin-settings-dialog-header", children: [
+          /* @__PURE__ */ jsx87(DialogTitle, { children: t2("settings.threadPluginsSettingsTitle", { name: plugin.name }) }),
+          /* @__PURE__ */ jsx87(DialogDescription, { children: t2("settings.threadPluginsSettingsHint") })
+        ] }),
+        /* @__PURE__ */ jsxs73("div", { className: "plugin-settings-dialog-body", children: [
+          plugin.settingsOverridden && /* @__PURE__ */ jsxs73("p", { className: "thread-plugins-note", role: "note", children: [
+            t2("settings.threadPluginsCustom"),
+            /* @__PURE__ */ jsx87(
+              "button",
+              {
+                type: "button",
+                disabled: Boolean(scope.pending[plugin.id]),
+                onClick: () => void scope.resetSettings(plugin.id),
+                children: t2("settings.threadPluginsReset")
+              }
+            )
+          ] }),
+          sections.map((section) => /* @__PURE__ */ jsx87("div", { children: section.render(context) }, `${section.id}:${generation}`))
+        ] })
+      ]
+    }
+  ) });
+}
+
 // src/app-shell/PhoneHandChoice.tsx
-import { jsx as jsx86, jsxs as jsxs73 } from "react/jsx-runtime";
+import { jsx as jsx88, jsxs as jsxs74 } from "react/jsx-runtime";
 function PhoneHandChoice({ hand, onChange }) {
   useI18n();
-  return /* @__PURE__ */ jsxs73("div", { className: "mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2", children: [
-    /* @__PURE__ */ jsxs73("div", { className: "min-w-0", children: [
-      /* @__PURE__ */ jsx86("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneHand") }),
-      /* @__PURE__ */ jsx86("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneHandHint") })
+  return /* @__PURE__ */ jsxs74("div", { className: "mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2", children: [
+    /* @__PURE__ */ jsxs74("div", { className: "min-w-0", children: [
+      /* @__PURE__ */ jsx88("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneHand") }),
+      /* @__PURE__ */ jsx88("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneHandHint") })
     ] }),
-    /* @__PURE__ */ jsx86(
+    /* @__PURE__ */ jsx88(
       "div",
       {
         role: "radiogroup",
         "aria-label": translate("workbench.phoneHand"),
         className: "inline-flex shrink-0 rounded-full border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] p-0.5",
-        children: ["left", "right"].map((value) => /* @__PURE__ */ jsx86(
+        children: ["left", "right"].map((value) => /* @__PURE__ */ jsx88(
           "button",
           {
             type: "button",
@@ -23875,15 +24371,15 @@ function PhoneHandChoice({ hand, onChange }) {
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect46, useRef as useRef40, useState as useState62 } from "react";
-import { jsx as jsx87, jsxs as jsxs74 } from "react/jsx-runtime";
+import { useEffect as useEffect48, useRef as useRef42, useState as useState64 } from "react";
+import { jsx as jsx89, jsxs as jsxs75 } from "react/jsx-runtime";
 function MenuIcon() {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx87("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx87("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
+  return /* @__PURE__ */ jsx89("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx89("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
 }
 function CloseIcon() {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx87("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx87("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
+  return /* @__PURE__ */ jsx89("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx89("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
 }
 function menuItemClassName(disabled = false) {
   return `flex w-full items-center rounded-[0.95rem] px-3 py-2 text-left text-sm transition ${disabled ? "cursor-not-allowed bg-[var(--theme-muted)] text-[var(--theme-fg-muted)]" : "text-[var(--theme-fg)] hover:bg-[var(--theme-hover)]"}`;
@@ -23923,7 +24419,7 @@ function AppShellMenuButton({ className = "" }) {
   if (!shellNav) {
     return null;
   }
-  return /* @__PURE__ */ jsx87(
+  return /* @__PURE__ */ jsx89(
     "button",
     {
       type: "button",
@@ -23932,7 +24428,7 @@ function AppShellMenuButton({ className = "" }) {
       "aria-controls": "app-shell-navigation-menu",
       onClick: shellNav.toggleNav,
       className: `inline-flex h-10 w-10 shrink-0 items-center justify-center text-[var(--theme-fg)] transition hover:text-[var(--theme-fg-soft)] ${className}`.trim(),
-      children: shellNav.navOpen ? /* @__PURE__ */ jsx87(CloseIcon, {}) : /* @__PURE__ */ jsx87(MenuIcon, {})
+      children: shellNav.navOpen ? /* @__PURE__ */ jsx89(CloseIcon, {}) : /* @__PURE__ */ jsx89(MenuIcon, {})
     }
   );
 }
@@ -23944,8 +24440,8 @@ function AppShellNavigationMenu({
 }) {
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
-  const menuRef = useRef40(null);
-  useEffect46(() => {
+  const menuRef = useRef42(null);
+  useEffect48(() => {
     if (!shellNav?.navOpen) {
       return;
     }
@@ -23973,7 +24469,7 @@ function AppShellNavigationMenu({
   if (!shellNav?.navOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs74(
+  return /* @__PURE__ */ jsxs75(
     "div",
     {
       ref: menuRef,
@@ -23983,14 +24479,14 @@ function AppShellNavigationMenu({
       onTouchStart: (event) => event.stopPropagation(),
       className: `rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] p-4 shadow-2xl shadow-black/15 backdrop-blur ${className}`.trim(),
       children: [
-        /* @__PURE__ */ jsxs74("div", { children: [
-          /* @__PURE__ */ jsx87("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Pockymoe" }),
-          /* @__PURE__ */ jsx87("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.navigation") })
+        /* @__PURE__ */ jsxs75("div", { children: [
+          /* @__PURE__ */ jsx89("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Pockymoe" }),
+          /* @__PURE__ */ jsx89("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.navigation") })
         ] }),
-        /* @__PURE__ */ jsxs74("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
+        /* @__PURE__ */ jsxs75("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
           items.map((item) => {
             const active = currentPath === item.href;
-            return /* @__PURE__ */ jsx87(
+            return /* @__PURE__ */ jsx89(
               "button",
               {
                 type: "button",
@@ -24008,7 +24504,7 @@ function AppShellNavigationMenu({
               item.href
             );
           }),
-          /* @__PURE__ */ jsx87(
+          /* @__PURE__ */ jsx89(
             "button",
             {
               type: "button",
@@ -24037,8 +24533,8 @@ function AppShellSettingsDialog({
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
   const plugins = usePlugins();
-  const [pluginImportDraft, setPluginImportDraft] = useState62("");
-  const [pluginImportState, setPluginImportState] = useState62({
+  const [pluginImportDraft, setPluginImportDraft] = useState64("");
+  const [pluginImportState, setPluginImportState] = useState64({
     busy: false,
     message: null,
     error: null
@@ -24046,7 +24542,7 @@ function AppShellSettingsDialog({
   const selectedThemeMode = shellNav?.themeMode ?? "system";
   const effectiveTheme = shellNav?.effectiveTheme ?? "dark";
   const autoCollapseCompletedTurns = shellNav?.autoCollapseCompletedTurns ?? true;
-  useEffect46(() => {
+  useEffect48(() => {
     if (!shellNav?.settingsOpen) {
       return;
     }
@@ -24105,8 +24601,8 @@ function AppShellSettingsDialog({
   if (!shellNav?.settingsOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs74("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
-    /* @__PURE__ */ jsx87(
+  return /* @__PURE__ */ jsxs75("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
+    /* @__PURE__ */ jsx89(
       "button",
       {
         type: "button",
@@ -24115,7 +24611,7 @@ function AppShellSettingsDialog({
         className: "ui-overlay-scrim absolute inset-0 backdrop-blur-sm"
       }
     ),
-    /* @__PURE__ */ jsxs74(
+    /* @__PURE__ */ jsxs75(
       "section",
       {
         role: "dialog",
@@ -24123,62 +24619,62 @@ function AppShellSettingsDialog({
         "aria-label": translate("files.settings"),
         className: "relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-4xl flex-col overflow-hidden rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] shadow-2xl shadow-black/20",
         children: [
-          /* @__PURE__ */ jsx87("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs74("div", { className: "flex items-start justify-between gap-3", children: [
-            /* @__PURE__ */ jsxs74("div", { children: [
-              /* @__PURE__ */ jsx87("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.settings") }),
-              /* @__PURE__ */ jsx87("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: translate("files.settings") }),
-              /* @__PURE__ */ jsx87("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: translate("files.manageAppearanceAndThreadUIPlugins") })
+          /* @__PURE__ */ jsx89("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs75("div", { className: "flex items-start justify-between gap-3", children: [
+            /* @__PURE__ */ jsxs75("div", { children: [
+              /* @__PURE__ */ jsx89("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.settings") }),
+              /* @__PURE__ */ jsx89("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: translate("files.settings") }),
+              /* @__PURE__ */ jsx89("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: translate("files.manageAppearanceAndThreadUIPlugins") })
             ] }),
-            /* @__PURE__ */ jsx87(
+            /* @__PURE__ */ jsx89(
               "button",
               {
                 type: "button",
                 "aria-label": translate("files.closeSettings"),
                 onClick: shellNav.closeSettings,
                 className: "inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--theme-border-strong)] bg-[var(--theme-surface-strong)] text-[var(--theme-fg)] transition hover:border-[var(--theme-border-contrast)] hover:bg-[var(--theme-hover)]",
-                children: /* @__PURE__ */ jsx87(CloseIcon, {})
+                children: /* @__PURE__ */ jsx89(CloseIcon, {})
               }
             )
           ] }) }),
-          /* @__PURE__ */ jsx87("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs74("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsxs74("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsx87("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs74("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx87("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
-                /* @__PURE__ */ jsxs74("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
+          /* @__PURE__ */ jsx89("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs75("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxs75("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsx89("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs75("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx89("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
+                /* @__PURE__ */ jsxs75("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
                   translate("files.chooseLightDarkOrFollowTheSystem"),
                   " ",
                   effectiveTheme,
                   "."
                 ] })
               ] }) }),
-              /* @__PURE__ */ jsx87("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
+              /* @__PURE__ */ jsx89("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
                 const active = selectedThemeMode === option.value;
-                return /* @__PURE__ */ jsxs74(
+                return /* @__PURE__ */ jsxs75(
                   "button",
                   {
                     type: "button",
                     onClick: () => shellNav.setThemeMode(option.value),
                     className: `block rounded-[1rem] border px-3 py-2.5 text-left transition ${active ? "border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)]" : "border-[var(--theme-border)] bg-[var(--theme-surface-strong)] hover:bg-[var(--theme-hover)]"}`,
                     children: [
-                      /* @__PURE__ */ jsxs74("div", { className: "flex items-center justify-between gap-3", children: [
-                        /* @__PURE__ */ jsx87("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
-                        active ? /* @__PURE__ */ jsx87("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: translate("files.active") }) : null
+                      /* @__PURE__ */ jsxs75("div", { className: "flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx89("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
+                        active ? /* @__PURE__ */ jsx89("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: translate("files.active") }) : null
                       ] }),
-                      /* @__PURE__ */ jsx87("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
+                      /* @__PURE__ */ jsx89("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
                     ]
                   },
                   option.value
                 );
               }) })
             ] }),
-            shellNav?.setPhoneDock ? /* @__PURE__ */ jsxs74("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsxs74("div", { className: "flex items-start justify-between gap-4", children: [
-                /* @__PURE__ */ jsxs74("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx87("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneDockSetting") }),
-                  /* @__PURE__ */ jsx87("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneDockSettingHint") })
+            shellNav?.setPhoneDock ? /* @__PURE__ */ jsxs75("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsxs75("div", { className: "flex items-start justify-between gap-4", children: [
+                /* @__PURE__ */ jsxs75("div", { className: "min-w-0", children: [
+                  /* @__PURE__ */ jsx89("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneDockSetting") }),
+                  /* @__PURE__ */ jsx89("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneDockSettingHint") })
                 ] }),
-                /* @__PURE__ */ jsxs74("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
-                  /* @__PURE__ */ jsx87(
+                /* @__PURE__ */ jsxs75("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
+                  /* @__PURE__ */ jsx89(
                     "input",
                     {
                       type: "checkbox",
@@ -24187,18 +24683,18 @@ function AppShellSettingsDialog({
                       className: "h-4 w-4 accent-[var(--theme-accent-solid)]"
                     }
                   ),
-                  /* @__PURE__ */ jsx87("span", { children: translate("workbench.phoneDockSettingToggle") })
+                  /* @__PURE__ */ jsx89("span", { children: translate("workbench.phoneDockSettingToggle") })
                 ] })
               ] }),
-              shellNav.setPhoneHand && (shellNav.phoneDock ?? true) ? /* @__PURE__ */ jsx87(PhoneHandChoice, { hand: shellNav.phoneHand ?? "right", onChange: shellNav.setPhoneHand }) : null
+              shellNav.setPhoneHand && (shellNav.phoneDock ?? true) ? /* @__PURE__ */ jsx89(PhoneHandChoice, { hand: shellNav.phoneHand ?? "right", onChange: shellNav.setPhoneHand }) : null
             ] }) : null,
-            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx87("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs74("div", { className: "flex items-start justify-between gap-4", children: [
-              /* @__PURE__ */ jsxs74("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx87("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.threadTimeline") }),
-                /* @__PURE__ */ jsx87("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.collapseCompletedTurnsIntoPromptElapsedWork") })
+            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx89("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs75("div", { className: "flex items-start justify-between gap-4", children: [
+              /* @__PURE__ */ jsxs75("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx89("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.threadTimeline") }),
+                /* @__PURE__ */ jsx89("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.collapseCompletedTurnsIntoPromptElapsedWork") })
               ] }),
-              /* @__PURE__ */ jsxs74("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
-                /* @__PURE__ */ jsx87(
+              /* @__PURE__ */ jsxs75("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
+                /* @__PURE__ */ jsx89(
                   "input",
                   {
                     type: "checkbox",
@@ -24209,16 +24705,16 @@ function AppShellSettingsDialog({
                     className: "h-4 w-4 accent-[var(--theme-accent-solid)]"
                   }
                 ),
-                /* @__PURE__ */ jsx87("span", { children: translate("files.autoCollapse") })
+                /* @__PURE__ */ jsx89("span", { children: translate("files.autoCollapse") })
               ] })
             ] }) }) : null,
-            /* @__PURE__ */ jsxs74("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsxs74("div", { className: "flex items-start justify-between gap-3", children: [
-                /* @__PURE__ */ jsxs74("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx87("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.plugins") }),
-                  /* @__PURE__ */ jsx87("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.enableRenderersAndThreadExtensionsLoadedBy") })
+            /* @__PURE__ */ jsxs75("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsxs75("div", { className: "flex items-start justify-between gap-3", children: [
+                /* @__PURE__ */ jsxs75("div", { className: "min-w-0", children: [
+                  /* @__PURE__ */ jsx89("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.plugins") }),
+                  /* @__PURE__ */ jsx89("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.enableRenderersAndThreadExtensionsLoadedBy") })
                 ] }),
-                /* @__PURE__ */ jsx87(
+                /* @__PURE__ */ jsx89(
                   "button",
                   {
                     type: "button",
@@ -24229,23 +24725,23 @@ function AppShellSettingsDialog({
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsxs74("div", { className: "mt-3 grid gap-2", children: [
-                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs74(
+              /* @__PURE__ */ jsxs75("div", { className: "mt-3 grid gap-2", children: [
+                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs75(
                   "div",
                   {
                     className: "flex items-start justify-between gap-3 rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2.5",
                     children: [
-                      /* @__PURE__ */ jsxs74("span", { className: "min-w-0", children: [
-                        /* @__PURE__ */ jsx87("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
-                        /* @__PURE__ */ jsx87("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
-                        /* @__PURE__ */ jsx87("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
+                      /* @__PURE__ */ jsxs75("span", { className: "min-w-0", children: [
+                        /* @__PURE__ */ jsx89("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
+                        /* @__PURE__ */ jsx89("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
+                        /* @__PURE__ */ jsx89("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
                           ...plugin.capabilities.artifactTypes.map((type) => type.type),
                           ...plugin.capabilities.threadPanels.map((panel) => panel.kind ?? panel.id)
                         ].join(", ") || translate("files.utility") }),
-                        /* @__PURE__ */ jsx87("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? translate("files.importedManifest") : translate("files.builtInModule") })
+                        /* @__PURE__ */ jsx89("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? translate("files.importedManifest") : translate("files.builtInModule") })
                       ] }),
-                      /* @__PURE__ */ jsxs74("span", { className: "flex shrink-0 items-center gap-2", children: [
-                        plugin.source === "imported" ? /* @__PURE__ */ jsx87(
+                      /* @__PURE__ */ jsxs75("span", { className: "flex shrink-0 items-center gap-2", children: [
+                        plugin.source === "imported" ? /* @__PURE__ */ jsx89(
                           "button",
                           {
                             type: "button",
@@ -24254,12 +24750,12 @@ function AppShellSettingsDialog({
                             children: translate("files.uninstall")
                           }
                         ) : null,
-                        /* @__PURE__ */ jsxs74("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
+                        /* @__PURE__ */ jsxs75("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
                           translate("files.toggle"),
                           " ",
                           plugin.name
                         ] }),
-                        /* @__PURE__ */ jsx87(
+                        /* @__PURE__ */ jsx89(
                           "input",
                           {
                             id: `plugin-toggle-${plugin.id}`,
@@ -24274,11 +24770,11 @@ function AppShellSettingsDialog({
                   },
                   plugin.id
                 )),
-                plugins.plugins.length === 0 && /* @__PURE__ */ jsx87("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: translate("files.noPluginsAreRegistered") })
+                plugins.plugins.length === 0 && /* @__PURE__ */ jsx89("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: translate("files.noPluginsAreRegistered") })
               ] }),
-              /* @__PURE__ */ jsxs74("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
-                /* @__PURE__ */ jsx87("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: translate("files.importPlugin") }),
-                /* @__PURE__ */ jsx87(
+              /* @__PURE__ */ jsxs75("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
+                /* @__PURE__ */ jsx89("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: translate("files.importPlugin") }),
+                /* @__PURE__ */ jsx89(
                   "textarea",
                   {
                     value: pluginImportDraft,
@@ -24293,9 +24789,9 @@ function AppShellSettingsDialog({
                     className: "mt-2 min-h-28 w-full resize-y rounded-[0.9rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2 font-mono text-xs leading-5 text-[var(--theme-fg)] outline-none transition placeholder:text-[var(--theme-fg-muted)] focus:border-[var(--theme-accent-border)]"
                   }
                 ),
-                /* @__PURE__ */ jsxs74("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
-                  /* @__PURE__ */ jsx87("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.importsRegisterManifestDeclaredArtifactTypesRendering") }),
-                  /* @__PURE__ */ jsx87(
+                /* @__PURE__ */ jsxs75("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
+                  /* @__PURE__ */ jsx89("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.importsRegisterManifestDeclaredArtifactTypesRendering") }),
+                  /* @__PURE__ */ jsx89(
                     "button",
                     {
                       type: "button",
@@ -24306,10 +24802,10 @@ function AppShellSettingsDialog({
                     }
                   )
                 ] }),
-                pluginImportState.error && /* @__PURE__ */ jsx87("p", { className: "mt-2 text-xs text-rose-300", children: pluginImportState.error }),
-                pluginImportState.message && /* @__PURE__ */ jsx87("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
+                pluginImportState.error && /* @__PURE__ */ jsx89("p", { className: "mt-2 text-xs text-rose-300", children: pluginImportState.error }),
+                pluginImportState.message && /* @__PURE__ */ jsx89("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
               ] }),
-              plugins.error && /* @__PURE__ */ jsx87("p", { className: "mt-2 text-xs text-rose-300", children: plugins.error })
+              plugins.error && /* @__PURE__ */ jsx89("p", { className: "mt-2 text-xs text-rose-300", children: plugins.error })
             ] }),
             extraContent
           ] }) })
@@ -24320,7 +24816,7 @@ function AppShellSettingsDialog({
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { useEffect as useEffect47, useLayoutEffect as useLayoutEffect15, useMemo as useMemo20, useRef as useRef41, useState as useState63 } from "react";
+import { useEffect as useEffect49, useLayoutEffect as useLayoutEffect15, useMemo as useMemo22, useRef as useRef43, useState as useState65 } from "react";
 import { ArrowLeft as ArrowLeft4, ArrowUpRight, ChevronRight as ChevronRight7, ChevronUp as ChevronUp4, Folder as Folder2, List, Monitor as Monitor2, Network as Network2, RotateCw as RotateCw2 } from "lucide-react";
 
 // src/components/threadMap/model.ts
@@ -24409,7 +24905,7 @@ function indexMap(root) {
 
 // src/components/threadMap/ThreadTile.tsx
 import { Network } from "lucide-react";
-import { jsx as jsx88, jsxs as jsxs75 } from "react/jsx-runtime";
+import { jsx as jsx90, jsxs as jsxs76 } from "react/jsx-runtime";
 var MINUTE2 = 6e4;
 var HOUR = 60 * MINUTE2;
 var DAY = 24 * HOUR;
@@ -24427,7 +24923,7 @@ var MONOGRAMS = {
 };
 var monogram = (agent) => MONOGRAMS[agent] ?? agent.replace(/[^a-z0-9]/gi, "").slice(0, 2).replace(/^./, (c) => c.toUpperCase());
 function AgentChip({ agent }) {
-  return agent ? /* @__PURE__ */ jsx88("span", { className: "thread-map-agent", "data-agent": agent, "aria-hidden": "true", children: monogram(agent) }) : null;
+  return agent ? /* @__PURE__ */ jsx90("span", { className: "thread-map-agent", "data-agent": agent, "aria-hidden": "true", children: monogram(agent) }) : null;
 }
 function formatRunTime(ms) {
   const minutes = Math.round(ms / MINUTE2);
@@ -24497,13 +24993,13 @@ function AgeGlyph({ tier }) {
   const fraction = (tier + 1) / 5;
   const angle = fraction * 2 * Math.PI;
   const x = 8 + 5 * Math.sin(angle), y = 8 - 5 * Math.cos(angle);
-  return /* @__PURE__ */ jsxs75("svg", { className: "thread-map-age-glyph", "data-age": tier, viewBox: "0 0 16 16", "aria-hidden": "true", children: [
-    /* @__PURE__ */ jsx88("circle", { cx: "8", cy: "8", r: "6.6", fill: "none", stroke: "currentColor", strokeWidth: "1.4" }),
-    fraction >= 1 ? /* @__PURE__ */ jsx88("circle", { cx: "8", cy: "8", r: "5", fill: "currentColor" }) : /* @__PURE__ */ jsx88("path", { d: `M8 8 L8 3 A5 5 0 ${fraction > 0.5 ? 1 : 0} 1 ${x.toFixed(2)} ${y.toFixed(2)} Z`, fill: "currentColor" })
+  return /* @__PURE__ */ jsxs76("svg", { className: "thread-map-age-glyph", "data-age": tier, viewBox: "0 0 16 16", "aria-hidden": "true", children: [
+    /* @__PURE__ */ jsx90("circle", { cx: "8", cy: "8", r: "6.6", fill: "none", stroke: "currentColor", strokeWidth: "1.4" }),
+    fraction >= 1 ? /* @__PURE__ */ jsx90("circle", { cx: "8", cy: "8", r: "5", fill: "currentColor" }) : /* @__PURE__ */ jsx90("path", { d: `M8 8 L8 3 A5 5 0 ${fraction > 0.5 ? 1 : 0} 1 ${x.toFixed(2)} ${y.toFixed(2)} Z`, fill: "currentColor" })
   ] });
 }
 function Spark({ hourly }) {
-  return /* @__PURE__ */ jsx88("span", { className: "thread-map-spark", "aria-hidden": "true", children: hourly.map((ms, hour) => /* @__PURE__ */ jsx88("i", { "data-zero": ms <= 0 || void 0, style: { "--h": Math.min(1, ms / HOUR).toFixed(3) } }, hour)) });
+  return /* @__PURE__ */ jsx90("span", { className: "thread-map-spark", "aria-hidden": "true", children: hourly.map((ms, hour) => /* @__PURE__ */ jsx90("i", { "data-zero": ms <= 0 || void 0, style: { "--h": Math.min(1, ms / HOUR).toFixed(3) } }, hour)) });
 }
 function tileTier(box) {
   const { width: w, height: h } = box;
@@ -24517,8 +25013,8 @@ function tileTier(box) {
 var FIT = { padding: 18, gap: 5, who: 14, grid: 32, column: 56, meta: 14, usage: 22, spark: 14, promptLine: 16 };
 function Usage({ thread }) {
   if (!thread.tokenUsage && !thread.priceEstimate) return null;
-  return /* @__PURE__ */ jsxs75("span", { className: "thread-map-usage", children: [
-    /* @__PURE__ */ jsx88(
+  return /* @__PURE__ */ jsxs76("span", { className: "thread-map-usage", children: [
+    /* @__PURE__ */ jsx90(
       TokenUsageCost,
       {
         usage: thread.tokenUsage,
@@ -24526,8 +25022,8 @@ function Usage({ thread }) {
         ...thread.pricePartial ? { detailsNote: translate("workbench.threadMapPricePartial") } : {}
       }
     ),
-    thread.tokenUsage ? /* @__PURE__ */ jsxs75("span", { className: "thread-map-tokens", title: translate("chat.totalTokens", { value1: thread.tokenUsage.totalTokens.toLocaleString(getLocale()) }), children: [
-      /* @__PURE__ */ jsx88(TokenMetricIcon, {}),
+    thread.tokenUsage ? /* @__PURE__ */ jsxs76("span", { className: "thread-map-tokens", title: translate("chat.totalTokens", { value1: thread.tokenUsage.totalTokens.toLocaleString(getLocale()) }), children: [
+      /* @__PURE__ */ jsx90(TokenMetricIcon, {}),
       formatCompactTokenCount(thread.tokenUsage.totalTokens)
     ] }) : null
   ] });
@@ -24538,7 +25034,7 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
   const tier = tileTier(box);
   const details = threadDetails(node, hours);
   const age = ageTier(thread.createdAt);
-  const chip = /* @__PURE__ */ jsx88(AgentChip, { agent: thread.agent });
+  const chip = /* @__PURE__ */ jsx90(AgentChip, { agent: thread.agent });
   const titled = tier !== "icon" && tier !== "dot";
   const lineHeight = tier === "card" ? 19 : tier === "large" ? 17 : 16;
   const childCount = thread.children?.length ?? 0;
@@ -24567,16 +25063,16 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
   const left = h - fixed - lines * lineHeight - (prompt ? promptLines * FIT.promptLine + FIT.gap : 0);
   const sparkHeight = FIT.spark + Math.max(0, Math.min(28, Math.floor(left * 0.4)));
   const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model].filter(Boolean).join(" \xB7 ") : "";
-  const status = thread.running ? /* @__PURE__ */ jsxs75("span", { className: "thread-map-tile-live", children: [
-    /* @__PURE__ */ jsx88("i", { className: "thread-map-running-dot" }),
+  const status = thread.running ? /* @__PURE__ */ jsxs76("span", { className: "thread-map-tile-live", children: [
+    /* @__PURE__ */ jsx90("i", { className: "thread-map-running-dot" }),
     translate("workbench.threadMapRunning")
-  ] }) : thread.lastActiveAt ? /* @__PURE__ */ jsx88("span", { children: translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) }) : null;
+  ] }) : thread.lastActiveAt ? /* @__PURE__ */ jsx90("span", { children: translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) }) : null;
   const short = [
     translate("workbench.threadMapTurns", { count: thread.turns ?? 0 }),
     thread.totalMs && w >= 110 ? translate("workbench.threadMapTotalShort", { duration: formatShortDuration(thread.totalMs) }) : null,
     thread.priceEstimate && w >= 170 ? formatCompactUsd(thread.priceEstimate.totalUsd) : null
   ].filter(Boolean).join(" \xB7 ");
-  const childrenButton = (count) => /* @__PURE__ */ jsxs75(
+  const childrenButton = (count) => /* @__PURE__ */ jsxs76(
     "button",
     {
       type: "button",
@@ -24585,12 +25081,12 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
       "aria-label": translate("workbench.threadMapShowChildren", { count: childCount, title: thread.title }),
       title: translate("workbench.threadMapShowChildren", { count: childCount, title: thread.title }),
       children: [
-        /* @__PURE__ */ jsx88(Network, { "aria-hidden": "true" }),
-        count && /* @__PURE__ */ jsx88("span", { children: childCount })
+        /* @__PURE__ */ jsx90(Network, { "aria-hidden": "true" }),
+        count && /* @__PURE__ */ jsx90("span", { children: childCount })
       ]
     }
   );
-  return /* @__PURE__ */ jsxs75(
+  return /* @__PURE__ */ jsxs76(
     "div",
     {
       className: "thread-map-tile",
@@ -24602,7 +25098,7 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
       "data-current": current || void 0,
       style: { left: box.x, top: box.y, width: w, height: h, "--lines": lines, "--prompt-lines": promptLines, "--spark-h": `${sparkHeight}px` },
       children: [
-        /* @__PURE__ */ jsx88(
+        /* @__PURE__ */ jsx90(
           "a",
           {
             href: thread.href,
@@ -24614,43 +25110,43 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
             ...hover
           }
         ),
-        tier !== "dot" && /* @__PURE__ */ jsxs75("span", { className: "thread-map-tile-head", children: [
+        tier !== "dot" && /* @__PURE__ */ jsxs76("span", { className: "thread-map-tile-head", children: [
           chip,
-          titled && /* @__PURE__ */ jsx88("span", { className: "thread-map-tile-title", children: thread.title }),
+          titled && /* @__PURE__ */ jsx90("span", { className: "thread-map-tile-title", children: thread.title }),
           showChildren && childrenButton(childrenWidth > 24),
-          showAge && /* @__PURE__ */ jsxs75("span", { className: "thread-map-age", title: thread.createdAt ? translate("workbench.threadMapCreated", { date: formatDate(thread.createdAt, { dateStyle: "medium" }) }) : void 0, children: [
-            /* @__PURE__ */ jsx88(AgeGlyph, { tier: age }),
-            showAgeText && /* @__PURE__ */ jsx88("span", { children: formatAge(thread.createdAt) })
+          showAge && /* @__PURE__ */ jsxs76("span", { className: "thread-map-age", title: thread.createdAt ? translate("workbench.threadMapCreated", { date: formatDate(thread.createdAt, { dateStyle: "medium" }) }) : void 0, children: [
+            /* @__PURE__ */ jsx90(AgeGlyph, { tier: age }),
+            showAgeText && /* @__PURE__ */ jsx90("span", { children: formatAge(thread.createdAt) })
           ] })
         ] }),
-        childrenRow && /* @__PURE__ */ jsx88("span", { className: "thread-map-tile-children-row", children: childrenButton(true) }),
-        showWho && (who || status || thread.failed) && /* @__PURE__ */ jsxs75("span", { className: "thread-map-tile-sub", children: [
-          who && /* @__PURE__ */ jsx88("span", { className: "thread-map-tile-who", children: who }),
-          thread.failed && /* @__PURE__ */ jsx88("span", { className: "thread-map-tile-failed", children: translate("workbench.threadMapFailedTurn") }),
+        childrenRow && /* @__PURE__ */ jsx90("span", { className: "thread-map-tile-children-row", children: childrenButton(true) }),
+        showWho && (who || status || thread.failed) && /* @__PURE__ */ jsxs76("span", { className: "thread-map-tile-sub", children: [
+          who && /* @__PURE__ */ jsx90("span", { className: "thread-map-tile-who", children: who }),
+          thread.failed && /* @__PURE__ */ jsx90("span", { className: "thread-map-tile-failed", children: translate("workbench.threadMapFailedTurn") }),
           status
         ] }),
-        prompt && /* @__PURE__ */ jsx88("span", { className: "thread-map-tile-prompt", children: prompt }),
-        (figures === "grid" || figures === "column") && /* @__PURE__ */ jsxs75("span", { className: "thread-map-stats", "data-layout": figures, children: [
-          /* @__PURE__ */ jsxs75("span", { children: [
-            /* @__PURE__ */ jsx88("b", { children: thread.turns }),
-            /* @__PURE__ */ jsx88("small", { children: translate("workbench.threadMapStatTurns") })
+        prompt && /* @__PURE__ */ jsx90("span", { className: "thread-map-tile-prompt", children: prompt }),
+        (figures === "grid" || figures === "column") && /* @__PURE__ */ jsxs76("span", { className: "thread-map-stats", "data-layout": figures, children: [
+          /* @__PURE__ */ jsxs76("span", { children: [
+            /* @__PURE__ */ jsx90("b", { children: thread.turns }),
+            /* @__PURE__ */ jsx90("small", { children: translate("workbench.threadMapStatTurns") })
           ] }),
-          /* @__PURE__ */ jsxs75("span", { children: [
-            /* @__PURE__ */ jsx88("b", { children: thread.totalMs ? formatShortDuration(thread.totalMs) : "\u2014" }),
-            /* @__PURE__ */ jsx88("small", { children: translate("workbench.threadMapStatTotal") })
+          /* @__PURE__ */ jsxs76("span", { children: [
+            /* @__PURE__ */ jsx90("b", { children: thread.totalMs ? formatShortDuration(thread.totalMs) : "\u2014" }),
+            /* @__PURE__ */ jsx90("small", { children: translate("workbench.threadMapStatTotal") })
           ] }),
-          /* @__PURE__ */ jsxs75("span", { children: [
-            /* @__PURE__ */ jsx88("b", { children: thread.activeMs ? formatShortDuration(thread.activeMs) : "\u2014" }),
-            /* @__PURE__ */ jsx88("small", { children: translate("workbench.threadMapStatRecent", { hours }) })
+          /* @__PURE__ */ jsxs76("span", { children: [
+            /* @__PURE__ */ jsx90("b", { children: thread.activeMs ? formatShortDuration(thread.activeMs) : "\u2014" }),
+            /* @__PURE__ */ jsx90("small", { children: translate("workbench.threadMapStatRecent", { hours }) })
           ] }),
-          usage === "cell" && /* @__PURE__ */ jsxs75("span", { className: "thread-map-stat-usage", children: [
-            /* @__PURE__ */ jsx88(Usage, { thread }),
-            /* @__PURE__ */ jsx88("small", { children: translate("workbench.threadMapStatCost") })
+          usage === "cell" && /* @__PURE__ */ jsxs76("span", { className: "thread-map-stat-usage", children: [
+            /* @__PURE__ */ jsx90(Usage, { thread }),
+            /* @__PURE__ */ jsx90("small", { children: translate("workbench.threadMapStatCost") })
           ] })
         ] }),
-        usage === "row" && /* @__PURE__ */ jsx88(Usage, { thread }),
-        figures === "line" && /* @__PURE__ */ jsx88("span", { className: "thread-map-tile-meta", children: short }),
-        showSpark && /* @__PURE__ */ jsx88(Spark, { hourly: thread.hourlyMs })
+        usage === "row" && /* @__PURE__ */ jsx90(Usage, { thread }),
+        figures === "line" && /* @__PURE__ */ jsx90("span", { className: "thread-map-tile-meta", children: short }),
+        showSpark && /* @__PURE__ */ jsx90(Spark, { hourly: thread.hourlyMs })
       ]
     }
   );
@@ -24697,7 +25193,7 @@ function squarify(items, weight, bounds) {
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { Fragment as Fragment31, jsx as jsx89, jsxs as jsxs76 } from "react/jsx-runtime";
+import { Fragment as Fragment32, jsx as jsx91, jsxs as jsxs77 } from "react/jsx-runtime";
 var HEADER = 26;
 function describe(node, hours) {
   if (node.thread) return threadDetails(node, hours);
@@ -24721,10 +25217,10 @@ var reducedMotion = () => typeof window !== "undefined" && typeof window.matchMe
 function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, onRetry, onDismiss }) {
   useI18n();
   const allLabel = translate("workbench.threadMapAll");
-  const root = useMemo20(() => buildThreadMap(devices, allLabel), [devices, allLabel]);
-  const nodes = useMemo20(() => indexMap(root), [root]);
-  const [focusId, setFocusId] = useState63(null);
-  const [openGroups, setOpenGroups] = useState63(() => /* @__PURE__ */ new Set());
+  const root = useMemo22(() => buildThreadMap(devices, allLabel), [devices, allLabel]);
+  const nodes = useMemo22(() => indexMap(root), [root]);
+  const [focusId, setFocusId] = useState65(null);
+  const [openGroups, setOpenGroups] = useState65(() => /* @__PURE__ */ new Set());
   const toggleGroup = (key) => {
     setTip(null);
     setOpenGroups((current2) => {
@@ -24734,13 +25230,13 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     });
   };
   const current = (focusId ? nodes.get(focusId) : void 0) ?? root;
-  const canvas = useRef41(null);
-  const stage = useRef41(null);
-  const crumbs = useRef41(null);
-  const zoomPlan = useRef41(null);
-  const [size, setSize] = useState63({ width: 0, height: 0 });
-  const [tip, setTip] = useState63(null);
-  useEffect47(() => {
+  const canvas = useRef43(null);
+  const stage = useRef43(null);
+  const crumbs = useRef43(null);
+  const zoomPlan = useRef43(null);
+  const [size, setSize] = useState65({ width: 0, height: 0 });
+  const [tip, setTip] = useState65(null);
+  useEffect49(() => {
     const node = canvas.current;
     if (!node) return;
     const measure = () => setSize({ width: node.clientWidth, height: node.clientHeight });
@@ -24798,9 +25294,9 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
       { duration: 280, easing: "cubic-bezier(0.2, 0.75, 0.25, 1)" }
     );
   }, [current.id]);
-  const gesture = useRef41({ navigate, current, root, nodes, onDismiss });
+  const gesture = useRef43({ navigate, current, root, nodes, onDismiss });
   gesture.current = { navigate, current, root, nodes, onDismiss };
-  useEffect47(() => {
+  useEffect49(() => {
     const node = canvas.current;
     if (!node) return;
     let pinch = null;
@@ -24956,7 +25452,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
       tokens: child.tokenUsage?.totalTokens ?? 0
     })).sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
     const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
-    return /* @__PURE__ */ jsxs76(
+    return /* @__PURE__ */ jsxs77(
       "section",
       {
         className: "thread-map-section thread-map-group",
@@ -24965,8 +25461,8 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
         "aria-label": thread.title,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          /* @__PURE__ */ jsxs76("div", { className: "thread-map-group-head", children: [
-            /* @__PURE__ */ jsxs76(
+          /* @__PURE__ */ jsxs77("div", { className: "thread-map-group-head", children: [
+            /* @__PURE__ */ jsxs77(
               "button",
               {
                 type: "button",
@@ -24975,17 +25471,17 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
                 "aria-label": translate("workbench.threadMapHideChildren", { title: thread.title }),
                 onClick: () => toggleGroup(thread.key),
                 children: [
-                  /* @__PURE__ */ jsx89(AgentChip, { agent: thread.agent }),
-                  /* @__PURE__ */ jsx89("span", { className: "thread-map-section-label", children: thread.title }),
-                  box.width >= 110 && /* @__PURE__ */ jsxs76("span", { className: "thread-map-section-count", children: [
-                    /* @__PURE__ */ jsx89(Network2, { "aria-hidden": "true" }),
+                  /* @__PURE__ */ jsx91(AgentChip, { agent: thread.agent }),
+                  /* @__PURE__ */ jsx91("span", { className: "thread-map-section-label", children: thread.title }),
+                  box.width >= 110 && /* @__PURE__ */ jsxs77("span", { className: "thread-map-section-count", children: [
+                    /* @__PURE__ */ jsx91(Network2, { "aria-hidden": "true" }),
                     children2.length
                   ] }),
-                  /* @__PURE__ */ jsx89(ChevronUp4, { "aria-hidden": "true" })
+                  /* @__PURE__ */ jsx91(ChevronUp4, { "aria-hidden": "true" })
                 ]
               }
             ),
-            box.width >= 80 && /* @__PURE__ */ jsx89(
+            box.width >= 80 && /* @__PURE__ */ jsx91(
               "a",
               {
                 className: "thread-map-group-open",
@@ -24993,7 +25489,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
                 onClick: open(thread),
                 "aria-label": translate("workbench.threadMapOpenThread", { title: thread.title }),
                 title: translate("workbench.threadMapOpenThread", { title: thread.title }),
-                children: /* @__PURE__ */ jsx89(ArrowUpRight, { "aria-hidden": "true" })
+                children: /* @__PURE__ */ jsx91(ArrowUpRight, { "aria-hidden": "true" })
               }
             )
           ] }),
@@ -25011,7 +25507,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     if (item.kind === "thread") {
       const thread = item.thread;
       if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
-      return /* @__PURE__ */ jsx89(
+      return /* @__PURE__ */ jsx91(
         ThreadTile,
         {
           node: item,
@@ -25036,17 +25532,17 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     const named = box.width >= 72;
     const Icon = item.kind === "device" ? Monitor2 : Folder2;
     const zoomable = !unlisted;
-    const head = /* @__PURE__ */ jsxs76(Fragment31, { children: [
-      named && /* @__PURE__ */ jsx89(Icon, { "aria-hidden": "true" }),
-      /* @__PURE__ */ jsx89("span", { className: "thread-map-section-label", children: item.label }),
-      unlisted ? named && /* @__PURE__ */ jsx89("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx89(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs76("span", { className: "thread-map-section-count", children: [
-        item.running > 0 && /* @__PURE__ */ jsx89("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+    const head = /* @__PURE__ */ jsxs77(Fragment32, { children: [
+      named && /* @__PURE__ */ jsx91(Icon, { "aria-hidden": "true" }),
+      /* @__PURE__ */ jsx91("span", { className: "thread-map-section-label", children: item.label }),
+      unlisted ? named && /* @__PURE__ */ jsx91("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx91(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs77("span", { className: "thread-map-section-count", children: [
+        item.running > 0 && /* @__PURE__ */ jsx91("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
         item.threads,
-        item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx89("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
+        item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx91("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
       ] })
     ] });
     const zoom = (event) => navigate(item, event.currentTarget.closest("section"));
-    return /* @__PURE__ */ jsxs76(
+    return /* @__PURE__ */ jsxs77(
       "section",
       {
         "data-map-id": item.id,
@@ -25062,7 +25558,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
         "aria-label": text,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          (preview || live.length > 0) && zoomable ? /* @__PURE__ */ jsx89(
+          (preview || live.length > 0) && zoomable ? /* @__PURE__ */ jsx91(
             "button",
             {
               type: "button",
@@ -25072,12 +25568,12 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
               ...hover(lines),
               children: head
             }
-          ) : /* @__PURE__ */ jsx89("div", { className: "thread-map-section-head", children: head }),
-          preview && /* @__PURE__ */ jsx89("div", { className: "thread-map-preview", children: render(item.children, inner, depth + 1) }),
-          live.length > 0 && /* @__PURE__ */ jsx89("div", { className: "thread-map-preview", children: render(live, liveInner, depth + 1) }),
-          live.length > 0 && item.threads > live.length && /* @__PURE__ */ jsx89("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapMoreThreads", { count: item.threads - live.length }) }),
-          !preview && !live.length && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx89("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) }),
-          !preview && !live.length && zoomable && /* @__PURE__ */ jsx89(
+          ) : /* @__PURE__ */ jsx91("div", { className: "thread-map-section-head", children: head }),
+          preview && /* @__PURE__ */ jsx91("div", { className: "thread-map-preview", children: render(item.children, inner, depth + 1) }),
+          live.length > 0 && /* @__PURE__ */ jsx91("div", { className: "thread-map-preview", children: render(live, liveInner, depth + 1) }),
+          live.length > 0 && item.threads > live.length && /* @__PURE__ */ jsx91("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapMoreThreads", { count: item.threads - live.length }) }),
+          !preview && !live.length && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx91("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) }),
+          !preview && !live.length && zoomable && /* @__PURE__ */ jsx91(
             "button",
             {
               type: "button",
@@ -25087,7 +25583,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
               ...hover(lines)
             }
           ),
-          unlisted && state === "error" && onRetry && /* @__PURE__ */ jsx89(
+          unlisted && state === "error" && onRetry && /* @__PURE__ */ jsx91(
             "button",
             {
               type: "button",
@@ -25104,70 +25600,70 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
   });
   const children = current.children;
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
-  return /* @__PURE__ */ jsxs76("div", { className: "thread-map", children: [
-    /* @__PURE__ */ jsxs76("div", { className: "thread-map-bar", children: [
+  return /* @__PURE__ */ jsxs77("div", { className: "thread-map", children: [
+    /* @__PURE__ */ jsxs77("div", { className: "thread-map-bar", children: [
       heading,
-      /* @__PURE__ */ jsxs76("span", { className: "thread-map-summary", children: [
+      /* @__PURE__ */ jsxs77("span", { className: "thread-map-summary", children: [
         translate("workbench.threadMapThreads", { count: root.threads }),
-        root.running > 0 && /* @__PURE__ */ jsxs76(Fragment31, { children: [
+        root.running > 0 && /* @__PURE__ */ jsxs77(Fragment32, { children: [
           " \xB7 ",
-          /* @__PURE__ */ jsx89("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx91("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
           translate("workbench.threadMapRunningCount", { count: root.running })
         ] }),
-        root.usd > 0 && /* @__PURE__ */ jsxs76(Fragment31, { children: [
+        root.usd > 0 && /* @__PURE__ */ jsxs77(Fragment32, { children: [
           " \xB7 ",
           translate("workbench.threadMapCost", { usd: formatCompactUsd(root.usd) })
         ] })
       ] }),
       actions
     ] }),
-    /* @__PURE__ */ jsxs76("div", { className: "thread-map-bar thread-map-path", children: [
-      /* @__PURE__ */ jsx89("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx89(ArrowLeft4, { "aria-hidden": "true" }) }),
-      /* @__PURE__ */ jsx89("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => /* @__PURE__ */ jsxs76("span", { className: "thread-map-crumb", children: [
-        index > 0 && /* @__PURE__ */ jsx89(ChevronRight7, { "aria-hidden": "true" }),
-        /* @__PURE__ */ jsx89("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), title: node.label, children: node.label })
+    /* @__PURE__ */ jsxs77("div", { className: "thread-map-bar thread-map-path", children: [
+      /* @__PURE__ */ jsx91("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx91(ArrowLeft4, { "aria-hidden": "true" }) }),
+      /* @__PURE__ */ jsx91("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => /* @__PURE__ */ jsxs77("span", { className: "thread-map-crumb", children: [
+        index > 0 && /* @__PURE__ */ jsx91(ChevronRight7, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsx91("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), title: node.label, children: node.label })
       ] }, node.id)) }),
-      children.length > 0 && /* @__PURE__ */ jsxs76("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
-        /* @__PURE__ */ jsx89(List, { "aria-hidden": "true" }),
-        /* @__PURE__ */ jsxs76("select", { "aria-label": translate("workbench.threadMapGoTo"), value: "", onChange: (event) => {
+      children.length > 0 && /* @__PURE__ */ jsxs77("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
+        /* @__PURE__ */ jsx91(List, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsxs77("select", { "aria-label": translate("workbench.threadMapGoTo"), value: "", onChange: (event) => {
           const node = nodes.get(event.target.value);
           if (node?.thread) onOpen(node.thread);
           else if (node) navigate(node);
         }, children: [
-          /* @__PURE__ */ jsx89("option", { value: "", children: translate("workbench.threadMapGoTo") }),
-          children.map((node) => /* @__PURE__ */ jsx89("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
+          /* @__PURE__ */ jsx91("option", { value: "", children: translate("workbench.threadMapGoTo") }),
+          children.map((node) => /* @__PURE__ */ jsx91("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs76("div", { ref: canvas, className: "thread-map-canvas", role: "group", "aria-label": current.label, children: [
-      children.length ? /* @__PURE__ */ jsx89("div", { ref: stage, className: "thread-map-stage", children: size.width > 0 && render(children, bounds, 0) }) : /* @__PURE__ */ jsx89("p", { className: "thread-map-empty", role: "status", children: devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
-      tip && /* @__PURE__ */ jsx89("div", { className: "thread-map-tip", role: "tooltip", style: { left: tip.x, top: tip.y }, "data-above": tip.above || void 0, children: tip.lines.map((line, index) => index ? /* @__PURE__ */ jsx89("span", { children: line }, index) : /* @__PURE__ */ jsx89("b", { children: line }, index)) })
+    /* @__PURE__ */ jsxs77("div", { ref: canvas, className: "thread-map-canvas", role: "group", "aria-label": current.label, children: [
+      children.length ? /* @__PURE__ */ jsx91("div", { ref: stage, className: "thread-map-stage", children: size.width > 0 && render(children, bounds, 0) }) : /* @__PURE__ */ jsx91("p", { className: "thread-map-empty", role: "status", children: devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
+      tip && /* @__PURE__ */ jsx91("div", { className: "thread-map-tip", role: "tooltip", style: { left: tip.x, top: tip.y }, "data-above": tip.above || void 0, children: tip.lines.map((line, index) => index ? /* @__PURE__ */ jsx91("span", { children: line }, index) : /* @__PURE__ */ jsx91("b", { children: line }, index)) })
     ] }),
-    /* @__PURE__ */ jsxs76("div", { className: "thread-map-legend", children: [
-      /* @__PURE__ */ jsx89("span", { children: translate("workbench.threadMapLegendSize") }),
-      /* @__PURE__ */ jsxs76("span", { className: "thread-map-scale", children: [
+    /* @__PURE__ */ jsxs77("div", { className: "thread-map-legend", children: [
+      /* @__PURE__ */ jsx91("span", { children: translate("workbench.threadMapLegendSize") }),
+      /* @__PURE__ */ jsxs77("span", { className: "thread-map-scale", children: [
         translate("workbench.threadMapLegendColor", { hours }),
-        /* @__PURE__ */ jsx89("small", { children: translate("workbench.threadMapLess") }),
-        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx89("i", { "data-heat": level, "aria-hidden": "true" }, level)),
-        /* @__PURE__ */ jsx89("small", { children: translate("workbench.threadMapMore") })
+        /* @__PURE__ */ jsx91("small", { children: translate("workbench.threadMapLess") }),
+        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx91("i", { "data-heat": level, "aria-hidden": "true" }, level)),
+        /* @__PURE__ */ jsx91("small", { children: translate("workbench.threadMapMore") })
       ] }),
-      /* @__PURE__ */ jsxs76("span", { className: "thread-map-scale thread-map-ages", children: [
+      /* @__PURE__ */ jsxs77("span", { className: "thread-map-scale thread-map-ages", children: [
         translate("workbench.threadMapLegendAge"),
-        /* @__PURE__ */ jsx89("small", { children: translate("workbench.threadMapNewer") }),
-        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx89(AgeGlyph, { tier }, tier)),
-        /* @__PURE__ */ jsx89("small", { children: translate("workbench.threadMapOlder") })
+        /* @__PURE__ */ jsx91("small", { children: translate("workbench.threadMapNewer") }),
+        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx91(AgeGlyph, { tier }, tier)),
+        /* @__PURE__ */ jsx91("small", { children: translate("workbench.threadMapOlder") })
       ] }),
-      /* @__PURE__ */ jsxs76("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsxs76("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
-          /* @__PURE__ */ jsx89("i", {}),
-          /* @__PURE__ */ jsx89("i", {}),
-          /* @__PURE__ */ jsx89("i", {}),
-          /* @__PURE__ */ jsx89("i", {})
+      /* @__PURE__ */ jsxs77("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsxs77("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
+          /* @__PURE__ */ jsx91("i", {}),
+          /* @__PURE__ */ jsx91("i", {}),
+          /* @__PURE__ */ jsx91("i", {}),
+          /* @__PURE__ */ jsx91("i", {})
         ] }),
         translate("workbench.threadMapLegendHourly")
       ] }),
-      /* @__PURE__ */ jsxs76("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsx89("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxs77("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsx91("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
         translate("workbench.threadMapLegendRunning")
       ] })
     ] })
@@ -25176,10 +25672,10 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
 
 // src/components/threadMap/ThreadMapDialog.tsx
 import { X as X8 } from "lucide-react";
-import { jsx as jsx90 } from "react/jsx-runtime";
+import { jsx as jsx92 } from "react/jsx-runtime";
 function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }) {
   useI18n();
-  return /* @__PURE__ */ jsx90(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx90(
+  return /* @__PURE__ */ jsx92(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx92(
     DialogContent,
     {
       showCloseButton: false,
@@ -25188,13 +25684,13 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
       "data-theme-mode": themeMode,
       className: "thread-graph-dialog matter-settings-dialog thread-map-dialog",
       overlayClassName: "matter-settings-overlay",
-      children: /* @__PURE__ */ jsx90(
+      children: /* @__PURE__ */ jsx92(
         ThreadMap,
         {
           ...map,
           onDismiss: () => onOpenChange(false),
-          heading: /* @__PURE__ */ jsx90(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
-          actions: /* @__PURE__ */ jsx90(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx90(X8, { "aria-hidden": "true" }) })
+          heading: /* @__PURE__ */ jsx92(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
+          actions: /* @__PURE__ */ jsx92(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx92(X8, { "aria-hidden": "true" }) })
         }
       )
     }
@@ -25203,7 +25699,7 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
 
 // src/components/PublicTranscript.tsx
 import { ChevronRight as ChevronRight8 } from "lucide-react";
-import { jsx as jsx91, jsxs as jsxs77 } from "react/jsx-runtime";
+import { jsx as jsx93, jsxs as jsxs78 } from "react/jsx-runtime";
 function transcriptSnapshot(title, turns, theme) {
   return {
     title,
@@ -25230,19 +25726,19 @@ function transcriptSnapshot(title, turns, theme) {
 }
 function PublicTranscript({ snapshot }) {
   useI18n();
-  const message = (item, index) => /* @__PURE__ */ jsx91(
+  const message = (item, index) => /* @__PURE__ */ jsx93(
     GraphChatMessageFrame,
     {
       kind: item.role === "user" ? "userMessage" : "agentMessage",
       timeLabel: item.createdAt ? formatMessageTimestamp(item.createdAt) : void 0,
-      children: item.role === "user" ? /* @__PURE__ */ jsx91(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx91("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx91(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
+      children: item.role === "user" ? /* @__PURE__ */ jsx93(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx93("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx93(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
     },
     index
   );
-  return /* @__PURE__ */ jsx91("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs77("div", { className: "public-transcript-content", children: [
-    /* @__PURE__ */ jsxs77("header", { className: "public-transcript-header", children: [
-      /* @__PURE__ */ jsx91("h1", { children: snapshot.title }),
-      /* @__PURE__ */ jsxs77("p", { children: [
+  return /* @__PURE__ */ jsx93("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs78("div", { className: "public-transcript-content", children: [
+    /* @__PURE__ */ jsxs78("header", { className: "public-transcript-header", children: [
+      /* @__PURE__ */ jsx93("h1", { children: snapshot.title }),
+      /* @__PURE__ */ jsxs78("p", { children: [
         snapshot.live ? translate("sharing.liveReadOnlyThread") : translate("sharing.readOnlySnapshot"),
         " \xB7 ",
         snapshot.turnCount,
@@ -25250,17 +25746,17 @@ function PublicTranscript({ snapshot }) {
         translate("sharing.turns_7cb1b2"),
         snapshot.live && snapshot.updatedAt ? translate("sharing.updated", { value1: new Date(snapshot.updatedAt).toLocaleString(getLocale()) }) : ""
       ] }),
-      snapshot.stale && /* @__PURE__ */ jsx91("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
+      snapshot.stale && /* @__PURE__ */ jsx93("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
     ] }),
     snapshot.turns.map((turn, index) => {
       const displayTurn = { id: `snapshot-${index}`, status: "completed", error: null, items: [], startedAt: turn.startedAt ?? null, completedAt: turn.completedAt ?? null, model: turn.model ?? null, reasoningEffort: turn.reasoningEffort ?? null, tokenUsage: turn.tokenUsage ?? null, priceEstimate: turn.priceEstimate ?? null };
-      return /* @__PURE__ */ jsxs77("section", { className: "thread-graph-turn public-transcript-turn", children: [
+      return /* @__PURE__ */ jsxs78("section", { className: "thread-graph-turn public-transcript-turn", children: [
         turn.messages.filter((item) => item.role === "user").map(message),
-        /* @__PURE__ */ jsxs77("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
-          /* @__PURE__ */ jsx91("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
-          /* @__PURE__ */ jsx91(ChevronRight8, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
-          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx91(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
-          /* @__PURE__ */ jsx91("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+        /* @__PURE__ */ jsxs78("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
+          /* @__PURE__ */ jsx93("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
+          /* @__PURE__ */ jsx93(ChevronRight8, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
+          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx93(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
+          /* @__PURE__ */ jsx93("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
         ] }),
         turn.messages.filter((item) => item.role === "assistant").map(message)
       ] }, index);
@@ -25269,9 +25765,9 @@ function PublicTranscript({ snapshot }) {
 }
 
 // src/components/ConversationSearchControls.tsx
-import { Fragment as Fragment32, jsx as jsx92, jsxs as jsxs78 } from "react/jsx-runtime";
+import { Fragment as Fragment33, jsx as jsx94, jsxs as jsxs79 } from "react/jsx-runtime";
 function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }) {
-  return /* @__PURE__ */ jsxs78(
+  return /* @__PURE__ */ jsxs79(
     "select",
     {
       className: "workbench-search-scope",
@@ -25279,10 +25775,10 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
       value,
       onChange: (event) => onChange(event.target.value),
       children: [
-        /* @__PURE__ */ jsx92("option", { value: "thread", children: labels.thread }),
-        allowGlobal && /* @__PURE__ */ jsxs78(Fragment32, { children: [
-          /* @__PURE__ */ jsx92("option", { value: "workspace", children: labels.workspace }),
-          /* @__PURE__ */ jsx92("option", { value: "device", children: labels.device })
+        /* @__PURE__ */ jsx94("option", { value: "thread", children: labels.thread }),
+        allowGlobal && /* @__PURE__ */ jsxs79(Fragment33, { children: [
+          /* @__PURE__ */ jsx94("option", { value: "workspace", children: labels.workspace }),
+          /* @__PURE__ */ jsx94("option", { value: "device", children: labels.device })
         ] })
       ]
     }
@@ -25310,15 +25806,15 @@ function searchHighlightParts(text, query) {
 }
 function ConversationSearchExcerpt({ text, query }) {
   const parts = searchHighlightParts(text, query);
-  return /* @__PURE__ */ jsxs78("p", { children: [
+  return /* @__PURE__ */ jsxs79("p", { children: [
     parts.before,
-    parts.match && /* @__PURE__ */ jsx92("mark", { children: parts.match }),
+    parts.match && /* @__PURE__ */ jsx94("mark", { children: parts.match }),
     parts.after
   ] });
 }
 
 // src/components/workbench/presentation.ts
-import { useCallback as useCallback23, useEffect as useEffect48, useRef as useRef42, useState as useState64 } from "react";
+import { useCallback as useCallback24, useEffect as useEffect50, useRef as useRef44, useState as useState66 } from "react";
 var defaultPresentation = {
   referenceId: null,
   mode: "focus",
@@ -25376,11 +25872,11 @@ function write(scope, value, patch) {
   }
 }
 function useWorkbenchPresentation(scope, contextKey = null) {
-  const owner = useRef42({ scope, contextKey });
+  const owner = useRef44({ scope, contextKey });
   if (owner.current.scope !== scope || owner.current.contextKey !== contextKey)
     owner.current = { scope, contextKey };
   const generation = owner.current;
-  const [stored, setStored] = useState64(() => ({
+  const [stored, setStored] = useState66(() => ({
     generation,
     value: read(scope),
     storageFailed: false,
@@ -25390,14 +25886,14 @@ function useWorkbenchPresentation(scope, contextKey = null) {
   const value = stored.generation === generation ? stored.value : { ...read(scope), ...pending };
   if (stored.generation !== generation)
     setStored({ generation, value, storageFailed: false, pending });
-  useEffect48(() => {
+  useEffect50(() => {
     if (!scope || stored.generation !== generation || !stored.pending) return;
     const storageFailed = write(scope, stored.value, stored.pending);
     setStored(
       (previous) => previous === stored ? { ...previous, pending: null, storageFailed } : previous
     );
   }, [scope, stored, generation]);
-  const update = useCallback23(
+  const update = useCallback24(
     (patch) => {
       if (owner.current !== generation) return;
       setStored((previous) => {
@@ -25466,6 +25962,8 @@ export {
   ThreadLoadingIndicator,
   ThreadMap,
   ThreadMapDialog,
+  ThreadPluginScope,
+  ThreadPluginsControl,
   ThreadShellPanel,
   ThreadTimeline,
   ThreadWorkspaceLayout,
@@ -25499,6 +25997,7 @@ export {
   translate,
   turnStatusLabel,
   useAppShellNav,
+  useDevicePlugins,
   useI18n,
   usePlugins,
   useThemeFeature,

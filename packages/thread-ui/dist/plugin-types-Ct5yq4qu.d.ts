@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ThreadHistoryItemDto, PluginManifestDto, ThreadArtifactDto } from '@pockymoe/shared';
+import { ThreadHistoryItemDto, PluginManifestDto, ThreadArtifactDto, PluginDto } from '@pockymoe/shared';
 
 interface ArtifactRenderContext {
     artifact: ThreadArtifactDto;
@@ -90,5 +90,35 @@ interface FrontendPluginModule {
         render: (context: InlineCodeRenderContext) => ReactNode | null;
     }>;
 }
+/** A plugin as one conversation sees it; `enabled` is the effective switch there. */
+interface ThreadPluginDto extends PluginDto {
+    globalEnabled: boolean;
+    /** null follows the device-wide switch. */
+    enabledOverride: boolean | null;
+    settingsOverridden: boolean;
+}
+interface ThreadPluginSettingsSnapshot {
+    revision: number;
+    globalRevision: number;
+    /** The conversation's own values; null inherits the device-wide ones. */
+    enabled: boolean | null;
+    values: Record<string, unknown> | null;
+    effective: {
+        enabled: boolean;
+        values: Record<string, unknown>;
+    };
+}
+interface ThreadPluginSettingsInput {
+    revision: number;
+    enabled: boolean | null;
+    /** A complete override snapshot, not a patch; null inherits. */
+    values: Record<string, unknown> | null;
+}
+/** Host access to one conversation's plugin scope. */
+interface ThreadPluginAdapter {
+    fetchPlugins: (threadId: string) => Promise<ThreadPluginDto[]>;
+    loadSettings: (threadId: string, pluginId: string) => Promise<ThreadPluginSettingsSnapshot>;
+    saveSettings: (threadId: string, pluginId: string, input: ThreadPluginSettingsInput) => Promise<ThreadPluginSettingsSnapshot>;
+}
 
-export type { ArtifactRenderContext as A, FrontendPluginModule as F, InlineCodeRenderContext as I, MessagePresentation as M, PluginSettingsSnapshot as P, ThreadPanelContribution as T, UpstreamConnectionHost as U, PluginActionOutputContext as a, MessagePresentationContext as b, PluginSettingsContext as c, PluginSettingsContribution as d, UpstreamConnectionPickerProps as e, UpstreamConnectionPickerValue as f, UpstreamConnectionProtocol as g };
+export type { ArtifactRenderContext as A, FrontendPluginModule as F, InlineCodeRenderContext as I, MessagePresentation as M, PluginActionOutputContext as P, ThreadPluginAdapter as T, UpstreamConnectionHost as U, MessagePresentationContext as a, PluginSettingsContext as b, PluginSettingsContribution as c, PluginSettingsSnapshot as d, ThreadPanelContribution as e, ThreadPluginDto as f, ThreadPluginSettingsInput as g, ThreadPluginSettingsSnapshot as h, UpstreamConnectionPickerProps as i, UpstreamConnectionPickerValue as j, UpstreamConnectionProtocol as k };

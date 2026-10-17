@@ -631,6 +631,21 @@ export function ThreadComposer({
     [appendAttachments, dismissPromptFocus, onPickAttachment],
   );
 
+  // Take a queued prompt out of the queue and back into the draft, ahead of what is there.
+  async function editPendingPrompt(pendingPromptId: string) {
+    const queued = pendingPrompts.find((entry) => entry.id === pendingPromptId);
+    if (!queued || !onCancelPendingPrompt) return;
+    await onCancelPendingPrompt(pendingPromptId);
+    const text = normalizePromptText(queued.prompt);
+    updateDraft((current) => ({
+      prompt: current.prompt.trim() ? `${text}\n${current.prompt}` : text,
+      attachments: current.attachments,
+    }));
+    pendingSelectionRef.current = { start: text.length, end: text.length };
+    selectionSnapshotRef.current = { start: text.length, end: text.length };
+    promptRef.current?.focus();
+  }
+
   function insertPlainTextIntoPrompt(text: string) {
     if (!text) {
       return;
@@ -928,6 +943,7 @@ export function ThreadComposer({
 
   const {
     promptPlaceholder,
+    promptPlaceholderHint,
     interruptLabel,
     sendButtonLabel,
     sendButtonClassName,
@@ -944,6 +960,7 @@ export function ThreadComposer({
     settingsBusy,
     supportedEffortCount: supportedEfforts.length,
     fastMode,
+    sendShortcut,
   });
   const {
     composerLayerClassName,
@@ -998,6 +1015,7 @@ export function ThreadComposer({
     goalStatus: goalState.data?.status,
     activeView,
     disabled,
+    promptEmpty: !prompt.trim() && attachments.length === 0,
     model,
     agent,
     modelOptions,
@@ -1110,12 +1128,16 @@ export function ThreadComposer({
     prompt,
     disabled,
     promptPlaceholder,
+    promptPlaceholderHint,
     canInterrupt,
     interruptLabel,
     composerPromptRegionClassName,
     graphChatInputClassName,
     promptInputClassName,
     goalComposeMode,
+    planMode: displayedCollaborationMode === 'plan',
+    settingsBusy,
+    onExitPlanMode: () => { void handleUpdateSettings({ collaborationMode: 'default' }); },
     goalTokenBudget,
     goalLocalError,
     goalBusy,
@@ -1177,6 +1199,7 @@ export function ThreadComposer({
             prompts={pendingPrompts}
             onSteer={onSteerPendingPrompt}
             onCancel={onCancelPendingPrompt}
+            {...(onCancelPendingPrompt ? { onEdit: editPendingPrompt } : {})}
           />
         ) : null
       }

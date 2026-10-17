@@ -17,6 +17,8 @@ interface ComposerPromptEditorProps {
   prompt: string;
   disabled: boolean;
   promptPlaceholder: string;
+  /** How to send, shown after the placeholder where there is a keyboard. */
+  promptPlaceholderHint?: string;
   canInterrupt: boolean;
   interruptLabel: string;
   composerPromptRegionClassName: string;
@@ -51,6 +53,7 @@ export function ComposerPromptEditor({
   prompt,
   disabled,
   promptPlaceholder,
+  promptPlaceholderHint = '',
   composerPromptRegionClassName,
   graphChatInputClassName,
   onInput,
@@ -90,6 +93,7 @@ export function ComposerPromptEditor({
             className={`thread-composer-placeholder pointer-events-none absolute left-3 top-3 truncate text-slate-500 sm:left-4 sm:top-4 dark:text-slate-400 right-3 sm:right-4`}
           >
             {promptPlaceholder}
+            {promptPlaceholderHint ? <span className="thread-composer-placeholder-hint">{promptPlaceholderHint}</span> : null}
           </span>
         )}
         <div

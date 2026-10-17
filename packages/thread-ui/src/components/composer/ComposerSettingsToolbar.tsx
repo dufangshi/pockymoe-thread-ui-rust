@@ -46,6 +46,7 @@ export function ComposerSettingsToolbar({
   goalBusy,
   activeView,
   disabled,
+  promptEmpty = false,
   sendButtonLabel,
   sendButtonClassName,
   sendButtonBaseClassName,
@@ -71,6 +72,8 @@ export function ComposerSettingsToolbar({
   goalBusy: boolean;
   activeView: 'chat' | 'shell';
   disabled: boolean;
+  /** No text or attachment to send yet. */
+  promptEmpty?: boolean;
   fastMode: boolean;
   sendButtonLabel: string;
   sendButtonClassName: string;
@@ -84,12 +87,19 @@ export function ComposerSettingsToolbar({
   onUpdateSettings: (input: UpdateThreadSettingsInput) => void;
 }) {
   useI18n();
-  // Theme flags: the harness avatar and a chevron on the model chip, and
-  // per-intent send icons with the "Send after this turn" label.
+  // Theme flags: the harness avatar and a chevron on the model chip, and a
+  // paper plane for sending now. Every theme shows the same three intents.
   const modelAvatar = useThemeFeature('composer.modelAvatar');
   const intentIcons = useThemeFeature('composer.intentIcons');
   // A turn is running: sending now adds the prompt to run after it.
   const sendLater = queueing && activeView === 'chat' && !goalComposeMode;
+  const sendIntentLabel = goalComposeMode
+    ? translate('chat.setGoal')
+    : sendLater
+      ? translate('chat.sendAfterTurn')
+      : translate('chat.sendPrompt');
+  // Nothing to send yet: the button looks off but stays focusable and says why.
+  const sendEmpty = promptEmpty && !goalBusy && !(activeView === 'chat' && disabled);
   const selectedModelLabel =
     modelOptions.find((entry) => entry.model === model)?.displayName ||
     model ||
@@ -197,25 +207,19 @@ export function ComposerSettingsToolbar({
         variant="default"
         size="icon-xs"
         data-send-intent={goalComposeMode ? 'goal' : sendLater ? 'queue' : 'send'}
-        aria-label={
-          goalComposeMode
-            ? translate('chat.setGoal')
-            : intentIcons && sendLater
-              ? translate('chat.sendAfterTurn')
-              : translate('chat.sendPrompt')
-        }
-        title={intentIcons && sendLater ? translate('chat.sendAfterTurn') : sendButtonLabel}
+        data-empty={sendEmpty ? 'true' : undefined}
+        aria-label={sendIntentLabel}
+        aria-disabled={sendEmpty || undefined}
+        title={sendEmpty ? translate('chat.typeToSend') : sendLater || goalComposeMode ? sendIntentLabel : sendButtonLabel}
         disabled={goalBusy || (activeView === 'chat' ? disabled : false)}
         className={`${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
       >
-        {intentIcons ? (
-          goalComposeMode ? (
-            <Target aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
-          ) : sendLater ? (
-            <SendLaterIcon />
-          ) : (
-            <Send aria-hidden="true" className="composer-send-plane h-[17px] w-[17px]" strokeWidth={2.2} />
-          )
+        {goalComposeMode ? (
+          <Target aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
+        ) : sendLater ? (
+          <SendLaterIcon />
+        ) : intentIcons ? (
+          <Send aria-hidden="true" className="composer-send-plane h-[17px] w-[17px]" strokeWidth={2.2} />
         ) : (
           <svg
             aria-hidden="true"

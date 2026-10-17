@@ -700,6 +700,26 @@
   background: color-mix(in srgb, var(--theme-accent) 18%, var(--theme-surface));
 }
 
+.thread-ui-shell .thread-composer-queue-edit {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-composer-queue-edit:hover:not(:disabled) {
+  background: var(--theme-hover);
+}
+
+.thread-ui-shell .thread-composer-pending-text {
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.thread-ui-shell .thread-composer-pending-text:focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 1px;
+}
+
 .thread-ui-shell .thread-composer-queue-remove {
   color: var(--theme-fg-muted);
 }

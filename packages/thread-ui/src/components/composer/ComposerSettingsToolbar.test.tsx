@@ -75,6 +75,7 @@ function renderToolbar({
   availableModels = modelOptions,
   agent,
   queueing = false,
+  promptEmpty = false,
   contextUsage = null,
 }: {
   initialOpenMenu?: SettingsMenu;
@@ -92,6 +93,7 @@ function renderToolbar({
   availableModels?: ModelOptionDto[];
   agent?: string;
   queueing?: boolean;
+  promptEmpty?: boolean;
   contextUsage?: ThreadContextUsageDto | null;
 } = {}) {
   function Harness() {
@@ -120,6 +122,7 @@ function renderToolbar({
           goalBusy={goalBusy}
           activeView={activeView}
           disabled={disabled}
+          promptEmpty={promptEmpty}
           fastMode={false}
           sendButtonLabel="Send"
           sendButtonClassName="send-state"
@@ -158,13 +161,28 @@ describe('ComposerSettingsToolbar', () => {
     expect(document.querySelector('.composer-context-summary')).toBeNull();
   });
 
-  it('adds the mascot, chevron and per-intent send icon only for Plum Pocket', () => {
+  it('shows the send intent in every theme; Plum Pocket adds the mascot, chevron and a paper plane', () => {
     const classic = renderToolbar({ agent: 'claude', queueing: true });
     expect(classic.querySelector('.composer-model-avatar')).toBeNull();
     expect(classic.querySelector('.composer-model-chevron')).toBeNull();
-    expect(classic.querySelector('.send-base path')?.getAttribute('d')).toBe('M8 13V3');
-    // Classic keeps its label while a turn runs.
-    expect(classic.querySelector('.send-base')?.getAttribute('aria-label')).toBe('Send Prompt');
+    // A running turn means the prompt waits for it, in every theme.
+    expect(classic.querySelector('.send-base .composer-send-later')).not.toBeNull();
+    expect(classic.querySelector('.send-base')?.getAttribute('aria-label')).toBe('Send after this turn');
+    expect(classic.querySelector('.send-base')?.getAttribute('title')).toBe('Send after this turn');
+    act(() => root?.unmount());
+    container?.remove();
+
+    const classicIdle = renderToolbar({ agent: 'claude' });
+    expect(classicIdle.querySelector('.send-base path')?.getAttribute('d')).toBe('M8 13V3');
+    expect(classicIdle.querySelector('.send-base')?.getAttribute('aria-label')).toBe('Send Prompt');
+    act(() => root?.unmount());
+    container?.remove();
+
+    const empty = renderToolbar({ agent: 'claude', promptEmpty: true });
+    const emptySend = empty.querySelector<HTMLButtonElement>('.send-base');
+    expect(emptySend?.disabled).toBe(false);
+    expect(emptySend?.getAttribute('aria-disabled')).toBe('true');
+    expect(emptySend?.getAttribute('title')).toBe('Type a message first');
     act(() => root?.unmount());
     container?.remove();
 

@@ -156,3 +156,34 @@
 .thread-subscription-usage-detail-heading strong { font-weight: 600; }
 .thread-subscription-usage-detail-reset { margin-top: 3px; color: var(--theme-fg-muted, #a1a1aa); font-size: 11px; }
 .thread-subscription-usage-detail-freshness { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--theme-border, #3f3f46); color: var(--theme-fg-muted, #a1a1aa); font-size: 10px; }
+
+/* A folded draft of several lines: "+N lines" at the end of its first line. */
+[data-composer-layout='collapsed'][data-composer-overflow] .thread-graph-composer-input[data-more-lines]::after {
+  content: attr(data-more-lines);
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--theme-hover, rgba(127, 127, 127, .14));
+  color: var(--theme-fg-muted);
+  font-size: 11px;
+  line-height: 16px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+[data-composer-layout='collapsed'][data-composer-overflow] .thread-graph-composer-input[data-more-lines] > [role='textbox'] {
+  padding-right: 52px;
+}
+
+/* Nothing to send yet: the send button looks off but stays focusable. */
+.thread-ui-shell .thread-graph-composer-send-button[data-empty='true'] { opacity: .45; cursor: default; }
+
+/* The send shortcut only means something where there is a keyboard. */
+.thread-ui-shell .thread-composer-placeholder-hint { opacity: .75; }
+@media (max-width: 639px), (pointer: coarse) {
+  .thread-ui-shell .thread-composer-placeholder-hint { display: none; }
+}
+
+.thread-ui-shell .composer-mode-chip { align-self: flex-start; }

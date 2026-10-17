@@ -7,6 +7,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type RefObject,
 } from "react";
+import { translate } from "../../i18n";
 import { serializeEditorPrompt } from "./contentEditablePrompt";
 
 /** Measure the rendered font and attachment chips against the *collapsed*
@@ -127,6 +128,13 @@ export function useCompactComposer(
       // the composer: folding it mid-word could cancel the composition.
       const composing = editor.dataset.imeComposing === "true";
       setExpanded((current) => (current === next || (composing && current) ? current : next));
+      // A folded draft of several lines says how many lines it hides.
+      const hiddenLines = overflowing ? serializeEditorPrompt(editor).trimEnd().split(/\r?\n/).length - 1 : 0;
+      const inputFrame = editor.parentElement;
+      if (inputFrame) {
+        if (hiddenLines > 0) inputFrame.dataset.moreLines = translate("chat.moreLines", { value1: hiddenLines });
+        else delete inputFrame.dataset.moreLines;
+      }
       if (!next && !composing) {
         editor.scrollTop = 0;
         if (editor.parentElement) editor.parentElement.scrollTop = 0;
@@ -189,6 +197,7 @@ export function useCompactComposer(
       alive = false;
       cancelAnimationFrame(frame);
       form.removeAttribute("data-composer-overflow");
+      if (editor.parentElement) delete editor.parentElement.dataset.moreLines;
       mutation.disconnect();
       resize?.disconnect();
       document.removeEventListener("pointerdown", onPointerDown, true);

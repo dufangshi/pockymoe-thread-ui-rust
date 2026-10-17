@@ -46,6 +46,7 @@ export function buildComposerControlState({
   settingsBusy,
   supportedEffortCount,
   fastMode,
+  sendShortcut = 'ctrlEnter',
 }: {
   goalComposeMode: boolean;
   goalBusy: boolean;
@@ -56,13 +57,18 @@ export function buildComposerControlState({
   settingsBusy: boolean;
   supportedEffortCount: number;
   fastMode: boolean;
+  sendShortcut?: 'ctrlEnter' | 'enter';
 }) {
   const promptPlaceholder = goalComposeMode
     ? translate("chat.describeTheGoalTheBackendShouldContinue")
     : (disabledPlaceholder ??
       (isShellView
         ? translate("chat.sendShellInputToTheAttachedTerminal")
-        : ''));
+        : translate("chat.typeMessage")));
+  // Keyboards only: how to send, from the current shortcut setting.
+  const promptPlaceholderHint = goalComposeMode || disabledPlaceholder || isShellView
+    ? ''
+    : translate(sendShortcut === 'enter' ? "chat.enterToSend" : "chat.ctrlEnterToSend");
   const sendButtonLabel = goalComposeMode
     ? goalBusy
       ? translate("chat.setting")
@@ -90,6 +96,7 @@ export function buildComposerControlState({
 
   return {
     promptPlaceholder,
+    promptPlaceholderHint,
     interruptLabel: isShellView ? translate("chat.sendCtrlC") : translate("chat.stopCurrentTurn"),
     sendButtonLabel,
     sendButtonClassName,

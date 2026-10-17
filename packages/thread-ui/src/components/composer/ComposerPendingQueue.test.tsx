@@ -80,7 +80,37 @@ describe("ComposerPendingQueue", () => {
     });
 
     expect(container.textContent).toContain("Queueing");
-    expect(container.querySelectorAll("button")).toHaveLength(0);
+    expect(container.querySelectorAll("button:not(.thread-composer-pending-text)")).toHaveLength(0);
+  });
+
+  it("opens a queued prompt in full and takes it back for editing", async () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    cleanup = () => {
+      root.unmount();
+      container.remove();
+    };
+    const onEdit = vi.fn().mockResolvedValue(undefined);
+
+    await act(async () => {
+      root.render(
+        <ComposerPendingQueue
+          prompts={[{ id: "queued-1", prompt: "First line\nSecond line" }]}
+          onCancel={vi.fn()}
+          onEdit={onEdit}
+        />,
+      );
+    });
+
+    const text = container.querySelector<HTMLButtonElement>(".thread-composer-pending-text")!;
+    expect(text.getAttribute("aria-expanded")).toBe("false");
+    expect(container.querySelector(".thread-composer-queue-edit")).toBeNull();
+    await act(async () => text.click());
+    expect(text.getAttribute("aria-expanded")).toBe("true");
+    expect(text.className).toContain("whitespace-pre-wrap");
+    await act(async () => container.querySelector<HTMLButtonElement>(".thread-composer-queue-edit")!.click());
+    expect(onEdit).toHaveBeenCalledWith("queued-1");
   });
 
   it("keeps non-steer backends in the same queue UI without a steer action", async () => {

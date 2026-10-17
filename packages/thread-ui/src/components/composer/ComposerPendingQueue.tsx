@@ -1,5 +1,5 @@
 import { translate, useI18n } from '../../i18n';
-import { CornerUpRight, Loader2, X } from "lucide-react";
+import { CornerUpRight, Loader2, Pencil, X } from "lucide-react";
 import { useState } from "react";
 
 interface ComposerPendingPrompt {
@@ -8,17 +8,22 @@ interface ComposerPendingPrompt {
   optimistic?: boolean;
 }
 
+/** Prompts waiting for the running turn. Tapping one shows all of it and Edit,
+    which takes it out of the queue back into the prompt. */
 export function ComposerPendingQueue({
   prompts,
   onSteer,
   onCancel,
+  onEdit,
 }: {
   prompts: ComposerPendingPrompt[];
   onSteer?: (pendingPromptId: string) => Promise<void> | void;
   onCancel?: (pendingPromptId: string) => Promise<void> | void;
+  onEdit?: (pendingPromptId: string) => Promise<void> | void;
 }) {
   useI18n();
   const [busyIds, setBusyIds] = useState<Set<string>>(() => new Set());
+  const [openId, setOpenId] = useState<string | null>(null);
 
   async function runAction(
     id: string,
@@ -53,17 +58,21 @@ export function ComposerPendingQueue({
       <div className="max-h-36 overflow-y-auto">
         {prompts.map((prompt) => {
           const busy = busyIds.has(prompt.id);
+          const open = openId === prompt.id;
           return (
             <div
               key={prompt.id}
-              className="thread-composer-pending-row flex min-h-10 items-center gap-2 border-t px-3 py-2"
+              data-open={open || undefined}
+              className={`thread-composer-pending-row flex min-h-10 gap-2 border-t px-3 py-2 ${open ? 'items-start' : 'items-center'}`}
             >
-              <p
-                className="min-w-0 flex-1 truncate text-sm text-[var(--theme-fg)]"
-                title={prompt.prompt}
+              <button
+                type="button"
+                aria-expanded={open}
+                onClick={() => setOpenId(open ? null : prompt.id)}
+                className={`thread-composer-pending-text min-w-0 flex-1 text-left text-sm text-[var(--theme-fg)] ${open ? 'max-h-28 overflow-y-auto whitespace-pre-wrap break-words py-1.5' : 'truncate'}`}
               >
                 {prompt.prompt}
-              </p>
+              </button>
               {prompt.optimistic ? (
                 <span className="inline-flex h-8 items-center gap-1.5 px-1.5 text-xs text-[var(--theme-fg-muted)]">
                   <Loader2
@@ -73,6 +82,17 @@ export function ComposerPendingQueue({
                   {translate("chat.queueing")}</span>
               ) : (
                 <>
+                  {open && onEdit ? (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void runAction(prompt.id, onEdit)}
+                      className="thread-composer-queue-edit inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition disabled:cursor-wait disabled:opacity-60"
+                    >
+                      <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                      {translate("chat.edit")}
+                    </button>
+                  ) : null}
                   {onSteer ? (
                     <button
                       type="button"
@@ -91,7 +111,7 @@ export function ComposerPendingQueue({
                           aria-hidden="true"
                         />
                       )}
-                      Steer
+                      {translate("chat.steerNow")}
                     </button>
                   ) : null}
                   {onCancel ? (

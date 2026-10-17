@@ -71,6 +71,7 @@ export interface UseComposerToolbarPropsInput {
   goalStatus: ThreadGoalDto['status'] | undefined;
   activeView: 'chat' | 'shell';
   disabled: boolean;
+  promptEmpty?: boolean;
   model: string | null | undefined;
   agent?: string | undefined;
   modelOptions: ModelOptionDto[];
@@ -185,6 +186,7 @@ export function useComposerToolbarProps({
   goalStatus,
   activeView,
   disabled,
+  promptEmpty,
   model,
   agent,
   modelOptions,
@@ -412,6 +414,7 @@ export function useComposerToolbarProps({
         goalBusy,
         activeView,
         disabled,
+        ...(promptEmpty !== undefined ? { promptEmpty } : {}),
         fastMode,
         sendButtonLabel,
         sendButtonClassName,

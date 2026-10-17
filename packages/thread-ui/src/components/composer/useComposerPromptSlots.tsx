@@ -6,6 +6,7 @@ import type {
 } from 'react';
 
 import { ComposerGoalComposeCard } from './ComposerGoalComposeCard';
+import { ComposerModeChip } from './ComposerModeChip';
 import { ComposerPromptEditor } from './ComposerPromptEditor';
 import { ComposerShellPromptInput } from './ComposerShellPromptInput';
 
@@ -15,12 +16,17 @@ export interface UseComposerPromptSlotsInput {
   prompt: string;
   disabled: boolean;
   promptPlaceholder: string;
+  promptPlaceholderHint?: string;
   canInterrupt: boolean;
   interruptLabel: string;
   composerPromptRegionClassName: string;
   graphChatInputClassName: string;
   promptInputClassName: string;
   goalComposeMode: boolean;
+  /** Plan mode is on: a chip above the prompt says so and turns it off. */
+  planMode?: boolean;
+  settingsBusy?: boolean;
+  onExitPlanMode?: () => void;
   goalTokenBudget: string;
   goalLocalError: string | null;
   goalBusy: boolean;
@@ -49,12 +55,16 @@ export function useComposerPromptSlots({
   prompt,
   disabled,
   promptPlaceholder,
+  promptPlaceholderHint = '',
   canInterrupt,
   interruptLabel,
   composerPromptRegionClassName,
   graphChatInputClassName,
   promptInputClassName,
   goalComposeMode,
+  planMode = false,
+  settingsBusy = false,
+  onExitPlanMode,
   goalTokenBudget,
   goalLocalError,
   goalBusy,
@@ -83,6 +93,7 @@ export function useComposerPromptSlots({
         prompt={prompt}
         disabled={disabled}
         promptPlaceholder={promptPlaceholder}
+        promptPlaceholderHint={promptPlaceholderHint}
         canInterrupt={canInterrupt}
         interruptLabel={interruptLabel}
         composerPromptRegionClassName={composerPromptRegionClassName}
@@ -107,6 +118,8 @@ export function useComposerPromptSlots({
         onTokenBudgetChange={onGoalTokenBudgetChange}
         onCancel={onCancelGoal}
       />
+    ) : planMode && !isShellView && onExitPlanMode ? (
+      <ComposerModeChip busy={settingsBusy} onExit={onExitPlanMode} />
     ) : null,
     shellPromptSlot: isShellView ? (
       <ComposerShellPromptInput

@@ -186,4 +186,17 @@ describe('useComposerPromptSlots', () => {
     expect(container.querySelector('[role="textbox"]')).toBeTruthy();
     expect(container.textContent).not.toContain('Ask Codex');
   });
+
+  it('shows plan mode above the prompt with a way out', () => {
+    const onExitPlanMode = vi.fn();
+    const container = render(baseInput({ planMode: true, onExitPlanMode }));
+    expect(container.querySelector('.composer-mode-chip')?.textContent).toContain('Plan mode');
+    flushSync(() => container.querySelector<HTMLButtonElement>('[aria-label="Exit plan mode"]')!.click());
+    expect(onExitPlanMode).toHaveBeenCalledOnce();
+  });
+
+  it('adds the send shortcut after the placeholder', () => {
+    const container = render(baseInput({ promptPlaceholder: 'Message', promptPlaceholderHint: ' · Ctrl+Enter to send' }));
+    expect(container.querySelector('.thread-composer-placeholder-hint')?.textContent).toBe(' · Ctrl+Enter to send');
+  });
 });

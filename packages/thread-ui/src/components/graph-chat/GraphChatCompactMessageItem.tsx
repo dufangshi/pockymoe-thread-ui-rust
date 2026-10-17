@@ -257,6 +257,7 @@ export const GraphChatCompactMessageItem = memo(
         timeTitle={timeTitle}
         actionsTime={item.createdAt ? formatMessageTimestamp(item.createdAt) : null}
         failure={item.kind === 'userMessage' ? failure : null}
+        sender={item.kind === 'userMessage' ? item.sender : null}
         kicker={added && item.createdAt ? (
           <span className="thread-added-prompt" role="img" aria-label={translate('chat.promptAdded', { time: formatMessageTimestamp(item.createdAt) })}
             title={translate('chat.promptAdded', { time: formatMessageTimestamp(item.createdAt) })}>

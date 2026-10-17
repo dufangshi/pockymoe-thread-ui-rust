@@ -3171,6 +3171,9 @@ declare const en: {
     readonly "chat.hint.reasoning": "Summaries of the model's reasoning steps.";
     readonly "chat.hint.reasoningExample": "e.g. planning which file to change first";
     readonly "chat.turnFailedShow": "Why this turn failed";
+    readonly "chat.sentBy": "Sent by {{name}}";
+    readonly "chat.sentThroughSharing": "Sent with shared access";
+    readonly "chat.senderAccountId": "Account ID";
     readonly "chat.turnFailedTitle": "This turn did not finish";
     readonly "chat.turnHeadDetails": "Turn details";
     readonly "chat.turnHeadRunning": "running {{elapsed}}";
@@ -6914,6 +6917,9 @@ declare const zhCN: {
     "chat.hint.reasoning": "模型推理步骤的摘要。";
     "chat.hint.reasoningExample": "例：先想好改哪个文件";
     "chat.turnFailedShow": "查看这一轮失败的原因";
+    "chat.sentBy": "由 {{name}} 发送";
+    "chat.sentThroughSharing": "通过共享访问发送";
+    "chat.senderAccountId": "账号 ID";
     "chat.turnFailedTitle": "这一轮没有完成";
     "chat.turnHeadDetails": "本轮详情";
     "chat.turnHeadRunning": "运行中 {{elapsed}}";
@@ -10679,6 +10685,9 @@ declare const resources: {
         readonly "chat.hint.reasoning": "Summaries of the model's reasoning steps.";
         readonly "chat.hint.reasoningExample": "e.g. planning which file to change first";
         readonly "chat.turnFailedShow": "Why this turn failed";
+        readonly "chat.sentBy": "Sent by {{name}}";
+        readonly "chat.sentThroughSharing": "Sent with shared access";
+        readonly "chat.senderAccountId": "Account ID";
         readonly "chat.turnFailedTitle": "This turn did not finish";
         readonly "chat.turnHeadDetails": "Turn details";
         readonly "chat.turnHeadRunning": "running {{elapsed}}";
@@ -14421,6 +14430,9 @@ declare const resources: {
         "chat.hint.reasoning": "模型推理步骤的摘要。";
         "chat.hint.reasoningExample": "例：先想好改哪个文件";
         "chat.turnFailedShow": "查看这一轮失败的原因";
+        "chat.sentBy": "由 {{name}} 发送";
+        "chat.sentThroughSharing": "通过共享访问发送";
+        "chat.senderAccountId": "账号 ID";
         "chat.turnFailedTitle": "这一轮没有完成";
         "chat.turnHeadDetails": "本轮详情";
         "chat.turnHeadRunning": "运行中 {{elapsed}}";

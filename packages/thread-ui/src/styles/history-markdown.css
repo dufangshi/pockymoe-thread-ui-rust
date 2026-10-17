@@ -3061,6 +3061,44 @@
 
 .thread-ui-shell .thread-graph-message-time-row + .thread-graph-message-bubble.is-assistant { padding-top: 0; }
 
+/* A prompt someone other than the device owner sent: an initial on the bubble's corner. */
+.thread-ui-shell .thread-graph-message-sender {
+  position: absolute; top: -7px; left: -7px; z-index: 2;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; padding: 0;
+  border: 1.5px solid var(--theme-bg, #fff); border-radius: 999px;
+  background: oklch(0.6 0.12 var(--sender-hue, 250)); color: #fff;
+  font-size: 10px; font-weight: 600; line-height: 1; cursor: pointer;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+  transition: transform 120ms ease;
+}
+.thread-ui-shell .thread-graph-message-sender:hover { transform: scale(1.08); }
+.thread-ui-shell .thread-graph-message-sender:focus-visible { outline: 2px solid var(--theme-accent-ring, oklch(0.6 0.12 var(--sender-hue, 250))); outline-offset: 1px; }
+.thread-message-sender-card {
+  position: fixed; z-index: 130; box-sizing: border-box; min-width: 150px;
+  padding: 8px 10px; border: 1px solid var(--theme-border, #d4d4d4); border-radius: 10px;
+  background: var(--theme-panel, #fff); color: var(--theme-fg, #222);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.16); font-size: 12.5px; line-height: 1.4;
+  animation: thread-message-sender-in 120ms ease-out;
+}
+.thread-message-sender-card-head { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.thread-message-sender-card-head strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.thread-message-sender-avatar {
+  display: inline-flex; flex: none; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 999px;
+  background: oklch(0.6 0.12 var(--sender-hue, 250)); color: #fff; font-size: 11px; font-weight: 600;
+}
+.thread-message-sender-card p { margin: 4px 0 0; color: var(--theme-fg-muted, #666); font-size: 11.5px; }
+.thread-message-sender-card code {
+  display: block; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--theme-fg-muted, #666); font-size: 10.5px;
+}
+@keyframes thread-message-sender-in { from { opacity: 0; transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) {
+  .thread-message-sender-card { animation: none; }
+  .thread-ui-shell .thread-graph-message-sender { transition: none; }
+}
+
 .thread-workspace-link-menu { position:fixed; z-index:120; min-width:180px; padding:4px; border:1px solid #49473e; border-radius:9px; background:#25241e; color:#e9e7df; box-shadow:0 8px 24px #0005; font-size:13px; }
 .thread-workspace-link-menu button { display:block; width:100%; border-radius:5px; padding:7px 10px; text-align:left; }
 .thread-workspace-link-menu button:hover,.thread-workspace-link-menu button:focus-visible { background:#3b392e; outline:none; }

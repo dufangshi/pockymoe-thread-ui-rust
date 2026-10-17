@@ -386,9 +386,19 @@ export interface ThreadPeerWorkDto {
   }>;
 }
 
+/** Who sent a prompt when it was not the device owner, as the device recorded it. */
+export interface MessageSenderDto {
+  /** The sender's relay account ID. */
+  userId: string;
+  /** The account name the owner shared with, when the device knows it. */
+  name?: string | null;
+}
+
 export interface ThreadHistoryItemDto {
   polishedReply?: PolishedReplyDto | null;
   peerWork?: ThreadPeerWorkDto | null;
+  /** Set on prompts that someone other than the device owner sent. */
+  sender?: MessageSenderDto | null;
   id: string;
   kind:
     | 'userMessage'
@@ -890,6 +900,8 @@ export interface ThreadPendingSteerDto {
   prompt: string;
   delivery: "steer" | "continuation";
   createdAt: string;
+  /** Set when someone other than the device owner sent it. */
+  sender?: MessageSenderDto | null;
 }
 
 export interface ThreadSubagentDto {

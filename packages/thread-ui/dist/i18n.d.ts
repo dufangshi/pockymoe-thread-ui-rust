@@ -3220,6 +3220,9 @@ declare const en: {
     };
     readonly "chat.promptAdded": "Added · {{time}}";
     readonly "chat.showSpeedDetails": "{{speed}}, show the speed breakdown";
+    readonly "chat.speedCombinedSoFar": "Combined output speed so far";
+    readonly "chat.speedLiveNote": "This turn is still working: the speed counts only model calls whose output has been reported, and the call count includes the one in progress.";
+    readonly "chat.speedNoSplitYet": "No per-request timing yet.";
     readonly "chat.speedCombined": "Combined output speed";
     readonly "chat.speedCombinedBasis": "{{tokens}} output tokens over {{time}} of model time (tools and waits left out)";
     readonly "chat.speedFirstToken": "First token";
@@ -3231,10 +3234,10 @@ declare const en: {
     readonly "chat.speedPrefillValue": "{{speed}} · {{tokens}} uncached";
     readonly "chat.speedDecode": "Decode";
     readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
-    readonly "chat.speedRequests": "LLM requests";
+    readonly "chat.speedRequests": "Model calls";
     readonly "chat.speedRequestsValue": {
-        readonly one: "{{count}} request";
-        readonly other: "{{count}} requests";
+        readonly one: "{{count}} call";
+        readonly other: "{{count}} calls";
     };
     readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed output. It includes queueing, prefill and hidden thinking, so the prefill speed is a lower bound. When thinking streams (as with local models) decode times it with the answer; otherwise only the answer (text and tool calls).";
     readonly "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.";
@@ -7000,6 +7003,9 @@ declare const zhCN: {
     };
     "chat.promptAdded": "追加 · {{time}}";
     "chat.showSpeedDetails": "{{speed}}，查看速度明细";
+    "chat.speedCombinedSoFar": "目前的综合输出速度";
+    "chat.speedLiveNote": "这一轮还在进行：速度只算已经报告了输出的模型调用，调用次数含正在进行的那次。";
+    "chat.speedNoSplitYet": "还没有可拆分的请求计时。";
     "chat.speedCombined": "综合输出速度";
     "chat.speedCombinedBasis": "{{time}} 模型时间内输出 {{tokens}} token（不含工具和等待）";
     "chat.speedFirstToken": "首字时间";
@@ -7011,7 +7017,7 @@ declare const zhCN: {
     "chat.speedPrefillValue": "{{speed}} · 未命中缓存 {{tokens}}";
     "chat.speedDecode": "解码";
     "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
-    "chat.speedRequests": "LLM 请求";
+    "chat.speedRequests": "模型调用";
     "chat.speedRequestsValue": {
         readonly one: "{{count}} 次";
         readonly other: "{{count}} 次";
@@ -10802,6 +10808,9 @@ declare const resources: {
         };
         readonly "chat.promptAdded": "Added · {{time}}";
         readonly "chat.showSpeedDetails": "{{speed}}, show the speed breakdown";
+        readonly "chat.speedCombinedSoFar": "Combined output speed so far";
+        readonly "chat.speedLiveNote": "This turn is still working: the speed counts only model calls whose output has been reported, and the call count includes the one in progress.";
+        readonly "chat.speedNoSplitYet": "No per-request timing yet.";
         readonly "chat.speedCombined": "Combined output speed";
         readonly "chat.speedCombinedBasis": "{{tokens}} output tokens over {{time}} of model time (tools and waits left out)";
         readonly "chat.speedFirstToken": "First token";
@@ -10813,10 +10822,10 @@ declare const resources: {
         readonly "chat.speedPrefillValue": "{{speed}} · {{tokens}} uncached";
         readonly "chat.speedDecode": "Decode";
         readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
-        readonly "chat.speedRequests": "LLM requests";
+        readonly "chat.speedRequests": "Model calls";
         readonly "chat.speedRequestsValue": {
-            readonly one: "{{count}} request";
-            readonly other: "{{count}} requests";
+            readonly one: "{{count}} call";
+            readonly other: "{{count}} calls";
         };
         readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed output. It includes queueing, prefill and hidden thinking, so the prefill speed is a lower bound. When thinking streams (as with local models) decode times it with the answer; otherwise only the answer (text and tool calls).";
         readonly "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.";
@@ -14581,6 +14590,9 @@ declare const resources: {
         };
         "chat.promptAdded": "追加 · {{time}}";
         "chat.showSpeedDetails": "{{speed}}，查看速度明细";
+        "chat.speedCombinedSoFar": "目前的综合输出速度";
+        "chat.speedLiveNote": "这一轮还在进行：速度只算已经报告了输出的模型调用，调用次数含正在进行的那次。";
+        "chat.speedNoSplitYet": "还没有可拆分的请求计时。";
         "chat.speedCombined": "综合输出速度";
         "chat.speedCombinedBasis": "{{time}} 模型时间内输出 {{tokens}} token（不含工具和等待）";
         "chat.speedFirstToken": "首字时间";
@@ -14592,7 +14604,7 @@ declare const resources: {
         "chat.speedPrefillValue": "{{speed}} · 未命中缓存 {{tokens}}";
         "chat.speedDecode": "解码";
         "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
-        "chat.speedRequests": "LLM 请求";
+        "chat.speedRequests": "模型调用";
         "chat.speedRequestsValue": {
             readonly one: "{{count}} 次";
             readonly other: "{{count}} 次";

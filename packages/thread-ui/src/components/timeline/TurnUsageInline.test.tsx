@@ -73,12 +73,12 @@ describe('turn usage in the visible timeline', () => {
       const summary = container.querySelector('.thread-graph-worked-summary [data-testid="turn-token-speed"]');
       const footer = container.querySelector('.thread-graph-turn-footer [data-testid="turn-token-speed"]');
       expect(summary).toBeNull();
-      // The head says it is running; speed and cost wait for the turn to end.
-      // The head pulses with the time so far; its speed waits for the turn to end.
+      // The head pulses with the time so far and shows the speed of the model
+      // calls already reported; with none reported yet it shows no speed.
       expect(container.querySelector('.thread-turn-head[data-active]')).not.toBeNull();
       expect(container.querySelector('.thread-turn-head-main')?.getAttribute('aria-label')).toMatch(/^running \d.*s$/);
       flushSync(() => container.querySelector<HTMLButtonElement>('.thread-turn-head-main')!.click());
-      expect(container.querySelector('.thread-turn-head-speed')).toBeNull();
+      expect(container.querySelector('.thread-turn-head-speed')?.textContent ?? null).toBe(measured ? '120.0 tok/s' : null);
       expect(footer?.textContent).toBe(`${measured ? '150.0' : '80.0'}`);
     } finally { flushSync(() => root.unmount()); }
   });
@@ -220,7 +220,7 @@ describe('turn usage in the visible timeline', () => {
       expect(speed.textContent).toBe('100.0 tok/s');
       await act(async () => speed.click());
       const details = document.querySelector('.thread-speed-details')!;
-      expect(details.textContent).toContain('LLM requests5 requests');
+      expect(details.textContent).toContain('Model calls5 calls');
       expect(details.textContent).toContain('First token');
       expect(details.textContent).toContain('1.5 s average · 2 requests');
       expect(details.textContent).toContain('Prefill');
@@ -228,6 +228,28 @@ describe('turn usage in the visible timeline', () => {
       expect(details.textContent).toContain('Decode');
       expect(details.textContent).toContain('150.0 tok/s · 1.8k in 12 s');
       expect(details.textContent).toContain('3 requests that arrived in one piece are left out.');
+    } finally { flushSync(() => root.unmount()); container.remove(); vi.unstubAllGlobals(); }
+  });
+
+  it("says a running turn's speed and call count are so far", async () => {
+    vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} });
+    const container = document.createElement('div');
+    document.body.append(container);
+    const root = createRoot(container);
+    const live: ThreadTurnDto = { ...turn, status: 'inProgress', completedAt: null, tokenUsage: { ...turn.tokenUsage!, generationSpeed: {
+      ...turn.tokenUsage!.generationSpeed!, active: true, averageOutputTokensPerSecond: 90, outputTimeMs: 10000,
+      splitMethod: 'streamedRequests', llmRequests: 3,
+    } } };
+    try {
+      flushSync(() => root.render(<ThreadTimeline turns={[live]} activeTurnId={turn.id} liveOutput="Working..." />));
+      flushSync(() => container.querySelector<HTMLButtonElement>('.thread-turn-head-main')!.click());
+      const speed = container.querySelector<HTMLButtonElement>('button.thread-turn-head-speed')!;
+      expect(speed.textContent).toBe('90.0 tok/s');
+      await act(async () => speed.click());
+      const details = document.querySelector('.thread-speed-details')!;
+      expect(details.textContent).toContain('Combined output speed so far');
+      expect(details.textContent).toContain('Model calls3 calls');
+      expect(details.textContent).toContain('the call count includes the one in progress');
     } finally { flushSync(() => root.unmount()); container.remove(); vi.unstubAllGlobals(); }
   });
 

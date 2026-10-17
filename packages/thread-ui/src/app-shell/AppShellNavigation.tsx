@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import type { ImportPluginInput } from '@pockymoe/shared';
 import { usePlugins } from '../plugins/usePlugins';
+import { confirmAsync } from '../components/menu/confirmAsync';
 import { type ThemeMode, useAppShellNav } from './AppShellNavContext';
 import { PhoneHandChoice } from './PhoneHandChoice';
 
@@ -268,7 +269,7 @@ export function AppShellSettingsDialog({
   }
 
   async function handleUninstallPlugin(pluginId: string, pluginName: string) {
-    const confirmed = window.confirm(`Uninstall ${pluginName}?`);
+    const confirmed = await confirmAsync({ title: translate('workbench.uninstallPluginTitle', { value1: pluginName }), description: translate('workbench.uninstallPluginBody'), confirmLabel: translate('workbench.uninstallPlugin') });
     if (!confirmed) {
       return;
     }

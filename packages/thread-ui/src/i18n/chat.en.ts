@@ -189,6 +189,7 @@ export const chatEn = {
   "chat.unableToLoadProviderConfig": "Unable to load provider config.",
   "chat.theRawMCPBlockMustStartWith": "The raw MCP block must start with a header like [mcp_servers.name].",
   "chat.copy_6b0f10": "Copy {{value1}}",
+  "chat.copyAll": "Copy all",
   "chat.copied": "Copied",
   "chat.copyFailed": "Copy failed",
   "chat.hideChainOfThought": "Hide chain of thought",

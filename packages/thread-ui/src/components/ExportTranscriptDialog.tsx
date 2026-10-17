@@ -1,8 +1,9 @@
 import { getLocale } from '../i18n';
 import { translate, useI18n } from '../i18n';
 import { Users, Link2, FileCode, Pencil } from 'lucide-react';
-import { useEffect, useMemo, useState, type ReactNode, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode, type FormEvent } from 'react';
 import { createPortal } from 'react-dom';
+import { useModalFocus } from './menu/useModalFocus';
 
 import type {
   ExportThreadTranscriptInput,
@@ -199,20 +200,9 @@ export function ThreadActionsDialog({
     }
   }, [open, turns]);
 
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape' && !busy) {
-        onCancel();
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [busy, onCancel, open]);
+  const windowRef = useRef<HTMLDivElement>(null);
+  // Focus moves into the window and stays there; Esc closes it unless busy.
+  useModalFocus(windowRef, open, busy ? undefined : onCancel);
 
   useEffect(() => {
     if (!open) {
@@ -338,6 +328,7 @@ export function ThreadActionsDialog({
         className="thread-export-dialog-backdrop absolute inset-0 backdrop-blur-sm disabled:cursor-not-allowed"
       />
       <div
+        ref={windowRef}
         role="dialog"
         aria-modal="true"
         aria-label={translate("sharing.threadActions")}

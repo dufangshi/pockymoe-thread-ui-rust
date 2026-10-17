@@ -6,6 +6,7 @@ import {
   MessageSquare,
   PanelBottomClose,
   PanelBottomOpen,
+  Check,
   Pencil,
   Plus,
   RotateCw,

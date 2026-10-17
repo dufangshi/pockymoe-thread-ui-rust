@@ -905,6 +905,7 @@ var chatEn = {
   "chat.unableToLoadProviderConfig": "Unable to load provider config.",
   "chat.theRawMCPBlockMustStartWith": "The raw MCP block must start with a header like [mcp_servers.name].",
   "chat.copy_6b0f10": "Copy {{value1}}",
+  "chat.copyAll": "Copy all",
   "chat.copied": "Copied",
   "chat.copyFailed": "Copy failed",
   "chat.hideChainOfThought": "Hide chain of thought",
@@ -1856,6 +1857,8 @@ var filesEn = {
   "files.safeWaitBeforeLeave": "Wait for the save or verify its unknown result before leaving. You can download your draft.",
   "files.safeLeave": "Leave this view and discard unsaved file drafts? Cancel to keep editing.",
   "files.safeDraftBudget": "32 unsaved documents are open. Save or close a document before opening another.",
+  "files.safeDiscardTitle": "Discard the draft?",
+  "files.safeDiscardAction": "Discard draft",
   "files.safeDiscard": "Discard this file draft and adopt the displayed base?",
   "files.safeDownloadDraft": "Download draft",
   "files.safeCheckDisk": "Check disk",
@@ -2882,6 +2885,8 @@ var settingsEn = {
   "settings.passcodeEnable": "Turn on",
   "settings.passcodeChange": "Change",
   "settings.passcodeDisable": "Turn off",
+  "settings.passcodeDisableTitle": "Turn off the passcode?",
+  "settings.passcodeDisableAction": "Turn off",
   "settings.passcodeDisableConfirm": "Turn off the passcode? Anyone who can open this address can use Pockymoe again.",
   "settings.passcodeSaved": "Passcode saved. Other browsers are signed out.",
   "settings.passcodeRemoved": "Passcode turned off.",
@@ -3104,6 +3109,9 @@ var sharingEn = {
 
 // src/i18n/workbench.en.ts
 var workbenchEn = {
+  "workbench.uninstallPluginTitle": "Uninstall {{value1}}?",
+  "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.",
+  "workbench.uninstallPlugin": "Uninstall",
   "workbench.treerScopeForbidden": "This thread or action is not available through this Treer hub.",
   "workbench.subagentsRunning": "Subagents \xB7 {{count}} running",
   "workbench.subagentCurrent": "Current",
@@ -4626,6 +4634,7 @@ var chatZhCN = {
   "chat.unableToLoadProviderConfig": "\u65E0\u6CD5\u52A0\u8F7D\u63D0\u4F9B\u5546\u914D\u7F6E\u3002",
   "chat.theRawMCPBlockMustStartWith": "\u539F\u59CB MCP \u914D\u7F6E\u5757\u5FC5\u987B\u4EE5 [mcp_servers.name] \u4E4B\u7C7B\u7684\u6807\u9898\u5F00\u5934\u3002",
   "chat.copy_6b0f10": "\u590D\u5236 {{value1}}",
+  "chat.copyAll": "\u590D\u5236\u5168\u6587",
   "chat.copied": "\u5DF2\u590D\u5236",
   "chat.copyFailed": "\u590D\u5236\u5931\u8D25",
   "chat.hideChainOfThought": "\u9690\u85CF\u601D\u8003\u8FC7\u7A0B",
@@ -5577,6 +5586,8 @@ var filesZhCN = {
   "files.safeWaitBeforeLeave": "\u8BF7\u7B49\u5F85\u4FDD\u5B58\u5B8C\u6210\u6216\u6838\u9A8C\u672A\u77E5\u7ED3\u679C\u540E\u518D\u79BB\u5F00\u3002\u53EF\u5148\u4E0B\u8F7D\u8349\u7A3F\u3002",
   "files.safeLeave": "\u79BB\u5F00\u5F53\u524D\u89C6\u56FE\u5E76\u653E\u5F03\u672A\u4FDD\u5B58\u7684\u6587\u4EF6\u8349\u7A3F\uFF1F\u53D6\u6D88\u53EF\u7EE7\u7EED\u7F16\u8F91\u3002",
   "files.safeDraftBudget": "\u5DF2\u6253\u5F00 32 \u4E2A\u672A\u4FDD\u5B58\u6587\u6863\u3002\u8BF7\u4FDD\u5B58\u6216\u5173\u95ED\u4E00\u4E2A\u6587\u6863\u540E\u518D\u6253\u5F00\u3002",
+  "files.safeDiscardTitle": "\u653E\u5F03\u8349\u7A3F\uFF1F",
+  "files.safeDiscardAction": "\u653E\u5F03\u8349\u7A3F",
   "files.safeDiscard": "\u653E\u5F03\u6B64\u6587\u4EF6\u8349\u7A3F\u5E76\u91C7\u7528\u6240\u5C55\u793A\u7684\u7248\u672C\uFF1F",
   "files.safeDownloadDraft": "\u4E0B\u8F7D\u8349\u7A3F",
   "files.safeCheckDisk": "\u68C0\u67E5\u78C1\u76D8",
@@ -6603,6 +6614,8 @@ var settingsZhCN = {
   "settings.passcodeEnable": "\u5F00\u542F",
   "settings.passcodeChange": "\u4FEE\u6539",
   "settings.passcodeDisable": "\u5173\u95ED",
+  "settings.passcodeDisableTitle": "\u5173\u95ED\u8BBF\u95EE\u53E3\u4EE4\uFF1F",
+  "settings.passcodeDisableAction": "\u5173\u95ED\u53E3\u4EE4",
   "settings.passcodeDisableConfirm": "\u5173\u95ED\u8BBF\u95EE\u53E3\u4EE4\uFF1F\u5173\u95ED\u540E\uFF0C\u4EFB\u4F55\u80FD\u6253\u5F00\u8FD9\u4E2A\u5730\u5740\u7684\u4EBA\u90FD\u80FD\u518D\u6B21\u4F7F\u7528 Pockymoe\u3002",
   "settings.passcodeSaved": "\u53E3\u4EE4\u5DF2\u4FDD\u5B58\uFF0C\u5176\u4ED6\u6D4F\u89C8\u5668\u5DF2\u9000\u51FA\u767B\u5F55\u3002",
   "settings.passcodeRemoved": "\u8BBF\u95EE\u53E3\u4EE4\u5DF2\u5173\u95ED\u3002",
@@ -6825,6 +6838,9 @@ var sharingZhCN = {
 
 // src/i18n/workbench.zh-CN.ts
 var workbenchZhCN = {
+  "workbench.uninstallPluginTitle": "\u5378\u8F7D {{value1}}\uFF1F",
+  "workbench.uninstallPluginBody": "\u63D2\u4EF6\u548C\u5B83\u7684\u8BBE\u7F6E\u4F1A\u4ECE\u8FD9\u53F0\u8BBE\u5907\u79FB\u9664\u3002",
+  "workbench.uninstallPlugin": "\u5378\u8F7D",
   "workbench.treerScopeForbidden": "\u6B64\u5BF9\u8BDD\u6216\u64CD\u4F5C\u4E0D\u5728\u5F53\u524D Treer Hub \u7684\u53EF\u7528\u8303\u56F4\u5185\u3002",
   "workbench.subagentsRunning": "\u5B50\u667A\u80FD\u4F53 \xB7 {{count}} \u4E2A\u8FD0\u884C\u4E2D",
   "workbench.subagentCurrent": "\u8FDB\u884C\u4E2D",

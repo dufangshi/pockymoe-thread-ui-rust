@@ -1,5 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { Check, Code2, Copy, Maximize2, Workflow } from 'lucide-react';
+import { Code2, Maximize2, Workflow } from 'lucide-react';
+import { CopyButton } from '../copy/CopyButton';
 import { translate, useI18n } from '../../i18n';
 import { GraphWorkspaceImageLightbox } from '../ZoomableImage';
 import { renderChatMermaid } from './graphChatMermaid';
@@ -11,8 +12,6 @@ export const GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram({
   const [result, setResult] = useState<{ source: string; dark: boolean; svg?: string }>();
   const [showSource, setShowSource] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [copyStatus, setCopyStatus] = useState<'copied' | 'failed'>();
-  const copyTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const expandButton = useRef<HTMLButtonElement>(null);
   const svg = result?.source === source && result.dark === dark ? result.svg : undefined;
   const failed = !pending && result?.source === source && result.dark === dark && !result.svg;
@@ -27,20 +26,12 @@ export const GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram({
     return () => controller.abort();
   }, [source, dark, pending]);
 
-  useEffect(() => () => clearTimeout(copyTimer.current), []);
   const closeExpanded = useCallback(() => {
     setExpanded(false);
     expandButton.current?.focus();
   }, []);
 
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(source);
-      setCopyStatus('copied');
-    } catch { setCopyStatus('failed'); }
-    clearTimeout(copyTimer.current);
-    copyTimer.current = setTimeout(() => setCopyStatus(undefined), 1500);
-  }
+
 
   return (
     <section className="thread-graph-mermaid not-prose" data-state={pending ? 'pending' : svg ? 'ready' : failed ? 'error' : 'loading'} data-theme={dark ? 'dark' : 'light'} aria-label={translate('chat.diagram')}>
@@ -48,7 +39,7 @@ export const GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram({
         <span className="thread-graph-mermaid-label"><Workflow size={14} aria-hidden="true" />Mermaid</span>
         <div className="thread-graph-mermaid-actions">
           {svg && <button type="button" onClick={() => setShowSource(value => !value)} aria-label={translate(showSource ? 'chat.showDiagram' : 'chat.diagramSource')} title={translate(showSource ? 'chat.showDiagram' : 'chat.diagramSource')} aria-pressed={showSource}><Code2 size={16} /></button>}
-          <button type="button" onClick={() => void copy()} aria-label={translate('chat.copyCode')} title={translate(copyStatus === 'copied' ? 'chat.copied' : copyStatus === 'failed' ? 'chat.copyFailed' : 'chat.copyCode')}>{copyStatus === 'copied' ? <Check size={16} /> : <Copy size={16} />}</button>
+          <CopyButton value={source} label={translate('chat.copyCode')} />
           {svg && <button ref={expandButton} type="button" onClick={() => setExpanded(true)} aria-label={translate('chat.expandDiagram')} title={translate('chat.expandDiagram')}><Maximize2 size={16} /></button>}
         </div>
       </div>

@@ -33,6 +33,8 @@ export const filesZhCN = {
   "files.safeWaitBeforeLeave": "请等待保存完成或核验未知结果后再离开。可先下载草稿。",
   "files.safeLeave": "离开当前视图并放弃未保存的文件草稿？取消可继续编辑。",
   "files.safeDraftBudget": "已打开 32 个未保存文档。请保存或关闭一个文档后再打开。",
+  "files.safeDiscardTitle": "放弃草稿？",
+  "files.safeDiscardAction": "放弃草稿",
   "files.safeDiscard": "放弃此文件草稿并采用所展示的版本？",
   "files.safeDownloadDraft": "下载草稿",
   "files.safeCheckDisk": "检查磁盘",

@@ -4,6 +4,7 @@ import { translate, useI18n } from '../../i18n';
 import type { WorkbenchThread } from '../MatterWorkbench';
 import { threadGroupActivity } from '../GroupedThreadTabs';
 import type { WorkbenchPane, WorkbenchPaneSwitch } from './paneSwitch';
+import { useModalFocus } from '../menu/useModalFocus';
 
 export type PhonePane = 'chat' | 'shell' | 'files';
 
@@ -155,6 +156,8 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
       node.removeEventListener('touchcancel', end);
     };
   }, [open]);
+  // Keyboard focus moves into an open sheet, stays there and returns on close.
+  useModalFocus(sheet, open, onClose);
   return (
     <>
       {open && <button type="button" className="matter-phone-sheet-scrim" aria-label={translate('workbench.closeSheet')} onClick={onClose} />}
@@ -167,7 +170,6 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
         data-open={open || undefined}
         aria-hidden={!open}
         inert={!open}
-        onKeyDown={event => { if (event.key === 'Escape') onClose(); }}
         // Actions and modal dialog triggers hide the sheet (their dialogs live in
         // portals); popover triggers keep it, since their popovers anchor inside.
         onClick={event => {

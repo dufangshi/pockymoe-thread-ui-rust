@@ -18,6 +18,10 @@ import './styles/copy.css';
 
 export { CopyButton, useCopy } from './components/copy/CopyButton';
 export { PathChip } from './components/copy/PathChip';
+export { useMenuKeyboard } from './components/menu/useMenuKeyboard';
+export { useModalFocus } from './components/menu/useModalFocus';
+export { useLongPress } from './components/menu/useLongPress';
+export { confirmAsync } from './components/menu/confirmAsync';
 
 export type {
   ShellSocketConnection,

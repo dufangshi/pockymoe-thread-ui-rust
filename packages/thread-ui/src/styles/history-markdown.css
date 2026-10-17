@@ -3106,9 +3106,15 @@
   .thread-ui-shell .thread-graph-message-sender { transition: none; }
 }
 
-.thread-workspace-link-menu { position:fixed; z-index:120; min-width:180px; padding:4px; border:1px solid #49473e; border-radius:9px; background:#25241e; color:#e9e7df; box-shadow:0 8px 24px #0005; font-size:13px; }
-.thread-workspace-link-menu button { display:block; width:100%; border-radius:5px; padding:7px 10px; text-align:left; }
-.thread-workspace-link-menu button:hover,.thread-workspace-link-menu button:focus-visible { background:#3b392e; outline:none; }
+/* A file link's menu wears the theme like the other menus. */
+.thread-workspace-link-menu { position:fixed; z-index:120; min-width:180px; padding:4px; border:1px solid var(--theme-border-strong); border-radius:9px; background:var(--theme-panel); color:var(--theme-fg); box-shadow:0 8px 24px rgb(0 0 0 / 22%); font-size:13px; }
+.thread-workspace-link-menu button { display:flex; align-items:center; gap:8px; width:100%; min-height:36px; border-radius:6px; padding:0 10px; text-align:left; }
+.thread-workspace-link-menu button svg { width:14px; height:14px; flex:none; }
+.thread-workspace-link-menu button:hover,.thread-workspace-link-menu button:focus-visible { background:var(--theme-hover); outline:none; }
+.thread-workspace-link-menu [data-copy-state='copied'] svg { color:var(--theme-accent-solid); }
+.thread-workspace-link-menu [data-copy-state='failed'] { color:var(--theme-danger, #e5484d); }
+/* A long press opens the app's own menu, not the system's link callout. */
+[data-file-link] { -webkit-touch-callout: none; }
 html[data-theme-effective="light"] .thread-workspace-link-menu { background:#f3f5f5; color:#24292c; border-color:#c8cecd; }
 html[data-theme-effective="light"] .thread-workspace-link-menu button:hover,html[data-theme-effective="light"] .thread-workspace-link-menu button:focus-visible { background:#e0e6e5; }
 @keyframes thread-operation-sheen { from { background-position:150% 0; } to { background-position:-150% 0; } }

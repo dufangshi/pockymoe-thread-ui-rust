@@ -13,7 +13,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react';
-import { Check, Copy } from 'lucide-react';
+import { CopyButton } from '../copy/CopyButton';
 import ReactMarkdown, { defaultUrlTransform } from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
@@ -28,7 +28,6 @@ import { markdownHtmlPlugins } from '../markdownHtml';
 import { WorkspaceFileLink } from '../WorkspaceFileLink';
 import { VerifiedWorkspacePath } from '../VerifiedWorkspacePath';
 import { parseWorkspacePathText, remarkWorkspacePaths, type WorkspacePathResolver } from '../workspacePathLinks';
-import { Button } from '../graph-ui/Button';
 import { usePlugins } from '../../plugins/usePlugins';
 import { GraphChatToolCall } from './GraphChatToolCall';
 import { getGraphChatHighlighter, syntaxThemeFor } from './graphChatShiki';
@@ -181,9 +180,6 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
   const [highlighter, setHighlighter] = useState<Awaited<
     ReturnType<typeof getGraphChatHighlighter>
   > | null>(null);
-  const [copyState, setCopyState] = useState<
-    Record<string, 'copied' | 'failed'>
-  >({});
   const [touchCode, setTouchCode] = useState<string | null>(null);
   const [dark, setDark] = useState(false);
   const cssSyntaxPalette = useThemeFeature('code.cssSyntaxPalette');
@@ -234,22 +230,6 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
     });
     return () => observer.disconnect();
   }, []);
-
-  async function copyCode(id: string, value: string) {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopyState((current) => ({ ...current, [id]: 'copied' }));
-      window.setTimeout(() => {
-        setCopyState((current) => {
-          const next = { ...current };
-          delete next[id];
-          return next;
-        });
-      }, 1200);
-    } catch {
-      setCopyState((current) => ({ ...current, [id]: 'failed' }));
-    }
-  }
 
   const CodeBlockRenderer = ({
     children,
@@ -380,27 +360,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
             }
           }}
         >
-          {!readOnly && <Button
-            type="button"
-            onClick={() => void copyCode(id, textContent)}
-            variant="ghost"
-            size="sm"
-            className="thread-graph-code-copy absolute right-2 top-2 z-10 rounded-md p-1.5"
-            title={
-              copyState[id] === 'copied'
-                ? translate("chat.copied")
-                : copyState[id] === 'failed'
-                  ? translate("chat.copyFailed")
-                  : translate("chat.copy")
-            }
-            aria-label={translate("chat.copyCode")}
-          >
-            {copyState[id] === 'copied' ? (
-              <Check data-icon="copied" className="h-3.5 w-3.5" />
-            ) : (
-              <Copy data-icon="copy" className="h-3.5 w-3.5" />
-            )}
-          </Button>}
+          {!readOnly && <CopyButton value={textContent} label={translate("chat.copyCode")} className="thread-graph-code-copy absolute right-2 top-2 z-10" />}
           {html ? (
             <div dangerouslySetInnerHTML={{ __html: html }} />
           ) : (

@@ -1,4 +1,7 @@
 export const workbenchEn = {
+  "workbench.uninstallPluginTitle": "Uninstall {{value1}}?",
+  "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.",
+  "workbench.uninstallPlugin": "Uninstall",
   "workbench.treerScopeForbidden": "This thread or action is not available through this Treer hub.",
   "workbench.subagentsRunning": "Subagents · {{count}} running",
   "workbench.subagentCurrent": "Current",

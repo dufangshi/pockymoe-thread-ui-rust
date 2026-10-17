@@ -1,7 +1,10 @@
+import { translate, useI18n } from '../i18n';
+import { CopyButton } from './copy/CopyButton';
 import { useLayoutEffect, useRef, useState } from 'react';
 
 /** Keep the home/root and nearest directories visible, including on narrow screens. */
 export function WorkbenchPath({ path }: { path: string }) {
+  useI18n();
   const ref = useRef<HTMLSpanElement>(null);
   const [label, setLabel] = useState(path);
   useLayoutEffect(() => {
@@ -37,5 +40,9 @@ export function WorkbenchPath({ path }: { path: string }) {
     void document.fonts.ready.then(update);
     return () => observer.disconnect();
   }, [path]);
-  return <span ref={ref} className="matter-workspace-path" title={path} aria-label={path}>{label}</span>;
+  // The shortened path keeps its whole value in reach: tooltip, and the copy button beside it.
+  return <span className="matter-workspace-path-chip">
+    <span ref={ref} className="matter-workspace-path" title={path} aria-label={path}>{label}</span>
+    <CopyButton value={path} label={translate('common.copyPath')} />
+  </span>;
 }

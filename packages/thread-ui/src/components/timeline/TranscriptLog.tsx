@@ -1,5 +1,6 @@
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Check, ChevronRight, Copy } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
+import { CopyButton } from '../copy/CopyButton';
 
 import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto, ThreadTurnActivitySegmentDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
 
@@ -260,18 +261,7 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
 
 /** Copies a command; it appears beside its row on hover, and on phones once the row is open. */
 function CopyCommand({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button type="button" className="tlog-copy" aria-label={translate('chat.logCopyCommand')} title={copied ? translate('chat.copied') : translate('chat.logCopyCommand')}
-      onClick={() => {
-        void navigator.clipboard?.writeText(text).then(() => {
-          setCopied(true);
-          window.setTimeout(() => setCopied(false), 1200);
-        }, () => undefined);
-      }}>
-      {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-    </button>
-  );
+  return <CopyButton value={text} label={translate('chat.logCopyCommand')} className="tlog-copy" />;
 }
 
 export const LogRow = memo(function LogRow({ item, defaultOpen = false, path }: { item: ThreadHistoryItemDto; defaultOpen?: boolean; path?: string }) {

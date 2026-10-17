@@ -491,6 +491,8 @@ export const settingsEn = {
   'settings.passcodeEnable': 'Turn on',
   'settings.passcodeChange': 'Change',
   'settings.passcodeDisable': 'Turn off',
+  'settings.passcodeDisableTitle': 'Turn off the passcode?',
+  'settings.passcodeDisableAction': 'Turn off',
   'settings.passcodeDisableConfirm':
     'Turn off the passcode? Anyone who can open this address can use Pockymoe again.',
   'settings.passcodeSaved': 'Passcode saved. Other browsers are signed out.',

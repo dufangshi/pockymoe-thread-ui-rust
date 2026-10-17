@@ -37,6 +37,7 @@ import { useFilePanel } from '../workbench/FilePanelContext';
 import { WorkspaceFileActions } from './WorkspaceFileMenu';
 import ReactMarkdown, { defaultUrlTransform, type Components } from 'react-markdown';
 import { localFileHref, relativeWorkspacePath, normalizeFileSystemPath } from '../workspacePaths';
+import { confirmAsync } from '../menu/confirmAsync';
 import remarkGfm from 'remark-gfm';
 import { markdownHtmlPlugins } from '../markdownHtml';
 import { MarkdownImageLinkContext } from '../ZoomableImage';
@@ -694,8 +695,8 @@ export function GraphWorkspacePreviewPane({
               <>
                 <button
                   type="button"
-                  onClick={() => {
-                    if (document && isProtected(document) && !window.confirm(translate('files.safeDiscard'))) return;
+                  onClick={async () => {
+                    if (document && isProtected(document) && !(await confirmAsync({ title: translate('files.safeDiscardTitle'), description: translate('files.safeDiscard'), confirmLabel: translate('files.safeDiscardAction') }))) return;
                     setDraftContent(document?.baseContent ?? previewFile.content);
                     setEditing(false);
                   }}
@@ -743,7 +744,7 @@ export function GraphWorkspacePreviewPane({
     {onNavigateForward && <button type="button" onClick={onNavigateForward} aria-label={translate('files.goForward')} title={translate('files.goForward')} className="thread-graph-editor-toolbar-button flex h-6 w-6 shrink-0 items-center justify-center rounded"><ArrowRight data-icon="forward" size={14} /></button>}
   </>;
   const copyPath = activeNode?.path && !/^(?:\/|[a-z]:[\\/])/i.test(activeNode.path) && workspaceRootPath ? `${workspaceRootPath.replace(/[\\/]+$/, '')}/${activeNode.path}` : activeNode?.path ?? '';
-  const fileActions = activeNode && <WorkspaceFileActions path={copyPath} key={activeNode.path} {...((documentMetadata || filePanel?.label) ? { metadata:[filePanel?.label, documentMetadata].filter(Boolean).join(' · ') } : {})}
+  const fileActions = activeNode && <WorkspaceFileActions path={copyPath} relativePath={workspaceRootPath ? relativeWorkspacePath(copyPath, workspaceRootPath) : null} key={activeNode.path} {...((documentMetadata || filePanel?.label) ? { metadata:[filePanel?.label, documentMetadata].filter(Boolean).join(' · ') } : {})}
     {...(document ? {onDownload:()=>{ if (!isProtected(document) && onDownloadFile) void onDownloadFile(); else downloadDraft(document); }, onRefresh: async () => {
       const previous = document.snapshot.contentHash;
       await documents?.checkDisk(document.snapshot.path);
@@ -847,7 +848,7 @@ export function GraphWorkspacePreviewPane({
                 <span>{document.snapshot.readOnlyReason ? translate('files.safeReadOnly', {reason: translateReadOnly(document.snapshot.readOnlyReason)}) : translate(document.needsVerification && document.phase==='clean' ? 'files.safeAdoptedSnapshot':`files.safePhase.${document.phase}`)} · {document.snapshot.encoding==='utf-8' ? 'UTF-8':translate('files.safeUnknownEncoding')}{document.snapshot.bom ? ' BOM' : ''} · {document.snapshot.eol.toUpperCase()} · r{document.revision}</span>
                 <div className="workspace-document-actions">
                   {document.phase === 'unknown' ? <button type="button" onClick={() => void documents?.reconcile(document.snapshot.path)}>{translate('files.safeVerifySave')}</button> : null}
-                  {document.phase === 'unknown' && document.conflict ? <button type="button" disabled={document.operationPending} onClick={() => {if(window.confirm(translate('files.safeManualRebase'))) documents?.acceptVerifiedDisk(document.snapshot.path);}}>{translate('files.safeUseCheckedBase')}</button> : null}
+                  {document.phase === 'unknown' && document.conflict ? <button type="button" disabled={document.operationPending} onClick={async () => {if(await confirmAsync({ title: translate('files.safeUseCheckedBase'), description: translate('files.safeManualRebase'), confirmLabel: translate('files.safeUseCheckedBase') })) documents?.acceptVerifiedDisk(document.snapshot.path);}}>{translate('files.safeUseCheckedBase')}</button> : null}
                   {document.phase === 'conflict' && !showConflict ? <button type="button" onClick={() => setShowConflict(true)}>{translate('files.safeViewConflict')}</button> : null}
                 </div>
               </div>
@@ -858,8 +859,8 @@ export function GraphWorkspacePreviewPane({
                 <p>{translate(document.phase==='unknown' ? 'files.safeUnknown':'files.safeConflictBody')}</p>
                 <div className="workspace-document-actions">
                   <button type="button" onClick={() => setShowConflict(false)}>{translate('files.safeKeepDraft')}</button>
-                  <button type="button" disabled={document.phase==='unknown' || document.conflict?.content == null} onClick={() => {const revision=document.revision; if(window.confirm(translate('files.safeDiscard'))) documents?.adoptDisk(document.snapshot.path,revision);}}>{translate('files.safeAdoptDisk')}</button>
-                  <button type="button" disabled={document.phase==='unknown' || !document.conflict?.contentHash || Boolean(document.conflict.readOnlyReason)} onClick={() => {if(window.confirm(translate('files.safeOverwriteConfirm'))) void documents?.save(document.snapshot.path,true);}}>{translate('files.safeOverwriteShown')}</button>
+                  <button type="button" disabled={document.phase==='unknown' || document.conflict?.content == null} onClick={async () => {const revision=document.revision; if(await confirmAsync({ title: translate('files.safeAdoptDisk'), description: translate('files.safeDiscard'), confirmLabel: translate('files.safeAdoptDisk') })) documents?.adoptDisk(document.snapshot.path,revision);}}>{translate('files.safeAdoptDisk')}</button>
+                  <button type="button" disabled={document.phase==='unknown' || !document.conflict?.contentHash || Boolean(document.conflict.readOnlyReason)} onClick={async () => {if(await confirmAsync({ title: translate('files.safeOverwriteShown'), description: translate('files.safeOverwriteConfirm'), confirmLabel: translate('files.safeOverwriteShown') })) void documents?.save(document.snapshot.path,true);}}>{translate('files.safeOverwriteShown')}</button>
                   <button type="button" disabled={document.conflict?.content == null} onClick={() => downloadDraft(document,true)}>{translate('files.safeDownloadDisk')}</button>
                 </div>
                 {document.conflict?.content != null ? <>

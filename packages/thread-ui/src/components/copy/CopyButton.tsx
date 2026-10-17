@@ -34,7 +34,7 @@ export function CopyButton({ value, label, className, onCopied }: {
   const text = state === 'copied' ? translate('common.copied') : state === 'failed' ? translate('common.copyFailed') : label;
   return (
     <button type="button" className={`copy-button${className ? ` ${className}` : ''}`} data-state={state}
-      aria-label={text} title={text}
+      aria-label={label} title={text}
       onClick={async (event: MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         if (await copy(typeof value === 'function' ? value() : value)) onCopied?.();

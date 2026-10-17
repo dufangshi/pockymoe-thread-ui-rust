@@ -169,6 +169,9 @@ declare const en: {
     readonly 'search.assistant': "Assistant";
     readonly 'search.title': "Title";
     readonly 'search.localDevice': "Local device";
+    readonly "workbench.uninstallPluginTitle": "Uninstall {{value1}}?";
+    readonly "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.";
+    readonly "workbench.uninstallPlugin": "Uninstall";
     readonly "workbench.treerScopeForbidden": "This thread or action is not available through this Treer hub.";
     readonly "workbench.subagentsRunning": "Subagents · {{count}} running";
     readonly "workbench.subagentCurrent": "Current";
@@ -1389,6 +1392,8 @@ declare const en: {
     readonly 'settings.passcodeEnable': "Turn on";
     readonly 'settings.passcodeChange': "Change";
     readonly 'settings.passcodeDisable': "Turn off";
+    readonly 'settings.passcodeDisableTitle': "Turn off the passcode?";
+    readonly 'settings.passcodeDisableAction': "Turn off";
     readonly 'settings.passcodeDisableConfirm': "Turn off the passcode? Anyone who can open this address can use Pockymoe again.";
     readonly 'settings.passcodeSaved': "Passcode saved. Other browsers are signed out.";
     readonly 'settings.passcodeRemoved': "Passcode turned off.";
@@ -1427,6 +1432,8 @@ declare const en: {
     readonly "files.safeWaitBeforeLeave": "Wait for the save or verify its unknown result before leaving. You can download your draft.";
     readonly "files.safeLeave": "Leave this view and discard unsaved file drafts? Cancel to keep editing.";
     readonly "files.safeDraftBudget": "32 unsaved documents are open. Save or close a document before opening another.";
+    readonly "files.safeDiscardTitle": "Discard the draft?";
+    readonly "files.safeDiscardAction": "Discard draft";
     readonly "files.safeDiscard": "Discard this file draft and adopt the displayed base?";
     readonly "files.safeDownloadDraft": "Download draft";
     readonly "files.safeCheckDisk": "Check disk";
@@ -2813,6 +2820,7 @@ declare const en: {
     readonly "chat.unableToLoadProviderConfig": "Unable to load provider config.";
     readonly "chat.theRawMCPBlockMustStartWith": "The raw MCP block must start with a header like [mcp_servers.name].";
     readonly "chat.copy_6b0f10": "Copy {{value1}}";
+    readonly "chat.copyAll": "Copy all";
     readonly "chat.copied": "Copied";
     readonly "chat.copyFailed": "Copy failed";
     readonly "chat.hideChainOfThought": "Hide chain of thought";
@@ -3925,6 +3933,9 @@ declare const zhCN: {
     'search.assistant': "助手";
     'search.title': "标题";
     'search.localDevice': "本地设备";
+    "workbench.uninstallPluginTitle": "卸载 {{value1}}？";
+    "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。";
+    "workbench.uninstallPlugin": "卸载";
     "workbench.treerScopeForbidden": "此对话或操作不在当前 Treer Hub 的可用范围内。";
     "workbench.subagentsRunning": "子智能体 · {{count}} 个运行中";
     "workbench.subagentCurrent": "进行中";
@@ -5145,6 +5156,8 @@ declare const zhCN: {
     'settings.passcodeEnable': "开启";
     'settings.passcodeChange': "修改";
     'settings.passcodeDisable': "关闭";
+    'settings.passcodeDisableTitle': "关闭访问口令？";
+    'settings.passcodeDisableAction': "关闭口令";
     'settings.passcodeDisableConfirm': "关闭访问口令？关闭后，任何能打开这个地址的人都能再次使用 Pockymoe。";
     'settings.passcodeSaved': "口令已保存，其他浏览器已退出登录。";
     'settings.passcodeRemoved': "访问口令已关闭。";
@@ -5183,6 +5196,8 @@ declare const zhCN: {
     "files.safeWaitBeforeLeave": "请等待保存完成或核验未知结果后再离开。可先下载草稿。";
     "files.safeLeave": "离开当前视图并放弃未保存的文件草稿？取消可继续编辑。";
     "files.safeDraftBudget": "已打开 32 个未保存文档。请保存或关闭一个文档后再打开。";
+    "files.safeDiscardTitle": "放弃草稿？";
+    "files.safeDiscardAction": "放弃草稿";
     "files.safeDiscard": "放弃此文件草稿并采用所展示的版本？";
     "files.safeDownloadDraft": "下载草稿";
     "files.safeCheckDisk": "检查磁盘";
@@ -6569,6 +6584,7 @@ declare const zhCN: {
     "chat.unableToLoadProviderConfig": "无法加载提供商配置。";
     "chat.theRawMCPBlockMustStartWith": "原始 MCP 配置块必须以 [mcp_servers.name] 之类的标题开头。";
     "chat.copy_6b0f10": "复制 {{value1}}";
+    "chat.copyAll": "复制全文";
     "chat.copied": "已复制";
     "chat.copyFailed": "复制失败";
     "chat.hideChainOfThought": "隐藏思考过程";
@@ -7703,6 +7719,9 @@ declare const resources: {
         readonly 'search.assistant': "Assistant";
         readonly 'search.title': "Title";
         readonly 'search.localDevice': "Local device";
+        readonly "workbench.uninstallPluginTitle": "Uninstall {{value1}}?";
+        readonly "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.";
+        readonly "workbench.uninstallPlugin": "Uninstall";
         readonly "workbench.treerScopeForbidden": "This thread or action is not available through this Treer hub.";
         readonly "workbench.subagentsRunning": "Subagents · {{count}} running";
         readonly "workbench.subagentCurrent": "Current";
@@ -8923,6 +8942,8 @@ declare const resources: {
         readonly 'settings.passcodeEnable': "Turn on";
         readonly 'settings.passcodeChange': "Change";
         readonly 'settings.passcodeDisable': "Turn off";
+        readonly 'settings.passcodeDisableTitle': "Turn off the passcode?";
+        readonly 'settings.passcodeDisableAction': "Turn off";
         readonly 'settings.passcodeDisableConfirm': "Turn off the passcode? Anyone who can open this address can use Pockymoe again.";
         readonly 'settings.passcodeSaved': "Passcode saved. Other browsers are signed out.";
         readonly 'settings.passcodeRemoved': "Passcode turned off.";
@@ -8961,6 +8982,8 @@ declare const resources: {
         readonly "files.safeWaitBeforeLeave": "Wait for the save or verify its unknown result before leaving. You can download your draft.";
         readonly "files.safeLeave": "Leave this view and discard unsaved file drafts? Cancel to keep editing.";
         readonly "files.safeDraftBudget": "32 unsaved documents are open. Save or close a document before opening another.";
+        readonly "files.safeDiscardTitle": "Discard the draft?";
+        readonly "files.safeDiscardAction": "Discard draft";
         readonly "files.safeDiscard": "Discard this file draft and adopt the displayed base?";
         readonly "files.safeDownloadDraft": "Download draft";
         readonly "files.safeCheckDisk": "Check disk";
@@ -10347,6 +10370,7 @@ declare const resources: {
         readonly "chat.unableToLoadProviderConfig": "Unable to load provider config.";
         readonly "chat.theRawMCPBlockMustStartWith": "The raw MCP block must start with a header like [mcp_servers.name].";
         readonly "chat.copy_6b0f10": "Copy {{value1}}";
+        readonly "chat.copyAll": "Copy all";
         readonly "chat.copied": "Copied";
         readonly "chat.copyFailed": "Copy failed";
         readonly "chat.hideChainOfThought": "Hide chain of thought";
@@ -11458,6 +11482,9 @@ declare const resources: {
         'search.assistant': "助手";
         'search.title': "标题";
         'search.localDevice': "本地设备";
+        "workbench.uninstallPluginTitle": "卸载 {{value1}}？";
+        "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。";
+        "workbench.uninstallPlugin": "卸载";
         "workbench.treerScopeForbidden": "此对话或操作不在当前 Treer Hub 的可用范围内。";
         "workbench.subagentsRunning": "子智能体 · {{count}} 个运行中";
         "workbench.subagentCurrent": "进行中";
@@ -12678,6 +12705,8 @@ declare const resources: {
         'settings.passcodeEnable': "开启";
         'settings.passcodeChange': "修改";
         'settings.passcodeDisable': "关闭";
+        'settings.passcodeDisableTitle': "关闭访问口令？";
+        'settings.passcodeDisableAction': "关闭口令";
         'settings.passcodeDisableConfirm': "关闭访问口令？关闭后，任何能打开这个地址的人都能再次使用 Pockymoe。";
         'settings.passcodeSaved': "口令已保存，其他浏览器已退出登录。";
         'settings.passcodeRemoved': "访问口令已关闭。";
@@ -12716,6 +12745,8 @@ declare const resources: {
         "files.safeWaitBeforeLeave": "请等待保存完成或核验未知结果后再离开。可先下载草稿。";
         "files.safeLeave": "离开当前视图并放弃未保存的文件草稿？取消可继续编辑。";
         "files.safeDraftBudget": "已打开 32 个未保存文档。请保存或关闭一个文档后再打开。";
+        "files.safeDiscardTitle": "放弃草稿？";
+        "files.safeDiscardAction": "放弃草稿";
         "files.safeDiscard": "放弃此文件草稿并采用所展示的版本？";
         "files.safeDownloadDraft": "下载草稿";
         "files.safeCheckDisk": "检查磁盘";
@@ -14102,6 +14133,7 @@ declare const resources: {
         "chat.unableToLoadProviderConfig": "无法加载提供商配置。";
         "chat.theRawMCPBlockMustStartWith": "原始 MCP 配置块必须以 [mcp_servers.name] 之类的标题开头。";
         "chat.copy_6b0f10": "复制 {{value1}}";
+        "chat.copyAll": "复制全文";
         "chat.copied": "已复制";
         "chat.copyFailed": "复制失败";
         "chat.hideChainOfThought": "隐藏思考过程";

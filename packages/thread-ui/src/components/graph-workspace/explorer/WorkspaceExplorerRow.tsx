@@ -17,6 +17,7 @@ import type { KeyboardEvent, ReactNode, Ref } from 'react';
 import { extensionOf, type WorkspaceTreeNode } from '../workspaceTree';
 import type { WorkspaceExplorerRowProjection } from './workspaceExplorerTypes';
 import { WorkspaceNodeActions, type WorkspaceNodeActionProps } from './WorkspaceNodeActions';
+import { useLongPress } from '../../menu/useLongPress';
 import { LINKED_DIRECTORY_ID_PREFIX } from './workspaceLinkedFiles';
 
 function iconForNode(node: WorkspaceTreeNode, expanded: boolean) {
@@ -60,6 +61,14 @@ function iconForNode(node: WorkspaceTreeNode, expanded: boolean) {
   return <File data-icon="file" className="workspace-node-icon is-file h-4 w-4 text-slate-400 dark:text-slate-500" />;
 }
 
+/** Opens a row's ⋯ menu; false when the row has none. */
+function openRowMenu(row: HTMLElement) {
+  const trigger = row.querySelector<HTMLButtonElement>('button[aria-haspopup="menu"]');
+  if (!trigger) return false;
+  trigger.click();
+  return true;
+}
+
 export function WorkspaceExplorerRow({
   row,
   selected,
@@ -95,6 +104,11 @@ export function WorkspaceExplorerRow({
   onDownload?: (node: WorkspaceTreeNode) => void;
 } & WorkspaceNodeActionProps) {
   useI18n();
+  // A long press opens the row's menu, like a right click or its ⋯ button.
+  const rowPress = useLongPress(({ x, y }) => {
+    const row = document.elementFromPoint(x, y)?.closest<HTMLElement>('[role="treeitem"]');
+    if (row) openRowMenu(row);
+  });
   const node: WorkspaceTreeNode = {
     ...row.node.source,
     children: [],
@@ -151,7 +165,13 @@ export function WorkspaceExplorerRow({
       } ${focused ? 'is-focused' : ''}`}
       style={{ paddingLeft }}
       onFocus={onFocus}
-      onKeyDown={onKeyDown}
+      onKeyDown={(event) => {
+        // The menu key and Shift+F10 open the row's menu, as a right click does.
+        if ((event.key === 'ContextMenu' || (event.key === 'F10' && event.shiftKey)) && openRowMenu(event.currentTarget)) { event.preventDefault(); return; }
+        onKeyDown(event);
+      }}
+      onContextMenu={(event) => { if (openRowMenu(event.currentTarget)) event.preventDefault(); }}
+      {...rowPress}
       onDoubleClick={() => {
         if (isDirectory && node.path) {
           onToggle(node.path);

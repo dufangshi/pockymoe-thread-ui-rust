@@ -30,7 +30,7 @@ export function TerminalMenu({
     const top = below + height <= viewHeight - 8 ? below : Math.max(8, rect.top - height - 4);
     const left = Math.max(8, Math.min(viewWidth - width - 8, 'width' in anchor ? rect.right - width : rect.left));
     setPosition({ left, top });
-    menu.querySelector<HTMLElement>('[role="menuitem"]:not(:disabled), input')?.focus();
+    menu.querySelector<HTMLElement>('[role^="menuitem"]:not(:disabled), input')?.focus();
   }, [anchor]);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export function TerminalMenu({
       style={position ? { left: position.left, top: position.top } : { visibility: 'hidden' }}
       onKeyDown={(event) => {
         if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
-        const items = [...(ref.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not(:disabled)') ?? [])];
+        const items = [...(ref.current?.querySelectorAll<HTMLElement>('[role^="menuitem"]:not(:disabled)') ?? [])];
         if (!items.length) return;
         event.preventDefault();
         const index = items.indexOf(document.activeElement as HTMLElement);

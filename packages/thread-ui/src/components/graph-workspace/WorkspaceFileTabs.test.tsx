@@ -50,7 +50,7 @@ describe('WorkspaceFileTabs', () => {
     expect(onSelect).toHaveBeenCalledWith('src/pinned.ts');
   });
 
-  it('requires inline confirmation before closing a dirty tab', () => {
+  it('asks in the confirmation window before closing a dirty tab', () => {
     const onClose = vi.fn();
     const element = render(
       <WorkspaceFileTabs
@@ -68,11 +68,11 @@ describe('WorkspaceFileTabs', () => {
         ?.click(),
     );
     expect(onClose).not.toHaveBeenCalled();
-    expect(element.textContent).toContain(
+    expect(document.body.textContent).toContain(
       'Discard unsaved changes in preview.ts?',
     );
 
-    const discard = [...element.querySelectorAll('button')].find(
+    const discard = [...document.body.querySelectorAll('button')].find(
       (button) => button.textContent === 'Discard',
     );
     act(() => discard?.click());

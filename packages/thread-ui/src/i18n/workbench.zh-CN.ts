@@ -1,4 +1,7 @@
 export const workbenchZhCN = {
+  "workbench.uninstallPluginTitle": "卸载 {{value1}}？",
+  "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。",
+  "workbench.uninstallPlugin": "卸载",
   "workbench.treerScopeForbidden": "此对话或操作不在当前 Treer Hub 的可用范围内。",
   "workbench.subagentsRunning": "子智能体 · {{count}} 个运行中",
   "workbench.subagentCurrent": "进行中",

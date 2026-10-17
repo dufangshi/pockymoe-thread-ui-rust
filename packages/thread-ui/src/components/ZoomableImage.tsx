@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../i18n';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useModalFocus } from './menu/useModalFocus';
 import { useImageViewport } from './useImageViewport';
 import { Maximize2, Minus, Plus, RotateCcw, X } from 'lucide-react';
 
@@ -25,25 +26,21 @@ export function GraphWorkspaceImageLightbox({
   const { viewportRef, scale, dragging, transform, reset: resetView, updateScale, handlers, moved } = useImageViewport();
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const backdropPointer = useRef(true);
+  const windowRef = useRef<HTMLDivElement | null>(null);
+  // Focus starts on close and stays in the viewer; Esc closes; focus returns to the image.
+  useModalFocus(windowRef, true, onClose, '.thread-graph-image-lightbox-close');
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    closeButtonRef.current?.focus();
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onClose]);
+  }, []);
 
   return createPortal(
     <div
+      ref={windowRef}
       className="thread-graph-image-lightbox"
       style={backgroundColor ? { backgroundColor } : undefined}
       role="dialog"

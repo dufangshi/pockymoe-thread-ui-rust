@@ -1422,3 +1422,6 @@
 .workbench-thread-picker-scrim { position: fixed; inset: 0; z-index: 249; background: var(--overlay-scrim, rgb(0 0 0 / 45%)); backdrop-filter: blur(6px); }
 .workbench-thread-picker-popover.is-sheet { border-bottom: 0; border-radius: 18px 18px 0 0; padding-bottom: env(safe-area-inset-bottom); animation: workbench-picker-rise .18s ease-out; }
 @keyframes workbench-picker-rise { from { transform: translateY(24px); opacity: 0; } }
+/* The workspace path with its copy button; the path takes the room, shortened. */
+.matter-workspace-path-chip { display: inline-flex; flex: 0 1 45%; align-items: center; gap: 2px; min-width: 0; }
+.matter-workspace-path-chip > .matter-workspace-path { flex: 1 1 auto; }

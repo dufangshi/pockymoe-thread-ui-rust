@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-RLXRBREP.js";
+} from "./chunk-H7P2KZJ6.js";
 
 // src/components/copy/CopyButton.tsx
 import { useEffect, useRef, useState } from "react";
@@ -74,7 +74,7 @@ function CopyButton({ value, label, className, onCopied }) {
       type: "button",
       className: `copy-button${className ? ` ${className}` : ""}`,
       "data-state": state,
-      "aria-label": text,
+      "aria-label": label,
       title: text,
       onClick: async (event) => {
         event.stopPropagation();
@@ -120,6 +120,260 @@ function PathChip({ path, display, copyValue, label, className }) {
   ] });
 }
 
+// src/components/menu/useMenuKeyboard.ts
+import { useEffect as useEffect2, useRef as useRef2 } from "react";
+function useMenuKeyboard(menuRef, open, onClose, itemSelector = '[role^="menuitem"]:not([disabled])') {
+  const close = useRef2(onClose);
+  close.current = onClose;
+  useEffect2(() => {
+    if (!open) return;
+    const menu = menuRef.current;
+    if (!menu) return;
+    const items = () => [...menu.querySelectorAll(itemSelector)];
+    items()[0]?.focus();
+    const key = (event) => {
+      const list = items();
+      const index = list.indexOf(document.activeElement);
+      const move = (to) => {
+        event.preventDefault();
+        list[(to + list.length) % list.length]?.focus();
+      };
+      if (event.key === "ArrowDown") move(index + 1);
+      else if (event.key === "ArrowUp") move(index < 0 ? -1 : index - 1);
+      else if (event.key === "Home") move(0);
+      else if (event.key === "End") move(list.length - 1);
+      else if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        close.current(true);
+      } else if (event.key === "Tab") close.current(false);
+    };
+    menu.addEventListener("keydown", key);
+    return () => menu.removeEventListener("keydown", key);
+  }, [menuRef, open, itemSelector]);
+}
+
+// src/components/menu/useModalFocus.ts
+import { useEffect as useEffect3, useRef as useRef3 } from "react";
+var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+function useModalFocus(windowRef, open, onClose, initial) {
+  const close = useRef3(onClose);
+  close.current = onClose;
+  useEffect3(() => {
+    if (!open) return;
+    const root = windowRef.current;
+    if (!root) return;
+    const before = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const visible = (element) => element.offsetParent !== null || element.getClientRects().length > 0;
+    const focusables = () => [...root.querySelectorAll(FOCUSABLE)].filter(visible);
+    const frame = requestAnimationFrame(() => {
+      if (root.contains(document.activeElement)) return;
+      (initial ? root.querySelector(initial) : null)?.focus() ?? focusables()[0]?.focus() ?? root.focus();
+    });
+    const key = (event) => {
+      if (event.key === "Escape" && close.current) {
+        event.preventDefault();
+        event.stopPropagation();
+        close.current();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const list = focusables();
+      if (!list.length) {
+        event.preventDefault();
+        return;
+      }
+      const first = list[0], last = list[list.length - 1];
+      const inside = root.contains(document.activeElement);
+      if (event.shiftKey && (document.activeElement === first || !inside)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !inside)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", key, true);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("keydown", key, true);
+      if (before?.isConnected) before.focus({ preventScroll: true });
+    };
+  }, [windowRef, open, initial]);
+}
+
+// src/components/menu/useLongPress.ts
+import { useRef as useRef4 } from "react";
+function useLongPress(onLongPress, delay = 500) {
+  const timer = useRef4(void 0);
+  const start = useRef4(null);
+  const fired = useRef4(false);
+  const cancel = () => {
+    window.clearTimeout(timer.current);
+    start.current = null;
+  };
+  return {
+    onTouchStart(event) {
+      const touch = event.touches[0];
+      if (!touch || event.touches.length > 1) return;
+      fired.current = false;
+      start.current = { x: touch.clientX, y: touch.clientY };
+      timer.current = window.setTimeout(() => {
+        if (!start.current) return;
+        fired.current = true;
+        onLongPress(start.current);
+      }, delay);
+    },
+    onTouchMove(event) {
+      const touch = event.touches[0];
+      if (start.current && touch && Math.hypot(touch.clientX - start.current.x, touch.clientY - start.current.y) > 10) cancel();
+    },
+    onTouchEnd: cancel,
+    onTouchCancel: cancel,
+    onClickCapture(event) {
+      if (fired.current) {
+        fired.current = false;
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }
+  };
+}
+
+// src/components/ConfirmDialog.tsx
+import { useRef as useRef5 } from "react";
+import { createPortal } from "react-dom";
+import { jsx as jsx3, jsxs as jsxs3 } from "react/jsx-runtime";
+function ConfirmDialog({
+  open,
+  title,
+  description,
+  confirmLabel = translate("workbench.delete"),
+  busyLabel = translate("workbench.deleting"),
+  busy = false,
+  error,
+  onCancel,
+  onConfirm,
+  secondaryLabel,
+  onSecondary,
+  cancelLabel
+}) {
+  useI18n();
+  const windowRef = useRef5(null);
+  useModalFocus(windowRef, open, busy ? void 0 : onCancel, "[data-initial-focus]");
+  if (!open) {
+    return null;
+  }
+  return createPortal(
+    /* @__PURE__ */ jsxs3("div", { className: "fixed inset-0 z-[95] flex items-end justify-center p-0 sm:items-center sm:p-6", children: [
+      /* @__PURE__ */ jsx3(
+        "button",
+        {
+          type: "button",
+          "aria-label": translate("workbench.closeConfirmationDialog"),
+          onClick: onCancel,
+          disabled: busy,
+          className: "absolute inset-0 bg-[var(--overlay-scrim)] backdrop-blur-sm disabled:cursor-not-allowed"
+        }
+      ),
+      /* @__PURE__ */ jsxs3(
+        "div",
+        {
+          ref: windowRef,
+          role: "dialog",
+          "aria-modal": "true",
+          "aria-label": title,
+          className: "relative z-[1] w-full max-w-md rounded-t-2xl border border-b-0 border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:rounded-xl sm:border-b sm:p-6",
+          children: [
+            /* @__PURE__ */ jsxs3("div", { className: "flex items-start justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs3("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsx3("p", { className: "text-sm font-medium", children: title }),
+                /* @__PURE__ */ jsx3("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-muted)]", children: description }),
+                error ? /* @__PURE__ */ jsx3("p", { role: "alert", className: "mt-2 text-sm text-rose-500", children: error }) : null
+              ] }),
+              /* @__PURE__ */ jsx3(
+                "button",
+                {
+                  type: "button",
+                  "aria-label": translate("workbench.closeDialog"),
+                  onClick: onCancel,
+                  disabled: busy,
+                  className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  children: /* @__PURE__ */ jsx3("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx3("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs3("div", { className: "mt-5 flex flex-wrap items-center justify-end gap-2", children: [
+              /* @__PURE__ */ jsx3(
+                "button",
+                {
+                  type: "button",
+                  "data-initial-focus": "",
+                  onClick: onCancel,
+                  disabled: busy,
+                  className: "min-h-10 rounded-md border border-[var(--theme-border)] px-4 py-2 text-sm font-medium text-[var(--theme-fg-soft)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  children: cancelLabel ?? translate("workbench.cancel")
+                }
+              ),
+              secondaryLabel && onSecondary ? /* @__PURE__ */ jsx3(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => void onSecondary(),
+                  disabled: busy,
+                  className: "min-h-10 rounded-md border border-[var(--theme-border)] px-4 py-2 text-sm font-medium text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  children: secondaryLabel
+                }
+              ) : null,
+              /* @__PURE__ */ jsx3(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => void onConfirm(),
+                  disabled: busy,
+                  className: "ui-action-danger min-h-10 rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed",
+                  children: busy ? busyLabel : confirmLabel
+                }
+              )
+            ] })
+          ]
+        }
+      )
+    ] }),
+    document.body
+  );
+}
+
+// src/components/menu/confirmAsync.tsx
+import { createRoot } from "react-dom/client";
+import { jsx as jsx4 } from "react/jsx-runtime";
+function confirmAsync({ title, description, confirmLabel, cancelLabel }) {
+  return new Promise((resolve) => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const root = createRoot(host);
+    const finish = (value) => {
+      root.unmount();
+      host.remove();
+      resolve(value);
+    };
+    root.render(
+      /* @__PURE__ */ jsx4(
+        ConfirmDialog,
+        {
+          open: true,
+          title,
+          description,
+          confirmLabel,
+          ...cancelLabel ? { cancelLabel } : {},
+          onCancel: () => finish(false),
+          onConfirm: () => finish(true)
+        }
+      )
+    );
+  });
+}
+
 // src/components/graph-ui/Dialog.tsx
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
@@ -132,35 +386,35 @@ function cn(...inputs) {
 }
 
 // src/components/graph-ui/Dialog.tsx
-import { jsx as jsx3, jsxs as jsxs3 } from "react/jsx-runtime";
+import { jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
 function Dialog({ ...props }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx3(DialogPrimitive.Root, { "data-slot": "dialog", ...props });
+  return /* @__PURE__ */ jsx5(DialogPrimitive.Root, { "data-slot": "dialog", ...props });
 }
 function DialogTrigger({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx3(DialogPrimitive.Trigger, { "data-slot": "dialog-trigger", ...props });
+  return /* @__PURE__ */ jsx5(DialogPrimitive.Trigger, { "data-slot": "dialog-trigger", ...props });
 }
 function DialogPortal({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx3(DialogPrimitive.Portal, { "data-slot": "dialog-portal", ...props });
+  return /* @__PURE__ */ jsx5(DialogPrimitive.Portal, { "data-slot": "dialog-portal", ...props });
 }
 function DialogClose({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx3(DialogPrimitive.Close, { "data-slot": "dialog-close", ...props });
+  return /* @__PURE__ */ jsx5(DialogPrimitive.Close, { "data-slot": "dialog-close", ...props });
 }
 function DialogOverlay({
   className,
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx5(
     DialogPrimitive.Overlay,
     {
       "data-slot": "dialog-overlay",
@@ -180,9 +434,9 @@ function DialogContent({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsxs3(DialogPortal, { "data-slot": "dialog-portal", children: [
-    /* @__PURE__ */ jsx3(DialogOverlay, { className: overlayClassName }),
-    /* @__PURE__ */ jsxs3(
+  return /* @__PURE__ */ jsxs4(DialogPortal, { "data-slot": "dialog-portal", children: [
+    /* @__PURE__ */ jsx5(DialogOverlay, { className: overlayClassName }),
+    /* @__PURE__ */ jsxs4(
       DialogPrimitive.Content,
       {
         "data-slot": "dialog-content",
@@ -193,14 +447,14 @@ function DialogContent({
         ...props,
         children: [
           children,
-          showCloseButton ? /* @__PURE__ */ jsxs3(
+          showCloseButton ? /* @__PURE__ */ jsxs4(
             DialogPrimitive.Close,
             {
               "data-slot": "dialog-close",
               className: "absolute right-4 top-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
               children: [
-                /* @__PURE__ */ jsx3(XIcon, { "data-icon": "close" }),
-                /* @__PURE__ */ jsx3("span", { className: "sr-only", children: translate("workbench.close") })
+                /* @__PURE__ */ jsx5(XIcon, { "data-icon": "close" }),
+                /* @__PURE__ */ jsx5("span", { className: "sr-only", children: translate("workbench.close") })
               ]
             }
           ) : null
@@ -211,7 +465,7 @@ function DialogContent({
 }
 function DialogHeader({ className, ...props }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx5(
     "div",
     {
       "data-slot": "dialog-header",
@@ -225,7 +479,7 @@ function DialogTitle({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx5(
     DialogPrimitive.Title,
     {
       "data-slot": "dialog-title",
@@ -239,7 +493,7 @@ function DialogDescription({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx5(
     DialogPrimitive.Description,
     {
       "data-slot": "dialog-description",
@@ -378,115 +632,14 @@ function downloadDraft(doc, disk = false) {
   URL.revokeObjectURL(url);
 }
 
-// src/components/ConfirmDialog.tsx
-import { useEffect as useEffect2 } from "react";
-import { createPortal } from "react-dom";
-import { jsx as jsx4, jsxs as jsxs4 } from "react/jsx-runtime";
-function ConfirmDialog({
-  open,
-  title,
-  description,
-  confirmLabel = translate("workbench.delete"),
-  busyLabel = translate("workbench.deleting"),
-  busy = false,
-  error,
-  onCancel,
-  onConfirm
-}) {
-  useI18n();
-  useEffect2(() => {
-    if (!open) {
-      return;
-    }
-    function handleKeyDown(event) {
-      if (event.key === "Escape" && !busy) {
-        onCancel();
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [busy, onCancel, open]);
-  if (!open) {
-    return null;
-  }
-  return createPortal(
-    /* @__PURE__ */ jsxs4("div", { className: "fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6", children: [
-      /* @__PURE__ */ jsx4(
-        "button",
-        {
-          type: "button",
-          "aria-label": translate("workbench.closeConfirmationDialog"),
-          onClick: onCancel,
-          disabled: busy,
-          className: "absolute inset-0 bg-[var(--overlay-scrim)] backdrop-blur-sm disabled:cursor-not-allowed"
-        }
-      ),
-      /* @__PURE__ */ jsxs4(
-        "div",
-        {
-          role: "dialog",
-          "aria-modal": "true",
-          "aria-label": title,
-          className: "relative z-[1] w-full max-w-md rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:p-6",
-          children: [
-            /* @__PURE__ */ jsxs4("div", { className: "flex items-start justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs4("div", { className: "min-w-0 flex-1", children: [
-                /* @__PURE__ */ jsx4("p", { className: "text-sm font-medium", children: title }),
-                /* @__PURE__ */ jsx4("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-muted)]", children: description }),
-                error ? /* @__PURE__ */ jsx4("p", { role: "alert", className: "mt-2 text-sm text-rose-500", children: error }) : null
-              ] }),
-              /* @__PURE__ */ jsx4(
-                "button",
-                {
-                  type: "button",
-                  "aria-label": translate("workbench.closeDialog"),
-                  onClick: onCancel,
-                  disabled: busy,
-                  className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
-                  children: /* @__PURE__ */ jsx4("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx4("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
-                }
-              )
-            ] }),
-            /* @__PURE__ */ jsxs4("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
-              /* @__PURE__ */ jsx4(
-                "button",
-                {
-                  type: "button",
-                  onClick: onCancel,
-                  disabled: busy,
-                  className: "rounded-md border border-[var(--theme-border)] px-4 py-2 text-sm font-medium text-[var(--theme-fg-soft)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
-                  children: translate("workbench.cancel")
-                }
-              ),
-              /* @__PURE__ */ jsx4(
-                "button",
-                {
-                  type: "button",
-                  onClick: () => void onConfirm(),
-                  disabled: busy,
-                  className: "ui-action-danger rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed",
-                  children: busy ? busyLabel : confirmLabel
-                }
-              )
-            ] })
-          ]
-        }
-      )
-    ] }),
-    document.body
-  );
-}
-
 // src/components/graph-ui/Tooltip.tsx
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
-import { jsx as jsx5, jsxs as jsxs5 } from "react/jsx-runtime";
+import { jsx as jsx6, jsxs as jsxs5 } from "react/jsx-runtime";
 function TooltipProvider({
   delayDuration = 0,
   ...props
 }) {
-  return /* @__PURE__ */ jsx5(
+  return /* @__PURE__ */ jsx6(
     TooltipPrimitive.Provider,
     {
       "data-slot": "tooltip-provider",
@@ -496,12 +649,12 @@ function TooltipProvider({
   );
 }
 function Tooltip({ ...props }) {
-  return /* @__PURE__ */ jsx5(TooltipProvider, { children: /* @__PURE__ */ jsx5(TooltipPrimitive.Root, { "data-slot": "tooltip", ...props }) });
+  return /* @__PURE__ */ jsx6(TooltipProvider, { children: /* @__PURE__ */ jsx6(TooltipPrimitive.Root, { "data-slot": "tooltip", ...props }) });
 }
 function TooltipTrigger({
   ...props
 }) {
-  return /* @__PURE__ */ jsx5(TooltipPrimitive.Trigger, { "data-slot": "tooltip-trigger", ...props });
+  return /* @__PURE__ */ jsx6(TooltipPrimitive.Trigger, { "data-slot": "tooltip-trigger", ...props });
 }
 function TooltipContent({
   children,
@@ -510,7 +663,7 @@ function TooltipContent({
   arrowStyle,
   ...props
 }) {
-  return /* @__PURE__ */ jsx5(TooltipPrimitive.Portal, { children: /* @__PURE__ */ jsxs5(
+  return /* @__PURE__ */ jsx6(TooltipPrimitive.Portal, { children: /* @__PURE__ */ jsxs5(
     TooltipPrimitive.Content,
     {
       "data-slot": "tooltip-content",
@@ -522,16 +675,16 @@ function TooltipContent({
       ...props,
       children: [
         children,
-        /* @__PURE__ */ jsx5(TooltipPrimitive.Arrow, { "data-slot": "tooltip-arrow", width: 10, height: 5, className: "fill-foreground", style: arrowStyle })
+        /* @__PURE__ */ jsx6(TooltipPrimitive.Arrow, { "data-slot": "tooltip-arrow", width: 10, height: 5, className: "fill-foreground", style: arrowStyle })
       ]
     }
   ) });
 }
 
 // src/components/RenameDialog.tsx
-import { useEffect as useEffect3 } from "react";
+import { useRef as useRef6 } from "react";
 import { createPortal as createPortal2 } from "react-dom";
-import { jsx as jsx6, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx7, jsxs as jsxs6 } from "react/jsx-runtime";
 function RenameDialog({
   open,
   title,
@@ -546,20 +699,8 @@ function RenameDialog({
   onSubmit
 }) {
   useI18n();
-  useEffect3(() => {
-    if (!open) {
-      return;
-    }
-    function handleKeyDown(event) {
-      if (event.key === "Escape" && !busy) {
-        onCancel();
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [busy, onCancel, open]);
+  const windowRef = useRef6(null);
+  useModalFocus(windowRef, open, busy ? void 0 : onCancel, "input");
   if (!open) {
     return null;
   }
@@ -568,8 +709,8 @@ function RenameDialog({
     void onSubmit();
   }
   return createPortal2(
-    /* @__PURE__ */ jsxs6("div", { className: "fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6", children: [
-      /* @__PURE__ */ jsx6(
+    /* @__PURE__ */ jsxs6("div", { className: "fixed inset-0 z-[95] flex items-end justify-center p-0 sm:items-center sm:p-6", children: [
+      /* @__PURE__ */ jsx7(
         "button",
         {
           type: "button",
@@ -582,6 +723,7 @@ function RenameDialog({
       /* @__PURE__ */ jsxs6(
         "form",
         {
+          ref: windowRef,
           role: "dialog",
           "aria-modal": "true",
           "aria-label": title,
@@ -592,14 +734,14 @@ function RenameDialog({
               if (!busy) onCancel();
             }
           },
-          className: "relative z-[1] w-full max-w-md rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:p-6",
+          className: "relative z-[1] w-full max-w-md rounded-t-2xl border border-b-0 border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:rounded-xl sm:border-b sm:p-6",
           children: [
             /* @__PURE__ */ jsxs6("div", { className: "flex items-start justify-between gap-3", children: [
               /* @__PURE__ */ jsxs6("div", { className: "min-w-0 flex-1", children: [
-                /* @__PURE__ */ jsx6("p", { className: "text-sm font-medium", children: title }),
-                /* @__PURE__ */ jsx6("p", { className: "mt-1 text-sm text-[var(--theme-fg-muted)]", children: description ?? translate("workbench.changesAreSavedOnlyAfterConfirmation") })
+                /* @__PURE__ */ jsx7("p", { className: "text-sm font-medium", children: title }),
+                /* @__PURE__ */ jsx7("p", { className: "mt-1 text-sm text-[var(--theme-fg-muted)]", children: description ?? translate("workbench.changesAreSavedOnlyAfterConfirmation") })
               ] }),
-              /* @__PURE__ */ jsx6(
+              /* @__PURE__ */ jsx7(
                 "button",
                 {
                   type: "button",
@@ -607,13 +749,13 @@ function RenameDialog({
                   onClick: onCancel,
                   disabled: busy,
                   className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
-                  children: /* @__PURE__ */ jsx6("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx6("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                  children: /* @__PURE__ */ jsx7("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx7("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
                 }
               )
             ] }),
             /* @__PURE__ */ jsxs6("div", { className: "mt-5", children: [
-              /* @__PURE__ */ jsx6("label", { htmlFor: "rename-dialog-input", className: "text-sm font-medium", children: label }),
-              /* @__PURE__ */ jsx6(
+              /* @__PURE__ */ jsx7("label", { htmlFor: "rename-dialog-input", className: "text-sm font-medium", children: label }),
+              /* @__PURE__ */ jsx7(
                 "input",
                 {
                   id: "rename-dialog-input",
@@ -626,8 +768,8 @@ function RenameDialog({
               )
             ] }),
             /* @__PURE__ */ jsxs6("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
-              error ? /* @__PURE__ */ jsx6("p", { role: "alert", className: "text-sm text-rose-500", children: error }) : null,
-              /* @__PURE__ */ jsx6(
+              error ? /* @__PURE__ */ jsx7("p", { role: "alert", className: "text-sm text-rose-500", children: error }) : null,
+              /* @__PURE__ */ jsx7(
                 "button",
                 {
                   type: "button",
@@ -637,7 +779,7 @@ function RenameDialog({
                   children: translate("workbench.cancel")
                 }
               ),
-              /* @__PURE__ */ jsx6(
+              /* @__PURE__ */ jsx7(
                 "button",
                 {
                   type: "submit",
@@ -687,7 +829,7 @@ function useTabScrollEdges(ref) {
 // src/components/graph-workspace/GraphResizablePanels.tsx
 import { GripVerticalIcon } from "lucide-react";
 import * as ResizablePrimitive from "react-resizable-panels";
-import { jsx as jsx7 } from "react/jsx-runtime";
+import { jsx as jsx8 } from "react/jsx-runtime";
 function classNames(...values) {
   return values.filter(Boolean).join(" ");
 }
@@ -695,7 +837,7 @@ function ResizablePanelGroup({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx8(
     ResizablePrimitive.PanelGroup,
     {
       "data-slot": "resizable-panel-group",
@@ -710,14 +852,14 @@ function ResizablePanelGroup({
 function ResizablePanel({
   ...props
 }) {
-  return /* @__PURE__ */ jsx7(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
+  return /* @__PURE__ */ jsx8(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
 }
 function ResizableHandle({
   withHandle,
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx8(
     ResizablePrimitive.PanelResizeHandle,
     {
       "data-slot": "resizable-handle",
@@ -726,7 +868,7 @@ function ResizableHandle({
         className
       ),
       ...props,
-      children: withHandle ? /* @__PURE__ */ jsx7("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx7(GripVerticalIcon, { className: "size-2.5" }) }) : null
+      children: withHandle ? /* @__PURE__ */ jsx8("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx8(GripVerticalIcon, { className: "size-2.5" }) }) : null
     }
   );
 }
@@ -1086,69 +1228,22 @@ function collectAncestorPaths(path) {
   return paths;
 }
 
-// src/components/graph-ui/Button.tsx
-import { Slot } from "@radix-ui/react-slot";
-import { cva } from "class-variance-authority";
-import { jsx as jsx8 } from "react/jsx-runtime";
-var buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
-        destructive: "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
-        outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
-        secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline"
-      },
-      size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9"
-      }
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default"
-    }
-  }
-);
-function Button({
-  asChild = false,
-  className,
-  size,
-  variant,
-  ...props
-}) {
-  const Comp = asChild ? Slot : "button";
-  return /* @__PURE__ */ jsx8(
-    Comp,
-    {
-      "data-slot": "button",
-      className: cn(buttonVariants({ variant, size, className })),
-      ...props
-    }
-  );
-}
-
 // src/components/ZoomableImage.tsx
-import { createContext, useContext, useEffect as useEffect4, useRef as useRef3, useState as useState5 } from "react";
+import { createContext, useContext, useEffect as useEffect4, useRef as useRef8, useState as useState5 } from "react";
 import { createPortal as createPortal3 } from "react-dom";
 
 // src/components/useImageViewport.ts
-import { useRef as useRef2, useState as useState4 } from "react";
+import { useRef as useRef7, useState as useState4 } from "react";
 var MIN_SCALE = 0.5;
 var MAX_SCALE = 5;
 var clamp = (scale) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
 function useImageViewport() {
-  const viewportRef = useRef2(null);
+  const viewportRef = useRef7(null);
   const [view, setView] = useState4({ x: 0, y: 0, scale: 1 });
-  const current = useRef2(view);
-  const pointers = useRef2(/* @__PURE__ */ new Map());
-  const baseline = useRef2(null);
-  const moved = useRef2(false);
+  const current = useRef7(view);
+  const pointers = useRef7(/* @__PURE__ */ new Map());
+  const baseline = useRef7(null);
+  const moved = useRef7(false);
   const [dragging, setDragging] = useState4(false);
   const commit = (next) => {
     current.current = next;
@@ -1253,27 +1348,22 @@ function GraphWorkspaceImageLightbox({
 }) {
   const { locale: i18nLocale } = useI18n();
   const { viewportRef, scale, dragging, transform, reset: resetView, updateScale, handlers, moved } = useImageViewport();
-  const closeButtonRef = useRef3(null);
-  const backdropPointer = useRef3(true);
+  const closeButtonRef = useRef8(null);
+  const backdropPointer = useRef8(true);
+  const windowRef = useRef8(null);
+  useModalFocus(windowRef, true, onClose, ".thread-graph-image-lightbox-close");
   useEffect4(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    closeButtonRef.current?.focus();
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onClose]);
+  }, []);
   return createPortal3(
     /* @__PURE__ */ jsxs7(
       "div",
       {
+        ref: windowRef,
         className: "thread-graph-image-lightbox",
         style: backgroundColor ? { backgroundColor } : void 0,
         role: "dialog",
@@ -1392,7 +1482,7 @@ function ZoomableImage({
   height
 }) {
   const { locale: i18nLocale } = useI18n();
-  const triggerRef = useRef3(null);
+  const triggerRef = useRef8(null);
   const [open, setOpen] = useState5(false);
   const insideLink = useContext(MarkdownImageLinkContext);
   const dimension = (value) => typeof value === "number" ? value : value && /^\d+(?:\.\d+)?%?$/.test(value) ? value.endsWith("%") ? value : Number(value) : void 0;
@@ -1496,7 +1586,7 @@ function getGraphChatHighlighter() {
       javascript,
       typescript,
       tsx,
-      jsx11,
+      jsx12,
       python,
       json,
       bash,
@@ -1527,7 +1617,7 @@ function getGraphChatHighlighter() {
         javascript.default,
         typescript.default,
         tsx.default,
-        jsx11.default,
+        jsx12.default,
         python.default,
         json.default,
         bash.default,
@@ -1589,34 +1679,41 @@ var schema = {
 var markdownHtmlPlugins = [rehypeRaw, [rehypeSanitize, schema]];
 
 // src/components/WorkspaceFileLink.tsx
-import { useEffect as useEffect5, useRef as useRef4, useState as useState6 } from "react";
+import { useEffect as useEffect5, useRef as useRef9, useState as useState6 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
+import { Check as Check2, TriangleAlert as TriangleAlert2 } from "lucide-react";
 import { Fragment as Fragment2, jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
 function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-inline-link" }) {
   useI18n();
   const [menu, setMenu] = useState6(null);
-  const [copyError, setCopyError] = useState6(false);
-  const menuRef = useRef4(null);
+  const [copy, setCopy] = useState6(null);
+  const menuRef = useRef9(null);
+  const linkRef = useRef9(null);
   const displayPath = path.startsWith("/") || /^[a-z]:/i.test(path) ? path : `./${path.replace(/^\.\//, "")}`;
-  const address = displayPath + (line ? `#L${line}` : "");
+  const copyValue = path.replace(/^\.\//, "") + (line ? `:${line}` : "");
+  const close = (restoreFocus) => {
+    setMenu(null);
+    setCopy(null);
+    if (restoreFocus) linkRef.current?.focus();
+  };
+  useMenuKeyboard(menuRef, Boolean(menu), close);
   useEffect5(() => {
     if (!menu) return;
     const dismiss = (event) => {
-      if (!menuRef.current?.contains(event.target)) setMenu(null);
-    };
-    const key = (event) => {
-      if (event.key === "Escape") setMenu(null);
+      if (!menuRef.current?.contains(event.target)) close(false);
     };
     document.addEventListener("pointerdown", dismiss);
-    document.addEventListener("keydown", key);
     window.addEventListener("scroll", dismiss, true);
-    menuRef.current?.querySelector("button")?.focus();
     return () => {
       document.removeEventListener("pointerdown", dismiss);
-      document.removeEventListener("keydown", key);
       window.removeEventListener("scroll", dismiss, true);
     };
   }, [menu]);
+  const show = (x, y) => {
+    setCopy(null);
+    setMenu({ x: Math.min(x, window.innerWidth - 190), y: Math.min(y, window.innerHeight - 100) });
+  };
+  const press = useLongPress(({ x, y }) => show(x, y));
   const open = () => {
     setMenu(null);
     onOpen({ path, ...line ? { line } : {} });
@@ -1625,29 +1722,83 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
     /* @__PURE__ */ jsx10(
       "a",
       {
+        ref: linkRef,
+        "data-file-link": "",
         href: displayPath.split("/").map(encodeURIComponent).join("/") + (line ? `#L${line}` : ""),
-        title: address,
+        title: copyValue,
         className,
+        ...press,
         onClick: (event) => {
           event.preventDefault();
           open();
         },
         onContextMenu: (event) => {
           event.preventDefault();
-          setCopyError(false);
-          setMenu({ x: Math.min(event.clientX, window.innerWidth - 190), y: Math.min(event.clientY, window.innerHeight - 100) });
+          show(event.clientX, event.clientY);
         },
         children
       }
     ),
     menu && createPortal4(/* @__PURE__ */ jsxs8("div", { ref: menuRef, role: "menu", "aria-label": translate("files.fileLink"), className: "thread-workspace-link-menu", style: { left: Math.max(8, menu.x), top: Math.max(8, menu.y) }, children: [
-      /* @__PURE__ */ jsx10("button", { role: "menuitem", onClick: open, children: translate("files.openFile") }),
-      /* @__PURE__ */ jsx10("button", { role: "menuitem", onClick: () => {
-        void navigator.clipboard.writeText(address).then(() => setMenu(null)).catch(() => setCopyError(true));
-      }, children: translate("files.copyLinkAddress") }),
-      copyError && /* @__PURE__ */ jsx10("span", { role: "alert", children: translate("files.couldNotCopyPath") })
-    ] }), document.body)
+      /* @__PURE__ */ jsx10("button", { type: "button", role: "menuitem", onClick: open, children: translate("files.openFile") }),
+      /* @__PURE__ */ jsxs8("button", { type: "button", role: "menuitem", "data-copy-state": copy ?? void 0, onClick: async () => {
+        const ok = await copyText(copyValue);
+        setCopy(ok ? "copied" : "failed");
+        if (ok) window.setTimeout(() => close(true), 700);
+      }, children: [
+        copy === "copied" ? /* @__PURE__ */ jsx10(Check2, { "aria-hidden": "true" }) : copy === "failed" ? /* @__PURE__ */ jsx10(TriangleAlert2, { "aria-hidden": "true" }) : null,
+        copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : translate("common.copyPath")
+      ] }),
+      /* @__PURE__ */ jsx10("span", { className: "copy-button-status", role: "status", children: copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : "" })
+    ] }), linkRef.current?.closest(".thread-ui-shell") ?? document.body)
   ] });
+}
+
+// src/components/graph-ui/Button.tsx
+import { Slot } from "@radix-ui/react-slot";
+import { cva } from "class-variance-authority";
+import { jsx as jsx11 } from "react/jsx-runtime";
+var buttonVariants = cva(
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+        destructive: "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
+        outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline"
+      },
+      size: {
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default"
+    }
+  }
+);
+function Button({
+  asChild = false,
+  className,
+  size,
+  variant,
+  ...props
+}) {
+  const Comp = asChild ? Slot : "button";
+  return /* @__PURE__ */ jsx11(
+    Comp,
+    {
+      "data-slot": "button",
+      className: cn(buttonVariants({ variant, size, className })),
+      ...props
+    }
+  );
 }
 
 export {
@@ -1658,6 +1809,11 @@ export {
   useCopy,
   CopyButton,
   PathChip,
+  useMenuKeyboard,
+  useModalFocus,
+  useLongPress,
+  ConfirmDialog,
+  confirmAsync,
   cn,
   Button,
   MarkdownImageLinkContext,
@@ -1712,6 +1868,5 @@ export {
   editDraft,
   settleSave,
   confirmWorkspaceDocumentLeave,
-  downloadDraft,
-  ConfirmDialog
+  downloadDraft
 };

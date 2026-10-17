@@ -1,12 +1,13 @@
 import { translate, useI18n } from '../../../i18n';
 import {
   Copy,
-  ClipboardCopy,
+  Check,
   Download,
   Info,
   MoreHorizontal,
   Pencil,
   Trash2,
+  TriangleAlert,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -15,12 +16,14 @@ import { ConfirmDialog } from '../../ConfirmDialog';
 import type { WorkspaceTreeNode } from '../workspaceTree';
 import { WorkspaceNodeProperties } from './WorkspaceNodeProperties';
 import { shellThemeProps } from '../../themeHooks';
+import { useMenuKeyboard } from '../../menu/useMenuKeyboard';
 
 export interface WorkspaceNodeActionProps {
+  /** Resolves whether the path was copied, for the menu's feedback. */
   onCopyPath?: (
     node: WorkspaceTreeNode,
     kind?: 'relative' | 'absolute',
-  ) => void;
+  ) => void | Promise<boolean>;
   onDownload?: (node: WorkspaceTreeNode) => void;
   onRename?: (node: WorkspaceTreeNode, name: string) => Promise<void>;
   onDelete?: (node: WorkspaceTreeNode) => Promise<void>;
@@ -35,6 +38,8 @@ export function WorkspaceNodeActions({
 }: WorkspaceNodeActionProps & { node: WorkspaceTreeNode }) {
   useI18n();
   const [menu, setMenu] = useState<{ left: number; top: number } | null>(null);
+  const [copied, setCopied] = useState<{ kind: 'relative' | 'absolute'; state: 'copied' | 'failed' } | null>(null);
+  useEffect(() => { if (!menu) setCopied(null); }, [menu]);
   const [dialog, setDialog] = useState<'rename' | 'delete' | 'properties' | null>(null);
   const [name, setName] = useState(node.name);
   const [error, setError] = useState<string | null>(null);
@@ -45,6 +50,8 @@ export function WorkspaceNodeActions({
     setMenu(null);
     trigger.current?.focus();
   };
+  // ↑/↓/Home/End move between items; Esc closes and returns to the ⋯ button.
+  useMenuKeyboard(popup, Boolean(menu), (restore) => restore ? close() : setMenu(null));
   useEffect(() => {
     if (!menu) return;
     const outside = (event: PointerEvent) => {
@@ -111,7 +118,7 @@ export function WorkspaceNodeActions({
             title={translate("files.copyAbsolutePathFor", { value1: node.name })}
             aria-label={translate("files.copyAbsolutePathFor", { value1: node.name })}
           >
-            <ClipboardCopy data-icon="copy-absolute-path" size={14} />
+            <Copy data-icon="copy-absolute-path" size={14} />
           </button>
         </>
       )}
@@ -174,8 +181,19 @@ export function WorkspaceNodeActions({
             {/* Short one-line labels; the node's name stays in each accessible name. */}
             {onDownload && <button role="menuitem" type="button" onClick={() => { onDownload(node); close(); }}><Download data-icon="download" size={14} />{translate('files.downloadFile')}</button>}
             {onCopyPath && <>
-              <button role="menuitem" type="button" aria-label={translate('files.copyRelativePathFor', { value1: node.name })} onClick={() => { onCopyPath(node, 'relative'); close(); }}><Copy data-icon="copy-path" size={14} />{translate('files.copyRelativePath')}</button>
-              <button role="menuitem" type="button" aria-label={translate('files.copyAbsolutePathFor', { value1: node.name })} onClick={() => { onCopyPath(node, 'absolute'); close(); }}><ClipboardCopy data-icon="copy-absolute-path" size={14} />{translate('files.copyAbsolutePath')}</button>
+              {(['relative', 'absolute'] as const).map(kind => (
+                <button key={kind} role="menuitem" type="button" data-copy-state={copied?.kind === kind ? copied.state : undefined}
+                  aria-label={translate(kind === 'relative' ? 'files.copyRelativePathFor' : 'files.copyAbsolutePathFor', { value1: node.name })}
+                  onClick={async () => {
+                    // The item shows the result, then the menu closes; a failure stays to be read.
+                    const ok = (await onCopyPath(node, kind)) !== false;
+                    setCopied({ kind, state: ok ? 'copied' : 'failed' });
+                    if (ok) window.setTimeout(() => { setCopied(null); close(); }, 700);
+                  }}>
+                  {copied?.kind === kind ? (copied.state === 'copied' ? <Check size={14} /> : <TriangleAlert size={14} />) : <Copy data-icon={kind === 'relative' ? 'copy-path' : 'copy-absolute-path'} size={14} />}
+                  {copied?.kind === kind ? translate(copied.state === 'copied' ? 'common.copied' : 'common.copyFailed') : translate(kind === 'relative' ? 'files.copyRelativePath' : 'files.copyAbsolutePath')}
+                </button>
+              ))}
             </>}
             {onRename && (
               <button

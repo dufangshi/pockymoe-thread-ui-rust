@@ -189,6 +189,7 @@ export const chatZhCN = {
   "chat.unableToLoadProviderConfig": "无法加载提供商配置。",
   "chat.theRawMCPBlockMustStartWith": "原始 MCP 配置块必须以 [mcp_servers.name] 之类的标题开头。",
   "chat.copy_6b0f10": "复制 {{value1}}",
+  "chat.copyAll": "复制全文",
   "chat.copied": "已复制",
   "chat.copyFailed": "复制失败",
   "chat.hideChainOfThought": "隐藏思考过程",

@@ -240,7 +240,7 @@ describe('TranscriptLog', () => {
     expect(container.querySelector('.tlog-row-head')?.getAttribute('aria-expanded')).toBe('false');
     expect(container.querySelector('.tlog-copy')?.getAttribute('title')).toBe('Copied');
     expect(container.querySelector('.tlog-copy .lucide-check')).not.toBeNull();
-    await act(async () => vi.advanceTimersByTime(1200));
+    await act(async () => vi.advanceTimersByTime(1500));
     expect(container.querySelector('.tlog-copy .lucide-copy')).not.toBeNull();
   });
 

@@ -1,3 +1,4 @@
+import { copyText } from '../../shell/terminalClipboard';
 import { translate, useI18n } from '../../../i18n';
 import { useRef, useState, type ChangeEvent } from 'react';
 
@@ -84,23 +85,14 @@ export function useWorkspaceExplorerActions({
     });
   }
 
-  function copyPath(node: WorkspaceTreeNode, kind: 'relative' | 'absolute' = 'relative') {
+  /** Copies a node's path; resolves whether it was copied, for the menu's feedback. */
+  async function copyPath(node: WorkspaceTreeNode, kind: 'relative' | 'absolute' = 'relative') {
     onError(null);
-    if (
-      !node.path ||
-      typeof navigator === 'undefined' ||
-      !navigator.clipboard
-    ) {
-      return;
-    }
+    if (!node.path) return false;
     const relative = relativeWorkspacePath(node.path, workspaceRootPath);
-    if (kind === 'relative' && relative === null) { onError(translate("files.thisFileIsOutsideTheWorkspaceCopy")); return; }
+    if (kind === 'relative' && relative === null) { onError(translate("files.thisFileIsOutsideTheWorkspaceCopy")); return false; }
     const path = kind === 'relative' ? relative! : relative === null ? normalizeFileSystemPath(node.path) : `${normalizeFileSystemPath(workspaceRootPath).replace(/\/+$/, '')}/${relative}`;
-    void navigator.clipboard.writeText(path).catch((error) => {
-      onError(
-        error instanceof Error ? error.message : translate("files.failedToCopyFilePath"),
-      );
-    });
+    return copyText(path);
   }
 
   async function openGarbage() {

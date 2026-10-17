@@ -89,7 +89,7 @@ it('shows a file as its glyph and extension, and its card opens it in files', ()
     const card = document.querySelector('.attachment-float')!;
     expect(card.querySelector('strong')!.textContent).toBe('osfi_cgg_node357_report.pdf');
     expect(card.textContent).toContain('PDF file');
-    expect(card.querySelector('.attachment-card-info code')!.textContent).toBe('./.temp/threads/t1/osfi_cgg_node357_report.pdf');
+    expect(card.querySelector('.attachment-card-path')!.getAttribute('title')).toBe('./.temp/threads/t1/osfi_cgg_node357_report.pdf');
     act(() => [...card.querySelectorAll<HTMLButtonElement>('button')].find(item => item.textContent === 'Open in files')!.click());
     expect(onOpen).toHaveBeenCalledWith({ path: './.temp/threads/t1/osfi_cgg_node357_report.pdf' });
     expect(document.querySelector('.attachment-float')).toBeNull();

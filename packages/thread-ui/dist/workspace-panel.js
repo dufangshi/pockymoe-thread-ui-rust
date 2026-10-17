@@ -1,6 +1,7 @@
 import {
   Button,
   ConfirmDialog,
+  CopyButton,
   Dialog,
   DialogClose,
   DialogContent,
@@ -26,6 +27,8 @@ import {
   collectAncestorPaths,
   collectArtifacts,
   collectWorkspaceItems,
+  confirmAsync,
+  copyText,
   documentListeners,
   documentStores,
   downloadDraft,
@@ -47,10 +50,12 @@ import {
   settleSave,
   syntaxThemeFor,
   useFilePanel,
+  useLongPress,
+  useMenuKeyboard,
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-2PO343MI.js";
+} from "./chunk-AFXR6GCO.js";
 import {
   shellThemeProps,
   useThemeFeature
@@ -60,7 +65,7 @@ import {
   getLocale,
   translate,
   useI18n
-} from "./chunk-RLXRBREP.js";
+} from "./chunk-H7P2KZJ6.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect12, useMemo as useMemo11, useState as useState12 } from "react";
@@ -1121,22 +1126,16 @@ function useWorkspaceExplorerActions({
       kind: node.kind === "directory" ? "directory" : "file"
     });
   }
-  function copyPath(node, kind = "relative") {
+  async function copyPath(node, kind = "relative") {
     onError(null);
-    if (!node.path || typeof navigator === "undefined" || !navigator.clipboard) {
-      return;
-    }
+    if (!node.path) return false;
     const relative = relativeWorkspacePath(node.path, workspaceRootPath);
     if (kind === "relative" && relative === null) {
       onError(translate("files.thisFileIsOutsideTheWorkspaceCopy"));
-      return;
+      return false;
     }
     const path = kind === "relative" ? relative : relative === null ? normalizeFileSystemPath(node.path) : `${normalizeFileSystemPath(workspaceRootPath).replace(/\/+$/, "")}/${relative}`;
-    void navigator.clipboard.writeText(path).catch((error) => {
-      onError(
-        error instanceof Error ? error.message : translate("files.failedToCopyFilePath")
-      );
-    });
+    return copyText(path);
   }
   async function openGarbage() {
     if (!adapter?.emptyGarbage) {
@@ -1665,12 +1664,13 @@ import {
 // src/components/graph-workspace/explorer/WorkspaceNodeActions.tsx
 import {
   Copy,
-  ClipboardCopy,
+  Check,
   Download,
   Info,
   MoreHorizontal,
   Pencil,
-  Trash2
+  Trash2,
+  TriangleAlert
 } from "lucide-react";
 import { useEffect as useEffect3, useRef as useRef3, useState as useState4 } from "react";
 import { createPortal } from "react-dom";
@@ -1737,6 +1737,10 @@ function WorkspaceNodeActions({
 }) {
   useI18n();
   const [menu, setMenu] = useState4(null);
+  const [copied, setCopied] = useState4(null);
+  useEffect3(() => {
+    if (!menu) setCopied(null);
+  }, [menu]);
   const [dialog, setDialog] = useState4(null);
   const [name, setName] = useState4(node.name);
   const [error, setError] = useState4(null);
@@ -1747,6 +1751,7 @@ function WorkspaceNodeActions({
     setMenu(null);
     trigger.current?.focus();
   };
+  useMenuKeyboard(popup, Boolean(menu), (restore) => restore ? close() : setMenu(null));
   useEffect3(() => {
     if (!menu) return;
     const outside = (event) => {
@@ -1811,7 +1816,7 @@ function WorkspaceNodeActions({
               className: `${actionClass} workspace-node-quick-action`,
               title: translate("files.copyAbsolutePathFor", { value1: node.name }),
               "aria-label": translate("files.copyAbsolutePathFor", { value1: node.name }),
-              children: /* @__PURE__ */ jsx2(ClipboardCopy, { "data-icon": "copy-absolute-path", size: 14 })
+              children: /* @__PURE__ */ jsx2(Copy, { "data-icon": "copy-absolute-path", size: 14 })
             }
           )
         ] }),
@@ -1877,22 +1882,28 @@ function WorkspaceNodeActions({
                   /* @__PURE__ */ jsx2(Download, { "data-icon": "download", size: 14 }),
                   translate("files.downloadFile")
                 ] }),
-                onCopyPath && /* @__PURE__ */ jsxs2(Fragment2, { children: [
-                  /* @__PURE__ */ jsxs2("button", { role: "menuitem", type: "button", "aria-label": translate("files.copyRelativePathFor", { value1: node.name }), onClick: () => {
-                    onCopyPath(node, "relative");
-                    close();
-                  }, children: [
-                    /* @__PURE__ */ jsx2(Copy, { "data-icon": "copy-path", size: 14 }),
-                    translate("files.copyRelativePath")
-                  ] }),
-                  /* @__PURE__ */ jsxs2("button", { role: "menuitem", type: "button", "aria-label": translate("files.copyAbsolutePathFor", { value1: node.name }), onClick: () => {
-                    onCopyPath(node, "absolute");
-                    close();
-                  }, children: [
-                    /* @__PURE__ */ jsx2(ClipboardCopy, { "data-icon": "copy-absolute-path", size: 14 }),
-                    translate("files.copyAbsolutePath")
-                  ] })
-                ] }),
+                onCopyPath && /* @__PURE__ */ jsx2(Fragment2, { children: ["relative", "absolute"].map((kind) => /* @__PURE__ */ jsxs2(
+                  "button",
+                  {
+                    role: "menuitem",
+                    type: "button",
+                    "data-copy-state": copied?.kind === kind ? copied.state : void 0,
+                    "aria-label": translate(kind === "relative" ? "files.copyRelativePathFor" : "files.copyAbsolutePathFor", { value1: node.name }),
+                    onClick: async () => {
+                      const ok = await onCopyPath(node, kind) !== false;
+                      setCopied({ kind, state: ok ? "copied" : "failed" });
+                      if (ok) window.setTimeout(() => {
+                        setCopied(null);
+                        close();
+                      }, 700);
+                    },
+                    children: [
+                      copied?.kind === kind ? copied.state === "copied" ? /* @__PURE__ */ jsx2(Check, { size: 14 }) : /* @__PURE__ */ jsx2(TriangleAlert, { size: 14 }) : /* @__PURE__ */ jsx2(Copy, { "data-icon": kind === "relative" ? "copy-path" : "copy-absolute-path", size: 14 }),
+                      copied?.kind === kind ? translate(copied.state === "copied" ? "common.copied" : "common.copyFailed") : translate(kind === "relative" ? "files.copyRelativePath" : "files.copyAbsolutePath")
+                    ]
+                  },
+                  kind
+                )) }),
                 onRename && /* @__PURE__ */ jsxs2(
                   "button",
                   {
@@ -2010,6 +2021,12 @@ function iconForNode(node, expanded) {
   }
   return /* @__PURE__ */ jsx3(File2, { "data-icon": "file", className: "workspace-node-icon is-file h-4 w-4 text-slate-400 dark:text-slate-500" });
 }
+function openRowMenu(row) {
+  const trigger = row.querySelector('button[aria-haspopup="menu"]');
+  if (!trigger) return false;
+  trigger.click();
+  return true;
+}
 function WorkspaceExplorerRow({
   row,
   selected,
@@ -2030,6 +2047,10 @@ function WorkspaceExplorerRow({
   onDelete
 }) {
   useI18n();
+  const rowPress = useLongPress(({ x, y }) => {
+    const row2 = document.elementFromPoint(x, y)?.closest('[role="treeitem"]');
+    if (row2) openRowMenu(row2);
+  });
   const node = {
     ...row.node.source,
     children: []
@@ -2077,7 +2098,17 @@ function WorkspaceExplorerRow({
       className: `thread-graph-tree-row group relative flex min-w-0 items-center text-sm transition ${selected ? "is-selected" : ""} ${focused ? "is-focused" : ""}`,
       style: { paddingLeft },
       onFocus,
-      onKeyDown,
+      onKeyDown: (event) => {
+        if ((event.key === "ContextMenu" || event.key === "F10" && event.shiftKey) && openRowMenu(event.currentTarget)) {
+          event.preventDefault();
+          return;
+        }
+        onKeyDown(event);
+      },
+      onContextMenu: (event) => {
+        if (openRowMenu(event.currentTarget)) event.preventDefault();
+      },
+      ...rowPress,
       onDoubleClick: () => {
         if (isDirectory && node.path) {
           onToggle(node.path);
@@ -2455,7 +2486,7 @@ function WorkspaceExplorerTree({
 }
 
 // src/components/graph-workspace/explorer/WorkspaceExplorerPanel.tsx
-import { jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
+import { Fragment as Fragment4, jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
 var iconButtonClassName = "thread-graph-explorer-icon-button flex h-6 w-6 items-center justify-center rounded transition disabled:cursor-not-allowed disabled:opacity-40";
 var collapseButtonClassName = "thread-graph-explorer-collapse-button flex h-6 w-6 items-center justify-center rounded text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#222733] dark:hover:text-slate-100";
 function WorkspaceExplorerPanel({
@@ -2608,44 +2639,41 @@ function WorkspaceExplorerPanel({
             )
           }
         ),
-        canUpload || onEmptyGarbage ? /* @__PURE__ */ jsxs4("details", { className: "thread-graph-explorer-more relative", children: [
-          /* @__PURE__ */ jsx5(
-            "summary",
+        canUpload || onEmptyGarbage ? /* @__PURE__ */ jsx5(ExplorerMoreMenu, { triggerClassName: iconButtonClassName, children: (close) => /* @__PURE__ */ jsxs4(Fragment4, { children: [
+          canUpload ? /* @__PURE__ */ jsxs4(
+            "button",
             {
-              className: `${iconButtonClassName} list-none cursor-pointer`,
-              title: translate("files.moreExplorerActions"),
-              "aria-label": translate("files.moreExplorerActions"),
-              children: /* @__PURE__ */ jsx5(MoreHorizontal2, { "data-icon": "more", className: "h-4 w-4" })
+              type: "button",
+              role: "menuitem",
+              onClick: () => {
+                close();
+                onUpload?.();
+              },
+              className: "flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm hover:bg-[var(--theme-hover)] focus-visible:bg-[var(--theme-hover)] focus-visible:outline-none",
+              children: [
+                /* @__PURE__ */ jsx5(Upload, { "data-icon": "upload", className: "h-4 w-4" }),
+                translate("files.uploadFile")
+              ]
             }
-          ),
-          /* @__PURE__ */ jsxs4("div", { className: "absolute right-0 top-7 z-40 min-w-44 rounded-md border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1 shadow-lg", children: [
-            canUpload ? /* @__PURE__ */ jsxs4(
-              "button",
-              {
-                type: "button",
-                onClick: onUpload,
-                className: "flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm hover:bg-[var(--theme-hover)]",
-                children: [
-                  /* @__PURE__ */ jsx5(Upload, { "data-icon": "upload", className: "h-4 w-4" }),
-                  translate("files.uploadFile")
-                ]
-              }
-            ) : null,
-            onEmptyGarbage ? /* @__PURE__ */ jsxs4(
-              "button",
-              {
-                type: "button",
-                onClick: onEmptyGarbage,
-                disabled: !canEmptyGarbage,
-                className: "flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm text-rose-600 hover:bg-rose-500/10 disabled:opacity-50 dark:text-rose-300",
-                children: [
-                  /* @__PURE__ */ jsx5(Trash22, { "data-icon": "delete", className: "h-4 w-4" }),
-                  translate("files.emptyGarbage_b701de")
-                ]
-              }
-            ) : null
-          ] })
-        ] }) : null,
+          ) : null,
+          onEmptyGarbage ? /* @__PURE__ */ jsxs4(
+            "button",
+            {
+              type: "button",
+              role: "menuitem",
+              onClick: () => {
+                close();
+                onEmptyGarbage();
+              },
+              disabled: !canEmptyGarbage,
+              className: "flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm text-rose-600 hover:bg-rose-500/10 focus-visible:bg-rose-500/10 focus-visible:outline-none disabled:opacity-50 dark:text-rose-300",
+              children: [
+                /* @__PURE__ */ jsx5(Trash22, { "data-icon": "delete", className: "h-4 w-4" }),
+                translate("files.emptyGarbage_b701de")
+              ]
+            }
+          ) : null
+        ] }) }) : null,
         onExpandViewer ? expandViewerAvailable ? /* @__PURE__ */ jsx5(
           "button",
           {
@@ -2820,6 +2848,50 @@ function WorkspaceExplorerPanel({
     !initialLoading && !rootError && filterQuery && filterMode === "filter" && filterResult.matchCount === 0 ? /* @__PURE__ */ jsx5("p", { className: "thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400", children: translate("files.noMatchesInLoadedFolders") }) : visibleTree.children.length === 0 ? /* @__PURE__ */ jsx5("p", { className: "thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400", children: translate("files.thisWorkspaceIsEmptyAgentToolRuns") }) : null
   ] });
 }
+function ExplorerMoreMenu({ triggerClassName, children }) {
+  const [open, setOpen] = useState6(false);
+  const trigger = useRef5(null);
+  const menu = useRef5(null);
+  const close = (restore = false) => {
+    setOpen(false);
+    if (restore) trigger.current?.focus();
+  };
+  useMenuKeyboard(menu, open, close);
+  useEffect5(() => {
+    if (!open) return;
+    const outside = (event) => {
+      if (!menu.current?.contains(event.target) && !trigger.current?.contains(event.target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", outside);
+    return () => document.removeEventListener("pointerdown", outside);
+  }, [open]);
+  return /* @__PURE__ */ jsxs4("div", { className: "thread-graph-explorer-more relative", children: [
+    /* @__PURE__ */ jsx5(
+      "button",
+      {
+        ref: trigger,
+        type: "button",
+        className: triggerClassName,
+        "aria-haspopup": "menu",
+        "aria-expanded": open,
+        title: translate("files.moreExplorerActions"),
+        "aria-label": translate("files.moreExplorerActions"),
+        onClick: () => setOpen((value) => !value),
+        children: /* @__PURE__ */ jsx5(MoreHorizontal2, { "data-icon": "more", className: "h-4 w-4" })
+      }
+    ),
+    open ? /* @__PURE__ */ jsx5(
+      "div",
+      {
+        ref: menu,
+        role: "menu",
+        "aria-label": translate("files.moreExplorerActions"),
+        className: "absolute right-0 top-7 z-40 min-w-44 rounded-md border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1 shadow-lg",
+        children: children(() => close(true))
+      }
+    ) : null
+  ] });
+}
 
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import {
@@ -2852,10 +2924,10 @@ import {
 } from "lucide-react";
 
 // src/components/graph-workspace/WorkspaceFileMenu.tsx
-import { ClipboardCopy as ClipboardCopy2, Copy as Copy2, Download as Download2, RefreshCw as RefreshCw2 } from "lucide-react";
+import { Download as Download2, RefreshCw as RefreshCw2 } from "lucide-react";
 import { useEffect as useEffect6, useRef as useRef6, useState as useState7 } from "react";
 import { jsx as jsx6, jsxs as jsxs5 } from "react/jsx-runtime";
-function WorkspaceFileActions({ children, metadata, path, onDownload, onRefresh }) {
+function WorkspaceFileActions({ children, metadata, path, relativePath, onDownload, onRefresh }) {
   useI18n();
   const [busy, setBusy] = useState7(false);
   const [feedback, setFeedback] = useState7(null);
@@ -2864,15 +2936,6 @@ function WorkspaceFileActions({ children, metadata, path, onDownload, onRefresh 
   useEffect6(() => () => {
     generation.current++;
   }, []);
-  const copy = async (value) => {
-    try {
-      await navigator.clipboard.writeText(value);
-      setError(null);
-      setFeedback(translate("files.copied"));
-    } catch {
-      setError(translate("files.couldNotCopyPath"));
-    }
-  };
   return /* @__PURE__ */ jsxs5("div", { className: "workspace-file-actions", role: "toolbar", "aria-label": translate("files.fileActions"), title: metadata, children: [
     children,
     onRefresh && /* @__PURE__ */ jsx6("button", { type: "button", className: "thread-graph-editor-toolbar-button", disabled: busy, title: translate("files.reloadFile"), "aria-label": translate("files.reloadFile"), onClick: async () => {
@@ -2890,8 +2953,7 @@ function WorkspaceFileActions({ children, metadata, path, onDownload, onRefresh 
       }
     }, children: /* @__PURE__ */ jsx6(RefreshCw2, { size: 15, className: busy ? "animate-spin motion-reduce:animate-none" : "" }) }),
     onDownload && /* @__PURE__ */ jsx6("button", { type: "button", className: "thread-graph-editor-toolbar-button", title: translate("files.downloadFile"), "aria-label": translate("files.downloadFile"), onClick: onDownload, children: /* @__PURE__ */ jsx6(Download2, { size: 15 }) }),
-    /* @__PURE__ */ jsx6("button", { type: "button", title: translate("files.copyFilePath"), "aria-label": translate("files.copyFilePath"), onClick: () => void copy(path), children: /* @__PURE__ */ jsx6(ClipboardCopy2, { size: 15 }) }),
-    /* @__PURE__ */ jsx6("button", { type: "button", title: translate("files.copyFileName"), "aria-label": translate("files.copyFileName"), onClick: () => void copy(path.replace(/\\/g, "/").split("/").pop() ?? path), children: /* @__PURE__ */ jsx6(Copy2, { size: 15 }) }),
+    /* @__PURE__ */ jsx6(CopyButton, { value: relativePath || path, label: translate("common.copyPath") }),
     feedback && /* @__PURE__ */ jsx6("span", { role: "status", className: "workspace-file-action-feedback", title: feedback, children: feedback }),
     error && /* @__PURE__ */ jsx6("span", { role: "alert", className: "workspace-file-action-feedback is-error", title: error, children: error })
   ] });
@@ -3060,7 +3122,7 @@ function GraphMoleculeButtonGroup({
 }
 
 // src/components/graph-workspace/GraphMoleculeViewerLowerButtonGroup.tsx
-import { Fragment as Fragment4, jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Fragment as Fragment5, jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
 function GraphMoleculeViewerLowerButtonGroup({
   cameraInfo,
   onClearSelection,
@@ -3079,7 +3141,7 @@ function GraphMoleculeViewerLowerButtonGroup({
   useI18n();
   const hasSelection = selectedSerials.length > 0;
   const hasStaged = stagedAtoms > 0;
-  return /* @__PURE__ */ jsxs8(Fragment4, { children: [
+  return /* @__PURE__ */ jsxs8(Fragment5, { children: [
     /* @__PURE__ */ jsxs8("div", { className: "flex w-full justify-between gap-2 overflow-x-auto", children: [
       /* @__PURE__ */ jsxs8(GraphMoleculeButtonGroup, { children: [
         /* @__PURE__ */ jsx11(GraphMoleculeIconButton, { label: translate("files.distance"), children: /* @__PURE__ */ jsx11(AlignVerticalDistributeCenter, { className: "size-4" }) }),
@@ -3193,7 +3255,7 @@ function GraphMoleculeViewerLowerButtonGroup({
 }
 
 // src/components/graph-workspace/GraphMoleculeViewerUpperButtonGroup.tsx
-import { Box as Box2, Camera, Copy as Copy3, Download as Download3, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { Box as Box2, Camera, Copy as Copy2, Download as Download3, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
 function GraphMoleculeViewerUpperButtonGroup({
   currentIndex,
@@ -3256,7 +3318,7 @@ function GraphMoleculeViewerUpperButtonGroup({
         label: translate("files.copyCurrentStructure"),
         onClick: () => void handleCopyXYZ(),
         disabled: !xyzContent,
-        children: /* @__PURE__ */ jsx12(Copy3, { className: "size-3.5" })
+        children: /* @__PURE__ */ jsx12(Copy2, { className: "size-3.5" })
       }
     ),
     /* @__PURE__ */ jsx12(
@@ -4086,60 +4148,42 @@ function WorkspaceFileTabs({
       ) }),
       trailingAction ? /* @__PURE__ */ jsx16("div", { className: "thread-graph-editor-tabs-action flex h-8 shrink-0 items-center px-1", children: trailingAction }) : null
     ] }),
-    pendingTab ? /* @__PURE__ */ jsxs12(
-      "div",
+    /* @__PURE__ */ jsx16(
+      ConfirmDialog,
       {
-        className: "thread-graph-editor-close-confirm flex flex-wrap min-h-10 items-center justify-between gap-3 border-b px-3 py-1.5 text-xs",
-        role: "alert",
-        children: [
-          /* @__PURE__ */ jsxs12("span", { className: "min-w-0 truncate", children: [
-            translate("files.discardUnsavedChangesIn"),
-            " ",
-            pendingTab.name,
-            "?"
-          ] }),
-          /* @__PURE__ */ jsxs12("div", { className: "flex shrink-0 items-center gap-1", children: [
-            /* @__PURE__ */ jsx16(
-              "button",
-              {
-                type: "button",
-                onClick: () => setPendingClosePath(null),
-                className: "h-7 rounded px-2 hover:bg-[var(--theme-hover)]",
-                children: translate("files.keepEditing")
-              }
-            ),
-            onSaveAndClose ? /* @__PURE__ */ jsx16("button", { type: "button", disabled: savingClose || blockedClosePaths.has(pendingTab.path), onClick: async () => {
-              setSavingClose(true);
-              try {
-                await onSaveAndClose(pendingTab.path);
-              } finally {
-                setSavingClose(false);
-              }
-            }, children: translate("files.safeSaveClose") }) : null,
-            /* @__PURE__ */ jsx16(
-              "button",
-              {
-                type: "button",
-                disabled: savingClose || blockedClosePaths.has(pendingTab.path),
-                onClick: () => {
-                  setPendingClosePath(null);
-                  onClose(pendingTab.path);
-                },
-                className: "h-7 rounded bg-rose-500/15 px-2 text-rose-700 hover:bg-rose-500/25 dark:text-rose-200",
-                children: translate("files.discard")
-              }
-            )
-          ] })
-        ]
+        open: Boolean(pendingTab),
+        title: pendingTab ? `${translate("files.discardUnsavedChangesIn")} ${pendingTab.name}?` : "",
+        description: translate("files.safeDiscard"),
+        cancelLabel: translate("files.keepEditing"),
+        confirmLabel: translate("files.discard"),
+        busy: savingClose,
+        ...onSaveAndClose && pendingTab && !blockedClosePaths.has(pendingTab.path) ? {
+          secondaryLabel: translate("files.safeSaveClose"),
+          onSecondary: async () => {
+            setSavingClose(true);
+            try {
+              await onSaveAndClose(pendingTab.path);
+            } finally {
+              setSavingClose(false);
+              setPendingClosePath(null);
+            }
+          }
+        } : {},
+        onCancel: () => setPendingClosePath(null),
+        onConfirm: () => {
+          if (!pendingTab || blockedClosePaths.has(pendingTab.path)) return;
+          setPendingClosePath(null);
+          onClose(pendingTab.path);
+        }
       }
-    ) : null
+    )
   ] });
 }
 
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
-import { Fragment as Fragment5, jsx as jsx17, jsxs as jsxs13 } from "react/jsx-runtime";
+import { Fragment as Fragment6, jsx as jsx17, jsxs as jsxs13 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-MYJOBEWO.js")
+  () => import("./GraphWorkspaceMonacoEditor-H5OAPDW6.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4238,7 +4282,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-72ZEHVVL.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-IPZY34K2.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -4643,13 +4687,13 @@ function GraphWorkspacePreviewPane({
   }
   const fileToolbar = previewFile && (isMarkdownFile || isDrawioFile || canEditFile) ? /* @__PURE__ */ jsxs13("div", { className: "flex shrink-0 items-center gap-1", children: [
     (isMarkdownFile || isDrawioFile) && !editing ? /* @__PURE__ */ jsx17("button", { type: "button", className: "thread-graph-editor-toolbar-button workspace-mobile-view-toggle", "aria-label": translate(markdownView === "preview" ? "files.source" : "files.preview", { value1: renderedViewLabel }), title: translate(markdownView === "preview" ? "files.source" : "files.preview", { value1: renderedViewLabel }), onClick: () => setMarkdownView((view) => view === "preview" ? "source" : "preview"), children: markdownView === "preview" ? /* @__PURE__ */ jsx17(Code2, { "data-icon": "source", size: 16 }) : /* @__PURE__ */ jsx17(BookOpen, { "data-icon": "preview", size: 16 }) }) : null,
-    canEditFile ? /* @__PURE__ */ jsx17("div", { className: "flex shrink-0 items-center gap-0.5", children: editing ? /* @__PURE__ */ jsxs13(Fragment5, { children: [
+    canEditFile ? /* @__PURE__ */ jsx17("div", { className: "flex shrink-0 items-center gap-0.5", children: editing ? /* @__PURE__ */ jsxs13(Fragment6, { children: [
       /* @__PURE__ */ jsx17(
         "button",
         {
           type: "button",
-          onClick: () => {
-            if (document2 && isProtected(document2) && !window.confirm(translate("files.safeDiscard"))) return;
+          onClick: async () => {
+            if (document2 && isProtected(document2) && !await confirmAsync({ title: translate("files.safeDiscardTitle"), description: translate("files.safeDiscard"), confirmLabel: translate("files.safeDiscardAction") })) return;
             setDraftContent(document2?.baseContent ?? previewFile.content);
             setEditing(false);
           },
@@ -4691,12 +4735,13 @@ function GraphWorkspacePreviewPane({
   const documentMetadata = document2 ? `${documentState} \xB7 ${document2.snapshot.encoding === "utf-8" ? "UTF-8" : translate("files.safeUnknownEncoding")}${document2.snapshot.bom ? " BOM" : ""} \xB7 ${document2.snapshot.eol.toUpperCase()}` : void 0;
   const inlineStatus = document2 && /* @__PURE__ */ jsx17("span", { role: "status", "data-testid": "workspace-document-status", className: "sr-only", "data-phase": document2.phase, children: documentState });
   const backLabel = previousFilePath ? translate("files.backToDocument", { name: previousFilePath.split("/").pop() ?? previousFilePath }) : translate("workbench.goBack");
-  const navigationControls = /* @__PURE__ */ jsx17(Fragment5, { children: onNavigateForward && /* @__PURE__ */ jsx17("button", { type: "button", onClick: onNavigateForward, "aria-label": translate("files.goForward"), title: translate("files.goForward"), className: "thread-graph-editor-toolbar-button flex h-6 w-6 shrink-0 items-center justify-center rounded", children: /* @__PURE__ */ jsx17(ArrowRight, { "data-icon": "forward", size: 14 }) }) });
+  const navigationControls = /* @__PURE__ */ jsx17(Fragment6, { children: onNavigateForward && /* @__PURE__ */ jsx17("button", { type: "button", onClick: onNavigateForward, "aria-label": translate("files.goForward"), title: translate("files.goForward"), className: "thread-graph-editor-toolbar-button flex h-6 w-6 shrink-0 items-center justify-center rounded", children: /* @__PURE__ */ jsx17(ArrowRight, { "data-icon": "forward", size: 14 }) }) });
   const copyPath = activeNode?.path && !/^(?:\/|[a-z]:[\\/])/i.test(activeNode.path) && workspaceRootPath ? `${workspaceRootPath.replace(/[\\/]+$/, "")}/${activeNode.path}` : activeNode?.path ?? "";
   const fileActions = activeNode && /* @__PURE__ */ jsxs13(
     WorkspaceFileActions,
     {
       path: copyPath,
+      relativePath: workspaceRootPath ? relativeWorkspacePath(copyPath, workspaceRootPath) : null,
       ...documentMetadata || filePanel?.label ? { metadata: [filePanel?.label, documentMetadata].filter(Boolean).join(" \xB7 ") } : {},
       ...document2 ? { onDownload: () => {
         if (!isProtected(document2) && onDownloadFile) void onDownloadFile();
@@ -4798,8 +4843,8 @@ function GraphWorkspacePreviewPane({
               ] }),
               /* @__PURE__ */ jsxs13("div", { className: "workspace-document-actions", children: [
                 document2.phase === "unknown" ? /* @__PURE__ */ jsx17("button", { type: "button", onClick: () => void documents?.reconcile(document2.snapshot.path), children: translate("files.safeVerifySave") }) : null,
-                document2.phase === "unknown" && document2.conflict ? /* @__PURE__ */ jsx17("button", { type: "button", disabled: document2.operationPending, onClick: () => {
-                  if (window.confirm(translate("files.safeManualRebase"))) documents?.acceptVerifiedDisk(document2.snapshot.path);
+                document2.phase === "unknown" && document2.conflict ? /* @__PURE__ */ jsx17("button", { type: "button", disabled: document2.operationPending, onClick: async () => {
+                  if (await confirmAsync({ title: translate("files.safeUseCheckedBase"), description: translate("files.safeManualRebase"), confirmLabel: translate("files.safeUseCheckedBase") })) documents?.acceptVerifiedDisk(document2.snapshot.path);
                 }, children: translate("files.safeUseCheckedBase") }) : null,
                 document2.phase === "conflict" && !showConflict ? /* @__PURE__ */ jsx17("button", { type: "button", onClick: () => setShowConflict(true), children: translate("files.safeViewConflict") }) : null
               ] })
@@ -4809,16 +4854,16 @@ function GraphWorkspacePreviewPane({
               /* @__PURE__ */ jsx17("p", { children: translate(document2.phase === "unknown" ? "files.safeUnknown" : "files.safeConflictBody") }),
               /* @__PURE__ */ jsxs13("div", { className: "workspace-document-actions", children: [
                 /* @__PURE__ */ jsx17("button", { type: "button", onClick: () => setShowConflict(false), children: translate("files.safeKeepDraft") }),
-                /* @__PURE__ */ jsx17("button", { type: "button", disabled: document2.phase === "unknown" || document2.conflict?.content == null, onClick: () => {
+                /* @__PURE__ */ jsx17("button", { type: "button", disabled: document2.phase === "unknown" || document2.conflict?.content == null, onClick: async () => {
                   const revision = document2.revision;
-                  if (window.confirm(translate("files.safeDiscard"))) documents?.adoptDisk(document2.snapshot.path, revision);
+                  if (await confirmAsync({ title: translate("files.safeAdoptDisk"), description: translate("files.safeDiscard"), confirmLabel: translate("files.safeAdoptDisk") })) documents?.adoptDisk(document2.snapshot.path, revision);
                 }, children: translate("files.safeAdoptDisk") }),
-                /* @__PURE__ */ jsx17("button", { type: "button", disabled: document2.phase === "unknown" || !document2.conflict?.contentHash || Boolean(document2.conflict.readOnlyReason), onClick: () => {
-                  if (window.confirm(translate("files.safeOverwriteConfirm"))) void documents?.save(document2.snapshot.path, true);
+                /* @__PURE__ */ jsx17("button", { type: "button", disabled: document2.phase === "unknown" || !document2.conflict?.contentHash || Boolean(document2.conflict.readOnlyReason), onClick: async () => {
+                  if (await confirmAsync({ title: translate("files.safeOverwriteShown"), description: translate("files.safeOverwriteConfirm"), confirmLabel: translate("files.safeOverwriteShown") })) void documents?.save(document2.snapshot.path, true);
                 }, children: translate("files.safeOverwriteShown") }),
                 /* @__PURE__ */ jsx17("button", { type: "button", disabled: document2.conflict?.content == null, onClick: () => downloadDraft(document2, true), children: translate("files.safeDownloadDisk") })
               ] }),
-              document2.conflict?.content != null ? /* @__PURE__ */ jsxs13(Fragment5, { children: [
+              document2.conflict?.content != null ? /* @__PURE__ */ jsxs13(Fragment6, { children: [
                 /* @__PURE__ */ jsxs13("label", { children: [
                   translate("files.safeCompare"),
                   " ",
@@ -4976,7 +5021,7 @@ function GraphEmptyGarbageDialog({
 }
 
 // src/components/graph-workspace/GraphWorkspaceExplorer.tsx
-import { Fragment as Fragment6, jsx as jsx19, jsxs as jsxs15 } from "react/jsx-runtime";
+import { Fragment as Fragment7, jsx as jsx19, jsxs as jsxs15 } from "react/jsx-runtime";
 function GraphWorkspaceExplorer({
   activeView,
   detail,
@@ -5477,7 +5522,7 @@ function GraphWorkspaceExplorer({
       workspaceRootPath: detail.workspace.absPath
     }
   );
-  const overlays = /* @__PURE__ */ jsxs15(Fragment6, { children: [
+  const overlays = /* @__PURE__ */ jsxs15(Fragment7, { children: [
     /* @__PURE__ */ jsx19("input", { ref: fileInputRef, type: "file", "aria-label": translate("files.workspaceUploadFileInput"), "data-testid": "workspace-upload-file-input", className: "hidden", onChange: (event) => void handleUpload(event) }),
     showGarbageDialog && /* @__PURE__ */ jsx19(GraphEmptyGarbageDialog, { files: garbageFiles, onCancel: () => setShowGarbageDialog(false), onConfirm: () => void handleConfirmEmptyGarbage() }),
     createDialog

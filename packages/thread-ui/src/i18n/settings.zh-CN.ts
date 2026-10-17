@@ -454,6 +454,8 @@ export const settingsZhCN = {
   'settings.passcodeEnable': '开启',
   'settings.passcodeChange': '修改',
   'settings.passcodeDisable': '关闭',
+  'settings.passcodeDisableTitle': '关闭访问口令？',
+  'settings.passcodeDisableAction': '关闭口令',
   'settings.passcodeDisableConfirm':
     '关闭访问口令？关闭后，任何能打开这个地址的人都能再次使用 Pockymoe。',
   'settings.passcodeSaved': '口令已保存，其他浏览器已退出登录。',

@@ -1,5 +1,6 @@
-/* The one copy control (see docs/ui-principles.md §2). */
-.thread-ui-shell .copy-button, .copy-button {
+/* The one copy control (see docs/ui-principles.md §2). Zero-specificity base so a
+   place's own size, position and theme styling win. */
+:where(.copy-button) {
   position: relative;
   display: inline-grid;
   flex: none;
@@ -13,9 +14,9 @@
   color: var(--theme-fg-muted);
   cursor: pointer;
 }
-.copy-button > svg { width: 14px; height: 14px; }
-.copy-button:hover { background: var(--theme-hover); color: var(--theme-fg); }
-.copy-button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
+:where(.copy-button) > svg { width: 14px; height: 14px; }
+:where(.copy-button):hover { background: var(--theme-hover); color: var(--theme-fg); }
+:where(.copy-button):focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
 .copy-button[data-state='copied'] { color: var(--theme-accent-solid); }
 .copy-button[data-state='failed'] { color: var(--theme-danger, #e5484d); }
 /* Touch: a 40px hit area around the visible button. */
@@ -63,3 +64,8 @@
 .path-chip-tail { flex: none; max-width: 75%; overflow: hidden; text-overflow: ellipsis; }
 .path-chip.is-whole .path-chip-text { display: inline; white-space: normal; overflow-wrap: anywhere; }
 .path-chip.is-whole :is(.path-chip-head, .path-chip-tail) { max-width: none; overflow: visible; }
+
+/* Phones: the full-text window rises from the bottom like other secondary windows. */
+@media (max-width: 639px) {
+  .long-text-dialog.long-text-dialog { top: auto; bottom: 0; left: 0; width: 100vw; max-height: 88dvh; translate: none; border-bottom: 0; border-radius: 18px 18px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+}

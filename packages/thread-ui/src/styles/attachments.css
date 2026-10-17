@@ -119,20 +119,8 @@ button.attachment-card-preview:focus-visible { outline: 2px solid var(--theme-ac
   -webkit-line-clamp: 2;
 }
 .attachment-card-info > span { color: var(--theme-fg-muted); font-size: 11.5px; }
-/* Where it is: quiet, two lines at most; the full path is in its tooltip. */
-.attachment-card-info > code {
-  display: -webkit-box;
-  margin-top: 3px;
-  overflow: hidden;
-  background: none;
-  color: var(--theme-fg-muted);
-  font-size: 10.5px;
-  line-height: 1.45;
-  opacity: 0.85;
-  overflow-wrap: anywhere;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
+/* Where it is: a quiet path chip, shortened in the middle, with copy. */
+.attachment-card-info > .attachment-card-path { margin-top: 3px; color: var(--theme-fg-muted); font-size: 11px; }
 .attachment-card-actions { display: flex; gap: 6px; margin-top: 10px; }
 .attachment-card-actions > button {
   display: inline-flex;

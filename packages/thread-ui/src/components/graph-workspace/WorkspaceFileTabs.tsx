@@ -1,5 +1,6 @@
 import { translate, useI18n } from '../../i18n';
 import { useTabScrollEdges } from '../useTabScrollEdges';
+import { ConfirmDialog } from '../ConfirmDialog';
 import { Circle, FileCode2, X } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
@@ -105,35 +106,26 @@ export function WorkspaceFileTabs({
           </div>
         ) : null}
       </div>
-      {pendingTab ? (
-        <div
-          className="thread-graph-editor-close-confirm flex flex-wrap min-h-10 items-center justify-between gap-3 border-b px-3 py-1.5 text-xs"
-          role="alert"
-        >
-          <span className="min-w-0 truncate">
-            {translate("files.discardUnsavedChangesIn")} {pendingTab.name}?
-          </span>
-          <div className="flex shrink-0 items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setPendingClosePath(null)}
-              className="h-7 rounded px-2 hover:bg-[var(--theme-hover)]"
-            >
-              {translate("files.keepEditing")}</button>
-            {onSaveAndClose ? <button type="button" disabled={savingClose || blockedClosePaths.has(pendingTab.path)} onClick={async () => {setSavingClose(true); try {await onSaveAndClose(pendingTab.path);} finally {setSavingClose(false);}}}>{translate('files.safeSaveClose')}</button> : null}
-            <button
-              type="button"
-              disabled={savingClose || blockedClosePaths.has(pendingTab.path)}
-              onClick={() => {
-                setPendingClosePath(null);
-                onClose(pendingTab.path);
-              }}
-              className="h-7 rounded bg-rose-500/15 px-2 text-rose-700 hover:bg-rose-500/25 dark:text-rose-200"
-            >
-              {translate("files.discard")}</button>
-          </div>
-        </div>
-      ) : null}
+      {/* Closing a tab with a draft asks in the app's confirmation window:
+          keep editing (Esc), save and close, or discard. */}
+      <ConfirmDialog
+        open={Boolean(pendingTab)}
+        title={pendingTab ? `${translate("files.discardUnsavedChangesIn")} ${pendingTab.name}?` : ''}
+        description={translate('files.safeDiscard')}
+        cancelLabel={translate("files.keepEditing")}
+        confirmLabel={translate("files.discard")}
+        busy={savingClose}
+        {...(onSaveAndClose && pendingTab && !blockedClosePaths.has(pendingTab.path) ? {
+          secondaryLabel: translate('files.safeSaveClose'),
+          onSecondary: async () => { setSavingClose(true); try { await onSaveAndClose(pendingTab.path); } finally { setSavingClose(false); setPendingClosePath(null); } },
+        } : {})}
+        onCancel={() => setPendingClosePath(null)}
+        onConfirm={() => {
+          if (!pendingTab || blockedClosePaths.has(pendingTab.path)) return;
+          setPendingClosePath(null);
+          onClose(pendingTab.path);
+        }}
+      />
     </div>
   );
 }

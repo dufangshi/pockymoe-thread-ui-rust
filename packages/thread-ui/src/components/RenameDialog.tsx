@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../i18n';
-import { FormEvent, useEffect } from 'react';
+import { FormEvent, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useModalFocus } from './menu/useModalFocus';
 
 interface RenameDialogProps {
   open: boolean;
@@ -30,22 +31,9 @@ export function RenameDialog({
   onSubmit,
 }: RenameDialogProps) {
   useI18n();
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape' && !busy) {
-        onCancel();
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [busy, onCancel, open]);
+  const windowRef = useRef<HTMLFormElement>(null);
+  // Focus starts in the name field and stays in the window; Esc cancels.
+  useModalFocus(windowRef, open, busy ? undefined : onCancel, 'input');
 
   if (!open) {
     return null;
@@ -57,7 +45,7 @@ export function RenameDialog({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-[95] flex items-end justify-center p-0 sm:items-center sm:p-6">
       <button
         type="button"
         aria-label={translate("workbench.closeRenameDialog")}
@@ -66,6 +54,7 @@ export function RenameDialog({
         className="absolute inset-0 bg-[var(--overlay-scrim)] backdrop-blur-sm disabled:cursor-not-allowed"
       />
       <form
+        ref={windowRef}
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -76,7 +65,7 @@ export function RenameDialog({
             if (!busy) onCancel();
           }
         }}
-        className="relative z-[1] w-full max-w-md rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:p-6"
+        className="relative z-[1] w-full max-w-md rounded-t-2xl border border-b-0 border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:rounded-xl sm:border-b sm:p-6"
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">

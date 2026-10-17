@@ -7,7 +7,8 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { Brain, Check, Copy } from 'lucide-react';
+import { Brain } from 'lucide-react';
+import { CopyButton } from '../copy/CopyButton';
 
 import type { ThreadHistoryItemDto } from '@pockymoe/shared';
 import type { ThreadTimelineAdapter } from '../../adapters';
@@ -94,14 +95,10 @@ export const GraphChatCompactMessageItem = memo(
     onBeforeMessageResize?: (anchor?: Element | null) => void;
   }) {
   const { locale: i18nLocale } = useI18n();
-    const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(
-      'idle',
-    );
     const [reasoningOpen, setReasoningOpen] = useState(false);
     const failure = useTurnFailure(item.id);
     const added = useAddedPrompt(item.id) && item.kind === 'userMessage';
     const { presentation, text, showingOriginal, showOriginal } = useMessagePresentation({ item, streaming });
-    const resetTimerRef = useRef<number | null>(null);
     const reasoningItems =
       item.kind === 'agentMessage' ? (item.reasoningItems ?? []) : [];
     const reasoningText = reasoningItems
@@ -114,36 +111,6 @@ export const GraphChatCompactMessageItem = memo(
         item.status === 'Accepted' ||
         item.status === 'Awaiting response');
 
-    useEffect(() => {
-      return () => {
-        if (resetTimerRef.current !== null) {
-          window.clearTimeout(resetTimerRef.current);
-        }
-      };
-    }, []);
-
-    async function handleCopy() {
-      try {
-        await navigator.clipboard.writeText(text);
-        setCopyState('copied');
-        if (resetTimerRef.current !== null) {
-          window.clearTimeout(resetTimerRef.current);
-        }
-        resetTimerRef.current = window.setTimeout(
-          () => setCopyState('idle'),
-          1200,
-        );
-      } catch {
-        setCopyState('failed');
-        if (resetTimerRef.current !== null) {
-          window.clearTimeout(resetTimerRef.current);
-        }
-        resetTimerRef.current = window.setTimeout(
-          () => setCopyState('idle'),
-          1600,
-        );
-      }
-    }
 
     function toggleReasoning() {
       onBeforeMessageResize?.();
@@ -152,31 +119,7 @@ export const GraphChatCompactMessageItem = memo(
 
     const copyLabel = item.kind === 'agentMessage' ? translate("chat.agentReply") : 'prompt';
     const copyButton = (
-      <button
-        type="button"
-        aria-label={translate("chat.copy_6b0f10", { value1: copyLabel })}
-        title={
-          copyState === 'copied'
-            ? translate("chat.copied")
-            : copyState === 'failed'
-              ? translate("chat.copyFailed")
-              : translate("chat.copy_6b0f10", { value1: copyLabel })
-        }
-        onClick={() => void handleCopy()}
-        className={`thread-graph-message-copy inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition ${
-          copyState === 'copied'
-            ? 'ui-status-info'
-            : copyState === 'failed'
-              ? 'ui-status-danger'
-              : ''
-        }`}
-      >
-        {copyState === 'copied' ? (
-          <Check data-icon="copied" className="h-3.5 w-3.5" />
-        ) : (
-          <Copy data-icon="copy" className="h-3.5 w-3.5" />
-        )}
-      </button>
+      <CopyButton value={text} label={translate("chat.copy_6b0f10", { value1: copyLabel })} className="thread-graph-message-copy" />
     );
 
     const hasRunningReasoning = reasoningItems.some((entry) =>

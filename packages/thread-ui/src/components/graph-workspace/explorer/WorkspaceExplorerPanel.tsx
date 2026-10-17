@@ -21,11 +21,13 @@ import {
   useRef,
   useState,
   type MutableRefObject,
+  type ReactNode,
 } from 'react';
 
 import type { WorkspaceTreeNode } from '../workspaceTree';
 import { WorkspaceExplorerTree } from './WorkspaceExplorerTree';
 import type { WorkspaceNodeActionProps } from './WorkspaceNodeActions';
+import { useMenuKeyboard } from '../../menu/useMenuKeyboard';
 
 const iconButtonClassName =
   'thread-graph-explorer-icon-button flex h-6 w-6 items-center justify-center rounded transition disabled:cursor-not-allowed disabled:opacity-40';
@@ -194,20 +196,14 @@ export function WorkspaceExplorerPanel({
             />
           </button>
           {canUpload || onEmptyGarbage ? (
-            <details className="thread-graph-explorer-more relative">
-              <summary
-                className={`${iconButtonClassName} list-none cursor-pointer`}
-                title={translate("files.moreExplorerActions")}
-                aria-label={translate("files.moreExplorerActions")}
-              >
-                <MoreHorizontal data-icon="more" className="h-4 w-4" />
-              </summary>
-              <div className="absolute right-0 top-7 z-40 min-w-44 rounded-md border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1 shadow-lg">
+            <ExplorerMoreMenu triggerClassName={iconButtonClassName}>
+              {(close) => <>
                 {canUpload ? (
                   <button
                     type="button"
-                    onClick={onUpload}
-                    className="flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm hover:bg-[var(--theme-hover)]"
+                    role="menuitem"
+                    onClick={() => { close(); onUpload?.(); }}
+                    className="flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm hover:bg-[var(--theme-hover)] focus-visible:bg-[var(--theme-hover)] focus-visible:outline-none"
                   >
                     <Upload data-icon="upload" className="h-4 w-4" />
                     {translate("files.uploadFile")}</button>
@@ -215,15 +211,16 @@ export function WorkspaceExplorerPanel({
                 {onEmptyGarbage ? (
                   <button
                     type="button"
-                    onClick={onEmptyGarbage}
+                    role="menuitem"
+                    onClick={() => { close(); onEmptyGarbage(); }}
                     disabled={!canEmptyGarbage}
-                    className="flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm text-rose-600 hover:bg-rose-500/10 disabled:opacity-50 dark:text-rose-300"
+                    className="flex h-9 w-full items-center gap-2 rounded px-2 text-left text-sm text-rose-600 hover:bg-rose-500/10 focus-visible:bg-rose-500/10 focus-visible:outline-none disabled:opacity-50 dark:text-rose-300"
                   >
                     <Trash2 data-icon="delete" className="h-4 w-4" />
                     {translate("files.emptyGarbage_b701de")}</button>
                 ) : null}
-              </div>
-            </details>
+              </>}
+            </ExplorerMoreMenu>
           ) : null}
           {onExpandViewer ? (expandViewerAvailable ? (
             <button
@@ -409,5 +406,41 @@ export function WorkspaceExplorerPanel({
           {translate("files.thisWorkspaceIsEmptyAgentToolRuns")}</p>
       ) : null}
     </aside>
+  );
+}
+
+/** The tree toolbar's ⋯: a menu like the others (arrows, Esc closes only the
+    menu and returns to ⋯, a click outside or a chosen item closes it). */
+function ExplorerMoreMenu({ triggerClassName, children }: {
+  triggerClassName: string;
+  children: (close: () => void) => ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
+  const close = (restore = false) => { setOpen(false); if (restore) trigger.current?.focus(); };
+  useMenuKeyboard(menu, open, close);
+  useEffect(() => {
+    if (!open) return;
+    const outside = (event: PointerEvent) => {
+      if (!menu.current?.contains(event.target as Node) && !trigger.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', outside);
+    return () => document.removeEventListener('pointerdown', outside);
+  }, [open]);
+  return (
+    <div className="thread-graph-explorer-more relative">
+      <button ref={trigger} type="button" className={triggerClassName} aria-haspopup="menu" aria-expanded={open}
+        title={translate("files.moreExplorerActions")} aria-label={translate("files.moreExplorerActions")}
+        onClick={() => setOpen(value => !value)}>
+        <MoreHorizontal data-icon="more" className="h-4 w-4" />
+      </button>
+      {open ? (
+        <div ref={menu} role="menu" aria-label={translate("files.moreExplorerActions")}
+          className="absolute right-0 top-7 z-40 min-w-44 rounded-md border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1 shadow-lg">
+          {children(() => close(true))}
+        </div>
+      ) : null}
+    </div>
   );
 }

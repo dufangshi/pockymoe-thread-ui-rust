@@ -391,6 +391,19 @@ export function MatterWorkbench({
     setExplorerWidth(next);
     try { localStorage.setItem('remote-codex.explorer-width', String(next)); } catch { /* Optional preference. */ }
   };
+  // A drawer opened by a swipe has no focused control inside it; Esc still closes it.
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') setSidebarOpen(false); };
+    window.addEventListener('keydown', escape);
+    return () => window.removeEventListener('keydown', escape);
+  }, [sidebarOpen]);
+  // On a phone, closing search hands focus back to More, where it was opened.
+  const searchWasOpen = useRef(o.searchOpen);
+  useEffect(() => {
+    if (dock && searchWasOpen.current && !o.searchOpen) rootRef.current?.querySelector<HTMLElement>('.matter-phone-more')?.focus({ preventScroll: true });
+    searchWasOpen.current = o.searchOpen;
+  }, [dock, o.searchOpen]);
   // The current thread's row stays in sight in the workspace list, which scrolls on its own.
   useEffect(() => {
     sidebarRef.current?.querySelector('[data-testid="workspace-threads"] [aria-current="page"]')?.scrollIntoView?.({ block: 'nearest' });

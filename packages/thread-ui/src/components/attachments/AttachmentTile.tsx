@@ -4,6 +4,7 @@ import { translate, useI18n } from '../../i18n';
 import { FolderOpen, Maximize2 } from 'lucide-react';
 import { GraphWorkspaceImageLightbox } from '../ZoomableImage';
 import { shellThemeProps } from '../themeHooks';
+import { PathChip } from '../copy/PathChip';
 import { FILE_GLYPH_SVG, fileBadge, fileFamily, fileKindLabel, formatFileSize, shortFileName, type FileFamily } from './attachmentFiles';
 
 /** The face of an attachment: a file glyph in its family's color with its
@@ -36,7 +37,7 @@ export function AttachmentCard({ name, family, size, path, thumbnail, onView, ac
     <div className="attachment-card-info">
       <strong title={name}>{name}</strong>
       <span>{[fileKindLabel(name, family), size !== undefined ? formatFileSize(size) : null].filter(Boolean).join(' · ')}</span>
-      {path && path !== name ? <code title={path}>{path}</code> : null}
+      {path && path !== name ? <PathChip path={path} className="attachment-card-path" /> : null}
     </div>
   );
   return (
@@ -102,6 +103,8 @@ export function FloatingCard({ anchor, onClose, children }: { anchor: HTMLElemen
       window.removeEventListener('resize', position);
     };
   }, [anchor]);
+  // The card's first action takes focus, so Tab continues inside it.
+  useEffect(() => { card.current?.querySelector<HTMLElement>('button')?.focus({ preventScroll: true }); }, []);
   useEffect(() => {
     const outside = (event: PointerEvent) => {
       if (!card.current?.contains(event.target as Node) && !anchor.contains(event.target as Node)) close.current();

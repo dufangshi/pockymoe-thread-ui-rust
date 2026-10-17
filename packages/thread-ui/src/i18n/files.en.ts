@@ -33,6 +33,8 @@ export const filesEn = {
   "files.safeWaitBeforeLeave": "Wait for the save or verify its unknown result before leaving. You can download your draft.",
   "files.safeLeave": "Leave this view and discard unsaved file drafts? Cancel to keep editing.",
   "files.safeDraftBudget": "32 unsaved documents are open. Save or close a document before opening another.",
+  "files.safeDiscardTitle": "Discard the draft?",
+  "files.safeDiscardAction": "Discard draft",
   "files.safeDiscard": "Discard this file draft and adopt the displayed base?",
   "files.safeDownloadDraft": "Download draft",
   "files.safeCheckDisk": "Check disk",

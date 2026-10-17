@@ -525,4 +525,6 @@ export const devicesEn = {
   "devices.deviceIsolationUpdate": "Update this device to change this.",
   "devices.deviceIsolationLoading": "Loading…",
   "devices.deviceIsolationSave": "Save",
+  "devices.sharedControl": "Shared for control",
+  "devices.sharedControlDetail": "Shared with others who can control its agents, so its agents cannot reach your other devices.",
 } as const;

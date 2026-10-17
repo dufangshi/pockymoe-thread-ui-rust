@@ -1811,7 +1811,9 @@ var devicesEn = {
   "devices.deviceIsolationOffline": "The device is offline. Change this when it is online.",
   "devices.deviceIsolationUpdate": "Update this device to change this.",
   "devices.deviceIsolationLoading": "Loading\u2026",
-  "devices.deviceIsolationSave": "Save"
+  "devices.deviceIsolationSave": "Save",
+  "devices.sharedControl": "Shared for control",
+  "devices.sharedControlDetail": "Shared with others who can control its agents, so its agents cannot reach your other devices."
 };
 
 // src/i18n/files.en.ts
@@ -5526,7 +5528,9 @@ var devicesZhCN = {
   "devices.deviceIsolationOffline": "\u8BBE\u5907\u79BB\u7EBF\uFF0C\u4E0A\u7EBF\u540E\u624D\u80FD\u4FEE\u6539\u3002",
   "devices.deviceIsolationUpdate": "\u8BF7\u5148\u66F4\u65B0\u8FD9\u53F0\u8BBE\u5907\u518D\u4FEE\u6539\u3002",
   "devices.deviceIsolationLoading": "\u52A0\u8F7D\u4E2D\u2026",
-  "devices.deviceIsolationSave": "\u4FDD\u5B58"
+  "devices.deviceIsolationSave": "\u4FDD\u5B58",
+  "devices.sharedControl": "\u5DF2\u5171\u4EAB\u64CD\u63A7\u6743",
+  "devices.sharedControlDetail": "\u5DF2\u5171\u4EAB\u7ED9\u4ED6\u4EBA\uFF0C\u4E14\u5BF9\u65B9\u53EF\u4EE5\u64CD\u63A7\u8FD9\u53F0\u8BBE\u5907\u4E0A\u7684 Agent\uFF0C\u6240\u4EE5\u5B83\u7684 Agent \u4E0D\u80FD\u8BBF\u95EE\u4F60\u7684\u5176\u4ED6\u8BBE\u5907\u3002"
 };
 
 // src/i18n/files.zh-CN.ts

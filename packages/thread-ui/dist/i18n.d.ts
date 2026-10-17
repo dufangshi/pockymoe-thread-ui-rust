@@ -2595,6 +2595,8 @@ declare const en: {
     readonly "devices.deviceIsolationUpdate": "Update this device to change this.";
     readonly "devices.deviceIsolationLoading": "Loading…";
     readonly "devices.deviceIsolationSave": "Save";
+    readonly "devices.sharedControl": "Shared for control";
+    readonly "devices.sharedControlDetail": "Shared with others who can control its agents, so its agents cannot reach your other devices.";
     readonly "common.language": "Language";
     readonly "common.languageDescription": "Choose the interface language for this browser.";
     readonly "common.errorTitle": "Something went wrong";
@@ -6345,6 +6347,8 @@ declare const zhCN: {
     "devices.deviceIsolationUpdate": "请先更新这台设备再修改。";
     "devices.deviceIsolationLoading": "加载中…";
     "devices.deviceIsolationSave": "保存";
+    "devices.sharedControl": "已共享操控权";
+    "devices.sharedControlDetail": "已共享给他人，且对方可以操控这台设备上的 Agent，所以它的 Agent 不能访问你的其他设备。";
     "common.language": "语言";
     "common.languageDescription": "选择此浏览器的界面语言。";
     "common.errorTitle": "页面出错了";
@@ -10117,6 +10121,8 @@ declare const resources: {
         readonly "devices.deviceIsolationUpdate": "Update this device to change this.";
         readonly "devices.deviceIsolationLoading": "Loading…";
         readonly "devices.deviceIsolationSave": "Save";
+        readonly "devices.sharedControl": "Shared for control";
+        readonly "devices.sharedControlDetail": "Shared with others who can control its agents, so its agents cannot reach your other devices.";
         readonly "common.language": "Language";
         readonly "common.languageDescription": "Choose the interface language for this browser.";
         readonly "common.errorTitle": "Something went wrong";
@@ -13866,6 +13872,8 @@ declare const resources: {
         "devices.deviceIsolationUpdate": "请先更新这台设备再修改。";
         "devices.deviceIsolationLoading": "加载中…";
         "devices.deviceIsolationSave": "保存";
+        "devices.sharedControl": "已共享操控权";
+        "devices.sharedControlDetail": "已共享给他人，且对方可以操控这台设备上的 Agent，所以它的 Agent 不能访问你的其他设备。";
         "common.language": "语言";
         "common.languageDescription": "选择此浏览器的界面语言。";
         "common.errorTitle": "页面出错了";

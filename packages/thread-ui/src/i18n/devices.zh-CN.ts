@@ -525,4 +525,6 @@ export const devicesZhCN = {
   "devices.deviceIsolationUpdate": "请先更新这台设备再修改。",
   "devices.deviceIsolationLoading": "加载中…",
   "devices.deviceIsolationSave": "保存",
+  "devices.sharedControl": "已共享操控权",
+  "devices.sharedControlDetail": "已共享给他人，且对方可以操控这台设备上的 Agent，所以它的 Agent 不能访问你的其他设备。",
 } as const;

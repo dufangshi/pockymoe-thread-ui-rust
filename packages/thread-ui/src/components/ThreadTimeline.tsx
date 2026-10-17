@@ -15,6 +15,7 @@ import type {
 import { useAppShellNav } from '../app-shell/AppShellNavContext';
 import { LongTextDialog } from './LongTextDialog';
 import { PeerWorkGroup } from './timeline/PeerWorkGroup';
+import { markSearchHits } from './timeline/searchHits';
 import { aggregatePeerWorkTurn, groupPeerWorkTurns, peerWorkForTurn, peerWorkPreview } from './timeline/peerWork';
 import type { ThreadTimelineAdapter } from '../adapters';
 import { GraphChatCompactMessageItem as CompactMessageItem } from './graph-chat/GraphChatCompactMessageItem';
@@ -75,7 +76,8 @@ export interface ThreadTimelineProps {
   ) => Promise<void> | void;
   liveOutput: string;
   scrollRequestKey?: number;
-  searchTarget?: { turnId: string; itemId: string; key: number };
+  /** `query` is marked in the message the search landed on. */
+  searchTarget?: { turnId: string; itemId: string; key: number; query?: string };
   previousTurnScrollRequestKey?: number;
   nextTurnScrollRequestKey?: number;
   bottomSpacer?: number;
@@ -393,8 +395,12 @@ function ThreadTimelineComponent({
       const target = message ?? turn;
       if (!container || !target) return;
       lastSearchKeyRef.current = searchTarget.key;
-      container.scrollTo({ top: container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - 24, behavior: 'instant' });
+      // The open turn's work line rides at the top; land below it, not under it.
+      const workLine = turn?.querySelector('.thread-worked-toggle[aria-expanded="true"]')?.closest<HTMLElement>('.thread-graph-worked-summary');
+      const covered = workLine && workLine.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING ? workLine.getBoundingClientRect().height : 0;
+      container.scrollTo({ top: container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - 24 - covered, behavior: 'instant' });
       target.animate([{ backgroundColor: 'var(--theme-accent-soft)' }, { backgroundColor: 'transparent' }], { duration: 1400 });
+      if (searchTarget.query) markSearchHits(target, searchTarget.query);
     });
     return () => cancelAnimationFrame(frame);
   }, [searchTarget, collapsedTurnOverrides, preserveScrollPositionForResize]);

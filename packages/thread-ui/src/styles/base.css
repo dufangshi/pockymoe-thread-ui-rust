@@ -848,3 +848,15 @@
 .thread-ui-shell .tab-scroll-surface[data-overflow-end="true"]::after { opacity: 1; }
 .thread-ui-shell .tab-scroll-surface[data-overflow-end="true"],
 .thread-ui-shell .tab-scroll-surface[data-overflow-start="true"] { box-shadow: inset 0 1px color-mix(in srgb, var(--theme-border-strong) 55%, transparent); }
+/* The edge hints are buttons that page the strip. */
+.thread-ui-shell .tab-scroll-surface:has(> .tab-scroll-button)::before,
+.thread-ui-shell .tab-scroll-surface:has(> .tab-scroll-button)::after { content: none; }
+.thread-ui-shell .tab-scroll-button {
+  position: absolute; z-index: 3; inset-block: 0; width: 24px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; border: 0; color: var(--theme-fg-muted); cursor: pointer;
+}
+.thread-ui-shell .tab-scroll-button[data-edge="start"] { left: 0; background: linear-gradient(to right, var(--theme-surface) 55%, transparent); }
+.thread-ui-shell .tab-scroll-button[data-edge="end"] { right: 0; background: linear-gradient(to left, var(--theme-surface) 55%, transparent); }
+.thread-ui-shell .tab-scroll-button:hover { color: var(--theme-fg); }
+.thread-ui-shell .tab-scroll-button > svg { width: 15px; height: 15px; }

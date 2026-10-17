@@ -486,6 +486,8 @@ export const workbenchEn = {
   "workbench.deepseekHarnessNotRunning": "This thread's DSH session is not running yet.",
   "workbench.terminalNew": "New terminal",
   "workbench.terminalSplit": "Split terminal",
+  "workbench.scrollTabsBack": "Scroll tabs back",
+  "workbench.scrollTabsForward": "Scroll tabs forward",
   "workbench.terminalKill": "Kill terminal",
   "workbench.terminalKillNamed": "Kill {{value1}}",
   "workbench.terminalKillRunningTitle": "Kill {{value1}}?",

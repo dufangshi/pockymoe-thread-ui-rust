@@ -1,5 +1,6 @@
 import { translate, useI18n } from '../../i18n';
 import { useTabScrollEdges } from '../useTabScrollEdges';
+import { TabScrollButtons } from '../TabScrollButtons';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { Circle, FileCode2, X } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -99,6 +100,7 @@ export function WorkspaceFileTabs({
             );
           })}
         </div>
+        <TabScrollButtons targetRef={tabsRef} edges={scrollEdges} />
         </div>
         {trailingAction ? (
           <div className="thread-graph-editor-tabs-action flex h-8 shrink-0 items-center px-1">

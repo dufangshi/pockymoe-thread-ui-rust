@@ -3325,3 +3325,9 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:hover,html
 .thread-ui-shell .thread-graph-session-notice.is-warning .thread-graph-history-event-icon { color: #d0921d; }
 .thread-ui-shell .thread-graph-session-notice.is-error .thread-graph-history-event-icon { color: var(--theme-danger, #e5484d); }
 .thread-ui-shell .thread-graph-message-bubble.is-user:has(> .thread-graph-message-failure):not([data-actions-beside]) .thread-graph-message-copy-desktop { right: 28px; }
+
+/* Words a search landed on, until the reader next presses, types or scrolls. */
+::highlight(thread-search-hit) {
+  background-color: color-mix(in srgb, #f5c542 55%, transparent);
+  color: inherit;
+}

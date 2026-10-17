@@ -486,6 +486,8 @@ export const workbenchZhCN = {
   "workbench.deepseekHarnessNotRunning": "本线程的 DSH 会话尚未运行。",
   "workbench.terminalNew": "新建终端",
   "workbench.terminalSplit": "拆分终端",
+  "workbench.scrollTabsBack": "向前滚动标签",
+  "workbench.scrollTabsForward": "向后滚动标签",
   "workbench.terminalKill": "终止终端",
   "workbench.terminalKillNamed": "终止 {{value1}}",
   "workbench.terminalKillRunningTitle": "终止 {{value1}}？",

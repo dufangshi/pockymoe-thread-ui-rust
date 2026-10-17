@@ -23,6 +23,7 @@ import {
   X,
 } from 'lucide-react';
 import { useTabScrollEdges } from './useTabScrollEdges';
+import { TabScrollButtons } from './TabScrollButtons';
 import { WorkbenchContext } from './WorkbenchContext';
 import { homeRelativePath, WorkbenchPath } from './WorkbenchPath';
 import { PathChip } from './copy/PathChip';
@@ -781,9 +782,11 @@ export function MatterWorkbench({
         <div className="tab-scroll-surface matter-tab-scroll" {...tabScrollEdges}>
         <nav ref={tabsRef} className="matter-thread-tabs" aria-label={translate("workbench.workspaceThreads")}>
           <GroupedThreadTabs threads={tabs} currentKey={o.currentKey} onNavigate={navigate} />
-          {newThread}
         </nav>
+        <TabScrollButtons targetRef={tabsRef} edges={tabScrollEdges} />
         </div>
+        {/* New thread stays in reach however many tabs there are. */}
+        <div className="matter-tab-add">{newThread}</div>
         {!o.emptyWorkspace && <button className="matter-toolbar-toggle" aria-label={translate("workbench.threadTools")} aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal data-icon="thread-tools" /></button>}
         {o.statusActions}
         {toolbarOpen && <div className="matter-breadcrumb" id="matter-thread-tools">

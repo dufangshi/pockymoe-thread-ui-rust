@@ -144,7 +144,7 @@ export function TerminalTabs({
                     <SquareSplitHorizontal size={14} />
                   </button>
                 )}
-                <button type="button" tabIndex={-1} disabled={busy} aria-label={t('workbench.terminalKillNamed', { value1: entry.label })} title={t('workbench.terminalKill')}
+                <button type="button" tabIndex={-1} disabled={busy} className="is-danger" aria-label={t('workbench.terminalKillNamed', { value1: entry.label })} title={t('workbench.terminalKill')}
                   onClick={(event) => { event.stopPropagation(); onKill(id); }}>
                   <Trash2 size={14} />
                 </button>

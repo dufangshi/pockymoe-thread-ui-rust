@@ -856,7 +856,7 @@ export function GraphWorkspacePreviewPane({
             {document && (document.phase === 'conflict' || (document.phase === 'unknown' && document.conflict)) && showConflict ? (
               <div className="workspace-document-conflict" data-testid="workspace-document-conflict">
                 <strong>{translate(document.phase==='unknown' ? 'files.safePhase.unknown':'files.safeConflictTitle')}</strong>
-                <p>{translate(document.phase==='unknown' ? 'files.safeUnknown':'files.safeConflictBody')}</p>
+                <p>{translate(document.phase==='unknown' ? 'files.safeUnknown' : document.conflictFrom==='check' ? 'files.safeChangedBody' : 'files.safeConflictBody')}</p>
                 <div className="workspace-document-actions">
                   <button type="button" onClick={() => setShowConflict(false)}>{translate('files.safeKeepDraft')}</button>
                   <button type="button" disabled={document.phase==='unknown' || document.conflict?.content == null} onClick={async () => {const revision=document.revision; if(await confirmAsync({ title: translate('files.safeAdoptDisk'), description: translate('files.safeDiscard'), confirmLabel: translate('files.safeAdoptDisk') })) documents?.adoptDisk(document.snapshot.path,revision);}}>{translate('files.safeAdoptDisk')}</button>

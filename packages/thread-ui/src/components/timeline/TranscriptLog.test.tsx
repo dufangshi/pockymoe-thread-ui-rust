@@ -119,10 +119,17 @@ describe('TranscriptLog', () => {
     await click('.tlog-row-head');
     expect(container.querySelector('.tlog-detail[role="status"]')).not.toBeNull();
     await act(async () => reject(new Error('Unavailable')));
-    expect(container.querySelector('.tlog-output.is-error')?.textContent).toBe('Unavailable');
+    const failure = container.querySelector('.tlog-detail-error[role="alert"]');
+    expect(failure?.textContent).toContain("Couldn't load the details: Unavailable");
+    expect(container.querySelector('.tlog-output')).toBeNull();
     await click('.tlog-row-head');
     await click('.tlog-row-head');
     expect(loadDetail).toHaveBeenCalledTimes(2);
+    await act(async () => reject(new Error('Still unavailable')));
+    // Retry asks again in place.
+    await click('.tlog-detail-retry');
+    expect(loadDetail).toHaveBeenCalledTimes(3);
+    expect(container.querySelector('.tlog-detail[role="status"]')).not.toBeNull();
   });
 
   it('opens inline tool output and diffs in the text viewer without loading', async () => {

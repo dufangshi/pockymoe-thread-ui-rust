@@ -757,3 +757,30 @@
 .tlog-open-full:hover, .tlog-open-full:focus-visible { opacity: 1; color: var(--theme-fg); }
 .tlog-open-full > svg { width: 13px; height: 13px; }
 .tlog-open-full::after { content: ''; position: absolute; inset: -6px; }
+
+/* Details that failed to load: the reason, in the failure color, and a way to try again. */
+.tlog-detail-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 6px 8px;
+  border: 1px solid color-mix(in srgb, var(--tlog-failed) 40%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--tlog-failed) 8%, transparent);
+  color: var(--tlog-failed);
+  font-size: 12px;
+}
+.tlog-detail-error > svg { flex: none; width: 14px; height: 14px; }
+.tlog-detail-error > span { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.tlog-detail-retry {
+  flex: none;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.tlog-detail-retry:hover { background: color-mix(in srgb, var(--tlog-failed) 14%, transparent); }

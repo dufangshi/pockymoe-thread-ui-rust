@@ -197,6 +197,11 @@
 .terminal-menu-item > span:not(.terminal-status-dot):not(.terminal-tab-prefix) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .terminal-menu-item:not(:disabled):hover, .terminal-menu-item:focus-visible { background: var(--theme-hover); }
 .terminal-menu-item.is-danger { color: #d1555f; }
+/* Every kill entry carries the danger color, not only the menu's. */
+.terminal-icon-button.is-danger,
+.terminal-tab-actions button.is-danger { color: #d1555f !important; }
+.terminal-icon-button.is-danger:not(:disabled):hover,
+.terminal-tab-actions button.is-danger:not(:disabled):hover { background: color-mix(in srgb, #d1555f 14%, transparent) !important; color: #d1555f !important; }
 .terminal-menu-item[aria-checked='true'] { background: var(--theme-accent-soft); }
 .terminal-menu-row { display: flex; align-items: center; gap: 2px; }
 .terminal-menu-rename { display: flex; flex: 1; gap: 4px; padding: 2px; }

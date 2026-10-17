@@ -486,6 +486,8 @@ export const chatEn = {
   'chat.logOpenFull': 'Open in full',
   'chat.logNoOutput': 'No output',
   'chat.logLoading': 'Loading…',
+  'chat.logDetailFailed': "Couldn't load the details: {{reason}}",
+  'chat.retry': 'Retry',
   'chat.logRunning': 'running',
   'chat.logFailedTag': 'failed',
   'chat.logInterrupted': 'interrupted',

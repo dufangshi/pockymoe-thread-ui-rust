@@ -247,6 +247,8 @@ export function WorkspaceExplorerRow({
           aria-label={translate("files.retryLoading", { value1: node.name })}
         >
           <CircleAlert className="h-3.5 w-3.5" />
+          {/* Announced once when the folder fails to load. */}
+          <span className="sr-only" role="alert">{translate("files.retry_f4914f", { value1: error, value2: node.name })}</span>
         </button>
       ) : null}
       {!linkedDirectory && node.path ? <WorkspaceNodeActions node={node}

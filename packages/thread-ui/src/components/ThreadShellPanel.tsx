@@ -51,6 +51,7 @@ import {
 import { ShellTouchControls } from './shell/ShellTouchControls';
 import { controlSequenceForLetter } from './shell/shellSnapshot';
 import { TerminalMenu } from './shell/TerminalMenu';
+import { confirmAsync } from './menu/confirmAsync';
 import {
   TERMINAL_TABS_DEFAULT,
   TERMINAL_TABS_MAX,
@@ -262,6 +263,11 @@ export const ThreadShellPanel = forwardRef<
     { id: shell.id, label: labels.get(shell.id) ?? shell.id, status: terminalStatus(shell), detail: `${shell.cwd} · ${shell.id.slice(0, 8)}` },
   ])), [labels, liveShells, terminalStatus]);
   const activeLabel = activeShell ? labels.get(activeShell.id) ?? null : null;
+  // Read when a terminal is killed, without recreating the kill action on each output.
+  const runtimeRef = useRef(runtime);
+  runtimeRef.current = runtime;
+  const labelsRef = useRef(labels);
+  labelsRef.current = labels;
 
   useEffect(() => {
     if (shellState) saveTerminalLayout(layoutKey, layout);
@@ -375,6 +381,12 @@ export const ThreadShellPanel = forwardRef<
 
   const killTerminal = useCallback(async (shellId: string | null | undefined) => {
     if (!shellId) return;
+    // A command still runs there: ask first. An idle shell just closes.
+    if (runtimeRef.current[shellId]?.isCommandRunning && !(await confirmAsync({
+      title: t('workbench.terminalKillRunningTitle', { value1: labelsRef.current.get(shellId) ?? shellId.slice(0, 8) }),
+      description: t('workbench.terminalKillRunningBody'),
+      confirmLabel: t('workbench.terminalKill'),
+    }))) return;
     setBusy(true);
     try {
       await shellAdapter.terminateShell(shellId);
@@ -631,7 +643,7 @@ export const ThreadShellPanel = forwardRef<
               {renamingId === shellId ? (
                 <form className="terminal-menu-rename" onSubmit={(event) => { event.preventDefault(); void submitRename(); }}>
                   <input aria-label={t('workbench.terminalName')} value={renameDraft} autoFocus onChange={event => setRenameDraft(event.currentTarget.value)} />
-                  <button type="submit" className="terminal-icon-button" aria-label={t('files.save')} title={t('files.save')}><Pencil size={15} /></button>
+                  <button type="submit" className="terminal-icon-button" aria-label={t('files.save')} title={t('files.save')}><Check size={15} /></button>
                 </form>
               ) : (
                 <>
@@ -643,7 +655,7 @@ export const ThreadShellPanel = forwardRef<
                     <TerminalStatusDot status={entry.status} />
                   </button>
                   <button type="button" className="terminal-icon-button" aria-label={t('workbench.terminalRenameNamed', { value1: entry.label })} onClick={() => startRename(shellId)}><Pencil size={15} /></button>
-                  <button type="button" className="terminal-icon-button" aria-label={t('workbench.terminalKillNamed', { value1: entry.label })} disabled={busy} onClick={() => void killTerminal(shellId)}><Trash2 size={15} /></button>
+                  <button type="button" className="terminal-icon-button is-danger" aria-label={t('workbench.terminalKillNamed', { value1: entry.label })} disabled={busy} onClick={() => void killTerminal(shellId)}><Trash2 size={15} /></button>
                 </>
               )}
             </div>

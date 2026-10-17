@@ -356,7 +356,7 @@ export function WorkspaceExplorerPanel({
           ))}
         </div>
       ) : rootError ? (
-        <div className="mx-3 mt-2 rounded-md border border-rose-500/25 bg-rose-500/10 px-3 py-3 text-sm text-rose-700 dark:text-rose-200">
+        <div role="alert" className="mx-3 mt-2 rounded-md border border-rose-500/25 bg-rose-500/10 px-3 py-3 text-sm text-rose-700 dark:text-rose-200">
           <p>{rootError}</p>
           <button
             type="button"

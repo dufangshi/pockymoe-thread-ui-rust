@@ -232,6 +232,7 @@ export function useWorkspaceDocuments(
             ...current,
             phase: current.phase === 'unknown' ? 'unknown' : 'conflict',
             conflict: disk,
+            conflictFrom: current.phase === 'conflict' && current.conflictFrom === 'save' ? 'save' : 'check',
           });
       } else
         replaceDocument(path, {

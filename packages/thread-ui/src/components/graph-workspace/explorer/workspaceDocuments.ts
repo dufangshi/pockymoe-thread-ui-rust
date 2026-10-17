@@ -16,6 +16,8 @@ export interface WorkspaceDraft {
   operationPending?: boolean;
   error: string | null;
   conflict?: WorkspaceDocumentSnapshot;
+  /** What found the conflict: a save the disk refused, or a check of the disk. */
+  conflictFrom?: 'save' | 'check';
   submitted?: { content: string; revision: number; operationId: string };
 }
 // Host and lazy workspace entries can be prebundled separately. Keep source
@@ -129,6 +131,7 @@ export function settleSave(
       ...doc,
       phase: 'conflict',
       conflict: receipt.snapshot,
+      conflictFrom: 'save',
       submitted: undefined,
       error: receipt.snapshot ? null : translate('files.safeMissing'),
     };

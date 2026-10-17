@@ -1,5 +1,5 @@
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { ChevronRight, Maximize2 } from 'lucide-react';
+import { ChevronRight, Maximize2, TriangleAlert } from 'lucide-react';
 import { CopyButton } from '../copy/CopyButton';
 
 import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto, ThreadTurnActivitySegmentDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
@@ -72,6 +72,7 @@ function useItemDetail(item: ThreadHistoryItemDto, enabled: boolean) {
   const key = `${item.id}:${item.status ?? ''}`;
   const live = logStatus(item.status) === 'running';
   const [state, setState] = useState<{ key: string; text?: string; error?: string } | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!enabled || !loadable || !loader) return;
@@ -98,12 +99,14 @@ function useItemDetail(item: ThreadHistoryItemDto, enabled: boolean) {
       },
     );
     return () => { active = false; };
-  }, [enabled, loadable, loader, key, live, item.id]);
+  }, [enabled, loadable, loader, key, live, item.id, attempt]);
 
-  if (inline) return { text: inline, loading: false, error: undefined };
-  if (!loadable) return { text: null, loading: false, error: undefined };
-  if (state?.key === key) return { text: state.text ?? null, loading: false, error: state.error };
-  return { text: null, loading: enabled, error: undefined };
+  // A failed load is forgotten by the cache, so trying again asks once more.
+  const retry = useCallback(() => { setState(null); setAttempt((value) => value + 1); }, []);
+  if (inline) return { text: inline, loading: false, error: undefined, retry };
+  if (!loadable) return { text: null, loading: false, error: undefined, retry };
+  if (state?.key === key) return { text: state.text ?? null, loading: false, error: state.error, retry };
+  return { text: null, loading: enabled, error: undefined, retry };
 }
 
 const PATH_MARKERS = ['/apps/', '/packages/', '/crates/', '/src/', '/tests/', '/docs/', '/scripts/', '/e2e/'];
@@ -243,15 +246,27 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
   }
 
   const command = item.kind === 'commandExecution' && title.full !== title.text.replace(/ …$/, '') ? title.full : null;
-  const output = detail.error ?? (text ? toolResultText(text) : '');
+  if (detail.error) {
+    return (
+      <div className="tlog-detail">
+        {command ? <pre className="tlog-command">{command}</pre> : null}
+        <div className="tlog-detail-error" role="alert">
+          <TriangleAlert aria-hidden="true" />
+          <span>{translate('chat.logDetailFailed', { reason: detail.error })}</span>
+          <button type="button" className="tlog-detail-retry" onClick={detail.retry}>{translate('chat.retry')}</button>
+        </div>
+      </div>
+    );
+  }
+  const output = text ? toolResultText(text) : '';
   const clipped = clip(output);
   const whole = item.kind === 'commandExecution' ? `$ ${title.full}\n\n${output}` : text || output;
   return (
     <div className="tlog-detail">
       {command ? <pre className="tlog-command">{command}</pre> : null}
       {output ? (
-        <Viewable className={`tlog-output${detail.error ? ' is-error' : ''}`} label={translate('chat.logOpenFull')}
-          onOpen={actions && !detail.error ? () => actions.openText(viewTitle, whole) : undefined}>
+        <Viewable className="tlog-output" label={translate('chat.logOpenFull')}
+          onOpen={actions ? () => actions.openText(viewTitle, whole) : undefined}>
           <pre>{clipped}</pre>
         </Viewable>
       ) : command ? null : <p className="tlog-empty">{translate('chat.logNoOutput')}</p>}

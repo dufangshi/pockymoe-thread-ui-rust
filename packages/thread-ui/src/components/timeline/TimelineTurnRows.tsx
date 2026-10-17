@@ -654,6 +654,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   );
   // The run a reader opened from a folded turn's narration; null is the last run.
   const [openRunBefore, setOpenRunBefore] = useState<string | null | undefined>(undefined);
+  // The reader unfolded the turn from its work line: work that is one run opens with it.
+  const [openSoleRun, setOpenSoleRun] = useState(false);
   // Stretches of work opened in a folded turn, by the answer they precede ('end' for the last).
   const [openStretches, setOpenStretches] = useState<Set<string>>(() => new Set());
   const revealedSearch = useRef<number | null>(null);
@@ -708,6 +710,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       turnStartedAt={turn.startedAt}
       autoOpenLatestToolDetails={autoOpenLatestToolDetails && entries.at(-1)?.key === groupedItems.at(-1)?.key}
       {...(options?.openLastRun ? { openRunBefore: null } : openRunBefore !== undefined ? { openRunBefore } : {})}
+      openSoleRun={openSoleRun}
       {...(onSelectArtifact ? { onSelectArtifact } : {})}
       {...(adapter ? { adapter } : {})}
     />
@@ -876,6 +879,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
             onClick={(event) => {
               if (deferredItemsLoading) return;
               onBeforeMessageResize?.(event.currentTarget);
+              setOpenSoleRun(effectiveCollapsed);
               onToggleCollapse(turn, effectiveCollapsed);
             }}
             aria-label={translate("chat.turn_6e6e38", { value1: workedLabel, value2: effectiveCollapsed ? translate("chat.expand") : translate("chat.collapse"), value3: absoluteIndex })}
@@ -1028,6 +1032,8 @@ interface TimelineHistoryEntriesProps {
   onToggleGroupedItem: (groupKey: string, currentExpanded: boolean) => void;
   /** Open the run before this item (null: the last run), once the turn has loaded. */
   openRunBefore?: string | null;
+  /** Open the run when it is the whole of these entries. */
+  openSoleRun?: boolean;
   threadId: string | undefined;
   scrollRootRef: RefObject<HTMLDivElement | null>;
   fallbackTimestamp?: string | null | undefined;
@@ -1063,6 +1069,7 @@ function TimelineHistoryEntries({
   turnStartedAt,
   autoOpenLatestToolDetails = false,
   openRunBefore,
+  openSoleRun = false,
 }: TimelineHistoryEntriesProps) {
   const { locale: i18nLocale } = useI18n();
   const latestEntryKey = entries.at(-1)?.key ?? null;
@@ -1114,6 +1121,9 @@ function TimelineHistoryEntries({
   const blocks = logBlocks(entries);
   const lastKey = blocks.at(-1)?.key;
   const lastRunKey = blocks.findLast((block) => block.kind === 'run')?.key;
+  // Work that is one run opens with the work line the reader just unfolded: its
+  // summary would only repeat that line.
+  const soleRun = openSoleRun && blocks.length === 1 && blocks[0]!.kind === 'run';
   return (
     <>
       {blocks.map((block, index) => {
@@ -1132,7 +1142,7 @@ function TimelineHistoryEntries({
             ? next.item.id === openRunBefore
             // The item it precedes may be the answer, shown below the work.
             : block.key === lastRunKey && !blocks.some(other => other.kind === 'item' && other.item.id === openRunBefore));
-        const expanded = expandedGroups[block.key] ?? expandedGroups[block.parentKey] ?? (live || opened);
+        const expanded = expandedGroups[block.key] ?? expandedGroups[block.parentKey] ?? (live || opened || soleRun);
         return (
           <LogRun
             key={block.key}

@@ -1,0 +1,40 @@
+/* Phones: every control can be hit within 40×40px (docs/ui-principles.md §9). The
+   visual size stays; an invisible pseudo-element widens what a finger hits. */
+@media (max-width: 639px) {
+  .thread-ui-shell :is(
+    .thread-turn-head-main,
+    .thread-turn-usage-price,
+    .thread-turn-head-time,
+    .thread-turn-head-speed,
+    .thread-graph-message-failure,
+    .matter-mobile-close,
+    .thread-graph-editor-toolbar-button,
+    .thread-graph-editor-tab-close,
+    .thread-map-children,
+    .matter-notifications-heading > button,
+    .workspace-file-actions > button,
+    .workspace-properties-close
+  ) { position: relative; }
+  .thread-ui-shell :is(
+    .thread-turn-head-main,
+    .thread-turn-usage-price,
+    .thread-turn-head-time,
+    .thread-turn-head-speed
+  )::after { content: ''; position: absolute; inset: -10px -3px; }
+  .thread-ui-shell :is(
+    .thread-graph-message-failure,
+    .matter-mobile-close,
+    .thread-graph-editor-toolbar-button,
+    .thread-graph-editor-tab-close,
+    .thread-map-children,
+    .matter-notifications-heading > button,
+    .workspace-file-actions > button
+  )::after { content: ''; position: absolute; inset: -6px; }
+  /* Menus' rows and the model list are finger-sized. */
+  .thread-ui-shell .composer-model-menu-heading ~ div > [role='menuitemradio'] { min-height: 44px; font-size: 13px; }
+  /* Every dialog's close button. */
+  [data-slot='dialog-close'] { min-width: 40px; min-height: 40px; display: grid; place-items: center; }
+  /* Primary composer controls: 40px. */
+  .thread-ui-shell [data-composer-menu-trigger='true'],
+  .thread-ui-shell .thread-graph-composer-stop-button { min-width: 40px; min-height: 40px; }
+}

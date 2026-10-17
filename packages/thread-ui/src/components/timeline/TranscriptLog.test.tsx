@@ -75,7 +75,7 @@ describe('TranscriptLog', () => {
     await click('.tlog-row-head');
     expect(container.querySelector('.tlog-output')?.textContent).toBe('loaded output');
     expect(loadDetail).toHaveBeenCalledTimes(1);
-    await click('.tlog-viewable');
+    await click('.tlog-open-full');
     expect(context.openText).toHaveBeenCalledWith('cached', '$ cached\n\nloaded output');
     expect(container.querySelector('.tlog-full, .tlog-open')).toBeNull();
   });
@@ -134,9 +134,9 @@ describe('TranscriptLog', () => {
     expect(context.loadDetail).not.toHaveBeenCalled();
     expect(container.querySelector('.tlog-output')?.textContent).toBe('found');
     expect(container.querySelector('.tlog-diff .is-add code')?.textContent).toBe('new');
-    await click('[data-kind="toolCall"] .tlog-viewable');
+    await click('[data-kind="toolCall"] .tlog-open-full');
     expect(context.openText).toHaveBeenCalledWith('lookup', tool.detailText);
-    await click('[data-kind="fileChange"] .tlog-viewable');
+    await click('[data-kind="fileChange"] .tlog-open-full');
     expect(context.openText).toHaveBeenCalledWith('src/a.ts', edit.detailText, 'fileChange');
     expect(container.querySelector('.tlog-open, .tlog-full')).toBeNull();
   });
@@ -210,24 +210,17 @@ describe('TranscriptLog', () => {
     expect(loadDetail).toHaveBeenCalledExactlyOnceWith('cmd');
   });
 
-  it('opens output with click, Enter or Space, while text selection suppresses a click', async () => {
+  it('opens the whole output from its own button, leaving the text plain to select', async () => {
     const context = actions();
     const command = item('cmd', 'commandExecution', { text: 'bash -lc "pwd"', detailText: '/work/repo' });
     await render(<TranscriptLogContext.Provider value={context}><LogRow item={command} /></TranscriptLogContext.Provider>);
     await click('.tlog-row-head');
     const block = container.querySelector<HTMLElement>('.tlog-viewable')!;
-    expect(block.getAttribute('role')).toBe('button');
-    expect(block.tabIndex).toBe(0);
-    const selection = vi.spyOn(window, 'getSelection').mockReturnValue({ toString: () => 'selected output' } as Selection);
+    expect(block.getAttribute('role')).toBeNull();
     await click('.tlog-viewable');
     expect(context.openText).not.toHaveBeenCalled();
-    selection.mockReturnValue(null);
-    await click('.tlog-viewable');
-    for (const key of ['Enter', ' ']) {
-      await act(async () => block.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })));
-    }
-    expect(context.openText).toHaveBeenCalledTimes(3);
-    expect(context.openText).toHaveBeenLastCalledWith('pwd', '$ pwd\n\n/work/repo');
+    await click('.tlog-open-full');
+    expect(context.openText).toHaveBeenCalledExactlyOnceWith('pwd', '$ pwd\n\n/work/repo');
   });
 
   it('copies the unwrapped command without expanding it and briefly shows a check icon', async () => {

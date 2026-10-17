@@ -1,5 +1,5 @@
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Maximize2 } from 'lucide-react';
 import { CopyButton } from '../copy/CopyButton';
 
 import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto, ThreadTurnActivitySegmentDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
@@ -204,13 +204,13 @@ function Viewable({ className, label, onOpen, more, children }: {
   children: ReactNode;
 }) {
   if (!onOpen) return <div className={className}>{children}</div>;
-  // Selecting text inside the block does not open the viewer.
-  const open = () => { if (!window.getSelection()?.toString()) onOpen(); };
+  // The whole output opens from its own button, as a diagram's does; the text
+  // itself stays plain to read and select.
   return (
-    <div className={`${className} tlog-viewable`} role="button" tabIndex={0} aria-label={label} title={label}
-      onClick={open} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpen(); } }}>
+    <div className={`${className} tlog-viewable`}>
+      <button type="button" className="tlog-open-full" aria-label={label} title={label} onClick={onOpen}><Maximize2 aria-hidden="true" /></button>
       {children}
-      {more ? <span className="tlog-more-lines">{more}</span> : null}
+      {more ? <button type="button" className="tlog-more-lines" onClick={onOpen}>{more}</button> : null}
     </div>
   );
 }
@@ -277,6 +277,7 @@ export const LogRow = memo(function LogRow({ item, defaultOpen = false, path }: 
     <div className="tlog-row" data-kind={item.kind} data-status={status} data-open={open || undefined}>
       <div className="tlog-row-line">
         <button type="button" className="tlog-row-head" aria-expanded={open} onClick={(event) => { actions?.anchor?.(event.currentTarget); setChosen(!open); }} title={title.full}>
+          <ChevronRight className="tlog-chev tlog-row-chev" aria-hidden="true" />
           <span className="tlog-glyph" aria-hidden="true">{GLYPH[item.kind] ?? '·'}</span>
           <span className={`tlog-title${title.mono ? ' is-mono' : ''}`}>{title.text}</span>
           {item.kind === 'fileChange' ? <DeltaBadges added={item.addedLines} removed={item.removedLines} /> : null}
@@ -307,6 +308,7 @@ function ReadBatch({ items }: { items: ThreadHistoryItemDto[] }) {
     <div className="tlog-row" data-kind="fileRead" data-batch="true" data-open={open || undefined}>
       <div className="tlog-row-line">
         <button type="button" className="tlog-row-head" aria-expanded={open} onClick={(event) => { actions?.anchor?.(event.currentTarget); setOpen((value) => !value); }}>
+          <ChevronRight className="tlog-chev tlog-row-chev" aria-hidden="true" />
           <span className="tlog-glyph" aria-hidden="true">→</span>
           <span className="tlog-title">{translate('chat.readFileCount', { count: items.length })}</span>
           <span className="tlog-batch-names">{items.map((item) => displayPath(item.previewText?.trim() || item.text, actions?.workspaceRoot).split('/').at(-1)).join('  ')}</span>

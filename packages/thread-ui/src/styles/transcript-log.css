@@ -572,7 +572,7 @@
 /* Output and diff blocks open the floating viewer. */
 .tlog-output:has(> pre) { padding: 0; overflow: hidden; max-height: none; }
 .tlog-output > pre { border: 0; border-radius: 0; background: none; }
-.tlog-viewable { position: relative; cursor: zoom-in; }
+.tlog-viewable { position: relative; }
 .tlog-viewable:hover { border-color: var(--theme-border-strong); }
 .tlog-viewable:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
 .tlog-more-lines {
@@ -742,3 +742,18 @@
 .workspace-loading-skeleton-bar { height: 41px; flex: none; border-bottom: 1px solid var(--theme-border); }
 @keyframes workspace-skeleton-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .workspace-loading-skeleton { animation: none; } }
+
+/* Every expandable row leads with a chevron; its type glyph follows. */
+.tlog-row-chev { width: 11px; height: 11px; margin-right: -4px; opacity: .7; }
+.tlog-row[data-open] > .tlog-row-line .tlog-row-chev { transform: rotate(90deg); }
+/* A long output or diff opens whole from its own button, top right. */
+.tlog-viewable { position: relative; }
+.tlog-open-full {
+  position: absolute; top: 4px; right: 4px; z-index: 1;
+  display: grid; place-items: center; width: 26px; height: 26px;
+  border-radius: 6px; background: var(--theme-panel); color: var(--theme-fg-muted);
+  opacity: .75; box-shadow: 0 0 0 1px var(--theme-border);
+}
+.tlog-open-full:hover, .tlog-open-full:focus-visible { opacity: 1; color: var(--theme-fg); }
+.tlog-open-full > svg { width: 13px; height: 13px; }
+.tlog-open-full::after { content: ''; position: absolute; inset: -6px; }

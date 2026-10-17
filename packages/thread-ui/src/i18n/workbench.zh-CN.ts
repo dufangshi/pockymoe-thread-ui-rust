@@ -519,6 +519,7 @@ export const workbenchZhCN = {
   'workbench.homeShort': '首页',
   'workbench.minimizeFiles': '最小化：只在左侧保留文件树',
   'workbench.restoreFiles': '重新展开文件编辑器',
+  'workbench.threadMapMoreThreads': { one: '另有 {{count}} 个线程', other: '另有 {{count}} 个线程' },
   'workbench.app': '应用',
   'workbench.closeSheet': '关闭',
   "workbench.phoneDockSetting": "手机单手模式",

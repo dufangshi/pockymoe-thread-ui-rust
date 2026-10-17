@@ -70,6 +70,10 @@ export interface MapNode {
  *  six times one of a single turn, so a long thread does not hide the rest. */
 export const threadWeight = (turns: number | null) => 1 + Math.sqrt(Math.max(0, turns ?? 0));
 
+/** A running thread (or one whose agent threads run) weighs as much as a long
+ *  one at least, so it, its workspace and its device get room to show it. */
+export const runningWeight = (turns: number | null) => threadWeight(turns) * 2 + 8;
+
 const MINUTE = 60_000;
 /** Heat 0–4 from the running time in the window, like a contribution graph:
  *  none, up to 10 minutes, up to an hour, up to three hours, more. */
@@ -101,9 +105,10 @@ export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: s
     for (const workspace of device.workspaces) {
       const space: MapNode = { ...blank, children: [], id: `workspace:${device.id}:${workspace.id}`, kind: 'workspace', label: workspace.label, parent: node, workspace, device };
       for (const thread of workspace.threads) {
+        const live = Boolean(thread.running || thread.children?.some(child => child.running));
         const leaf: MapNode = {
           id: `thread:${thread.key}`, kind: 'thread', label: thread.title, parent: space, children: [], thread, device, workspace,
-          weight: threadWeight(thread.turns), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0, threads: 1, running: thread.running ? 1 : 0,
+          weight: live ? runningWeight(thread.turns) : threadWeight(thread.turns), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0, threads: 1, running: live ? 1 : 0,
           usd: thread.priceEstimate?.totalUsd ?? 0, tokens: thread.tokenUsage?.totalTokens ?? 0,
         };
         space.children.push(leaf);

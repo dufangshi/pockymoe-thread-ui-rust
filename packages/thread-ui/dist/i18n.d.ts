@@ -685,6 +685,10 @@ declare const en: {
     readonly 'workbench.homeShort': "Home";
     readonly 'workbench.minimizeFiles': "Minimize: keep only the file tree, on the left";
     readonly 'workbench.restoreFiles': "Show the file editor again";
+    readonly 'workbench.threadMapMoreThreads': {
+        readonly one: "+{{count}} more thread";
+        readonly other: "+{{count}} more threads";
+    };
     readonly 'workbench.app': "App";
     readonly 'workbench.closeSheet': "Close";
     readonly "workbench.phoneDockSetting": "One-handed phone layout";
@@ -4416,6 +4420,10 @@ declare const zhCN: {
     'workbench.homeShort': "首页";
     'workbench.minimizeFiles': "最小化：只在左侧保留文件树";
     'workbench.restoreFiles': "重新展开文件编辑器";
+    'workbench.threadMapMoreThreads': {
+        readonly one: "另有 {{count}} 个线程";
+        readonly other: "另有 {{count}} 个线程";
+    };
     'workbench.app': "应用";
     'workbench.closeSheet': "关闭";
     "workbench.phoneDockSetting": "手机单手模式";
@@ -8169,6 +8177,10 @@ declare const resources: {
         readonly 'workbench.homeShort': "Home";
         readonly 'workbench.minimizeFiles': "Minimize: keep only the file tree, on the left";
         readonly 'workbench.restoreFiles': "Show the file editor again";
+        readonly 'workbench.threadMapMoreThreads': {
+            readonly one: "+{{count}} more thread";
+            readonly other: "+{{count}} more threads";
+        };
         readonly 'workbench.app': "App";
         readonly 'workbench.closeSheet': "Close";
         readonly "workbench.phoneDockSetting": "One-handed phone layout";
@@ -11899,6 +11911,10 @@ declare const resources: {
         'workbench.homeShort': "首页";
         'workbench.minimizeFiles': "最小化：只在左侧保留文件树";
         'workbench.restoreFiles': "重新展开文件编辑器";
+        'workbench.threadMapMoreThreads': {
+            readonly one: "另有 {{count}} 个线程";
+            readonly other: "另有 {{count}} 个线程";
+        };
         'workbench.app': "应用";
         'workbench.closeSheet': "关闭";
         "workbench.phoneDockSetting": "手机单手模式";

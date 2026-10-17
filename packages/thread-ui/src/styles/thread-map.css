@@ -1,7 +1,8 @@
 /* Thread map: every thread as a treemap tile. Area follows turns, the fill the
    run time in the last day (five light steps, like a contribution graph, so the
-   text on a tile stays readable), and running tiles breathe slowly. Themes may
-   set --thread-map-heat; it defaults to the accent. */
+   text on a tile stays readable), and running tiles breathe slowly in their own
+   color, so where agents run stands out from where they ran. Themes may set
+   --thread-map-heat (the accent by default) and --thread-map-live. */
 .thread-graph-dialog.thread-map-dialog {
   display: flex;
   flex-direction: column;
@@ -15,6 +16,7 @@
   border-radius: 16px;
   color: var(--theme-fg);
   --thread-map-heat: var(--theme-accent-solid);
+  --thread-map-live: #ec7a08;
   --thread-map-tile: var(--theme-surface);
   --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));
   /* Age, fresh to old: cyan, blue, violet, amber, bronze. */
@@ -25,6 +27,7 @@
   --thread-map-age-4: #96653f;
 }
 .thread-graph-dialog.thread-map-dialog[data-theme-effective='dark'] {
+  --thread-map-live: #ffa64d;
   --thread-map-age-0: #4cc3e6;
   --thread-map-age-1: #82a3f2;
   --thread-map-age-2: #ae91f0;
@@ -505,19 +508,27 @@
 .thread-map [data-heat='4'] { --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 52%, var(--thread-map-tile)); }
 .thread-map :is(.thread-map-tile, .thread-map-section[data-heat], .thread-map-scale i) { background-color: var(--thread-map-fill); }
 
-/* Running: a steady ring and a slow breath of the accent under the text. */
+/* Running: a ring in the running color, and a pulse that rises quickly and fades
+   slowly, like a heartbeat: a halo outside the block and a glow in from its edge.
+   Both are in the running color, so they show by hue on any fill, bright or dark;
+   the fill keeps its heat. Devices and workspaces with agents running inside take
+   the color on their edge. */
 .thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {
-  border-color: color-mix(in oklab, var(--thread-map-heat) 75%, transparent);
+  border-color: var(--thread-map-live);
+  animation: thread-map-halo 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;
 }
+.thread-map .thread-map-section[data-live]:not([data-running]) { border-color: color-mix(in oklab, var(--thread-map-live) 55%, var(--theme-border)); }
+.thread-map .thread-map-section[data-live] > .thread-map-section-head .thread-map-section-count { color: var(--theme-fg-soft); }
+.thread-map .thread-map-tile-live { color: var(--thread-map-live); }
 .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {
   position: absolute;
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background: var(--thread-map-heat);
+  box-shadow: inset 0 0 0 2px var(--thread-map-live), inset 0 0 26px color-mix(in oklab, var(--thread-map-live) 70%, transparent);
   content: '';
   pointer-events: none;
-  animation: thread-map-breathe 3.2s ease-in-out infinite;
+  animation: thread-map-glow 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;
 }
 .thread-map-running-dot {
   display: inline-block;
@@ -525,20 +536,26 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--thread-map-heat);
+  background: var(--thread-map-live);
   vertical-align: 0.05em;
-  animation: thread-map-breathe-dot 3.2s ease-in-out infinite;
+  animation: thread-map-breathe-dot 1.8s ease-out infinite;
 }
-@keyframes thread-map-breathe {
-  0%, 100% { opacity: 0.04; }
-  50% { opacity: 0.3; }
+@keyframes thread-map-halo {
+  0%, 100% { box-shadow: 0 0 0 1px var(--thread-map-live), 0 0 0 0 transparent; }
+  22% { box-shadow: 0 0 0 1.5px var(--thread-map-live), 0 0 12px 3px color-mix(in oklab, var(--thread-map-live) 65%, transparent); }
 }
+@keyframes thread-map-glow {
+  0%, 100% { opacity: 0.12; }
+  22% { opacity: 1; }
+}
+/* The dot pings: a ring leaves it and fades, which shows on any background. */
 @keyframes thread-map-breathe-dot {
-  0%, 100% { opacity: 0.35; }
-  50% { opacity: 1; }
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--thread-map-live) 75%, transparent); }
+  70%, 100% { box-shadow: 0 0 0 6px transparent; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before { animation: none; opacity: 0.16; }
+  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running] { animation: none; box-shadow: 0 0 0 1.5px var(--thread-map-live); }
+  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before { animation: none; opacity: 0.7; }
   .thread-map-running-dot { animation: none; }
 }
 

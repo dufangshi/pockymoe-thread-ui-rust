@@ -519,6 +519,7 @@ export const workbenchEn = {
   'workbench.homeShort': 'Home',
   'workbench.minimizeFiles': 'Minimize: keep only the file tree, on the left',
   'workbench.restoreFiles': 'Show the file editor again',
+  'workbench.threadMapMoreThreads': { one: '+{{count}} more thread', other: '+{{count}} more threads' },
   'workbench.app': 'App',
   'workbench.closeSheet': 'Close',
   "workbench.phoneDockSetting": "One-handed phone layout",

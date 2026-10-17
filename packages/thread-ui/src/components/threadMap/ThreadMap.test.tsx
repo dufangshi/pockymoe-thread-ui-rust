@@ -4,7 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { setLocale } from '../../i18n';
 import { ThreadMap } from './ThreadMap';
-import { buildThreadMap, heatLevel, threadWeight, type MapNode, type ThreadMapDevice, type ThreadMapThread } from './model';
+import { buildThreadMap, heatLevel, runningWeight, threadWeight, type MapNode, type ThreadMapDevice, type ThreadMapThread } from './model';
 import { ageTier, formatAge, formatShortDuration, promptLine, ThreadTile } from './ThreadTile';
 import { squarify } from './squarify';
 
@@ -37,6 +37,19 @@ describe('thread map model', () => {
     expect(threadWeight(100)).toBe(11);
     expect(threadWeight(null)).toBe(1);
     expect([0, 1, 10 * 60_000, 11 * 60_000, 3_600_000, 3 * 3_600_000, 4 * 3_600_000].map(heatLevel)).toEqual([0, 1, 1, 2, 2, 3, 4]);
+  });
+
+  it('weighs a running thread, or one whose agent threads run, like a long one at least', () => {
+    expect(runningWeight(0)).toBe(10);
+    expect(runningWeight(100)).toBe(30);
+    const root = buildThreadMap([{ id: 'd', name: 'D', state: 'ready', workspaces: [{ id: 'w', label: 'w', threads: [
+      thread('idle', { turns: 100 }),
+      thread('lead', { turns: 1, children: [thread('worker', { running: true })] }),
+    ] }] }], 'All');
+    const [first, second] = root.children[0]!.children;
+    expect(first!.thread!.key).toBe('lead');
+    expect(first).toMatchObject({ weight: runningWeight(1), running: 1 });
+    expect(second).toMatchObject({ weight: 11, running: 0 });
   });
 
   it('groups threads by device and workspace, skips empty workspaces and keeps unlisted devices', () => {
@@ -118,6 +131,24 @@ describe('ThreadMap', () => {
     // Without activity from its device a thread still shows, unheated.
     expect(link('c')!.getAttribute('aria-label')).toBe('Thread c · Codex · docs');
     expect(tile('c')!.dataset.heat).toBe('0');
+  });
+
+  it('shows the agents running inside a block too small for everything in it', () => {
+    // A small map and a crowded workspace: everything in it cannot show.
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(240);
+    vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(160);
+    const crowd = Array.from({ length: 300 }, (_, index) => thread(`q${index}`, { turns: 0 }));
+    show([
+      { id: 'big', name: 'Big', state: 'ready', workspaces: [{ id: 'main', label: 'main', threads: Array.from({ length: 6 }, (_, index) => thread(`m${index}`, { turns: 2500 })) }] },
+      { id: 'wsl', name: 'WSL', state: 'ready', workspaces: [{ id: 'lab', label: 'lab', threads: [...crowd, thread('live', { turns: 2, running: true })] }] },
+    ]);
+    const lab = host.querySelector<HTMLElement>('section[data-map-id="workspace:wsl:lab"]')!;
+    expect(lab.hasAttribute('data-collapsed')).toBe(false);
+    expect(lab.hasAttribute('data-live')).toBe(true);
+    expect(lab.querySelector('a.thread-map-tile-link[href="/threads/live"]')).not.toBeNull();
+    expect(lab.querySelector('a.thread-map-tile-link[href="/threads/q0"]')).toBeNull();
+    expect(lab.querySelector('.thread-map-section-summary')!.textContent).toBe('+300 more threads');
+    expect(host.querySelector('section[data-map-id="device:wsl"]')!.hasAttribute('data-live')).toBe(true);
   });
 
   it('drills into a device and a workspace and back', () => {

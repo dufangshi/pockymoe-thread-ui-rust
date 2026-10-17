@@ -234,7 +234,7 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
   );
   return (
     <div className="thread-map-tile" data-map-id={node.id} data-size={tier} data-heat={heatLevel(thread.activeMs)}
-      data-running={thread.running || undefined} data-failed={thread.failed || undefined} data-current={current || undefined}
+      data-running={thread.running || node.running > 0 || undefined} data-failed={thread.failed || undefined} data-current={current || undefined}
       style={{ left: box.x, top: box.y, width: w, height: h, '--lines': lines, '--prompt-lines': promptLines, '--spark-h': `${sparkHeight}px` } as CSSProperties}>
       <a href={thread.href} className="thread-map-tile-link" aria-label={details.join(' · ')} aria-current={current ? 'page' : undefined}
         tabIndex={tier === 'dot' ? -1 : undefined} onClick={onOpen} {...hover} />

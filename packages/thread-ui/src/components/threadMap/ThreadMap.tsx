@@ -303,6 +303,9 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   };
 
   let rendered = 0;
+  const runningLeaves = (node: MapNode): MapNode[] => node.kind === 'thread'
+    ? (node.running ? [node] : [])
+    : node.children.flatMap(runningLeaves);
   // Every level answers: a thread opens from its tile wherever it shows, and a
   // device or workspace opens from its header row (or anywhere, when it is too
   // small to show what is inside).
@@ -323,6 +326,11 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       const unlisted = item.kind === 'device' && state !== 'ready';
       const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
       const preview = !unlisted && rendered < 600 && fits(item, inner, depth);
+      // A block too small for everything inside still shows the agents running
+      // there (up to four), with the rest counted under them.
+      const live = !preview && !unlisted && item.running > 0 && inner.width >= 44 && inner.height >= 34
+        ? runningLeaves(item).slice(0, 4) : [];
+      const liveInner = { ...inner, height: Math.max(0, inner.height - (item.threads > live.length ? 15 : 0)) };
       const named = box.width >= 72;
       const Icon = item.kind === 'device' ? Monitor : Folder;
       const zoomable = !unlisted;
@@ -338,18 +346,23 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       </>;
       const zoom = (event: ReactMouseEvent<HTMLElement>) => navigate(item, event.currentTarget.closest('section'));
       return (
-        <section key={item.id} data-map-id={item.id} className="thread-map-section" data-kind={item.kind} data-depth={depth} data-state={unlisted ? state : undefined} data-collapsed={!preview || undefined}
-          data-heat={preview ? undefined : heatLevel(item.activeMs)} data-running={!preview && item.running ? true : undefined}
+        <section key={item.id} data-map-id={item.id} className="thread-map-section" data-kind={item.kind} data-depth={depth} data-state={unlisted ? state : undefined}
+          data-collapsed={(!preview && !live.length) || undefined} data-live={item.running > 0 || undefined}
+          data-heat={preview || live.length ? undefined : heatLevel(item.activeMs)} data-running={!preview && !live.length && item.running ? true : undefined}
           data-zoomable={zoomable || undefined} aria-label={text} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
-          {preview && zoomable
+          {(preview || live.length > 0) && zoomable
             ? <button type="button" className="thread-map-section-head" aria-label={translate('workbench.threadMapExplore', { name: text })}
               onClick={zoom} {...hover(lines)}>{head}</button>
             : <div className="thread-map-section-head">{head}</div>}
           {preview && <div className="thread-map-preview">{render(item.children, inner, depth + 1)}</div>}
-          {!preview && !unlisted && box.height >= HEADER + 18 && (
+          {live.length > 0 && <div className="thread-map-preview">{render(live, liveInner, depth + 1)}</div>}
+          {live.length > 0 && item.threads > live.length && (
+            <span className="thread-map-section-summary" aria-hidden="true">{translate('workbench.threadMapMoreThreads', { count: item.threads - live.length })}</span>
+          )}
+          {!preview && !live.length && !unlisted && box.height >= HEADER + 18 && (
             <span className="thread-map-section-summary" aria-hidden="true">{translate('workbench.threadMapThreads', { count: item.threads })}</span>
           )}
-          {!preview && zoomable && <button type="button" className="thread-map-zoom" aria-label={translate('workbench.threadMapExplore', { name: text })}
+          {!preview && !live.length && zoomable && <button type="button" className="thread-map-zoom" aria-label={translate('workbench.threadMapExplore', { name: text })}
             onClick={zoom} {...hover(lines)} />}
           {unlisted && state === 'error' && onRetry && <button type="button" className="thread-map-zoom"
             aria-label={`${translate('workbench.threadMapRetry')} · ${text}`} onClick={() => onRetry(item.device!.id)} {...hover(lines)} />}

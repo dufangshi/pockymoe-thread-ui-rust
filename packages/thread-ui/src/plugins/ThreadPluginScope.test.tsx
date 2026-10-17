@@ -461,3 +461,35 @@ it('follows a device-wide switch and settings save at once, without leaving the 
   expect(save).toHaveBeenCalledTimes(1);
   expect(fetches()).toBe(4);
 });
+
+it("takes another device's answers as they are for a conversation reached through its own adapter", async () => {
+  const backend = fakeBackend();
+  // The main device has the plugin off and unavailable; the other device has it on.
+  const device: PluginProviderAdapter = {
+    fetchPlugins: () => [
+      { ...demo.manifest, enabled: false, available: false },
+    ],
+  };
+  let latest: ReturnType<typeof usePlugins> | undefined;
+  function Handle() {
+    latest = usePlugins();
+    return null;
+  }
+  await act(async () =>
+    root.render(
+      <PluginProvider adapter={device} builtinPlugins={[demo]}>
+        <ThreadPluginScope threadId="remote" adapter={backend.adapter}>
+          <Handle />
+          <Probe name="probe-remote" />
+        </ThreadPluginScope>
+      </PluginProvider>,
+    ),
+  );
+  expect(q('[data-testid="probe-remote"]').textContent).toBe(
+    'panels:1 stored:stored result',
+  );
+  expect(latest!.plugins.find((plugin) => plugin.id === ID)).toMatchObject({
+    enabled: true,
+    available: true,
+  });
+});

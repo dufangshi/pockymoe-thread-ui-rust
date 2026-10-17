@@ -23824,7 +23824,8 @@ function ThreadPluginScope({
       ++request.current;
     };
   }, [reload]);
-  const deviceState = `${device.plugins.map((plugin) => `${plugin.id}:${plugin.enabled}`).join("|")}#${device.settingsVersion ?? 0}`;
+  const sameDevice = !adapter;
+  const deviceState = sameDevice ? `${device.plugins.map((plugin) => `${plugin.id}:${plugin.enabled}`).join("|")}#${device.settingsVersion ?? 0}` : "";
   const seenDeviceState = useRef39(deviceState);
   useEffect46(() => {
     if (seenDeviceState.current === deviceState) return;
@@ -23914,11 +23915,21 @@ function ThreadPluginScope({
   const plugins = useMemo20(() => {
     if (loaded.status !== "ready") return device.plugins;
     const scoped = new Map(loaded.plugins.map((plugin) => [plugin.id, plugin]));
-    return device.plugins.map((plugin) => {
+    const merged = device.plugins.map((plugin) => {
       const own = scoped.get(plugin.id);
-      return own ? { ...plugin, enabled: plugin.enabled && own.enabled } : plugin;
+      if (!own) return plugin;
+      return {
+        ...plugin,
+        ...own,
+        enabled: sameDevice ? plugin.enabled && own.enabled : own.enabled
+      };
     });
-  }, [device.plugins, loaded]);
+    const known2 = new Set(device.plugins.map((plugin) => plugin.id));
+    return [
+      ...merged,
+      ...loaded.plugins.filter((plugin) => !known2.has(plugin.id))
+    ];
+  }, [device.plugins, loaded, sameDevice]);
   const thread = useMemo20(
     () => ({
       threadId,

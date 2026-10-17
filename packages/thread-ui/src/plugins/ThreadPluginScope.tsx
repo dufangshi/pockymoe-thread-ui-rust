@@ -120,9 +120,14 @@ export function ThreadPluginScope({
 
   // A device-wide switch or settings save changes what this conversation inherits:
   // refresh in place, keyed by the device's state rather than adapter identity.
-  const deviceState = `${device.plugins
-    .map((plugin) => `${plugin.id}:${plugin.enabled}`)
-    .join('|')}#${device.settingsVersion ?? 0}`;
+  // Only a conversation on this provider's device inherits from it; one reached
+  // through its own adapter (another device) answers for itself.
+  const sameDevice = !adapter;
+  const deviceState = sameDevice
+    ? `${device.plugins
+        .map((plugin) => `${plugin.id}:${plugin.enabled}`)
+        .join('|')}#${device.settingsVersion ?? 0}`
+    : '';
   const seenDeviceState = useRef(deviceState);
   useEffect(() => {
     if (seenDeviceState.current === deviceState) return;
@@ -234,14 +239,23 @@ export function ThreadPluginScope({
   const plugins = useMemo(() => {
     if (loaded.status !== 'ready') return device.plugins;
     const scoped = new Map(loaded.plugins.map((plugin) => [plugin.id, plugin]));
-    return device.plugins.map((plugin) => {
+    // The conversation's own descriptor is authoritative (availability included).
+    // On this device its global switch also wins at once, before a refresh lands.
+    const merged = device.plugins.map((plugin) => {
       const own = scoped.get(plugin.id);
-      // The device-wide switch wins at once, even before this scope refreshes.
-      return own
-        ? { ...plugin, enabled: plugin.enabled && own.enabled }
-        : plugin;
+      if (!own) return plugin;
+      return {
+        ...plugin,
+        ...own,
+        enabled: sameDevice ? plugin.enabled && own.enabled : own.enabled,
+      };
     });
-  }, [device.plugins, loaded]);
+    const known = new Set(device.plugins.map((plugin) => plugin.id));
+    return [
+      ...merged,
+      ...loaded.plugins.filter((plugin) => !known.has(plugin.id)),
+    ];
+  }, [device.plugins, loaded, sameDevice]);
 
   const thread = useMemo<ThreadPluginScopeState>(
     () => ({

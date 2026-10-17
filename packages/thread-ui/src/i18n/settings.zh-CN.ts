@@ -80,6 +80,9 @@ export const settingsZhCN = {
     '{{name}} 已保存。重新应用前，使用它的 harness 继续使用已应用的版本。',
   'settings.connUsagePending': '{{harness}} 待应用',
   'settings.connUsedBy': '{{harness}} 正在使用',
+  'settings.connNativeOAuth': '账号登录',
+  'settings.connNativeConfig': '原生配置',
+  'settings.connNativeApplied': '{{harness}} 现在使用{{name}}。',
   'settings.connPending': '待应用',
   'settings.connPendingHint':
     '{{harness}} 仍在使用之前应用的版本。重新应用后才会使用已保存的修改。',

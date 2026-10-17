@@ -1071,6 +1071,9 @@ declare const en: {
     readonly 'settings.connSavedInUse': "{{name}} saved. Harnesses using it keep the applied version until you reapply.";
     readonly 'settings.connUsagePending': "{{harness}} · not applied";
     readonly 'settings.connUsedBy': "Used by {{harness}}";
+    readonly 'settings.connNativeOAuth': "Account sign-in";
+    readonly 'settings.connNativeConfig': "Native config";
+    readonly 'settings.connNativeApplied': "{{harness}} now uses {{name}}.";
     readonly 'settings.connPending': "Not applied";
     readonly 'settings.connPendingHint': "{{harness}} still uses the version applied earlier. Reapply to use the saved changes.";
     readonly 'settings.connAddShort': "Add";
@@ -4861,6 +4864,9 @@ declare const zhCN: {
     'settings.connSavedInUse': "{{name}} 已保存。重新应用前，使用它的 harness 继续使用已应用的版本。";
     'settings.connUsagePending': "{{harness}} 待应用";
     'settings.connUsedBy': "{{harness}} 正在使用";
+    'settings.connNativeOAuth': "账号登录";
+    'settings.connNativeConfig': "原生配置";
+    'settings.connNativeApplied': "{{harness}} 现在使用{{name}}。";
     'settings.connPending': "待应用";
     'settings.connPendingHint': "{{harness}} 仍在使用之前应用的版本。重新应用后才会使用已保存的修改。";
     'settings.connAddShort': "添加";
@@ -8673,6 +8679,9 @@ declare const resources: {
         readonly 'settings.connSavedInUse': "{{name}} saved. Harnesses using it keep the applied version until you reapply.";
         readonly 'settings.connUsagePending': "{{harness}} · not applied";
         readonly 'settings.connUsedBy': "Used by {{harness}}";
+        readonly 'settings.connNativeOAuth': "Account sign-in";
+        readonly 'settings.connNativeConfig': "Native config";
+        readonly 'settings.connNativeApplied': "{{harness}} now uses {{name}}.";
         readonly 'settings.connPending': "Not applied";
         readonly 'settings.connPendingHint': "{{harness}} still uses the version applied earlier. Reapply to use the saved changes.";
         readonly 'settings.connAddShort': "Add";
@@ -12462,6 +12471,9 @@ declare const resources: {
         'settings.connSavedInUse': "{{name}} 已保存。重新应用前，使用它的 harness 继续使用已应用的版本。";
         'settings.connUsagePending': "{{harness}} 待应用";
         'settings.connUsedBy': "{{harness}} 正在使用";
+        'settings.connNativeOAuth': "账号登录";
+        'settings.connNativeConfig': "原生配置";
+        'settings.connNativeApplied': "{{harness}} 现在使用{{name}}。";
         'settings.connPending': "待应用";
         'settings.connPendingHint': "{{harness}} 仍在使用之前应用的版本。重新应用后才会使用已保存的修改。";
         'settings.connAddShort': "添加";

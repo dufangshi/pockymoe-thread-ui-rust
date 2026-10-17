@@ -6,7 +6,7 @@ import {
   formatNumber,
   translate,
   useI18n
-} from "./chunk-DVVAU55L.js";
+} from "./chunk-R4BU4O6Y.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -181,6 +181,7 @@ function ContentQualitySettings({
         "replyContextTurns",
         "replyContextMaxChars"
       ]) {
+        if (limitsSupported === true) continue;
         if (limitsSupported === false) {
           if (key in stored) body[key] = stored[key];
           else delete body[key];

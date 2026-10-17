@@ -420,6 +420,23 @@ describe('Content Quality settings', () => {
       replyContextTurns: 7,
       replyContextMaxChars: 3000,
     });
+    // A runtime that declares them gets the limits saved, defaults included.
+    await act(async () =>
+      root.render(
+        <ContentQualitySettings
+          key="fresh"
+          pluginId="quality"
+          load={vi.fn().mockResolvedValue({ revision: 1, values: {} })}
+          save={save}
+          plugin={descriptor(true)}
+        />,
+      ),
+    );
+    await click('Save settings');
+    expect(save.mock.calls[2]![0].values).toMatchObject({
+      replyContextTurns: 5,
+      replyContextMaxChars: 10000,
+    });
   });
 
   it('passes the host connection capability through PluginProvider settings sections', async () => {

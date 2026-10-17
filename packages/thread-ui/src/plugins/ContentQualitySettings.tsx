@@ -212,14 +212,15 @@ export function ContentQualitySettings({
       // Supervisors before saved connections reject an unknown connectionId.
       if (!values.connectionId && !('connectionId' in stored))
         delete body.connectionId;
-      // A runtime known to lack context limits never gets new ones (stored values
-      // pass through untouched). When support is unknown, send them only once
-      // stored or changed, so an untouched form still saves on a runtime that
-      // would reject the keys.
+      // A runtime that declares context limits always gets them (defaults included);
+      // one known to lack them never gets new ones (stored values pass through).
+      // When support is unknown, send them only once stored or changed, so an
+      // untouched form still saves on a runtime that would reject the keys.
       for (const key of [
         'replyContextTurns',
         'replyContextMaxChars',
       ] as const) {
+        if (limitsSupported === true) continue;
         if (limitsSupported === false) {
           if (key in stored) body[key] = stored[key];
           else delete body[key];

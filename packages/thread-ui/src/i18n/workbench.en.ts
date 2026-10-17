@@ -532,8 +532,6 @@ export const workbenchEn = {
   "workbench.leftHanded": "Left-handed",
   "workbench.pinnedThreads": "Pinned conversations",
   "workbench.shortcutMoved": "{{title}} moved to {{position}} of {{count}}",
-  "workbench.shortcutReorderHint": "Drag to reorder",
-  "workbench.shortcutReorderHintTouch": "Long-press and drag to reorder",
   "workbench.allWorkspaces": "All workspaces",
   "workbench.threadMap": "Thread map",
   "workbench.threadMapThisDevice": "This device",

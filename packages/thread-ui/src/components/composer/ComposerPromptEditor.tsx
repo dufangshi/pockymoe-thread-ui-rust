@@ -1,7 +1,8 @@
 import { translate, useI18n } from '../../i18n';
 import { useRef, useState } from 'react';
 import { GraphWorkspaceImageLightbox } from '../ZoomableImage';
-import { AttachmentCard, FloatingCard } from '../attachments/AttachmentTile';
+import { X } from 'lucide-react';
+import { AttachmentCard, FloatingCard, ViewAction } from '../attachments/AttachmentTile';
 import type { FileFamily } from '../attachments/attachmentFiles';
 import type {
   ClipboardEvent,
@@ -73,6 +74,11 @@ export function ComposerPromptEditor({
     return target instanceof Element ? target.closest<HTMLElement>('[data-segment-type="attachment"]') : null;
   }
   const detailsImage = details?.querySelector('img');
+  const view = details && detailsImage ? () => {
+    previewTrigger.current = details;
+    setDetails(null);
+    setPreview({ src: detailsImage.src, alt: details.dataset.name ?? '' });
+  } : undefined;
   return (
     <div
       data-slot="input-group-control"
@@ -141,19 +147,15 @@ export function ComposerPromptEditor({
       {details?.isConnected ? (
         <FloatingCard anchor={details} onClose={() => setDetails(null)}>
           <AttachmentCard name={details.dataset.name ?? ''} family={(details.dataset.family ?? 'other') as FileFamily}
-            size={details.dataset.size ? Number(details.dataset.size) : undefined} thumbnail={detailsImage?.src}
+            size={details.dataset.size ? Number(details.dataset.size) : undefined} thumbnail={detailsImage?.src} onView={view}
             actions={<>
-              {detailsImage ? <button type="button" onClick={() => {
-                previewTrigger.current = details;
-                setDetails(null);
-                setPreview({ src: detailsImage.src, alt: details.dataset.name ?? '' });
-              }}>{translate('chat.attachmentView')}</button> : null}
+              {view ? <ViewAction onClick={view} /> : null}
               <button type="button" className="is-danger" onClick={() => {
                 details.remove();
                 setDetails(null);
                 onInput();
                 promptRef.current?.focus({ preventScroll: true });
-              }}>{translate('chat.attachmentRemove')}</button>
+              }}><X aria-hidden="true" />{translate('chat.attachmentRemove')}</button>
             </>} />
         </FloatingCard>
       ) : null}

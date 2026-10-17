@@ -347,7 +347,8 @@ export function MatterWorkbench({
     window.addEventListener('keydown', toggle, true);
     return () => window.removeEventListener('keydown', toggle, true);
   }, [o.terminalEnabled]);
-  const [shortcutsOpen, setShortcutsOpen] = useState(true);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [workspaceOpen, setWorkspaceOpen] = useState(true);
   const [recentsOpen, setRecentsOpen] = useState(true);
   const [bellOpen, setBellOpen] = useState(false);
   const [toolbarOpen, setToolbarOpen] = useState(false);
@@ -369,6 +370,10 @@ export function MatterWorkbench({
     setExplorerWidth(next);
     try { localStorage.setItem('remote-codex.explorer-width', String(next)); } catch { /* Optional preference. */ }
   };
+  // The current thread's row stays in sight in the workspace list, which scrolls on its own.
+  useEffect(() => {
+    sidebarRef.current?.querySelector('[data-testid="workspace-threads"] [aria-current="page"]')?.scrollIntoView?.({ block: 'nearest' });
+  }, [o.currentKey]);
   const [lastReveal, setLastReveal] = useState(revealExplorer);
   if (lastReveal !== revealExplorer) {
     setLastReveal(revealExplorer);
@@ -405,6 +410,10 @@ export function MatterWorkbench({
   // it, the listed threads stand in.
   const unreadThreads = (o.activeThreads ?? o.threads).filter(thread => thread.status === 'unread' && thread.key !== o.currentKey);
   const favorites = o.threads.filter(thread => thread.favorite);
+  // The sidebar and the thread sheet list this workspace's threads apart from
+  // the recent ones elsewhere.
+  const workspaceThreads = o.workspaceThreads ? tabs : [];
+  const recentThreads = o.threads.filter(thread => !workspaceThreads.some(tab => tab.key === thread.key));
   const attention = (thread: WorkbenchThread) => thread.status === 'running' ? 0 : thread.status === 'unread' || thread.status === 'failed' ? 1 : 2;
   // The thread sheet lists the current thread's group first, then by attention.
   const currentRootKey = tabs.find(thread => thread.key === o.currentKey)?.rootKey ?? o.currentKey;
@@ -602,6 +611,9 @@ export function MatterWorkbench({
         className={`matter-sidebar ${sidebarOpen ? 'is-open' : ''}`}
         aria-label={translate("workbench.threadNavigation")}
       >
+        {/* The upper half holds this workspace's threads; recent chats from
+            everywhere start halfway down, so the two read apart. Each scrolls on its own. */}
+        <div className={`matter-sidebar-upper ${recentThreads.length ? '' : 'is-alone'}`}>
         <div className="matter-sidebar-heading">
           {dock
             ? <span className="matter-drawer-brand"><b aria-hidden="true">p<i>m</i></b>Pockymoe</span>
@@ -636,6 +648,7 @@ export function MatterWorkbench({
             {o.error}
           </p>
         )}
+        <div className="matter-sidebar-scroll">
         <button
           className="matter-section-heading"
           aria-expanded={shortcutsOpen}
@@ -647,9 +660,6 @@ export function MatterWorkbench({
         </button>
         {shortcutsOpen && (
           <div className="matter-thread-section" data-testid="shortcuts">
-            {favorites.length > 1 && o.onReorderShortcuts && (
-              <p className="matter-shortcut-hint">{translate(mobile ? "workbench.shortcutReorderHintTouch" : "workbench.shortcutReorderHint")}</p>
-            )}
             <ShortcutList threads={favorites} onReorder={o.onReorderShortcuts}
               renderRow={thread => renderThread(thread, threadGroupActivity(thread, o.threads.filter(child => child.rootKey === thread.key && child.key !== thread.key)))} />
             {!o.threads.some((t) => t.favorite) && (
@@ -659,20 +669,40 @@ export function MatterWorkbench({
             )}
           </div>
         )}
-        <button
-          className="matter-section-heading"
-          aria-expanded={recentsOpen}
-          onClick={() => setRecentsOpen(!recentsOpen)}
-        >
-          {recentsOpen ? <ChevronDown /> : <ChevronRight />}
-          <span>{translate("workbench.recentChats")}</span>
-          <span className="matter-section-count" title={translate("workbench.conversationsGroups", { value1: o.threads.length, value2: groupThreads(o.threads).length })}>{groupThreads(o.threads).length}</span>
-        </button>
-        {recentsOpen && (
-          <div className="matter-thread-section" data-testid="recent-chats">
-            {renderThreadGroups(o.threads)}
-          </div>
-        )}
+        {workspaceThreads.length > 0 && <>
+          <button
+            className="matter-section-heading"
+            aria-expanded={workspaceOpen}
+            onClick={() => setWorkspaceOpen(!workspaceOpen)}
+          >
+            {workspaceOpen ? <ChevronDown /> : <ChevronRight />}
+            <span>{translate("workbench.thisWorkspace")}</span>
+            <span className="matter-section-count">{groupThreads(workspaceThreads).length}</span>
+          </button>
+          {workspaceOpen && (
+            <div className="matter-thread-section" data-testid="workspace-threads">
+              {renderThreadGroups(workspaceThreads)}
+            </div>
+          )}
+        </>}
+        </div>
+        </div>
+        {recentThreads.length > 0 && <div className="matter-sidebar-recents">
+          <button
+            className="matter-section-heading"
+            aria-expanded={recentsOpen}
+            onClick={() => setRecentsOpen(!recentsOpen)}
+          >
+            {recentsOpen ? <ChevronDown /> : <ChevronRight />}
+            <span>{translate("workbench.recentChats")}</span>
+            <span className="matter-section-count" title={translate("workbench.conversationsGroups", { value1: recentThreads.length, value2: groupThreads(recentThreads).length })}>{groupThreads(recentThreads).length}</span>
+          </button>
+          {recentsOpen && (
+            <div className="matter-thread-section matter-sidebar-scroll" data-testid="recent-chats">
+              {renderThreadGroups(recentThreads)}
+            </div>
+          )}
+        </div>}
         {!dock && <div className="matter-sidebar-footer">
           {translate("workbench.yourConversationsTogether")}</div>}
       </aside>

@@ -14,6 +14,7 @@ import { RenameDialog } from '../../RenameDialog';
 import { ConfirmDialog } from '../../ConfirmDialog';
 import type { WorkspaceTreeNode } from '../workspaceTree';
 import { WorkspaceNodeProperties } from './WorkspaceNodeProperties';
+import { shellThemeProps } from '../../themeHooks';
 
 export interface WorkspaceNodeActionProps {
   onCopyPath?: (
@@ -149,7 +150,9 @@ export function WorkspaceNodeActions({
             ref={popup}
             role="menu"
             aria-label={translate("files.actionsFor", { value1: node.name })}
-            className="thread-ui-shell workspace-node-menu"
+            className={`thread-ui-shell workspace-node-menu ${shellThemeProps(trigger.current).themeClass}`}
+            data-theme-effective={shellThemeProps(trigger.current)['data-theme-effective']}
+            data-theme-mode={shellThemeProps(trigger.current)['data-theme-mode']}
             style={{
               position: 'fixed',
               left: menu.left,

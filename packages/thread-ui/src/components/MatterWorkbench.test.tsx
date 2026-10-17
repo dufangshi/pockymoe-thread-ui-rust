@@ -200,9 +200,23 @@ describe('one-handed phone dock', () => {
     expect(drawer.querySelector('.matter-drawer-brand')?.textContent).toContain('Pockymoe');
     expect(drawer.querySelector('button[aria-label="Open Explorer"]')).toBeNull();
     expect(drawer.querySelector('a.matter-drawer-home')?.getAttribute('href')).toBe('/workspaces');
+    // Shortcuts start folded and need no reorder hint.
+    const shortcuts = drawer.querySelector<HTMLButtonElement>('button.matter-section-heading')!;
+    expect(shortcuts.getAttribute('aria-expanded')).toBe('false');
+    act(() => shortcuts.click());
     expect([...drawer.querySelectorAll('[data-testid="shortcuts"] [data-shortcut]')].map(row => row.getAttribute('data-shortcut'))).toEqual(['b', 'a']);
-    expect(drawer.querySelector('.matter-shortcut-hint')?.textContent).toBe('Long-press and drag to reorder');
+    expect(drawer.querySelector('.matter-shortcut-hint')).toBeNull();
     expect(drawer.querySelector('.matter-sidebar-footer')).toBeNull();
+  });
+
+  it("lists this workspace's threads above the recent ones from elsewhere", () => {
+    options = { ...baseOptions, threads: [thread('a'), thread('x'), thread('y')], workspaceThreads: [thread('a'), thread('b')] };
+    render();
+    const sidebar = host.querySelector('aside.matter-sidebar')!;
+    const keys = (id: string) => [...sidebar.querySelectorAll(`[data-testid="${id}"] .matter-thread-row`)].map(row => row.getAttribute('href'));
+    expect(sidebar.querySelector('.matter-sidebar-upper [data-testid="workspace-threads"]')).not.toBeNull();
+    expect(keys('workspace-threads')).toEqual([thread('a').href, thread('b').href]);
+    expect(keys('recent-chats')).toEqual([thread('x').href, thread('y').href]);
   });
 
   it('does not switch threads with a sideways swipe on the dock', () => {

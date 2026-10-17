@@ -532,8 +532,6 @@ export const workbenchZhCN = {
   "workbench.leftHanded": "左手模式",
   "workbench.pinnedThreads": "固定的对话",
   "workbench.shortcutMoved": "{{title}} 已移到第 {{position}} 位，共 {{count}} 个",
-  "workbench.shortcutReorderHint": "拖动调整顺序",
-  "workbench.shortcutReorderHintTouch": "长按拖动调整顺序",
   "workbench.allWorkspaces": "所有工作区",
   "workbench.threadMap": "线程地图",
   "workbench.threadMapThisDevice": "本机",

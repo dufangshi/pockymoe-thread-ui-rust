@@ -63,6 +63,18 @@ export function useDocumentThemeRevision() {
   return useSyncExternalStore(subscribe, readRevision, () => '');
 }
 
+/** The shell theme around `element`, for UI portaled to `document.body`: without
+ *  it a portaled `.thread-ui-shell` takes the light palette under a dark shell. */
+export function shellThemeProps(element: Element | null | undefined) {
+  const shell = element?.closest<HTMLElement>('.thread-ui-shell');
+  const effective = shell?.dataset.themeEffective;
+  return {
+    themeClass: effective === 'dark' ? 'thread-ui-theme-dark dark' : '',
+    'data-theme-effective': effective,
+    'data-theme-mode': shell?.dataset.themeMode,
+  };
+}
+
 /** A `#rrggbb` or `#rrggbbaa` custom property inherited by `element`. */
 export function cssHexVariable(element: Element | null | undefined, name: string) {
   if (!element) return undefined;

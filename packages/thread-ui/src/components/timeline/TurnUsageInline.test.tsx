@@ -209,7 +209,8 @@ describe('turn usage in the visible timeline', () => {
     const root = createRoot(container);
     const split: ThreadTurnDto = { ...turn, tokenUsage: { ...turn.tokenUsage!, generationSpeed: {
       ...turn.tokenUsage!.generationSpeed!, averageOutputTokensPerSecond: 100, outputTimeMs: 20000,
-      firstTokenMs: 1500, firstTokenRequests: 2, prefillTokens: 5000, prefillCachedTokens: 18000, prefillTokensPerSecond: 1666.7,
+      splitMethod: 'streamedRequests', firstTokenMs: 1500, firstTokenRequests: 2, burstRequests: 3,
+      prefillTokens: 5000, prefillCachedTokens: 18000, prefillTokensPerSecond: 1666.7,
       decodeTokens: 1800, decodeMs: 12000, decodeTokensPerSecond: 150,
     } } };
     try {
@@ -225,6 +226,27 @@ describe('turn usage in the visible timeline', () => {
       expect(details.textContent).toContain('1,667 tok/s · 5k uncached');
       expect(details.textContent).toContain('Decode');
       expect(details.textContent).toContain('150.0 tok/s · 1.8k in 12 s');
+      expect(details.textContent).toContain('3 requests that arrived in one piece are left out.');
+    } finally { flushSync(() => root.unmount()); container.remove(); vi.unstubAllGlobals(); }
+  });
+
+  it('does not split speeds measured before replies that arrive in one piece were told apart', async () => {
+    vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} });
+    const container = document.createElement('div');
+    document.body.append(container);
+    const root = createRoot(container);
+    const old: ThreadTurnDto = { ...turn, tokenUsage: { ...turn.tokenUsage!, generationSpeed: {
+      ...turn.tokenUsage!.generationSpeed!, averageOutputTokensPerSecond: 146.7, outputTimeMs: 161000,
+      firstTokenMs: 6011, firstTokenRequests: 14, prefillTokens: 19223, prefillTokensPerSecond: 228.4,
+      decodeTokens: 13018, decodeMs: 750, decodeTokensPerSecond: 17357,
+    } } };
+    try {
+      flushSync(() => root.render(<ThreadTimeline turns={[old]} liveOutput="" />));
+      flushSync(() => container.querySelector<HTMLButtonElement>('.thread-turn-head-main')!.click());
+      await act(async () => container.querySelector<HTMLButtonElement>('button.thread-turn-head-speed')!.click());
+      const details = document.querySelector('.thread-speed-details')!;
+      expect(details.textContent).not.toContain('Decode');
+      expect(details.textContent).toContain('only the combined speed is known');
     } finally { flushSync(() => root.unmount()); container.remove(); vi.unstubAllGlobals(); }
   });
 

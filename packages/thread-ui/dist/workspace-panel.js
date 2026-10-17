@@ -49,16 +49,17 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-7OFHA246.js";
+} from "./chunk-H4DCLUXX.js";
 import {
+  shellThemeProps,
   useThemeFeature
-} from "./chunk-QIOFPWO7.js";
+} from "./chunk-IPBYGYSQ.js";
 import {
   en,
   getLocale,
   translate,
   useI18n
-} from "./chunk-2DP7F2PW.js";
+} from "./chunk-ROQSECLO.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect12, useMemo as useMemo11, useState as useState12 } from "react";
@@ -1847,7 +1848,9 @@ function WorkspaceNodeActions({
               ref: popup,
               role: "menu",
               "aria-label": translate("files.actionsFor", { value1: node.name }),
-              className: "thread-ui-shell workspace-node-menu",
+              className: `thread-ui-shell workspace-node-menu ${shellThemeProps(trigger.current).themeClass}`,
+              "data-theme-effective": shellThemeProps(trigger.current)["data-theme-effective"],
+              "data-theme-mode": shellThemeProps(trigger.current)["data-theme-mode"],
               style: {
                 position: "fixed",
                 left: menu.left,
@@ -4135,7 +4138,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment5, jsx as jsx17, jsxs as jsxs13 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-LVDX7OTU.js")
+  () => import("./GraphWorkspaceMonacoEditor-RYN5AHJO.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4234,7 +4237,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-7KGKTW4Z.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-3ETNVJXG.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);

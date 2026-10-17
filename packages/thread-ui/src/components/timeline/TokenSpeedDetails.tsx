@@ -25,8 +25,11 @@ export function TokenSpeedDetails({ speed, value }: { speed: Speed; value: numbe
   const [open, setOpen] = useState(false);
   const openAtPointerDown = useRef(false);
   const modelMs = speed.outputTimeMs || speed.llmTimeMs;
-  const split = known(speed.firstTokenMs) || known(speed.decodeTokensPerSecond);
-  const rows = [
+  // Earlier snapshots timed replies that arrived in one piece as if they streamed.
+  const measured = speed.splitMethod === 'streamedRequests';
+  const split = measured && (known(speed.firstTokenMs) || known(speed.decodeTokensPerSecond));
+  const bursts = measured ? speed.burstRequests ?? 0 : 0;
+  const rows = !measured ? [] : [
     ...(known(speed.firstTokenMs) ? [{
       icon: Timer, label: translate('chat.speedFirstToken'),
       value: translate('chat.speedFirstTokenValue', { time: seconds(speed.firstTokenMs), count: speed.firstTokenRequests ?? 1 }),
@@ -78,7 +81,8 @@ export function TokenSpeedDetails({ speed, value }: { speed: Speed; value: numbe
           </div>
         ) : null}
         <p style={{ margin: '8px 0 0', fontSize: 11, lineHeight: 1.45, opacity: 0.75 }}>
-          {translate(split ? 'chat.speedNote' : 'chat.speedNoSplit')}
+          {split ? translate('chat.speedNote') : bursts > 0 ? translate('chat.speedAllBursts') : translate('chat.speedNoSplit')}
+          {split && bursts > 0 ? ` ${translate('chat.speedSomeBursts', { count: bursts })}` : null}
         </p>
       </TooltipContent>
     </Tooltip>

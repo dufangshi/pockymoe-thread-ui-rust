@@ -701,8 +701,6 @@ declare const en: {
     readonly "workbench.leftHanded": "Left-handed";
     readonly "workbench.pinnedThreads": "Pinned conversations";
     readonly "workbench.shortcutMoved": "{{title}} moved to {{position}} of {{count}}";
-    readonly "workbench.shortcutReorderHint": "Drag to reorder";
-    readonly "workbench.shortcutReorderHintTouch": "Long-press and drag to reorder";
     readonly "workbench.allWorkspaces": "All workspaces";
     readonly "workbench.threadMap": "Thread map";
     readonly "workbench.threadMapThisDevice": "This device";
@@ -3195,8 +3193,13 @@ declare const en: {
     readonly "chat.speedPrefillValue": "{{speed}} · {{tokens}} uncached";
     readonly "chat.speedDecode": "Decode";
     readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
-    readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed text, thought or tool call. It includes queueing, prefill and thinking that does not stream, so the prefill speed is a lower bound.";
+    readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed output. It includes queueing, prefill and hidden thinking, so the prefill speed is a lower bound. Decode counts only the answer (text and tool calls) while it streams, not the thinking.";
     readonly "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.";
+    readonly "chat.speedAllBursts": "Every reply in this turn arrived in one piece (hidden thinking, then the tool call), so nothing streamed to time: first token, prefill and decode cannot be told apart.";
+    readonly "chat.speedSomeBursts": {
+        readonly one: "{{count}} request that arrived in one piece is left out.";
+        readonly other: "{{count}} requests that arrived in one piece are left out.";
+    };
     readonly "chat.backgroundAgentsRunning": {
         readonly one: "{{count}} background agent running";
         readonly other: "{{count}} background agents running";
@@ -4436,8 +4439,6 @@ declare const zhCN: {
     "workbench.leftHanded": "左手模式";
     "workbench.pinnedThreads": "固定的对话";
     "workbench.shortcutMoved": "{{title}} 已移到第 {{position}} 位，共 {{count}} 个";
-    "workbench.shortcutReorderHint": "拖动调整顺序";
-    "workbench.shortcutReorderHintTouch": "长按拖动调整顺序";
     "workbench.allWorkspaces": "所有工作区";
     "workbench.threadMap": "线程地图";
     "workbench.threadMapThisDevice": "本机";
@@ -6930,8 +6931,13 @@ declare const zhCN: {
     "chat.speedPrefillValue": "{{speed}} · 未命中缓存 {{tokens}}";
     "chat.speedDecode": "解码";
     "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
-    "chat.speedNote": "首字时间从发出请求算到第一段流式文字、思考或工具调用，包含排队、预填充和不流式输出的思考，所以预填充速度是下限。";
+    "chat.speedNote": "首字时间从发出请求算到第一段流式输出，含排队、预填充和不显示的思考，所以预填充速度是下限。解码只算回答（文字和工具调用）流式输出的 token 和时间，不含思考。";
     "chat.speedNoSplit": "这一轮没有分请求的计时，只有综合速度。";
+    "chat.speedAllBursts": "这一轮的回复都是整段到达的（思考不显示，工具调用一次给出），没有可计时的流式输出，拆不出首字、预填充和解码。";
+    "chat.speedSomeBursts": {
+        readonly one: "另有 {{count}} 次整段到达的请求未计入。";
+        readonly other: "另有 {{count}} 次整段到达的请求未计入。";
+    };
     "chat.backgroundAgentsRunning": {
         readonly one: "{{count}} 个后台智能体运行中";
         readonly other: "{{count}} 个后台智能体运行中";
@@ -8193,8 +8199,6 @@ declare const resources: {
         readonly "workbench.leftHanded": "Left-handed";
         readonly "workbench.pinnedThreads": "Pinned conversations";
         readonly "workbench.shortcutMoved": "{{title}} moved to {{position}} of {{count}}";
-        readonly "workbench.shortcutReorderHint": "Drag to reorder";
-        readonly "workbench.shortcutReorderHintTouch": "Long-press and drag to reorder";
         readonly "workbench.allWorkspaces": "All workspaces";
         readonly "workbench.threadMap": "Thread map";
         readonly "workbench.threadMapThisDevice": "This device";
@@ -10687,8 +10691,13 @@ declare const resources: {
         readonly "chat.speedPrefillValue": "{{speed}} · {{tokens}} uncached";
         readonly "chat.speedDecode": "Decode";
         readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
-        readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed text, thought or tool call. It includes queueing, prefill and thinking that does not stream, so the prefill speed is a lower bound.";
+        readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed output. It includes queueing, prefill and hidden thinking, so the prefill speed is a lower bound. Decode counts only the answer (text and tool calls) while it streams, not the thinking.";
         readonly "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.";
+        readonly "chat.speedAllBursts": "Every reply in this turn arrived in one piece (hidden thinking, then the tool call), so nothing streamed to time: first token, prefill and decode cannot be told apart.";
+        readonly "chat.speedSomeBursts": {
+            readonly one: "{{count}} request that arrived in one piece is left out.";
+            readonly other: "{{count}} requests that arrived in one piece are left out.";
+        };
         readonly "chat.backgroundAgentsRunning": {
             readonly one: "{{count}} background agent running";
             readonly other: "{{count}} background agents running";
@@ -11927,8 +11936,6 @@ declare const resources: {
         "workbench.leftHanded": "左手模式";
         "workbench.pinnedThreads": "固定的对话";
         "workbench.shortcutMoved": "{{title}} 已移到第 {{position}} 位，共 {{count}} 个";
-        "workbench.shortcutReorderHint": "拖动调整顺序";
-        "workbench.shortcutReorderHintTouch": "长按拖动调整顺序";
         "workbench.allWorkspaces": "所有工作区";
         "workbench.threadMap": "线程地图";
         "workbench.threadMapThisDevice": "本机";
@@ -14421,8 +14428,13 @@ declare const resources: {
         "chat.speedPrefillValue": "{{speed}} · 未命中缓存 {{tokens}}";
         "chat.speedDecode": "解码";
         "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
-        "chat.speedNote": "首字时间从发出请求算到第一段流式文字、思考或工具调用，包含排队、预填充和不流式输出的思考，所以预填充速度是下限。";
+        "chat.speedNote": "首字时间从发出请求算到第一段流式输出，含排队、预填充和不显示的思考，所以预填充速度是下限。解码只算回答（文字和工具调用）流式输出的 token 和时间，不含思考。";
         "chat.speedNoSplit": "这一轮没有分请求的计时，只有综合速度。";
+        "chat.speedAllBursts": "这一轮的回复都是整段到达的（思考不显示，工具调用一次给出），没有可计时的流式输出，拆不出首字、预填充和解码。";
+        "chat.speedSomeBursts": {
+            readonly one: "另有 {{count}} 次整段到达的请求未计入。";
+            readonly other: "另有 {{count}} 次整段到达的请求未计入。";
+        };
         "chat.backgroundAgentsRunning": {
             readonly one: "{{count}} 个后台智能体运行中";
             readonly other: "{{count}} 个后台智能体运行中";

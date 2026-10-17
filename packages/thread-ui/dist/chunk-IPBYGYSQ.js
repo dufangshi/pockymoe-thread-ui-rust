@@ -40,6 +40,15 @@ function useThemeFeature(flag) {
 function useDocumentThemeRevision() {
   return useSyncExternalStore(subscribe, readRevision, () => "");
 }
+function shellThemeProps(element) {
+  const shell = element?.closest(".thread-ui-shell");
+  const effective = shell?.dataset.themeEffective;
+  return {
+    themeClass: effective === "dark" ? "thread-ui-theme-dark dark" : "",
+    "data-theme-effective": effective,
+    "data-theme-mode": shell?.dataset.themeMode
+  };
+}
 function cssHexVariable(element, name) {
   if (!element) return void 0;
   const value = getComputedStyle(element).getPropertyValue(name).trim();
@@ -52,5 +61,6 @@ export {
   documentThemeFeatures,
   useThemeFeature,
   useDocumentThemeRevision,
+  shellThemeProps,
   cssHexVariable
 };

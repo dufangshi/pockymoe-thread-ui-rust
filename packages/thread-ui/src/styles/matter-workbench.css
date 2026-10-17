@@ -738,6 +738,28 @@
   padding: 14px;
   border-bottom: 1px solid var(--theme-border);
 }
+/* An agent thread's notifications sit under their conversation, indented like
+   agent threads in the sidebar. */
+.matter-notification-group { border-bottom: 1px solid var(--theme-border); }
+.matter-notification-root {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 4px;
+  color: var(--theme-fg-soft);
+  font-size: 12px;
+  font-weight: 600;
+}
+.matter-notification-root > svg { flex: none; width: 14px; height: 14px; }
+.matter-notification-root > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.matter-notification-group > a:not(.matter-notification-root) {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 21px;
+  padding: 10px 14px 10px 12px;
+  border-left: 1px solid var(--theme-border);
+}
 .matter-notifications small {
   display: block;
   margin-top: 5px;

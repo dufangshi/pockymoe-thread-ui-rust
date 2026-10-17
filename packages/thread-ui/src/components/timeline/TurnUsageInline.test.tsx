@@ -209,7 +209,7 @@ describe('turn usage in the visible timeline', () => {
     const root = createRoot(container);
     const split: ThreadTurnDto = { ...turn, tokenUsage: { ...turn.tokenUsage!, generationSpeed: {
       ...turn.tokenUsage!.generationSpeed!, averageOutputTokensPerSecond: 100, outputTimeMs: 20000,
-      splitMethod: 'streamedRequests', firstTokenMs: 1500, firstTokenRequests: 2, burstRequests: 3,
+      splitMethod: 'streamedRequests', llmRequests: 5, firstTokenMs: 1500, firstTokenRequests: 2, burstRequests: 3,
       prefillTokens: 5000, prefillCachedTokens: 18000, prefillTokensPerSecond: 1666.7,
       decodeTokens: 1800, decodeMs: 12000, decodeTokensPerSecond: 150,
     } } };
@@ -220,6 +220,7 @@ describe('turn usage in the visible timeline', () => {
       expect(speed.textContent).toBe('100.0 tok/s');
       await act(async () => speed.click());
       const details = document.querySelector('.thread-speed-details')!;
+      expect(details.textContent).toContain('LLM requests5 requests');
       expect(details.textContent).toContain('First token');
       expect(details.textContent).toContain('1.5 s average · 2 requests');
       expect(details.textContent).toContain('Prefill');

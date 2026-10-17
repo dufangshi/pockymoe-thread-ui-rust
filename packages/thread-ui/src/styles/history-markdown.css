@@ -3269,3 +3269,7 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:hover,html
   margin-block: .8rem;
 }
 .thread-ui-shell :is(.thread-graph-markdown-preview, .thread-graph-message-markdown) summary { cursor: pointer; font-weight: 500; }
+
+/* A harness warning or error notice keeps the generic frame but colors its icon. */
+.thread-ui-shell .thread-graph-session-notice.is-warning .thread-graph-history-event-icon { color: #d0921d; }
+.thread-ui-shell .thread-graph-session-notice.is-error .thread-graph-history-event-icon { color: var(--theme-danger, #e5484d); }

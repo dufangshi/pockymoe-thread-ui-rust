@@ -26,6 +26,7 @@ import {
   Search,
   Sparkles,
   Terminal,
+  TriangleAlert,
   Webhook,
   Wrench,
   XCircle,
@@ -595,6 +596,22 @@ export const GraphChatGenericHistoryItem = memo(
     const { locale: i18nLocale } = useI18n();
     if (item.origin === 'nativeTaskNotification' || item.origin === 'nativeBackgroundWait') {
       return <GraphChatNativeTaskNotification item={item} timeMeta={timeMeta} />;
+    }
+    // A harness notice (a warning, a model fallback): its title, then its detail.
+    if (item.origin === 'sessionNotice') {
+      const alert = item.severity === 'warning' || item.severity === 'error';
+      return (
+        <GraphChatHistoryEventFrame
+          className={`thread-graph-event-generic thread-graph-session-notice${alert ? ` is-${item.severity}` : ''}`}
+          icon={alert ? <TriangleAlert className="h-4 w-4" /> : <Info className="h-4 w-4" />}
+          item={item}
+          timeMeta={timeMeta}
+          title={item.text}
+          tone="generic"
+        >
+          {item.detailText ? <div className="thread-graph-history-event-note"><GraphChatLinkifiedPlainText text={item.detailText} /></div> : null}
+        </GraphChatHistoryEventFrame>
+      );
     }
     return (
       <GraphChatHistoryEventFrame

@@ -773,8 +773,8 @@ declare const en: {
     readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
     readonly "workbench.threadMapOpenThread": "Open {{title}}";
     readonly "workbench.runningChip": {
-        readonly one: "{{count}} thread is running on this account. Show it";
-        readonly other: "{{count}} threads are running on this account. Show them";
+        readonly one: "{{count}} conversation is running on this account. Show it";
+        readonly other: "{{count}} conversations are running on this account. Show them";
     };
     readonly "workbench.runningSheet": "Running threads";
     readonly "workbench.runningNow": "Running";
@@ -3193,7 +3193,12 @@ declare const en: {
     readonly "chat.speedPrefillValue": "{{speed}} · {{tokens}} uncached";
     readonly "chat.speedDecode": "Decode";
     readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
-    readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed output. It includes queueing, prefill and hidden thinking, so the prefill speed is a lower bound. Decode counts only the answer (text and tool calls) while it streams, not the thinking.";
+    readonly "chat.speedRequests": "LLM requests";
+    readonly "chat.speedRequestsValue": {
+        readonly one: "{{count}} request";
+        readonly other: "{{count}} requests";
+    };
+    readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed output. It includes queueing, prefill and hidden thinking, so the prefill speed is a lower bound. When thinking streams (as with local models) decode times it with the answer; otherwise only the answer (text and tool calls).";
     readonly "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.";
     readonly "chat.speedAllBursts": "Every reply in this turn arrived in one piece (hidden thinking, then the tool call), so nothing streamed to time: first token, prefill and decode cannot be told apart.";
     readonly "chat.speedSomeBursts": {
@@ -4511,8 +4516,8 @@ declare const zhCN: {
     "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
     "workbench.threadMapOpenThread": "打开 {{title}}";
     "workbench.runningChip": {
-        readonly one: "本帐号有 {{count}} 个线程正在运行，点按查看";
-        readonly other: "本帐号有 {{count}} 个线程正在运行，点按查看";
+        readonly one: "本帐号有 {{count}} 个对话正在运行，点按查看";
+        readonly other: "本帐号有 {{count}} 个对话正在运行，点按查看";
     };
     "workbench.runningSheet": "运行中的线程";
     "workbench.runningNow": "正在运行";
@@ -6931,7 +6936,12 @@ declare const zhCN: {
     "chat.speedPrefillValue": "{{speed}} · 未命中缓存 {{tokens}}";
     "chat.speedDecode": "解码";
     "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
-    "chat.speedNote": "首字时间从发出请求算到第一段流式输出，含排队、预填充和不显示的思考，所以预填充速度是下限。解码只算回答（文字和工具调用）流式输出的 token 和时间，不含思考。";
+    "chat.speedRequests": "LLM 请求";
+    "chat.speedRequestsValue": {
+        readonly one: "{{count}} 次";
+        readonly other: "{{count}} 次";
+    };
+    "chat.speedNote": "首字时间从发出请求算到第一段流式输出，含排队、预填充和不显示的思考，所以预填充速度是下限。思考逐字流出时（如本地模型）解码连同思考一起计时，否则只算回答（文字和工具调用）。";
     "chat.speedNoSplit": "这一轮没有分请求的计时，只有综合速度。";
     "chat.speedAllBursts": "这一轮的回复都是整段到达的（思考不显示，工具调用一次给出），没有可计时的流式输出，拆不出首字、预填充和解码。";
     "chat.speedSomeBursts": {
@@ -8271,8 +8281,8 @@ declare const resources: {
         readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
         readonly "workbench.threadMapOpenThread": "Open {{title}}";
         readonly "workbench.runningChip": {
-            readonly one: "{{count}} thread is running on this account. Show it";
-            readonly other: "{{count}} threads are running on this account. Show them";
+            readonly one: "{{count}} conversation is running on this account. Show it";
+            readonly other: "{{count}} conversations are running on this account. Show them";
         };
         readonly "workbench.runningSheet": "Running threads";
         readonly "workbench.runningNow": "Running";
@@ -10691,7 +10701,12 @@ declare const resources: {
         readonly "chat.speedPrefillValue": "{{speed}} · {{tokens}} uncached";
         readonly "chat.speedDecode": "Decode";
         readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
-        readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed output. It includes queueing, prefill and hidden thinking, so the prefill speed is a lower bound. Decode counts only the answer (text and tool calls) while it streams, not the thinking.";
+        readonly "chat.speedRequests": "LLM requests";
+        readonly "chat.speedRequestsValue": {
+            readonly one: "{{count}} request";
+            readonly other: "{{count}} requests";
+        };
+        readonly "chat.speedNote": "Time to first token runs from sending a request to its first streamed output. It includes queueing, prefill and hidden thinking, so the prefill speed is a lower bound. When thinking streams (as with local models) decode times it with the answer; otherwise only the answer (text and tool calls).";
         readonly "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.";
         readonly "chat.speedAllBursts": "Every reply in this turn arrived in one piece (hidden thinking, then the tool call), so nothing streamed to time: first token, prefill and decode cannot be told apart.";
         readonly "chat.speedSomeBursts": {
@@ -12008,8 +12023,8 @@ declare const resources: {
         "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
         "workbench.threadMapOpenThread": "打开 {{title}}";
         "workbench.runningChip": {
-            readonly one: "本帐号有 {{count}} 个线程正在运行，点按查看";
-            readonly other: "本帐号有 {{count}} 个线程正在运行，点按查看";
+            readonly one: "本帐号有 {{count}} 个对话正在运行，点按查看";
+            readonly other: "本帐号有 {{count}} 个对话正在运行，点按查看";
         };
         "workbench.runningSheet": "运行中的线程";
         "workbench.runningNow": "正在运行";
@@ -14428,7 +14443,12 @@ declare const resources: {
         "chat.speedPrefillValue": "{{speed}} · 未命中缓存 {{tokens}}";
         "chat.speedDecode": "解码";
         "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
-        "chat.speedNote": "首字时间从发出请求算到第一段流式输出，含排队、预填充和不显示的思考，所以预填充速度是下限。解码只算回答（文字和工具调用）流式输出的 token 和时间，不含思考。";
+        "chat.speedRequests": "LLM 请求";
+        "chat.speedRequestsValue": {
+            readonly one: "{{count}} 次";
+            readonly other: "{{count}} 次";
+        };
+        "chat.speedNote": "首字时间从发出请求算到第一段流式输出，含排队、预填充和不显示的思考，所以预填充速度是下限。思考逐字流出时（如本地模型）解码连同思考一起计时，否则只算回答（文字和工具调用）。";
         "chat.speedNoSplit": "这一轮没有分请求的计时，只有综合速度。";
         "chat.speedAllBursts": "这一轮的回复都是整段到达的（思考不显示，工具调用一次给出），没有可计时的流式输出，拆不出首字、预填充和解码。";
         "chat.speedSomeBursts": {

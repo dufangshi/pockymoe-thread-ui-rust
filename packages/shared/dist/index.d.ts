@@ -305,6 +305,8 @@ interface ThreadHistoryItemDto {
     transcriptOrder?: number | null;
     sourceTurnId?: string | null;
     origin?: string | null;
+    /** A harness notice's level (`origin: 'sessionNotice'`). */
+    severity?: 'info' | 'warning' | 'error' | null;
     taskStatus?: string | null;
     taskId?: string | null;
     waitingStartedAt?: string | null;
@@ -452,6 +454,8 @@ interface ThreadTurnTokenUsageDto {
         /** How the split below was measured. Snapshots without it timed every
             request, bursts included, and are not shown. */
         splitMethod?: 'streamedRequests';
+        /** Model requests that produced output in the turn, streamed or not. */
+        llmRequests?: number;
         /** Per model request that visibly streamed: the average wait for its first
             output, including queueing, prefill and thinking that does not stream. */
         firstTokenMs?: number | null;

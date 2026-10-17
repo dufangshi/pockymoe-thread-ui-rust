@@ -33,6 +33,8 @@ export interface ThreadGraphWorkspacePanelProps {
   activeView?: 'chat' | 'shell';
   features?: ThreadGraphWorkspaceFeatures;
   focusPathRequest?: { path: string; line?: number; requestId: number } | null;
+  /** The workspace-relative path of the file being read, or null. */
+  onActiveFileChange?: (relativePath: string | null) => void;
 }
 
 export type WorkspaceTab =
@@ -310,6 +312,7 @@ export function ThreadGraphWorkspacePanel({
   activeView = 'chat',
   features: featureConfig,
   focusPathRequest = null,
+  onActiveFileChange,
 }: ThreadGraphWorkspacePanelProps) {
   const { locale: i18nLocale } = useI18n();
   const features = useMemo(
@@ -414,6 +417,7 @@ export function ThreadGraphWorkspacePanel({
             status={status}
             focusPathRequest={focusPathRequest}
             workspaceAdapter={workspaceAdapter ?? null}
+            {...(onActiveFileChange ? { onActiveFileChange } : {})}
           />
         ) : null}
 

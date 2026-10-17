@@ -648,6 +648,7 @@ export const filesEn = {
   "files.terminalPasteWarningHint": "Only when the shell would run the lines right away.",
   "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a Mac, ⌘C and ⌘V copy and paste and Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select.",
   "files.askAttachments": { one: "{{count}} attached file goes with it", other: "{{count}} attached files go with it" },
+  "files.askWithoutFile": "Ask without {{name}}",
   "files.propertiesMenu": "Properties",
   "files.propertiesKind": "Kind",
   "files.propertiesFolder": "Folder",

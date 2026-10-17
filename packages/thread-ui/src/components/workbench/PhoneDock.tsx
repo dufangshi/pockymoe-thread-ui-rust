@@ -175,7 +175,9 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
         // Actions and modal dialog triggers hide the sheet (their dialogs live in
         // portals); popover triggers keep it, since their popovers anchor inside.
         onClick={event => {
-          if (event.target instanceof Element && event.target.closest('a[href], button:not([aria-expanded]), [data-slot="dialog-trigger"]')) window.setTimeout(onClose, 0);
+          const target = event.target instanceof Element ? event.target : null;
+          if (target?.closest('[data-sheet-keep]')) return;
+          if (target?.closest('a[href], button:not([aria-expanded]), [data-slot="dialog-trigger"]')) window.setTimeout(onClose, 0);
         }}
       >
         <div className="matter-phone-sheet-grabber" aria-hidden="true" />

@@ -38,6 +38,7 @@ export function GraphWorkspaceExplorer({
   status,
   focusPathRequest,
   workspaceAdapter,
+  onActiveFileChange,
 }: {
   activeView: 'chat' | 'shell';
   detail: ThreadDetailDto;
@@ -46,6 +47,7 @@ export function GraphWorkspaceExplorer({
   status: AgentRuntimeStatusDto | null;
   focusPathRequest?: { path: string; line?: number; requestId: number } | null;
   workspaceAdapter?: ThreadWorkspaceAdapter | null;
+  onActiveFileChange?: (relativePath: string | null) => void;
 }) {
   useI18n();
   const {
@@ -95,6 +97,12 @@ export function GraphWorkspaceExplorer({
   const readingPositions = useMemo(() => new Map<string, number>(), [documents.source]);
   const [navigation, setNavigation] = useState<{ scope: string; paths: string[]; index: number }>({ scope: documents.source, paths: [], index: -1 });
   const selectedFilePath = activeNode?.kind === 'file' ? activeNode.path : null;
+  const activeFileChange = useRef(onActiveFileChange);
+  activeFileChange.current = onActiveFileChange;
+  useEffect(() => {
+    activeFileChange.current?.(selectedFilePath ? relativeWorkspacePath(selectedFilePath, detail.workspace.absPath) : null);
+  }, [selectedFilePath, detail.workspace.absPath]);
+  useEffect(() => () => activeFileChange.current?.(null), []);
   useLayoutEffect(() => {
     setNavigation(current => {
       if (current.scope !== documents.source) return { scope: documents.source, paths: selectedFilePath ? [selectedFilePath] : [], index: selectedFilePath ? 0 : -1 };

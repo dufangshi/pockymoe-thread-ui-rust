@@ -2,6 +2,12 @@ import { translate, useI18n } from '../i18n';
 import { CopyButton } from './copy/CopyButton';
 import { useLayoutEffect, useRef, useState } from 'react';
 
+/** The path with forward slashes and the home folder as `~`. */
+export function homeRelativePath(path: string) {
+  return path.replace(/\\/g, '/')
+    .replace(/^(?:\/home\/[^/]+|\/Users\/[^/]+|[A-Za-z]:\/Users\/[^/]+|\/root)(?=\/|$)/, '~');
+}
+
 /** Keep the home/root and nearest directories visible, including on narrow screens. */
 export function WorkbenchPath({ path }: { path: string }) {
   useI18n();
@@ -10,8 +16,7 @@ export function WorkbenchPath({ path }: { path: string }) {
   useLayoutEffect(() => {
     const node = ref.current;
     if (!node) return;
-    const normalized = path.replace(/\\/g, '/')
-      .replace(/^(?:\/home\/[^/]+|\/Users\/[^/]+|[A-Za-z]:\/Users\/[^/]+|\/root)(?=\/|$)/, '~');
+    const normalized = homeRelativePath(path);
     const measure = document.createElement('canvas').getContext('2d');
     const update = () => {
       if (!measure) return;

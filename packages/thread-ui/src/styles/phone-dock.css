@@ -258,6 +258,20 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  /* The More sheet names the thread in up to two lines, then its workspace. */
+  .matter-phone-sheet-head { display: grid; gap: 4px; margin: 10px 8px 8px; }
+  .matter-phone-sheet-body .matter-phone-sheet-head h3.matter-phone-sheet-title {
+    display: -webkit-box;
+    margin: 0;
+    color: var(--theme-fg);
+    font-size: 14px;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .matter-phone-sheet-head .matter-phone-sheet-path { max-width: 100%; justify-self: start; }
   .matter-phone-sheet .matter-thread-row { min-height: 52px; font-size: 14px; }
   .matter-phone-sheet .matter-thread-entry { position: relative; }
   .matter-phone-sheet-footer { display: flex; flex: none; gap: 8px; align-items: center; padding: 8px 12px 0; border-top: 1px solid var(--theme-border); }

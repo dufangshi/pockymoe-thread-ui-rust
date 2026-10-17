@@ -24,7 +24,8 @@ import {
 } from 'lucide-react';
 import { useTabScrollEdges } from './useTabScrollEdges';
 import { WorkbenchContext } from './WorkbenchContext';
-import { WorkbenchPath } from './WorkbenchPath';
+import { homeRelativePath, WorkbenchPath } from './WorkbenchPath';
+import { PathChip } from './copy/PathChip';
 import { StatusMark } from './StatusMark';
 import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
 import { useThemeFeature } from './themeHooks';
@@ -873,7 +874,11 @@ export function MatterWorkbench({
             <button type="button" onClick={() => history.back()}><ArrowLeft data-icon="back" /><span>{translate('workbench.goBack')}</span></button>
             <div className="matter-phone-sheet-settings">{settings}<span>{translate('workbench.settings')}</span></div>
           </nav>}>
-          <h3 title={title}>{title}</h3>
+          {/* Copying the path keeps the sheet open, so its check mark shows. */}
+          <div className="matter-phone-sheet-head" data-sheet-keep="">
+            <h3 className="matter-phone-sheet-title">{title}</h3>
+            {!o.emptyWorkspace && o.workspacePath ? <PathChip path={o.workspacePath} display={homeRelativePath(o.workspacePath)} className="matter-phone-sheet-path" /> : null}
+          </div>
           <div className="matter-phone-sheet-tools">
             {!o.emptyWorkspace && <button type="button" onClick={o.onSearch}><Search data-icon="search" /><span>{translate('workbench.searchConversation')}</span></button>}
             {!o.emptyWorkspace && <button type="button" aria-pressed={o.favorite} disabled={o.favoriteBusy} onClick={o.onToggleFavorite}><Star data-icon="shortcut" fill={o.favorite ? 'currentColor' : 'none'} /><span>{o.favorite ? translate('workbench.removeShortcut') : translate('workbench.addShortcut')}</span></button>}

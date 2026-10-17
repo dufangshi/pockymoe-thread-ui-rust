@@ -1,5 +1,5 @@
-import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-DnYFmnMA.js';
-export { i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as SendPromptInput, m as ShellSocketConnection, n as ShellSocketHandlers, o as ThreadImageAssetVariant, W as WorkspaceDocumentSaveInput, p as WorkspaceDocumentSnapshot, q as WorkspaceSaveReceipt, r as WorkspaceTab, s as createDefaultPluginContextValue, t as mergePluginState } from './workspace-panel-DnYFmnMA.js';
+import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-Br4gCfQn.js';
+export { D as DescribeThread, i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as SendPromptInput, m as ShellSocketConnection, n as ShellSocketHandlers, o as ThreadImageAssetVariant, p as ThreadLinkInfo, W as WorkspaceDocumentSaveInput, q as WorkspaceDocumentSnapshot, r as WorkspaceSaveReceipt, s as WorkspaceTab, t as createDefaultPluginContextValue, u as mergePluginState } from './workspace-panel-Br4gCfQn.js';
 import * as react from 'react';
 import { Dispatch, SetStateAction, ReactNode, Component, ErrorInfo, RefObject, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
 import { ReasoningEffortDto, CollaborationModeDto, SandboxModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
@@ -845,6 +845,11 @@ interface ThreadMapThread {
     children?: ThreadMapThread[] | undefined;
     /** Agent threads folded into this one. */
     agentThreads?: number | undefined;
+    /**
+     * For an agent thread on a tile of its own (it works in another workspace than
+     * its conversation): the title of the thread that started it.
+     */
+    from?: string | undefined;
 }
 interface ThreadMapWorkspace {
     id: string;

@@ -17,6 +17,22 @@ import type { SendPromptInput } from './types';
  */
 export type ThreadImageAssetVariant = 'thumbnail';
 
+/**
+ * What a page knows of another thread on its device, for naming it where it is
+ * linked (a task's sender, a sub-thread's parent). `workspaceLabel` may be absent
+ * while it is unknown.
+ */
+export interface ThreadLinkInfo {
+  title: string;
+  workspaceId?: string | null;
+  workspaceLabel?: string | null;
+}
+/**
+ * Looks up a thread of this device: its info, `null` when it is gone or the
+ * reader cannot open it, `undefined` while the page does not know yet.
+ */
+export type DescribeThread = (threadId: string) => ThreadLinkInfo | null | undefined;
+
 export interface ThreadTimelineAdapter {
   resolveWorkspacePath?: (path: string) => Promise<boolean>;
   workspaceRootPath?: string | undefined;
@@ -29,6 +45,8 @@ export interface ThreadTimelineAdapter {
   onOpenLinkedThread?: (threadId: string) => void;
   /** An address for a thread on this device, so links to it can open in a new tab. */
   getThreadHref?: (threadId: string) => string;
+  /** Names linked threads by their titles instead of short IDs. */
+  describeThread?: DescribeThread;
   onOpenWorkspaceFile?: (input: { path: string; line?: number }) => void;
   cancelPendingSteer?: (
     threadId: string,
@@ -197,6 +215,11 @@ export interface ThreadShellAdapter {
 export interface ThreadDetailUiAdapter {
   openThread(threadId: string): void;
   getThreadHref?: (threadId: string) => string;
+  /**
+   * Names linked threads by their titles. With it, a sub-thread (one with a
+   * `parentThreadId`) shows a bar above its conversation that leads to its parent.
+   */
+  describeThread?: DescribeThread;
   getNewThreadHref?: (workspaceId?: string | null) => string;
   renderNewThreadDialogContent?: (input: {
     close: () => void;

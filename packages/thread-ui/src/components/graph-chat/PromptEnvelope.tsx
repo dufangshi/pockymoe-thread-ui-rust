@@ -2,6 +2,7 @@ import { createContext, useContext, useState, type MouseEvent, type ReactNode } 
 import { ChevronRight } from 'lucide-react';
 
 import { translate, useI18n } from '../../i18n';
+import type { DescribeThread } from '../../adapters';
 import { GraphChatLinkifiedPlainText } from './GraphChatMessageBody';
 
 /* Prompts the Supervisor writes on an agent's behalf (runtime interaction/mod.rs,
@@ -19,8 +20,8 @@ const UUID = /\b([0-9a-f]{8})-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b
 // A sender on this device is "thread <id>"; another device's reads "device/thread (device …)".
 const LOCAL_SENDER = /^thread ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
 
-/** Opens a thread of this device from the transcript: an address and in-app navigation. */
-export const ThreadLinkContext = createContext<{ href?: (threadId: string) => string; open?: (threadId: string) => void }>({});
+/** Opens a thread of this device from the transcript: an address, in-app navigation and its title. */
+export const ThreadLinkContext = createContext<{ href?: (threadId: string) => string; open?: (threadId: string) => void; describe?: DescribeThread }>({});
 
 function shortIds(text: string) {
   return text.replace(UUID, '$1');
@@ -98,13 +99,16 @@ const KIND_LABEL: Record<string, 'chat.envelopeTask' | 'chat.envelopeQuestion' |
 export function PromptEnvelopeHeader({ envelope }: { envelope: PromptEnvelope & { type: 'peer' } }) {
   useI18n();
   const label = KIND_LABEL[envelope.kind] ? translate(KIND_LABEL[envelope.kind]!) : envelope.kind;
+  // A sender thread the page knows reads by its title; others keep the short ID.
+  const { describe } = useContext(ThreadLinkContext);
+  const senderTitle = envelope.fromThreadId ? describe?.(envelope.fromThreadId)?.title?.trim() : undefined;
   return (
     <>
       <div className="prompt-envelope-head" data-kind={envelope.kind}>
         <span className="prompt-envelope-glyph" aria-hidden="true">↘</span>
         <span className="prompt-envelope-kind">{label}</span>
-        <span className="prompt-envelope-from">{envelope.fromThreadId
-          ? <>{translate('chat.envelopeFrom', { from: '' }).trim()} <ThreadLink threadId={envelope.fromThreadId} label={envelope.from} /></>
+        <span className="prompt-envelope-from" data-titled={senderTitle ? '' : undefined}>{envelope.fromThreadId
+          ? <>{translate('chat.envelopeFrom', { from: '' }).trim()} <ThreadLink threadId={envelope.fromThreadId} label={senderTitle || envelope.from} /></>
           : translate('chat.envelopeFrom', { from: envelope.from })}</span>
         {/* A subject derived from the first line would only repeat it. */}
         {envelope.subject && !envelope.body.trimStart().startsWith(envelope.subject.replace(/…$/, '').trimEnd())

@@ -591,6 +591,7 @@ export const workbenchEn = {
   "workbench.threadMapShowChildren": { one: "Show the {{count}} agent thread {{title}} started", other: "Show the {{count}} agent threads {{title}} started" },
   "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}",
   "workbench.threadMapOpenThread": "Open {{title}}",
+  "workbench.threadMapFrom": "from {{title}}",
   "workbench.runningChip": { one: "{{count}} conversation is running on this account. Show it", other: "{{count}} conversations are running on this account. Show them" },
   "workbench.runningSheet": "Running threads",
   "workbench.runningNow": "Running",

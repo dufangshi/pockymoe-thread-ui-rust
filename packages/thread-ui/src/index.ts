@@ -16,9 +16,11 @@ import './styles/thread-map.css';
 import './styles/attachments.css';
 
 export type {
+  DescribeThread,
   ShellSocketConnection,
   ShellSocketHandlers,
   ThreadDetailUiAdapter,
+  ThreadLinkInfo,
   ThreadImageAssetVariant,
   ThreadShellAdapter,
   ThreadTimelineAdapter,

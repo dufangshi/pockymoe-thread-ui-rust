@@ -297,6 +297,17 @@ describe('ThreadTile', () => {
       .querySelector('.thread-map-usage')).toBeNull();
   });
 
+  it('says which thread started an agent thread shown on its own, where the tile has room', () => {
+    const worker = { ...busy, from: '重构首页' };
+    const tile = show({ width: 300, height: 260 }, worker);
+    expect(text(tile, '.thread-map-tile-from')).toBe('由 重构首页 创建');
+    expect(tile.querySelector('a')!.getAttribute('aria-label')).toContain('Claude · opus · app · 由 重构首页 创建');
+    // Small tiles drop the words; the tile's label keeps them.
+    const small = show({ width: 120, height: 90 }, worker);
+    expect(small.querySelector('.thread-map-tile-from')).toBeNull();
+    expect(small.querySelector('a')!.getAttribute('aria-label')).toContain('由 重构首页 创建');
+  });
+
   it('drops details as the tile shrinks, keeping what fits', () => {
     const tall = show({ width: 110, height: 220 });
     expect(tall.querySelector('.thread-map-stats')!.getAttribute('data-layout')).toBe('column');

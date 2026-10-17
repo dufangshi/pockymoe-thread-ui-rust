@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-R4BU4O6Y.js";
+} from "./chunk-K4B4PAVQ.js";
 
 // src/components/graph-ui/Dialog.tsx
 import * as DialogPrimitive from "@radix-ui/react-dialog";

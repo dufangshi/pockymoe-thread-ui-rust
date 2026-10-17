@@ -772,6 +772,7 @@ declare const en: {
     };
     readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
     readonly "workbench.threadMapOpenThread": "Open {{title}}";
+    readonly "workbench.threadMapFrom": "from {{title}}";
     readonly "workbench.runningChip": {
         readonly one: "{{count}} conversation is running on this account. Show it";
         readonly other: "{{count}} conversations are running on this account. Show them";
@@ -3194,6 +3195,10 @@ declare const en: {
     };
     readonly 'chat.logShowFiles': "Show changed files";
     readonly "chat.envelopeOpenSender": "Open the sending thread {{id}}";
+    readonly "chat.relationSubThread": "Sub-thread";
+    readonly "chat.relationFrom": "from";
+    readonly "chat.relationBack": "Back to parent";
+    readonly "chat.relationParentUnavailable": "Parent unavailable";
     readonly "chat.hint.commands": "Commands the agent ran in a terminal, failed ones included.";
     readonly "chat.hint.commandsExample": "e.g. npm test, rg -n PromptQueue src";
     readonly "chat.hint.failed": "Operations that ended with an error or were interrupted, usually a failing test or a missing file.";
@@ -4565,6 +4570,7 @@ declare const zhCN: {
     };
     "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
     "workbench.threadMapOpenThread": "打开 {{title}}";
+    "workbench.threadMapFrom": "由 {{title}} 创建";
     "workbench.runningChip": {
         readonly one: "本帐号有 {{count}} 个对话正在运行，点按查看";
         readonly other: "本帐号有 {{count}} 个对话正在运行，点按查看";
@@ -6987,6 +6993,10 @@ declare const zhCN: {
     };
     'chat.logShowFiles': "查看改动的文件";
     "chat.envelopeOpenSender": "打开发送方线程 {{id}}";
+    "chat.relationSubThread": "子线程";
+    "chat.relationFrom": "由";
+    "chat.relationBack": "回到父线程";
+    "chat.relationParentUnavailable": "父线程不可用";
     "chat.hint.commands": "智能体在终端里执行的命令，失败的也算在内。";
     "chat.hint.commandsExample": "例：npm test、rg -n PromptQueue src";
     "chat.hint.failed": "以错误结束或被中断的操作，多半是没通过的测试或找不到的文件。";
@@ -8380,6 +8390,7 @@ declare const resources: {
         };
         readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
         readonly "workbench.threadMapOpenThread": "Open {{title}}";
+        readonly "workbench.threadMapFrom": "from {{title}}";
         readonly "workbench.runningChip": {
             readonly one: "{{count}} conversation is running on this account. Show it";
             readonly other: "{{count}} conversations are running on this account. Show them";
@@ -10802,6 +10813,10 @@ declare const resources: {
         };
         readonly 'chat.logShowFiles': "Show changed files";
         readonly "chat.envelopeOpenSender": "Open the sending thread {{id}}";
+        readonly "chat.relationSubThread": "Sub-thread";
+        readonly "chat.relationFrom": "from";
+        readonly "chat.relationBack": "Back to parent";
+        readonly "chat.relationParentUnavailable": "Parent unavailable";
         readonly "chat.hint.commands": "Commands the agent ran in a terminal, failed ones included.";
         readonly "chat.hint.commandsExample": "e.g. npm test, rg -n PromptQueue src";
         readonly "chat.hint.failed": "Operations that ended with an error or were interrupted, usually a failing test or a missing file.";
@@ -12172,6 +12187,7 @@ declare const resources: {
         };
         "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
         "workbench.threadMapOpenThread": "打开 {{title}}";
+        "workbench.threadMapFrom": "由 {{title}} 创建";
         "workbench.runningChip": {
             readonly one: "本帐号有 {{count}} 个对话正在运行，点按查看";
             readonly other: "本帐号有 {{count}} 个对话正在运行，点按查看";
@@ -14594,6 +14610,10 @@ declare const resources: {
         };
         'chat.logShowFiles': "查看改动的文件";
         "chat.envelopeOpenSender": "打开发送方线程 {{id}}";
+        "chat.relationSubThread": "子线程";
+        "chat.relationFrom": "由";
+        "chat.relationBack": "回到父线程";
+        "chat.relationParentUnavailable": "父线程不可用";
         "chat.hint.commands": "智能体在终端里执行的命令，失败的也算在内。";
         "chat.hint.commandsExample": "例：npm test、rg -n PromptQueue src";
         "chat.hint.failed": "以错误结束或被中断的操作，多半是没通过的测试或找不到的文件。";

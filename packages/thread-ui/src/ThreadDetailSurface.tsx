@@ -339,6 +339,7 @@ export function ThreadDetailSurface({
       ...(detail && adapter.workspace ? { resolveWorkspacePath: createWorkspacePathResolver(adapter.workspace, { threadId: detail.thread.id, workspaceId: detail.workspace.id }, detail.workspace.absPath) } : {}),
       onOpenLinkedThread: openThread,
       ...(adapter.getThreadHref ? { getThreadHref: adapter.getThreadHref } : {}),
+      ...(adapter.describeThread ? { describeThread: adapter.describeThread } : {}),
       ...(openWorkspaceFile ? { onOpenWorkspaceFile: openWorkspaceFile } : {}),
       ...(loadHistoryItemDetail
         ? { onLoadHistoryItemDetail: loadHistoryItemDetail }
@@ -351,6 +352,8 @@ export function ThreadDetailSurface({
       detail?.workspace.id,
       detail?.thread.id,
       adapter.workspace,
+      adapter.getThreadHref,
+      adapter.describeThread,
       cancelPendingSteer,
       getImageAssetUrl,
       loadHistoryItemDetail,

@@ -23,6 +23,7 @@ import {
   type ThreadTimelineProps,
 } from '../ThreadTimeline';
 import { TranscriptAgentProvider, transcriptAgentFor } from './TranscriptAgent';
+import { ThreadRelationBar } from './ThreadRelationBar';
 
 export interface GraphChatThreadUsageSummary {
   input: number;
@@ -365,6 +366,7 @@ export function GraphChatThreadChatPanel({
     () => transcriptAgentFor(detail.thread),
     [detail.thread],
   );
+  const parentThreadId = detail.thread.parentThreadId;
   const timelineElement = useMemo(() => {
     const threadRunning =
       detail.thread.status === 'running' || detail.thread.activeTurnId !== null;
@@ -410,6 +412,16 @@ export function GraphChatThreadChatPanel({
       className="thread-graph-chat-panel relative flex h-full min-h-0 flex-col"
       style={panelStyle}
     >
+      {/* A sub-thread names the thread that started it, pinned above its conversation. */}
+      {parentThreadId && adapter.describeThread ? (
+        <ThreadRelationBar
+          parentThreadId={parentThreadId}
+          parent={adapter.describeThread(parentThreadId)}
+          currentWorkspaceId={detail.thread.workspaceId}
+          href={adapter.getThreadHref?.(parentThreadId)}
+          onOpen={adapter.openThread}
+        />
+      ) : null}
       {beforeTimelineContent}
       <TranscriptAgentProvider agent={transcriptAgent}>
         {timelineElement}

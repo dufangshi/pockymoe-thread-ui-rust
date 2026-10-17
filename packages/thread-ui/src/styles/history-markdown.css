@@ -2181,17 +2181,25 @@
   margin-top: 0.25rem;
 }
 
+/* A wide table scrolls sideways instead of squeezing short columns into one
+   character per line on phones. */
 .thread-ui-shell .thread-graph-markdown :where(table) {
   display: block;
-  width: 100%;
+  width: max-content;
+  max-width: 100%;
   overflow-x: auto;
   border-collapse: collapse;
 }
 
 .thread-ui-shell .thread-graph-markdown :where(th, td) {
+  min-width: 4em;
   border: 1px solid var(--theme-border);
   padding: 0.4rem 0.55rem;
   text-align: left;
+}
+
+.thread-ui-shell .thread-graph-markdown :where(th) {
+  white-space: nowrap;
 }
 
 .thread-ui-shell .thread-graph-markdown :where(th) {

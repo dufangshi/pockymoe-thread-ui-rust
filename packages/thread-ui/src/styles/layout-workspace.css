@@ -706,7 +706,7 @@
 .thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tab,
 .thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tabs-action { height: var(--workbench-tab-height); }
 .thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tab { flex: 0 0 auto; min-width: 88px; max-width: 156px; }
-.thread-ui-shell .workspace-file-tab-name { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.thread-ui-shell .workspace-file-tab-name { display: flex; min-width: 0; white-space: nowrap; text-align: left; }
 .thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tab-close { flex: 0 0 24px; width: 24px; height: 28px; opacity: .7; }
 .thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tab-close:hover { opacity: 1; }
 .thread-ui-shell .workspace-file-navigation { display: flex; flex: none; padding: 0; border-right: 1px solid var(--theme-border); }

@@ -137,8 +137,10 @@ type TerminalMenuState =
   | { kind: 'switcher'; anchor: DOMRect }
   | { kind: 'actions'; anchor: DOMRect | { x: number; y: number }; shellId: string };
 
-function IconButton({ label, onClick, disabled, pressed, expanded, children, testId, keepFocus }: {
+function IconButton({ label, onClick, disabled, pressed, expanded, children, testId, keepFocus, danger }: {
   label: string;
+  /** Destroys something: drawn in the danger color. */
+  danger?: boolean;
   onClick: (event: ReactMouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   pressed?: boolean;
@@ -152,7 +154,7 @@ function IconButton({ label, onClick, disabled, pressed, expanded, children, tes
   return (
     <button
       type="button"
-      className="terminal-icon-button"
+      className={`terminal-icon-button${danger ? ' is-danger' : ''}`}
       aria-label={label}
       title={label}
       disabled={disabled}
@@ -720,11 +722,12 @@ export const ThreadShellPanel = forwardRef<
           </IconButton>
         )}
         {!compact && (
-          <IconButton label={t('workbench.terminalKill')} disabled={busy || !activeShell} onClick={() => void killTerminal(activeShell?.id)} testId="terminal-kill">
+          <IconButton label={t('workbench.terminalKill')} disabled={busy || !activeShell} onClick={() => void killTerminal(activeShell?.id)} testId="terminal-kill" danger>
             <Trash2 size={16} />
           </IconButton>
         )}
-        {compact && activeShell && (
+        {/* One terminal has no tab to right-click: its rename and connection live here, as on phones. */}
+        {(compact || !showTabs) && activeShell && (
           <IconButton label={t('workbench.terminalMore')} expanded={menu?.kind === 'actions'} onClick={(event) => openActions(activeShell.id, event)} testId="terminal-more">
             <Ellipsis size={16} />
           </IconButton>

@@ -530,7 +530,7 @@ export const workbenchEn = {
   'workbench.workspaceAndShortcuts': 'Workspace and shortcuts',
   'workbench.drawerShort': 'Workspaces',
   'workbench.homeShort': 'Home',
-  'workbench.minimizeFiles': 'Minimize: keep only the file tree, on the left',
+  'workbench.minimizeFiles': 'Minimize: keep only the file tree',
   'workbench.restoreFiles': 'Show the file editor again',
   'workbench.threadMapMoreThreads': { one: '+{{count}} more thread', other: '+{{count}} more threads' },
   'workbench.app': 'App',

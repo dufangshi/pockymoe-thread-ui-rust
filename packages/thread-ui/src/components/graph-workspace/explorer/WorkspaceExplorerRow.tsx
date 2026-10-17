@@ -19,6 +19,7 @@ import type { WorkspaceExplorerRowProjection } from './workspaceExplorerTypes';
 import { WorkspaceNodeActions, type WorkspaceNodeActionProps } from './WorkspaceNodeActions';
 import { useLongPress } from '../../menu/useLongPress';
 import { LINKED_DIRECTORY_ID_PREFIX } from './workspaceLinkedFiles';
+import { MiddleName } from '../../copy/MiddleName';
 
 function iconForNode(node: WorkspaceTreeNode, expanded: boolean) {
   if (node.kind === 'directory') {
@@ -232,8 +233,8 @@ export function WorkspaceExplorerRow({
             <bdi>{displayName}</bdi>
           </span>
         ) : (
-          <span className="min-w-0 flex-1 truncate" title={displayName}>
-            {label}
+          <span className="flex min-w-0 flex-1" title={displayName}>
+            {row.matchRanges?.length ? <span className="min-w-0 truncate">{label}</span> : <MiddleName name={displayName} />}
           </span>
         )}
       </button>

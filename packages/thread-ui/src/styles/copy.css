@@ -69,3 +69,8 @@
 @media (max-width: 639px) {
   .long-text-dialog.long-text-dialog { top: auto; bottom: 0; left: 0; width: 100vw; max-height: 88dvh; translate: none; border-bottom: 0; border-radius: 18px 18px 0 0; padding-bottom: env(safe-area-inset-bottom); }
 }
+
+/* Middle truncation: the head shrinks with an ellipsis, the tail stays whole. */
+.middle-name { display: inline-flex; min-width: 0; max-width: 100%; white-space: nowrap; }
+.middle-name-head { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.middle-name-tail { flex: none; }

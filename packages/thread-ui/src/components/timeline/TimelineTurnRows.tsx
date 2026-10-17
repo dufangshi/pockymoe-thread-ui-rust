@@ -484,9 +484,10 @@ export function formatWorkedDuration(
     return translate("chat.worked");
   }
 
+  // Whole seconds rounded down, like the turn head, so both show the same time.
   const totalSeconds = Math.max(
     1,
-    Math.round((endMillis - startMillis) / 1000),
+    Math.floor((endMillis - startMillis) / 1000),
   );
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);

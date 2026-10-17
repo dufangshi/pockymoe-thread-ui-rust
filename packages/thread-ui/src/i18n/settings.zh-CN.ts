@@ -383,6 +383,7 @@ export const settingsZhCN = {
     'DSH 控制台只监听设备的回环地址。请在设备本机（localhost）或通过 Pockymoe Relay 打开 Pockymoe。',
   'settings.dshFeedbackNotice':
     '会把你的文字和本会话的历史发送给 DeepSeek，除非本设备关闭了 DSH 遥测（DSH_TELEMETRY_DISABLED）。',
+  'settings.dshFeedbackSend': '发送',
   'settings.dshFeedbackConfirm':
     '除非本设备关闭了 DSH 遥测，DSH 会把你的反馈和本会话的历史发送给 DeepSeek。确定发送吗？',
   'settings.upstreamsShowUninstalled': '显示未安装',

@@ -2,6 +2,7 @@ import { useWorkspaceDocuments } from "./explorer/useWorkspaceDocuments";
 import { isProtected } from "./explorer/workspaceDocuments";
 import { translate, useI18n } from '../../i18n';
 import { relativeWorkspacePath } from '../workspacePaths';
+import type { ImperativePanelHandle } from 'react-resizable-panels';
 import { RenameDialog } from '../RenameDialog';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
@@ -30,6 +31,8 @@ import {
   ResizablePanelGroup,
 } from './GraphResizablePanels';
 
+
+const TREE_MIN_PX = 220;
 export function GraphWorkspaceExplorer({
   activeView,
   detail,
@@ -97,6 +100,16 @@ export function GraphWorkspaceExplorer({
   const readingPositions = useMemo(() => new Map<string, number>(), [documents.source]);
   const [navigation, setNavigation] = useState<{ scope: string; paths: string[]; index: number }>({ scope: documents.source, paths: [], index: -1 });
   const selectedFilePath = activeNode?.kind === 'file' ? activeNode.path : null;
+  // The tree opens at least TREE_MIN_PX wide, so its names and toolbar fit;
+  // the reader can still drag it narrower.
+  const workspacePanelRef = useRef<HTMLDivElement>(null);
+  const treePanelRef = useRef<ImperativePanelHandle>(null);
+  useLayoutEffect(() => {
+    const width = workspacePanelRef.current?.clientWidth ?? 0;
+    const tree = treePanelRef.current;
+    if (!tree || width <= 0 || (tree.getSize() / 100) * width >= TREE_MIN_PX) return;
+    tree.resize(Math.min(50, (TREE_MIN_PX / width) * 100));
+  }, []);
   const activeFileChange = useRef(onActiveFileChange);
   activeFileChange.current = onActiveFileChange;
   useEffect(() => {
@@ -600,6 +613,7 @@ export function GraphWorkspaceExplorer({
 
   return (
     <div
+      ref={workspacePanelRef}
       data-testid="workspace-panel"
       className="flex h-full min-h-0 w-full overflow-hidden bg-transparent p-1"
     >
@@ -607,7 +621,7 @@ export function GraphWorkspaceExplorer({
           direction="horizontal"
           className="thread-graph-workspace-resizable"
         >
-          <ResizablePanel defaultSize={28} minSize={18}>
+          <ResizablePanel ref={treePanelRef} defaultSize={28} minSize={18}>
             <div className="thread-graph-workspace-explorer-pane h-full min-h-0 overflow-hidden">
               {explorerPanel}
             </div>

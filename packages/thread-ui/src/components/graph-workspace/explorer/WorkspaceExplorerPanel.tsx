@@ -4,6 +4,7 @@ import {
   FileCode2,
   FilePlus2,
   ListCollapse,
+  Maximize2,
   Minus,
   MoreHorizontal,
   RefreshCw,
@@ -155,7 +156,7 @@ export function WorkspaceExplorerPanel({
               <button type="button" className="is-minimize" aria-pressed={Boolean(filePanel.minimized)}
                 onClick={() => filePanel.setMinimized?.(!filePanel.minimized)}
                 aria-label={translate(filePanel.minimized ? 'workbench.restoreFiles' : 'workbench.minimizeFiles')}
-                title={translate(filePanel.minimized ? 'workbench.restoreFiles' : 'workbench.minimizeFiles')}><Minus aria-hidden="true" /></button>
+                title={translate(filePanel.minimized ? 'workbench.restoreFiles' : 'workbench.minimizeFiles')}>{filePanel.minimized ? <Maximize2 aria-hidden="true" /> : <Minus aria-hidden="true" />}</button>
             </span>
           ) : filePanel && onExpandViewer && <button type="button" data-testid="workbench-close-files" className={iconButtonClassName} onClick={filePanel.close} aria-label={translate('workbench.closeFiles')} title={translate('workbench.closeFiles')}><X data-icon="close" size={16} /></button>}
           {onCreateFile && <button type="button" onClick={onCreateFile}

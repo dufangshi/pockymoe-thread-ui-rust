@@ -4,6 +4,7 @@ import { TabScrollButtons } from '../TabScrollButtons';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { Circle, FileCode2, X } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { MiddleName } from '../copy/MiddleName';
 
 export interface WorkspaceFileTab {
   name: string;
@@ -81,7 +82,7 @@ export function WorkspaceFileTabs({
                   className={`flex h-full min-w-0 flex-1 items-center gap-1.5 px-2.5 text-left text-xs ${tab.pinned ? '' : 'italic'}`}
                 >
                   <FileCode2 data-icon="code" className="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  <span className="workspace-file-tab-name" dir="rtl"><bdi dir="ltr">{tab.name}</bdi></span>
+                  <MiddleName name={tab.name} className="workspace-file-tab-name" />
                 </button>
                 <button
                   type="button"

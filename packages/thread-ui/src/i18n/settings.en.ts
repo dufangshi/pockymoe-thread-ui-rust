@@ -414,6 +414,7 @@ export const settingsEn = {
     "The DSH console listens on the device's loopback address. Open Pockymoe on the device itself (localhost) or through Pockymoe Relay.",
   'settings.dshFeedbackNotice':
     "Sends your text and this session's history to DeepSeek, unless DSH telemetry is turned off on this device (DSH_TELEMETRY_DISABLED).",
+  'settings.dshFeedbackSend': 'Send',
   'settings.dshFeedbackConfirm':
     "DSH will send your feedback and this session's history to DeepSeek unless DSH telemetry is turned off on this device. Send it?",
   'settings.upstreamsShowUninstalled': 'Show uninstalled',

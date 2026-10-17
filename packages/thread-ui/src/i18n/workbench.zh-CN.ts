@@ -530,7 +530,7 @@ export const workbenchZhCN = {
   'workbench.workspaceAndShortcuts': '工作区与快捷方式',
   'workbench.drawerShort': '工作区',
   'workbench.homeShort': '首页',
-  'workbench.minimizeFiles': '最小化：只在左侧保留文件树',
+  'workbench.minimizeFiles': '最小化：只保留文件树',
   'workbench.restoreFiles': '重新展开文件编辑器',
   'workbench.threadMapMoreThreads': { one: '另有 {{count}} 个线程', other: '另有 {{count}} 个线程' },
   'workbench.app': '应用',

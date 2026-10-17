@@ -575,10 +575,9 @@
   align-self: center;
   margin: 0 6px;
 }
-/* The strip takes only the room its tabs need, so New thread follows the last
-   tab and stays at the right end once the tabs scroll. */
-.matter-tabs-row > .matter-tab-scroll { flex: 0 1 auto; }
-.matter-tab-add { display: flex; flex: none; align-items: center; height: 34px; margin-right: auto; }
+/* New thread sits at the right end of the tab strip, outside its scroll area,
+   so it stays in reach however many tabs there are. */
+.matter-tab-add { display: flex; flex: none; align-items: center; height: 34px; }
 .matter-new-thread svg {
   width: 16px;
   height: 16px;

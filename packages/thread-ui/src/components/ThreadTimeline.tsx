@@ -400,7 +400,14 @@ function ThreadTimelineComponent({
       const covered = workLine && workLine.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING ? workLine.getBoundingClientRect().height : 0;
       container.scrollTo({ top: container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - 24 - covered, behavior: 'instant' });
       target.animate([{ backgroundColor: 'var(--theme-accent-soft)' }, { backgroundColor: 'transparent' }], { duration: 1400 });
-      if (searchTarget.query) markSearchHits(target, searchTarget.query);
+      // A long message may hold the words far below its start: bring the first into view.
+      if (searchTarget.query) markSearchHits(target, searchTarget.query, (first) => {
+        const hit = first.getBoundingClientRect();
+        const view = container.getBoundingClientRect();
+        const top = view.top + 24 + covered;
+        if (hit.top >= top && hit.bottom <= view.bottom - 96) return;
+        container.scrollTo({ top: container.scrollTop + hit.top - top - Math.max(0, (view.bottom - top) / 4), behavior: 'instant' });
+      });
     });
     return () => cancelAnimationFrame(frame);
   }, [searchTarget, collapsedTurnOverrides, preserveScrollPositionForResize]);

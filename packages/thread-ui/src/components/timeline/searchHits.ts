@@ -2,7 +2,7 @@
     highlight, which paints text without touching the DOM React owns. The marks
     stay until the reader next presses, types or scrolls. Browsers without the
     Highlight API keep only the landing flash. */
-export function markSearchHits(root: HTMLElement, query: string) {
+export function markSearchHits(root: HTMLElement, query: string, onFound?: (first: Range) => void, attempt = 0) {
   const needle = query.trim().toLocaleLowerCase();
   const registry = typeof CSS !== 'undefined' ? CSS.highlights : undefined;
   if (!needle || !registry || typeof Highlight === 'undefined') return;
@@ -18,8 +18,13 @@ export function markSearchHits(root: HTMLElement, query: string) {
     }
   }
   clearSearchHits();
-  if (!ranges.length) return;
+  if (!ranges.length) {
+    // The message's text may render a moment after the landing; look again briefly.
+    if (attempt < RETRY_DELAYS.length && root.isConnected) window.setTimeout(() => markSearchHits(root, query, onFound, attempt + 1), RETRY_DELAYS[attempt]);
+    return;
+  }
   registry.set('thread-search-hit', new Highlight(...ranges));
+  onFound?.(ranges[0]!);
   // The landing scroll has already happened; the next one is the reader's.
   window.setTimeout(() => {
     for (const type of CLEAR_EVENTS) window.addEventListener(type, clearSearchHits, { capture: true, once: true, passive: true });
@@ -27,6 +32,7 @@ export function markSearchHits(root: HTMLElement, query: string) {
 }
 
 const CLEAR_EVENTS = ['pointerdown', 'keydown', 'wheel', 'touchmove'] as const;
+const RETRY_DELAYS = [100, 250, 600, 1200];
 
 export function clearSearchHits() {
   if (typeof CSS !== 'undefined') CSS.highlights?.delete('thread-search-hit');

@@ -128,8 +128,11 @@ export function useCompactComposer(
       // the composer: folding it mid-word could cancel the composition.
       const composing = editor.dataset.imeComposing === "true";
       setExpanded((current) => (current === next || (composing && current) ? current : next));
-      // A folded draft of several lines says how many lines it hides.
-      const hiddenLines = overflowing ? serializeEditorPrompt(editor).trimEnd().split(/\r?\n/).length - 1 : 0;
+      // A folded draft of several lines says how many lines it hides below what shows.
+      const lineHeight = Number.parseFloat(getComputedStyle(editor).lineHeight) || 0;
+      const hiddenLines = overflowing && !next && lineHeight > 0 && /\n/.test(serializeEditorPrompt(editor).trimEnd())
+        ? Math.round((editor.scrollHeight - editor.clientHeight) / lineHeight)
+        : 0;
       const inputFrame = editor.parentElement;
       if (inputFrame) {
         if (hiddenLines > 0) inputFrame.dataset.moreLines = translate("chat.moreLines", { value1: hiddenLines });

@@ -18,9 +18,10 @@ const seconds = (ms: number) => ms < 60_000
   : `${Math.floor(ms / 60_000)}m ${String(Math.round((ms % 60_000) / 1000)).padStart(2, '0')}s`;
 const known = (value: number | null | undefined): value is number => value != null && Number.isFinite(value) && value > 0;
 
-/** The combined output speed; tapping it shows the time to first token, prefill
-    and decode speeds, the way benchmarks report them. */
-export function TokenSpeedDetails({ speed, value }: { speed: Speed; value: number }) {
+/** The combined output speed; tapping it shows how many model calls it took and
+    the time to first token, prefill and decode speeds, the way benchmarks report
+    them. `live`: the turn is still working, so these are the figures so far. */
+export function TokenSpeedDetails({ speed, value, live = false }: { speed: Speed; value: number; live?: boolean }) {
   useI18n();
   const [open, setOpen] = useState(false);
   const openAtPointerDown = useRef(false);
@@ -67,7 +68,7 @@ export function TokenSpeedDetails({ speed, value }: { speed: Speed; value: numbe
         style={{ zIndex: 80, maxWidth: 'min(320px, calc(100vw - 24px))' }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 6 }}>
           <Gauge size={14} aria-hidden="true" />
-          <span>{translate('chat.speedCombined')}</span>
+          <span>{translate(live ? 'chat.speedCombinedSoFar' : 'chat.speedCombined')}</span>
           <span style={{ marginLeft: 'auto', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{rate(value)}</span>
         </div>
         <div className="thread-usage-details-total" style={{ paddingBottom: 8, marginBottom: split ? 8 : 0, fontSize: 12, opacity: 0.85 }}>
@@ -85,7 +86,8 @@ export function TokenSpeedDetails({ speed, value }: { speed: Speed; value: numbe
           </div>
         ) : null}
         <p style={{ margin: '8px 0 0', fontSize: 11, lineHeight: 1.45, opacity: 0.75 }}>
-          {split ? translate('chat.speedNote') : bursts > 0 ? translate('chat.speedAllBursts') : translate('chat.speedNoSplit')}
+          {live ? `${translate('chat.speedLiveNote')} ` : null}
+          {split ? translate('chat.speedNote') : bursts > 0 ? translate('chat.speedAllBursts') : translate(live ? 'chat.speedNoSplitYet' : 'chat.speedNoSplit')}
           {split && bursts > 0 ? ` ${translate('chat.speedSomeBursts', { count: bursts })}` : null}
         </p>
       </TooltipContent>

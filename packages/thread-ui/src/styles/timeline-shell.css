@@ -33,7 +33,16 @@
 
 .thread-ui-shell .thread-graph-scroll-content {
   min-height: 100%;
-  padding: 1rem 0 max(0rem, var(--thread-graph-chat-scroll-bottom-spacer, 0px));
+  /* The spacer is measured on the page; inside the zoomed content it is divided back. */
+  padding: 1rem 0 max(0rem, calc(var(--thread-graph-chat-scroll-bottom-spacer, 0px) / var(--chat-zoom, 1)));
+}
+
+/* Text size (Settings, set by the host as --chat-zoom) scales the conversation and
+   the prompt as a whole, whatever sizes a theme gives them, so lines wrap at the same
+   width; the app around them (settings, menus, buttons) keeps its size. */
+.thread-ui-shell .thread-graph-scroll-content,
+.thread-ui-shell .thread-graph-composer-input > :is([role='textbox'], .thread-composer-placeholder) {
+  zoom: var(--chat-zoom, 1);
 }
 
 .thread-ui-shell .thread-graph-message-list {

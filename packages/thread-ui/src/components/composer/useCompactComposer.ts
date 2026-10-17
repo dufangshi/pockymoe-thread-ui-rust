@@ -61,6 +61,8 @@ export function promptExceedsCompactLine(
     letterSpacing: style.letterSpacing,
     wordSpacing: style.wordSpacing,
     textTransform: style.textTransform,
+    // The prompt is zoomed by the Text size setting; measure its line the same way.
+    zoom: style.zoom || "1",
   });
   group.append(measurement);
   const width = measurement.getBoundingClientRect().width;

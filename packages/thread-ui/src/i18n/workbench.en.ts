@@ -1,4 +1,5 @@
 export const workbenchEn = {
+  "workbench.agentThreadsRunningShort": "Agent threads running",
   "workbench.uninstallPluginTitle": "Uninstall {{value1}}?",
   "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.",
   "workbench.uninstallPlugin": "Uninstall",

@@ -25,6 +25,7 @@ import {
 import { useTabScrollEdges } from './useTabScrollEdges';
 import { WorkbenchContext } from './WorkbenchContext';
 import { WorkbenchPath } from './WorkbenchPath';
+import { StatusMark } from './StatusMark';
 import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
 import { useThemeFeature } from './themeHooks';
 import { PhoneDock, PhoneSheet, type PhonePane } from './workbench/PhoneDock';
@@ -77,6 +78,8 @@ export interface WorkbenchNotification {
   rootKey?: string;
   rootTitle?: string;
   rootHref?: string;
+  /** How the turn ended: a completed one is marked like an unread thread. */
+  status?: 'unread' | 'failed' | 'interrupted';
 }
 /** A plugin's thread panel in the workbench rail (it opens in the tools drawer). */
 export interface WorkbenchToolPanel {
@@ -489,7 +492,7 @@ export function MatterWorkbench({
         navigate(n.href);
       }}
     >
-      <span className="matter-status-dot" data-status="completed" />
+      <StatusMark status={n.status ?? 'unread'} />
       <span>
         {n.title}
         {n.summary && <p className="matter-notification-summary">{n.summary}</p>}

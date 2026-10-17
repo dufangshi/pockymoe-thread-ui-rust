@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-H7P2KZJ6.js";
+} from "./chunk-JZNB3EWV.js";
 
 // src/components/copy/CopyButton.tsx
 import { useEffect, useRef, useState } from "react";
@@ -171,6 +171,8 @@ function useModalFocus(windowRef, open, onClose, initial) {
       (initial ? root.querySelector(initial) : null)?.focus() ?? focusables()[0]?.focus() ?? root.focus();
     });
     const key = (event) => {
+      const active = document.activeElement;
+      if (active && !root.contains(active) && active.closest('[role="dialog"], [role="alertdialog"], [role="menu"]')) return;
       if (event.key === "Escape" && close.current) {
         event.preventDefault();
         event.stopPropagation();

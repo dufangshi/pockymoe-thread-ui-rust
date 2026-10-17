@@ -169,6 +169,7 @@ declare const en: {
     readonly 'search.assistant': "Assistant";
     readonly 'search.title': "Title";
     readonly 'search.localDevice': "Local device";
+    readonly "workbench.agentThreadsRunningShort": "Agent threads running";
     readonly "workbench.uninstallPluginTitle": "Uninstall {{value1}}?";
     readonly "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.";
     readonly "workbench.uninstallPlugin": "Uninstall";
@@ -3933,6 +3934,7 @@ declare const zhCN: {
     'search.assistant': "助手";
     'search.title': "标题";
     'search.localDevice': "本地设备";
+    "workbench.agentThreadsRunningShort": "智能体线程运行中";
     "workbench.uninstallPluginTitle": "卸载 {{value1}}？";
     "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。";
     "workbench.uninstallPlugin": "卸载";
@@ -7719,6 +7721,7 @@ declare const resources: {
         readonly 'search.assistant': "Assistant";
         readonly 'search.title': "Title";
         readonly 'search.localDevice': "Local device";
+        readonly "workbench.agentThreadsRunningShort": "Agent threads running";
         readonly "workbench.uninstallPluginTitle": "Uninstall {{value1}}?";
         readonly "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.";
         readonly "workbench.uninstallPlugin": "Uninstall";
@@ -11482,6 +11485,7 @@ declare const resources: {
         'search.assistant': "助手";
         'search.title': "标题";
         'search.localDevice': "本地设备";
+        "workbench.agentThreadsRunningShort": "智能体线程运行中";
         "workbench.uninstallPluginTitle": "卸载 {{value1}}？";
         "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。";
         "workbench.uninstallPlugin": "卸载";

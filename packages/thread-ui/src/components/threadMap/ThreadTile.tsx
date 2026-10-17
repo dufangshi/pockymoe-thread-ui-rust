@@ -1,5 +1,6 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import { formatDate, getLocale, translate } from '../../i18n';
+import { StatusMark } from '../StatusMark';
 import { themeAgentName } from '../themeAgent';
 import { Network } from 'lucide-react';
 import { TokenMetricIcon } from '../timeline/TokenMetricIcon';
@@ -241,6 +242,8 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
       {tier !== 'dot' && (
         <span className="thread-map-tile-head">
           {chip}
+          {/* The navigation's marks for a failed or interrupted last turn; running has its heartbeat. */}
+          {(thread.failed || thread.interrupted) && !thread.running ? <StatusMark status={thread.failed ? 'failed' : 'interrupted'} /> : null}
           {titled && <span className="thread-map-tile-title">{thread.title}</span>}
           {showChildren && childrenButton(childrenWidth > 24)}
           {showAge && (

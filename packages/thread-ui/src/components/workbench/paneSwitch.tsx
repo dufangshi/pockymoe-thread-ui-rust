@@ -8,6 +8,8 @@ export interface WorkbenchPaneSwitch {
   pane: WorkbenchPane;
   active: WorkbenchPane;
   titles: Record<WorkbenchPane, string>;
+  /** Each pane's thread status, shown beside its title. */
+  marks?: Partial<Record<WorkbenchPane, string | undefined>>;
   select: (pane: WorkbenchPane) => void;
   /** A rendered switch claims its pane, so the panels need no fallback there. */
   claim: (pane: WorkbenchPane) => () => void;

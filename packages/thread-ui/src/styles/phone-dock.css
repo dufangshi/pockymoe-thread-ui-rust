@@ -443,3 +443,5 @@
   .thread-ui-shell .matter-workbench .matter-phone-sheet[data-open],
   .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread { transition: none; }
 }
+/* A pinned conversation's status mark sits before its title, as in the sidebar. */
+.thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin .matter-status-dot { flex: none; }

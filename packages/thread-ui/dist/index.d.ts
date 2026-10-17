@@ -73,6 +73,15 @@ declare function confirmAsync({ title, description, confirmLabel, cancelLabel }:
     cancelLabel?: string;
 }): Promise<boolean>;
 
+/** What each navigation status is called (see docs/ui-principles.md §6). */
+declare function navigationStatusLabel(status: string): string;
+/** The one thread status mark: spinner ring, green dot, hollow dot, amber square,
+    red diamond or orange hollow square, with its name for assistive technology. */
+declare function StatusMark({ status, label }: {
+    status: string;
+    label?: string | undefined;
+}): react.JSX.Element;
+
 interface SlashPanelState<T> {
     status: 'idle' | 'loading' | 'ready' | 'failed';
     data: T | null;
@@ -213,6 +222,8 @@ interface WorkbenchPaneSwitch {
     pane: WorkbenchPane;
     active: WorkbenchPane;
     titles: Record<WorkbenchPane, string>;
+    /** Each pane's thread status, shown beside its title. */
+    marks?: Partial<Record<WorkbenchPane, string | undefined>>;
     select: (pane: WorkbenchPane) => void;
     /** A rendered switch claims its pane, so the panels need no fallback there. */
     claim: (pane: WorkbenchPane) => () => void;
@@ -244,6 +255,8 @@ interface WorkbenchPanelsOptions {
         title: string;
     }>;
     referenceTitle?: string;
+    /** Navigation status of each pane's thread, for the phone's pinned titles. */
+    marks?: Partial<Record<WorkbenchPane, string | undefined>>;
     referenceContent?: ReactNode;
     collaborationContent?: ReactNode;
     onMakePrimary: () => void;
@@ -286,6 +299,8 @@ interface WorkbenchNotification {
     rootKey?: string;
     rootTitle?: string;
     rootHref?: string;
+    /** How the turn ended: a completed one is marked like an unread thread. */
+    status?: 'unread' | 'failed' | 'interrupted';
 }
 /** A plugin's thread panel in the workbench rail (it opens in the tools drawer). */
 interface WorkbenchToolPanel {
@@ -898,6 +913,8 @@ interface ThreadMapThread {
     lastPrompt?: string | undefined;
     /** The last turn failed. */
     failed?: boolean | undefined;
+    /** The last turn was interrupted. */
+    interrupted?: boolean | undefined;
     /** Tokens of every turn, agent threads included. */
     tokenUsage?: ThreadTurnTokenBreakdownDto | undefined;
     /** The API price of those tokens. */
@@ -1079,4 +1096,4 @@ declare function ThreadLoadingIndicator({ inline, label }: {
     label?: string;
 }): react.JSX.Element;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ExportTranscriptDialog, FrontendPluginModule, GraphChatThreadChatPanel, LongTextDialog, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginProvider, type PluginProviderAdapter, PluginSettingsButton, PluginSettingsSnapshot, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, SettingsSection, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapThread, type ThreadMapWorkspace, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, UpstreamConnectionHost, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, confirmAsync, confirmWorkspaceDocumentLeave, createWorkspacePathResolver, documentThemeFeatures, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ExportTranscriptDialog, FrontendPluginModule, GraphChatThreadChatPanel, LongTextDialog, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginProvider, type PluginProviderAdapter, PluginSettingsButton, PluginSettingsSnapshot, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapThread, type ThreadMapWorkspace, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, UpstreamConnectionHost, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, confirmAsync, confirmWorkspaceDocumentLeave, createWorkspacePathResolver, documentThemeFeatures, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };

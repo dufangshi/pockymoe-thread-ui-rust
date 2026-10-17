@@ -3109,6 +3109,7 @@ var sharingEn = {
 
 // src/i18n/workbench.en.ts
 var workbenchEn = {
+  "workbench.agentThreadsRunningShort": "Agent threads running",
   "workbench.uninstallPluginTitle": "Uninstall {{value1}}?",
   "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.",
   "workbench.uninstallPlugin": "Uninstall",
@@ -6838,6 +6839,7 @@ var sharingZhCN = {
 
 // src/i18n/workbench.zh-CN.ts
 var workbenchZhCN = {
+  "workbench.agentThreadsRunningShort": "\u667A\u80FD\u4F53\u7EBF\u7A0B\u8FD0\u884C\u4E2D",
   "workbench.uninstallPluginTitle": "\u5378\u8F7D {{value1}}\uFF1F",
   "workbench.uninstallPluginBody": "\u63D2\u4EF6\u548C\u5B83\u7684\u8BBE\u7F6E\u4F1A\u4ECE\u8FD9\u53F0\u8BBE\u5907\u79FB\u9664\u3002",
   "workbench.uninstallPlugin": "\u5378\u8F7D",

@@ -1,4 +1,5 @@
 export const workbenchZhCN = {
+  "workbench.agentThreadsRunningShort": "智能体线程运行中",
   "workbench.uninstallPluginTitle": "卸载 {{value1}}？",
   "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。",
   "workbench.uninstallPlugin": "卸载",

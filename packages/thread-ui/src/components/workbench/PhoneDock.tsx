@@ -5,6 +5,7 @@ import type { WorkbenchThread } from '../MatterWorkbench';
 import { threadGroupActivity } from '../GroupedThreadTabs';
 import type { WorkbenchPane, WorkbenchPaneSwitch } from './paneSwitch';
 import { useModalFocus } from '../menu/useModalFocus';
+import { StatusMark } from '../StatusMark';
 
 export type PhonePane = 'chat' | 'shell' | 'files';
 
@@ -78,6 +79,7 @@ function PinnedThreads({ value, threadsOpen, onOpenThreads }: {
               : translate(side === 'primary' ? 'workbench.showLeftConversation' : 'workbench.showRightConversation', { value1: value.titles[side] })}
             title={value.titles[side]}
             onClick={() => (shown ? onOpenThreads() : value.select(side))}>
+            {value.marks?.[side] ? <StatusMark status={value.marks[side]!} /> : null}
             <span className="matter-phone-pin-title">{value.titles[side]}</span>
             {shown ? <ChevronsUpDown aria-hidden="true" /> : null}
           </button>

@@ -40,6 +40,8 @@ export interface WorkbenchPanelsOptions {
   ) => boolean | void;
   candidates: Array<{ id: string; title: string }>;
   referenceTitle?: string;
+  /** Navigation status of each pane's thread, for the phone's pinned titles. */
+  marks?: Partial<Record<WorkbenchPane, string | undefined>>;
   referenceContent?: ReactNode;
   collaborationContent?: ReactNode;
   onMakePrimary: () => void;
@@ -272,9 +274,9 @@ export function WorkbenchPanels({
   const referenceTitle = o.referenceTitle ?? t('workbench.loadingThreadDetail');
   const paneSwitches = useMemo(() => {
     if (!paneSwitchEnabled) return null;
-    const base = { active: mobileView, titles: { primary: o.primaryTitle, reference: referenceTitle }, select: selectPane, claim: claimSwitch };
+    const base = { active: mobileView, titles: { primary: o.primaryTitle, reference: referenceTitle }, ...(o.marks ? { marks: o.marks } : {}), select: selectPane, claim: claimSwitch };
     return { primary: { ...base, pane: 'primary' }, reference: { ...base, pane: 'reference' } } satisfies Record<WorkbenchPane, WorkbenchPaneSwitch>;
-  }, [paneSwitchEnabled, mobileView, o.primaryTitle, referenceTitle, selectPane, claimSwitch]);
+  }, [paneSwitchEnabled, mobileView, o.primaryTitle, referenceTitle, o.marks?.primary, o.marks?.reference, selectPane, claimSwitch]);
   const onPaneSwitchChange = o.onPaneSwitchChange;
   useEffect(() => {
     if (!onPaneSwitchChange) return;

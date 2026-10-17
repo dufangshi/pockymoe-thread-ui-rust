@@ -27,6 +27,8 @@ export interface ThreadMapThread {
   lastPrompt?: string | undefined;
   /** The last turn failed. */
   failed?: boolean | undefined;
+  /** The last turn was interrupted. */
+  interrupted?: boolean | undefined;
   /** Tokens of every turn, agent threads included. */
   tokenUsage?: ThreadTurnTokenBreakdownDto | undefined;
   /** The API price of those tokens. */

@@ -3,11 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown } from 'lucide-react';
 import type { WorkbenchThread } from './MatterWorkbench';
+import { navigationStatusLabel } from './StatusMark';
 
-const statusLabels: Record<string, string> = {
-  get running() { return translate("workbench.running"); }, get unread() { return translate("workbench.completedUnread"); }, get idle() { return translate("workbench.idleRead"); },
-  get failed() { return translate("workbench.failed"); }, get interrupted() { return translate("workbench.interrupted"); }, get unknown() { return translate("workbench.statusUnavailable"); },
-};
+const statusLabels: Record<string, string> = new Proxy({}, { get: (_, status) => navigationStatusLabel(String(status)) });
 
 // This is a navigation indicator. The parent's own execution state stays intact.
 export function threadGroupActivity(root: WorkbenchThread, children: WorkbenchThread[] = []) {

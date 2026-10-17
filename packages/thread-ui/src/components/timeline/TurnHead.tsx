@@ -63,7 +63,9 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
   const effort = turn.reasoningEffort?.trim();
   const usage = turn.tokenUsage?.total;
   const speed = turn.tokenUsage?.generationSpeed;
-  const rate = speed?.averageOutputTokensPerSecond ?? speed?.averageTokensPerSecond;
+  // While the turn works, the speed so far counts only model calls whose output
+  // has been reported; the time of the call in flight would dilute it.
+  const rate = active ? speed?.averageOutputTokensPerSecond : speed?.averageOutputTokensPerSecond ?? speed?.averageTokensPerSecond;
   const toggle = (event: MouseEvent<HTMLElement>) => {
     // The cost is a control of its own.
     if (event.target instanceof Element && event.target.closest('.thread-usage-cost')) return;
@@ -85,7 +87,7 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
       </button>
     ) : null}
     {model ? <span className="thread-turn-head-model" title={model}>{shortModelName(model)}{effort ? ` · ${effort}` : ''}</span> : null}
-    {!active && speed && rate != null && Number.isFinite(rate) && rate > 0 ? <TokenSpeedDetails speed={speed} value={rate} /> : null}
+    {speed && rate != null && Number.isFinite(rate) && rate > 0 ? <TokenSpeedDetails speed={speed} value={rate} live={active} /> : null}
     {added ? (
       <span className="thread-turn-head-added" role="img" title={translate('chat.turnHeadAddedValue', { count: added })}
         aria-label={translate('chat.turnHeadAddedValue', { count: added })}>

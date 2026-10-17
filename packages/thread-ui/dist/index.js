@@ -45,7 +45,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-47GFHCGE.js";
+} from "./chunk-5J4D7VHQ.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -72,7 +72,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-FL6XHKNB.js";
+} from "./chunk-2RVNY4HW.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -15225,7 +15225,7 @@ var rate = (value) => translate("chat.turnHeadSpeed", {
 });
 var seconds = (ms) => ms < 6e4 ? `${(ms / 1e3).toLocaleString(getLocale(), { maximumFractionDigits: 1 })} s` : `${Math.floor(ms / 6e4)}m ${String(Math.round(ms % 6e4 / 1e3)).padStart(2, "0")}s`;
 var known = (value) => value != null && Number.isFinite(value) && value > 0;
-function TokenSpeedDetails({ speed, value }) {
+function TokenSpeedDetails({ speed, value, live = false }) {
   useI18n();
   const [open, setOpen] = useState43(false);
   const openAtPointerDown = useRef26(false);
@@ -15286,7 +15286,7 @@ function TokenSpeedDetails({ speed, value }) {
         children: [
           /* @__PURE__ */ jsxs52("div", { style: { display: "flex", gap: 12, alignItems: "center", marginBottom: 6 }, children: [
             /* @__PURE__ */ jsx62(Gauge, { size: 14, "aria-hidden": "true" }),
-            /* @__PURE__ */ jsx62("span", { children: translate("chat.speedCombined") }),
+            /* @__PURE__ */ jsx62("span", { children: translate(live ? "chat.speedCombinedSoFar" : "chat.speedCombined") }),
             /* @__PURE__ */ jsx62("span", { style: { marginLeft: "auto", fontVariantNumeric: "tabular-nums", fontWeight: 600 }, children: rate(value) })
           ] }),
           /* @__PURE__ */ jsx62("div", { className: "thread-usage-details-total", style: { paddingBottom: 8, marginBottom: split ? 8 : 0, fontSize: 12, opacity: 0.85 }, children: translate("chat.speedCombinedBasis", { tokens: formatCompactTokenCount(speed.outputTokens), time: seconds(modelMs) }) }),
@@ -15296,7 +15296,8 @@ function TokenSpeedDetails({ speed, value }) {
             /* @__PURE__ */ jsx62("span", { style: { textAlign: "right" }, children: text })
           ] }, label)) }) : null,
           /* @__PURE__ */ jsxs52("p", { style: { margin: "8px 0 0", fontSize: 11, lineHeight: 1.45, opacity: 0.75 }, children: [
-            split ? translate("chat.speedNote") : bursts > 0 ? translate("chat.speedAllBursts") : translate("chat.speedNoSplit"),
+            live ? `${translate("chat.speedLiveNote")} ` : null,
+            split ? translate("chat.speedNote") : bursts > 0 ? translate("chat.speedAllBursts") : translate(live ? "chat.speedNoSplitYet" : "chat.speedNoSplit"),
             split && bursts > 0 ? ` ${translate("chat.speedSomeBursts", { count: bursts })}` : null
           ] })
         ]
@@ -15695,7 +15696,7 @@ function TurnHead({ turn, active, added, onBeforeResize }) {
   const effort = turn.reasoningEffort?.trim();
   const usage = turn.tokenUsage?.total;
   const speed = turn.tokenUsage?.generationSpeed;
-  const rate2 = speed?.averageOutputTokensPerSecond ?? speed?.averageTokensPerSecond;
+  const rate2 = active ? speed?.averageOutputTokensPerSecond : speed?.averageOutputTokensPerSecond ?? speed?.averageTokensPerSecond;
   const toggle = (event) => {
     if (event.target instanceof Element && event.target.closest(".thread-usage-cost")) return;
     onBeforeResize?.(event.currentTarget);
@@ -15723,7 +15724,7 @@ function TurnHead({ turn, active, added, onBeforeResize }) {
       shortModelName(model),
       effort ? ` \xB7 ${effort}` : ""
     ] }) : null,
-    !active && speed && rate2 != null && Number.isFinite(rate2) && rate2 > 0 ? /* @__PURE__ */ jsx67(TokenSpeedDetails, { speed, value: rate2 }) : null,
+    speed && rate2 != null && Number.isFinite(rate2) && rate2 > 0 ? /* @__PURE__ */ jsx67(TokenSpeedDetails, { speed, value: rate2, live: active }) : null,
     added ? /* @__PURE__ */ jsxs57(
       "span",
       {

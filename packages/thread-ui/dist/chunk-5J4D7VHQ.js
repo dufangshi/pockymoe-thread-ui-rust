@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-FL6XHKNB.js";
+} from "./chunk-2RVNY4HW.js";
 
 // src/components/copy/CopyButton.tsx
 import { useEffect, useRef, useState } from "react";

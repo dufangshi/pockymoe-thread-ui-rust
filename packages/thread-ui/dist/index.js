@@ -13229,6 +13229,7 @@ function sortTurnItemsByRecordedSequence(items) {
   const sequenceValues = trailingItems.map((item) => historyItemSequence(item)).filter(Number.isFinite);
   const maxSequence = sequenceValues.length > 0 ? Math.max(...sequenceValues) : 0;
   const orderedItems = [];
+  const timed = trailingItems.filter(hasHistoryItemSequence).map((item) => ({ at: Date.parse(item.createdAt ?? ""), order: historyItemSequence(item) })).filter((entry) => Number.isFinite(entry.at)).sort((left, right) => left.at - right.at || left.order - right.order);
   let cursor = 0;
   while (cursor < trailingItems.length) {
     const item = trailingItems[cursor];
@@ -13246,13 +13247,25 @@ function sortTurnItemsByRecordedSequence(items) {
       cursor += 1;
     }
     const block = trailingItems.slice(blockStart, cursor);
+    const timedOrder = (blockItem) => {
+      const at = Date.parse(blockItem.createdAt ?? "");
+      if (!Number.isFinite(at) || timed.length === 0) return null;
+      const before = timed.filter((entry) => entry.at <= at).at(-1);
+      const after = timed.find((entry) => entry.at > at);
+      if (before && after) return before.order + (after.order - before.order) * ((at - before.at) / Math.max(1, after.at - before.at) * 0.98 + 0.01);
+      if (before) return before.order + 0.5;
+      return after ? after.order - 0.5 : null;
+    };
     const previousSequenced = [...trailingItems.slice(0, blockStart)].reverse().find(hasHistoryItemSequence);
     const nextSequenced = trailingItems.slice(cursor).find(hasHistoryItemSequence);
     const previousSequence = previousSequenced ? historyItemSequence(previousSequenced) : null;
     const nextSequence = nextSequenced ? historyItemSequence(nextSequenced) : null;
     block.forEach((blockItem, blockIndex) => {
       let order;
-      if (previousSequence === null && nextSequence !== null) {
+      const byTime = timedOrder(blockItem);
+      if (byTime !== null) {
+        order = byTime;
+      } else if (previousSequence === null && nextSequence !== null) {
         order = nextSequence - (block.length - blockIndex) / (block.length + 1);
       } else if (previousSequence !== null && nextSequence !== null && nextSequence > previousSequence) {
         const span = nextSequence - previousSequence;

@@ -1418,3 +1418,7 @@
 @media (prefers-reduced-motion: reduce) {
   .matter-shortcut-list[data-reordering] .matter-shortcut { transition: none; }
 }
+/* On a phone the split picker is a bottom sheet over a scrim, like share and export. */
+.workbench-thread-picker-scrim { position: fixed; inset: 0; z-index: 249; background: var(--overlay-scrim, rgb(0 0 0 / 45%)); backdrop-filter: blur(6px); }
+.workbench-thread-picker-popover.is-sheet { border-bottom: 0; border-radius: 18px 18px 0 0; padding-bottom: env(safe-area-inset-bottom); animation: workbench-picker-rise .18s ease-out; }
+@keyframes workbench-picker-rise { from { transform: translateY(24px); opacity: 0; } }

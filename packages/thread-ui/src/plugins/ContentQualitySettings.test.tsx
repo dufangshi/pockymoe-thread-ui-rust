@@ -359,6 +359,69 @@ describe('Content Quality settings', () => {
     expect(container.textContent).toContain('按字符计，不是 token');
   });
 
+  it('does not promise context limits on a runtime without them', async () => {
+    const save = vi
+      .fn()
+      .mockImplementation(async (snapshot) => ({ ...snapshot, revision: 2 }));
+    const load = vi
+      .fn()
+      .mockResolvedValueOnce({ revision: 1, values: {} })
+      .mockResolvedValue({
+        revision: 1,
+        values: { replyContextTurns: 7, replyContextMaxChars: 3000 },
+      });
+    const descriptor = (replyContextLimits: boolean) => ({
+      ...contentQualityPlugin.manifest,
+      enabled: true,
+      capabilities: {
+        ...contentQualityPlugin.manifest.capabilities,
+        ...(replyContextLimits ? { replyContextLimits } : {}),
+      },
+    });
+    await act(async () =>
+      root.render(
+        <ContentQualitySettings
+          key="old"
+          pluginId="quality"
+          load={load}
+          save={save}
+          plugin={descriptor(false)}
+        />,
+      ),
+    );
+    expect(control('Context turns').disabled).toBe(true);
+    expect(control('Context character limit').disabled).toBe(true);
+    expect(container.textContent).toContain(
+      "Update this device's Supervisor to limit polishing context",
+    );
+    await click('Save settings');
+    expect(save.mock.calls[0]![0].values).not.toHaveProperty(
+      'replyContextTurns',
+    );
+    expect(save.mock.calls[0]![0].values).not.toHaveProperty(
+      'replyContextMaxChars',
+    );
+    // A runtime that declares the capability edits and saves them.
+    await act(async () =>
+      root.render(
+        <ContentQualitySettings
+          key="new"
+          pluginId="quality"
+          load={load}
+          save={save}
+          plugin={descriptor(true)}
+        />,
+      ),
+    );
+    expect(control('Context turns').disabled).toBe(false);
+    expect(container.textContent).not.toContain('Update this device');
+    await click('Save settings');
+    expect(save.mock.calls[1]![0].values).toMatchObject({
+      replyContextTurns: 7,
+      replyContextMaxChars: 3000,
+    });
+  });
+
   it('passes the host connection capability through PluginProvider settings sections', async () => {
     const renderPicker = vi.fn(() => <span>host picker</span>);
     const adapter: PluginProviderAdapter = {

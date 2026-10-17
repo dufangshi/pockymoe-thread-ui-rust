@@ -6,6 +6,10 @@ export const contentQualityZhCN = {
   'quality.report.shortReply': '回复未达到最短长度',
   'quality.report.alreadyPolished': '回复已润色',
   'quality.report.turnNotCompleted': '回合未成功完成',
+  'quality.report.exceedsContextBudget':
+    '回复原文超过参考字数上限（{{maxChars}} 字），未润色；可在设置中调高上限。',
+  'quality.report.exceedsContextBudgetPlain':
+    '回复原文超过参考字数上限，未润色；可在设置中调高上限。',
   'quality.report.unsupportedMarkup': '不支持该文档标记格式',
   'quality.report.fileWritten': '已写入文件',
   'quality.report.fileUnchanged': '文件未更改',
@@ -55,6 +59,8 @@ export const contentQualityZhCN = {
   'quality.minReplyChars': '自动润色触发长度（字符数）',
   'quality.minReplyCharsHint':
     '最终回复正文达到此字符数后，才在回合结束时自动润色；代码不计入，较短的回复保持原样。',
+  'quality.contextLimitsNeedUpdate':
+    '更新此设备的 Supervisor 后才能限制润色上下文；在此之前润色会读取整个对话。',
   'quality.replyContextTurns': '参考轮数',
   'quality.replyContextTurnsHint':
     '润色时参考最近几轮对话，含正在润色的这一轮。',

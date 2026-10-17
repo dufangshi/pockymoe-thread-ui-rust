@@ -3590,6 +3590,8 @@ declare const en: {
     readonly 'quality.report.shortReply': "Reply is below the minimum length";
     readonly 'quality.report.alreadyPolished': "Reply is already polished";
     readonly 'quality.report.turnNotCompleted': "Turn did not complete successfully";
+    readonly 'quality.report.exceedsContextBudget': "The reply is longer than the context limit ({{maxChars}} characters), so it was not polished. Raise the limit in settings to polish it.";
+    readonly 'quality.report.exceedsContextBudgetPlain': "The reply is longer than the context character limit, so it was not polished. Raise the limit in settings to polish it.";
     readonly 'quality.report.unsupportedMarkup': "Document markup is unsupported";
     readonly 'quality.report.fileWritten': "File written";
     readonly 'quality.report.fileUnchanged': "File unchanged";
@@ -3632,6 +3634,7 @@ declare const en: {
     readonly 'quality.readerBackgroundHint': "Optional context about the reader’s experience and needs.";
     readonly 'quality.minReplyChars': "Auto-polish trigger length (characters)";
     readonly 'quality.minReplyCharsHint': "Auto-polish runs when the turn ends only if the final reply's prose, not counting code, is at least this many characters; shorter replies stay as they are.";
+    readonly 'quality.contextLimitsNeedUpdate': "Update this device's Supervisor to limit polishing context; until then polishing reads the whole conversation.";
     readonly 'quality.replyContextTurns': "Context turns";
     readonly 'quality.replyContextTurnsHint': "Recent turns read for polishing, including the one being polished.";
     readonly 'quality.replyContextMaxChars': "Context character limit";
@@ -7377,6 +7380,8 @@ declare const zhCN: {
     'quality.report.shortReply': "回复未达到最短长度";
     'quality.report.alreadyPolished': "回复已润色";
     'quality.report.turnNotCompleted': "回合未成功完成";
+    'quality.report.exceedsContextBudget': "回复原文超过参考字数上限（{{maxChars}} 字），未润色；可在设置中调高上限。";
+    'quality.report.exceedsContextBudgetPlain': "回复原文超过参考字数上限，未润色；可在设置中调高上限。";
     'quality.report.unsupportedMarkup': "不支持该文档标记格式";
     'quality.report.fileWritten': "已写入文件";
     'quality.report.fileUnchanged': "文件未更改";
@@ -7419,6 +7424,7 @@ declare const zhCN: {
     'quality.readerBackgroundHint': "可选：读者的经验与需求。";
     'quality.minReplyChars': "自动润色触发长度（字符数）";
     'quality.minReplyCharsHint': "最终回复正文达到此字符数后，才在回合结束时自动润色；代码不计入，较短的回复保持原样。";
+    'quality.contextLimitsNeedUpdate': "更新此设备的 Supervisor 后才能限制润色上下文；在此之前润色会读取整个对话。";
     'quality.replyContextTurns': "参考轮数";
     'quality.replyContextTurnsHint': "润色时参考最近几轮对话，含正在润色的这一轮。";
     'quality.replyContextMaxChars': "参考字数上限";
@@ -11186,6 +11192,8 @@ declare const resources: {
         readonly 'quality.report.shortReply': "Reply is below the minimum length";
         readonly 'quality.report.alreadyPolished': "Reply is already polished";
         readonly 'quality.report.turnNotCompleted': "Turn did not complete successfully";
+        readonly 'quality.report.exceedsContextBudget': "The reply is longer than the context limit ({{maxChars}} characters), so it was not polished. Raise the limit in settings to polish it.";
+        readonly 'quality.report.exceedsContextBudgetPlain': "The reply is longer than the context character limit, so it was not polished. Raise the limit in settings to polish it.";
         readonly 'quality.report.unsupportedMarkup': "Document markup is unsupported";
         readonly 'quality.report.fileWritten': "File written";
         readonly 'quality.report.fileUnchanged': "File unchanged";
@@ -11228,6 +11236,7 @@ declare const resources: {
         readonly 'quality.readerBackgroundHint': "Optional context about the reader’s experience and needs.";
         readonly 'quality.minReplyChars': "Auto-polish trigger length (characters)";
         readonly 'quality.minReplyCharsHint': "Auto-polish runs when the turn ends only if the final reply's prose, not counting code, is at least this many characters; shorter replies stay as they are.";
+        readonly 'quality.contextLimitsNeedUpdate': "Update this device's Supervisor to limit polishing context; until then polishing reads the whole conversation.";
         readonly 'quality.replyContextTurns': "Context turns";
         readonly 'quality.replyContextTurnsHint': "Recent turns read for polishing, including the one being polished.";
         readonly 'quality.replyContextMaxChars': "Context character limit";
@@ -14972,6 +14981,8 @@ declare const resources: {
         'quality.report.shortReply': "回复未达到最短长度";
         'quality.report.alreadyPolished': "回复已润色";
         'quality.report.turnNotCompleted': "回合未成功完成";
+        'quality.report.exceedsContextBudget': "回复原文超过参考字数上限（{{maxChars}} 字），未润色；可在设置中调高上限。";
+        'quality.report.exceedsContextBudgetPlain': "回复原文超过参考字数上限，未润色；可在设置中调高上限。";
         'quality.report.unsupportedMarkup': "不支持该文档标记格式";
         'quality.report.fileWritten': "已写入文件";
         'quality.report.fileUnchanged': "文件未更改";
@@ -15014,6 +15025,7 @@ declare const resources: {
         'quality.readerBackgroundHint': "可选：读者的经验与需求。";
         'quality.minReplyChars': "自动润色触发长度（字符数）";
         'quality.minReplyCharsHint': "最终回复正文达到此字符数后，才在回合结束时自动润色；代码不计入，较短的回复保持原样。";
+        'quality.contextLimitsNeedUpdate': "更新此设备的 Supervisor 后才能限制润色上下文；在此之前润色会读取整个对话。";
         'quality.replyContextTurns': "参考轮数";
         'quality.replyContextTurnsHint': "润色时参考最近几轮对话，含正在润色的这一轮。";
         'quality.replyContextMaxChars': "参考字数上限";

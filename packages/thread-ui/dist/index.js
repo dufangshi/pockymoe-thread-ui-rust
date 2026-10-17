@@ -33,7 +33,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-PX4SURX7.js";
+} from "./chunk-VTJ26QO3.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -60,7 +60,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-SHQXT7E5.js";
+} from "./chunk-DVVAU55L.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -23554,12 +23554,15 @@ import {
   useCallback as useCallback22,
   useEffect as useEffect45,
   useMemo as useMemo19,
+  useRef as useRef39,
   useState as useState60
 } from "react";
 import { jsx as jsx83 } from "react/jsx-runtime";
 var DEFAULT_PLUGIN_PROVIDER_ADAPTER = {};
 var DEFAULT_BUILTIN_PLUGINS = [];
-function PluginSettingsSection({ section, pluginId, adapter, onSaved }) {
+function PluginSettingsSection({ section, pluginId, plugin, adapter, onSaved }) {
+  const current = useRef39(plugin);
+  current.current = plugin;
   const context = useMemo19(() => ({
     pluginId,
     load: () => adapter.loadPluginSettings(pluginId),
@@ -23568,7 +23571,10 @@ function PluginSettingsSection({ section, pluginId, adapter, onSaved }) {
       onSaved();
       return saved;
     },
-    ...adapter.connections ? { connections: adapter.connections } : {}
+    ...adapter.connections ? { connections: adapter.connections } : {},
+    get plugin() {
+      return current.current;
+    }
   }), [adapter, pluginId, onSaved]);
   return section.render(context);
 }
@@ -23686,7 +23692,7 @@ function PluginProvider({
       id: `plugin:${module.manifest.id}:${section.id}`,
       label: section.label,
       description: section.description,
-      content: /* @__PURE__ */ jsx83(PluginSettingsSection, { section, pluginId: module.manifest.id, adapter, onSaved: settingsSaved })
+      content: /* @__PURE__ */ jsx83(PluginSettingsSection, { section, pluginId: module.manifest.id, plugin: devicePlugin, adapter, onSaved: settingsSaved })
     }))];
   }), [adapter, builtinPlugins, plugins, settingsPluginIds, settingsSaved]);
   const value = useMemo19(
@@ -23756,7 +23762,7 @@ function PluginActionOutput({
 
 // src/plugins/PluginSettingsButton.tsx
 import { Settings as Settings2 } from "lucide-react";
-import { useRef as useRef40, useState as useState62 } from "react";
+import { useRef as useRef41, useState as useState62 } from "react";
 
 // src/plugins/ThreadPluginScope.tsx
 import {
@@ -23764,7 +23770,7 @@ import {
   useContext as useContext13,
   useEffect as useEffect46,
   useMemo as useMemo20,
-  useRef as useRef39,
+  useRef as useRef40,
   useState as useState61
 } from "react";
 import { jsx as jsx85 } from "react/jsx-runtime";
@@ -23787,7 +23793,7 @@ function ThreadPluginScope({
 }) {
   const parent = useContext13(PluginContext);
   const device = parent.device ?? parent;
-  const threadsRef = useRef39(adapter ?? device.adapter?.threads);
+  const threadsRef = useRef40(adapter ?? device.adapter?.threads);
   threadsRef.current = adapter ?? device.adapter?.threads;
   const supported = Boolean(threadsRef.current);
   const [loaded, setLoaded] = useState61({
@@ -23797,7 +23803,7 @@ function ThreadPluginScope({
   });
   const [pluginErrors, setPluginErrors] = useState61({});
   const [pending, setPending] = useState61({});
-  const request = useRef39(0);
+  const request = useRef40(0);
   const reload = useCallback23(async () => {
     const threads = threadsRef.current;
     if (!threads) {
@@ -23833,7 +23839,7 @@ function ThreadPluginScope({
   const sameDevice = !adapter;
   const gateByDevice = sameDevice && device.devicePluginsKnown === true;
   const deviceState = sameDevice ? `${device.plugins.map((plugin) => `${plugin.id}:${plugin.enabled}`).join("|")}#${device.settingsVersion ?? 0}` : "";
-  const seenDeviceState = useRef39(deviceState);
+  const seenDeviceState = useRef40(deviceState);
   useEffect46(() => {
     if (seenDeviceState.current === deviceState) return;
     seenDeviceState.current = deviceState;
@@ -23981,8 +23987,8 @@ import { jsx as jsx86, jsxs as jsxs72 } from "react/jsx-runtime";
 function PluginSettingsButton({ plugin, className }) {
   const { t: t2 } = useI18n();
   const plugins = useDevicePlugins();
-  const trigger = useRef40(null);
-  const content = useRef40(null);
+  const trigger = useRef41(null);
+  const content = useRef41(null);
   const [open, setOpen] = useState62(false);
   const [theme, setTheme] = useState62({});
   const sections = plugins.getSettingsSections(plugin.id);
@@ -24034,7 +24040,7 @@ function PluginSettingsButton({ plugin, className }) {
 
 // src/plugins/ThreadPluginsControl.tsx
 import { Puzzle, RotateCcw, Settings as Settings3 } from "lucide-react";
-import { useEffect as useEffect47, useId as useId4, useMemo as useMemo21, useRef as useRef41, useState as useState63 } from "react";
+import { useEffect as useEffect47, useId as useId4, useMemo as useMemo21, useRef as useRef42, useState as useState63 } from "react";
 import { Fragment as Fragment31, jsx as jsx87, jsxs as jsxs73 } from "react/jsx-runtime";
 var choiceOf = (plugin) => plugin.enabledOverride === null ? "inherit" : plugin.enabledOverride ? "on" : "off";
 var overrideOf = (choice) => choice === "inherit" ? null : choice === "on";
@@ -24051,8 +24057,8 @@ function ThreadPluginsControl({
   const device = useDevicePlugins();
   const nav = useAppShellNav();
   const openGlobal = onOpenGlobalSettings ?? (nav?.openSettingsSection ? () => nav.openSettingsSection("plugins") : void 0);
-  const trigger = useRef41(null);
-  const title = useRef41(null);
+  const trigger = useRef42(null);
+  const title = useRef42(null);
   const [open, setOpen] = useState63(false);
   const [editing, setEditing] = useState63(null);
   const visible = useMemo21(
@@ -24300,8 +24306,10 @@ function ThreadPluginSettingsDialog({
   const { t: t2 } = useI18n();
   const device = useDevicePlugins();
   const [generation, setGeneration] = useState63(0);
-  const enabled = useRef41(null);
-  const overridden = useRef41(plugin.settingsOverridden);
+  const enabled = useRef42(null);
+  const descriptor = useRef42(plugin);
+  descriptor.current = plugin;
+  const overridden = useRef42(plugin.settingsOverridden);
   useEffect47(() => {
     if (overridden.current && !plugin.settingsOverridden)
       setGeneration((value) => value + 1);
@@ -24327,7 +24335,10 @@ function ThreadPluginSettingsDialog({
         enabled.current = saved.enabled;
         return { revision: saved.revision, values: saved.effective.values };
       },
-      ...device.adapter?.connections ? { connections: device.adapter.connections } : {}
+      ...device.adapter?.connections ? { connections: device.adapter.connections } : {},
+      get plugin() {
+        return descriptor.current;
+      }
     }),
     // A new generation reloads the editor after its values were reset.
     [
@@ -24402,7 +24413,7 @@ function PhoneHandChoice({ hand, onChange }) {
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect48, useRef as useRef42, useState as useState64 } from "react";
+import { useEffect as useEffect48, useRef as useRef43, useState as useState64 } from "react";
 import { jsx as jsx89, jsxs as jsxs75 } from "react/jsx-runtime";
 function MenuIcon() {
   const { locale: i18nLocale } = useI18n();
@@ -24471,7 +24482,7 @@ function AppShellNavigationMenu({
 }) {
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
-  const menuRef = useRef42(null);
+  const menuRef = useRef43(null);
   useEffect48(() => {
     if (!shellNav?.navOpen) {
       return;
@@ -24847,7 +24858,7 @@ function AppShellSettingsDialog({
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { useEffect as useEffect49, useLayoutEffect as useLayoutEffect15, useMemo as useMemo22, useRef as useRef43, useState as useState65 } from "react";
+import { useEffect as useEffect49, useLayoutEffect as useLayoutEffect15, useMemo as useMemo22, useRef as useRef44, useState as useState65 } from "react";
 import { ArrowLeft as ArrowLeft4, ArrowUpRight, ChevronRight as ChevronRight7, ChevronUp as ChevronUp4, Folder as Folder2, List, Monitor as Monitor2, Network as Network2, RotateCw as RotateCw2 } from "lucide-react";
 
 // src/components/threadMap/model.ts
@@ -25261,10 +25272,10 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     });
   };
   const current = (focusId ? nodes.get(focusId) : void 0) ?? root;
-  const canvas = useRef43(null);
-  const stage = useRef43(null);
-  const crumbs = useRef43(null);
-  const zoomPlan = useRef43(null);
+  const canvas = useRef44(null);
+  const stage = useRef44(null);
+  const crumbs = useRef44(null);
+  const zoomPlan = useRef44(null);
   const [size, setSize] = useState65({ width: 0, height: 0 });
   const [tip, setTip] = useState65(null);
   useEffect49(() => {
@@ -25325,7 +25336,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
       { duration: 280, easing: "cubic-bezier(0.2, 0.75, 0.25, 1)" }
     );
   }, [current.id]);
-  const gesture = useRef43({ navigate, current, root, nodes, onDismiss });
+  const gesture = useRef44({ navigate, current, root, nodes, onDismiss });
   gesture.current = { navigate, current, root, nodes, onDismiss };
   useEffect49(() => {
     const node = canvas.current;
@@ -25845,7 +25856,7 @@ function ConversationSearchExcerpt({ text, query }) {
 }
 
 // src/components/workbench/presentation.ts
-import { useCallback as useCallback24, useEffect as useEffect50, useRef as useRef44, useState as useState66 } from "react";
+import { useCallback as useCallback24, useEffect as useEffect50, useRef as useRef45, useState as useState66 } from "react";
 var defaultPresentation = {
   referenceId: null,
   mode: "focus",
@@ -25903,7 +25914,7 @@ function write(scope, value, patch) {
   }
 }
 function useWorkbenchPresentation(scope, contextKey = null) {
-  const owner = useRef44({ scope, contextKey });
+  const owner = useRef45({ scope, contextKey });
   if (owner.current.scope !== scope || owner.current.contextKey !== contextKey)
     owner.current = { scope, contextKey };
   const generation = owner.current;

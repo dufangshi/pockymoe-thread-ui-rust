@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -44,12 +45,17 @@ export interface PluginProviderAdapter {
 const DEFAULT_PLUGIN_PROVIDER_ADAPTER: PluginProviderAdapter = {};
 const DEFAULT_BUILTIN_PLUGINS: FrontendPluginModule[] = [];
 
-function PluginSettingsSection({ section, pluginId, adapter, onSaved }: {
+function PluginSettingsSection({ section, pluginId, plugin, adapter, onSaved }: {
   section: PluginSettingsContribution;
   pluginId: string;
+  plugin: PluginDto;
   adapter: PluginProviderAdapter;
   onSaved: () => void;
 }) {
+  // A getter keeps the descriptor current without rebuilding the context, which
+  // would reload the form (and drop unsaved edits) on every switch change.
+  const current = useRef(plugin);
+  current.current = plugin;
   const context = useMemo(() => ({
     pluginId,
     load: () => adapter.loadPluginSettings!(pluginId),
@@ -59,6 +65,7 @@ function PluginSettingsSection({ section, pluginId, adapter, onSaved }: {
       return saved;
     },
     ...(adapter.connections ? { connections: adapter.connections } : {}),
+    get plugin() { return current.current; },
   }), [adapter, pluginId, onSaved]);
   return section.render(context);
 }
@@ -202,7 +209,7 @@ export function PluginProvider({
       id: `plugin:${module.manifest.id}:${section.id}`,
       label: section.label,
       description: section.description,
-      content: <PluginSettingsSection section={section} pluginId={module.manifest.id} adapter={adapter} onSaved={settingsSaved} />,
+      content: <PluginSettingsSection section={section} pluginId={module.manifest.id} plugin={devicePlugin} adapter={adapter} onSaved={settingsSaved} />,
     }))];
   }), [adapter, builtinPlugins, plugins, settingsPluginIds, settingsSaved]);
 

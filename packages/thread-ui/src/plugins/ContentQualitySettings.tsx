@@ -29,7 +29,10 @@ const presets = [
   'copyedit',
 ] as const;
 const details = ['short', 'balanced', 'detailed'] as const;
-/** Polishing context limits; older runtimes omit them and use these defaults. */
+/**
+ * Polishing context limits. Runtimes without the `replyContextLimits` capability
+ * ignore them and still read the whole history.
+ */
 const contextLimits = {
   replyContextTurns: { min: 1, max: 1000 },
   replyContextMaxChars: { min: 1, max: 10_000_000 },
@@ -127,10 +130,21 @@ function isConflict(error: unknown) {
   );
 }
 
+/** Whether the runtime applies context limits; unknown when no descriptor is given. */
+function contextLimitsSupport(plugin: PluginSettingsContext['plugin']) {
+  if (!plugin) return undefined;
+  const flagged = (value: unknown) =>
+    Boolean(value) &&
+    typeof value === 'object' &&
+    (value as { replyContextLimits?: unknown }).replyContextLimits === true;
+  return flagged(plugin.capabilities) || flagged(plugin);
+}
+
 export function ContentQualitySettings({
   load,
   save,
   connections,
+  plugin,
 }: PluginSettingsContext) {
   const { t } = useI18n();
   const scope = useId();
@@ -198,10 +212,20 @@ export function ContentQualitySettings({
       // Supervisors before saved connections reject an unknown connectionId.
       if (!values.connectionId && !('connectionId' in stored))
         delete body.connectionId;
-      // Runtimes before context limits reject unknown keys: send them only once
-      // stored or changed, so an untouched form still saves there.
-      for (const key of ['replyContextTurns', 'replyContextMaxChars'] as const)
-        if (!(key in stored) && values[key] === defaults[key]) delete body[key];
+      // A runtime known to lack context limits never gets new ones (stored values
+      // pass through untouched). When support is unknown, send them only once
+      // stored or changed, so an untouched form still saves on a runtime that
+      // would reject the keys.
+      for (const key of [
+        'replyContextTurns',
+        'replyContextMaxChars',
+      ] as const) {
+        if (limitsSupported === false) {
+          if (key in stored) body[key] = stored[key];
+          else delete body[key];
+        } else if (!(key in stored) && values[key] === defaults[key])
+          delete body[key];
+      }
       const snapshot = await save({ revision, values: body });
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
@@ -231,6 +255,7 @@ export function ContentQualitySettings({
   }
 
   const busy = status === 'loading' || status === 'saving';
+  const limitsSupported = contextLimitsSupport(plugin);
   const error =
     status === 'loadError' || status === 'saveError' || status === 'conflict';
   return (
@@ -371,6 +396,7 @@ export function ContentQualitySettings({
             <input
               id={`${scope}-replyContextTurns`}
               aria-describedby={`${scope}-replyContextTurns-hint`}
+              disabled={limitsSupported === false}
               type="number"
               min={contextLimits.replyContextTurns.min}
               max={contextLimits.replyContextTurns.max}
@@ -385,7 +411,11 @@ export function ContentQualitySettings({
                 update('replyContextTurns', event.target.valueAsNumber)
               }
             />,
-            t('quality.replyContextTurnsHint'),
+            t(
+              limitsSupported === false
+                ? 'quality.contextLimitsNeedUpdate'
+                : 'quality.replyContextTurnsHint',
+            ),
           )}
           {field(
             'replyContextMaxChars',
@@ -393,6 +423,7 @@ export function ContentQualitySettings({
             <input
               id={`${scope}-replyContextMaxChars`}
               aria-describedby={`${scope}-replyContextMaxChars-hint`}
+              disabled={limitsSupported === false}
               type="number"
               min={contextLimits.replyContextMaxChars.min}
               max={contextLimits.replyContextMaxChars.max}

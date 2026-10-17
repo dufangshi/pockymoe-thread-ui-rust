@@ -63,6 +63,8 @@ export interface PluginSettingsContext {
   load: () => Promise<PluginSettingsSnapshot>;
   save: (settings: PluginSettingsSnapshot) => Promise<PluginSettingsSnapshot>;
   connections?: UpstreamConnectionHost;
+  /** The device's (or conversation's) descriptor, for capability checks. */
+  plugin?: PluginDto;
 }
 
 export interface PluginSettingsContribution {

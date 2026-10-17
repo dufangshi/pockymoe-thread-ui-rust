@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import type {
+  PluginDto,
   PluginManifestDto,
   ThreadArtifactDto,
   ThreadHistoryItemDto,
@@ -106,4 +107,42 @@ export interface FrontendPluginModule {
     languages: string[];
     render: (context: InlineCodeRenderContext) => ReactNode | null;
   }>;
+}
+
+/** A plugin as one conversation sees it; `enabled` is the effective switch there. */
+export interface ThreadPluginDto extends PluginDto {
+  globalEnabled: boolean;
+  /** null follows the device-wide switch. */
+  enabledOverride: boolean | null;
+  settingsOverridden: boolean;
+}
+
+export interface ThreadPluginSettingsSnapshot {
+  revision: number;
+  globalRevision: number;
+  /** The conversation's own values; null inherits the device-wide ones. */
+  enabled: boolean | null;
+  values: Record<string, unknown> | null;
+  effective: { enabled: boolean; values: Record<string, unknown> };
+}
+
+export interface ThreadPluginSettingsInput {
+  revision: number;
+  enabled: boolean | null;
+  /** A complete override snapshot, not a patch; null inherits. */
+  values: Record<string, unknown> | null;
+}
+
+/** Host access to one conversation's plugin scope. */
+export interface ThreadPluginAdapter {
+  fetchPlugins: (threadId: string) => Promise<ThreadPluginDto[]>;
+  loadSettings: (
+    threadId: string,
+    pluginId: string,
+  ) => Promise<ThreadPluginSettingsSnapshot>;
+  saveSettings: (
+    threadId: string,
+    pluginId: string,
+    input: ThreadPluginSettingsInput,
+  ) => Promise<ThreadPluginSettingsSnapshot>;
 }

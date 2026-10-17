@@ -7,7 +7,7 @@ var THEME_FEATURES = [
   "composer.modelAvatar",
   /** Icon rows in the slash toolbox and attach menu, a "/" glyph and a paperclip trigger. */
   "composer.richMenus",
-  /** Per-intent send icons and the "Send after this turn" label while a turn runs. */
+  /** A paper plane for Send; the send intents themselves show in every theme. */
   "composer.intentIcons",
   /** Each reply opens with the agent's avatar and name, ahead of the work summary. */
   "transcript.agentByline",

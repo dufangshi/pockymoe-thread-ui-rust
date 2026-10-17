@@ -1,8 +1,8 @@
 import * as react from 'react';
 import { ReactNode, MutableRefObject } from 'react';
 import * as _pockymoe_shared from '@pockymoe/shared';
-import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
-import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, b as MessagePresentationContext, M as MessagePresentation, a as PluginActionOutputContext, F as FrontendPluginModule } from './plugin-types-CXhGM6t7.js';
+import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, UpdatePluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
+import { U as UpstreamConnectionHost, T as ThreadPluginAdapter, d as PluginSettingsSnapshot, F as FrontendPluginModule, A as ArtifactRenderContext, I as InlineCodeRenderContext, e as ThreadPanelContribution, a as MessagePresentationContext, M as MessagePresentation, P as PluginActionOutputContext, f as ThreadPluginDto, h as ThreadPluginSettingsSnapshot, g as ThreadPluginSettingsInput } from './plugin-types-Ct5yq4qu.js';
 
 interface PromptAttachmentUpload extends PromptAttachmentManifestEntryDto {
     file: File;
@@ -306,6 +306,23 @@ declare function SettingsPanels({ sections, initialId, selected: selectedId, onS
     scroll?: MutableRefObject<number> | undefined;
 }): react.JSX.Element | null;
 
+interface PluginProviderAdapter {
+    connections?: UpstreamConnectionHost;
+    /** Per-conversation plugin switches and settings, when the device supports them. */
+    threads?: ThreadPluginAdapter;
+    loadPluginSettings?: (pluginId: string) => Promise<PluginSettingsSnapshot>;
+    savePluginSettings?: (pluginId: string, settings: PluginSettingsSnapshot) => Promise<PluginSettingsSnapshot>;
+    fetchPlugins?: () => Promise<PluginDto[]> | PluginDto[];
+    importPlugin?: (input: ImportPluginInput) => Promise<PluginDto> | PluginDto;
+    updatePlugin?: (pluginId: string, input: UpdatePluginInput) => Promise<PluginDto> | PluginDto;
+    deletePlugin?: (pluginId: string) => Promise<PluginDto> | PluginDto;
+}
+declare function PluginProvider({ adapter, builtinPlugins, children, }: {
+    adapter?: PluginProviderAdapter;
+    builtinPlugins?: FrontendPluginModule[];
+    children: ReactNode;
+}): react.JSX.Element;
+
 interface PluginContextValue {
     plugins: PluginDto[];
     loading: boolean;
@@ -322,6 +339,35 @@ interface PluginContextValue {
     getSettingsSections: (pluginId?: string) => SettingsSection[];
     presentMessage: (context: MessagePresentationContext) => MessagePresentation | null;
     renderActionOutput: (pluginId: string, context: PluginActionOutputContext) => ReactNode | null;
+    /** The plugin modules this host ships. */
+    modules?: FrontendPluginModule[];
+    adapter?: PluginProviderAdapter;
+    /** Changes whenever device-wide plugin settings are saved. */
+    settingsVersion?: number;
+    /** Whether `plugins` reflects the device's answer rather than module defaults. */
+    devicePluginsKnown?: boolean;
+    /** Inside a conversation scope: the device-wide context, for global management. */
+    device?: PluginContextValue;
+    /** Inside a conversation scope: its switches and settings. */
+    thread?: ThreadPluginScopeState;
+}
+type ThreadPluginScopeStatus = 'loading' | 'ready' | 'unsupported' | 'forbidden' | 'error';
+interface ThreadPluginScopeState {
+    threadId: string;
+    status: ThreadPluginScopeStatus;
+    plugins: ThreadPluginDto[];
+    error: string | null;
+    /** Per plugin: the last failed change, kept until the next attempt. */
+    pluginErrors: Record<string, {
+        message: string;
+        conflict: boolean;
+    }>;
+    pending: Record<string, boolean>;
+    reload: () => Promise<void>;
+    setEnabledOverride: (pluginId: string, enabled: boolean | null) => Promise<void>;
+    resetSettings: (pluginId: string) => Promise<void>;
+    loadSettings: (pluginId: string) => Promise<ThreadPluginSettingsSnapshot>;
+    saveSettings: (pluginId: string, input: ThreadPluginSettingsInput) => Promise<ThreadPluginSettingsSnapshot>;
 }
 declare function mergePluginState(modules: FrontendPluginModule[], serverPlugins: PluginDto[]): PluginDto[];
 declare function createDefaultPluginContextValue(modules?: FrontendPluginModule[]): PluginContextValue;
@@ -341,6 +387,8 @@ interface ThreadGraphWorkspacePanelProps {
         line?: number;
         requestId: number;
     } | null;
+    /** The workspace-relative path of the file being read, or null. */
+    onActiveFileChange?: (relativePath: string | null) => void;
 }
 type WorkspaceTab = 'workspace' | 'tools' | 'guide' | 'graph' | 'extensions';
 interface ThreadGraphWorkspaceFeatures {
@@ -351,7 +399,7 @@ interface ThreadGraphWorkspaceFeatures {
     extensions?: boolean;
     defaultTab?: WorkspaceTab;
 }
-declare function ThreadGraphWorkspacePanel({ detail, status, plugins, workspaceAdapter, metaContent, settingsContent, activeView, features: featureConfig, focusPathRequest, }: ThreadGraphWorkspacePanelProps): react.JSX.Element | null;
+declare function ThreadGraphWorkspacePanel({ detail, status, plugins, workspaceAdapter, metaContent, settingsContent, activeView, features: featureConfig, focusPathRequest, onActiveFileChange, }: ThreadGraphWorkspacePanelProps): react.JSX.Element | null;
 declare const MemoizedThreadGraphWorkspacePanel: react.MemoExoticComponent<typeof ThreadGraphWorkspacePanel>;
 
-export { MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SettingsSection as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, SettingsPanels as g, type ThreadWorkspaceAdapter as h, PluginContext as i, type SendPromptInput as j, type ShellSocketConnection as k, type ShellSocketHandlers as l, type ThreadImageAssetVariant as m, type WorkspaceDocumentSnapshot as n, type WorkspaceSaveReceipt as o, type WorkspaceTab as p, createDefaultPluginContextValue as q, mergePluginState as r, ThreadGraphWorkspacePanel as s };
+export { MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SettingsSection as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, SettingsPanels as g, type ThreadWorkspaceAdapter as h, PluginContext as i, PluginProvider as j, type PluginProviderAdapter as k, type SendPromptInput as l, type ShellSocketConnection as m, type ShellSocketHandlers as n, type ThreadImageAssetVariant as o, type WorkspaceDocumentSnapshot as p, type WorkspaceSaveReceipt as q, type WorkspaceTab as r, createDefaultPluginContextValue as s, mergePluginState as t, ThreadGraphWorkspacePanel as u };

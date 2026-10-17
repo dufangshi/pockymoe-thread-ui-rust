@@ -77,7 +77,24 @@ describe("GraphChatCompactMessageItem", () => {
     expect(onBeforeMessageResize).toHaveBeenCalled();
   });
 
-  it.each(['disabled', 'unavailable', 'unregistered', 'missing', 'empty', 'malformed', 'stale', 'validation failed', 'streaming', 'user message'])(
+  // A stored polished reply is history: turning the plugin off (here or globally)
+  // stops new polishing but keeps what was already produced readable.
+  it.each(['disabled', 'unavailable', 'unregistered'])(
+    'keeps an existing polished reply readable when the plugin is %s', async condition => {
+      mockDigest();
+      const { container, root } = mount();
+      const adapter = { fetchPlugins: () => condition === 'unregistered' ? [] : [{ ...contentQualityPlugin.manifest, enabled: condition !== 'disabled', available: condition !== 'unavailable' }] };
+      await act(async () => root.render(<PluginProvider adapter={adapter} builtinPlugins={[contentQualityPlugin]}>
+        <GraphChatCompactMessageItem item={{ id: 'quality', kind: 'agentMessage', text: source, polishedReply: polishedReply() }} scrollRootRef={{ current: null }} />
+      </PluginProvider>));
+      expect(container.textContent).toContain('Polished answer');
+      const original = [...container.querySelectorAll<HTMLButtonElement>('button')].find(element => element.textContent === 'Original')!;
+      await act(async () => original.click());
+      expect(container.textContent).toContain(source);
+    },
+  );
+
+  it.each(['missing', 'empty', 'malformed', 'stale', 'validation failed', 'streaming', 'user message'])(
     'falls back to the original reply when %s', async condition => {
       mockDigest();
       if (condition === 'validation failed') vi.stubGlobal('crypto', { subtle: { digest: vi.fn().mockRejectedValue(new Error('unavailable')) } });

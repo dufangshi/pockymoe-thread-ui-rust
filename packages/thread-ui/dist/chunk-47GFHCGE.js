@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-JZNB3EWV.js";
+} from "./chunk-FL6XHKNB.js";
 
 // src/components/copy/CopyButton.tsx
 import { useEffect, useRef, useState } from "react";
@@ -580,6 +580,7 @@ function settleSave(doc, receipt) {
       ...doc,
       phase: "conflict",
       conflict: receipt.snapshot,
+      conflictFrom: "save",
       submitted: void 0,
       error: receipt.snapshot ? null : translate("files.safeMissing")
     };
@@ -828,10 +829,51 @@ function useTabScrollEdges(ref) {
   return { "data-overflow-start": edges.start, "data-overflow-end": edges.end };
 }
 
+// src/components/TabScrollButtons.tsx
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Fragment, jsx as jsx8, jsxs as jsxs7 } from "react/jsx-runtime";
+function TabScrollButtons({ targetRef, edges }) {
+  useI18n();
+  const page = (direction) => {
+    const strip = targetRef.current;
+    if (!strip) return;
+    const smooth = !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    strip.scrollBy({ left: direction * Math.max(80, strip.clientWidth * 0.8), behavior: smooth ? "smooth" : "auto" });
+  };
+  return /* @__PURE__ */ jsxs7(Fragment, { children: [
+    edges["data-overflow-start"] ? /* @__PURE__ */ jsx8(
+      "button",
+      {
+        type: "button",
+        className: "tab-scroll-button",
+        "data-edge": "start",
+        tabIndex: -1,
+        "aria-label": translate("workbench.scrollTabsBack"),
+        title: translate("workbench.scrollTabsBack"),
+        onClick: () => page(-1),
+        children: /* @__PURE__ */ jsx8(ChevronLeft, { "aria-hidden": "true" })
+      }
+    ) : null,
+    edges["data-overflow-end"] ? /* @__PURE__ */ jsx8(
+      "button",
+      {
+        type: "button",
+        className: "tab-scroll-button",
+        "data-edge": "end",
+        tabIndex: -1,
+        "aria-label": translate("workbench.scrollTabsForward"),
+        title: translate("workbench.scrollTabsForward"),
+        onClick: () => page(1),
+        children: /* @__PURE__ */ jsx8(ChevronRight, { "aria-hidden": "true" })
+      }
+    ) : null
+  ] });
+}
+
 // src/components/graph-workspace/GraphResizablePanels.tsx
 import { GripVerticalIcon } from "lucide-react";
 import * as ResizablePrimitive from "react-resizable-panels";
-import { jsx as jsx8 } from "react/jsx-runtime";
+import { jsx as jsx9 } from "react/jsx-runtime";
 function classNames(...values) {
   return values.filter(Boolean).join(" ");
 }
@@ -839,7 +881,7 @@ function ResizablePanelGroup({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(
     ResizablePrimitive.PanelGroup,
     {
       "data-slot": "resizable-panel-group",
@@ -854,14 +896,14 @@ function ResizablePanelGroup({
 function ResizablePanel({
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
+  return /* @__PURE__ */ jsx9(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
 }
 function ResizableHandle({
   withHandle,
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(
     ResizablePrimitive.PanelResizeHandle,
     {
       "data-slot": "resizable-handle",
@@ -870,7 +912,7 @@ function ResizableHandle({
         className
       ),
       ...props,
-      children: withHandle ? /* @__PURE__ */ jsx8("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx8(GripVerticalIcon, { className: "size-2.5" }) }) : null
+      children: withHandle ? /* @__PURE__ */ jsx9("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx9(GripVerticalIcon, { className: "size-2.5" }) }) : null
     }
   );
 }
@@ -1337,7 +1379,7 @@ function useImageViewport() {
 
 // src/components/ZoomableImage.tsx
 import { Maximize2, Minus, Plus, RotateCcw, X } from "lucide-react";
-import { Fragment, jsx as jsx9, jsxs as jsxs7 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
 var MarkdownImageLinkContext = createContext(false);
 var IMAGE_LIGHTBOX_MIN_SCALE = 0.5;
 var IMAGE_LIGHTBOX_MAX_SCALE = 5;
@@ -1362,7 +1404,7 @@ function GraphWorkspaceImageLightbox({
     };
   }, []);
   return createPortal3(
-    /* @__PURE__ */ jsxs7(
+    /* @__PURE__ */ jsxs8(
       "div",
       {
         ref: windowRef,
@@ -1372,14 +1414,14 @@ function GraphWorkspaceImageLightbox({
         "aria-modal": "true",
         "aria-label": translate("files.imagePreview", { value1: alt || translate("files.workspaceImage") }),
         children: [
-          /* @__PURE__ */ jsxs7(
+          /* @__PURE__ */ jsxs8(
             "div",
             {
               className: "thread-graph-image-lightbox-toolbar",
               role: "toolbar",
               "aria-label": translate("files.imageZoomControls"),
               children: [
-                /* @__PURE__ */ jsx9(
+                /* @__PURE__ */ jsx10(
                   "button",
                   {
                     type: "button",
@@ -1387,10 +1429,10 @@ function GraphWorkspaceImageLightbox({
                     disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE,
                     title: translate("files.zoomOut"),
                     "aria-label": translate("files.zoomOut"),
-                    children: /* @__PURE__ */ jsx9(Minus, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx10(Minus, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsxs7(
+                /* @__PURE__ */ jsxs8(
                   "button",
                   {
                     type: "button",
@@ -1399,15 +1441,15 @@ function GraphWorkspaceImageLightbox({
                     title: translate("files.resetZoom"),
                     "aria-label": translate("files.resetZoomCurrently", { value1: Math.round(scale * 100) }),
                     children: [
-                      /* @__PURE__ */ jsx9(RotateCcw, { className: "h-3.5 w-3.5" }),
-                      /* @__PURE__ */ jsxs7("span", { children: [
+                      /* @__PURE__ */ jsx10(RotateCcw, { className: "h-3.5 w-3.5" }),
+                      /* @__PURE__ */ jsxs8("span", { children: [
                         Math.round(scale * 100),
                         "%"
                       ] })
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsx9(
+                /* @__PURE__ */ jsx10(
                   "button",
                   {
                     type: "button",
@@ -1415,17 +1457,17 @@ function GraphWorkspaceImageLightbox({
                     disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE,
                     title: translate("files.zoomIn"),
                     "aria-label": translate("files.zoomIn"),
-                    children: /* @__PURE__ */ jsx9(Plus, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx10(Plus, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsx9(
+                /* @__PURE__ */ jsx10(
                   "span",
                   {
                     className: "thread-graph-image-lightbox-divider",
                     "aria-hidden": "true"
                   }
                 ),
-                /* @__PURE__ */ jsx9(
+                /* @__PURE__ */ jsx10(
                   "button",
                   {
                     ref: closeButtonRef,
@@ -1433,13 +1475,13 @@ function GraphWorkspaceImageLightbox({
                     onClick: onClose,
                     title: translate("files.closeImagePreview"),
                     "aria-label": translate("files.closeImagePreview"),
-                    children: /* @__PURE__ */ jsx9(X, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx10(X, { className: "h-4 w-4" })
                   }
                 )
               ]
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx10(
             "div",
             {
               ref: viewportRef,
@@ -1454,7 +1496,7 @@ function GraphWorkspaceImageLightbox({
                 backdropPointer.current = event.target === event.currentTarget;
                 handlers.onPointerDown(event);
               },
-              children: /* @__PURE__ */ jsx9(
+              children: /* @__PURE__ */ jsx10(
                 "img",
                 {
                   src,
@@ -1489,14 +1531,14 @@ function ZoomableImage({
   const insideLink = useContext(MarkdownImageLinkContext);
   const dimension = (value) => typeof value === "number" ? value : value && /^\d+(?:\.\d+)?%?$/.test(value) ? value.endsWith("%") ? value : Number(value) : void 0;
   const imageStyle = { width: dimension(width), height: dimension(height) };
-  const image = /* @__PURE__ */ jsx9("img", { src, alt, className, loading, style: imageStyle });
+  const image = /* @__PURE__ */ jsx10("img", { src, alt, className, loading, style: imageStyle });
   function closeLightbox() {
     setOpen(false);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   }
   if (insideLink) return image;
-  return /* @__PURE__ */ jsxs7(Fragment, { children: [
-    /* @__PURE__ */ jsx9(
+  return /* @__PURE__ */ jsxs8(Fragment2, { children: [
+    /* @__PURE__ */ jsx10(
       "button",
       {
         ref: triggerRef,
@@ -1509,7 +1551,7 @@ function ZoomableImage({
         children: image
       }
     ),
-    open ? /* @__PURE__ */ jsx9(
+    open ? /* @__PURE__ */ jsx10(
       GraphWorkspaceImageLightbox,
       {
         src: fullSrc || src,
@@ -1523,18 +1565,18 @@ function WorkspaceImagePreview({ src, alt }) {
   useI18n();
   const { viewportRef, scale, dragging, transform, reset, updateScale, handlers } = useImageViewport();
   const [open, setOpen] = useState5(false);
-  return /* @__PURE__ */ jsxs7("div", { className: "workspace-image-preview", children: [
-    /* @__PURE__ */ jsxs7("div", { className: "workspace-image-controls", role: "toolbar", "aria-label": translate("files.imageZoomControls"), children: [
-      /* @__PURE__ */ jsx9("button", { type: "button", onClick: () => updateScale(scale - 0.25), disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE, "aria-label": translate("files.zoomOut"), children: /* @__PURE__ */ jsx9(Minus, { size: 14 }) }),
-      /* @__PURE__ */ jsx9("button", { type: "button", onClick: reset, "aria-label": translate("files.resetZoom"), children: /* @__PURE__ */ jsxs7("span", { children: [
+  return /* @__PURE__ */ jsxs8("div", { className: "workspace-image-preview", children: [
+    /* @__PURE__ */ jsxs8("div", { className: "workspace-image-controls", role: "toolbar", "aria-label": translate("files.imageZoomControls"), children: [
+      /* @__PURE__ */ jsx10("button", { type: "button", onClick: () => updateScale(scale - 0.25), disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE, "aria-label": translate("files.zoomOut"), children: /* @__PURE__ */ jsx10(Minus, { size: 14 }) }),
+      /* @__PURE__ */ jsx10("button", { type: "button", onClick: reset, "aria-label": translate("files.resetZoom"), children: /* @__PURE__ */ jsxs8("span", { children: [
         Math.round(scale * 100),
         "%"
       ] }) }),
-      /* @__PURE__ */ jsx9("button", { type: "button", onClick: () => updateScale(scale + 0.25), disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE, "aria-label": translate("files.zoomIn"), children: /* @__PURE__ */ jsx9(Plus, { size: 14 }) }),
-      /* @__PURE__ */ jsx9("button", { type: "button", onClick: () => setOpen(true), "aria-label": translate("files.openImagePreview"), children: /* @__PURE__ */ jsx9(Maximize2, { size: 14 }) })
+      /* @__PURE__ */ jsx10("button", { type: "button", onClick: () => updateScale(scale + 0.25), disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE, "aria-label": translate("files.zoomIn"), children: /* @__PURE__ */ jsx10(Plus, { size: 14 }) }),
+      /* @__PURE__ */ jsx10("button", { type: "button", onClick: () => setOpen(true), "aria-label": translate("files.openImagePreview"), children: /* @__PURE__ */ jsx10(Maximize2, { size: 14 }) })
     ] }),
-    /* @__PURE__ */ jsx9("div", { ref: viewportRef, className: "workspace-image-viewport", ...handlers, children: /* @__PURE__ */ jsx9("img", { src, alt, draggable: false, className: dragging ? "is-dragging" : "", style: { transform } }) }),
-    open && /* @__PURE__ */ jsx9(GraphWorkspaceImageLightbox, { src, alt, onClose: () => setOpen(false) })
+    /* @__PURE__ */ jsx10("div", { ref: viewportRef, className: "workspace-image-viewport", ...handlers, children: /* @__PURE__ */ jsx10("img", { src, alt, draggable: false, className: dragging ? "is-dragging" : "", style: { transform } }) }),
+    open && /* @__PURE__ */ jsx10(GraphWorkspaceImageLightbox, { src, alt, onClose: () => setOpen(false) })
   ] });
 }
 
@@ -1588,7 +1630,7 @@ function getGraphChatHighlighter() {
       javascript,
       typescript,
       tsx,
-      jsx12,
+      jsx13,
       python,
       json,
       bash,
@@ -1619,7 +1661,7 @@ function getGraphChatHighlighter() {
         javascript.default,
         typescript.default,
         tsx.default,
-        jsx12.default,
+        jsx13.default,
         python.default,
         json.default,
         bash.default,
@@ -1684,7 +1726,7 @@ var markdownHtmlPlugins = [rehypeRaw, [rehypeSanitize, schema]];
 import { useEffect as useEffect5, useRef as useRef9, useState as useState6 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
 import { Check as Check2, TriangleAlert as TriangleAlert2 } from "lucide-react";
-import { Fragment as Fragment2, jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx11, jsxs as jsxs9 } from "react/jsx-runtime";
 function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-inline-link" }) {
   useI18n();
   const [menu, setMenu] = useState6(null);
@@ -1720,8 +1762,8 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
     setMenu(null);
     onOpen({ path, ...line ? { line } : {} });
   };
-  return /* @__PURE__ */ jsxs8(Fragment2, { children: [
-    /* @__PURE__ */ jsx10(
+  return /* @__PURE__ */ jsxs9(Fragment3, { children: [
+    /* @__PURE__ */ jsx11(
       "a",
       {
         ref: linkRef,
@@ -1741,17 +1783,17 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
         children
       }
     ),
-    menu && createPortal4(/* @__PURE__ */ jsxs8("div", { ref: menuRef, role: "menu", "aria-label": translate("files.fileLink"), className: "thread-workspace-link-menu", style: { left: Math.max(8, menu.x), top: Math.max(8, menu.y) }, children: [
-      /* @__PURE__ */ jsx10("button", { type: "button", role: "menuitem", onClick: open, children: translate("files.openFile") }),
-      /* @__PURE__ */ jsxs8("button", { type: "button", role: "menuitem", "data-copy-state": copy ?? void 0, onClick: async () => {
+    menu && createPortal4(/* @__PURE__ */ jsxs9("div", { ref: menuRef, role: "menu", "aria-label": translate("files.fileLink"), className: "thread-workspace-link-menu", style: { left: Math.max(8, menu.x), top: Math.max(8, menu.y) }, children: [
+      /* @__PURE__ */ jsx11("button", { type: "button", role: "menuitem", onClick: open, children: translate("files.openFile") }),
+      /* @__PURE__ */ jsxs9("button", { type: "button", role: "menuitem", "data-copy-state": copy ?? void 0, onClick: async () => {
         const ok = await copyText(copyValue);
         setCopy(ok ? "copied" : "failed");
         if (ok) window.setTimeout(() => close(true), 700);
       }, children: [
-        copy === "copied" ? /* @__PURE__ */ jsx10(Check2, { "aria-hidden": "true" }) : copy === "failed" ? /* @__PURE__ */ jsx10(TriangleAlert2, { "aria-hidden": "true" }) : null,
+        copy === "copied" ? /* @__PURE__ */ jsx11(Check2, { "aria-hidden": "true" }) : copy === "failed" ? /* @__PURE__ */ jsx11(TriangleAlert2, { "aria-hidden": "true" }) : null,
         copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : translate("common.copyPath")
       ] }),
-      /* @__PURE__ */ jsx10("span", { className: "copy-button-status", role: "status", children: copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : "" })
+      /* @__PURE__ */ jsx11("span", { className: "copy-button-status", role: "status", children: copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : "" })
     ] }), linkRef.current?.closest(".thread-ui-shell") ?? document.body)
   ] });
 }
@@ -1759,7 +1801,7 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
 // src/components/graph-ui/Button.tsx
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { jsx as jsx11 } from "react/jsx-runtime";
+import { jsx as jsx12 } from "react/jsx-runtime";
 var buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
   {
@@ -1793,7 +1835,7 @@ function Button({
   ...props
 }) {
   const Comp = asChild ? Slot : "button";
-  return /* @__PURE__ */ jsx11(
+  return /* @__PURE__ */ jsx12(
     Comp,
     {
       "data-slot": "button",
@@ -1836,6 +1878,7 @@ export {
   FilePanelContext,
   useFilePanel,
   useTabScrollEdges,
+  TabScrollButtons,
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,

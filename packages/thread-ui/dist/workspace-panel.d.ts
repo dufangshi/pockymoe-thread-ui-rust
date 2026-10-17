@@ -1,4 +1,4 @@
-export { M as MemoizedThreadGraphWorkspacePanel, f as ThreadGraphWorkspaceFeatures, s as ThreadGraphWorkspacePanel, c as ThreadGraphWorkspacePanelProps, p as WorkspaceTab } from './workspace-panel-B1FrzYrV.js';
+export { M as MemoizedThreadGraphWorkspacePanel, f as ThreadGraphWorkspaceFeatures, u as ThreadGraphWorkspacePanel, c as ThreadGraphWorkspacePanelProps, r as WorkspaceTab } from './workspace-panel-ZiEki9G3.js';
 import 'react';
 import '@pockymoe/shared';
-import './plugin-types-CXhGM6t7.js';
+import './plugin-types-Ct5yq4qu.js';

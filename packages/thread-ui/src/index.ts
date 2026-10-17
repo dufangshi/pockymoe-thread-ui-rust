@@ -100,6 +100,11 @@ export { PluginProvider } from './plugins/PluginProvider';
 export { usePlugins } from './plugins/usePlugins';
 export { PluginActionOutput } from './plugins/PluginActionOutput';
 export { PluginSettingsButton } from './plugins/PluginSettingsButton';
+export {
+  ThreadPluginScope,
+  useDevicePlugins,
+} from './plugins/ThreadPluginScope';
+export { ThreadPluginsControl } from './plugins/ThreadPluginsControl';
 export type {
   ArtifactRenderContext,
   FrontendPluginModule,
@@ -115,6 +120,10 @@ export type {
   UpstreamConnectionPickerProps,
   UpstreamConnectionPickerValue,
   UpstreamConnectionProtocol,
+  ThreadPluginAdapter,
+  ThreadPluginDto,
+  ThreadPluginSettingsInput,
+  ThreadPluginSettingsSnapshot,
 } from './plugins/plugin-types';
 export type { PluginProviderAdapter } from './plugins/PluginProvider';
 export {

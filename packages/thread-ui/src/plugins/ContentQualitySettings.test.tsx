@@ -302,6 +302,63 @@ describe('Content Quality settings', () => {
     expect(save.mock.calls[1]![0].values).toHaveProperty('connectionId', '');
   });
 
+  it('shows context limit defaults for older runtimes and only sends them once stored or changed', async () => {
+    const save = vi
+      .fn()
+      .mockImplementation(async (snapshot) => ({ ...snapshot, revision: 2 }));
+    const load = vi
+      .fn()
+      .mockResolvedValueOnce({ revision: 1, values: { model: 'm' } })
+      .mockResolvedValue({
+        revision: 3,
+        values: { replyContextTurns: 0, replyContextMaxChars: 2500 },
+      });
+    await act(async () =>
+      root.render(
+        <ContentQualitySettings pluginId="quality" load={load} save={save} />,
+      ),
+    );
+    const turns = control('Context turns') as HTMLInputElement;
+    const chars = control('Context character limit') as HTMLInputElement;
+    expect([turns.value, turns.min, turns.max]).toEqual(['5', '1', '1000']);
+    expect([chars.value, chars.min, chars.max]).toEqual([
+      '10000',
+      '1',
+      '10000000',
+    ]);
+    expect(container.textContent).toContain('including the one being polished');
+    expect(container.textContent).toContain('characters, not tokens');
+    // An older runtime rejects unknown keys: an untouched form leaves them out.
+    await click('Save settings');
+    expect(save.mock.calls[0]![0].values).not.toHaveProperty(
+      'replyContextTurns',
+    );
+    expect(save.mock.calls[0]![0].values).not.toHaveProperty(
+      'replyContextMaxChars',
+    );
+    await change('Context turns', '12');
+    await click('Save settings');
+    expect(save.mock.calls[1]![0].values).toMatchObject({
+      replyContextTurns: 12,
+    });
+    expect(save.mock.calls[1]![0].values).not.toHaveProperty(
+      'replyContextMaxChars',
+    );
+    // Stored values are kept; an out-of-range one falls back to the default.
+    await click('Reload saved settings');
+    expect(control('Context turns').value).toBe('5');
+    expect(control('Context character limit').value).toBe('2500');
+    await click('Save settings');
+    expect(save.mock.calls[2]![0].values).toMatchObject({
+      replyContextTurns: 5,
+      replyContextMaxChars: 2500,
+    });
+    await act(async () => setLocale('zh-CN', false));
+    expect(control('参考轮数').value).toBe('5');
+    expect(container.textContent).toContain('含正在润色的这一轮');
+    expect(container.textContent).toContain('按字符计，不是 token');
+  });
+
   it('passes the host connection capability through PluginProvider settings sections', async () => {
     const renderPicker = vi.fn(() => <span>host picker</span>);
     const adapter: PluginProviderAdapter = {

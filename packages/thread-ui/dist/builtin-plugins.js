@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-5SETNE4N.js";
+} from "./chunk-S7DCW5G7.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -64,6 +64,10 @@ var presets = [
   "copyedit"
 ];
 var details = ["short", "balanced", "detailed"];
+var contextLimits = {
+  replyContextTurns: { min: 1, max: 1e3 },
+  replyContextMaxChars: { min: 1, max: 1e7 }
+};
 var defaults = {
   connectionId: "",
   connectionFile: "",
@@ -73,6 +77,8 @@ var defaults = {
   detail: "balanced",
   readerBackground: "",
   minReplyChars: 800,
+  replyContextTurns: 5,
+  replyContextMaxChars: 1e4,
   autoReplies: true,
   autoDocuments: false,
   documentMode: "review"
@@ -102,6 +108,11 @@ function readValues(snapshot) {
     values.autoDocuments = snapshot.values.autoDocuments;
   if (typeof snapshot.values.minReplyChars === "number" && Number.isSafeInteger(snapshot.values.minReplyChars) && snapshot.values.minReplyChars >= 0)
     values.minReplyChars = snapshot.values.minReplyChars;
+  for (const key of ["replyContextTurns", "replyContextMaxChars"]) {
+    const value = snapshot.values[key];
+    if (typeof value === "number" && Number.isSafeInteger(value) && value >= contextLimits[key].min && value <= contextLimits[key].max)
+      values[key] = value;
+  }
   if (snapshot.values.documentMode === "review" || snapshot.values.documentMode === "rewrite")
     values.documentMode = snapshot.values.documentMode;
   return values;
@@ -159,6 +170,8 @@ function ContentQualitySettings({
       const body = { ...stored, ...values };
       if (!values.connectionId && !("connectionId" in stored))
         delete body.connectionId;
+      for (const key of ["replyContextTurns", "replyContextMaxChars"])
+        if (!(key in stored) && values[key] === defaults[key]) delete body[key];
       const snapshot = await save({ revision, values: body });
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
@@ -300,6 +313,44 @@ function ContentQualitySettings({
               }
             ),
             t("quality.minReplyCharsHint")
+          ),
+          field(
+            "replyContextTurns",
+            t("quality.replyContextTurns"),
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                id: `${scope}-replyContextTurns`,
+                "aria-describedby": `${scope}-replyContextTurns-hint`,
+                type: "number",
+                min: contextLimits.replyContextTurns.min,
+                max: contextLimits.replyContextTurns.max,
+                step: 1,
+                required: true,
+                value: Number.isNaN(values.replyContextTurns) ? "" : values.replyContextTurns,
+                onChange: (event) => update("replyContextTurns", event.target.valueAsNumber)
+              }
+            ),
+            t("quality.replyContextTurnsHint")
+          ),
+          field(
+            "replyContextMaxChars",
+            t("quality.replyContextMaxChars"),
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                id: `${scope}-replyContextMaxChars`,
+                "aria-describedby": `${scope}-replyContextMaxChars-hint`,
+                type: "number",
+                min: contextLimits.replyContextMaxChars.min,
+                max: contextLimits.replyContextMaxChars.max,
+                step: 1,
+                required: true,
+                value: Number.isNaN(values.replyContextMaxChars) ? "" : values.replyContextMaxChars,
+                onChange: (event) => update("replyContextMaxChars", event.target.valueAsNumber)
+              }
+            ),
+            t("quality.replyContextMaxCharsHint")
           ),
           /* @__PURE__ */ jsxs("div", { className: "plugin-settings-field", children: [
             /* @__PURE__ */ jsxs(

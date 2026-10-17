@@ -59,6 +59,12 @@ export const contentQualityEn = {
   'quality.minReplyChars': 'Auto-polish trigger length (characters)',
   'quality.minReplyCharsHint':
     "Auto-polish runs when the turn ends only if the final reply's prose, not counting code, is at least this many characters; shorter replies stay as they are.",
+  'quality.replyContextTurns': 'Context turns',
+  'quality.replyContextTurnsHint':
+    'Recent turns read for polishing, including the one being polished.',
+  'quality.replyContextMaxChars': 'Context character limit',
+  'quality.replyContextMaxCharsHint':
+    'Total characters of message text read, including the reply being polished (characters, not tokens). Newest text is kept first; a reply longer than this is not polished, so raise the limit if needed.',
   'quality.autoReplies': 'Automatically polish long replies',
   'quality.autoRepliesHint':
     'Applies when this plugin is enabled. Original replies are always retained. Polishing may incur model usage charges.',

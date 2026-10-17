@@ -3629,6 +3629,10 @@ declare const en: {
     readonly 'quality.readerBackgroundHint': "Optional context about the reader’s experience and needs.";
     readonly 'quality.minReplyChars': "Auto-polish trigger length (characters)";
     readonly 'quality.minReplyCharsHint': "Auto-polish runs when the turn ends only if the final reply's prose, not counting code, is at least this many characters; shorter replies stay as they are.";
+    readonly 'quality.replyContextTurns': "Context turns";
+    readonly 'quality.replyContextTurnsHint': "Recent turns read for polishing, including the one being polished.";
+    readonly 'quality.replyContextMaxChars': "Context character limit";
+    readonly 'quality.replyContextMaxCharsHint': "Total characters of message text read, including the reply being polished (characters, not tokens). Newest text is kept first; a reply longer than this is not polished, so raise the limit if needed.";
     readonly 'quality.autoReplies': "Automatically polish long replies";
     readonly 'quality.autoRepliesHint': "Applies when this plugin is enabled. Original replies are always retained. Polishing may incur model usage charges.";
     readonly 'quality.autoDocuments': "Automatically review changed documents";
@@ -7409,6 +7413,10 @@ declare const zhCN: {
     'quality.readerBackgroundHint': "可选：读者的经验与需求。";
     'quality.minReplyChars': "自动润色触发长度（字符数）";
     'quality.minReplyCharsHint': "最终回复正文达到此字符数后，才在回合结束时自动润色；代码不计入，较短的回复保持原样。";
+    'quality.replyContextTurns': "参考轮数";
+    'quality.replyContextTurnsHint': "润色时参考最近几轮对话，含正在润色的这一轮。";
+    'quality.replyContextMaxChars': "参考字数上限";
+    'quality.replyContextMaxCharsHint': "参考的消息正文总字符数，含待润色的回复（按字符计，不是 token）。优先保留最新内容；待润色回复本身超过上限时不会润色，可调高此值。";
     'quality.autoReplies': "自动润色较长的回复";
     'quality.autoRepliesHint': "插件启用时生效。始终保留原始回复。润色可能产生模型使用费用。";
     'quality.autoDocuments': "自动审阅已更改的文档";
@@ -11211,6 +11219,10 @@ declare const resources: {
         readonly 'quality.readerBackgroundHint': "Optional context about the reader’s experience and needs.";
         readonly 'quality.minReplyChars': "Auto-polish trigger length (characters)";
         readonly 'quality.minReplyCharsHint': "Auto-polish runs when the turn ends only if the final reply's prose, not counting code, is at least this many characters; shorter replies stay as they are.";
+        readonly 'quality.replyContextTurns': "Context turns";
+        readonly 'quality.replyContextTurnsHint': "Recent turns read for polishing, including the one being polished.";
+        readonly 'quality.replyContextMaxChars': "Context character limit";
+        readonly 'quality.replyContextMaxCharsHint': "Total characters of message text read, including the reply being polished (characters, not tokens). Newest text is kept first; a reply longer than this is not polished, so raise the limit if needed.";
         readonly 'quality.autoReplies': "Automatically polish long replies";
         readonly 'quality.autoRepliesHint': "Applies when this plugin is enabled. Original replies are always retained. Polishing may incur model usage charges.";
         readonly 'quality.autoDocuments': "Automatically review changed documents";
@@ -14990,6 +15002,10 @@ declare const resources: {
         'quality.readerBackgroundHint': "可选：读者的经验与需求。";
         'quality.minReplyChars': "自动润色触发长度（字符数）";
         'quality.minReplyCharsHint': "最终回复正文达到此字符数后，才在回合结束时自动润色；代码不计入，较短的回复保持原样。";
+        'quality.replyContextTurns': "参考轮数";
+        'quality.replyContextTurnsHint': "润色时参考最近几轮对话，含正在润色的这一轮。";
+        'quality.replyContextMaxChars': "参考字数上限";
+        'quality.replyContextMaxCharsHint': "参考的消息正文总字符数，含待润色的回复（按字符计，不是 token）。优先保留最新内容；待润色回复本身超过上限时不会润色，可调高此值。";
         'quality.autoReplies': "自动润色较长的回复";
         'quality.autoRepliesHint': "插件启用时生效。始终保留原始回复。润色可能产生模型使用费用。";
         'quality.autoDocuments': "自动审阅已更改的文档";

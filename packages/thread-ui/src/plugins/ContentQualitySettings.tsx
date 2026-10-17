@@ -29,6 +29,11 @@ const presets = [
   'copyedit',
 ] as const;
 const details = ['short', 'balanced', 'detailed'] as const;
+/** Polishing context limits; older runtimes omit them and use these defaults. */
+const contextLimits = {
+  replyContextTurns: { min: 1, max: 1000 },
+  replyContextMaxChars: { min: 1, max: 10_000_000 },
+} as const;
 type QualitySettings = {
   connectionId: string;
   connectionFile: string;
@@ -38,6 +43,8 @@ type QualitySettings = {
   detail: (typeof details)[number];
   readerBackground: string;
   minReplyChars: number;
+  replyContextTurns: number;
+  replyContextMaxChars: number;
   autoReplies: boolean;
   autoDocuments: boolean;
   documentMode: 'review' | 'rewrite';
@@ -52,6 +59,8 @@ const defaults: QualitySettings = {
   detail: 'balanced',
   readerBackground: '',
   minReplyChars: 800,
+  replyContextTurns: 5,
+  replyContextMaxChars: 10000,
   autoReplies: true,
   autoDocuments: false,
   documentMode: 'review',
@@ -92,6 +101,16 @@ function readValues(snapshot: PluginSettingsSnapshot): QualitySettings {
     snapshot.values.minReplyChars >= 0
   )
     values.minReplyChars = snapshot.values.minReplyChars;
+  for (const key of ['replyContextTurns', 'replyContextMaxChars'] as const) {
+    const value = snapshot.values[key];
+    if (
+      typeof value === 'number' &&
+      Number.isSafeInteger(value) &&
+      value >= contextLimits[key].min &&
+      value <= contextLimits[key].max
+    )
+      values[key] = value;
+  }
   if (
     snapshot.values.documentMode === 'review' ||
     snapshot.values.documentMode === 'rewrite'
@@ -179,6 +198,10 @@ export function ContentQualitySettings({
       // Supervisors before saved connections reject an unknown connectionId.
       if (!values.connectionId && !('connectionId' in stored))
         delete body.connectionId;
+      // Runtimes before context limits reject unknown keys: send them only once
+      // stored or changed, so an untouched form still saves there.
+      for (const key of ['replyContextTurns', 'replyContextMaxChars'] as const)
+        if (!(key in stored) && values[key] === defaults[key]) delete body[key];
       const snapshot = await save({ revision, values: body });
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
@@ -341,6 +364,50 @@ export function ContentQualitySettings({
               }
             />,
             t('quality.minReplyCharsHint'),
+          )}
+          {field(
+            'replyContextTurns',
+            t('quality.replyContextTurns'),
+            <input
+              id={`${scope}-replyContextTurns`}
+              aria-describedby={`${scope}-replyContextTurns-hint`}
+              type="number"
+              min={contextLimits.replyContextTurns.min}
+              max={contextLimits.replyContextTurns.max}
+              step={1}
+              required
+              value={
+                Number.isNaN(values.replyContextTurns)
+                  ? ''
+                  : values.replyContextTurns
+              }
+              onChange={(event) =>
+                update('replyContextTurns', event.target.valueAsNumber)
+              }
+            />,
+            t('quality.replyContextTurnsHint'),
+          )}
+          {field(
+            'replyContextMaxChars',
+            t('quality.replyContextMaxChars'),
+            <input
+              id={`${scope}-replyContextMaxChars`}
+              aria-describedby={`${scope}-replyContextMaxChars-hint`}
+              type="number"
+              min={contextLimits.replyContextMaxChars.min}
+              max={contextLimits.replyContextMaxChars.max}
+              step={1}
+              required
+              value={
+                Number.isNaN(values.replyContextMaxChars)
+                  ? ''
+                  : values.replyContextMaxChars
+              }
+              onChange={(event) =>
+                update('replyContextMaxChars', event.target.valueAsNumber)
+              }
+            />,
+            t('quality.replyContextMaxCharsHint'),
           )}
           <div className="plugin-settings-field">
             <label

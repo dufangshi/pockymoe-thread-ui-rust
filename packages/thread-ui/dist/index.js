@@ -33,7 +33,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-MWHAMXQX.js";
+} from "./chunk-YCXE3ZNF.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -60,7 +60,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-5SETNE4N.js";
+} from "./chunk-S7DCW5G7.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";

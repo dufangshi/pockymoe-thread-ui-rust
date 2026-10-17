@@ -33,7 +33,7 @@ import {
   relativeWorkspacePath,
   syntaxThemeFor,
   useTabScrollEdges
-} from "./chunk-G2R6TW3G.js";
+} from "./chunk-6VMC3RZP.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -60,7 +60,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-3KTAWA6P.js";
+} from "./chunk-KOUNBYIQ.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -23734,6 +23734,7 @@ function PluginSettingsButton({ plugin, className }) {
   const [open, setOpen] = useState61(false);
   const [theme, setTheme] = useState61({});
   const sections = plugins.getSettingsSections(plugin.id);
+  const off = plugins.plugins.find((item) => item.id === plugin.id)?.enabled === false;
   if (!sections.length) return null;
   const label = t2("settings.pluginSettings", { value1: plugin.name });
   const single = sections.length === 1 ? sections[0] : null;
@@ -23763,13 +23764,16 @@ function PluginSettingsButton({ plugin, className }) {
             /* @__PURE__ */ jsx85(DialogTitle, { children: label }),
             /* @__PURE__ */ jsx85(DialogDescription, { children: single?.description ?? plugin.description })
           ] }),
-          /* @__PURE__ */ jsx85("div", { className: "plugin-settings-dialog-body", children: single ? single.content : sections.map((section) => /* @__PURE__ */ jsxs72("section", { className: "plugin-settings-dialog-section", "aria-labelledby": `${section.id}-heading`, children: [
-            /* @__PURE__ */ jsxs72("header", { children: [
-              /* @__PURE__ */ jsx85("h3", { id: `${section.id}-heading`, children: section.label }),
-              section.description && /* @__PURE__ */ jsx85("p", { children: section.description })
-            ] }),
-            section.content
-          ] }, section.id)) })
+          /* @__PURE__ */ jsxs72("div", { className: "plugin-settings-dialog-body", children: [
+            off && /* @__PURE__ */ jsx85("p", { role: "note", className: "plugin-settings-off", children: t2("settings.pluginNotEnabled") }),
+            single ? single.content : sections.map((section) => /* @__PURE__ */ jsxs72("section", { className: "plugin-settings-dialog-section", "aria-labelledby": `${section.id}-heading`, children: [
+              /* @__PURE__ */ jsxs72("header", { children: [
+                /* @__PURE__ */ jsx85("h3", { id: `${section.id}-heading`, children: section.label }),
+                section.description && /* @__PURE__ */ jsx85("p", { children: section.description })
+              ] }),
+              section.content
+            ] }, section.id))
+          ] })
         ]
       }
     )

@@ -18,21 +18,19 @@ export const contentQualityEn = {
   'quality.report.reply': 'Reply polishing',
   'quality.report.scanError': 'Document scan failed',
   'quality.report.noDocuments': 'No documents reviewed.',
-  'quality.report.moreDocuments': 'Additional eligible documents were not reviewed in this run.',
+  'quality.report.moreDocuments':
+    'Additional eligible documents were not reviewed in this run.',
   'quality.name': 'Content Quality',
   'quality.description':
     'Polish long agent replies and review or rewrite documents with your chosen model.',
-  'quality.connectionFile': 'Connection profile file',
-  'quality.connectionFileHint':
-    'Path to a private connection profile on the Supervisor device. Configure credentials in that file; only its path is stored here.',
   'quality.connection': 'Connection',
-  'quality.connectionLegacy': 'Connection profile file (legacy)',
+  'quality.connectionEmpty': 'Choose a saved connection, or add one with +.',
+  'quality.connectionUnavailable': 'Saved connections cannot be chosen here.',
   'quality.connectionHint':
     'A saved upstream connection on this device. Choosing one does not change any harness.',
   'quality.connectionLegacyHint':
-    'Currently using a connection profile file. Choose a saved connection to replace it.',
+    'An earlier connection setup is still in use. Choose a saved connection to replace it.',
   'quality.model': 'Model',
-  'quality.modelHint': 'Model identifier supported by your connection profile.',
   'quality.language': 'Output language',
   'quality.languageHint': 'Language tag, for example zh-CN or en.',
   'quality.preset': 'Writing preset',
@@ -58,7 +56,9 @@ export const contentQualityEn = {
   'quality.readerBackground': 'Reader background',
   'quality.readerBackgroundHint':
     'Optional context about the reader’s experience and needs.',
-  'quality.minReplyChars': 'Minimum reply length (characters)',
+  'quality.minReplyChars': 'Auto-polish trigger length (characters)',
+  'quality.minReplyCharsHint':
+    "Auto-polish runs when the turn ends only if the final reply's prose, not counting code, is at least this many characters; shorter replies stay as they are.",
   'quality.autoReplies': 'Automatically polish long replies',
   'quality.autoRepliesHint':
     'Applies when this plugin is enabled. Original replies are always retained. Polishing may incur model usage charges.',

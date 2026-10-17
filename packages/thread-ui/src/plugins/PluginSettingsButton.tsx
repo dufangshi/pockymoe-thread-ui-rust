@@ -18,6 +18,8 @@ export function PluginSettingsButton({ plugin, className }: { plugin: Pick<Plugi
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<{ effective?: string; mode?: string }>({});
   const sections = plugins.getSettingsSections(plugin.id);
+  // Settings can be saved while the plugin is off; say plainly that they wait for it.
+  const off = plugins.plugins.find(item => item.id === plugin.id)?.enabled === false;
   if (!sections.length) return null;
   const label = t('settings.pluginSettings', { value1: plugin.name });
   const single = sections.length === 1 ? sections[0]! : null;
@@ -43,6 +45,7 @@ export function PluginSettingsButton({ plugin, className }: { plugin: Pick<Plugi
         <DialogDescription>{single?.description ?? plugin.description}</DialogDescription>
       </DialogHeader>
       <div className="plugin-settings-dialog-body">
+        {off && <p role="note" className="plugin-settings-off">{t('settings.pluginNotEnabled')}</p>}
         {single ? single.content : sections.map(section => <section key={section.id} className="plugin-settings-dialog-section" aria-labelledby={`${section.id}-heading`}>
           <header><h3 id={`${section.id}-heading`}>{section.label}</h3>{section.description && <p>{section.description}</p>}</header>
           {section.content}

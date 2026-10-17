@@ -22,15 +22,14 @@ export const contentQualityZhCN = {
   'quality.name': '内容质量',
   'quality.description':
     '使用你选择的模型润色较长的智能体回复，并审阅或改写文档。',
-  'quality.connectionFile': '连接配置文件',
-  'quality.connectionFileHint':
-    'Supervisor 设备上私有连接配置文件的路径。请在该文件中配置凭据；这里只保存路径。',
   'quality.connection': '连接',
-  'quality.connectionLegacy': '连接配置文件（旧方式）',
-  'quality.connectionHint': '本设备上保存的上游连接。选择它不会改动任何 harness。',
-  'quality.connectionLegacyHint': '当前使用连接配置文件。选择一个已保存的连接即可替换。',
+  'quality.connectionEmpty': '选择一个已保存的连接，或用 + 添加。',
+  'quality.connectionUnavailable': '此处无法选择已保存的连接。',
+  'quality.connectionHint':
+    '本设备上保存的上游连接。选择它不会改动任何 harness。',
+  'quality.connectionLegacyHint':
+    '仍在使用之前的连接设置。选择一个已保存的连接即可替换。',
   'quality.model': '模型',
-  'quality.modelHint': '连接配置支持的模型标识。',
   'quality.language': '输出语言',
   'quality.languageHint': '语言标签，例如 zh-CN 或 en。',
   'quality.preset': '写作预设',
@@ -50,7 +49,9 @@ export const contentQualityZhCN = {
   'quality.detail.detailed': '详细',
   'quality.readerBackground': '读者背景',
   'quality.readerBackgroundHint': '可选：读者的经验与需求。',
-  'quality.minReplyChars': '最短回复长度（字符数）',
+  'quality.minReplyChars': '自动润色触发长度（字符数）',
+  'quality.minReplyCharsHint':
+    '最终回复正文达到此字符数后，才在回合结束时自动润色；代码不计入，较短的回复保持原样。',
   'quality.autoReplies': '自动润色较长的回复',
   'quality.autoRepliesHint':
     '插件启用时生效。始终保留原始回复。润色可能产生模型使用费用。',

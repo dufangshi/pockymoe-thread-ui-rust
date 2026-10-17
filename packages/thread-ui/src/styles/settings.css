@@ -30,8 +30,6 @@
 .plugin-settings-actions .plugin-settings-save { background: var(--theme-accent-solid); color: var(--theme-accent-solid-fg); border-color: transparent; }
 .plugin-settings-form :disabled { cursor: default; opacity: .55; }
 .plugin-settings-error { color: var(--theme-danger, #d85b64); font-size: 13px; line-height: 1.6; }
-.plugin-settings-legacy > summary { width: fit-content; padding: 2px 0; cursor: pointer; color: var(--theme-fg-muted); font-size: 12px; }
-.plugin-settings-legacy[open] > summary { margin-bottom: 10px; }
 .thread-graph-dialog.thread-graph-settings-dialog[data-slot='dialog-content'] { display: flex; flex-direction: column; gap: 0; width: min(940px, calc(100vw - 40px)); max-width: 940px; height: min(740px, calc(100dvh - 64px)); max-height: calc(100dvh - 32px); padding: 0; overflow: clip; border-radius: 18px; }
 .thread-graph-dialog.thread-graph-settings-dialog > [data-slot='dialog-header'] { padding: 22px 54px 18px 26px; border-bottom: 1px solid var(--theme-border); text-align: left; }
 .thread-graph-dialog.thread-graph-settings-dialog > [data-slot='dialog-close'] { top: 17px; right: 16px; width: 32px; height: 32px; display: grid; place-items: center; }
@@ -59,6 +57,7 @@
 .thread-graph-dialog.matter-settings-dialog.plugin-settings-dialog { display: flex; flex-direction: column; gap: 14px; width: min(560px, calc(100vw - 24px)); max-width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow: hidden; }
 .plugin-settings-dialog-header { padding-right: 32px; }
 .plugin-settings-dialog-body { min-height: 0; margin: 0 -22px -22px; padding: 2px 22px 22px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.plugin-settings-off { margin-bottom: 14px; padding: 8px 11px; border-radius: 8px; background: var(--status-warning-bg, var(--theme-hover)); color: var(--status-warning-fg, var(--theme-fg)); font-size: 12.5px; line-height: 1.5; }
 .plugin-settings-dialog-section + .plugin-settings-dialog-section { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--theme-border); }
 .plugin-settings-dialog-section > header { margin-bottom: 14px; }
 .plugin-settings-dialog-section h3 { font-size: 14px; font-weight: 600; }

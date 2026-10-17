@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-3KTAWA6P.js";
+} from "./chunk-KOUNBYIQ.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -49,7 +49,7 @@ import {
   useRef,
   useState
 } from "react";
-import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+import { jsx, jsxs } from "react/jsx-runtime";
 var connectionProtocols = [
   "openai_chat",
   "openai_responses",
@@ -179,40 +179,6 @@ function ContentQualitySettings({
     ] });
   }
   const busy = status === "loading" || status === "saving";
-  const fileField = values && field(
-    "connectionFile",
-    t("quality.connectionFile"),
-    /* @__PURE__ */ jsx(
-      "input",
-      {
-        id: `${scope}-connectionFile`,
-        "aria-describedby": `${scope}-connectionFile-hint`,
-        value: values.connectionFile,
-        maxLength: 4096,
-        autoComplete: "off",
-        spellCheck: false,
-        onChange: (event) => update("connectionFile", event.target.value)
-      }
-    ),
-    t("quality.connectionFileHint")
-  );
-  const modelField = values && field(
-    "model",
-    t("quality.model"),
-    /* @__PURE__ */ jsx(
-      "input",
-      {
-        id: `${scope}-model`,
-        "aria-describedby": `${scope}-model-hint`,
-        value: values.model,
-        maxLength: 200,
-        autoComplete: "off",
-        spellCheck: false,
-        onChange: (event) => update("model", event.target.value)
-      }
-    ),
-    t("quality.modelHint")
-  );
   const error = status === "loadError" || status === "saveError" || status === "conflict";
   return /* @__PURE__ */ jsxs(
     "form",
@@ -225,40 +191,31 @@ function ContentQualitySettings({
       "aria-busy": busy,
       children: [
         values && /* @__PURE__ */ jsxs("fieldset", { disabled: busy, className: "plugin-settings-fields", children: [
-          connections ? /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsxs(
-              "div",
-              {
-                className: "plugin-settings-field",
-                role: "group",
-                "aria-labelledby": `${scope}-connection`,
-                children: [
-                  /* @__PURE__ */ jsx("span", { id: `${scope}-connection`, children: t("quality.connection") }),
-                  connections.renderPicker({
-                    connectionId: values.connectionId,
-                    model: values.model,
-                    protocols: connectionProtocols,
-                    disabled: busy,
-                    onChange: (next) => {
-                      update("connectionId", next.connectionId);
-                      update("model", next.model);
-                    }
-                  }),
-                  /* @__PURE__ */ jsx("p", { children: t(
-                    !values.connectionId && values.connectionFile ? "quality.connectionLegacyHint" : "quality.connectionHint"
-                  ) })
-                ]
-              }
-            ),
-            !values.connectionId && modelField,
-            /* @__PURE__ */ jsxs("details", { className: "plugin-settings-legacy", children: [
-              /* @__PURE__ */ jsx("summary", { children: t("quality.connectionLegacy") }),
-              fileField
-            ] })
-          ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
-            fileField,
-            modelField
-          ] }),
+          /* @__PURE__ */ jsxs(
+            "div",
+            {
+              className: "plugin-settings-field",
+              role: "group",
+              "aria-labelledby": `${scope}-connection`,
+              "aria-describedby": `${scope}-connection-hint`,
+              children: [
+                /* @__PURE__ */ jsx("span", { id: `${scope}-connection`, children: t("quality.connection") }),
+                connections?.renderPicker({
+                  connectionId: values.connectionId,
+                  model: values.model,
+                  protocols: connectionProtocols,
+                  disabled: busy,
+                  onChange: (next) => {
+                    update("connectionId", next.connectionId);
+                    update("model", next.model);
+                  }
+                }),
+                /* @__PURE__ */ jsx("p", { id: `${scope}-connection-hint`, children: t(
+                  !connections ? "quality.connectionUnavailable" : values.connectionId ? "quality.connectionHint" : values.connectionFile ? "quality.connectionLegacyHint" : "quality.connectionEmpty"
+                ) })
+              ]
+            }
+          ),
           field(
             "language",
             t("quality.language"),
@@ -332,6 +289,7 @@ function ContentQualitySettings({
               "input",
               {
                 id: `${scope}-minReplyChars`,
+                "aria-describedby": `${scope}-minReplyChars-hint`,
                 type: "number",
                 min: 0,
                 max: 65536,
@@ -340,7 +298,8 @@ function ContentQualitySettings({
                 value: Number.isNaN(values.minReplyChars) ? "" : values.minReplyChars,
                 onChange: (event) => update("minReplyChars", event.target.valueAsNumber)
               }
-            )
+            ),
+            t("quality.minReplyCharsHint")
           ),
           /* @__PURE__ */ jsxs("div", { className: "plugin-settings-field", children: [
             /* @__PURE__ */ jsxs(
@@ -448,7 +407,7 @@ function ContentQualitySettings({
 }
 
 // src/plugins/ContentQualityActionOutput.tsx
-import { Fragment as Fragment2, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
+import { Fragment, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function record(value) {
   return value && typeof value === "object" && !Array.isArray(value) ? value : null;
 }
@@ -486,7 +445,7 @@ function ReportStatus({ report, hideCompleted = false }) {
   const statusKey = Object.hasOwn(statusKeys, status) ? statusKeys[status] : void 0;
   const reasonKey = Object.hasOwn(reasonKeys, reason) ? reasonKeys[reason] : void 0;
   const showStatus = Boolean(status) && !(hideCompleted && status === "completed");
-  return /* @__PURE__ */ jsxs2(Fragment2, { children: [
+  return /* @__PURE__ */ jsxs2(Fragment, { children: [
     (showStatus || reason) && /* @__PURE__ */ jsxs2("p", { className: "plugin-report-line", children: [
       showStatus && /* @__PURE__ */ jsx2(Tag, { tone: Object.hasOwn(statusTones, status) ? statusTones[status] : "neutral", children: statusKey ? t(statusKey) : status }),
       reason && /* @__PURE__ */ jsx2("span", { children: reasonKey ? t(reasonKey) : reason })

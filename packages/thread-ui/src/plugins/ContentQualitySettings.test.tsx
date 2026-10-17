@@ -105,7 +105,17 @@ describe('Content Quality settings', () => {
       ),
     );
     expect(control('Output language').value).toBe('zh-CN');
-    expect(control('Minimum reply length (characters)').value).toBe('800');
+    expect(control('Auto-polish trigger length (characters)').value).toBe(
+      '800',
+    );
+    expect(container.textContent).toContain(
+      "only if the final reply's prose, not counting code, is at least this many characters",
+    );
+    // Without the host capability there is no connection picker and no file path.
+    expect(container.textContent).toContain(
+      'Saved connections cannot be chosen here.',
+    );
+    expect(container.textContent).not.toContain('Connection profile file');
     expect(control('Writing preset').querySelectorAll('option')).toHaveLength(
       5,
     );
@@ -114,14 +124,12 @@ describe('Content Quality settings', () => {
       (control('Automatically polish long replies') as HTMLInputElement)
         .checked,
     ).toBe(true);
-    await change('Connection profile file', '/private/quality-profile.json');
-    await change('Model', 'test-model');
     await change('Output language', 'en');
     await change('Writing preset', 'technical');
     expect(container.textContent).toContain('Keep precise terminology');
     await change('Level of detail', 'short');
     await change('Reader background', 'Rust developer');
-    await change('Minimum reply length (characters)', '1200');
+    await change('Auto-polish trigger length (characters)', '1200');
     await change('Default manual document action', 'rewrite');
     expect(control('Default manual document action').textContent).toContain(
       'write the revised file',
@@ -149,7 +157,7 @@ describe('Content Quality settings', () => {
     await act(async () =>
       latest!.setPluginEnabled(contentQualityPlugin.manifest.id, false),
     );
-    expect(control('Model').value).toBe('test-model');
+    expect(control('Reader background').value).toBe('Rust developer');
     expect(loadPluginSettings).toHaveBeenCalledTimes(1);
     await click('Save settings');
     expect(savePluginSettings).toHaveBeenLastCalledWith(
@@ -157,8 +165,8 @@ describe('Content Quality settings', () => {
       {
         revision: 3,
         values: {
-          connectionFile: '/private/quality-profile.json',
-          model: 'test-model',
+          connectionFile: '',
+          model: '',
           language: 'en',
           preset: 'technical',
           detail: 'short',
@@ -176,7 +184,7 @@ describe('Content Quality settings', () => {
     expect(container.querySelector('input[type="password"]')).toBeNull();
   });
 
-  it('uses the host connection picker, hides the file path and saves compatibility values back', async () => {
+  it('offers only the host connection picker, never the file path, and saves stored values back', async () => {
     const pickerProps: Array<Record<string, unknown>> = [];
     const connections = {
       renderPicker: (props: {
@@ -219,19 +227,22 @@ describe('Content Quality settings', () => {
         />,
       ),
     );
-    const legacy = container.querySelector('details')!;
-    expect(legacy.open).toBe(false);
-    expect(legacy.querySelector('summary')?.textContent).toBe(
-      'Connection profile file (legacy)',
-    );
-    expect(control('Connection profile file').value).toBe(
-      '/legacy/profile.json',
-    );
+    expect(container.querySelector('details')).toBeNull();
+    expect(container.textContent).not.toContain('Connection profile file');
+    expect(
+      [...container.querySelectorAll('input')].some(
+        (input) => input.value === '/legacy/profile.json',
+      ),
+    ).toBe(false);
     expect(container.textContent).toContain(
-      'Currently using a connection profile file',
+      'An earlier connection setup is still in use.',
     );
-    // Without a chosen connection the legacy path still needs its model.
-    expect(control('Model').value).toBe('old-model');
+    // The model belongs to the picker; there is no separate model field.
+    expect(
+      [...container.querySelectorAll('label')].some(
+        (label) => label.textContent === 'Model',
+      ),
+    ).toBe(false);
     expect(pickerProps.at(-1)).toMatchObject({
       connectionId: '',
       model: 'old-model',
@@ -240,12 +251,6 @@ describe('Content Quality settings', () => {
     await change('Reader background', 'Kept while choosing');
     await click('picker:none:old-model');
     expect(container.textContent).toContain('picker:conn-1:chat-model');
-    // The picker owns the model once a connection is chosen.
-    expect(
-      [...container.querySelectorAll('label')].some(
-        (label) => label.textContent === 'Model',
-      ),
-    ).toBe(false);
     expect(control('Reader background').value).toBe('Kept while choosing');
     await click('Save settings');
     expect(save).toHaveBeenCalledWith({
@@ -282,10 +287,16 @@ describe('Content Quality settings', () => {
         />,
       ),
     );
-    await change('Model', 'edited');
+    expect(container.textContent).toContain(
+      'Choose a saved connection, or add one with +.',
+    );
+    await change('Reader background', 'edited');
     await click('Save settings');
     expect(save.mock.calls[0]![0].values).not.toHaveProperty('connectionId');
-    expect(save.mock.calls[0]![0].values.model).toBe('edited');
+    expect(save.mock.calls[0]![0].values).toMatchObject({
+      model: 'm',
+      readerBackground: 'edited',
+    });
     await click('Reload saved settings');
     await click('Save settings');
     expect(save.mock.calls[1]![0].values).toHaveProperty('connectionId', '');
@@ -330,8 +341,11 @@ describe('Content Quality settings', () => {
   it('retains edits on save failure and conflict, then explicitly reloads the latest revision', async () => {
     const load = vi
       .fn()
-      .mockResolvedValueOnce({ revision: 2, values: { model: 'saved-model' } })
-      .mockResolvedValue({ revision: 9, values: { model: 'new-model' } });
+      .mockResolvedValueOnce({
+        revision: 2,
+        values: { readerBackground: 'saved' },
+      })
+      .mockResolvedValue({ revision: 9, values: { readerBackground: 'new' } });
     const save = vi
       .fn()
       .mockRejectedValueOnce(new Error('offline'))
@@ -342,24 +356,24 @@ describe('Content Quality settings', () => {
         <ContentQualitySettings pluginId="quality" load={load} save={save} />,
       ),
     );
-    await change('Model', 'my-edit');
+    await change('Reader background', 'my-edit');
     await click('Save settings');
     expect(container.querySelector('[role="alert"]')?.textContent).toContain(
       'Unable to save',
     );
-    expect(control('Model').value).toBe('my-edit');
+    expect(control('Reader background').value).toBe('my-edit');
     await click('Save settings');
     expect(container.querySelector('[role="alert"]')?.textContent).toContain(
       'changed elsewhere',
     );
-    expect(control('Model').value).toBe('my-edit');
+    expect(control('Reader background').value).toBe('my-edit');
     expect(
       [...container.querySelectorAll('button')].find(
         (button) => button.textContent === 'Save settings',
       )?.disabled,
     ).toBe(true);
     await click('Reload saved settings');
-    expect(control('Model').value).toBe('new-model');
+    expect(control('Reader background').value).toBe('new');
     await click('Save settings');
     expect(save.mock.calls[2]![0].revision).toBe(9);
   });
@@ -380,9 +394,14 @@ describe('Content Quality settings', () => {
     );
     expect(container.querySelector('input')).toBeNull();
     await click('Reload saved settings');
-    expect(control('Model').value).toBe('');
+    expect(control('Output language').value).toBe('zh-CN');
     await act(async () => setLocale('zh-CN', false));
-    expect(control('连接配置文件')).toBeTruthy();
+    expect(control('自动润色触发长度（字符数）').value).toBe('800');
+    expect(container.textContent).toContain(
+      '最终回复正文达到此字符数后，才在回合结束时自动润色；代码不计入，较短的回复保持原样。',
+    );
+    expect(container.textContent).not.toContain('最短回复长度');
+    expect(container.textContent).not.toContain('连接配置文件');
     expect(control('写作预设').querySelectorAll('option')).toHaveLength(5);
     expect(control('默认手动文档操作').textContent).toContain(
       '直接写入修订后的文件',

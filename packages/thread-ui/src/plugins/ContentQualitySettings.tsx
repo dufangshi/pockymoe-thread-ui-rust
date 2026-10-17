@@ -208,38 +208,6 @@ export function ContentQualitySettings({
   }
 
   const busy = status === 'loading' || status === 'saving';
-  const fileField =
-    values &&
-    field(
-      'connectionFile',
-      t('quality.connectionFile'),
-      <input
-        id={`${scope}-connectionFile`}
-        aria-describedby={`${scope}-connectionFile-hint`}
-        value={values.connectionFile}
-        maxLength={4096}
-        autoComplete="off"
-        spellCheck={false}
-        onChange={(event) => update('connectionFile', event.target.value)}
-      />,
-      t('quality.connectionFileHint'),
-    );
-  const modelField =
-    values &&
-    field(
-      'model',
-      t('quality.model'),
-      <input
-        id={`${scope}-model`}
-        aria-describedby={`${scope}-model-hint`}
-        value={values.model}
-        maxLength={200}
-        autoComplete="off"
-        spellCheck={false}
-        onChange={(event) => update('model', event.target.value)}
-      />,
-      t('quality.modelHint'),
-    );
   const error =
     status === 'loadError' || status === 'saveError' || status === 'conflict';
   return (
@@ -253,47 +221,37 @@ export function ContentQualitySettings({
     >
       {values && (
         <fieldset disabled={busy} className="plugin-settings-fields">
-          {connections ? (
-            <>
-              <div
-                className="plugin-settings-field"
-                role="group"
-                aria-labelledby={`${scope}-connection`}
-              >
-                <span id={`${scope}-connection`}>
-                  {t('quality.connection')}
-                </span>
-                {connections.renderPicker({
-                  connectionId: values.connectionId,
-                  model: values.model,
-                  protocols: connectionProtocols,
-                  disabled: busy,
-                  onChange: (next) => {
-                    update('connectionId', next.connectionId);
-                    update('model', next.model);
-                  },
-                })}
-                <p>
-                  {t(
-                    !values.connectionId && values.connectionFile
+          {/* Only saved connections are offered here. Older stored values (a profile
+              file, its model) are not shown but are saved back unchanged. */}
+          <div
+            className="plugin-settings-field"
+            role="group"
+            aria-labelledby={`${scope}-connection`}
+            aria-describedby={`${scope}-connection-hint`}
+          >
+            <span id={`${scope}-connection`}>{t('quality.connection')}</span>
+            {connections?.renderPicker({
+              connectionId: values.connectionId,
+              model: values.model,
+              protocols: connectionProtocols,
+              disabled: busy,
+              onChange: (next) => {
+                update('connectionId', next.connectionId);
+                update('model', next.model);
+              },
+            })}
+            <p id={`${scope}-connection-hint`}>
+              {t(
+                !connections
+                  ? 'quality.connectionUnavailable'
+                  : values.connectionId
+                    ? 'quality.connectionHint'
+                    : values.connectionFile
                       ? 'quality.connectionLegacyHint'
-                      : 'quality.connectionHint',
-                  )}
-                </p>
-              </div>
-              {/* Without a saved connection the file (or its default path) still runs. */}
-              {!values.connectionId && modelField}
-              <details className="plugin-settings-legacy">
-                <summary>{t('quality.connectionLegacy')}</summary>
-                {fileField}
-              </details>
-            </>
-          ) : (
-            <>
-              {fileField}
-              {modelField}
-            </>
-          )}
+                      : 'quality.connectionEmpty',
+              )}
+            </p>
+          </div>
           {field(
             'language',
             t('quality.language'),
@@ -369,6 +327,7 @@ export function ContentQualitySettings({
             t('quality.minReplyChars'),
             <input
               id={`${scope}-minReplyChars`}
+              aria-describedby={`${scope}-minReplyChars-hint`}
               type="number"
               min={0}
               max={65536}
@@ -381,6 +340,7 @@ export function ContentQualitySettings({
                 update('minReplyChars', event.target.valueAsNumber)
               }
             />,
+            t('quality.minReplyCharsHint'),
           )}
           <div className="plugin-settings-field">
             <label

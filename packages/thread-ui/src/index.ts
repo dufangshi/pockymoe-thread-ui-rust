@@ -13,6 +13,7 @@ import './styles/plugin-reports.css';
 import './styles/terminal-panel.css';
 import './styles/transcript-log.css';
 import './styles/thread-map.css';
+import './styles/attachments.css';
 
 export type {
   ShellSocketConnection,

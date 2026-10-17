@@ -1242,7 +1242,14 @@ var chatEn = {
   "chat.speedDecodeValue": "{{speed}} \xB7 {{tokens}} in {{time}}",
   "chat.speedNote": "Time to first token runs from sending a request to its first streamed text, thought or tool call. It includes queueing, prefill and thinking that does not stream, so the prefill speed is a lower bound.",
   "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.",
-  "chat.backgroundAgentsRunning": { one: "{{count}} background agent running", other: "{{count}} background agents running" }
+  "chat.backgroundAgentsRunning": { one: "{{count}} background agent running", other: "{{count}} background agents running" },
+  "chat.attachmentImage": "Image",
+  "chat.attachmentFileOf": "{{kind}} file",
+  "chat.attachmentFile": "File",
+  "chat.attachmentDetails": "{{name}}, show details",
+  "chat.attachmentView": "View full size",
+  "chat.attachmentOpenInFiles": "Open in files",
+  "chat.attachmentRemove": "Remove"
 };
 
 // src/i18n/common.en.ts
@@ -4940,7 +4947,14 @@ var chatZhCN = {
   "chat.speedDecodeValue": "{{speed}} \xB7 {{time}} \u8F93\u51FA {{tokens}}",
   "chat.speedNote": "\u9996\u5B57\u65F6\u95F4\u4ECE\u53D1\u51FA\u8BF7\u6C42\u7B97\u5230\u7B2C\u4E00\u6BB5\u6D41\u5F0F\u6587\u5B57\u3001\u601D\u8003\u6216\u5DE5\u5177\u8C03\u7528\uFF0C\u5305\u542B\u6392\u961F\u3001\u9884\u586B\u5145\u548C\u4E0D\u6D41\u5F0F\u8F93\u51FA\u7684\u601D\u8003\uFF0C\u6240\u4EE5\u9884\u586B\u5145\u901F\u5EA6\u662F\u4E0B\u9650\u3002",
   "chat.speedNoSplit": "\u8FD9\u4E00\u8F6E\u6CA1\u6709\u5206\u8BF7\u6C42\u7684\u8BA1\u65F6\uFF0C\u53EA\u6709\u7EFC\u5408\u901F\u5EA6\u3002",
-  "chat.backgroundAgentsRunning": { one: "{{count}} \u4E2A\u540E\u53F0\u667A\u80FD\u4F53\u8FD0\u884C\u4E2D", other: "{{count}} \u4E2A\u540E\u53F0\u667A\u80FD\u4F53\u8FD0\u884C\u4E2D" }
+  "chat.backgroundAgentsRunning": { one: "{{count}} \u4E2A\u540E\u53F0\u667A\u80FD\u4F53\u8FD0\u884C\u4E2D", other: "{{count}} \u4E2A\u540E\u53F0\u667A\u80FD\u4F53\u8FD0\u884C\u4E2D" },
+  "chat.attachmentImage": "\u56FE\u7247",
+  "chat.attachmentFileOf": "{{kind}} \u6587\u4EF6",
+  "chat.attachmentFile": "\u6587\u4EF6",
+  "chat.attachmentDetails": "{{name}}\uFF0C\u67E5\u770B\u8BE6\u60C5",
+  "chat.attachmentView": "\u67E5\u770B\u5927\u56FE",
+  "chat.attachmentOpenInFiles": "\u5728\u6587\u4EF6\u4E2D\u6253\u5F00",
+  "chat.attachmentRemove": "\u79FB\u9664"
 };
 
 // src/i18n/common.zh-CN.ts

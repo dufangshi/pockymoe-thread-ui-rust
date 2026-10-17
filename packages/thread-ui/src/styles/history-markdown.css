@@ -785,13 +785,7 @@
   height: auto;
   object-fit: contain;
 }
-/* A photo in a prompt is at most three lines of its text tall, frame included. */
-.thread-ui-shell .thread-graph-user-photo :is(.thread-graph-zoomable-image-trigger > img, .thread-graph-user-photo-missing) {
-  max-width: min(100%, 12rem);
-  max-height: 4rem;
-  max-height: calc(3lh - 10px);
-}
-.thread-ui-shell .thread-graph-user-photo .thread-graph-user-photo-missing { width: 5rem; height: 4rem; height: calc(3lh - 10px); }
+
 
 .thread-graph-image-lightbox {
   position: fixed;

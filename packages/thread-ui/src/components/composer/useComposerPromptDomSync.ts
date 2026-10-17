@@ -7,9 +7,11 @@ import {
 
 import {
   attachmentDisplayLabel,
+  basenameFromAttachmentPath,
   type PromptSegment,
   type PromptSelectionRange,
 } from './composerUtils';
+import { FILE_GLYPH_SVG, fileBadge, fileFamily, shortFileName } from '../attachments/attachmentFiles';
 import { restoreSelectionAfterInsertedAttachments } from './contentEditablePrompt';
 
 interface UseComposerPromptDomSyncInput {
@@ -27,87 +29,55 @@ interface UseComposerPromptDomSyncInput {
   restoreSelection: (selection: PromptSelectionRange | null) => void;
 }
 
+// The same tile as a sent prompt's attachment: a glyph (or a photo's thumbnail)
+// over its shortened name. Tapping it opens its card (see ComposerPromptEditor),
+// which reads the details kept on the token.
 function createPromptAttachmentToken(
   segment: Extract<PromptSegment, { type: 'attachment' }>,
   attachmentPreviewUrls: Record<string, string>,
 ) {
   const { attachment } = segment;
+  const name = basenameFromAttachmentPath(attachment.originalName || attachmentDisplayLabel(attachment)) || attachmentDisplayLabel(attachment);
+  const family = fileFamily(name, attachment.kind, attachment.file?.type);
   const token = document.createElement('span');
   token.dataset.segmentType = 'attachment';
   token.dataset.clientId = attachment.clientId;
   token.dataset.placeholder = attachment.placeholder;
+  token.dataset.family = family;
+  token.dataset.kind = attachment.kind;
+  token.dataset.name = name;
+  if (attachment.file) token.dataset.size = String(attachment.file.size);
   token.contentEditable = 'false';
-  token.className =
-    'thread-composer-attachment-chip mx-[0.12rem] inline-flex max-w-full align-baseline';
-
-  if (attachment.kind === 'photo') {
-    token.classList.add(
-      'thread-composer-attachment-chip-photo',
-      'rounded-[0.95rem]',
-      'border',
-      'border-sky-300/35',
-      'bg-sky-300/10',
-      'p-1',
-      'shadow-sm',
-      'shadow-stone-950/20',
-    );
-
-    const previewUrl = attachmentPreviewUrls[attachment.clientId];
-    if (previewUrl) {
-      token.setAttribute('role', 'button');
-      token.setAttribute('aria-label', translate("chat.openImagePreview", { value1: attachment.originalName || translate("chat.pastedImage") }));
-      token.tabIndex = 0;
-      token.classList.add('cursor-zoom-in');
-      const image = document.createElement('img');
-      image.src = previewUrl;
-      image.alt = attachment.originalName || 'Pasted image';
-      image.className =
-        'thread-composer-attachment-thumb h-[4.5rem] w-[6rem] rounded-[0.7rem] bg-stone-950 object-contain';
-      image.draggable = false;
-      token.append(image);
-    } else {
-      const imagePlaceholder = document.createElement('span');
-      imagePlaceholder.className =
-        'thread-composer-attachment-thumb inline-block h-[4.5rem] w-[6rem] rounded-[0.7rem] bg-stone-900/80';
-      imagePlaceholder.setAttribute('aria-hidden', 'true');
-      token.append(imagePlaceholder);
-    }
-
-    const caption = document.createElement('span');
-    caption.className =
-      'thread-composer-attachment-caption ml-2 inline-flex max-w-[8rem] items-center text-[10px] font-medium tracking-[0.08em] text-sky-50';
-    caption.textContent = attachmentDisplayLabel(attachment);
-
-    token.append(caption);
-    return token;
-  }
-
-  token.classList.add(
-    'items-center',
-    'gap-2',
-    'rounded-[0.95rem]',
-    'border',
-    'border-emerald-300/35',
-    'bg-emerald-300/10',
-    'px-2.5',
-    'py-2',
-    'text-[10px]',
-    'font-medium',
-    'tracking-[0.08em]',
-    'text-emerald-50',
-    'shadow-sm',
-    'shadow-stone-950/20',
-  );
+  token.className = 'attachment-tile';
+  token.setAttribute('role', 'button');
+  token.setAttribute('aria-label', translate('chat.attachmentDetails', { name }));
+  token.title = name;
+  token.tabIndex = 0;
 
   const icon = document.createElement('span');
-  icon.className =
-    'inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200/25 bg-emerald-300/12 text-[9px]';
-  icon.textContent = 'FILE';
-
+  icon.className = 'attachment-tile-icon';
+  const previewUrl = attachment.kind === 'photo' ? attachmentPreviewUrls[attachment.clientId] : undefined;
+  if (previewUrl) {
+    const image = document.createElement('img');
+    image.src = previewUrl;
+    image.alt = '';
+    image.draggable = false;
+    icon.append(image);
+  } else {
+    const glyph = document.createElement('span');
+    glyph.className = 'attachment-tile-glyph';
+    glyph.innerHTML = FILE_GLYPH_SVG;
+    icon.append(glyph);
+    const badge = fileBadge(name);
+    if (badge) {
+      const mark = document.createElement('b');
+      mark.textContent = badge;
+      icon.append(mark);
+    }
+  }
   const label = document.createElement('span');
-  label.className = 'inline-flex max-w-[10rem] truncate';
-  label.textContent = attachmentDisplayLabel(attachment);
-
+  label.className = 'attachment-tile-name';
+  label.textContent = shortFileName(name);
   token.append(icon, label);
   return token;
 }

@@ -294,6 +294,7 @@ export const GraphChatCompactMessageItem = memo(
             text={envelope?.type === 'peer' ? envelope.body : item.text}
             attachmentPreviewUrls={item.attachmentPreviewUrls}
             getImageAssetUrl={adapter?.getImageAssetUrl}
+            onOpenWorkspaceFile={adapter?.onOpenWorkspaceFile}
           />
           </>
         )}

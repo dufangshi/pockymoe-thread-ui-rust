@@ -16,7 +16,7 @@ import {
 
 import { useMessageExpansion } from './MessageExpansionScope';
 import { ScrollAnchorContext } from '../timeline/scrollAnchor';
-import { ZoomableImage } from '../ZoomableImage';
+import { MessageAttachment } from '../attachments/AttachmentTile';
 import type { ThreadTimelineAdapter } from '../../adapters';
 import { hasLikelyMarkdownSyntax } from '../markdownHeuristics';
 import { GraphChatMessageContent } from './GraphChatMessageContent';
@@ -351,6 +351,7 @@ export const GraphChatUserMessageBody = memo(
     text,
     attachmentPreviewUrls,
     getImageAssetUrl,
+    onOpenWorkspaceFile,
     messageId,
     scrollRootRef,
     onBeforeResize,
@@ -362,6 +363,7 @@ export const GraphChatUserMessageBody = memo(
     text: string;
     attachmentPreviewUrls?: Record<string, string> | undefined;
     getImageAssetUrl?: ThreadTimelineAdapter['getImageAssetUrl'] | undefined;
+    onOpenWorkspaceFile?: ThreadTimelineAdapter['onOpenWorkspaceFile'] | undefined;
   }) {
   const { locale: i18nLocale } = useI18n();
     const allSegments = useMemo(() => tokenizeUserMessageText(text), [text]);
@@ -412,49 +414,13 @@ export const GraphChatUserMessageBody = memo(
                 ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? undefined
                 : undefined);
             const label = basenameFromAssetPath(segment.path) || translate("chat.attachedImage");
-
-            return (
-              // A thumbnail about three lines of text tall; its name is in the title and
-              // tapping it opens the photo at full size.
-              <span
-                key={segment.key}
-                className="thread-graph-user-photo mx-[0.14rem] inline-flex align-middle"
-                title={segment.path}
-              >
-                <span className="inline-flex max-w-full flex-col rounded-[0.8rem] border border-sky-300/28 bg-sky-300/[0.08] p-1 shadow-sm shadow-stone-950/20">
-                  {imageUrl ? (
-                    <ZoomableImage
-                      src={imageUrl}
-                      fullSrc={fullImageUrl}
-                      alt={label}
-                      className="rounded-[0.6rem] bg-stone-950 object-contain"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <span className="thread-graph-user-photo-missing inline-flex items-center justify-center rounded-[0.6rem] bg-stone-950 text-[10px] text-sky-100">
-                      {translate("chat.pHOTO")}</span>
-                  )}
-                </span>
-              </span>
-            );
+            return <MessageAttachment key={segment.key} kind="photo" path={segment.path} name={label}
+              thumbnailUrl={imageUrl} fullUrl={fullImageUrl} />;
           }
 
           const fileName = basenameFromAssetPath(segment.path) || translate("chat.attachedFile");
-          return (
-            <span
-              key={segment.key}
-              className="mx-[0.14rem] inline-flex align-middle"
-            >
-              <span
-                className="inline-flex max-w-[12rem] items-center gap-2 rounded-[0.95rem] border border-emerald-300/28 bg-emerald-300/[0.08] px-2.5 py-2 text-[10px] font-medium tracking-[0.08em] text-emerald-50 shadow-sm shadow-stone-950/20"
-                title={segment.path}
-              >
-                <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200/20 bg-emerald-300/12 text-[9px]">
-                  {translate("chat.fILE")}</span>
-                <span className="min-w-0 truncate">{fileName}</span>
-              </span>
-            </span>
-          );
+          return <MessageAttachment key={segment.key} kind="file" path={segment.path} name={fileName}
+            {...(onOpenWorkspaceFile ? { onOpenFile: onOpenWorkspaceFile } : {})} />;
         })}
         {isLong ? <button ref={toggleRef} type="button" onClick={event => {event.stopPropagation(); toggle();}} aria-expanded={expanded}
           className="thread-graph-show-more timeline-meta-text mt-1 flex w-fit items-center gap-1 rounded px-1 text-xs transition">

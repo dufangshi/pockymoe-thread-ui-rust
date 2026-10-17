@@ -35,12 +35,15 @@
 [data-composer-layout='expanded'] .thread-graph-composer-input > [role='textbox'] {
   max-height: min(240px, 30dvh); overflow-y: auto; scrollbar-width: thin;
 }
-[data-composer-layout] .thread-graph-composer-input [data-segment-type='attachment'] {
-  max-height: 24px; vertical-align: middle;
+/* Folded to one line, an attachment is a small tile that fits the line: its glyph
+   or thumbnail beside its name. */
+[data-composer-layout]:not([data-composer-layout='expanded']) .thread-graph-composer-input .attachment-tile {
+  flex-direction: row; gap: 4px; width: auto; max-width: 9rem; height: 22px; margin: 0 2px; padding: 0 6px 0 3px; border-radius: 6px;
 }
-[data-composer-layout] .thread-graph-composer-input [data-segment-type='attachment'] img {
-  max-height: 20px; width: auto;
-}
+[data-composer-layout]:not([data-composer-layout='expanded']) .thread-graph-composer-input .attachment-tile-icon { width: 16px; height: 18px; }
+[data-composer-layout]:not([data-composer-layout='expanded']) .thread-graph-composer-input .attachment-tile-glyph { width: 13px; height: 16px; }
+[data-composer-layout]:not([data-composer-layout='expanded']) .thread-graph-composer-input .attachment-tile-icon > b { display: none; }
+[data-composer-layout]:not([data-composer-layout='expanded']) .thread-graph-composer-input .attachment-tile-icon > img { border-radius: 3px; }
 [data-composer-layout] .composer-model-label {
   /* Use the space freed by moving model/permission controls into Settings.
      Reserve room for the prompt and action buttons in narrow split panes. */

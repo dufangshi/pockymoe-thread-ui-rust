@@ -529,4 +529,11 @@ export const chatEn = {
   "chat.speedNote": "Time to first token runs from sending a request to its first streamed text, thought or tool call. It includes queueing, prefill and thinking that does not stream, so the prefill speed is a lower bound.",
   "chat.speedNoSplit": "This turn has no per-request timing; only the combined speed is known.",
   "chat.backgroundAgentsRunning": { one: "{{count}} background agent running", other: "{{count}} background agents running" },
+  "chat.attachmentImage": "Image",
+  "chat.attachmentFileOf": "{{kind}} file",
+  "chat.attachmentFile": "File",
+  "chat.attachmentDetails": "{{name}}, show details",
+  "chat.attachmentView": "View full size",
+  "chat.attachmentOpenInFiles": "Open in files",
+  "chat.attachmentRemove": "Remove",
 } as const;

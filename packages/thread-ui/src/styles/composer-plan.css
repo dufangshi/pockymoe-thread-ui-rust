@@ -199,7 +199,7 @@
   box-shadow: none;
 }
 
-.thread-ui-shell .thread-composer-input [contenteditable],
+.thread-ui-shell .thread-composer-input [contenteditable]:not([contenteditable='false']),
 .thread-ui-shell .thread-composer-input textarea {
   display: block;
   width: 100%;
@@ -210,7 +210,7 @@
   line-height: 1.55;
 }
 
-.thread-ui-shell .thread-composer-input [contenteditable] {
+.thread-ui-shell .thread-composer-input [contenteditable]:not([contenteditable='false']) {
   min-height: 4.15rem !important;
   max-height: 9.5rem !important;
   overflow-y: auto;
@@ -340,7 +340,7 @@
 
   .thread-ui-shell:not([data-thread-layout="mobile"])
     .thread-composer-input
-    [contenteditable],
+    [contenteditable]:not([contenteditable='false']),
   .thread-ui-shell:not([data-thread-layout="mobile"])
     .thread-composer-input
     textarea {
@@ -374,11 +374,11 @@
   box-shadow: none !important;
 }
 
-.thread-ui-shell.thread-ui-theme-dark .thread-composer-input [contenteditable],
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-input [contenteditable]:not([contenteditable='false']),
 .thread-ui-shell[data-theme-effective="dark"]
   .thread-composer-input
-  [contenteditable],
-.thread-ui-shell.dark .thread-composer-input [contenteditable],
+  [contenteditable]:not([contenteditable='false']),
+.thread-ui-shell.dark .thread-composer-input [contenteditable]:not([contenteditable='false']),
 .thread-ui-shell.thread-ui-theme-dark .thread-composer-input textarea,
 .thread-ui-shell[data-theme-effective="dark"] .thread-composer-input textarea,
 .thread-ui-shell.dark .thread-composer-input textarea {
@@ -450,82 +450,13 @@
   color: rgb(241 245 249);
 }
 
-.thread-ui-shell .thread-graph-composer-input [contenteditable] {
+.thread-ui-shell .thread-graph-composer-input [contenteditable]:not([contenteditable='false']) {
   display: block;
   width: 100%;
   min-width: 0;
   overflow-y: auto;
   background: transparent;
   color: inherit;
-}
-
-.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip,
-.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip {
-  box-sizing: border-box;
-  flex: 0 0 auto;
-  width: max-content !important;
-  max-width: min(100%, 7.25rem) !important;
-  vertical-align: middle;
-}
-
-.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip-photo,
-.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip-photo {
-  display: inline-flex !important;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.25rem;
-  padding: 0.35rem !important;
-}
-
-.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-thumb,
-.thread-ui-shell .thread-composer-input .thread-composer-attachment-thumb {
-  display: block;
-  width: 5.75rem !important;
-  height: 3.75rem !important;
-  max-width: 100%;
-  border-radius: 0.6rem !important;
-  object-fit: cover;
-}
-
-.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,
-.thread-ui-shell .thread-composer-input .thread-composer-attachment-caption {
-  display: block !important;
-  width: 100%;
-  max-width: 5.75rem !important;
-  margin-left: 0 !important;
-  overflow: hidden;
-  color: rgb(3 105 161);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.thread-ui-shell.thread-ui-theme-dark
-  .thread-graph-composer-input
-  .thread-composer-attachment-caption,
-.thread-ui-shell[data-theme-effective="dark"]
-  .thread-graph-composer-input
-  .thread-composer-attachment-caption,
-:root[data-theme-effective="dark"]
-  .thread-ui-shell
-  .thread-graph-composer-input
-  .thread-composer-attachment-caption,
-.thread-ui-shell.dark
-  .thread-graph-composer-input
-  .thread-composer-attachment-caption,
-.thread-ui-shell.thread-ui-theme-dark
-  .thread-composer-input
-  .thread-composer-attachment-caption,
-.thread-ui-shell[data-theme-effective="dark"]
-  .thread-composer-input
-  .thread-composer-attachment-caption,
-:root[data-theme-effective="dark"]
-  .thread-ui-shell
-  .thread-composer-input
-  .thread-composer-attachment-caption,
-.thread-ui-shell.dark
-  .thread-composer-input
-  .thread-composer-attachment-caption {
-  color: rgb(125 211 252);
 }
 
 .thread-ui-shell .thread-graph-composer-toolbar {
@@ -587,7 +518,7 @@
     padding: 0.65rem 0.75rem 0.2rem !important;
   }
 
-  .thread-ui-shell .thread-graph-composer-input [contenteditable] {
+  .thread-ui-shell .thread-graph-composer-input [contenteditable]:not([contenteditable='false']) {
     min-height: 3rem !important;
     padding-right: 2.5rem;
   }

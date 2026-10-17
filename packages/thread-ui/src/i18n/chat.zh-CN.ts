@@ -529,4 +529,11 @@ export const chatZhCN = {
   "chat.speedNote": "首字时间从发出请求算到第一段流式文字、思考或工具调用，包含排队、预填充和不流式输出的思考，所以预填充速度是下限。",
   "chat.speedNoSplit": "这一轮没有分请求的计时，只有综合速度。",
   "chat.backgroundAgentsRunning": { one: "{{count}} 个后台智能体运行中", other: "{{count}} 个后台智能体运行中" },
+  "chat.attachmentImage": "图片",
+  "chat.attachmentFileOf": "{{kind}} 文件",
+  "chat.attachmentFile": "文件",
+  "chat.attachmentDetails": "{{name}}，查看详情",
+  "chat.attachmentView": "查看大图",
+  "chat.attachmentOpenInFiles": "在文件中打开",
+  "chat.attachmentRemove": "移除",
 } as const;

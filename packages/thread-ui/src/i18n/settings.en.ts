@@ -312,6 +312,7 @@ export const settingsEn = {
   'settings.working': 'Working…',
   'settings.importUpstream': 'Import upstream',
   'settings.applyTemplate': 'Apply template',
+  'settings.templateNotJson': 'The template is not valid JSON. Check its brackets, quotes and commas. Details: {{value1}}',
   'settings.previewTemplate': 'Preview template',
   'settings.updateThisSupervisorToEnableModelDiscovery':
     'Update this Supervisor to enable model discovery.',

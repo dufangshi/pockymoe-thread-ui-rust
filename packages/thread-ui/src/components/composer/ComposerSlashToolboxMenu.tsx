@@ -1,4 +1,4 @@
-import { translate, useI18n } from '../../i18n';
+import { translate, useI18n, type TranslationKey } from '../../i18n';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
 import type {
   AgentBackendToolboxItemSchemaDto,
@@ -64,7 +64,16 @@ const toolboxIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   unsupported: CircleSlash,
 };
 
-function ToolboxLabel({ rich, action, command, description }: {
+// The Supervisor's built-in toolbox describes its commands in English; show
+// those in the reader's language. Other descriptions come from the harness.
+const BUILTIN_DESCRIPTIONS: Record<string, TranslationKey> = {
+  'Toggle fast / performance mode.': 'chat.toolboxFastDescription',
+  'Compact the current session.': 'chat.toolboxCompactDescription',
+  'Set or pause the session goal.': 'chat.toolboxGoalDescription',
+  'Fork this session.': 'chat.toolboxForkDescription',
+};
+
+function ToolboxLabel({ rich, action, command, description: rawDescription }: {
   rich: boolean;
   action: string;
   command: string;
@@ -72,6 +81,8 @@ function ToolboxLabel({ rich, action, command, description }: {
 }) {
   if (!rich) return <span>{command}</span>;
   const Icon = toolboxIcons[action] ?? MessageSquarePlus;
+  const builtin = rawDescription ? BUILTIN_DESCRIPTIONS[rawDescription] : undefined;
+  const description = builtin ? translate(builtin) : rawDescription;
   return (
     <>
       <span className="composer-toolbox-icon" aria-hidden="true"><Icon data-icon={toolboxIcons[action] ? action : 'prompt'} /></span>

@@ -43,10 +43,10 @@ export function ComposerSubscriptionUsage({
   if (!usage || !windows.length) return null;
   const description = windows
     .map((window) => {
-      const remaining = Math.max(0, 100 - window.usedPercent);
-      return `${window.label}: ${remaining}% remaining, ${resetLabel(window.resetsAt)}`;
+      const remaining = Math.max(0, Math.round(100 - window.usedPercent));
+      return `${window.label}: ${translate("chat.remainingPercentage", { value1: remaining })}, ${resetLabel(window.resetsAt)}`;
     })
-    .join('. ');
+    .join(translate("chat.listSeparator"));
   const observed = new Date(usage.observedAt);
   const updated = Number.isNaN(observed.getTime()) ? translate("chat.updateTimeUnavailable") : translate("chat.updated", { value1: observed.toLocaleString(getLocale()) });
   const freshness = `${usage.stale ? translate("chat.lastKnown") : ''}${updated}`;

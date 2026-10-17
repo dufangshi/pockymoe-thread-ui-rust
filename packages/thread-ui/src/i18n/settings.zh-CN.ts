@@ -169,16 +169,16 @@ export const settingsZhCN = {
     '保存到账号并在设备和浏览器间同步。Mac 上也可用 Command 代替 Ctrl。',
   'settings.ctrlEnterToSend': 'Ctrl+Enter 发送',
   'settings.enterInsertsANewLineCtrlShift':
-    'Enter 换行。Ctrl+Shift+Enter 立即发送 steer。',
+    'Enter 换行。Ctrl+Shift+Enter 立即插话。',
   'settings.enterToSend': 'Enter 发送',
   'settings.shiftEnterInsertsANewLineCtrl':
-    'Shift+Enter 换行。Ctrl+Enter 立即发送 steer。',
+    'Shift+Enter 换行。Ctrl+Enter 立即插话。',
   'settings.saving': '正在保存…',
   'settings.loading': '正在加载…',
   'settings.signInThroughRelayToChangeYour':
     '通过 Relay 登录后可修改账号快捷键。',
   'settings.steerDeliversToTheRunningTurnImmediately':
-    'Steer 立即送达正在运行的轮次；空闲时启动新轮次。',
+    '插话立即送达正在运行的轮次；空闲时开始新一轮。',
   'settings.retry': '重试',
   'settings.workspacePermissions': '工作区权限',
   'settings.fullAccess': '完全访问',
@@ -289,6 +289,7 @@ export const settingsZhCN = {
   'settings.working': '处理中…',
   'settings.importUpstream': '导入上游',
   'settings.applyTemplate': '应用模板',
+  'settings.templateNotJson': '模板不是有效的 JSON，请检查括号、引号和逗号。详情：{{value1}}',
   'settings.previewTemplate': '预览模板',
   'settings.updateThisSupervisorToEnableModelDiscovery':
     '更新此 Supervisor 以启用模型发现。',

@@ -1,4 +1,8 @@
 export const devicesZhCN = {
+  "devices.reasonUnmanaged": "这是源码运行或非托管的可执行文件。运行 GitHub 安装命令，安装托管的原生运行时。",
+  "devices.reasonHostManaged": "由主机管理的更新需要原生安装和稳定的原生启动命令。请先运行 GitHub 安装命令。",
+  "devices.reasonRetiredNpmWindows": "这台 Windows 设备管理器设备运行的是已停用的 npm 包。请在“设备”页运行 Windows 安装命令，迁移到原生 GitHub 运行时。",
+  "devices.reasonRetiredNpm": "这台设备仍从已停用的 npm 包运行。更新会安装原生 GitHub 运行时，并把服务迁移过去。",
   "devices.useOneClickProtectionInstead": "改用一键保护",
   "devices.replaceLocalEnrollmentHelp": "这会丢弃待完成的本地注册，并使用新的注册密钥启动一键保护。旧的设置或绑定命令将无法完成注册。取消后，你可以继续使用本地命令。",
   "devices.localCommandPending": "正在等待本地绑定命令。请在此设备上运行命令；“保护所有设备”不会替换此注册流程。",

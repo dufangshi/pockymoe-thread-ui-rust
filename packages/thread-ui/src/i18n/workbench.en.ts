@@ -488,6 +488,7 @@ export const workbenchEn = {
   "workbench.terminalSplit": "Split terminal",
   "workbench.scrollTabsBack": "Scroll tabs back",
   "workbench.scrollTabsForward": "Scroll tabs forward",
+  "workbench.createsFolderUnder": "Creates a new folder under {{value1}}.",
   "workbench.terminalKill": "Kill terminal",
   "workbench.terminalKillNamed": "Kill {{value1}}",
   "workbench.terminalKillRunningTitle": "Kill {{value1}}?",

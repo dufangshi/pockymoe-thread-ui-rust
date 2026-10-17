@@ -229,7 +229,7 @@ export function WorkspaceNodeActions({
       <WorkspaceNodeProperties node={node} open={dialog === 'properties'} onOpenChange={(next) => { if (!next) { setDialog(null); trigger.current?.focus(); } }} />
       <RenameDialog
         open={dialog === 'rename'}
-        title={translate("files.rename", { value1: node.kind === 'directory' ? 'folder' : 'file' })}
+        title={translate("files.rename", { value1: translate(node.kind === 'directory' ? 'files.kindFolder' : 'files.kindFile') })}
         label={translate("files.name")}
         value={name}
         onChange={setName}
@@ -240,7 +240,7 @@ export function WorkspaceNodeActions({
       />
       <ConfirmDialog
         open={dialog === 'delete'}
-        title={translate("files.delete_c93ae0", { value1: node.kind === 'directory' ? 'folder' : 'file' })}
+        title={translate("files.delete_c93ae0", { value1: translate(node.kind === 'directory' ? 'files.kindFolder' : 'files.kindFile') })}
         description={translate("files.permanentlyDelete", { value1: node.path, value2: node.kind === 'directory' ? translate("files.andItsContents") : '' })}
         onCancel={() => setDialog(null)}
         onConfirm={mutate}

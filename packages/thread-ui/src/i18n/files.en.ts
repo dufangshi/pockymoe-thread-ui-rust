@@ -1,4 +1,9 @@
 export const filesEn = {
+  "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.",
+  "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.",
+  "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.",
+  "files.terminalPluginDescription": "Built-in durable terminal panel backed by the supervisor PTY host.",
+  "files.pluginsEnabledCount": "{{value1}}/{{value2}} enabled",
   "files.copyFilePath": "Copy file path",
   "files.copyFileName": "Copy file name",
   "files.fileActions": "File actions",
@@ -153,6 +158,8 @@ export const filesEn = {
   "files.createBackup": "Create backup",
   "files.loadingBackups": "Loading backups...",
   "files.noConfigBackupsYet": "No config backups yet.",
+  "files.kindFolder": "folder",
+  "files.kindFile": "file",
   "files.rename": "Rename {{value1}}",
   "files.saveArchiveName": "Save archive name {{value1}}",
   "files.cancel": "Cancel",

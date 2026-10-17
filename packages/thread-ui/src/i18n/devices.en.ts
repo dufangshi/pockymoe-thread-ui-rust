@@ -1,4 +1,8 @@
 export const devicesEn = {
+  "devices.reasonUnmanaged": "This is a source or unmanaged executable. Run the GitHub setup command to install a managed native runtime.",
+  "devices.reasonHostManaged": "Host-managed updates require a native installation and a stable native launch command. Run the GitHub setup command first.",
+  "devices.reasonRetiredNpmWindows": "This Windows Device Manager device runs the retired npm package. Run the Windows setup command from the Devices page to move it to the native GitHub runtime.",
+  "devices.reasonRetiredNpm": "This device still runs from the retired npm package. Update installs the native GitHub runtime and moves its service to it.",
   "devices.useOneClickProtectionInstead": "Use one-click protection instead",
   "devices.replaceLocalEnrollmentHelp": "This discards the pending local enrollment and starts one-click protection with a new enrollment secret. The old setup or bind command will no longer complete enrollment. You can keep using the local command instead by cancelling.",
   "devices.localCommandPending": "Waiting for the local bind command. Run the command on this device; Protect all devices will not replace this enrollment.",

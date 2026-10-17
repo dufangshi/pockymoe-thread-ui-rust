@@ -6,6 +6,7 @@ import {
   FormEvent,
   KeyboardEvent,
   useCallback,
+  useEffect,
   type SetStateAction,
   useMemo,
   useRef,
@@ -301,6 +302,13 @@ export function ThreadComposer({
   useI18n();
   const [openMenu, setOpenMenu] = useState<SettingsMenu>(null);
   const [slashPanelView, setSlashPanelView] = useState<SlashPanelView>('root');
+  // A `/` typed into an empty prompt stays in the prompt and filters the toolbox
+  // by what follows; null when the toolbox was not opened by typing.
+  const [slashQuery, setSlashQuery] = useState<string | null>(null);
+  const [slashActive, setSlashActive] = useState(0);
+  useEffect(() => {
+    if (openMenu !== 'slash' && slashQuery !== null) setSlashQuery(null);
+  }, [openMenu, slashQuery]);
   const submitInFlightRef = useRef(false);
   const [mcpPanelMode, setMcpPanelMode] = useState<McpPanelMode>('list');
   const slashCapabilities = useMemo(
@@ -741,10 +749,30 @@ export function ThreadComposer({
     await submitPrompt();
   }
 
+  // Commands the typed `/query` matches, in toolbox order.
+  function slashCommands(query: string) {
+    const commands = [
+      ...(slashCapabilities.planMode ? ['/plan'] : []),
+      ...availableToolboxItems.map(item => item.command),
+    ];
+    const needle = query.toLowerCase();
+    return commands.filter(command => command.slice(1).toLowerCase().startsWith(needle));
+  }
+  function closeSlashQuery() {
+    setSlashQuery(null);
+    if (openMenu === 'slash') setOpenMenu(null);
+  }
+
   function handlePromptInput() {
     // The browser owns the composition text and selection until it commits.
     if (promptRef.current?.dataset.imeComposing === 'true') return;
     const nextPrompt = serializeEditorPrompt();
+    if (slashQuery !== null) {
+      // Anything but `/` and a command name (a space, a path) is prompt text.
+      const query = /^\/[\w-]*$/.test(nextPrompt) ? nextPrompt.slice(1) : null;
+      if (query === null || slashCommands(query).length === 0) closeSlashQuery();
+      else { setSlashQuery(query); setSlashActive(0); }
+    }
     const nextSelection = snapshotSelection();
     selectionSnapshotRef.current = nextSelection;
     updateDraft((current) => ({
@@ -846,10 +874,37 @@ export function ThreadComposer({
       availableToolboxItems.length > 0 &&
       serializeEditorPrompt().trim().length === 0
     ) {
-      event.preventDefault();
+      // The slash is typed like any character; the toolbox only follows it.
       setSlashPanelView('root');
+      setSlashQuery('');
+      setSlashActive(0);
       setOpenMenu('slash');
       return;
+    }
+    if (openMenu === 'slash' && slashQuery !== null && slashPanelView === 'root') {
+      const count = slashCommands(slashQuery).length;
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (count) setSlashActive(index => (index + (event.key === 'ArrowDown' ? 1 : count - 1)) % count);
+        return;
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        closeSlashQuery();
+        return;
+      }
+      if (event.key === 'Enter' && !event.shiftKey && count) {
+        event.preventDefault();
+        const row = document.querySelectorAll<HTMLButtonElement>('[data-slash-row]:not([disabled])')[slashActive];
+        if (row) {
+          // The typed `/command` was a request for the tool, not prompt text.
+          updateDraft((current) => ({ ...current, prompt: '' }));
+          setSlashQuery(null);
+          row.click();
+        }
+        return;
+      }
     }
 
     const keyAction = derivePromptKeyDownAction({
@@ -915,6 +970,8 @@ export function ThreadComposer({
     busy,
   });
   const toolbarProps = useComposerToolbarProps({
+    slashQuery,
+    slashActive,
     isShellView,
     canToggleShellView,
     isMobileShell,

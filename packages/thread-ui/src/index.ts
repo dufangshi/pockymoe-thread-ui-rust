@@ -14,6 +14,10 @@ import './styles/terminal-panel.css';
 import './styles/transcript-log.css';
 import './styles/thread-map.css';
 import './styles/attachments.css';
+import './styles/copy.css';
+
+export { CopyButton, useCopy } from './components/copy/CopyButton';
+export { PathChip } from './components/copy/PathChip';
 
 export type {
   ShellSocketConnection,

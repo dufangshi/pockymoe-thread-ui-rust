@@ -17,6 +17,10 @@ export const commonEn = {
   "common.helpAccountSummary": "Unlocking, recovery codes and password prompts.",
   "common.openApp": "Open Pockymoe",
   "common.helpNotFound": "This help topic does not exist.",
+  "common.copied": "Copied",
+  "common.copyFailed": "Copy failed",
+  "common.copyPath": "Copy path",
+  "common.pathShowWhole": "{{path}}, tap to show the whole path",
   "common.items": {
     "one": "{{count}} item",
     "other": "{{count}} items"

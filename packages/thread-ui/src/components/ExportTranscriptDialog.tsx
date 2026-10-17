@@ -512,7 +512,7 @@ export function ThreadActionsDialog({
                   value={turnSelection}
                   onChange={(event) => setTurnSelection(event.target.value as TurnSelectionMode)}
                 >
-                  {(['latest-3', 'latest-10', 'latest-20', 'all-loaded', translate("sharing.custom_f9ac14")] as TurnSelectionMode[]).map((entry) => (
+                  {(['latest-3', 'latest-10', 'latest-20', 'all-loaded', 'custom'] as TurnSelectionMode[]).map((entry) => (
                     <option key={entry} value={entry}>
                       {turnSelectionLabel(entry)}
                     </option>

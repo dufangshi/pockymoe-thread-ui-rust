@@ -129,7 +129,6 @@ export const sharingZhCN = {
   "sharing.noAccess": "无权限",
   "sharing.readFiles": "读取文件",
   "sharing.readAndEdit": "读取和编辑",
-  "sharing.custom_f9ac14": "自定义",
   "sharing.turn_b09c73": "轮次",
   "sharing.imagePreview": "图片预览",
   "sharing.closeImagePreview": "关闭图片预览",

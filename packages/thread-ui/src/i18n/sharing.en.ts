@@ -129,7 +129,6 @@ export const sharingEn = {
   "sharing.noAccess": "No access",
   "sharing.readFiles": "Read files",
   "sharing.readAndEdit": "Read and edit",
-  "sharing.custom_f9ac14": "custom",
   "sharing.turn_b09c73": "turn",
   "sharing.imagePreview": "Image preview",
   "sharing.closeImagePreview": "Close image preview",

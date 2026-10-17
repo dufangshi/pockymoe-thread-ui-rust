@@ -3019,6 +3019,13 @@
   .thread-ui-shell .thread-graph-code-block:hover .thread-graph-code-copy,
   .thread-ui-shell .thread-graph-code-block:focus-within .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
 }
+/* With room left of a prompt's bubble, its time and copy sit there, level with
+   its last line, covering nothing. */
+.thread-ui-shell .thread-graph-message-bubble.is-user[data-actions-beside] .thread-graph-message-copy-desktop {
+  right: 100%; padding: 0 6px 0 0; background: none;
+}
+/* The failure mark stays above the actions, so it can always be pressed. */
+.thread-ui-shell .thread-graph-message-bubble .thread-graph-message-failure { position: relative; z-index: 11; }
 /* The surface the fade blends into: the prompt bubble's own color, else the page. */
 .thread-ui-shell .thread-graph-message-bubble.is-user { --message-surface: oklch(0.925 0.004 255); }
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-message-bubble.is-user,
@@ -3311,3 +3318,4 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:hover,html
 /* A harness warning or error notice keeps the generic frame but colors its icon. */
 .thread-ui-shell .thread-graph-session-notice.is-warning .thread-graph-history-event-icon { color: #d0921d; }
 .thread-ui-shell .thread-graph-session-notice.is-error .thread-graph-history-event-icon { color: var(--theme-danger, #e5484d); }
+.thread-ui-shell .thread-graph-message-bubble.is-user:has(> .thread-graph-message-failure):not([data-actions-beside]) .thread-graph-message-copy-desktop { right: 28px; }

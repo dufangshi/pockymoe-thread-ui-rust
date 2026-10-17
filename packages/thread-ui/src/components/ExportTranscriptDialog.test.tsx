@@ -202,6 +202,9 @@ describe('ThreadActionsDialog', () => {
   it('exports a custom turn selection', () => {
     const onExport = vi.fn();
     renderDialog({ onExport });
+    // The option itself is named and carries the mode (an i18n pass once replaced it with its label).
+    const custom = [...document.body.querySelector('select')!.options].find(option => option.value === 'custom');
+    expect(custom?.textContent).toBe('Custom');
 
     changeSelect(document.body.querySelector('select')!, 'custom');
     click(exportButton('Clear'));

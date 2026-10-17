@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { getLocale, translate, useI18n } from '../../../i18n';
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '../../graph-ui/Dialog';
 import type { WorkspaceTreeNode } from '../workspaceTree';
+import { PathChip } from '../../copy/PathChip';
 
 const bytes = (size: number) => {
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -34,7 +35,7 @@ export function WorkspaceNodeProperties({ node, open, onOpenChange }: {
   const loaded = directory && node.childrenLoaded ? node.children.length : null;
   const rows: [string, ReactNode][] = [
     [translate('files.propertiesKind'), directory ? translate('files.propertiesFolder') : extension ? translate('files.propertiesFileOf', { kind: extension }) : translate('files.propertiesFile')],
-    [translate('files.propertiesLocation'), folder],
+    [translate('files.propertiesLocation'), node.path.includes('/') ? <PathChip path={folder} /> : folder],
     ...(size !== undefined ? [[translate('files.propertiesSize'), bytes(size)] as [string, ReactNode]] : []),
     ...(loaded !== null ? [[translate('files.propertiesContains'), translate('files.propertiesItems', { count: loaded })] as [string, ReactNode]] : []),
     ...([['files.propertiesCreated', info?.createdAt], ['files.propertiesModified', info?.modifiedAt], ['files.propertiesAccessed', info?.accessedAt]] as const)

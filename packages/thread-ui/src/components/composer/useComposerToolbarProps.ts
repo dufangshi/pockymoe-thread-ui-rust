@@ -112,6 +112,9 @@ export interface UseComposerToolbarPropsInput {
   mcpHttpUrl: string;
   mcpRawBlock: string;
   capabilities: ComposerToolbarCapabilities;
+  /** What follows a typed `/`, filtering the toolbox; null when not opened by typing. */
+  slashQuery?: string | null;
+  slashActive?: number;
   shellControlState: ThreadShellControlState | null;
   onToggleView?: () => void;
   onDismissPromptFocus: () => void;
@@ -223,6 +226,8 @@ export function useComposerToolbarProps({
   mcpHttpUrl,
   mcpRawBlock,
   capabilities,
+  slashQuery = null,
+  slashActive = 0,
   shellControlState,
   onToggleView,
   onDismissPromptFocus,
@@ -270,6 +275,8 @@ export function useComposerToolbarProps({
     : {
         open: openMenu === 'slash',
         slashPanelView,
+        slashQuery,
+        slashActive,
         availableToolboxItems,
         planModeAvailable: capabilities.planMode,
         forkFromTurnAvailable: capabilities.forkFromTurn,

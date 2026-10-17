@@ -18,6 +18,7 @@ import type { ComponentType, MouseEvent, SVGProps } from 'react';
 import {
   CircleSlash,
   GitFork,
+  History,
   ListChecks,
   MessageSquarePlus,
   Plug,
@@ -85,6 +86,8 @@ function ToolboxLabel({ rich, action, command, description }: {
 export function ComposerSlashToolboxMenu({
   open,
   slashPanelView,
+  slashQuery = null,
+  slashActive = 0,
   availableToolboxItems,
   planModeAvailable,
   forkFromTurnAvailable,
@@ -166,6 +169,10 @@ export function ComposerSlashToolboxMenu({
 }: {
   open: boolean;
   slashPanelView: SlashPanelView;
+  /** What follows a typed `/`: rows not starting with it are hidden. */
+  slashQuery?: string | null;
+  /** The row Enter would run, among the shown ones. */
+  slashActive?: number;
   availableToolboxItems: AgentBackendToolboxItemSchemaDto[];
   planModeAvailable: boolean;
   forkFromTurnAvailable: boolean;
@@ -252,6 +259,16 @@ export function ComposerSlashToolboxMenu({
 }) {
   useI18n();
   const rich = useThemeFeature('composer.richMenus');
+  const matches = (command: string) => slashQuery === null || command.slice(1).toLowerCase().startsWith(slashQuery.toLowerCase());
+  const planShown = planModeAvailable && matches('/plan');
+  const shownItems = availableToolboxItems.filter(item => matches(item.command));
+  // Rows in the order Enter cycles through them.
+  const activeCommand = [...(planShown ? ['/plan'] : []), ...shownItems.map(item => item.command)][slashActive];
+  const activeProps = (command: string) => ({
+    'data-slash-row': true,
+    'data-active': slashQuery !== null && command === activeCommand ? true : undefined,
+  });
+  const panelCommand: Partial<Record<SlashPanelView, string>> = { fork: '/fork', forkTurns: '/fork', skills: '/skills', hooks: '/hooks', mcp: '/mcp' };
   return (
     <div className="relative">
       <InputGroupButton
@@ -286,9 +303,10 @@ export function ComposerSlashToolboxMenu({
         >
           {slashPanelView === 'root' ? (
             <div className="p-2">
-              {planModeAvailable ? (
+              {planShown ? (
                 <button
                   type="button"
+                  {...activeProps('/plan')}
                   data-toolbox-action="plan"
                   aria-pressed={displayedCollaborationMode === 'plan'}
                   disabled={settingsBusy}
@@ -315,14 +333,31 @@ export function ComposerSlashToolboxMenu({
                   </div>
                 </button>
               ) : null}
-              {availableToolboxItems.map((item, index) =>
+              {shownItems.map((item, index) =>
                 item.action === 'goal' ? (
+                  // The row sets a goal like the others run their tool; the history
+                  // of earlier goals is the button at its end.
                   <div
                     key={`${item.action}:${item.command}`}
                     data-toolbox-action={item.action}
-                    className={`composer-toolbox-split mt-1 flex min-h-11 overflow-hidden rounded-xl border border-[var(--theme-border)] ${index === 0 && !planModeAvailable ? 'mt-0' : ''}`}
+                    className={`composer-toolbox-split mt-1 flex min-h-11 overflow-hidden rounded-xl ${index === 0 && !planShown ? 'mt-0' : ''}`}
                     title={item.description ?? item.label}
                   >
+                    <button
+                      type="button"
+                      {...activeProps(item.command)}
+                      disabled={toolboxItemDisabled(item)}
+                      onClick={(event) => onToolboxItemClick(item, event)}
+                      className={`${toolboxItemClassName(item)} mt-0 min-w-0 flex-1`}
+                      aria-label={translate("chat.openGoalComposer")}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <ToolboxLabel rich={rich} action={item.action} command={item.command} description={item.description} />
+                        <span className="composer-toolbox-status text-[11px] uppercase tracking-[0.16em] text-stone-400">
+                          {toolboxItemStatus(item)}
+                        </span>
+                      </div>
+                    </button>
                     <button
                       type="button"
                       disabled={toolboxItemDisabled(item)}
@@ -330,34 +365,22 @@ export function ComposerSlashToolboxMenu({
                         onSetSlashPanelView('goals');
                         void onViewGoals?.();
                       }}
-                      className="min-w-0 flex-1 px-3 py-2.5 text-left text-sm text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
+                      className="grid w-11 shrink-0 place-items-center rounded-xl text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
                       aria-label={translate("chat.viewGoals")}
+                      title={translate("chat.viewGoals")}
                     >
-                      {rich ? (
-                        <span className="flex items-center gap-3">
-                          <ToolboxLabel rich action={item.action} command={item.command} description={item.description} />
-                        </span>
-                      ) : (
-                        <span>{item.command}</span>
-                      )}
+                      <History aria-hidden="true" className="h-4 w-4" />
                     </button>
-                    <button
-                      type="button"
-                      disabled={toolboxItemDisabled(item)}
-                      onClick={(event) => onToolboxItemClick(item, event)}
-                      className="min-w-14 border-l border-[var(--theme-border)] px-3 text-xs font-semibold text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
-                      aria-label={translate("chat.openGoalComposer")}
-                    >
-                      {translate("chat.open")}</button>
                   </div>
                 ) : (
                   <button
                     key={`${item.action}:${item.command}`}
                     type="button"
+                    {...activeProps(item.command)}
                     data-toolbox-action={item.action}
                     disabled={toolboxItemDisabled(item)}
                     onClick={(event) => onToolboxItemClick(item, event)}
-                    className={`${toolboxItemClassName(item)} ${index === 0 && !planModeAvailable ? 'mt-0' : ''}`}
+                    className={`${toolboxItemClassName(item)} ${index === 0 && !planShown ? 'mt-0' : ''}`}
                     title={item.description ?? item.label}
                   >
                     <div className="flex items-center justify-between gap-3">
@@ -384,6 +407,18 @@ export function ComposerSlashToolboxMenu({
                 <p role="alert" className="m-2 shrink-0 rounded-xl border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-3 text-sm text-[var(--status-danger-fg)]">
                   {forkError}
                 </p>
+              ) : null}
+              {/* Every second-level panel leads back to the toolbox; goals has its own header. */}
+              {panelCommand[slashPanelView] ? (
+                <div className="flex min-h-11 shrink-0 items-center justify-between gap-3 border-b border-[var(--theme-border)] px-3 py-2">
+                  <button
+                    type="button"
+                    onClick={() => onSetSlashPanelView('root')}
+                    className="min-h-9 rounded-lg px-2 text-xs font-medium text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent-border)]"
+                  >
+                    {translate("chat.back")}</button>
+                  <span className="text-xs font-semibold text-[var(--theme-fg)]">{panelCommand[slashPanelView]}</span>
+                </div>
               ) : null}
               <div className="min-h-0 overflow-auto">
               {slashPanelView === 'goals' ? (

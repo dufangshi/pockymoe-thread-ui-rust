@@ -9,6 +9,7 @@ import {
   MOLECULAR_EXTENSIONS,
   MarkdownImageLinkContext,
   PDF_EXTENSIONS,
+  PathChip,
   RenameDialog,
   ResizableHandle,
   ResizablePanel,
@@ -49,7 +50,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-PMQOCFMK.js";
+} from "./chunk-2PO343MI.js";
 import {
   shellThemeProps,
   useThemeFeature
@@ -59,7 +60,7 @@ import {
   getLocale,
   translate,
   useI18n
-} from "./chunk-JXJUSRI3.js";
+} from "./chunk-RLXRBREP.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect12, useMemo as useMemo11, useState as useState12 } from "react";
@@ -1701,7 +1702,7 @@ function WorkspaceNodeProperties({ node, open, onOpenChange }) {
   const loaded = directory && node.childrenLoaded ? node.children.length : null;
   const rows = [
     [translate("files.propertiesKind"), directory ? translate("files.propertiesFolder") : extension ? translate("files.propertiesFileOf", { kind: extension }) : translate("files.propertiesFile")],
-    [translate("files.propertiesLocation"), folder],
+    [translate("files.propertiesLocation"), node.path.includes("/") ? /* @__PURE__ */ jsx(PathChip, { path: folder }) : folder],
     ...size !== void 0 ? [[translate("files.propertiesSize"), bytes(size)]] : [],
     ...loaded !== null ? [[translate("files.propertiesContains"), translate("files.propertiesItems", { count: loaded })]] : [],
     ...[["files.propertiesCreated", info?.createdAt], ["files.propertiesModified", info?.modifiedAt], ["files.propertiesAccessed", info?.accessedAt]].flatMap(([label, at]) => when(at) ? [[translate(label), when(at)]] : []),
@@ -4138,7 +4139,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment5, jsx as jsx17, jsxs as jsxs13 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-ZK5QE2CQ.js")
+  () => import("./GraphWorkspaceMonacoEditor-MYJOBEWO.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4237,7 +4238,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-ZSWIK62D.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-72ZEHVVL.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);

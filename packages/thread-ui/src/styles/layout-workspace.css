@@ -795,10 +795,23 @@
   box-shadow: 0 18px 48px rgb(0 0 0 / 28%);
 }
 .workspace-properties-overlay { z-index: 1000; background: rgb(0 0 0 / 32%); }
+/* Phones: a sheet rising from the bottom, like the other secondary windows. */
+@media (max-width: 639px) {
+  .workspace-properties.workspace-properties {
+    top: auto; bottom: 0; left: 0; width: 100vw; translate: none;
+    border-bottom: 0; border-radius: 18px 18px 0 0;
+    padding: 16px 18px calc(18px + env(safe-area-inset-bottom));
+  }
+}
 .workspace-properties > header { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
 .workspace-properties > header > svg { flex: none; width: 20px; height: 20px; color: var(--theme-fg-muted); }
-.workspace-properties .workspace-properties-title { flex: 1; min-width: 0; overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-.workspace-properties-close { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; color: var(--theme-fg-muted); }
+/* Long names wrap to two lines and long places shorten; nothing pushes the box
+   or its close button wider. */
+.workspace-properties.workspace-properties { grid-template-columns: minmax(0, 1fr); }
+.workspace-properties > * { min-width: 0; }
+.workspace-properties .workspace-properties-title { display: -webkit-box; flex: 1; min-width: 0; overflow: hidden; font-size: 14px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.workspace-properties-close { position: relative; display: grid; flex: none; place-items: center; align-self: flex-start; width: 28px; height: 28px; border-radius: 6px; color: var(--theme-fg-muted); }
+.workspace-properties-close::after { content: ''; position: absolute; inset: -6px; }
 .workspace-properties-close:hover { background: var(--theme-hover); color: var(--theme-fg); }
 .workspace-properties-close svg { width: 16px; height: 16px; }
 .workspace-properties dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 0; font-size: 12.5px; line-height: 1.45; }

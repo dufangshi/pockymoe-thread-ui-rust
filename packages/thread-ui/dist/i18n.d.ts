@@ -70,6 +70,9 @@ declare const en: {
     readonly "tour.threads.importForm.body": "Pick the harness, then a discovered session (or paste its session ID). Only Import session registers it.";
     readonly "tour.threads.history.title": "Your threads";
     readonly "tour.threads.history.body": "Shortcuts keep starred threads close; Recent chats lists threads across workspaces, with subagent threads grouped under their parent. ⋯ renames or archives.";
+    readonly "tour.openMore.prereq": "Tap ⋯ at the right of the bottom bar to open More; it is in there.";
+    readonly "tour.threads.historyDock.body": "Tap the thread name in the bottom bar for this workspace's threads and recent chats; swiping up on the bar works too.";
+    readonly "tour.threads.newThread.prereqDock": "Tap the thread name in the bottom bar to open the thread list; New chat is at its foot.";
     readonly "tour.threads.historyMobile.body": "Tap here to open the thread list: starred shortcuts and recent chats across workspaces.";
     readonly "tour.threads.new.title": "Create a thread";
     readonly "tour.threads.new.body": "Tabs are this workspace's threads. + opens a dialog to choose harness, agent, model, reasoning effort and title; Create Thread starts it.";
@@ -917,7 +920,6 @@ declare const en: {
     readonly "sharing.noAccess": "No access";
     readonly "sharing.readFiles": "Read files";
     readonly "sharing.readAndEdit": "Read and edit";
-    readonly "sharing.custom_f9ac14": "custom";
     readonly "sharing.turn_b09c73": "turn";
     readonly "sharing.imagePreview": "Image preview";
     readonly "sharing.closeImagePreview": "Close image preview";
@@ -2613,6 +2615,10 @@ declare const en: {
     readonly "common.helpAccountSummary": "Unlocking, recovery codes and password prompts.";
     readonly "common.openApp": "Open Pockymoe";
     readonly "common.helpNotFound": "This help topic does not exist.";
+    readonly "common.copied": "Copied";
+    readonly "common.copyFailed": "Copy failed";
+    readonly "common.copyPath": "Copy path";
+    readonly "common.pathShowWhole": "{{path}}, tap to show the whole path";
     readonly "common.items": {
         readonly one: "{{count}} item";
         readonly other: "{{count}} items";
@@ -3820,6 +3826,9 @@ declare const zhCN: {
     "tour.threads.importForm.body": "选择 Harness，再选择发现的会话（或粘贴会话 ID）。点击「导入会话」才会登记。";
     "tour.threads.history.title": "你的对话";
     "tour.threads.history.body": "「快捷方式」固定星标对话；「最近对话」跨工作区列出对话，子智能体对话归在父对话下。⋯ 可重命名或归档。";
+    "tour.openMore.prereq": "点底栏右侧的 ⋯ 打开「更多」，这个功能在那里。";
+    "tour.threads.historyDock.body": "点底栏的线程名，打开本工作区的线程和最近对话；在底栏上向上滑也可以。";
+    "tour.threads.newThread.prereqDock": "先点底栏的线程名打开线程列表，「新建对话」在列表底部。";
     "tour.threads.historyMobile.body": "点按这里打开对话列表：星标快捷方式和跨工作区的最近对话。";
     "tour.threads.new.title": "新建对话";
     "tour.threads.new.body": "标签是当前工作区的对话。「+」打开弹窗，选择 Harness、Agent、模型、推理强度和标题，点击「创建线程」才会开始。";
@@ -4667,7 +4676,6 @@ declare const zhCN: {
     "sharing.noAccess": "无权限";
     "sharing.readFiles": "读取文件";
     "sharing.readAndEdit": "读取和编辑";
-    "sharing.custom_f9ac14": "自定义";
     "sharing.turn_b09c73": "轮次";
     "sharing.imagePreview": "图片预览";
     "sharing.closeImagePreview": "关闭图片预览";
@@ -6363,6 +6371,10 @@ declare const zhCN: {
     "common.helpAccountSummary": "解锁、恢复码和密码提示。";
     "common.openApp": "打开 Pockymoe";
     "common.helpNotFound": "没有这个帮助主题。";
+    "common.copied": "已复制";
+    "common.copyFailed": "复制失败";
+    "common.copyPath": "复制路径";
+    "common.pathShowWhole": "{{path}}，点按显示完整路径";
     "common.items": {
         readonly one: "{{count}} 项";
         readonly other: "{{count}} 项";
@@ -7592,6 +7604,9 @@ declare const resources: {
         readonly "tour.threads.importForm.body": "Pick the harness, then a discovered session (or paste its session ID). Only Import session registers it.";
         readonly "tour.threads.history.title": "Your threads";
         readonly "tour.threads.history.body": "Shortcuts keep starred threads close; Recent chats lists threads across workspaces, with subagent threads grouped under their parent. ⋯ renames or archives.";
+        readonly "tour.openMore.prereq": "Tap ⋯ at the right of the bottom bar to open More; it is in there.";
+        readonly "tour.threads.historyDock.body": "Tap the thread name in the bottom bar for this workspace's threads and recent chats; swiping up on the bar works too.";
+        readonly "tour.threads.newThread.prereqDock": "Tap the thread name in the bottom bar to open the thread list; New chat is at its foot.";
         readonly "tour.threads.historyMobile.body": "Tap here to open the thread list: starred shortcuts and recent chats across workspaces.";
         readonly "tour.threads.new.title": "Create a thread";
         readonly "tour.threads.new.body": "Tabs are this workspace's threads. + opens a dialog to choose harness, agent, model, reasoning effort and title; Create Thread starts it.";
@@ -8439,7 +8454,6 @@ declare const resources: {
         readonly "sharing.noAccess": "No access";
         readonly "sharing.readFiles": "Read files";
         readonly "sharing.readAndEdit": "Read and edit";
-        readonly "sharing.custom_f9ac14": "custom";
         readonly "sharing.turn_b09c73": "turn";
         readonly "sharing.imagePreview": "Image preview";
         readonly "sharing.closeImagePreview": "Close image preview";
@@ -10135,6 +10149,10 @@ declare const resources: {
         readonly "common.helpAccountSummary": "Unlocking, recovery codes and password prompts.";
         readonly "common.openApp": "Open Pockymoe";
         readonly "common.helpNotFound": "This help topic does not exist.";
+        readonly "common.copied": "Copied";
+        readonly "common.copyFailed": "Copy failed";
+        readonly "common.copyPath": "Copy path";
+        readonly "common.pathShowWhole": "{{path}}, tap to show the whole path";
         readonly "common.items": {
             readonly one: "{{count}} item";
             readonly other: "{{count}} items";
@@ -11341,6 +11359,9 @@ declare const resources: {
         "tour.threads.importForm.body": "选择 Harness，再选择发现的会话（或粘贴会话 ID）。点击「导入会话」才会登记。";
         "tour.threads.history.title": "你的对话";
         "tour.threads.history.body": "「快捷方式」固定星标对话；「最近对话」跨工作区列出对话，子智能体对话归在父对话下。⋯ 可重命名或归档。";
+        "tour.openMore.prereq": "点底栏右侧的 ⋯ 打开「更多」，这个功能在那里。";
+        "tour.threads.historyDock.body": "点底栏的线程名，打开本工作区的线程和最近对话；在底栏上向上滑也可以。";
+        "tour.threads.newThread.prereqDock": "先点底栏的线程名打开线程列表，「新建对话」在列表底部。";
         "tour.threads.historyMobile.body": "点按这里打开对话列表：星标快捷方式和跨工作区的最近对话。";
         "tour.threads.new.title": "新建对话";
         "tour.threads.new.body": "标签是当前工作区的对话。「+」打开弹窗，选择 Harness、Agent、模型、推理强度和标题，点击「创建线程」才会开始。";
@@ -12188,7 +12209,6 @@ declare const resources: {
         "sharing.noAccess": "无权限";
         "sharing.readFiles": "读取文件";
         "sharing.readAndEdit": "读取和编辑";
-        "sharing.custom_f9ac14": "自定义";
         "sharing.turn_b09c73": "轮次";
         "sharing.imagePreview": "图片预览";
         "sharing.closeImagePreview": "关闭图片预览";
@@ -13884,6 +13904,10 @@ declare const resources: {
         "common.helpAccountSummary": "解锁、恢复码和密码提示。";
         "common.openApp": "打开 Pockymoe";
         "common.helpNotFound": "没有这个帮助主题。";
+        "common.copied": "已复制";
+        "common.copyFailed": "复制失败";
+        "common.copyPath": "复制路径";
+        "common.pathShowWhole": "{{path}}，点按显示完整路径";
         "common.items": {
             readonly one: "{{count}} 项";
             readonly other: "{{count}} 项";

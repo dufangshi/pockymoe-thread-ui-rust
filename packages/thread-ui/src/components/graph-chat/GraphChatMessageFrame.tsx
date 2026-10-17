@@ -1,5 +1,8 @@
 import { translate, useI18n } from '../../i18n';
 import { useState, type MouseEvent, type ReactNode } from 'react';
+
+/** Room a prompt's time and copy need beside its bubble. */
+const SIDE_ACTIONS_WIDTH = 132;
 import { CheckCircle2, Circle, CircleAlert, Loader2, XCircle } from 'lucide-react';
 import { failureMessage } from './turnPrompts';
 import { MessageSenderMark, type MessageSenderView } from './MessageSenderMark';
@@ -116,6 +119,16 @@ export function GraphChatMessageFrame({
   const { locale: i18nLocale } = useI18n();
   const isUser = kind === 'userMessage';
   const [touchActionsVisible, setTouchActionsVisible] = useState(false);
+  // A prompt's time and copy go in the free space left of its bubble, so they
+  // never cover its text or failure mark; a bubble as wide as the row keeps them
+  // inside, over a fade.
+  const [actionsBeside, setActionsBeside] = useState(false);
+  const placeActions = (bubble: HTMLElement) => {
+    if (!isUser) return;
+    const row = bubble.closest('.thread-graph-message')?.getBoundingClientRect();
+    const box = bubble.getBoundingClientRect();
+    setActionsBeside(Boolean(row && box.left - row.left >= SIDE_ACTIONS_WIDTH));
+  };
   const [failureOpen, setFailureOpen] = useState(false);
   const failureText = failure ? failureMessage(failure) : null;
   const normalizedStatus = status?.trim().toLowerCase() ?? '';
@@ -139,6 +152,7 @@ export function GraphChatMessageFrame({
     ) {
       return;
     }
+    placeActions(event.currentTarget);
     setTouchActionsVisible((visible) => !visible);
   }
 
@@ -157,8 +171,11 @@ export function GraphChatMessageFrame({
         {timeNode ? <div className={`thread-graph-message-time-row ${isUser ? 'is-user' : ''}`}>{timeNode}</div> : null}
         <div
           data-touch-actions={touchActionsVisible ? 'true' : 'false'}
+          data-actions-beside={actionsBeside || undefined}
           className={`thread-graph-message-bubble relative min-w-0 ${isUser ? 'is-user' : 'is-assistant'}`}
           onClick={handleMessageClick}
+          onPointerEnter={(event) => { if (event.pointerType === 'mouse') placeActions(event.currentTarget); }}
+          onFocus={(event) => placeActions(event.currentTarget)}
         >
           {isUser && sender ? <MessageSenderMark sender={sender} /> : null}
           {!isUser && metaControl ? (

@@ -17,6 +17,10 @@ export const commonZhCN = {
   "common.helpAccountSummary": "解锁、恢复码和密码提示。",
   "common.openApp": "打开 Pockymoe",
   "common.helpNotFound": "没有这个帮助主题。",
+  "common.copied": "已复制",
+  "common.copyFailed": "复制失败",
+  "common.copyPath": "复制路径",
+  "common.pathShowWhole": "{{path}}，点按显示完整路径",
   "common.items": {
     "one": "{{count}} 项",
     "other": "{{count}} 项"

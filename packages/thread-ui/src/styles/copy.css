@@ -1,0 +1,65 @@
+/* The one copy control (see docs/ui-principles.md §2). */
+.thread-ui-shell .copy-button, .copy-button {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--theme-fg-muted);
+  cursor: pointer;
+}
+.copy-button > svg { width: 14px; height: 14px; }
+.copy-button:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.copy-button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
+.copy-button[data-state='copied'] { color: var(--theme-accent-solid); }
+.copy-button[data-state='failed'] { color: var(--theme-danger, #e5484d); }
+/* Touch: a 40px hit area around the visible button. */
+.copy-button::after { content: ''; position: absolute; inset: -6px; }
+.copy-button-note {
+  position: absolute;
+  right: 100%;
+  margin-right: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--theme-danger, #e5484d);
+  color: #fff;
+  font-size: 11px;
+  line-height: 16px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.copy-button-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* A displayed path: monospace, shortened in the middle, with copy. */
+.path-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+  vertical-align: middle;
+}
+.thread-ui-shell .path-chip-text, .path-chip-text {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.92em;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.path-chip-head { min-width: 1.5em; overflow: hidden; text-overflow: ellipsis; }
+.path-chip-tail { flex: none; max-width: 75%; overflow: hidden; text-overflow: ellipsis; }
+.path-chip.is-whole .path-chip-text { display: inline; white-space: normal; overflow-wrap: anywhere; }
+.path-chip.is-whole :is(.path-chip-head, .path-chip-tail) { max-width: none; overflow: visible; }

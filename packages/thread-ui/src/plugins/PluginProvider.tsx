@@ -83,6 +83,9 @@ export function PluginProvider({
   const settingsSaved = useCallback(() => setSettingsVersion(value => value + 1), []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // True only once the device answered with its plugins; module defaults alone
+  // (for example when a view-only share cannot read them) are not authoritative.
+  const [devicePluginsKnown, setDevicePluginsKnown] = useState(false);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -93,7 +96,9 @@ export function PluginProvider({
         : [];
       setPlugins(mergePluginState(builtinPlugins, serverPlugins));
       setSettingsPluginIds(new Set(serverPlugins.filter(plugin => plugin.available !== false).map(plugin => plugin.id)));
+      setDevicePluginsKnown(Boolean(adapter.fetchPlugins));
     } catch (err) {
+      setDevicePluginsKnown(false);
       setError(err instanceof Error ? err.message : translate("workbench.unableToLoadPlugins"));
     } finally {
       setLoading(false);
@@ -215,11 +220,13 @@ export function PluginProvider({
       modules: builtinPlugins,
       adapter,
       settingsVersion,
+      devicePluginsKnown,
     }),
     [
       adapter,
       builtinPlugins,
       capabilities,
+      devicePluginsKnown,
       error,
       getSettingsSections,
       importPluginManifest,

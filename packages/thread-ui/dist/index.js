@@ -23585,6 +23585,7 @@ function PluginProvider({
   const settingsSaved = useCallback22(() => setSettingsVersion((value2) => value2 + 1), []);
   const [loading, setLoading] = useState60(false);
   const [error, setError] = useState60(null);
+  const [devicePluginsKnown, setDevicePluginsKnown] = useState60(false);
   const refresh = useCallback22(async () => {
     setLoading(true);
     setError(null);
@@ -23592,7 +23593,9 @@ function PluginProvider({
       const serverPlugins = adapter.fetchPlugins ? await adapter.fetchPlugins() : [];
       setPlugins(mergePluginState(builtinPlugins, serverPlugins));
       setSettingsPluginIds(new Set(serverPlugins.filter((plugin) => plugin.available !== false).map((plugin) => plugin.id)));
+      setDevicePluginsKnown(Boolean(adapter.fetchPlugins));
     } catch (err) {
+      setDevicePluginsKnown(false);
       setError(err instanceof Error ? err.message : translate("workbench.unableToLoadPlugins"));
     } finally {
       setLoading(false);
@@ -23698,12 +23701,14 @@ function PluginProvider({
       ...capabilities,
       modules: builtinPlugins,
       adapter,
-      settingsVersion
+      settingsVersion,
+      devicePluginsKnown
     }),
     [
       adapter,
       builtinPlugins,
       capabilities,
+      devicePluginsKnown,
       error,
       getSettingsSections,
       importPluginManifest,
@@ -23825,6 +23830,7 @@ function ThreadPluginScope({
     };
   }, [reload]);
   const sameDevice = !adapter;
+  const gateByDevice = sameDevice && device.devicePluginsKnown === true;
   const deviceState = sameDevice ? `${device.plugins.map((plugin) => `${plugin.id}:${plugin.enabled}`).join("|")}#${device.settingsVersion ?? 0}` : "";
   const seenDeviceState = useRef39(deviceState);
   useEffect46(() => {
@@ -23921,7 +23927,7 @@ function ThreadPluginScope({
       return {
         ...plugin,
         ...own,
-        enabled: sameDevice ? plugin.enabled && own.enabled : own.enabled
+        enabled: gateByDevice ? plugin.enabled && own.enabled : own.enabled
       };
     });
     const known2 = new Set(device.plugins.map((plugin) => plugin.id));
@@ -23929,7 +23935,7 @@ function ThreadPluginScope({
       ...merged,
       ...loaded.plugins.filter((plugin) => !known2.has(plugin.id))
     ];
-  }, [device.plugins, loaded, sameDevice]);
+  }, [device.plugins, loaded, gateByDevice]);
   const thread = useMemo20(
     () => ({
       threadId,

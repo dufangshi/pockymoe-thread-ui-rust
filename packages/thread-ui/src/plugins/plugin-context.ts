@@ -46,6 +46,8 @@ export interface PluginContextValue {
   adapter?: PluginProviderAdapter;
   /** Changes whenever device-wide plugin settings are saved. */
   settingsVersion?: number;
+  /** Whether `plugins` reflects the device's answer rather than module defaults. */
+  devicePluginsKnown?: boolean;
   /** Inside a conversation scope: the device-wide context, for global management. */
   device?: PluginContextValue;
   /** Inside a conversation scope: its switches and settings. */

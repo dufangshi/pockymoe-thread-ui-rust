@@ -493,3 +493,28 @@ it("takes another device's answers as they are for a conversation reached throug
     available: true,
   });
 });
+
+it('trusts the conversation when a view-only share cannot read the device plugins', async () => {
+  const backend = fakeBackend();
+  // A plugin that is off by default: module defaults must not overrule the scope.
+  const offByDefault: FrontendPluginModule = { ...demo, defaultEnabled: false };
+  const adapter: PluginProviderAdapter = {
+    fetchPlugins: () =>
+      Promise.reject(
+        Object.assign(new Error('forbidden'), { statusCode: 403 }),
+      ),
+    threads: backend.adapter,
+  };
+  await act(async () =>
+    root.render(
+      <PluginProvider adapter={adapter} builtinPlugins={[offByDefault]}>
+        <ThreadPluginScope threadId="a">
+          <Probe name="probe-a" />
+        </ThreadPluginScope>
+      </PluginProvider>,
+    ),
+  );
+  expect(q('[data-testid="probe-a"]').textContent).toBe(
+    'panels:1 stored:stored result',
+  );
+});

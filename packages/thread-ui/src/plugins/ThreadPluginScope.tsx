@@ -123,6 +123,9 @@ export function ThreadPluginScope({
   // Only a conversation on this provider's device inherits from it; one reached
   // through its own adapter (another device) answers for itself.
   const sameDevice = !adapter;
+  // The device-wide switch may only gate this scope once the device has actually
+  // answered; otherwise the conversation's own (effective) answer stands.
+  const gateByDevice = sameDevice && device.devicePluginsKnown === true;
   const deviceState = sameDevice
     ? `${device.plugins
         .map((plugin) => `${plugin.id}:${plugin.enabled}`)
@@ -247,7 +250,7 @@ export function ThreadPluginScope({
       return {
         ...plugin,
         ...own,
-        enabled: sameDevice ? plugin.enabled && own.enabled : own.enabled,
+        enabled: gateByDevice ? plugin.enabled && own.enabled : own.enabled,
       };
     });
     const known = new Set(device.plugins.map((plugin) => plugin.id));
@@ -255,7 +258,7 @@ export function ThreadPluginScope({
       ...merged,
       ...loaded.plugins.filter((plugin) => !known.has(plugin.id)),
     ];
-  }, [device.plugins, loaded, sameDevice]);
+  }, [device.plugins, loaded, gateByDevice]);
 
   const thread = useMemo<ThreadPluginScopeState>(
     () => ({

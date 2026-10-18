@@ -788,6 +788,7 @@ declare const en: {
     };
     readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
     readonly "workbench.threadMapOpenThread": "Open {{title}}";
+    readonly "workbench.threadMapFrom": "from {{title}}";
     readonly "workbench.runningChip": {
         readonly one: "{{count}} conversation is running on this account. Show it";
         readonly other: "{{count}} conversations are running on this account. Show them";
@@ -1086,6 +1087,9 @@ declare const en: {
     readonly 'settings.connSavedInUse': "{{name}} saved. Harnesses using it keep the applied version until you reapply.";
     readonly 'settings.connUsagePending': "{{harness}} · not applied";
     readonly 'settings.connUsedBy': "Used by {{harness}}";
+    readonly 'settings.connNativeOAuth': "Account sign-in";
+    readonly 'settings.connNativeConfig': "Native config";
+    readonly 'settings.connNativeApplied': "{{harness}} now uses {{name}}.";
     readonly 'settings.connPending': "Not applied";
     readonly 'settings.connPendingHint': "{{harness}} still uses the version applied earlier. Reapply to use the saved changes.";
     readonly 'settings.connAddShort': "Add";
@@ -3249,6 +3253,10 @@ declare const en: {
     };
     readonly 'chat.logShowFiles': "Show changed files";
     readonly "chat.envelopeOpenSender": "Open the sending thread {{id}}";
+    readonly "chat.relationSubThread": "Sub-thread";
+    readonly "chat.relationFrom": "from";
+    readonly "chat.relationBack": "Back to parent";
+    readonly "chat.relationParentUnavailable": "Parent unavailable";
     readonly "chat.hint.commands": "Commands the agent ran in a terminal, failed ones included.";
     readonly "chat.hint.commandsExample": "e.g. npm test, rg -n PromptQueue src";
     readonly "chat.hint.failed": "Operations that ended with an error or were interrupted, usually a failing test or a missing file.";
@@ -3648,6 +3656,8 @@ declare const en: {
     readonly 'quality.report.shortReply': "Reply is below the minimum length";
     readonly 'quality.report.alreadyPolished': "Reply is already polished";
     readonly 'quality.report.turnNotCompleted': "Turn did not complete successfully";
+    readonly 'quality.report.exceedsContextBudget': "The reply is longer than the context limit ({{maxChars}} characters), so it was not polished. Raise the limit in settings to polish it.";
+    readonly 'quality.report.exceedsContextBudgetPlain': "The reply is longer than the context character limit, so it was not polished. Raise the limit in settings to polish it.";
     readonly 'quality.report.unsupportedMarkup': "Document markup is unsupported";
     readonly 'quality.report.fileWritten': "File written";
     readonly 'quality.report.fileUnchanged': "File unchanged";
@@ -3690,6 +3700,11 @@ declare const en: {
     readonly 'quality.readerBackgroundHint': "Optional context about the reader’s experience and needs.";
     readonly 'quality.minReplyChars': "Auto-polish trigger length (characters)";
     readonly 'quality.minReplyCharsHint': "Auto-polish runs when the turn ends only if the final reply's prose, not counting code, is at least this many characters; shorter replies stay as they are.";
+    readonly 'quality.contextLimitsNeedUpdate': "Update this device's Supervisor to limit polishing context; until then polishing reads the whole conversation.";
+    readonly 'quality.replyContextTurns': "Context turns";
+    readonly 'quality.replyContextTurnsHint': "Recent turns read for polishing, including the one being polished.";
+    readonly 'quality.replyContextMaxChars': "Context character limit";
+    readonly 'quality.replyContextMaxCharsHint': "Total characters of message text read, including the reply being polished (characters, not tokens). Newest text is kept first; a reply longer than this is not polished, so raise the limit if needed.";
     readonly 'quality.autoReplies': "Automatically polish long replies";
     readonly 'quality.autoRepliesHint': "Applies when this plugin is enabled. Original replies are always retained. Polishing may incur model usage charges.";
     readonly 'quality.autoDocuments': "Automatically review changed documents";
@@ -4629,6 +4644,7 @@ declare const zhCN: {
     };
     "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
     "workbench.threadMapOpenThread": "打开 {{title}}";
+    "workbench.threadMapFrom": "由 {{title}} 创建";
     "workbench.runningChip": {
         readonly one: "本帐号有 {{count}} 个对话正在运行，点按查看";
         readonly other: "本帐号有 {{count}} 个对话正在运行，点按查看";
@@ -4927,6 +4943,9 @@ declare const zhCN: {
     'settings.connSavedInUse': "{{name}} 已保存。重新应用前，使用它的 harness 继续使用已应用的版本。";
     'settings.connUsagePending': "{{harness}} 待应用";
     'settings.connUsedBy': "{{harness}} 正在使用";
+    'settings.connNativeOAuth': "账号登录";
+    'settings.connNativeConfig': "原生配置";
+    'settings.connNativeApplied': "{{harness}} 现在使用{{name}}。";
     'settings.connPending': "待应用";
     'settings.connPendingHint': "{{harness}} 仍在使用之前应用的版本。重新应用后才会使用已保存的修改。";
     'settings.connAddShort': "添加";
@@ -7090,6 +7109,10 @@ declare const zhCN: {
     };
     'chat.logShowFiles': "查看改动的文件";
     "chat.envelopeOpenSender": "打开发送方线程 {{id}}";
+    "chat.relationSubThread": "子线程";
+    "chat.relationFrom": "由";
+    "chat.relationBack": "回到父线程";
+    "chat.relationParentUnavailable": "父线程不可用";
     "chat.hint.commands": "智能体在终端里执行的命令，失败的也算在内。";
     "chat.hint.commandsExample": "例：npm test、rg -n PromptQueue src";
     "chat.hint.failed": "以错误结束或被中断的操作，多半是没通过的测试或找不到的文件。";
@@ -7489,6 +7512,8 @@ declare const zhCN: {
     'quality.report.shortReply': "回复未达到最短长度";
     'quality.report.alreadyPolished': "回复已润色";
     'quality.report.turnNotCompleted': "回合未成功完成";
+    'quality.report.exceedsContextBudget': "回复原文超过参考字数上限（{{maxChars}} 字），未润色；可在设置中调高上限。";
+    'quality.report.exceedsContextBudgetPlain': "回复原文超过参考字数上限，未润色；可在设置中调高上限。";
     'quality.report.unsupportedMarkup': "不支持该文档标记格式";
     'quality.report.fileWritten': "已写入文件";
     'quality.report.fileUnchanged': "文件未更改";
@@ -7531,6 +7556,11 @@ declare const zhCN: {
     'quality.readerBackgroundHint': "可选：读者的经验与需求。";
     'quality.minReplyChars': "自动润色触发长度（字符数）";
     'quality.minReplyCharsHint': "最终回复正文达到此字符数后，才在回合结束时自动润色；代码不计入，较短的回复保持原样。";
+    'quality.contextLimitsNeedUpdate': "更新此设备的 Supervisor 后才能限制润色上下文；在此之前润色会读取整个对话。";
+    'quality.replyContextTurns': "参考轮数";
+    'quality.replyContextTurnsHint': "润色时参考最近几轮对话，含正在润色的这一轮。";
+    'quality.replyContextMaxChars': "参考字数上限";
+    'quality.replyContextMaxCharsHint': "参考的消息正文总字符数，含待润色的回复（按字符计，不是 token）。优先保留最新内容；待润色回复本身超过上限时不会润色，可调高此值。";
     'quality.autoReplies': "自动润色较长的回复";
     'quality.autoRepliesHint': "插件启用时生效。始终保留原始回复。润色可能产生模型使用费用。";
     'quality.autoDocuments': "自动审阅已更改的文档";
@@ -8492,6 +8522,7 @@ declare const resources: {
         };
         readonly "workbench.threadMapHideChildren": "Fold the agent threads back into {{title}}";
         readonly "workbench.threadMapOpenThread": "Open {{title}}";
+        readonly "workbench.threadMapFrom": "from {{title}}";
         readonly "workbench.runningChip": {
             readonly one: "{{count}} conversation is running on this account. Show it";
             readonly other: "{{count}} conversations are running on this account. Show them";
@@ -8790,6 +8821,9 @@ declare const resources: {
         readonly 'settings.connSavedInUse': "{{name}} saved. Harnesses using it keep the applied version until you reapply.";
         readonly 'settings.connUsagePending': "{{harness}} · not applied";
         readonly 'settings.connUsedBy': "Used by {{harness}}";
+        readonly 'settings.connNativeOAuth': "Account sign-in";
+        readonly 'settings.connNativeConfig': "Native config";
+        readonly 'settings.connNativeApplied': "{{harness}} now uses {{name}}.";
         readonly 'settings.connPending': "Not applied";
         readonly 'settings.connPendingHint': "{{harness}} still uses the version applied earlier. Reapply to use the saved changes.";
         readonly 'settings.connAddShort': "Add";
@@ -10953,6 +10987,10 @@ declare const resources: {
         };
         readonly 'chat.logShowFiles': "Show changed files";
         readonly "chat.envelopeOpenSender": "Open the sending thread {{id}}";
+        readonly "chat.relationSubThread": "Sub-thread";
+        readonly "chat.relationFrom": "from";
+        readonly "chat.relationBack": "Back to parent";
+        readonly "chat.relationParentUnavailable": "Parent unavailable";
         readonly "chat.hint.commands": "Commands the agent ran in a terminal, failed ones included.";
         readonly "chat.hint.commandsExample": "e.g. npm test, rg -n PromptQueue src";
         readonly "chat.hint.failed": "Operations that ended with an error or were interrupted, usually a failing test or a missing file.";
@@ -11352,6 +11390,8 @@ declare const resources: {
         readonly 'quality.report.shortReply': "Reply is below the minimum length";
         readonly 'quality.report.alreadyPolished': "Reply is already polished";
         readonly 'quality.report.turnNotCompleted': "Turn did not complete successfully";
+        readonly 'quality.report.exceedsContextBudget': "The reply is longer than the context limit ({{maxChars}} characters), so it was not polished. Raise the limit in settings to polish it.";
+        readonly 'quality.report.exceedsContextBudgetPlain': "The reply is longer than the context character limit, so it was not polished. Raise the limit in settings to polish it.";
         readonly 'quality.report.unsupportedMarkup': "Document markup is unsupported";
         readonly 'quality.report.fileWritten': "File written";
         readonly 'quality.report.fileUnchanged': "File unchanged";
@@ -11394,6 +11434,11 @@ declare const resources: {
         readonly 'quality.readerBackgroundHint': "Optional context about the reader’s experience and needs.";
         readonly 'quality.minReplyChars': "Auto-polish trigger length (characters)";
         readonly 'quality.minReplyCharsHint': "Auto-polish runs when the turn ends only if the final reply's prose, not counting code, is at least this many characters; shorter replies stay as they are.";
+        readonly 'quality.contextLimitsNeedUpdate': "Update this device's Supervisor to limit polishing context; until then polishing reads the whole conversation.";
+        readonly 'quality.replyContextTurns': "Context turns";
+        readonly 'quality.replyContextTurnsHint': "Recent turns read for polishing, including the one being polished.";
+        readonly 'quality.replyContextMaxChars': "Context character limit";
+        readonly 'quality.replyContextMaxCharsHint': "Total characters of message text read, including the reply being polished (characters, not tokens). Newest text is kept first; a reply longer than this is not polished, so raise the limit if needed.";
         readonly 'quality.autoReplies': "Automatically polish long replies";
         readonly 'quality.autoRepliesHint': "Applies when this plugin is enabled. Original replies are always retained. Polishing may incur model usage charges.";
         readonly 'quality.autoDocuments': "Automatically review changed documents";
@@ -12332,6 +12377,7 @@ declare const resources: {
         };
         "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
         "workbench.threadMapOpenThread": "打开 {{title}}";
+        "workbench.threadMapFrom": "由 {{title}} 创建";
         "workbench.runningChip": {
             readonly one: "本帐号有 {{count}} 个对话正在运行，点按查看";
             readonly other: "本帐号有 {{count}} 个对话正在运行，点按查看";
@@ -12630,6 +12676,9 @@ declare const resources: {
         'settings.connSavedInUse': "{{name}} 已保存。重新应用前，使用它的 harness 继续使用已应用的版本。";
         'settings.connUsagePending': "{{harness}} 待应用";
         'settings.connUsedBy': "{{harness}} 正在使用";
+        'settings.connNativeOAuth': "账号登录";
+        'settings.connNativeConfig': "原生配置";
+        'settings.connNativeApplied': "{{harness}} 现在使用{{name}}。";
         'settings.connPending': "待应用";
         'settings.connPendingHint': "{{harness}} 仍在使用之前应用的版本。重新应用后才会使用已保存的修改。";
         'settings.connAddShort': "添加";
@@ -14793,6 +14842,10 @@ declare const resources: {
         };
         'chat.logShowFiles': "查看改动的文件";
         "chat.envelopeOpenSender": "打开发送方线程 {{id}}";
+        "chat.relationSubThread": "子线程";
+        "chat.relationFrom": "由";
+        "chat.relationBack": "回到父线程";
+        "chat.relationParentUnavailable": "父线程不可用";
         "chat.hint.commands": "智能体在终端里执行的命令，失败的也算在内。";
         "chat.hint.commandsExample": "例：npm test、rg -n PromptQueue src";
         "chat.hint.failed": "以错误结束或被中断的操作，多半是没通过的测试或找不到的文件。";
@@ -15192,6 +15245,8 @@ declare const resources: {
         'quality.report.shortReply': "回复未达到最短长度";
         'quality.report.alreadyPolished': "回复已润色";
         'quality.report.turnNotCompleted': "回合未成功完成";
+        'quality.report.exceedsContextBudget': "回复原文超过参考字数上限（{{maxChars}} 字），未润色；可在设置中调高上限。";
+        'quality.report.exceedsContextBudgetPlain': "回复原文超过参考字数上限，未润色；可在设置中调高上限。";
         'quality.report.unsupportedMarkup': "不支持该文档标记格式";
         'quality.report.fileWritten': "已写入文件";
         'quality.report.fileUnchanged': "文件未更改";
@@ -15234,6 +15289,11 @@ declare const resources: {
         'quality.readerBackgroundHint': "可选：读者的经验与需求。";
         'quality.minReplyChars': "自动润色触发长度（字符数）";
         'quality.minReplyCharsHint': "最终回复正文达到此字符数后，才在回合结束时自动润色；代码不计入，较短的回复保持原样。";
+        'quality.contextLimitsNeedUpdate': "更新此设备的 Supervisor 后才能限制润色上下文；在此之前润色会读取整个对话。";
+        'quality.replyContextTurns': "参考轮数";
+        'quality.replyContextTurnsHint': "润色时参考最近几轮对话，含正在润色的这一轮。";
+        'quality.replyContextMaxChars': "参考字数上限";
+        'quality.replyContextMaxCharsHint': "参考的消息正文总字符数，含待润色的回复（按字符计，不是 token）。优先保留最新内容；待润色回复本身超过上限时不会润色，可调高此值。";
         'quality.autoReplies': "自动润色较长的回复";
         'quality.autoRepliesHint': "插件启用时生效。始终保留原始回复。润色可能产生模型使用费用。";
         'quality.autoDocuments': "自动审阅已更改的文档";

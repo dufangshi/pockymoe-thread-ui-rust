@@ -3,9 +3,10 @@ import {
   useTerminalPreferences
 } from "./chunk-5NGPD4NR.js";
 import {
+  formatNumber,
   translate,
   useI18n
-} from "./chunk-ZAXHF23V.js";
+} from "./chunk-NWQPEUSE.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -64,6 +65,10 @@ var presets = [
   "copyedit"
 ];
 var details = ["short", "balanced", "detailed"];
+var contextLimits = {
+  replyContextTurns: { min: 1, max: 1e3 },
+  replyContextMaxChars: { min: 1, max: 1e7 }
+};
 var defaults = {
   connectionId: "",
   connectionFile: "",
@@ -73,6 +78,8 @@ var defaults = {
   detail: "balanced",
   readerBackground: "",
   minReplyChars: 800,
+  replyContextTurns: 5,
+  replyContextMaxChars: 1e4,
   autoReplies: true,
   autoDocuments: false,
   documentMode: "review"
@@ -102,6 +109,11 @@ function readValues(snapshot) {
     values.autoDocuments = snapshot.values.autoDocuments;
   if (typeof snapshot.values.minReplyChars === "number" && Number.isSafeInteger(snapshot.values.minReplyChars) && snapshot.values.minReplyChars >= 0)
     values.minReplyChars = snapshot.values.minReplyChars;
+  for (const key of ["replyContextTurns", "replyContextMaxChars"]) {
+    const value = snapshot.values[key];
+    if (typeof value === "number" && Number.isSafeInteger(value) && value >= contextLimits[key].min && value <= contextLimits[key].max)
+      values[key] = value;
+  }
   if (snapshot.values.documentMode === "review" || snapshot.values.documentMode === "rewrite")
     values.documentMode = snapshot.values.documentMode;
   return values;
@@ -110,10 +122,16 @@ function isConflict(error) {
   if (!error || typeof error !== "object") return false;
   return "statusCode" in error && error.statusCode === 409 || "status" in error && error.status === 409;
 }
+function contextLimitsSupport(plugin) {
+  if (!plugin) return void 0;
+  const flagged = (value) => Boolean(value) && typeof value === "object" && value.replyContextLimits === true;
+  return flagged(plugin.capabilities) || flagged(plugin);
+}
 function ContentQualitySettings({
   load,
   save,
-  connections
+  connections,
+  plugin
 }) {
   const { t } = useI18n();
   const scope = useId();
@@ -159,6 +177,17 @@ function ContentQualitySettings({
       const body = { ...stored, ...values };
       if (!values.connectionId && !("connectionId" in stored))
         delete body.connectionId;
+      for (const key of [
+        "replyContextTurns",
+        "replyContextMaxChars"
+      ]) {
+        if (limitsSupported === true) continue;
+        if (limitsSupported === false) {
+          if (key in stored) body[key] = stored[key];
+          else delete body[key];
+        } else if (!(key in stored) && values[key] === defaults[key])
+          delete body[key];
+      }
       const snapshot = await save({ revision, values: body });
       const next = readValues(snapshot);
       if (id !== requestId.current) return;
@@ -179,6 +208,7 @@ function ContentQualitySettings({
     ] });
   }
   const busy = status === "loading" || status === "saving";
+  const limitsSupported = contextLimitsSupport(plugin);
   const error = status === "loadError" || status === "saveError" || status === "conflict";
   return /* @__PURE__ */ jsxs(
     "form",
@@ -300,6 +330,48 @@ function ContentQualitySettings({
               }
             ),
             t("quality.minReplyCharsHint")
+          ),
+          field(
+            "replyContextTurns",
+            t("quality.replyContextTurns"),
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                id: `${scope}-replyContextTurns`,
+                "aria-describedby": `${scope}-replyContextTurns-hint`,
+                disabled: limitsSupported === false,
+                type: "number",
+                min: contextLimits.replyContextTurns.min,
+                max: contextLimits.replyContextTurns.max,
+                step: 1,
+                required: true,
+                value: Number.isNaN(values.replyContextTurns) ? "" : values.replyContextTurns,
+                onChange: (event) => update("replyContextTurns", event.target.valueAsNumber)
+              }
+            ),
+            t(
+              limitsSupported === false ? "quality.contextLimitsNeedUpdate" : "quality.replyContextTurnsHint"
+            )
+          ),
+          field(
+            "replyContextMaxChars",
+            t("quality.replyContextMaxChars"),
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                id: `${scope}-replyContextMaxChars`,
+                "aria-describedby": `${scope}-replyContextMaxChars-hint`,
+                disabled: limitsSupported === false,
+                type: "number",
+                min: contextLimits.replyContextMaxChars.min,
+                max: contextLimits.replyContextMaxChars.max,
+                step: 1,
+                required: true,
+                value: Number.isNaN(values.replyContextMaxChars) ? "" : values.replyContextMaxChars,
+                onChange: (event) => update("replyContextMaxChars", event.target.valueAsNumber)
+              }
+            ),
+            t("quality.replyContextMaxCharsHint")
           ),
           /* @__PURE__ */ jsxs("div", { className: "plugin-settings-field", children: [
             /* @__PURE__ */ jsxs(
@@ -429,6 +501,14 @@ var reasonKeys = {
   turnNotCompleted: "quality.report.turnNotCompleted",
   unsupportedMarkup: "quality.report.unsupportedMarkup"
 };
+function reasonText(report, t) {
+  const reason = text(report.reason, 500);
+  if (reason === "replyExceedsContextBudget") {
+    const max = report.maxChars;
+    return typeof max === "number" && Number.isSafeInteger(max) && max > 0 ? t("quality.report.exceedsContextBudget", { maxChars: formatNumber(max) }) : t("quality.report.exceedsContextBudgetPlain");
+  }
+  return Object.hasOwn(reasonKeys, reason) ? t(reasonKeys[reason]) : reason;
+}
 var statusTones = {
   reviewed: "success",
   completed: "success",
@@ -441,14 +521,13 @@ function Tag({ tone = "neutral", children }) {
 function ReportStatus({ report, hideCompleted = false }) {
   const { t } = useI18n();
   const status = text(report.status, 200);
-  const reason = text(report.reason, 500);
+  const reason = reasonText(report, t);
   const statusKey = Object.hasOwn(statusKeys, status) ? statusKeys[status] : void 0;
-  const reasonKey = Object.hasOwn(reasonKeys, reason) ? reasonKeys[reason] : void 0;
   const showStatus = Boolean(status) && !(hideCompleted && status === "completed");
   return /* @__PURE__ */ jsxs2(Fragment, { children: [
     (showStatus || reason) && /* @__PURE__ */ jsxs2("p", { className: "plugin-report-line", children: [
       showStatus && /* @__PURE__ */ jsx2(Tag, { tone: Object.hasOwn(statusTones, status) ? statusTones[status] : "neutral", children: statusKey ? t(statusKey) : status }),
-      reason && /* @__PURE__ */ jsx2("span", { children: reasonKey ? t(reasonKey) : reason })
+      reason && /* @__PURE__ */ jsx2("span", { children: reason })
     ] }),
     typeof report.error === "string" && /* @__PURE__ */ jsx2("p", { role: "status", className: "plugin-report-error", children: text(report.error) })
   ] });
@@ -493,8 +572,7 @@ function DocumentReport({ report }) {
   ) : [];
   const status = text(report.status, 200);
   const statusKey = Object.hasOwn(statusKeys, status) ? statusKeys[status] : void 0;
-  const reason = text(report.reason, 500);
-  const reasonKey = Object.hasOwn(reasonKeys, reason) ? reasonKeys[reason] : void 0;
+  const reason = reasonText(report, t);
   return /* @__PURE__ */ jsxs2("article", { className: "quality-doc", "data-status": status || void 0, children: [
     /* @__PURE__ */ jsxs2("header", { className: "quality-doc-header", children: [
       /* @__PURE__ */ jsx2("h4", { className: "quality-doc-path", children: text(report.path, 4096) }),
@@ -506,7 +584,7 @@ function DocumentReport({ report }) {
         findings.length > 0 && /* @__PURE__ */ jsx2(Tag, { tone: "accent", children: t(findings.length === 1 ? "quality.report.findingOne" : "quality.report.findingCount", { value1: findings.length }) })
       ] })
     ] }),
-    reason && /* @__PURE__ */ jsx2("p", { className: "plugin-report-meta", children: reasonKey ? t(reasonKey) : reason }),
+    reason && /* @__PURE__ */ jsx2("p", { className: "plugin-report-meta", children: reason }),
     typeof report.error === "string" && /* @__PURE__ */ jsx2("p", { role: "status", className: "plugin-report-error", children: text(report.error) }),
     !!findings.length && /* @__PURE__ */ jsx2("ul", { className: "quality-doc-findings", "aria-label": t("quality.report.findings"), children: findings.slice(0, 100).map((finding, index) => /* @__PURE__ */ jsx2("li", { children: text(finding) }, index)) }),
     findings.length > 100 && /* @__PURE__ */ jsx2("p", { className: "plugin-report-note", children: t("automation.outputTruncated") }),

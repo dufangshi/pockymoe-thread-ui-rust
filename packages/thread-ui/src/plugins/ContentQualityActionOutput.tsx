@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useI18n, type TranslationKey } from '../i18n';
+import { formatNumber, useI18n, type TranslationKey } from '../i18n';
 import type { PluginActionOutputContext } from './plugin-types';
 
 type Report = Record<string, unknown>;
@@ -31,6 +31,18 @@ const reasonKeys: Record<string, TranslationKey> = {
   unsupportedMarkup: 'quality.report.unsupportedMarkup',
 };
 
+/** The reason in words; never a bare code when a translation exists. */
+function reasonText(report: Report, t: ReturnType<typeof useI18n>['t']) {
+  const reason = text(report.reason, 500);
+  if (reason === 'replyExceedsContextBudget') {
+    const max = report.maxChars;
+    return typeof max === 'number' && Number.isSafeInteger(max) && max > 0
+      ? t('quality.report.exceedsContextBudget', { maxChars: formatNumber(max) })
+      : t('quality.report.exceedsContextBudgetPlain');
+  }
+  return Object.hasOwn(reasonKeys, reason) ? t(reasonKeys[reason]!) : reason;
+}
+
 type Tone = 'success' | 'danger' | 'accent' | 'neutral';
 const statusTones: Record<string, Tone> = {
   reviewed: 'success',
@@ -47,12 +59,9 @@ function Tag({ tone = 'neutral', children }: { tone?: Tone; children: ReactNode 
 function ReportStatus({ report, hideCompleted = false }: { report: Report; hideCompleted?: boolean }) {
   const { t } = useI18n();
   const status = text(report.status, 200);
-  const reason = text(report.reason, 500);
+  const reason = reasonText(report, t);
   const statusKey = Object.hasOwn(statusKeys, status)
     ? statusKeys[status]
-    : undefined;
-  const reasonKey = Object.hasOwn(reasonKeys, reason)
-    ? reasonKeys[reason]
     : undefined;
   const showStatus = Boolean(status) && !(hideCompleted && status === 'completed');
   return (
@@ -64,7 +73,7 @@ function ReportStatus({ report, hideCompleted = false }: { report: Report; hideC
               {statusKey ? t(statusKey) : status}
             </Tag>
           )}
-          {reason && <span>{reasonKey ? t(reasonKey) : reason}</span>}
+          {reason && <span>{reason}</span>}
         </p>
       )}
       {typeof report.error === 'string' && (
@@ -138,10 +147,7 @@ function DocumentReport({ report }: { report: Report }) {
   const statusKey = Object.hasOwn(statusKeys, status)
     ? statusKeys[status]
     : undefined;
-  const reason = text(report.reason, 500);
-  const reasonKey = Object.hasOwn(reasonKeys, reason)
-    ? reasonKeys[reason]
-    : undefined;
+  const reason = reasonText(report, t);
   return (
     <article className="quality-doc" data-status={status || undefined}>
       <header className="quality-doc-header">
@@ -168,7 +174,7 @@ function DocumentReport({ report }: { report: Report }) {
           )}
         </span>
       </header>
-      {reason && <p className="plugin-report-meta">{reasonKey ? t(reasonKey) : reason}</p>}
+      {reason && <p className="plugin-report-meta">{reason}</p>}
       {typeof report.error === 'string' && (
         <p role="status" className="plugin-report-error">
           {text(report.error)}

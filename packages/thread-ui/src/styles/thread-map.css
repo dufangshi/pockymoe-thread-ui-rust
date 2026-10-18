@@ -399,6 +399,7 @@
 .thread-map-tile-sub > * { flex: none; }
 .thread-map-tile-sub > * + *::before { margin-right: 6px; opacity: 0.55; content: '·'; }
 .thread-map-tile-who { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.thread-map-tile-from { flex: 0 2 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .thread-map-tile-live { display: inline-flex; align-items: center; gap: 4px; color: var(--theme-fg); font-weight: 600; }
 .thread-map-tile-live .thread-map-running-dot { margin-right: 0; }
 .thread-map-tile-failed { color: var(--theme-danger, #c2410c); font-weight: 600; }

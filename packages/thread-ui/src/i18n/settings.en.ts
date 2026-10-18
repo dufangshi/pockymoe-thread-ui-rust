@@ -93,6 +93,9 @@ export const settingsEn = {
     '{{name}} saved. Harnesses using it keep the applied version until you reapply.',
   'settings.connUsagePending': '{{harness}} · not applied',
   'settings.connUsedBy': 'Used by {{harness}}',
+  'settings.connNativeOAuth': 'Account sign-in',
+  'settings.connNativeConfig': 'Native config',
+  'settings.connNativeApplied': '{{harness}} now uses {{name}}.',
   'settings.connPending': 'Not applied',
   'settings.connPendingHint':
     '{{harness}} still uses the version applied earlier. Reapply to use the saved changes.',

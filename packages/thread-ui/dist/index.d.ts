@@ -1,10 +1,10 @@
 import * as react from 'react';
 import { RefObject, TouchEvent, MouseEvent, Dispatch, SetStateAction, ReactNode, Component, ErrorInfo, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
-import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-ZiEki9G3.js';
-export { i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as SendPromptInput, m as ShellSocketConnection, n as ShellSocketHandlers, o as ThreadImageAssetVariant, W as WorkspaceDocumentSaveInput, p as WorkspaceDocumentSnapshot, q as WorkspaceSaveReceipt, r as WorkspaceTab, s as createDefaultPluginContextValue, t as mergePluginState } from './workspace-panel-ZiEki9G3.js';
+import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-p7Tke5p9.js';
+export { D as DescribeThread, i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as SendPromptInput, m as ShellSocketConnection, n as ShellSocketHandlers, o as ThreadImageAssetVariant, p as ThreadLinkInfo, W as WorkspaceDocumentSaveInput, q as WorkspaceDocumentSnapshot, r as WorkspaceSaveReceipt, s as WorkspaceTab, t as createDefaultPluginContextValue, u as mergePluginState } from './workspace-panel-p7Tke5p9.js';
 import { ReasoningEffortDto, CollaborationModeDto, SandboxModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
-import { P as PluginActionOutputContext, T as ThreadPluginAdapter } from './plugin-types-Ct5yq4qu.js';
-export { A as ArtifactRenderContext, F as FrontendPluginModule, I as InlineCodeRenderContext, M as MessagePresentation, a as MessagePresentationContext, b as PluginSettingsContext, c as PluginSettingsContribution, d as PluginSettingsSnapshot, e as ThreadPanelContribution, f as ThreadPluginDto, g as ThreadPluginSettingsInput, h as ThreadPluginSettingsSnapshot, U as UpstreamConnectionHost, i as UpstreamConnectionPickerProps, j as UpstreamConnectionPickerValue, k as UpstreamConnectionProtocol } from './plugin-types-Ct5yq4qu.js';
+import { P as PluginActionOutputContext, T as ThreadPluginAdapter } from './plugin-types-CWS2sP5i.js';
+export { A as ArtifactRenderContext, F as FrontendPluginModule, I as InlineCodeRenderContext, M as MessagePresentation, a as MessagePresentationContext, b as PluginSettingsContext, c as PluginSettingsContribution, d as PluginSettingsSnapshot, e as ThreadPanelContribution, f as ThreadPluginDto, g as ThreadPluginSettingsInput, h as ThreadPluginSettingsSnapshot, U as UpstreamConnectionHost, i as UpstreamConnectionPickerProps, j as UpstreamConnectionPickerValue, k as UpstreamConnectionProtocol } from './plugin-types-CWS2sP5i.js';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 export { DEFAULT_LOCALE, I18nProvider, LOCALE_OPTIONS, LOCALE_STORAGE_KEY, LanguageSwitcher, Locale, SUPPORTED_LOCALES, TranslationKey, TranslationValues, detectLocale, formatDate, formatNumber, getLocale, initializeI18n, normalizeLocale, setLocale, t, translate, useI18n } from './i18n.js';
 
@@ -455,6 +455,8 @@ interface ThreadWorkspaceLayoutProps {
     newThreadLabel?: string;
     /** Host scope disables global settings and home navigation; conversation creation stays available. */
     restrictedNavigation?: boolean;
+    /** Keep Settings under restrictedNavigation; the host passes only the sections its scope allows. */
+    scopedSettings?: boolean;
     onNewThread?: () => void;
     onNewThreadTitle?: (title: string) => Promise<void> | void;
     renderNewThreadDialogContent?: (input: {
@@ -494,7 +496,7 @@ interface ThreadCardsProps {
     collapsed?: boolean;
 }
 declare function ThreadCards({ threads, currentThreadId, currentWorkspaceId, workspaceLabels, onOpenThread, getThreadHref, renderThreadLink, onBeginRenameThread, onDeleteThread, scrollable, maxHeightClassName, showDeleteButton, showSessionCopyButton, collapsed, }: ThreadCardsProps): react.JSX.Element;
-declare function ThreadWorkspaceLayout({ workbench, threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, hideRoomsRail, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, harnessLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, deviceMonitor, metaContent, settingsContent, globalSettingsContent, settingsSections, restrictedNavigation, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, workspaceRevealRequestKey, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
+declare function ThreadWorkspaceLayout({ workbench, threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, hideRoomsRail, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, harnessLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, deviceMonitor, metaContent, settingsContent, globalSettingsContent, settingsSections, restrictedNavigation, scopedSettings, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, workspaceRevealRequestKey, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
 
 type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
     status: ThreadTurnDto["status"] | "sending";
@@ -778,6 +780,8 @@ interface ThreadDetailSurfaceProps {
     appNavigationMenu?: ReactNode;
     workspaceReturnHref?: string;
     restrictedNavigation?: boolean;
+    /** See ThreadWorkspaceLayout `scopedSettings`. */
+    scopedSettings?: boolean;
     onWorkspaceReturn?: () => void;
     threadActionsButton?: ReactNode;
     surfaceActions?: ReactNode;
@@ -834,7 +838,7 @@ interface ThreadDetailSurfaceProps {
     loadingContent?: ReactNode;
     emptyContent?: ReactNode;
 }
-declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsSections, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, restrictedNavigation, onWorkspaceReturn, threadActionsButton, surfaceActions, workbench, deviceMonitor, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, presentation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
+declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsSections, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, restrictedNavigation, scopedSettings, onWorkspaceReturn, threadActionsButton, surfaceActions, workbench, deviceMonitor, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, presentation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
 
 declare function usePlugins(): PluginContextValue;
 
@@ -941,6 +945,11 @@ interface ThreadMapThread {
     children?: ThreadMapThread[] | undefined;
     /** Agent threads folded into this one. */
     agentThreads?: number | undefined;
+    /**
+     * For an agent thread on a tile of its own (it works in another workspace than
+     * its conversation): the title of the thread that started it.
+     */
+    from?: string | undefined;
 }
 interface ThreadMapWorkspace {
     id: string;

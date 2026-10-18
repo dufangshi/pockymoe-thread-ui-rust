@@ -508,6 +508,17 @@
 .prompt-envelope-glyph { flex: none; width: 1.6ch; text-align: center; font: 700 12px var(--tlog-font-mono); color: var(--theme-accent-strong, var(--theme-accent-solid)); }
 .prompt-envelope-kind { flex: none; font-weight: 600; color: var(--theme-fg-soft); }
 .prompt-envelope-from { flex: none; font-family: var(--tlog-font-mono); font-size: 11.5px; }
+/* A sender named by its title: body type, cut short so the subject keeps room. */
+.prompt-envelope-from[data-titled] {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: min(45%, 20em);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: 12px;
+}
 .prompt-envelope-link {
   color: inherit;
   text-decoration: underline dotted var(--tlog-rule);

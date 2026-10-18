@@ -374,6 +374,8 @@ function ThreadPluginSettingsDialog({
   const device = useDevicePlugins();
   const [generation, setGeneration] = useState(0);
   const enabled = useRef<boolean | null>(null);
+  const descriptor = useRef(plugin);
+  descriptor.current = plugin;
   // Reload the editor whenever this conversation's values are reset, from here or
   // from the plugin list; a plain save keeps the editor (and its "saved" note).
   const overridden = useRef(plugin.settingsOverridden);
@@ -408,6 +410,9 @@ function ThreadPluginSettingsDialog({
       ...(device.adapter?.connections
         ? { connections: device.adapter.connections }
         : {}),
+      get plugin() {
+        return descriptor.current;
+      },
     }),
     // A new generation reloads the editor after its values were reset.
     [

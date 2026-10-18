@@ -6,6 +6,10 @@ export const contentQualityEn = {
   'quality.report.shortReply': 'Reply is below the minimum length',
   'quality.report.alreadyPolished': 'Reply is already polished',
   'quality.report.turnNotCompleted': 'Turn did not complete successfully',
+  'quality.report.exceedsContextBudget':
+    'The reply is longer than the context limit ({{maxChars}} characters), so it was not polished. Raise the limit in settings to polish it.',
+  'quality.report.exceedsContextBudgetPlain':
+    'The reply is longer than the context character limit, so it was not polished. Raise the limit in settings to polish it.',
   'quality.report.unsupportedMarkup': 'Document markup is unsupported',
   'quality.report.fileWritten': 'File written',
   'quality.report.fileUnchanged': 'File unchanged',
@@ -59,6 +63,14 @@ export const contentQualityEn = {
   'quality.minReplyChars': 'Auto-polish trigger length (characters)',
   'quality.minReplyCharsHint':
     "Auto-polish runs when the turn ends only if the final reply's prose, not counting code, is at least this many characters; shorter replies stay as they are.",
+  'quality.contextLimitsNeedUpdate':
+    "Update this device's Supervisor to limit polishing context; until then polishing reads the whole conversation.",
+  'quality.replyContextTurns': 'Context turns',
+  'quality.replyContextTurnsHint':
+    'Recent turns read for polishing, including the one being polished.',
+  'quality.replyContextMaxChars': 'Context character limit',
+  'quality.replyContextMaxCharsHint':
+    'Total characters of message text read, including the reply being polished (characters, not tokens). Newest text is kept first; a reply longer than this is not polished, so raise the limit if needed.',
   'quality.autoReplies': 'Automatically polish long replies',
   'quality.autoRepliesHint':
     'Applies when this plugin is enabled. Original replies are always retained. Polishing may incur model usage charges.',

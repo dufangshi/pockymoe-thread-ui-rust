@@ -341,7 +341,8 @@ function ThreadTimelineComponent({
   const threadLinks = useMemo(() => ({
     ...(adapter?.getThreadHref ? { href: adapter.getThreadHref } : {}),
     ...(openThreadLink ? { open: openThreadLink } : {}),
-  }), [adapter?.getThreadHref, openThreadLink]);
+    ...(adapter?.describeThread ? { describe: adapter.describeThread } : {}),
+  }), [adapter?.getThreadHref, adapter?.describeThread, openThreadLink]);
   useEffect(() => {
     // A composer floating over the transcript hides its bottom; sticky controls
     // (an opened message's "Show less") stop above it, and above the turn strip

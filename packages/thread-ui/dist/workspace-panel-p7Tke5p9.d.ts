@@ -2,7 +2,7 @@ import * as react from 'react';
 import { ReactNode, MutableRefObject } from 'react';
 import * as _pockymoe_shared from '@pockymoe/shared';
 import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, UpdatePluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
-import { U as UpstreamConnectionHost, T as ThreadPluginAdapter, d as PluginSettingsSnapshot, F as FrontendPluginModule, A as ArtifactRenderContext, I as InlineCodeRenderContext, e as ThreadPanelContribution, a as MessagePresentationContext, M as MessagePresentation, P as PluginActionOutputContext, f as ThreadPluginDto, h as ThreadPluginSettingsSnapshot, g as ThreadPluginSettingsInput } from './plugin-types-Ct5yq4qu.js';
+import { U as UpstreamConnectionHost, T as ThreadPluginAdapter, d as PluginSettingsSnapshot, F as FrontendPluginModule, A as ArtifactRenderContext, I as InlineCodeRenderContext, e as ThreadPanelContribution, a as MessagePresentationContext, M as MessagePresentation, P as PluginActionOutputContext, f as ThreadPluginDto, h as ThreadPluginSettingsSnapshot, g as ThreadPluginSettingsInput } from './plugin-types-CWS2sP5i.js';
 
 interface PromptAttachmentUpload extends PromptAttachmentManifestEntryDto {
     file: File;
@@ -32,6 +32,21 @@ interface ThreadShellControlState {
  * the variant answer with the original, so callers must not rely on its size.
  */
 type ThreadImageAssetVariant = 'thumbnail';
+/**
+ * What a page knows of another thread on its device, for naming it where it is
+ * linked (a task's sender, a sub-thread's parent). `workspaceLabel` may be absent
+ * while it is unknown.
+ */
+interface ThreadLinkInfo {
+    title: string;
+    workspaceId?: string | null;
+    workspaceLabel?: string | null;
+}
+/**
+ * Looks up a thread of this device: its info, `null` when it is gone or the
+ * reader cannot open it, `undefined` while the page does not know yet.
+ */
+type DescribeThread = (threadId: string) => ThreadLinkInfo | null | undefined;
 interface ThreadTimelineAdapter {
     resolveWorkspacePath?: (path: string) => Promise<boolean>;
     workspaceRootPath?: string | undefined;
@@ -44,6 +59,8 @@ interface ThreadTimelineAdapter {
     onOpenLinkedThread?: (threadId: string) => void;
     /** An address for a thread on this device, so links to it can open in a new tab. */
     getThreadHref?: (threadId: string) => string;
+    /** Names linked threads by their titles instead of short IDs. */
+    describeThread?: DescribeThread;
     onOpenWorkspaceFile?: (input: {
         path: string;
         line?: number;
@@ -223,6 +240,11 @@ interface ThreadShellAdapter {
 interface ThreadDetailUiAdapter {
     openThread(threadId: string): void;
     getThreadHref?: (threadId: string) => string;
+    /**
+     * Names linked threads by their titles. With it, a sub-thread (one with a
+     * `parentThreadId`) shows a bar above its conversation that leads to its parent.
+     */
+    describeThread?: DescribeThread;
     getNewThreadHref?: (workspaceId?: string | null) => string;
     renderNewThreadDialogContent?: (input: {
         close: () => void;
@@ -402,4 +424,4 @@ interface ThreadGraphWorkspaceFeatures {
 declare function ThreadGraphWorkspacePanel({ detail, status, plugins, workspaceAdapter, metaContent, settingsContent, activeView, features: featureConfig, focusPathRequest, onActiveFileChange, }: ThreadGraphWorkspacePanelProps): react.JSX.Element | null;
 declare const MemoizedThreadGraphWorkspacePanel: react.MemoExoticComponent<typeof ThreadGraphWorkspacePanel>;
 
-export { MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SettingsSection as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, SettingsPanels as g, type ThreadWorkspaceAdapter as h, PluginContext as i, PluginProvider as j, type PluginProviderAdapter as k, type SendPromptInput as l, type ShellSocketConnection as m, type ShellSocketHandlers as n, type ThreadImageAssetVariant as o, type WorkspaceDocumentSnapshot as p, type WorkspaceSaveReceipt as q, type WorkspaceTab as r, createDefaultPluginContextValue as s, mergePluginState as t, ThreadGraphWorkspacePanel as u };
+export { type DescribeThread as D, MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SettingsSection as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, SettingsPanels as g, type ThreadWorkspaceAdapter as h, PluginContext as i, PluginProvider as j, type PluginProviderAdapter as k, type SendPromptInput as l, type ShellSocketConnection as m, type ShellSocketHandlers as n, type ThreadImageAssetVariant as o, type ThreadLinkInfo as p, type WorkspaceDocumentSnapshot as q, type WorkspaceSaveReceipt as r, type WorkspaceTab as s, createDefaultPluginContextValue as t, mergePluginState as u, ThreadGraphWorkspacePanel as v };

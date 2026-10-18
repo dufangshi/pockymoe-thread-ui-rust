@@ -615,3 +615,101 @@
 @media (prefers-reduced-motion: reduce) {
   .thread-loading-ring, .thread-loading-lines i { animation: none; }
 }
+
+/* A sub-thread's relation bar: one line above the conversation, outside its
+   scroll, so it stays while the conversation scrolls and covers nothing. Its
+   content lines up with the messages; a phone keeps the back icon only. */
+.thread-relation-bar {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  border-bottom: 1px solid var(--theme-border);
+  background: color-mix(in srgb, var(--theme-accent-solid) 6%, var(--theme-surface));
+  color: var(--theme-fg-muted);
+  font-size: 12.5px;
+  line-height: 18px;
+}
+.thread-relation-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 29px;
+  min-width: 0;
+  padding-inline: 20px;
+}
+.matter-workbench .thread-relation-row {
+  max-width: var(--matter-reading-width, 100%);
+  margin-inline: auto;
+  padding-inline: 28px;
+}
+.thread-relation-icon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--theme-accent-strong, var(--theme-accent-solid));
+}
+.thread-relation-lead,
+.thread-relation-missing { flex: none; white-space: nowrap; }
+.thread-relation-parent,
+.thread-relation-place {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.thread-relation-parent {
+  flex: 0 1 auto;
+  min-width: 3em;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--theme-fg);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.thread-relation-bar[data-loading] .thread-relation-parent { font-weight: 500; color: var(--theme-fg-muted); }
+.thread-relation-parent:hover { text-decoration-color: currentColor; }
+/* The workspace gives way first when the line is short. */
+.thread-relation-place { flex: 0 10 auto; }
+.thread-relation-back {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  margin-left: auto;
+  padding: 0 8px;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-panel);
+  color: var(--theme-fg-soft, var(--theme-fg));
+  font: inherit;
+  font-size: 12px;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.thread-relation-back:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.thread-relation-back svg { flex: none; width: 13px; height: 13px; }
+.thread-relation-parent:focus-visible,
+.thread-relation-back:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
+@media (max-width: 639px) {
+  .thread-relation-row,
+  .matter-workbench .thread-relation-row { padding-inline: 10px 6px; }
+  .thread-relation-place,
+  .thread-relation-back-text { display: none; }
+  .thread-relation-back {
+    position: relative;
+    justify-content: center;
+    width: 26px;
+    height: 24px;
+    padding: 0;
+  }
+  /* A 40px touch target around the small icon, grown down into the
+     conversation's empty top edge rather than up into the top bar. */
+  .thread-relation-back::before { content: ''; position: absolute; inset: -2px -7px -14px; }
+}

@@ -175,6 +175,8 @@ export interface ThreadDetailSurfaceProps {
   appNavigationMenu?: ReactNode;
   workspaceReturnHref?: string;
   restrictedNavigation?: boolean;
+  /** See ThreadWorkspaceLayout `scopedSettings`. */
+  scopedSettings?: boolean;
   onWorkspaceReturn?: () => void;
   threadActionsButton?: ReactNode;
   surfaceActions?: ReactNode;
@@ -255,6 +257,7 @@ export function ThreadDetailSurface({
   appNavigationMenu,
   workspaceReturnHref,
   restrictedNavigation,
+  scopedSettings,
   onWorkspaceReturn,
   threadActionsButton,
   surfaceActions,
@@ -339,6 +342,7 @@ export function ThreadDetailSurface({
       ...(detail && adapter.workspace ? { resolveWorkspacePath: createWorkspacePathResolver(adapter.workspace, { threadId: detail.thread.id, workspaceId: detail.workspace.id }, detail.workspace.absPath) } : {}),
       onOpenLinkedThread: openThread,
       ...(adapter.getThreadHref ? { getThreadHref: adapter.getThreadHref } : {}),
+      ...(adapter.describeThread ? { describeThread: adapter.describeThread } : {}),
       ...(openWorkspaceFile ? { onOpenWorkspaceFile: openWorkspaceFile } : {}),
       ...(loadHistoryItemDetail
         ? { onLoadHistoryItemDetail: loadHistoryItemDetail }
@@ -351,6 +355,8 @@ export function ThreadDetailSurface({
       detail?.workspace.id,
       detail?.thread.id,
       adapter.workspace,
+      adapter.getThreadHref,
+      adapter.describeThread,
       cancelPendingSteer,
       getImageAssetUrl,
       loadHistoryItemDetail,
@@ -529,6 +535,7 @@ export function ThreadDetailSurface({
       appNavigationMenu={appNavigationMenu}
       workspaceReturnHref={workspaceReturnHref}
       restrictedNavigation={restrictedNavigation}
+      {...(scopedSettings ? { scopedSettings } : {})}
       {...(onWorkspaceReturn ? { onWorkspaceReturn } : {})}
       showMobileAppMenu={Boolean(appMenuButton)}
       showMobileThreadNavToggle={presentation !== "embedded-single-thread"}

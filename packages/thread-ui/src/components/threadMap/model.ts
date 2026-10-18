@@ -39,6 +39,11 @@ export interface ThreadMapThread {
   children?: ThreadMapThread[] | undefined;
   /** Agent threads folded into this one. */
   agentThreads?: number | undefined;
+  /**
+   * For an agent thread on a tile of its own (it works in another workspace than
+   * its conversation): the title of the thread that started it.
+   */
+  from?: string | undefined;
 }
 export interface ThreadMapWorkspace { id: string; label: string; path?: string | undefined; threads: ThreadMapThread[] }
 export interface ThreadMapDevice {

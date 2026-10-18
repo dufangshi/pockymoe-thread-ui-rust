@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ThreadHistoryItemDto, PluginManifestDto, ThreadArtifactDto, PluginDto } from '@pockymoe/shared';
+import { ThreadHistoryItemDto, PluginDto, PluginManifestDto, ThreadArtifactDto } from '@pockymoe/shared';
 
 interface ArtifactRenderContext {
     artifact: ThreadArtifactDto;
@@ -45,6 +45,8 @@ interface PluginSettingsContext {
     load: () => Promise<PluginSettingsSnapshot>;
     save: (settings: PluginSettingsSnapshot) => Promise<PluginSettingsSnapshot>;
     connections?: UpstreamConnectionHost;
+    /** The device's (or conversation's) descriptor, for capability checks. */
+    plugin?: PluginDto;
 }
 interface PluginSettingsContribution {
     id: string;

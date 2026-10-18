@@ -27,9 +27,11 @@ export { confirmAsync } from './components/menu/confirmAsync';
 export { StatusMark, navigationStatusLabel } from './components/StatusMark';
 
 export type {
+  DescribeThread,
   ShellSocketConnection,
   ShellSocketHandlers,
   ThreadDetailUiAdapter,
+  ThreadLinkInfo,
   ThreadImageAssetVariant,
   ThreadShellAdapter,
   ThreadTimelineAdapter,

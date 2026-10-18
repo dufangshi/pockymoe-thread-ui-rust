@@ -83,7 +83,8 @@ export function promptLine(prompt: string) {
 export function threadDetails(node: MapNode, hours: number) {
   const thread = node.thread!;
   const who = [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model,
-    node.parent && node.parent.kind !== 'root' ? node.parent.label : null].filter(Boolean).join(' · ');
+    node.parent && node.parent.kind !== 'root' ? node.parent.label : null,
+    thread.from ? translate('workbench.threadMapFrom', { title: thread.from }) : null].filter(Boolean).join(' · ');
   const figures = [
     thread.turns !== null ? translate('workbench.threadMapTurns', { count: thread.turns }) : null,
     thread.totalMs ? translate('workbench.threadMapTotalRan', { duration: formatRunTime(thread.totalMs) }) : null,
@@ -216,8 +217,10 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
   // Room still left grows the hourly strip, up to three times its height.
   const left = h - fixed - lines * lineHeight - (prompt ? promptLines * FIT.promptLine + FIT.gap : 0);
   const sparkHeight = FIT.spark + Math.max(0, Math.min(28, Math.floor(left * 0.4)));
-  // The chip already names the agent; a wide tile spells it out with the model.
+  // The chip already names the agent; a wide tile spells it out with the model,
+  // and says which thread started an agent thread shown on its own.
   const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model].filter(Boolean).join(' · ') : '';
+  const from = w >= 160 && thread.from ? translate('workbench.threadMapFrom', { title: thread.from }) : '';
   const status = thread.running
     ? <span className="thread-map-tile-live"><i className="thread-map-running-dot" />{translate('workbench.threadMapRunning')}</span>
     : thread.lastActiveAt ? <span>{translate('workbench.threadMapActiveAgo', { ago: ago(thread.lastActiveAt) })}</span> : null;
@@ -255,9 +258,10 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
         </span>
       )}
       {childrenRow && <span className="thread-map-tile-children-row">{childrenButton(true)}</span>}
-      {showWho && (who || status || thread.failed) && (
+      {showWho && (who || from || status || thread.failed) && (
         <span className="thread-map-tile-sub">
           {who && <span className="thread-map-tile-who">{who}</span>}
+          {from && <span className="thread-map-tile-from">{from}</span>}
           {thread.failed && <span className="thread-map-tile-failed">{translate('workbench.threadMapFailedTurn')}</span>}
           {status}
         </span>

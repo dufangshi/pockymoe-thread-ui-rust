@@ -25,8 +25,9 @@ import {
 import { useTabScrollEdges } from './useTabScrollEdges';
 import { TabScrollButtons } from './TabScrollButtons';
 import { WorkbenchContext } from './WorkbenchContext';
-import { homeRelativePath, WorkbenchPath } from './WorkbenchPath';
+import { homeRelativePath } from './WorkbenchPath';
 import { PathChip } from './copy/PathChip';
+import { ThreadToolsMenu } from './workbench/ThreadToolsMenu';
 import { StatusMark } from './StatusMark';
 import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
 import { useThemeFeature } from './themeHooks';
@@ -378,6 +379,7 @@ export function MatterWorkbench({
   const [recentsOpen, setRecentsOpen] = useState(true);
   const [bellOpen, setBellOpen] = useState(false);
   const [toolbarOpen, setToolbarOpen] = useState(false);
+  const toolbarToggleRef = useRef<HTMLButtonElement>(null);
   const [legacyExplorerOpen, setLegacyExplorerOpen] = useState(false);
   const explorerOpen = o.panels ? o.panels.presentation.mode === 'files' : legacyExplorerOpen;
   const setExplorerOpen = (value: boolean | ((open: boolean) => boolean)) => {
@@ -787,27 +789,14 @@ export function MatterWorkbench({
         </div>
         {/* New thread stays in reach however many tabs there are. */}
         <div className="matter-tab-add">{newThread}</div>
-        {!o.emptyWorkspace && <button className="matter-toolbar-toggle" aria-label={translate("workbench.threadTools")} aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal data-icon="thread-tools" /></button>}
+        {!o.emptyWorkspace && <button ref={toolbarToggleRef} className="matter-toolbar-toggle" aria-label={translate("workbench.threadTools")} aria-haspopup="menu" aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal data-icon="thread-tools" /></button>}
         {o.statusActions}
-        {toolbarOpen && <div className="matter-breadcrumb" id="matter-thread-tools">
-          <WorkbenchPath path={o.workspacePath} />
-          <ChevronRight />
-          <span className="matter-current-title" title={title}>
-            {title}
-          </span>
-          <button
-            aria-label={o.favorite ? translate("workbench.removeShortcut") : translate("workbench.addShortcut")}
-            aria-pressed={o.favorite}
-            disabled={o.favoriteBusy}
-            onClick={o.onToggleFavorite}
-          >
-            <Star data-icon="shortcut" fill={o.favorite ? 'currentColor' : 'none'} />
-          </button>
-          <div className="matter-thread-actions">
-            {actions}
-            {threadMenu}
-          </div>
-        </div>}
+        <ThreadToolsMenu id="matter-thread-tools" open={toolbarOpen && !o.emptyWorkspace} anchorRef={toolbarToggleRef}
+          path={o.workspacePath} title={title} favorite={o.favorite} favoriteBusy={o.favoriteBusy} onToggleFavorite={o.onToggleFavorite}
+          onClose={(restore) => { setToolbarOpen(false); if (restore) toolbarToggleRef.current?.focus(); }}>
+          {actions}
+          {threadMenu}
+        </ThreadToolsMenu>
         </div>}
         <PhoneDockContext.Provider value={dock}>
         {o.panels ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={dock ? { ...o.panels, onPaneSwitchChange: setPaneSwitch } : o.panels} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (

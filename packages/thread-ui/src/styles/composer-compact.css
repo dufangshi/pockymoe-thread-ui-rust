@@ -192,6 +192,11 @@
    frame: slash and attach at the left, the model, stop and send at the right. */
 [data-composer-layout='collapsed'] :is(.composer-tools, .composer-model-control),
 .thread-ui-shell .matter-workbench [data-composer-layout='collapsed'] :is(.composer-tools, .composer-model-control) { display: none; }
+/* A control whose menu is open never vanishes under the finger. */
+[data-composer-layout='collapsed'] .composer-tools:has([data-composer-menu-surface]),
+.thread-ui-shell .matter-workbench [data-composer-layout='collapsed'] .composer-tools:has([data-composer-menu-surface]) { display: flex; }
+[data-composer-layout='collapsed'] .composer-model-control:has([data-composer-menu-surface]),
+.thread-ui-shell .matter-workbench [data-composer-layout='collapsed'] .composer-model-control:has([data-composer-menu-surface]) { display: block; }
 [data-composer-layout='expanded'] .thread-graph-composer-toolbar,
 .thread-ui-shell .matter-workbench [data-composer-layout='expanded'] .thread-graph-composer-toolbar {
   grid-column: 1 / -1; grid-row: 2; width: auto; justify-self: stretch;

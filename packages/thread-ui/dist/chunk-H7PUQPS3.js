@@ -1850,6 +1850,7 @@ export {
   pastedLineCount,
   useCopy,
   CopyButton,
+  splitPath,
   PathChip,
   useMenuKeyboard,
   useModalFocus,

@@ -124,18 +124,43 @@ describe("composer interaction scope", () => {
     expect(form.dataset.expanded).toBe("true");
   });
 
-  it("returns to one line when left empty", async () => {
+  it("keeps an empty composer open when focus just drops, and folds on a real move away", async () => {
     const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
     const form = host.querySelector("form")!;
     await settle(() => editor.focus());
-    expect(form.dataset.expanded).toBe("true");
     await settle(() => {
       editor.textContent = "";
       editor.dispatchEvent(new Event("input", { bubbles: true }));
     });
-    // Still editing: the tools stay.
     expect(form.dataset.expanded).toBe("true");
+    // iOS Safari: pressing a button drops focus to the page. That is no move.
     await settle(() => editor.blur());
+    expect(form.dataset.expanded).toBe("true");
+    // Focus landing on another control outside it is.
+    await settle(() => button("Outside").focus());
+    expect(form.dataset.expanded).toBe("false");
+  });
+
+  it("stays open while one of its menus is open, whatever focus does", async () => {
+    const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
+    const form = host.querySelector("form")!;
+    await settle(() => editor.focus());
+    await settle(() => {
+      editor.textContent = "";
+      editor.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    const menu = document.createElement("div");
+    menu.dataset.composerMenuSurface = "true";
+    const item = document.createElement("button");
+    item.textContent = "/debug";
+    menu.append(item);
+    form.querySelector('[data-slot="input-group-addon"]')!.append(menu);
+    // Focus moves out (the menu's item takes the page) and the conversation is tapped.
+    await settle(() => button("Outside").focus());
+    await settle(() => host.querySelector("[data-thread-transcript] p")!.dispatchEvent(new MouseEvent("click", { bubbles: true })));
+    expect(form.dataset.expanded).toBe("true");
+    menu.remove();
+    await settle(() => host.querySelector("[data-thread-transcript] p")!.dispatchEvent(new MouseEvent("click", { bubbles: true })));
     expect(form.dataset.expanded).toBe("false");
   });
 });

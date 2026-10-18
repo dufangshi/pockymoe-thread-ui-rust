@@ -140,10 +140,12 @@ export function useCompactComposer(
       ownedEvents.current.has(event) || ownsTarget(event.target);
     let focusWithin = ownsTarget(document.activeElement);
     // Editing opens the composer: the text takes the whole width and the tools a
-    // row along its foot. Once open it stays open (other controls, the dock, a menu
-    // or the keyboard closing do not fold it) until the reader taps the conversation
-    // or leaves it empty. Scrolling the conversation is not a tap. Folded, it is one
-    // line with only stop and send beside it.
+    // row along its foot. Folded, it is one line with only stop and send beside it.
+    // It folds only on a deliberate move away: a tap on the conversation, or focus
+    // landing on another control outside it while the prompt is empty. Losing focus
+    // alone never folds it: pressing a button in its menus drops focus to the page
+    // on iOS Safari, and folding then would hide the menu under the finger. While
+    // one of its menus or panels is open it stays open; they are part of it.
     let opened = false;
     let pendingPointerEvent: PointerEvent | null = null;
     const measure = () => {
@@ -155,8 +157,7 @@ export function useCompactComposer(
       const overflowing = promptExceedsCompactLine(editor, group, toolbar);
       // Apply the fade only when real content exceeds the compact budget.
       form.toggleAttribute("data-composer-overflow", overflowing);
-      if (focusWithin) opened = true;
-      else if (!serializeEditorPrompt(editor).trim()) opened = false;
+      if (focusWithin || menuOpen()) opened = true;
       const next = opened;
       // A composition (dictation, an IME's underlined candidates) only ever opens
       // the composer: folding it mid-word could cancel the composition.
@@ -190,15 +191,19 @@ export function useCompactComposer(
       pendingPointerEvent = event;
       schedule();
     };
+    const menuOpen = () => Boolean(form.querySelector("[data-composer-menu-surface]"));
     const onClick = (event: MouseEvent) => {
       const target = event.target instanceof Element ? event.target : null;
-      if (!target?.closest("[data-thread-transcript]") || ownsEvent(event)) return;
+      if (!target?.closest("[data-thread-transcript]") || ownsEvent(event) || menuOpen()) return;
       opened = false;
       focusWithin = ownsTarget(document.activeElement);
       schedule();
     };
     const onFocusIn = (event: globalThis.FocusEvent) => {
       focusWithin = ownsEvent(event);
+      // Focus went to another control (Tab, a click in the sidebar): an empty
+      // composer folds. Focus dropping to the page is not a move and keeps it.
+      if (!focusWithin && !menuOpen() && !serializeEditorPrompt(editor).trim()) opened = false;
       schedule();
     };
     const onFocusOut = (event: globalThis.FocusEvent) => {

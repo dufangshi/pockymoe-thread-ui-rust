@@ -1429,3 +1429,50 @@
 /* The workspace path with its copy button; the path takes the room, shortened. */
 .matter-workspace-path-chip { display: inline-flex; flex: 0 1 45%; align-items: center; gap: 2px; min-width: 0; }
 .matter-workspace-path-chip > .matter-workspace-path { flex: 1 1 auto; }
+
+/* Thread tools: a dropdown under their toggle (ThreadToolsMenu). The head is the
+   workspace path and the thread, beside its shortcut star; the host's actions
+   below are labelled from their accessible names. */
+.thread-ui-shell .matter-thread-tools-menu {
+  position: fixed; z-index: 120; width: 304px; max-width: calc(100vw - 16px); padding: 6px;
+  border: 1px solid var(--theme-border-strong, var(--theme-border)); border-radius: 12px;
+  background: var(--theme-panel); color: var(--theme-fg); font-size: 13px;
+  box-shadow: 0 12px 32px -8px rgb(0 0 0 / 28%), 0 2px 6px rgb(0 0 0 / 10%);
+  animation: matter-thread-tools-in 140ms ease-out;
+}
+@keyframes matter-thread-tools-in { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
+@media (prefers-reduced-motion: reduce) { .thread-ui-shell .matter-thread-tools-menu { animation: none; } }
+.thread-ui-shell .matter-thread-tools-head {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; align-items: center;
+  margin-bottom: 4px; padding: 6px 4px 10px 10px; border-bottom: 1px solid var(--theme-border);
+}
+.thread-ui-shell .matter-thread-tools-path { display: flex; align-items: center; gap: 7px; min-width: 0; font: 12.5px/1.3 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace); }
+.thread-ui-shell .matter-thread-tools-path > svg { flex: none; width: 16px; height: 16px; color: var(--theme-fg-muted); }
+.thread-ui-shell .matter-thread-tools-path { gap: 0; }
+.thread-ui-shell .matter-thread-tools-path > svg:first-child { margin-right: 7px; }
+.thread-ui-shell .matter-thread-tools-path-head { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.thread-ui-shell .matter-thread-tools-path-tail { flex: none; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.thread-ui-shell .matter-thread-tools-copy { margin-left: 6px; }
+.thread-ui-shell .matter-thread-tools-copy { flex: none; width: 24px; height: 24px; color: var(--theme-fg-muted); }
+.thread-ui-shell .matter-thread-tools-title { min-width: 0; padding-left: 23px; overflow: hidden; color: var(--theme-fg-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.thread-ui-shell .matter-thread-tools-star {
+  grid-column: 2; grid-row: 1 / span 2; display: grid; place-items: center; width: 34px; height: 34px;
+  border-radius: 8px; color: var(--theme-fg-muted);
+}
+.thread-ui-shell .matter-thread-tools-star:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.thread-ui-shell .matter-thread-tools-star[aria-pressed='true'] { color: #e3a33b; }
+.thread-ui-shell .matter-thread-tools-star svg { width: 17px; height: 17px; }
+.thread-ui-shell .matter-thread-tools-items { display: flex; flex-direction: column; }
+.thread-ui-shell .matter-thread-tools-items :is(div, span):has(> :is(button, a)) { display: contents; }
+.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label] {
+  display: flex; align-items: center; gap: 10px; width: 100%; height: auto; min-height: 36px; padding: 0 10px;
+  border: 0; border-radius: 8px; background: transparent; color: var(--theme-fg); font-size: 13px; text-align: left;
+}
+.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label]::after { content: attr(aria-label); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label] > svg { flex: none; width: 16px; height: 16px; color: var(--theme-fg-soft, var(--theme-fg-muted)); }
+.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label]:is(:hover, :focus-visible):not(:disabled) { background: var(--theme-hover); outline: none; }
+.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label]:disabled { opacity: .45; }
+/* Port mappings (remote devices only) last, set apart. */
+.thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports']) { order: 10; margin-top: 5px; position: relative; }
+.thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports'])::before { content: ''; position: absolute; top: -3px; left: 4px; right: 4px; height: 1px; background: var(--theme-border); }
+.thread-ui-shell .matter-toolbar-toggle[aria-expanded='true'] { background: var(--theme-hover); color: var(--theme-fg); }

@@ -4,6 +4,8 @@ export const workbenchEn = {
   "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.",
   "workbench.uninstallPlugin": "Uninstall",
   "workbench.treerScopeForbidden": "This thread or action is not available through this Treer hub.",
+  "workbench.openFullPage": "Open in a new browser tab",
+  "workbench.openFullPageBlocked": "This Treer blocks new tabs. Use ⋯ on its tab, then “Open in new browser tab”.",
   "workbench.subagentsRunning": "Subagents · {{count}} running",
   "workbench.subagentCurrent": "Current",
   "workbench.subagentUnread": "Unread",

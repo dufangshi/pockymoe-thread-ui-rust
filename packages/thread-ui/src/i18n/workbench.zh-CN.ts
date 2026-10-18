@@ -4,6 +4,8 @@ export const workbenchZhCN = {
   "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。",
   "workbench.uninstallPlugin": "卸载",
   "workbench.treerScopeForbidden": "此对话或操作不在当前 Treer Hub 的可用范围内。",
+  "workbench.openFullPage": "在新浏览器标签页中打开",
+  "workbench.openFullPageBlocked": "当前 Treer 不允许打开新标签页。请点 Treer 标签上的 ⋯，选「在新浏览器标签页中打开」。",
   "workbench.subagentsRunning": "子智能体 · {{count}} 个运行中",
   "workbench.subagentCurrent": "进行中",
   "workbench.subagentUnread": "未读",

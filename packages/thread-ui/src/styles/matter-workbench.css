@@ -856,7 +856,7 @@
 @media (prefers-reduced-transparency: reduce) {
   .thread-ui-shell .matter-workbench .thread-graph-composer-shell { background: var(--theme-panel); backdrop-filter: none; }
 }
-.thread-ui-shell .matter-workbench .thread-graph-composer-shell:focus-within {
+.thread-ui-shell .matter-workbench .thread-graph-composer-shell:has(:focus-visible, input:focus, textarea:focus, select:focus, [contenteditable="true"]:focus) {
   border-color: var(--theme-accent-solid);
   box-shadow:
     0 0 0 2px color-mix(in srgb, var(--theme-accent-solid) 10%, transparent),

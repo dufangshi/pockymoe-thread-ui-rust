@@ -32,6 +32,30 @@ afterEach(() => {
 });
 
 describe('GraphChatMessageContent', () => {
+  it('reveals code actions only for touch/pen taps and clears them when switching to a mouse', () => {
+    const element = render(<GraphChatMessageContent content={'```js\nconst value = 1;\n```'} />);
+    const block = element.querySelector('.thread-graph-code-block')!;
+    const code = block.querySelector('code')!;
+    const button = block.querySelector('button')!;
+    const pointer = (target: Element, type: string, pointerType: string) => {
+      const event = new MouseEvent(type, { bubbles: true });
+      Object.defineProperty(event, 'pointerType', { value: pointerType });
+      act(() => { target.dispatchEvent(event); });
+    };
+    pointer(code, 'pointerup', 'mouse');
+    expect(block.getAttribute('data-touch-actions')).toBe('false');
+    pointer(code, 'pointerup', 'touch');
+    expect(block.getAttribute('data-touch-actions')).toBe('true');
+    pointer(button, 'pointerup', 'touch');
+    expect(block.getAttribute('data-touch-actions')).toBe('true');
+    pointer(code, 'pointerup', 'touch');
+    expect(block.getAttribute('data-touch-actions')).toBe('false');
+    pointer(code, 'pointerup', 'pen');
+    expect(block.getAttribute('data-touch-actions')).toBe('true');
+    pointer(block, 'pointerover', 'mouse');
+    expect(block.getAttribute('data-touch-actions')).toBe('false');
+  });
+
   it('renders README HTML, linked image dimensions and collapsible Markdown without executing embedded content', () => {
     const element = render(<GraphChatMessageContent content={[
       '<p align="center"><a href="https://example.com/docs"><img alt="English" src="https://example.com/badge.svg" width="88" onerror="alert(1)"></a></p>',

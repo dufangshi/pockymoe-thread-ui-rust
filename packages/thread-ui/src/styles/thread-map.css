@@ -101,7 +101,7 @@
 /* Not the settings dialog's corner close button: it sits in the bar. */
 .thread-map-dialog [data-slot='dialog-close'].thread-map-close { top: auto; right: auto; width: 32px; height: 32px; border-radius: 8px; opacity: 1; }
 .thread-map-icon-button:focus-visible,
-.thread-map-goto:focus-within { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
+.thread-map-goto:has(select:focus) { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
 .thread-map-icon-button svg,
 .thread-map-goto svg { width: 17px; height: 17px; pointer-events: none; }
 /* A native picker reaches every block, even one too small to tap. */

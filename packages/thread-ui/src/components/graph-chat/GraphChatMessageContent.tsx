@@ -353,8 +353,9 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
       return (
         <div className="thread-graph-code-block not-prose relative my-3 overflow-auto rounded-xl border p-3 text-sm shadow-sm"
           data-touch-actions={touchCode === id ? 'true' : 'false'}
+          onPointerEnter={(event) => { if (event.pointerType === 'mouse') setTouchCode(null); }}
           onPointerUp={(event) => {
-            if (event.pointerType !== 'mouse' && !(event.target instanceof Element && event.target.closest('button'))) {
+            if ((event.pointerType === 'touch' || event.pointerType === 'pen') && !(event.target instanceof Element && event.target.closest('button'))) {
               event.stopPropagation();
               setTouchCode((current) => current === id ? null : id);
             }

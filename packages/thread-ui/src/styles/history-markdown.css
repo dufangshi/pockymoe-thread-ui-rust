@@ -184,7 +184,7 @@
   color: var(--theme-fg);
 }
 
-.thread-ui-shell .thread-graph-tree-row:focus-within {
+.thread-ui-shell .thread-graph-tree-row:is(:focus-visible, :has(:focus-visible)) {
   --thread-graph-tree-row-background: var(--theme-hover);
   background: var(--theme-hover);
   color: var(--theme-fg);
@@ -213,7 +213,7 @@
   color: var(--theme-fg);
 }
 
-.thread-ui-shell .thread-graph-tree-row.is-focused {
+.thread-ui-shell .thread-graph-tree-row.is-focused:focus-visible {
   outline: 1px solid
     color-mix(in oklch, var(--theme-accent-solid) 68%, transparent);
   outline-offset: -1px;
@@ -253,7 +253,7 @@
 
 .thread-ui-shell .thread-graph-tree-row:hover .thread-graph-tree-actions,
 .thread-ui-shell
-  .thread-graph-tree-row:focus-within
+  .thread-graph-tree-row:is(:focus-visible, :has(:focus-visible))
   .thread-graph-tree-actions {
   opacity: 1;
   pointer-events: auto;
@@ -2528,7 +2528,7 @@
     .thread-graph-message-bubble.is-assistant:hover
     .thread-graph-message-time-popover,
   .thread-ui-shell
-    .thread-graph-message-bubble.is-assistant:focus-within
+    .thread-graph-message-bubble.is-assistant:is(:focus-visible, :has(:focus-visible))
     .thread-graph-message-time-popover {
     opacity: 1;
     transform: translateY(0);
@@ -3022,10 +3022,12 @@
 .thread-ui-shell .thread-graph-code-copy { opacity: 0; pointer-events: none; transition: opacity 140ms ease; }
 .thread-ui-shell .thread-graph-message-bubble[data-touch-actions="true"] .thread-graph-message-copy-desktop { opacity: 1; pointer-events: auto; }
 .thread-ui-shell .thread-graph-code-block[data-touch-actions="true"] .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
+/* Keyboard access also works on devices whose primary pointer is touch. */
+.thread-ui-shell .thread-graph-message-bubble:has(:focus-visible) .thread-graph-message-copy-desktop { opacity: 1; pointer-events: auto; }
+.thread-ui-shell .thread-graph-code-block:has(:focus-visible) .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
 @media (hover: hover) and (pointer: fine) {
-  .thread-ui-shell .thread-graph-message-bubble:is(:hover, :focus-within) .thread-graph-message-copy-desktop { opacity: 1; pointer-events: auto; }
-  .thread-ui-shell .thread-graph-code-block:hover .thread-graph-code-copy,
-  .thread-ui-shell .thread-graph-code-block:focus-within .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
+  .thread-ui-shell .thread-graph-message-bubble:hover .thread-graph-message-copy-desktop { opacity: 1; pointer-events: auto; }
+  .thread-ui-shell .thread-graph-code-block:hover .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
 }
 /* With room left of a prompt's bubble, its time and copy sit there, level with
    its last line, covering nothing. */

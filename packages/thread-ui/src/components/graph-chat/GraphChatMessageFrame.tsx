@@ -1,5 +1,5 @@
 import { translate, useI18n } from '../../i18n';
-import { useState, type MouseEvent, type ReactNode } from 'react';
+import { useState, type PointerEvent, type ReactNode } from 'react';
 
 /** Room a prompt's time and copy need beside its bubble. */
 const SIDE_ACTIONS_WIDTH = 132;
@@ -145,7 +145,8 @@ export function GraphChatMessageFrame({
       {timeLabel}
     </span>
   ) : null;
-  function handleMessageClick(event: MouseEvent<HTMLDivElement>) {
+  function handleMessagePointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return;
     if (
       event.target instanceof Element &&
       event.target.closest('a, button, input, summary, pre, .thread-graph-code-block')
@@ -173,8 +174,14 @@ export function GraphChatMessageFrame({
           data-touch-actions={touchActionsVisible ? 'true' : 'false'}
           data-actions-beside={actionsBeside || undefined}
           className={`thread-graph-message-bubble relative min-w-0 ${isUser ? 'is-user' : 'is-assistant'}`}
-          onClick={handleMessageClick}
-          onPointerEnter={(event) => { if (event.pointerType === 'mouse') placeActions(event.currentTarget); }}
+          onPointerUp={handleMessagePointerUp}
+          onPointerEnter={(event) => {
+            if (event.pointerType === 'mouse') {
+              setTouchActionsVisible(false);
+              placeActions(event.currentTarget);
+            }
+          }}
+          onPointerLeave={(event) => { if (event.pointerType === 'mouse') setTouchActionsVisible(false); }}
           onFocus={(event) => placeActions(event.currentTarget)}
         >
           {isUser && sender ? <MessageSenderMark sender={sender} /> : null}

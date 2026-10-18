@@ -194,11 +194,6 @@
   padding-bottom: 0.45rem;
 }
 
-.thread-ui-shell .thread-composer-input:focus-within {
-  border-color: transparent;
-  box-shadow: none;
-}
-
 .thread-ui-shell .thread-composer-input [contenteditable]:not([contenteditable='false']),
 .thread-ui-shell .thread-composer-input textarea {
   display: block;

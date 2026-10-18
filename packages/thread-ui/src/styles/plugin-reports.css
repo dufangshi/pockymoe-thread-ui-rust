@@ -36,4 +36,4 @@
 .quality-diff .is-add { color: var(--status-success-fg, #1d7a4c); }
 .quality-diff .is-del { color: var(--status-danger-fg, #b4323d); }
 .quality-diff .is-hunk { color: var(--theme-fg-muted); }
-.plugin-settings-dialog:focus { outline: none; }
+.plugin-settings-dialog:focus-visible { outline: none; }

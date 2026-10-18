@@ -30,8 +30,6 @@
   padding: 0; overflow: hidden; scrollbar-width: none;
 }
 [data-composer-layout='expanded'] .thread-graph-composer-prompt-region { grid-column: 1 / -1; }
-[data-composer-layout='expanded'] .thread-graph-composer-toolbar,
-.thread-ui-shell .matter-workbench [data-composer-layout='expanded'] .thread-graph-composer-toolbar { grid-row: 2; padding-top: 6px; }
 [data-composer-layout='expanded'] .thread-graph-composer-input > [role='textbox'] {
   max-height: min(240px, 30dvh); overflow-y: auto; scrollbar-width: thin;
 }
@@ -188,16 +186,43 @@
 
 .thread-ui-shell .composer-mode-chip { align-self: flex-start; }
 
-/* Open, the text flows around the buttons in the bottom-right corner (see
-   wrapAroundToolbar in useCompactComposer): the buttons share the prompt's cell
-   and an invisible float, shaped to their area at its foot, keeps text out from
-   under them while the rows above use the whole width. */
-[data-composer-layout='expanded'][data-composer-wrap] .thread-graph-composer-prompt-region { grid-column: 1 / -1; grid-row: 1; }
-[data-composer-layout='expanded'][data-composer-wrap] .thread-graph-composer-toolbar,
-.thread-ui-shell .matter-workbench [data-composer-layout='expanded'][data-composer-wrap] .thread-graph-composer-toolbar {
-  grid-column: 1 / -1; grid-row: 1; justify-self: end; align-self: end; padding-top: 0; position: relative; z-index: 2;
+/* Two layers (docs/ui-principles.md §12). Folded it is one line with only stop
+   and send beside the text; the tools and the model wait for editing. Open, the
+   text takes the whole width and the tools a row along the foot, flush with the
+   frame: slash and attach at the left, the model, stop and send at the right. */
+[data-composer-layout='collapsed'] :is(.composer-tools, .composer-model-control),
+.thread-ui-shell .matter-workbench [data-composer-layout='collapsed'] :is(.composer-tools, .composer-model-control) { display: none; }
+[data-composer-layout='expanded'] .thread-graph-composer-toolbar,
+.thread-ui-shell .matter-workbench [data-composer-layout='expanded'] .thread-graph-composer-toolbar {
+  grid-column: 1 / -1; grid-row: 2; width: auto; justify-self: stretch;
+  justify-content: space-between; padding-top: 4px; margin: 0 -6px -4px;
 }
-[data-composer-layout='expanded'][data-composer-wrap] .thread-graph-composer-input > [role='textbox']::before {
-  content: ''; float: right; width: var(--composer-wrap-w, 0px); height: var(--composer-wrap-h, 0px);
-  shape-outside: inset(calc(100% - var(--composer-wrap-t, 0px)) 0 0 0);
+[data-composer-layout='expanded'] .composer-settings,
+.thread-ui-shell .matter-workbench [data-composer-layout='expanded'] .composer-settings { flex: 0 0 auto; flex-wrap: nowrap; }
+[data-composer-layout] .composer-model-control { flex: none; }
+
+/* One key size: 32px (34px on phones), their touch area widened to 40px. Tools
+   are bare icons until hovered or open; send is the one solid key. */
+[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button),
+.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button) {
+  position: relative; width: 32px; height: 32px; min-width: 32px; min-height: 32px;
+}
+/* !important: an older rule paints every composer icon button with !important. */
+[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button) {
+  background: transparent !important; border-color: transparent !important; box-shadow: none !important;
+}
+[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button):is(:hover, [aria-expanded='true']) {
+  background: var(--theme-hover) !important;
+}
+[data-composer-layout] .thread-graph-composer-toolbar button::after { content: ''; position: absolute; inset: -4px; }
+[data-composer-layout] .composer-model-label { min-height: 32px; }
+@media (max-width: 639px) {
+  [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button),
+  .thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button) {
+    width: 34px; height: 34px; min-width: 34px; min-height: 34px;
+  }
+  [data-composer-layout] .thread-graph-composer-toolbar button::after { inset: -3px; }
+  /* A phone shows the model's name on one line; its reasoning effort is in its menu. */
+  [data-composer-layout] .composer-model-effort { display: none; }
+  [data-composer-layout] .composer-model-label { min-height: 34px; }
 }

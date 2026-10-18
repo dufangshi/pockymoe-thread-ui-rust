@@ -34,7 +34,5 @@
   .thread-ui-shell .composer-model-menu-heading ~ div > [role='menuitemradio'] { min-height: 44px; font-size: 13px; }
   /* Every dialog's close button. */
   [data-slot='dialog-close'] { min-width: 40px; min-height: 40px; display: grid; place-items: center; }
-  /* Primary composer controls: 40px. */
-  .thread-ui-shell [data-composer-menu-trigger='true'],
-  .thread-ui-shell .thread-graph-composer-stop-button { min-width: 40px; min-height: 40px; }
+  /* Composer keys stay 34px and widen their touch area (composer-compact.css). */
 }

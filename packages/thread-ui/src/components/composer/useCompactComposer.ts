@@ -139,9 +139,11 @@ export function useCompactComposer(
     const ownsEvent = (event: Event) =>
       ownedEvents.current.has(event) || ownsTarget(event.target);
     let focusWithin = ownsTarget(document.activeElement);
-    // Once open, the composer stays open (other controls, the dock, a menu or the
-    // keyboard closing do not fold it) until the reader taps the conversation or
-    // the prompt is emptied. Scrolling the conversation is not a tap.
+    // Editing opens the composer: the text takes the whole width and the tools a
+    // row along its foot. Once open it stays open (other controls, the dock, a menu
+    // or the keyboard closing do not fold it) until the reader taps the conversation
+    // or leaves it empty. Scrolling the conversation is not a tap. Folded, it is one
+    // line with only stop and send beside it.
     let opened = false;
     let pendingPointerEvent: PointerEvent | null = null;
     const measure = () => {
@@ -153,9 +155,9 @@ export function useCompactComposer(
       const overflowing = promptExceedsCompactLine(editor, group, toolbar);
       // Apply the fade only when real content exceeds the compact budget.
       form.toggleAttribute("data-composer-overflow", overflowing);
-      if (focusWithin && overflowing) opened = true;
-      if (!overflowing && !serializeEditorPrompt(editor).trim()) opened = false;
-      const next = overflowing && opened;
+      if (focusWithin) opened = true;
+      else if (!serializeEditorPrompt(editor).trim()) opened = false;
+      const next = opened;
       // A composition (dictation, an IME's underlined candidates) only ever opens
       // the composer: folding it mid-word could cancel the composition.
       const composing = editor.dataset.imeComposing === "true";
@@ -176,43 +178,6 @@ export function useCompactComposer(
         editor.scrollTop = 0;
         if (editor.parentElement) editor.parentElement.scrollTop = 0;
       }
-      wrapAroundToolbar();
-    };
-    // Open, the prompt's text flows around the buttons in the bottom-right corner
-    // instead of leaving them a row of their own: a float at the editor's start,
-    // as tall as its text, whose shape is only the buttons' area at its foot.
-    // Text long enough to scroll would pass under them, so they get their row back.
-    const clearWrap = () => {
-      if (!form.hasAttribute("data-composer-wrap")) return;
-      form.removeAttribute("data-composer-wrap");
-      for (const name of ["--composer-wrap-w", "--composer-wrap-t", "--composer-wrap-h"]) form.style.removeProperty(name);
-    };
-    const wrapAroundToolbar = () => {
-      if (form.dataset.composerLayout !== "expanded" || !serializeEditorPrompt(editor).trim()) return clearWrap();
-      const scale = editorScale(editor);
-      const buttons = toolbar.getBoundingClientRect();
-      if (!buttons.width || !buttons.height) return clearWrap();
-      const textBottom = () => {
-        const range = document.createRange();
-        range.selectNodeContents(editor);
-        const rects = range.getClientRects();
-        const top = editor.getBoundingClientRect().top;
-        const last = rects.length ? rects[rects.length - 1]!.bottom : top;
-        return (last - top) / scale + editor.scrollTop;
-      };
-      const reserve = buttons.height / scale;
-      form.style.setProperty("--composer-wrap-w", `${(buttons.width + 8) / scale}px`);
-      form.style.setProperty("--composer-wrap-t", `${reserve}px`);
-      form.setAttribute("data-composer-wrap", "");
-      // The float sits at the foot of the text; text it pushes down moves it too.
-      let height = Math.max(reserve, Math.ceil(textBottom()));
-      for (let pass = 0; pass < 3; pass += 1) {
-        form.style.setProperty("--composer-wrap-h", `${height}px`);
-        const bottom = Math.max(reserve, Math.ceil(textBottom()));
-        if (bottom <= height + 1) break;
-        height = bottom;
-      }
-      if (editor.scrollHeight > editor.clientHeight + 1) clearWrap();
     };
     const schedule = () => {
       cancelAnimationFrame(frame);
@@ -271,7 +236,6 @@ export function useCompactComposer(
       alive = false;
       cancelAnimationFrame(frame);
       form.removeAttribute("data-composer-overflow");
-      clearWrap();
       if (editor.parentElement) delete editor.parentElement.dataset.moreLines;
       mutation.disconnect();
       resize?.disconnect();

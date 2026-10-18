@@ -106,15 +106,16 @@ describe("composer interaction scope", () => {
     expect(form.dataset.expanded).toBe("true");
   });
 
-  it("opens while a dictation or IME composition is still underlined", async () => {
+  it("opens as soon as the reader edits, and a composition keeps it open", async () => {
     const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
     const form = host.querySelector("form")!;
     await settle(() => {
       editor.textContent = "";
       editor.dispatchEvent(new Event("input", { bubbles: true }));
     });
-    await settle(() => editor.focus());
     expect(form.dataset.expanded).toBe("false");
+    await settle(() => editor.focus());
+    expect(form.dataset.expanded).toBe("true");
     await settle(() => {
       editor.dataset.imeComposing = "true";
       editor.textContent = "a long dictated sentence\nthat runs past one line";
@@ -123,7 +124,7 @@ describe("composer interaction scope", () => {
     expect(form.dataset.expanded).toBe("true");
   });
 
-  it("returns to one line when the prompt is emptied", async () => {
+  it("returns to one line when left empty", async () => {
     const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
     const form = host.querySelector("form")!;
     await settle(() => editor.focus());
@@ -132,6 +133,9 @@ describe("composer interaction scope", () => {
       editor.textContent = "";
       editor.dispatchEvent(new Event("input", { bubbles: true }));
     });
+    // Still editing: the tools stay.
+    expect(form.dataset.expanded).toBe("true");
+    await settle(() => editor.blur());
     expect(form.dataset.expanded).toBe("false");
   });
 });

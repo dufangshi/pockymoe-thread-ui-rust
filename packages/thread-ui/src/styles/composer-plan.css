@@ -518,11 +518,6 @@
     padding: 0.65rem 0.75rem 0.2rem !important;
   }
 
-  .thread-ui-shell .thread-graph-composer-input [contenteditable]:not([contenteditable='false']) {
-    min-height: 3rem !important;
-    padding-right: 2.5rem;
-  }
-
   .thread-ui-shell .thread-graph-composer-toolbar {
     min-height: 2.35rem;
     gap: 0.3rem;

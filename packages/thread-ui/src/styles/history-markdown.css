@@ -3339,3 +3339,14 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:hover,html
   background-color: color-mix(in srgb, #f5c542 55%, transparent);
   color: inherit;
 }
+
+/* An ended turn with nothing recorded opens to say so, and why. */
+.thread-ui-shell .thread-graph-turn-empty-note {
+  margin: 0 0 4px 24px;
+  padding: 8px 10px;
+  border-left: 2px solid var(--theme-border-strong);
+  color: var(--theme-fg-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.thread-ui-shell .thread-graph-turn-empty-reason { margin-top: 2px; color: var(--theme-fg-soft); }

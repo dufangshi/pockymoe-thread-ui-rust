@@ -18,6 +18,7 @@ import './styles/copy.css';
 import './styles/touch.css';
 
 export { CopyButton, useCopy } from './components/copy/CopyButton';
+export { copyText } from './components/shell/terminalClipboard';
 export { PathChip } from './components/copy/PathChip';
 export { useMenuKeyboard } from './components/menu/useMenuKeyboard';
 export { useModalFocus } from './components/menu/useModalFocus';

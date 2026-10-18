@@ -1517,3 +1517,27 @@ describe('ThreadTimeline', () => {
     });
   });
 });
+
+describe('an ended turn that recorded nothing', () => {
+  it('opens to say nothing was recorded and why, instead of looking like closed work', () => {
+    const turn: ThreadTurnDto = {
+      id: 'turn-empty',
+      startedAt: '2026-10-16T14:15:46.819Z',
+      completedAt: '2026-10-16T17:21:46.819Z',
+      status: 'interrupted',
+      error: 'Backend completion was not confirmed before the Supervisor connection ended. Reconnect to verify before continuing.',
+      items: [],
+    };
+    const element = render(<ThreadTimeline turns={[turn]} liveOutput="" />);
+    const toggle = element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!;
+    expect(toggle.textContent).toContain('Worked for 3h 6m');
+    expect(toggle.textContent).toContain('Interrupted');
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    // The reason moves into the opened note rather than a faint line above.
+    expect(element.querySelector('.thread-graph-turn-header + p')).toBeNull();
+    flushSync(() => toggle.click());
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(element.querySelector('.thread-graph-turn-empty-note')?.textContent).toContain('Nothing was recorded in this turn.');
+    expect(element.querySelector('.thread-graph-turn-empty-reason')?.textContent).toContain('Supervisor connection ended');
+  });
+});

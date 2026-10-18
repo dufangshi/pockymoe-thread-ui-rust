@@ -1,4 +1,4 @@
-/* Phones: every control can be hit within 40×40px (docs/ui-principles.md §9). The
+/* Phones: every control can be hit within 40×40px (docs/ui-principles.md §10). The
    visual size stays; an invisible pseudo-element widens what a finger hits. */
 @media (max-width: 639px) {
   .thread-ui-shell :is(

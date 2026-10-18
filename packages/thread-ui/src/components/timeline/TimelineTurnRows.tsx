@@ -61,6 +61,7 @@ import { groupAnswerSections, isSubstantiveAnswer } from './answerSections';
 import { TurnTokenSummary } from './tokenFormatting';
 import { TurnStatusBar } from './turnStatus';
 import { Collapse } from './Collapse';
+import { turnErrorText } from './turnErrors';
 import { activityParts, hasActivity, storySegments, stretchBetween, stretchFromItems, turnActivity, turnChangedFiles } from './activity';
 import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff, Parts, RunPlaceholder } from './TranscriptLog';
 import { useAppShellNav } from '../../app-shell/AppShellNavContext';
@@ -810,8 +811,32 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     <TurnHead turn={turn} active={activeForRendering} added={Math.max(0, prompts.length - 1)}
       {...(onBeforeMessageResize ? { onBeforeResize: onBeforeMessageResize } : {})} />
   );
+  // A turn that ended without recording anything (it was cut off before any
+  // output reached the Supervisor) still opens: to say so, and why.
+  const recordedNothing = isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems
+    && !groupedItems.some(entry => entry.kind !== 'item' || entry.item.kind !== 'userMessage');
+  const [emptyOpen, setEmptyOpen] = useState(false);
   const terminalWorkedNode =
-    isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems ? (
+    isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems ? recordedNothing ? (
+      <>
+        <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
+          <TranscriptAgentByline />
+          <button type="button" className="thread-worked-toggle group flex min-w-0 items-center gap-2 text-left transition"
+            aria-expanded={emptyOpen} onClick={(event) => { onBeforeMessageResize?.(event.currentTarget); setEmptyOpen(open => !open); }}>
+            <ChevronRight className={`thread-worked-chevron h-4 w-4 shrink-0 transition ${emptyOpen ? 'rotate-90' : ''}`} />
+            <span className="thread-graph-worked-label shrink-0">{workedLabel}</span>
+            {interruptedLabel}
+          </button>
+          <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
+        </div>
+        <Collapse open={emptyOpen}>
+          <div className="thread-graph-turn-empty-note">
+            <p>{translate('chat.turnRecordedNothing')}</p>
+            {turn.error ? <p className="thread-graph-turn-empty-reason">{turnErrorText(turn.error)}</p> : null}
+          </div>
+        </Collapse>
+      </>
+    ) : (
       <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
         <TranscriptAgentByline />
         <span className="thread-graph-worked-label shrink-0">
@@ -1011,7 +1036,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       body={canToggleWorkedSummary ? collapsedSummaryNode : turnBody}
       collapsed={effectiveCollapsed}
       collapsedBody={collapsedSummaryNode}
-      error={failedWith && firstPromptId ? null : turn.error}
+      error={(failedWith && firstPromptId) || recordedNothing || !turn.error ? null : turnErrorText(turn.error)}
       head={headNode}
       headerStatus={<TurnStatusBar turn={turn} />}
       isActive={activeForRendering}

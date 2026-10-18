@@ -187,3 +187,17 @@
 }
 
 .thread-ui-shell .composer-mode-chip { align-self: flex-start; }
+
+/* Open, the text flows around the buttons in the bottom-right corner (see
+   wrapAroundToolbar in useCompactComposer): the buttons share the prompt's cell
+   and an invisible float, shaped to their area at its foot, keeps text out from
+   under them while the rows above use the whole width. */
+[data-composer-layout='expanded'][data-composer-wrap] .thread-graph-composer-prompt-region { grid-column: 1 / -1; grid-row: 1; }
+[data-composer-layout='expanded'][data-composer-wrap] .thread-graph-composer-toolbar,
+.thread-ui-shell .matter-workbench [data-composer-layout='expanded'][data-composer-wrap] .thread-graph-composer-toolbar {
+  grid-column: 1 / -1; grid-row: 1; justify-self: end; align-self: end; padding-top: 0; position: relative; z-index: 2;
+}
+[data-composer-layout='expanded'][data-composer-wrap] .thread-graph-composer-input > [role='textbox']::before {
+  content: ''; float: right; width: var(--composer-wrap-w, 0px); height: var(--composer-wrap-h, 0px);
+  shape-outside: inset(calc(100% - var(--composer-wrap-t, 0px)) 0 0 0);
+}

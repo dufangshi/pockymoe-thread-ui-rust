@@ -2827,6 +2827,8 @@ declare const en: {
     readonly "chat.sandbox": "Sandbox: {{value1}}";
     readonly "chat.setGoal": "Set goal";
     readonly "chat.sendPrompt": "Send Prompt";
+    readonly "chat.turnRecordedNothing": "Nothing was recorded in this turn.";
+    readonly "chat.errorCompletionUnconfirmed": "Backend completion was not confirmed before the Supervisor connection ended. Reconnect to verify before continuing.";
     readonly "chat.sendAfterTurn": "Send after this turn";
     readonly "chat.toolboxFastDescription": "Toggle fast / performance mode.";
     readonly "chat.toolboxCompactDescription": "Compact the current session.";
@@ -6666,6 +6668,8 @@ declare const zhCN: {
     "chat.sandbox": "沙箱：{{value1}}";
     "chat.setGoal": "设置目标";
     "chat.sendPrompt": "发送提示词";
+    "chat.turnRecordedNothing": "这一轮没有记录到任何内容。";
+    "chat.errorCompletionUnconfirmed": "Supervisor 连接断开前，Harness 没有确认这一轮已完成。重新连接后先确认状态再继续。";
     "chat.sendAfterTurn": "本轮结束后发送";
     "chat.toolboxFastDescription": "切换快速/性能模式。";
     "chat.toolboxCompactDescription": "压缩当前会话。";
@@ -10527,6 +10531,8 @@ declare const resources: {
         readonly "chat.sandbox": "Sandbox: {{value1}}";
         readonly "chat.setGoal": "Set goal";
         readonly "chat.sendPrompt": "Send Prompt";
+        readonly "chat.turnRecordedNothing": "Nothing was recorded in this turn.";
+        readonly "chat.errorCompletionUnconfirmed": "Backend completion was not confirmed before the Supervisor connection ended. Reconnect to verify before continuing.";
         readonly "chat.sendAfterTurn": "Send after this turn";
         readonly "chat.toolboxFastDescription": "Toggle fast / performance mode.";
         readonly "chat.toolboxCompactDescription": "Compact the current session.";
@@ -14365,6 +14371,8 @@ declare const resources: {
         "chat.sandbox": "沙箱：{{value1}}";
         "chat.setGoal": "设置目标";
         "chat.sendPrompt": "发送提示词";
+        "chat.turnRecordedNothing": "这一轮没有记录到任何内容。";
+        "chat.errorCompletionUnconfirmed": "Supervisor 连接断开前，Harness 没有确认这一轮已完成。重新连接后先确认状态再继续。";
         "chat.sendAfterTurn": "本轮结束后发送";
         "chat.toolboxFastDescription": "切换快速/性能模式。";
         "chat.toolboxCompactDescription": "压缩当前会话。";

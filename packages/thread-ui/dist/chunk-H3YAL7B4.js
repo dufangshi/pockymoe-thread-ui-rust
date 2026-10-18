@@ -1,11 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-2RVNY4HW.js";
-
-// src/components/copy/CopyButton.tsx
-import { useEffect, useRef, useState } from "react";
-import { Check, Copy, TriangleAlert } from "lucide-react";
+} from "./chunk-ZAXHF23V.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -50,6 +46,8 @@ function pastedLineCount(text) {
 }
 
 // src/components/copy/CopyButton.tsx
+import { useEffect, useRef, useState } from "react";
+import { Check, Copy, TriangleAlert } from "lucide-react";
 import { jsx, jsxs } from "react/jsx-runtime";
 function useCopy() {
   const [state, setState] = useState("idle");

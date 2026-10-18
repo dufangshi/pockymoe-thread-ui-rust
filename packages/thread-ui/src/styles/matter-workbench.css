@@ -484,7 +484,8 @@
   transform: rotate(45deg);
 }
 .matter-status-dot[data-status='unknown'] { border-style: dotted; opacity: .6; }
-.matter-status-dot[data-status='interrupted'] { border-color: #b88b48; border-radius: 2px; }
+/* Interrupted is the stop sign: a solid amber square, unlike the hollow idle ring. */
+.matter-status-dot[data-status='interrupted'] { border-color: #c08a3e; background: #c08a3e; border-radius: 1.5px; }
 @keyframes matter-running { to { transform: rotate(360deg); } }
 @keyframes matter-agents-running { 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { .matter-status-dot:is([data-status='running'], [data-status='agents-running']) { animation: none; } }

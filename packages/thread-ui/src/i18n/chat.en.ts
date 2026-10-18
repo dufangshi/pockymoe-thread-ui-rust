@@ -139,6 +139,8 @@ export const chatEn = {
   "chat.sandbox": "Sandbox: {{value1}}",
   "chat.setGoal": "Set goal",
   "chat.sendPrompt": "Send Prompt",
+  "chat.turnRecordedNothing": "Nothing was recorded in this turn.",
+  "chat.errorCompletionUnconfirmed": "Backend completion was not confirmed before the Supervisor connection ended. Reconnect to verify before continuing.",
   "chat.sendAfterTurn": "Send after this turn",
   "chat.toolboxFastDescription": "Toggle fast / performance mode.",
   "chat.toolboxCompactDescription": "Compact the current session.",

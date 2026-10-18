@@ -71,6 +71,38 @@ export function promptExceedsCompactLine(
   return width > Math.max(0, available) + 0.5 * scale;
 }
 
+/** The editor's own scale: rendered size over layout size (Text size zooms it). */
+function editorScale(editor: HTMLElement) {
+  return editor.offsetWidth ? editor.getBoundingClientRect().width / editor.offsetWidth : 1;
+}
+
+/** Lines the prompt takes once open, where it has the whole width of the group:
+ *  a hidden copy of the editor laid out at that width. */
+export function openPromptLines(editor: HTMLDivElement, group: HTMLElement) {
+  const frame = editor.parentElement;
+  const lineHeight = Number.parseFloat(getComputedStyle(editor).lineHeight) || 0;
+  if (!frame || !lineHeight) return 0;
+  const scale = editorScale(editor);
+  const groupStyle = getComputedStyle(group);
+  const groupScale = group.offsetWidth ? group.getBoundingClientRect().width / group.offsetWidth : 1;
+  const padding = (Number.parseFloat(groupStyle.paddingLeft) || 0) + (Number.parseFloat(groupStyle.paddingRight) || 0);
+  const width = (group.getBoundingClientRect().width - padding * groupScale) / scale;
+  if (width <= 0) return 0;
+  const copy = editor.cloneNode(true) as HTMLDivElement;
+  copy.removeAttribute("contenteditable");
+  copy.removeAttribute("id");
+  copy.setAttribute("aria-hidden", "true");
+  copy.inert = true;
+  Object.assign(copy.style, {
+    position: "absolute", visibility: "hidden", pointerEvents: "none", left: "0", top: "0",
+    width: `${width}px`, height: "auto", maxHeight: "none", overflow: "visible",
+  });
+  frame.append(copy);
+  const lines = Math.round(copy.offsetHeight / lineHeight);
+  copy.remove();
+  return lines;
+}
+
 export function useCompactComposer(
   formRef: RefObject<HTMLFormElement | null>,
   enabled: boolean,
@@ -128,10 +160,12 @@ export function useCompactComposer(
       // the composer: folding it mid-word could cancel the composition.
       const composing = editor.dataset.imeComposing === "true";
       setExpanded((current) => (current === next || (composing && current) ? current : next));
-      // A folded draft of several lines says how many lines it hides below what shows.
+      // A folded draft says how many more lines it has when open: wrapped lines
+      // of a long paragraph count as well as new lines.
       const lineHeight = Number.parseFloat(getComputedStyle(editor).lineHeight) || 0;
-      const hiddenLines = overflowing && !next && lineHeight > 0 && /\n/.test(serializeEditorPrompt(editor).trimEnd())
-        ? Math.round((editor.scrollHeight - editor.clientHeight) / lineHeight)
+      const folded = form.dataset.composerLayout !== "expanded";
+      const hiddenLines = overflowing && !next && folded && lineHeight > 0
+        ? Math.max(0, openPromptLines(editor, group) - Math.max(1, Math.round(editor.clientHeight / lineHeight)))
         : 0;
       const inputFrame = editor.parentElement;
       if (inputFrame) {
@@ -142,6 +176,43 @@ export function useCompactComposer(
         editor.scrollTop = 0;
         if (editor.parentElement) editor.parentElement.scrollTop = 0;
       }
+      wrapAroundToolbar();
+    };
+    // Open, the prompt's text flows around the buttons in the bottom-right corner
+    // instead of leaving them a row of their own: a float at the editor's start,
+    // as tall as its text, whose shape is only the buttons' area at its foot.
+    // Text long enough to scroll would pass under them, so they get their row back.
+    const clearWrap = () => {
+      if (!form.hasAttribute("data-composer-wrap")) return;
+      form.removeAttribute("data-composer-wrap");
+      for (const name of ["--composer-wrap-w", "--composer-wrap-t", "--composer-wrap-h"]) form.style.removeProperty(name);
+    };
+    const wrapAroundToolbar = () => {
+      if (form.dataset.composerLayout !== "expanded" || !serializeEditorPrompt(editor).trim()) return clearWrap();
+      const scale = editorScale(editor);
+      const buttons = toolbar.getBoundingClientRect();
+      if (!buttons.width || !buttons.height) return clearWrap();
+      const textBottom = () => {
+        const range = document.createRange();
+        range.selectNodeContents(editor);
+        const rects = range.getClientRects();
+        const top = editor.getBoundingClientRect().top;
+        const last = rects.length ? rects[rects.length - 1]!.bottom : top;
+        return (last - top) / scale + editor.scrollTop;
+      };
+      const reserve = buttons.height / scale;
+      form.style.setProperty("--composer-wrap-w", `${(buttons.width + 8) / scale}px`);
+      form.style.setProperty("--composer-wrap-t", `${reserve}px`);
+      form.setAttribute("data-composer-wrap", "");
+      // The float sits at the foot of the text; text it pushes down moves it too.
+      let height = Math.max(reserve, Math.ceil(textBottom()));
+      for (let pass = 0; pass < 3; pass += 1) {
+        form.style.setProperty("--composer-wrap-h", `${height}px`);
+        const bottom = Math.max(reserve, Math.ceil(textBottom()));
+        if (bottom <= height + 1) break;
+        height = bottom;
+      }
+      if (editor.scrollHeight > editor.clientHeight + 1) clearWrap();
     };
     const schedule = () => {
       cancelAnimationFrame(frame);
@@ -200,6 +271,7 @@ export function useCompactComposer(
       alive = false;
       cancelAnimationFrame(frame);
       form.removeAttribute("data-composer-overflow");
+      clearWrap();
       if (editor.parentElement) delete editor.parentElement.dataset.moreLines;
       mutation.disconnect();
       resize?.disconnect();

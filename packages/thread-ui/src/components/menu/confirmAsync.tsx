@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { ConfirmDialog } from '../ConfirmDialog';
 
 /** The app's own confirmation in place of `window.confirm` (see
-    docs/ui-principles.md §10): resolves true when confirmed. */
+    docs/ui-principles.md §11): resolves true when confirmed. */
 export function confirmAsync({ title, description, confirmLabel, cancelLabel }: {
   title: string;
   description: string;

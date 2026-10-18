@@ -503,6 +503,7 @@ export const settingsEn = {
   'settings.dshRunModeBroken': '{{value1}} (unavailable: {{value2}})',
   'settings.dshRunModeBrokenUnknown': 'DSH reports it cannot load',
   'settings.resourcesTab': 'Resources',
+  'settings.treerDeviceDescription': "Check, update or restart this machine's Pockymoe hub.",
   'settings.resourcesDescription':
     'Release idle harnesses and cap how many stay loaded.',
   'settings.resourcesChooseDevice': 'Open a device to manage its resources.',

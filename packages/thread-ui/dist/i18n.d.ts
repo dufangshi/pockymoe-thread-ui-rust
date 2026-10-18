@@ -1416,6 +1416,7 @@ declare const en: {
     readonly 'settings.dshRunModeBroken': "{{value1}} (unavailable: {{value2}})";
     readonly 'settings.dshRunModeBrokenUnknown': "DSH reports it cannot load";
     readonly 'settings.resourcesTab': "Resources";
+    readonly 'settings.treerDeviceDescription': "Check, update or restart this machine's Pockymoe hub.";
     readonly 'settings.resourcesDescription': "Release idle harnesses and cap how many stay loaded.";
     readonly 'settings.resourcesChooseDevice': "Open a device to manage its resources.";
     readonly 'settings.resourcesUnavailable': "Update this device's Supervisor to change resource settings.";
@@ -5274,6 +5275,7 @@ declare const zhCN: {
     'settings.dshRunModeBroken': "{{value1}}（不可用：{{value2}}）";
     'settings.dshRunModeBrokenUnknown': "DSH 报告无法加载";
     'settings.resourcesTab': "资源";
+    'settings.treerDeviceDescription': "检查、更新或重启这台机器上的 Pockymoe hub。";
     'settings.resourcesDescription': "释放空闲 harness，限制同时加载的数量。";
     'settings.resourcesChooseDevice': "请打开设备以管理其资源。";
     'settings.resourcesUnavailable': "请更新此设备的 Supervisor 以修改资源设置。";
@@ -9154,6 +9156,7 @@ declare const resources: {
         readonly 'settings.dshRunModeBroken': "{{value1}} (unavailable: {{value2}})";
         readonly 'settings.dshRunModeBrokenUnknown': "DSH reports it cannot load";
         readonly 'settings.resourcesTab': "Resources";
+        readonly 'settings.treerDeviceDescription': "Check, update or restart this machine's Pockymoe hub.";
         readonly 'settings.resourcesDescription': "Release idle harnesses and cap how many stay loaded.";
         readonly 'settings.resourcesChooseDevice': "Open a device to manage its resources.";
         readonly 'settings.resourcesUnavailable': "Update this device's Supervisor to change resource settings.";
@@ -13011,6 +13014,7 @@ declare const resources: {
         'settings.dshRunModeBroken': "{{value1}}（不可用：{{value2}}）";
         'settings.dshRunModeBrokenUnknown': "DSH 报告无法加载";
         'settings.resourcesTab': "资源";
+        'settings.treerDeviceDescription': "检查、更新或重启这台机器上的 Pockymoe hub。";
         'settings.resourcesDescription': "释放空闲 harness，限制同时加载的数量。";
         'settings.resourcesChooseDevice': "请打开设备以管理其资源。";
         'settings.resourcesUnavailable': "请更新此设备的 Supervisor 以修改资源设置。";

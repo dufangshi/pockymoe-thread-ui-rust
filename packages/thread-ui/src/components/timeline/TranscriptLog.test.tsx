@@ -56,6 +56,16 @@ describe('TranscriptLog', () => {
     expect(container.querySelector('.tlog-row')).toBeNull();
   });
 
+  it('says a cleaned-up command output is gone instead of loading it', async () => {
+    const loadDetail = vi.fn(async (id: string) => detail(id, 'Tool: shell\n\nInput:\n{}'));
+    const row = item('cleaned', 'commandExecution', { hasDeferredDetail: true, outputPrunedAt: '2026-10-18T09:00:00.000Z', outputPrunedBytes: 2048 });
+    await render(<TranscriptLogContext.Provider value={actions({ loadDetail })}><LogRow item={row} /></TranscriptLogContext.Provider>);
+    await click('.tlog-row-head');
+    expect(loadDetail).not.toHaveBeenCalled();
+    expect(container.querySelector('.tlog-empty.is-pruned')?.textContent).toMatch(/^Output cleaned up on .+ by the storage setting \(was 2 KB\)$/);
+    expect(container.querySelector('.tlog-output')).toBeNull();
+  });
+
   it('loads details only after a row click and reuses the cache across close and remount', async () => {
     const loadDetail = vi.fn(async (id: string) => detail(id, 'Tool: shell\n\nOutput:\n"loaded output\\n"'));
     const context = actions({ loadDetail });

@@ -492,6 +492,7 @@ export const chatEn = {
   'chat.logDiffMore': { one: '{{count}} more line', other: '{{count}} more lines' },
   'chat.logOpenFull': 'Open in full',
   'chat.logNoOutput': 'No output',
+  'chat.logOutputPruned': 'Output cleaned up on {{date}} by the storage setting (was {{size}})',
   'chat.logLoading': 'Loading…',
   'chat.logDetailFailed': "Couldn't load the details: {{reason}}",
   'chat.retry': 'Retry',

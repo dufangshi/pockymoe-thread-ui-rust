@@ -399,6 +399,9 @@ export interface MessageSenderDto {
 }
 
 export interface ThreadHistoryItemDto {
+  /** Set when storage cleanup removed this command's output (its command and input stay). */
+  outputPrunedAt?: string | null;
+  outputPrunedBytes?: number | null;
   polishedReply?: PolishedReplyDto | null;
   peerWork?: ThreadPeerWorkDto | null;
   /** Set on prompts that someone other than the device owner sent. */

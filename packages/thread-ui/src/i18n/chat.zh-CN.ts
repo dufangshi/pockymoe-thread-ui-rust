@@ -492,6 +492,7 @@ export const chatZhCN = {
   'chat.logDiffMore': { one: '还有 {{count}} 行', other: '还有 {{count}} 行' },
   'chat.logOpenFull': '完整查看',
   'chat.logNoOutput': '无输出',
+  'chat.logOutputPruned': '输出已于 {{date}} 按存储设置清理（原 {{size}}）',
   'chat.logLoading': '加载中…',
   'chat.logDetailFailed': '无法加载详情：{{reason}}',
   'chat.retry': '重试',

@@ -4,7 +4,8 @@ import { CopyButton } from '../copy/CopyButton';
 
 import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto, ThreadTurnActivitySegmentDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
 
-import { translate, useI18n } from '../../i18n';
+import { getLocale, translate, useI18n } from '../../i18n';
+import { formatFileSize } from '../attachments/attachmentFiles';
 import { DiffDetail } from '../DiffDetail';
 import { GraphChatLinkifiedPlainText } from '../graph-chat/GraphChatMessageBody';
 import {
@@ -221,12 +222,26 @@ function Viewable({ className, label, onOpen, more, children }: {
 function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: { full: string; text: string }; path?: string }) {
   const actions = useContext(TranscriptLogContext);
   const isReasoning = item.kind === 'reasoning';
-  const detail = useItemDetail(item, !isReasoning);
+  // Storage cleanup kept only the command and its input: there is nothing to fetch.
+  const pruned = item.kind === 'commandExecution' && Boolean(item.outputPrunedAt);
+  const detail = useItemDetail(item, !isReasoning && !pruned);
   const workspaceRoot = actions?.workspaceRoot;
   const formatPath = useCallback((path: string) => displayPath(path, workspaceRoot), [workspaceRoot]);
 
   if (isReasoning) {
     return <div className="tlog-detail is-prose"><GraphChatLinkifiedPlainText text={item.text} /></div>;
+  }
+  if (pruned) {
+    const date = new Date(item.outputPrunedAt!);
+    return (
+      <div className="tlog-detail">
+        {title.full !== title.text.replace(/ …$/, '') ? <pre className="tlog-command">{title.full}</pre> : null}
+        <p className="tlog-empty is-pruned">{translate('chat.logOutputPruned', {
+          date: Number.isNaN(date.getTime()) ? item.outputPrunedAt! : date.toLocaleDateString(getLocale()),
+          size: formatFileSize(item.outputPrunedBytes ?? 0),
+        })}</p>
+      </div>
+    );
   }
   if (detail.loading) return <div className="tlog-detail is-loading" role="status">{translate('chat.logLoading')}</div>;
 

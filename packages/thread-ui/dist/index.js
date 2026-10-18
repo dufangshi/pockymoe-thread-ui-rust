@@ -45,7 +45,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-AGEZJRZP.js";
+} from "./chunk-6FZQDG22.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -72,7 +72,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-LPN6442K.js";
+} from "./chunk-HWKGDLG6.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -130,6 +130,68 @@ styleInject(':where(.copy-button) {\n  position: relative;\n  display: inline-gr
 
 // src/styles/touch.css
 styleInject('@media (max-width: 639px) {\n  .thread-ui-shell :is(.thread-turn-head-main, .thread-turn-usage-price, .thread-turn-head-time, .thread-turn-head-speed, .thread-graph-message-failure, .matter-mobile-close, .thread-graph-editor-toolbar-button, .thread-graph-editor-tab-close, .thread-map-children, .matter-notifications-heading > button, .workspace-file-actions > button, .workspace-properties-close) {\n    position: relative;\n  }\n  .thread-ui-shell :is(.thread-turn-head-main, .thread-turn-usage-price, .thread-turn-head-time, .thread-turn-head-speed)::after {\n    content: "";\n    position: absolute;\n    inset: -10px -3px;\n  }\n  .thread-ui-shell :is(.thread-graph-message-failure, .matter-mobile-close, .thread-graph-editor-toolbar-button, .thread-graph-editor-tab-close, .thread-map-children, .matter-notifications-heading > button, .workspace-file-actions > button)::after {\n    content: "";\n    position: absolute;\n    inset: -6px;\n  }\n  .thread-ui-shell .composer-model-menu-heading ~ div > [role=menuitemradio] {\n    min-height: 44px;\n    font-size: 13px;\n  }\n  [data-slot=dialog-close] {\n    min-width: 40px;\n    min-height: 40px;\n    display: grid;\n    place-items: center;\n  }\n}\n');
+
+// src/components/attachments/attachmentFiles.ts
+var families = [
+  ["pdf", /^pdf$/],
+  ["image", /^(png|jpe?g|gif|webp|svg|bmp|heic|heif|avif|ico|tiff?)$/],
+  ["archive", /^(zip|tar|gz|tgz|bz2|xz|7z|rar|zst)$/],
+  ["sheet", /^(csv|tsv|xlsx?|ods|numbers)$/],
+  ["doc", /^(docx?|odt|rtf|pages|pptx?|key)$/],
+  ["audio", /^(mp3|wav|m4a|flac|ogg|aac)$/],
+  ["video", /^(mp4|mov|webm|mkv|avi)$/],
+  ["text", /^(md|markdown|txt|log|rst)$/],
+  ["code", /^(js|jsx|ts|tsx|mjs|cjs|py|rs|go|java|kt|swift|c|cc|cpp|h|hpp|cs|rb|php|sh|bash|zsh|ps1|json|jsonc|ya?ml|toml|ini|xml|html?|css|scss|sql|lua|dart|vue|svelte|pockytheme)$/]
+];
+function fileExtension(name) {
+  const dot = name.lastIndexOf(".");
+  return dot > 0 && dot < name.length - 1 ? name.slice(dot + 1).toLowerCase() : null;
+}
+function fileFamily(name, kind, mime) {
+  if (kind === "photo" || mime?.startsWith("image/")) return "image";
+  const extension = fileExtension(name);
+  return extension && families.find(([, pattern]) => pattern.test(extension))?.[0] || "other";
+}
+function fileBadge(name) {
+  const extension = fileExtension(name);
+  return extension && extension.length <= 5 ? extension.toUpperCase() : null;
+}
+var charWidth = (char) => /[\u1100-\u115f\u2e80-\ua4cf\uac00-\ud7a3\uf900-\ufaff\ufe30-\ufe4f\uff00-\uff60\uffe0-\uffe6]/u.test(char) ? 2 : 1;
+var textWidth = (text) => [...text].reduce((sum, char) => sum + charWidth(char), 0);
+var takeWidth = (chars, budget) => {
+  const kept = [];
+  for (const char of chars) {
+    if (budget < charWidth(char)) break;
+    budget -= charWidth(char);
+    kept.push(char);
+  }
+  return kept;
+};
+function shortFileName(name, max = 11) {
+  if (textWidth(name) <= max) return name;
+  const extension = fileExtension(name);
+  const tail = extension && extension.length <= 5 ? `.${extension}` : "";
+  const stem = [...name.slice(0, name.length - tail.length)];
+  const room = Math.max(2, max - tail.length - 1);
+  const end = takeWidth([...stem].reverse(), Math.min(3, Math.floor(room / 3))).reverse();
+  const start = takeWidth(stem, room - textWidth(end.join("")));
+  return `${start.join("")}\u2026${end.join("")}${tail}`;
+}
+function formatFileSize(bytes) {
+  const units = ["B", "KB", "MB", "GB"];
+  let value = bytes, unit = 0;
+  while (value >= 1024 && unit < units.length - 1) {
+    value /= 1024;
+    unit++;
+  }
+  return `${value.toLocaleString(getLocale(), { maximumFractionDigits: unit ? 1 : 0 })} ${units[unit]}`;
+}
+function fileKindLabel(name, family) {
+  if (family === "image") return translate("chat.attachmentImage");
+  const badge = fileBadge(name);
+  return badge ? translate("chat.attachmentFileOf", { kind: badge }) : translate("chat.attachmentFile");
+}
+var FILE_GLYPH_SVG = '<svg class="attachment-glyph" viewBox="0 0 28 34" aria-hidden="true"><path class="attachment-glyph-sheet" d="M5 1.5h12.5L26 10v19.5a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-25a3 3 0 0 1 3-3z"/><path class="attachment-glyph-fold" d="M17.5 1.5V7a3 3 0 0 0 3 3H26"/></svg>';
 
 // src/components/StatusMark.tsx
 import { jsx } from "react/jsx-runtime";
@@ -4733,70 +4795,6 @@ function useComposerMenuLifecycle({
 import {
   useLayoutEffect as useLayoutEffect4
 } from "react";
-
-// src/components/attachments/attachmentFiles.ts
-var families = [
-  ["pdf", /^pdf$/],
-  ["image", /^(png|jpe?g|gif|webp|svg|bmp|heic|heif|avif|ico|tiff?)$/],
-  ["archive", /^(zip|tar|gz|tgz|bz2|xz|7z|rar|zst)$/],
-  ["sheet", /^(csv|tsv|xlsx?|ods|numbers)$/],
-  ["doc", /^(docx?|odt|rtf|pages|pptx?|key)$/],
-  ["audio", /^(mp3|wav|m4a|flac|ogg|aac)$/],
-  ["video", /^(mp4|mov|webm|mkv|avi)$/],
-  ["text", /^(md|markdown|txt|log|rst)$/],
-  ["code", /^(js|jsx|ts|tsx|mjs|cjs|py|rs|go|java|kt|swift|c|cc|cpp|h|hpp|cs|rb|php|sh|bash|zsh|ps1|json|jsonc|ya?ml|toml|ini|xml|html?|css|scss|sql|lua|dart|vue|svelte|pockytheme)$/]
-];
-function fileExtension(name) {
-  const dot = name.lastIndexOf(".");
-  return dot > 0 && dot < name.length - 1 ? name.slice(dot + 1).toLowerCase() : null;
-}
-function fileFamily(name, kind, mime) {
-  if (kind === "photo" || mime?.startsWith("image/")) return "image";
-  const extension = fileExtension(name);
-  return extension && families.find(([, pattern]) => pattern.test(extension))?.[0] || "other";
-}
-function fileBadge(name) {
-  const extension = fileExtension(name);
-  return extension && extension.length <= 5 ? extension.toUpperCase() : null;
-}
-var charWidth = (char) => /[\u1100-\u115f\u2e80-\ua4cf\uac00-\ud7a3\uf900-\ufaff\ufe30-\ufe4f\uff00-\uff60\uffe0-\uffe6]/u.test(char) ? 2 : 1;
-var textWidth = (text) => [...text].reduce((sum, char) => sum + charWidth(char), 0);
-var takeWidth = (chars, budget) => {
-  const kept = [];
-  for (const char of chars) {
-    if (budget < charWidth(char)) break;
-    budget -= charWidth(char);
-    kept.push(char);
-  }
-  return kept;
-};
-function shortFileName(name, max = 11) {
-  if (textWidth(name) <= max) return name;
-  const extension = fileExtension(name);
-  const tail = extension && extension.length <= 5 ? `.${extension}` : "";
-  const stem = [...name.slice(0, name.length - tail.length)];
-  const room = Math.max(2, max - tail.length - 1);
-  const end = takeWidth([...stem].reverse(), Math.min(3, Math.floor(room / 3))).reverse();
-  const start = takeWidth(stem, room - textWidth(end.join("")));
-  return `${start.join("")}\u2026${end.join("")}${tail}`;
-}
-function formatFileSize(bytes) {
-  const units = ["B", "KB", "MB", "GB"];
-  let value = bytes, unit = 0;
-  while (value >= 1024 && unit < units.length - 1) {
-    value /= 1024;
-    unit++;
-  }
-  return `${value.toLocaleString(getLocale(), { maximumFractionDigits: unit ? 1 : 0 })} ${units[unit]}`;
-}
-function fileKindLabel(name, family) {
-  if (family === "image") return translate("chat.attachmentImage");
-  const badge = fileBadge(name);
-  return badge ? translate("chat.attachmentFileOf", { kind: badge }) : translate("chat.attachmentFile");
-}
-var FILE_GLYPH_SVG = '<svg class="attachment-glyph" viewBox="0 0 28 34" aria-hidden="true"><path class="attachment-glyph-sheet" d="M5 1.5h12.5L26 10v19.5a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-25a3 3 0 0 1 3-3z"/><path class="attachment-glyph-fold" d="M17.5 1.5V7a3 3 0 0 0 3 3H26"/></svg>';
-
-// src/components/composer/useComposerPromptDomSync.ts
 function createPromptAttachmentToken(segment, attachmentPreviewUrls) {
   const { attachment } = segment;
   const name = basenameFromAttachmentPath(attachment.originalName || attachmentDisplayLabel(attachment)) || attachmentDisplayLabel(attachment);
@@ -16283,11 +16281,22 @@ function Viewable({ className, label, onOpen, more, children }) {
 function RowDetail({ item, title, path }) {
   const actions = useContext12(TranscriptLogContext);
   const isReasoning = item.kind === "reasoning";
-  const detail = useItemDetail(item, !isReasoning);
+  const pruned = item.kind === "commandExecution" && Boolean(item.outputPrunedAt);
+  const detail = useItemDetail(item, !isReasoning && !pruned);
   const workspaceRoot = actions?.workspaceRoot;
   const formatPath = useCallback14((path2) => displayPath(path2, workspaceRoot), [workspaceRoot]);
   if (isReasoning) {
     return /* @__PURE__ */ jsx69("div", { className: "tlog-detail is-prose", children: /* @__PURE__ */ jsx69(GraphChatLinkifiedPlainText, { text: item.text }) });
+  }
+  if (pruned) {
+    const date = new Date(item.outputPrunedAt);
+    return /* @__PURE__ */ jsxs59("div", { className: "tlog-detail", children: [
+      title.full !== title.text.replace(/ …$/, "") ? /* @__PURE__ */ jsx69("pre", { className: "tlog-command", children: title.full }) : null,
+      /* @__PURE__ */ jsx69("p", { className: "tlog-empty is-pruned", children: translate("chat.logOutputPruned", {
+        date: Number.isNaN(date.getTime()) ? item.outputPrunedAt : date.toLocaleDateString(getLocale()),
+        size: formatFileSize(item.outputPrunedBytes ?? 0)
+      }) })
+    ] });
   }
   if (detail.loading) return /* @__PURE__ */ jsx69("div", { className: "tlog-detail is-loading", role: "status", children: translate("chat.logLoading") });
   const text = detail.text ?? "";
@@ -26272,6 +26281,7 @@ export {
   detectLocale,
   documentThemeFeatures,
   formatDate,
+  formatFileSize,
   formatLongTimestamp,
   formatNumber,
   formatShortTimestamp,

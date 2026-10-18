@@ -369,7 +369,24 @@ describe('host-restricted navigation', () => {
     expect(host.querySelector('a[href="/workspaces"]')).toBeNull();
     expect(host.querySelector('button[title="New Chat"]')).not.toBeNull();
     expect(host.querySelector('[data-testid="settings-dialog"]')).toBeNull();
+    expect(host.querySelector('button[aria-label="Open settings"]')).toBeNull();
     expect(host.querySelector('a[href="/threads/child"]')).not.toBeNull();
     expect(host.textContent).toContain('Child conversation');
+  });
+
+  it.each([false, true])('keeps the host-scoped settings under restricted navigation (mobile=%s)', (mobile) => {
+    mockViewport(mobile);
+    Element.prototype.scrollIntoView = vi.fn();
+    const host = render(<ThreadWorkspaceLayout threads={[]} status={null}
+      restrictedNavigation scopedSettings
+      workspaceReturnHref="/workspaces" settingsSections={[{ id: 'preferences', label: 'Preferences', content: <p>Theme</p> }]}
+      getNewThreadHref={() => '/threads/new'}
+      workbench={{ threads: [{ key: 'local:child', title: 'Child', subtitle: 'Child thread', status: 'idle', href: '/threads/child', favorite: false }],
+        currentKey: 'local:child', activeView: 'chat', terminalEnabled: false, onViewChange: () => {}, onSearch: () => {}, workspacePath: '/project', favorite: false,
+        onToggleFavorite: () => {}, onNavigate: () => {}, notifications: [], unreadCount: 0, onReadNotifications: () => {} }}>
+      <p>Child conversation</p>
+    </ThreadWorkspaceLayout>);
+    expect(host.querySelector('a[href="/workspaces"]')).toBeNull();
+    expect(host.querySelector('button[aria-label="Open settings"]')).not.toBeNull();
   });
 });

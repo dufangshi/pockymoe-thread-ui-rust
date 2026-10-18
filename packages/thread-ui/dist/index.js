@@ -9803,6 +9803,7 @@ function ThreadWorkspaceLayout({
   globalSettingsContent,
   settingsSections,
   restrictedNavigation = false,
+  scopedSettings = false,
   workspaceLabels = {},
   workspaceReturnHref,
   onWorkspaceReturn,
@@ -10102,7 +10103,7 @@ function ThreadWorkspaceLayout({
     );
   }
   function renderSettingsDialog() {
-    if (restrictedNavigation) return null;
+    if (restrictedNavigation && !scopedSettings) return null;
     if (!settingsContent && !metaContent && !globalSettingsContent && !settingsSections?.length && !canUpdateThemeMode) {
       return null;
     }
@@ -23369,6 +23370,7 @@ function ThreadDetailSurface({
   appNavigationMenu,
   workspaceReturnHref,
   restrictedNavigation,
+  scopedSettings,
   onWorkspaceReturn,
   threadActionsButton,
   surfaceActions,
@@ -23585,6 +23587,7 @@ function ThreadDetailSurface({
       appNavigationMenu,
       workspaceReturnHref,
       restrictedNavigation,
+      ...scopedSettings ? { scopedSettings } : {},
       ...onWorkspaceReturn ? { onWorkspaceReturn } : {},
       showMobileAppMenu: Boolean(appMenuButton),
       showMobileThreadNavToggle: presentation !== "embedded-single-thread",

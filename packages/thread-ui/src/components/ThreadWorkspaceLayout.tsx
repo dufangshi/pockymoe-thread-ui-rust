@@ -113,6 +113,8 @@ interface ThreadWorkspaceLayoutProps {
   newThreadLabel?: string;
   /** Host scope disables global settings and home navigation; conversation creation stays available. */
   restrictedNavigation?: boolean;
+  /** Keep Settings under restrictedNavigation; the host passes only the sections its scope allows. */
+  scopedSettings?: boolean;
   onNewThread?: () => void;
   onNewThreadTitle?: (title: string) => Promise<void> | void;
   renderNewThreadDialogContent?: (input: {
@@ -437,6 +439,7 @@ export function ThreadWorkspaceLayout({
   globalSettingsContent,
   settingsSections,
   restrictedNavigation = false,
+  scopedSettings = false,
   workspaceLabels = {},
   workspaceReturnHref,
   onWorkspaceReturn,
@@ -790,7 +793,7 @@ export function ThreadWorkspaceLayout({
   }
 
   function renderSettingsDialog() {
-    if (restrictedNavigation) return null;
+    if (restrictedNavigation && !scopedSettings) return null;
     if (
       !settingsContent &&
       !metaContent &&

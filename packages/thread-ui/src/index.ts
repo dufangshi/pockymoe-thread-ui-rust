@@ -147,7 +147,7 @@ export {
   type AppShellNavigationMenuProps,
   type AppShellSettingsDialogProps,
 } from './app-shell/AppShellNavigation';
-export type { MatterWorkbenchOptions, WorkbenchThread, WorkbenchNotification, WorkbenchToolPanel } from './components/MatterWorkbench';
+export type { MatterWorkbenchOptions, ThreadMenuContext, WorkbenchThread, WorkbenchNotification, WorkbenchToolPanel } from './components/MatterWorkbench';
 export { MatterWorkbench } from './components/MatterWorkbench';
 export { ThreadMap } from './components/threadMap/ThreadMap';
 export { ThreadMapDialog } from './components/threadMap/ThreadMapDialog';

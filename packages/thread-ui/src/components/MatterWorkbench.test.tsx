@@ -530,4 +530,27 @@ describe('desktop tabs', () => {
     expect(row.querySelector('.matter-section-heading')?.textContent).toContain('This workspace');
     expect(row.querySelector('.matter-section-add [aria-label="New thread"]')).not.toBeNull();
   });
+
+  it('opens the thread\'s own menu on a right-click on a tab or a row, instead of the browser\'s', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+    const contexts: { key: string; x: number; y: number; close: () => void }[] = [];
+    options = { ...baseOptions, currentKey: 'local:a', workspaceThreads: [tab('local:a'), tab('local:b')],
+      renderThreadMenu: (thread, context) => {
+        if (!context) return null;
+        contexts.push({ key: thread.key, x: context.x, y: context.y, close: context.onClose });
+        return <div data-testid="thread-menu">{thread.title}</div>;
+      } };
+    render();
+    const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 120, clientY: 30 });
+    act(() => { host.querySelectorAll('.matter-thread-tabs .matter-group-tab')[1]!.dispatchEvent(event); });
+    expect(event.defaultPrevented).toBe(true);
+    expect(host.querySelector('[data-testid="thread-menu"]')?.textContent).toBe('LOCAL:B');
+    expect(contexts.at(-1)).toMatchObject({ key: 'local:b', x: 120, y: 30 });
+    act(() => contexts.at(-1)!.close());
+    expect(host.querySelector('[data-testid="thread-menu"]')).toBeNull();
+    const row = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 40, clientY: 200 });
+    act(() => { host.querySelector('[data-testid="workspace-threads"] .matter-thread-row')!.dispatchEvent(row); });
+    expect(row.defaultPrevented).toBe(true);
+    expect(contexts.at(-1)).toMatchObject({ key: 'local:a', x: 40, y: 200 });
+  });
 });

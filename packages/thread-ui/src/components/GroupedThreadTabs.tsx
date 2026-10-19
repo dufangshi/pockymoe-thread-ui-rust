@@ -27,10 +27,12 @@ export function groupThreads(threads: WorkbenchThread[]) {
   return groups;
 }
 
-export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose }: {
+export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, onThreadMenu }: {
   threads: WorkbenchThread[]; currentKey: string; onNavigate: (href: string) => void;
   /** Tabs that can be closed (the desktop's open conversations): a ✕, and a middle click. */
   onClose?: ((rootKey: string) => void) | undefined;
+  /** Right-click or the menu key on a tab opens the conversation's menu here. */
+  onThreadMenu?: ((thread: WorkbenchThread, x: number, y: number, returnFocus?: HTMLElement) => void) | undefined;
 }) {
   useI18n();
   const [menu, setMenu] = useState<{ key: string; left: number; top: number } | null>(null);
@@ -63,7 +65,14 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose }: 
         <a className="matter-group-tab" href={root.href} aria-current={active ? 'page' : undefined}
           title={`${selected ? `${root.title} · ${selected.title}` : root.title}\n${activity.label}`}
           onClick={event => { event.preventDefault(); onNavigate(root.href); }}
-          onAuxClick={onClose ? event => { if (event.button === 1) { event.preventDefault(); onClose(root.key); } } : undefined}>
+          onAuxClick={onClose ? event => { if (event.button === 1) { event.preventDefault(); onClose(root.key); } } : undefined}
+          onContextMenu={onThreadMenu ? event => { if (event.defaultPrevented) return; event.preventDefault(); onThreadMenu(root, event.clientX, event.clientY, event.currentTarget); } : undefined}
+          onKeyDown={onThreadMenu ? event => {
+            if (event.key !== 'ContextMenu' && !(event.key === 'F10' && event.shiftKey)) return;
+            event.preventDefault();
+            const box = event.currentTarget.getBoundingClientRect();
+            onThreadMenu(root, box.left, box.bottom + 4, event.currentTarget);
+          } : undefined}>
           {root.agent && <span className="matter-thread-avatar" data-agent={root.agent} aria-hidden="true" />}
           <span className="matter-status-dot" role="img" aria-label={activity.label} data-status={activity.status} />
           <span>{root.title}{selected ? ` · ${selected.title}` : ''}</span>

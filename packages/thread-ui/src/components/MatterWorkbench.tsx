@@ -2,7 +2,7 @@ import { WorkbenchPanels, type WorkbenchPanelsOptions } from './workbench/Workbe
 import { useWorkbenchToolPanel } from './workbench/toolPanel';
 import { getLocale } from '../i18n';
 import { translate, useI18n } from '../i18n';
-import { useEffect, useLayoutEffect, useMemo, useState, useRef, type ReactNode, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useMemo, useState, useRef, type ReactNode, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -46,6 +46,15 @@ const SIDEBAR_SECTIONS_KEY = 'pockymoe.sidebar-sections.v1';
 const SIDEBAR_WIDTH_KEY = 'pockymoe.sidebar-width';
 const SIDEBAR_MIN = 200, SIDEBAR_MAX = 420;
 const clampSidebar = (width: number) => Math.round(Math.max(SIDEBAR_MIN, Math.min(SIDEBAR_MAX, width)));
+
+/** Where a right-click opened a thread's menu, and how to end it. */
+export interface ThreadMenuContext {
+  x: number;
+  y: number;
+  /** Takes focus back when the menu closes from the keyboard. */
+  returnFocus?: HTMLElement | undefined;
+  onClose: () => void;
+}
 
 export interface WorkbenchThread {
   key: string;
@@ -145,7 +154,9 @@ export interface MatterWorkbenchOptions {
   notifications: WorkbenchNotification[];
   unreadCount: number;
   onReadNotifications: () => void;
-  renderThreadMenu?: (thread: WorkbenchThread) => ReactNode;
+  /** A thread's menu: its ⋯ button in a row, or, with `context`, the same menu
+      opened where the thread was right-clicked (a tab or a row). */
+  renderThreadMenu?: (thread: WorkbenchThread, context?: ThreadMenuContext) => ReactNode;
 }
 
 export function MatterWorkbench({
@@ -586,6 +597,23 @@ export function MatterWorkbench({
       <button data-action="go-forward" aria-label={translate("workbench.goForward")} title={translate("workbench.goForward")} onClick={() => history.forward()}><ArrowRight data-icon="forward" /></button>
     </div>
   );
+  // Right-click (or the menu key) on a tab or a row opens the thread's own ⋯ menu
+  // there instead of the browser's. Touch keeps the ⋯ button and the long-press drag.
+  const [contextMenu, setContextMenu] = useState<{ thread: WorkbenchThread; x: number; y: number; returnFocus?: HTMLElement; id: number } | null>(null);
+  const openThreadMenuAt = (thread: WorkbenchThread, x: number, y: number, returnFocus?: HTMLElement) => {
+    setContextMenu({ thread, x, y, ...(returnFocus ? { returnFocus } : {}), id: Date.now() });
+  };
+  const openThreadMenuFrom = (event: ReactMouseEvent<HTMLElement>, thread: WorkbenchThread) => {
+    if (!o.renderThreadMenu || mobile || event.defaultPrevented) return;
+    event.preventDefault();
+    openThreadMenuAt(thread, event.clientX, event.clientY, event.currentTarget);
+  };
+  const openThreadMenuFromKey = (event: ReactKeyboardEvent<HTMLElement>, thread: WorkbenchThread) => {
+    if (!o.renderThreadMenu || !(event.key === 'ContextMenu' || (event.key === 'F10' && event.shiftKey))) return;
+    event.preventDefault();
+    const box = event.currentTarget.getBoundingClientRect();
+    openThreadMenuAt(thread, box.left, box.bottom + 4, event.currentTarget);
+  };
   const bell = (
     <button
       aria-label={translate("workbench.notifications")}
@@ -641,6 +669,8 @@ export function MatterWorkbench({
       }}
       onPointerDown={() => o.onPrefetchThread?.(thread.href)}
       onMouseEnter={() => o.onPrefetchThread?.(thread.href)}
+      onContextMenu={event => openThreadMenuFrom(event, thread)}
+      onKeyDown={event => openThreadMenuFromKey(event, thread)}
       className="matter-thread-row"
       aria-current={thread.key === o.currentKey ? 'page' : undefined}
       title={`${thread.title}\n${thread.subtitle} · ${activity.label}`}
@@ -950,6 +980,7 @@ export function MatterWorkbench({
         <div className="tab-scroll-surface matter-tab-scroll" {...tabScrollEdges}>
         <nav ref={tabsRef} className="matter-thread-tabs" aria-label={translate("workbench.workspaceThreads")}>
           <GroupedThreadTabs threads={tabStrip} currentKey={o.currentKey} onNavigate={navigate}
+            onThreadMenu={o.renderThreadMenu && !mobile ? openThreadMenuAt : undefined}
             onClose={editorTabs && o.onCloseTab ? closeTab : undefined} />
         </nav>
         <TabScrollButtons targetRef={tabsRef} edges={tabScrollEdges} />
@@ -1060,6 +1091,10 @@ export function MatterWorkbench({
           </div>
         </PhoneSheet>
       </>}
+      {contextMenu && o.renderThreadMenu && <Fragment key={contextMenu.id}>{o.renderThreadMenu(contextMenu.thread, {
+        x: contextMenu.x, y: contextMenu.y, returnFocus: contextMenu.returnFocus,
+        onClose: () => setContextMenu(current => current?.id === contextMenu.id ? null : current),
+      })}</Fragment>}
       {bellOpen && (
         <>
           <button

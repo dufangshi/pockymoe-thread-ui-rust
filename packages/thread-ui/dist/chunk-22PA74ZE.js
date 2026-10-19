@@ -1,11 +1,7 @@
 import {
   translate,
   useI18n
-<<<<<<<< HEAD:packages/thread-ui/dist/chunk-G7A3UUWN.js
-} from "./chunk-CSH26ISX.js";
-========
-} from "./chunk-DUW7FZJ3.js";
->>>>>>>> 37830db (Plugins have a default for conversations; following it can mean off):packages/thread-ui/dist/chunk-GS2PWFJR.js
+} from "./chunk-A6SWIHQ3.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {

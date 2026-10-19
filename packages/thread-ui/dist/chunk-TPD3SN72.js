@@ -5,11 +5,7 @@ import {
 import {
   translate,
   useI18n
-<<<<<<<< HEAD:packages/thread-ui/dist/chunk-7LPCXQNB.js
-} from "./chunk-CSH26ISX.js";
-========
-} from "./chunk-DUW7FZJ3.js";
->>>>>>>> 37830db (Plugins have a default for conversations; following it can mean off):packages/thread-ui/dist/chunk-EOCLJFYZ.js
+} from "./chunk-A6SWIHQ3.js";
 import {
   KeyCode,
   KeyMod,

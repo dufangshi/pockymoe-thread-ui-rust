@@ -31,7 +31,7 @@
 }
 [data-composer-layout='expanded'] .thread-graph-composer-prompt-region { grid-column: 1 / -1; }
 [data-composer-layout='expanded'] .thread-graph-composer-input > [role='textbox'] {
-  max-height: min(240px, 30dvh); overflow-y: auto; scrollbar-width: thin;
+  max-height: min(240px, 30dvh); overflow-y: auto;
 }
 /* Folded to one line, an attachment is a small tile that fits the line: its glyph
    or thumbnail beside its name. */

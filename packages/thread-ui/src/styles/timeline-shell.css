@@ -20,7 +20,6 @@
   overflow-x: hidden;
   background: var(--theme-surface);
   color: var(--theme-fg);
-  scrollbar-color: rgb(203 213 225) transparent;
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-scroll-container,
@@ -28,7 +27,6 @@
 .thread-ui-shell.dark .thread-graph-scroll-container {
   background: var(--theme-surface);
   color: var(--theme-fg);
-  scrollbar-color: #374151 transparent;
 }
 
 .thread-ui-shell .thread-graph-scroll-content {

@@ -534,7 +534,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   background: var(--theme-surface);
-  scrollbar-width: thin;
+ 
 }
 .matter-thread-tabs > a,
 .matter-group-tab {
@@ -1298,7 +1298,7 @@
 .workbench-thread-picker-heading small { display: block; margin-top: 3px; color: var(--theme-fg-muted); font-size: 11px; }
 .workbench-thread-picker-heading button { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; color: var(--theme-fg-muted); }
 .workbench-thread-picker-heading button:hover { background: var(--theme-hover); }
-.workbench-thread-picker-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 5px 6px 10px; scrollbar-width: thin; }
+.workbench-thread-picker-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 5px 6px 10px; }
 .workbench-thread-picker-section-label { padding: 13px 9px 6px; font-size: 10px; line-height: 1.4; font-weight: 600; letter-spacing: .045em; color: var(--theme-fg-muted); }
 .workbench-thread-picker-popover .workbench-thread-picker-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 49px; padding: 8px 9px; border-radius: 8px; text-align: left; }
 .workbench-thread-picker-row:hover, .workbench-thread-picker-row:focus-visible { background: var(--theme-hover); }

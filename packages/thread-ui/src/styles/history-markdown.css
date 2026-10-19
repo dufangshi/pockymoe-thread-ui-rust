@@ -1753,7 +1753,6 @@
 .thread-ui-shell .thread-scroll-container {
   background: var(--theme-surface);
   color: var(--theme-fg);
-  scrollbar-color: var(--theme-border-strong) transparent;
 }
 
 .thread-ui-shell .thread-scroll-container > div > .divide-y {

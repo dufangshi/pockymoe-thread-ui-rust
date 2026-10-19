@@ -96,7 +96,6 @@
 /* FitAddon subtracts padding on xterm itself, not on its host. Putting it on
    the host overestimates rows and clips the cursor after a keyboard resize. */
 .terminal-panel .shell-pane-host .xterm { height: 100%; padding: 4px 0 2px 10px; }
-.terminal-panel .shell-pane-host .xterm-viewport { scrollbar-width: thin; }
 
 .terminal-pane-sash { position: relative; flex: 0 0 1px; background: var(--theme-border); touch-action: none; cursor: col-resize; }
 .terminal-groups[data-orientation='vertical'] > .terminal-pane-sash { cursor: row-resize; }
@@ -136,7 +135,7 @@
 .terminal-tabs-sash::before { content: ''; position: absolute; inset: 0 -4px; z-index: 2; }
 .terminal-tabs-sash:hover, .terminal-tabs-sash:active, .terminal-tabs-sash:focus-visible { background: var(--theme-accent-solid); }
 .terminal-tabs-host { flex-shrink: 0; min-width: 0; overflow: hidden; background: var(--theme-panel); }
-.terminal-tabs { display: flex; flex-direction: column; height: 100%; padding: 4px 0; overflow-y: auto; scrollbar-width: thin; }
+.terminal-tabs { display: flex; flex-direction: column; height: 100%; padding: 4px 0; overflow-y: auto; }
 .terminal-tab {
   position: relative;
   display: flex;

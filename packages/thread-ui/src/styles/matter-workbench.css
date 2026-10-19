@@ -585,12 +585,12 @@
    folded it leads the tabs row. */
 .matter-nav-strip { display: flex; flex: none; align-items: center; gap: 2px; height: 35px; padding: 0 8px; border-bottom: 1px solid var(--theme-border); }
 .matter-tabs-row > .matter-nav-strip { height: auto; border-bottom: 0; border-right: 1px solid var(--theme-border); }
-.thread-ui-shell .matter-workbench .matter-nav-strip > button {
+.thread-ui-shell .matter-workbench .matter-nav-strip > :is(button, a) {
   display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px;
   border: 0; border-radius: 8px; background: transparent; color: var(--theme-fg-soft);
 }
-.thread-ui-shell .matter-workbench .matter-nav-strip > button:hover { background: var(--theme-hover); color: var(--theme-fg); }
-.matter-nav-strip > button svg { width: 16px; height: 16px; }
+.thread-ui-shell .matter-workbench .matter-nav-strip > :is(button, a):hover { background: var(--theme-hover); color: var(--theme-fg); }
+.matter-nav-strip > :is(button, a) svg { width: 16px; height: 16px; }
 .matter-toolbar-toggle {
   flex-shrink: 0;
   width: 36px;

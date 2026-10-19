@@ -513,7 +513,8 @@ describe('desktop tabs', () => {
     expect(host.querySelector('nav.matter-rail button[aria-label="Go back"]')).toBeNull();
     act(() => host.querySelector<HTMLButtonElement>('.matter-nav-strip button[aria-expanded]')!.click());
     expect(strip()?.parentElement?.classList.contains('matter-tabs-row')).toBe(true);
-    expect([...strip()!.querySelectorAll('button')].map(button => button.getAttribute('aria-label'))).toEqual(['Toggle shortcuts sidebar', 'Go back', 'Go forward']);
+    expect([...strip()!.querySelectorAll('button, a')].map(control => control.getAttribute('aria-label'))).toEqual(['Toggle shortcuts sidebar', 'Go back', 'Go forward', 'Back to workspaces']);
+    expect(strip()!.querySelector('a')?.getAttribute('href')).toBe('/workspaces');
   });
 
   it('offers New thread right after this workspace\'s count', () => {

@@ -595,6 +595,8 @@ export function MatterWorkbench({
       </button>
       <button aria-label={translate("workbench.goBack")} title={translate("workbench.goBack")} onClick={() => history.back()}><ArrowLeft data-icon="back" /></button>
       <button data-action="go-forward" aria-label={translate("workbench.goForward")} title={translate("workbench.goForward")} onClick={() => history.forward()}><ArrowRight data-icon="forward" /></button>
+      {/* Out of the conversations, back to choosing a workspace. */}
+      {homeHref && <a href={homeHref} onClick={goHome} aria-label={translate("workbench.backToWorkspaces")} title={translate("workbench.workspaces")}><Home data-icon="home" /></a>}
     </div>
   );
   // Right-click (or the menu key) on a tab or a row opens the thread's own ⋯ menu

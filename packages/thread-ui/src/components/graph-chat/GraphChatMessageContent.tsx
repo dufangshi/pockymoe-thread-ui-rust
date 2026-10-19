@@ -351,7 +351,9 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
       }
 
       return (
-        <div className="thread-graph-code-block not-prose relative my-3 overflow-auto rounded-xl border p-3 text-sm shadow-sm"
+        // The frame holds the copy key floating over the code's corner; the code
+        // scrolls inside it, so the key never scrolls away or takes a line.
+        <div className="thread-graph-code-block not-prose"
           data-touch-actions={touchCode === id ? 'true' : 'false'}
           onPointerEnter={(event) => { if (event.pointerType === 'mouse') setTouchCode(null); }}
           onPointerUp={(event) => {
@@ -361,14 +363,16 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
             }
           }}
         >
-          {!readOnly && <CopyButton value={textContent} label={translate("chat.copyCode")} className="thread-graph-code-copy absolute right-2 top-2 z-10" />}
-          {html ? (
-            <div dangerouslySetInnerHTML={{ __html: html }} />
-          ) : (
-            <pre>
-              <code className="whitespace-pre">{textContent}</code>
-            </pre>
-          )}
+          {!readOnly && <CopyButton value={textContent} label={translate("chat.copyCode")} className="thread-graph-code-copy" />}
+          <div className="thread-graph-code-scroll">
+            {html ? (
+              <div dangerouslySetInnerHTML={{ __html: html }} />
+            ) : (
+              <pre>
+                <code className="whitespace-pre">{textContent}</code>
+              </pre>
+            )}
+          </div>
         </div>
       );
     }

@@ -2207,6 +2207,14 @@
 }
 
 .thread-ui-shell .thread-graph-code-block {
+  /* Laid out here, not by host utility classes: every host gets the same block. */
+  position: relative;
+  margin: 12px 0;
+  border: 1px solid;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
   border-color: rgb(226 232 240);
   background: rgb(248 250 252);
   color: rgb(31 41 55);
@@ -2227,7 +2235,20 @@
   color: inherit;
 }
 
+.thread-ui-shell .thread-graph-code-scroll { overflow-x: auto; padding: 10px 12px; }
+.thread-ui-shell .thread-graph-code-scroll pre { white-space: pre; }
+/* Copy floats over the code's top-right corner on a translucent chip; it takes
+   no room of its own. */
 .thread-ui-shell .thread-graph-code-copy {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   background: rgb(255 255 255 / 0.72);
   color: rgb(51 65 85);
   box-shadow: 0 4px 12px rgb(15 23 42 / 0.08);
@@ -3027,6 +3048,12 @@
 @media (hover: hover) and (pointer: fine) {
   .thread-ui-shell .thread-graph-message-bubble:hover .thread-graph-message-copy-desktop { opacity: 1; pointer-events: auto; }
   .thread-ui-shell .thread-graph-code-block:hover .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
+}
+/* Without hover the copy chip stays, faint, over the corner; it is fully drawn
+   while pressed or after a tap on the block. */
+@media (hover: none) {
+  .thread-ui-shell .thread-graph-code-copy { opacity: .45; pointer-events: auto; }
+  .thread-ui-shell .thread-graph-code-copy:active { opacity: 1; }
 }
 /* With room left of a prompt's bubble, its time and copy sit there, level with
    its last line, covering nothing. */

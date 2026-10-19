@@ -1,4 +1,7 @@
 export const chatZhCN = {
+  "chat.turnNotificationOn": "结束时通知你",
+  "chat.turnNotificationOff": "订阅这一轮的通知",
+
   'chat.replyVersion': '回复版本',
   "chat.peerAgent": "智能体",
   "chat.peerQuestion": "提问",

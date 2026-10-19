@@ -1,4 +1,7 @@
 export const chatEn = {
+  "chat.turnNotificationOn": "Notify you when this turn ends",
+  "chat.turnNotificationOff": "Subscribe to this turn",
+
   'chat.replyVersion': 'Reply version',
   "chat.peerAgent": "Agent",
   "chat.peerQuestion": "Question",

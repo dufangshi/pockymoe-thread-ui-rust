@@ -57,6 +57,7 @@ export interface ThreadTimelineProps {
   activeTurnId?: string | null;
   threadRunning?: boolean;
   backgroundAgentCount?: number;
+  renderTurnNotification?: ((turnId: string) => React.ReactNode) | undefined;
   backendProgress?: { turnId: string; receivedAt: string } | null;
   livePlan?: {
     turnId: string;
@@ -182,6 +183,7 @@ function ThreadTimelineComponent({
   activeTurnId = null,
   threadRunning = false,
   backgroundAgentCount = 0,
+  renderTurnNotification,
   pendingSteers = [],
   livePlan = null,
   liveItems = null,
@@ -814,6 +816,7 @@ function ThreadTimelineComponent({
         turn={displayTurn}
         revealTarget={searchTarget?.turnId === displayTurn.id ? searchTarget : undefined}
         backgroundAgentCount={backgroundAgentCount}
+        renderTurnNotification={renderTurnNotification}
         absoluteIndex={visibleTurnAbsoluteOffset + visibleIndex + 1}
         isCollapsed={rowCollapsed}
         livePlan={rowLivePlan}
@@ -1003,6 +1006,7 @@ function ThreadTimelineComponent({
                     {...(adapter ? { adapter } : {})}
                     turn={optimisticTurn}
                     backgroundAgentCount={backgroundAgentCount}
+        renderTurnNotification={renderTurnNotification}
                     absoluteIndex={optimisticAbsoluteIndex}
                     isCollapsed={rowCollapsed}
                     livePlan={null}
@@ -1119,6 +1123,7 @@ function ThreadTimelineComponent({
               {...(adapter ? { adapter } : {})}
               turn={unattachedLiveTurn}
               backgroundAgentCount={backgroundAgentCount}
+        renderTurnNotification={renderTurnNotification}
               absoluteIndex={unattachedLiveTurnIndex}
               isCollapsed={collapsedTurnOverrides[unattachedLiveTurn.id] ?? false}
               livePlan={livePlan?.turnId === unattachedLiveTurn.id ? livePlan : null}

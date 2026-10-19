@@ -22,6 +22,15 @@ function activeTurn(overrides: Partial<TimelineTurn> = {}): TimelineTurn {
 
 describe('TurnStatusBar footer', () => {
   afterEach(() => vi.useRealTimers());
+  it('keeps the turn subscription control inside the active footer and removes it after completion or recovery', () => {
+    const slot = <button aria-pressed="true">Notify on completion</button>;
+    const render = (status: TimelineTurn['status'], variant: 'header' | 'footer' = 'footer') => renderToStaticMarkup(<TurnStatusBar turn={activeTurn({ status })} variant={variant} notificationControl={slot} />);
+    expect(render('inProgress')).toContain('aria-pressed="true"');
+    expect(render('inProgress', 'header')).not.toContain('Notify on completion');
+    expect(render('completed')).not.toContain('Notify on completion');
+    expect(render('interrupted')).not.toContain('Notify on completion');
+    expect(render('recovering')).not.toContain('Notify on completion');
+  });
   it('merges progress into accessible dots with precise freshness boundaries', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-10-08T18:00:00Z'));

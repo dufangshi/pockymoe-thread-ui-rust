@@ -411,6 +411,7 @@ interface ThreadTurnRowProps {
   liveOutput: string;
   forceActive?: boolean;
   backgroundAgentCount?: number;
+  renderTurnNotification?: ((turnId: string) => ReactNode) | undefined;
   onToggleCollapse: (turn: TimelineTurn, currentCollapsed: boolean, loadDetails?: boolean) => void;
   /** Loads a folded turn's operations without opening the turn. */
   onLoadTurnItems?: (turn: TimelineTurn) => void;
@@ -574,6 +575,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   liveOutput,
   forceActive = false,
   backgroundAgentCount = 0,
+  renderTurnNotification,
   onToggleCollapse,
   onLoadTurnItems,
   narrationMode = false,
@@ -762,6 +764,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     <TurnStatusBar
       turn={activeFooterTurn}
       variant="footer"
+      notificationControl={renderTurnNotification?.(activeFooterTurn.id)}
       lastActivityAt={lastActivityAt}
       backgroundAgentCount={backgroundAgentCount}
       waitingForWake={peerWaitingForWake ?? mergedItems.some(item => item.origin === 'nativeBackgroundWait' && item.status === 'waiting')}

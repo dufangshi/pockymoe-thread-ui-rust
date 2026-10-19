@@ -70,7 +70,7 @@ export const tourZhCN = {
   "tour.threads.importForm.body": "选择 Harness，再选择发现的会话（或粘贴会话 ID）。点击「导入会话」才会登记。",
   "tour.threads.history.title": "你的对话",
   "tour.threads.history.body": "「快捷方式」固定星标对话；「最近对话」跨工作区列出对话，子智能体对话归在父对话下。⋯ 可重命名或归档。",
-  "tour.openMore.prereq": "点底栏右侧的 ⋯ 打开「更多」，这个功能在那里。",
+  "tour.openMore.prereq": "这个功能在「更多」里：手机点底栏右侧的 ⋯，电脑点标签栏右侧的线程工具按钮。",
   "tour.threads.historyDock.body": "点底栏的线程名，打开本工作区的线程和最近对话；在底栏上向上滑也可以。",
   "tour.threads.newThread.prereqDock": "先点底栏的线程名打开线程列表，「新建对话」在列表底部。",
   "tour.threads.historyMobile.body": "点按这里打开对话列表：星标快捷方式和跨工作区的最近对话。",

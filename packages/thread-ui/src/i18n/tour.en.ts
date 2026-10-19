@@ -70,7 +70,7 @@ export const tourEn = {
   "tour.threads.importForm.body": "Pick the harness, then a discovered session (or paste its session ID). Only Import session registers it.",
   "tour.threads.history.title": "Your threads",
   "tour.threads.history.body": "Shortcuts keep starred threads close; Recent chats lists threads across workspaces, with subagent threads grouped under their parent. ⋯ renames or archives.",
-  "tour.openMore.prereq": "Tap ⋯ at the right of the bottom bar to open More; it is in there.",
+  "tour.openMore.prereq": "It is in More: on a phone tap ⋯ at the right of the bottom bar; on a computer click the thread tools button at the right of the tabs.",
   "tour.threads.historyDock.body": "Tap the thread name in the bottom bar for this workspace's threads and recent chats; swiping up on the bar works too.",
   "tour.threads.newThread.prereqDock": "Tap the thread name in the bottom bar to open the thread list; New chat is at its foot.",
   "tour.threads.historyMobile.body": "Tap here to open the thread list: starred shortcuts and recent chats across workspaces.",

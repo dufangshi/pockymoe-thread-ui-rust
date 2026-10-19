@@ -1,4 +1,7 @@
 export const workbenchEn = {
+  "workbench.resizeSidebar": "Resize sidebar",
+  "workbench.resizeSidebarHint": "Drag to resize; double-click to reset",
+  "workbench.closeTab": "Close {{title}}",
   "workbench.agentThreadsRunningShort": "Agent threads running",
   "workbench.uninstallPluginTitle": "Uninstall {{value1}}?",
   "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.",

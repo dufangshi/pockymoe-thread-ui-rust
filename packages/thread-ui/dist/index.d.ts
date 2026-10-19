@@ -354,6 +354,11 @@ interface MatterWorkbenchOptions {
         first to last); `workspaceThreads` should then arrive in it. Without it
         tabs and lists keep the host's order and cannot be dragged. */
     onReorderWorkspaceThreads?: ((rootKeys: string[]) => void) | undefined;
+    /** Desktop tabs: the conversations the reader opened (roots with their agent
+        threads, in tab order), each closable; without it tabs list this workspace. */
+    openTabs?: WorkbenchThread[] | undefined;
+    onCloseTab?: ((rootKey: string) => void) | undefined;
+    onReorderOpenTabs?: ((rootKeys: string[]) => void) | undefined;
     onSearch: () => void;
     search?: ReactNode;
     searchOpen?: boolean;

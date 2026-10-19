@@ -42,6 +42,11 @@ import type { AgentSubscriptionUsageDto } from '@pockymoe/shared';
 import { useAppShellNav } from '../app-shell/AppShellNavContext';
 
 
+const SIDEBAR_SECTIONS_KEY = 'pockymoe.sidebar-sections.v1';
+const SIDEBAR_WIDTH_KEY = 'pockymoe.sidebar-width';
+const SIDEBAR_MIN = 200, SIDEBAR_MAX = 420;
+const clampSidebar = (width: number) => Math.round(Math.max(SIDEBAR_MIN, Math.min(SIDEBAR_MAX, width)));
+
 export interface WorkbenchThread {
   key: string;
   title: string;
@@ -129,6 +134,11 @@ export interface MatterWorkbenchOptions {
       first to last); `workspaceThreads` should then arrive in it. Without it
       tabs and lists keep the host's order and cannot be dragged. */
   onReorderWorkspaceThreads?: ((rootKeys: string[]) => void) | undefined;
+  /** Desktop tabs: the conversations the reader opened (roots with their agent
+      threads, in tab order), each closable; without it tabs list this workspace. */
+  openTabs?: WorkbenchThread[] | undefined;
+  onCloseTab?: ((rootKey: string) => void) | undefined;
+  onReorderOpenTabs?: ((rootKeys: string[]) => void) | undefined;
   onSearch: () => void;
   search?: ReactNode;
   searchOpen?: boolean;
@@ -177,10 +187,21 @@ export function MatterWorkbench({
   reorderWorkspace.current = keys => { setPendingWorkspaceOrder(keys); o.onReorderWorkspaceThreads?.(keys); };
   const commitWorkspaceOrder = useMemo(() => (keys: string[]) => reorderWorkspace.current(keys), []);
   const tabsRef = useRef<HTMLElement>(null);
-  useDragReorder(tabsRef, { axis: 'x', itemSelector: '.matter-thread-group', enabled: reorderable, onCommit: commitWorkspaceOrder });
+  // On the desktop the tabs are the open conversations, like an editor's files.
+  const desktopTabs = typeof window !== 'undefined' && !window.matchMedia('(max-width: 639px)').matches;
+  const editorTabs = desktopTabs && o.openTabs?.length ? o.openTabs : null;
+  const rootOfOpen = (thread: WorkbenchThread) => thread.rootKey && thread.rootKey !== thread.key && (o.openTabs ?? []).some(tab => tab.key === thread.rootKey) ? thread.rootKey : thread.key;
+  const [openOrder, setPendingOpenOrder] = usePendingOrder(groupThreads(o.openTabs ?? []).map(group => group.root.key));
+  const tabStrip = editorTabs ? inOrder(editorTabs, rootOfOpen, openOrder) : tabs;
+  const reorderOpen = useRef<(keys: string[]) => void>(() => undefined);
+  reorderOpen.current = keys => { setPendingOpenOrder(keys); o.onReorderOpenTabs?.(keys); };
+  const commitTabOrder = useMemo(() => (keys: string[]) => (editorTabsRef.current ? reorderOpen.current : reorderWorkspace.current)(keys), []);
+  const editorTabsRef = useRef(Boolean(editorTabs));
+  editorTabsRef.current = Boolean(editorTabs);
+  useDragReorder(tabsRef, { axis: 'x', itemSelector: '.matter-thread-group', enabled: editorTabs ? Boolean(o.onReorderOpenTabs) : reorderable, onCommit: commitTabOrder });
   const tabScrollEdges = useTabScrollEdges(tabsRef);
   useEffect(() => {
-    tabsRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    tabsRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
   }, [o.currentKey, tabs.length]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarHidden, setSidebarHidden] = useState(false);
@@ -408,9 +429,36 @@ export function MatterWorkbench({
     window.addEventListener('keydown', find, true);
     return () => window.removeEventListener('keydown', find, true);
   }, []);
-  const [shortcutsOpen, setShortcutsOpen] = useState(false);
-  const [workspaceOpen, setWorkspaceOpen] = useState(true);
-  const [recentsOpen, setRecentsOpen] = useState(true);
+  // On the desktop the sidebar opens with shortcuts and this workspace; recent
+  // chats wait folded, since the tabs hold the recently opened ones. A phone's
+  // drawer keeps its own defaults (shortcuts folded, recent chats open). Each
+  // fold is remembered per form factor.
+  const sectionsKey = `${SIDEBAR_SECTIONS_KEY}:${mobile ? 'phone' : 'desktop'}`;
+  const sectionDefaults = mobile ? { shortcuts: false, workspace: true, recents: true } : { shortcuts: true, workspace: true, recents: false };
+  const readSections = () => { try { return { ...sectionDefaults, ...JSON.parse(localStorage.getItem(sectionsKey) ?? '{}') }; } catch { return sectionDefaults; } };
+  const [sections, setSections] = useState<{ shortcuts: boolean; workspace: boolean; recents: boolean }>(readSections);
+  const [sectionsFor, setSectionsFor] = useState(sectionsKey);
+  if (sectionsFor !== sectionsKey) { setSectionsFor(sectionsKey); setSections(readSections()); }
+  const fold = (section: 'shortcuts' | 'workspace' | 'recents', open: boolean) => setSections(current => {
+    const next = { ...current, [section]: open };
+    try { localStorage.setItem(sectionsKey, JSON.stringify(next)); } catch { /* Folds still hold for this visit. */ }
+    return next;
+  });
+  const shortcutsOpen = sections.shortcuts, workspaceOpen = sections.workspace, recentsOpen = sections.recents;
+  const setShortcutsOpen = (open: boolean) => fold('shortcuts', open);
+  const setWorkspaceOpen = (open: boolean) => fold('workspace', open);
+  const setRecentsOpen = (open: boolean) => fold('recents', open);
+  const [sheetRecentsOpen, setSheetRecentsOpen] = useState(true);
+  // The desktop sidebar's width follows a drag on its edge, within bounds.
+  const [sidebarWidth, setSidebarWidth] = useState<number | null>(() => {
+    try { const stored = Number(localStorage.getItem(SIDEBAR_WIDTH_KEY)); return stored ? clampSidebar(stored) : null; } catch { return null; }
+  });
+  const sidebarDrag = useRef<{ x: number; width: number } | null>(null);
+  const resizeSidebar = (width: number | null) => {
+    const next = width === null ? null : clampSidebar(width);
+    setSidebarWidth(next);
+    try { if (next === null) localStorage.removeItem(SIDEBAR_WIDTH_KEY); else localStorage.setItem(SIDEBAR_WIDTH_KEY, String(Math.round(next))); } catch { /* Optional preference. */ }
+  };
   const workspaceListRef = useRef<HTMLDivElement>(null);
   const sheetListRef = useRef<HTMLDivElement>(null);
   const workspaceScroll = useMemo(() => ({ get current() { return workspaceListRef.current?.closest<HTMLElement>('.matter-sidebar-scroll') ?? null; } }), []);
@@ -460,6 +508,18 @@ export function MatterWorkbench({
     setLastReveal(revealExplorer);
     if (revealExplorer > 0 && !o.panels) setLegacyExplorerOpen(true);
   }
+  // Closing the open conversation's tab moves to its neighbour, as an editor does.
+  const closeTab = (rootKey: string) => {
+    const groups = groupThreads(tabStrip);
+    const at = groups.findIndex(group => group.root.key === rootKey);
+    const active = groups[at] && (groups[at]!.root.key === o.currentKey || groups[at]!.children.some(child => child.key === o.currentKey));
+    if (active) {
+      const neighbour = groups[at + 1] ?? groups[at - 1];
+      if (neighbour) navigate(neighbour.root.href);
+      else if (homeHref) navigate(homeHref);
+    }
+    o.onCloseTab?.(rootKey);
+  };
   const navigate = (href: string) => {
     setSidebarOpen(false);
     setBellOpen(false);
@@ -611,6 +671,7 @@ export function MatterWorkbench({
   return (
     <div
       ref={rootRef}
+      style={!mobile && sidebarWidth ? { '--matter-sidebar-width': `${sidebarWidth}px` } as CSSProperties : undefined}
       className={`matter-workbench ${sidebarHidden ? 'is-sidebar-hidden' : ''} ${dock ? 'has-phone-dock' : ''} ${leftHanded ? 'is-left-handed' : ''} ${dock && typing ? 'is-typing' : ''}`}
       onClick={(e) => {
         if (
@@ -762,7 +823,7 @@ export function MatterWorkbench({
       >
         {/* The upper half holds this workspace's threads; recent chats from
             everywhere start halfway down, so the two read apart. Each scrolls on its own. */}
-        <div className={`matter-sidebar-upper ${recentThreads.length ? '' : 'is-alone'}`}>
+        <div className={`matter-sidebar-upper ${recentThreads.length && recentsOpen ? '' : 'is-alone'}`}>
         <div className="matter-sidebar-heading">
           {dock
             ? <span className="matter-drawer-brand"><b aria-hidden="true">p<i>m</i></b>Pockymoe</span>
@@ -836,7 +897,7 @@ export function MatterWorkbench({
         </>}
         </div>
         </div>
-        {recentThreads.length > 0 && <div className="matter-sidebar-recents">
+        {recentThreads.length > 0 && <div className={`matter-sidebar-recents ${recentsOpen ? '' : 'is-folded'}`}>
           <button
             className="matter-section-heading"
             aria-expanded={recentsOpen}
@@ -856,6 +917,15 @@ export function MatterWorkbench({
           {translate("workbench.yourConversationsTogether")}</div>}
       </aside>
       <main className="matter-main">
+        {!mobile && !sidebarHidden && <div role="separator" aria-orientation="vertical" tabIndex={0} className="matter-sidebar-resize"
+          aria-label={translate('workbench.resizeSidebar')} aria-valuemin={SIDEBAR_MIN} aria-valuemax={SIDEBAR_MAX}
+          aria-valuenow={Math.round(sidebarWidth ?? sidebarRef.current?.offsetWidth ?? 236)} title={translate('workbench.resizeSidebarHint')}
+          onPointerDown={event => { event.preventDefault(); event.currentTarget.setPointerCapture(event.pointerId); sidebarDrag.current = { x: event.clientX, width: sidebarRef.current?.offsetWidth ?? 236 }; }}
+          onPointerMove={event => { if (sidebarDrag.current) resizeSidebar(sidebarDrag.current.width + event.clientX - sidebarDrag.current.x); }}
+          onPointerUp={event => { sidebarDrag.current = null; event.currentTarget.releasePointerCapture(event.pointerId); }}
+          onLostPointerCapture={() => { sidebarDrag.current = null; }}
+          onDoubleClick={() => resizeSidebar(null)}
+          onKeyDown={event => { if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); resizeSidebar((sidebarWidth ?? sidebarRef.current?.offsetWidth ?? 236) + (event.key === 'ArrowLeft' ? -16 : 16)); } }} />}
         {!dock && <div className="matter-tabs-row">
         <div className="matter-tabs-main">
         {/* Desktop: search opens over the tabs rather than pushing them aside. */}
@@ -871,7 +941,8 @@ export function MatterWorkbench({
         </button>}</div>}
         <div className="tab-scroll-surface matter-tab-scroll" {...tabScrollEdges}>
         <nav ref={tabsRef} className="matter-thread-tabs" aria-label={translate("workbench.workspaceThreads")}>
-          <GroupedThreadTabs threads={tabs} currentKey={o.currentKey} onNavigate={navigate} />
+          <GroupedThreadTabs threads={tabStrip} currentKey={o.currentKey} onNavigate={navigate}
+            onClose={editorTabs && o.onCloseTab ? closeTab : undefined} />
         </nav>
         <TabScrollButtons targetRef={tabsRef} edges={tabScrollEdges} />
         </div>
@@ -937,12 +1008,12 @@ export function MatterWorkbench({
           </button>
           {workspaceOpen && <div ref={sheetListRef} className="matter-thread-section" data-testid="sheet-workspace-threads">{renderThreadGroups(reorderable ? tabs : [...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)), reorderable)}</div>}
           {o.threads.some(thread => !tabs.some(tab => tab.key === thread.key)) && <>
-            <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={recentsOpen} onClick={() => setRecentsOpen(!recentsOpen)}>
-              {recentsOpen ? <ChevronDown /> : <ChevronRight />}
+            <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={sheetRecentsOpen} onClick={() => setSheetRecentsOpen(!sheetRecentsOpen)}>
+              {sheetRecentsOpen ? <ChevronDown /> : <ChevronRight />}
               <span>{translate('workbench.recentChats')}</span>
               <span className="matter-section-count">{groupThreads(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key))).length}</span>
             </button>
-            {recentsOpen && <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>}
+            {sheetRecentsOpen && <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>}
           </>}
         </PhoneSheet>
         <PhoneSheet open={runningOpen} label={translate('workbench.runningSheet')} onClose={() => setRunningOpen(false)}

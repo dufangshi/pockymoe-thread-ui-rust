@@ -101,7 +101,7 @@
   display: grid;
   height: 100%;
   min-height: 0;
-  grid-template-columns: 49px 236px minmax(0, 1fr);
+  grid-template-columns: 49px var(--matter-sidebar-width, 236px) minmax(0, 1fr);
   /* The desktop has no top bar: the tabs row is the only bar (phones keep theirs). */
   grid-template-rows: minmax(0, 1fr);
   background: var(--matter-chrome);
@@ -314,6 +314,37 @@
   flex-direction: column;
   min-height: 0;
 }
+/* Folded, recent chats are just their heading; this workspace takes the room. */
+.matter-sidebar-recents.is-folded { flex: none; }
+/* The sidebar's edge: drag to resize (200–420px), double-click for the default. */
+.matter-sidebar-resize { position: absolute; top: 0; bottom: 0; left: -4px; z-index: 30; width: 7px; cursor: col-resize; touch-action: none; }
+.matter-sidebar-resize::after { content: ''; position: absolute; top: 0; bottom: 0; left: 3px; width: 1px; background: transparent; transition: background 120ms; }
+.matter-sidebar-resize:is(:hover, :focus-visible, :active)::after { background: var(--theme-accent-solid); }
+.matter-sidebar-resize:focus-visible { outline: none; }
+/* Desktop sidebar, denser: lists scroll against the very edge, rows are shorter
+   and longer, and each row's menu is a vertical ⋯ shown when pointed at. */
+@media (min-width: 640px) {
+  .thread-ui-shell .matter-workbench .matter-sidebar { padding: 10px 0 8px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar-heading { margin-bottom: 8px; padding: 0 16px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-sidebar-scroll { padding: 0 4px 0 8px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar-recents > .matter-section-heading { width: auto; margin: 0 4px 0 8px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar :is(.matter-drawer-tools, .matter-drawer-home, .matter-sidebar-error) { margin-inline: 8px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar-footer { padding: 14px 16px 0; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-section { margin-bottom: 8px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-row { gap: 8px; margin: 1px 0; padding: 4px 8px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-copy { gap: 0; line-height: 16px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-copy small { line-height: 14px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .matter-thread-row { padding-right: 24px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 70px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-agent-toggle { right: 24px; height: 22px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions { right: 2px; width: 22px; height: 26px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .recent-thread-actions svg { transform: rotate(90deg); }
+}
+@media (min-width: 640px) and (hover: hover) {
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions { opacity: 0; transition: opacity 120ms; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry:is(:hover, :has(:focus-visible)) > .recent-thread-actions,
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions[aria-expanded='true'] { opacity: 1; }
+}
 .matter-sidebar-scroll {
   flex: 1 1 auto;
   min-height: 0;
@@ -499,6 +530,7 @@
   color: var(--theme-fg-muted);
 }
 .matter-main {
+  position: relative;
   min-width: 0;
   min-height: 0;
   display: flex;
@@ -603,6 +635,20 @@
   font-size: 12px;
 }
 .matter-group-toggle:hover { background: var(--theme-hover); }
+/* Desktop tabs are open conversations, closed with a ✕ that shows on the open
+   tab and the one pointed at (always, without hover). One divider per tab. */
+.matter-thread-group:has(> .matter-tab-close) { border-right: 1px solid var(--theme-border); }
+.matter-thread-group:has(> .matter-tab-close) > :is(.matter-group-tab, .matter-group-toggle) { border-right: 0; }
+.matter-thread-group:has(> .matter-tab-close):has(> .matter-group-tab[aria-current='page']) { background: var(--theme-bg); }
+.matter-thread-group:has(> .matter-tab-close) > .matter-group-tab { padding-right: 4px; }
+.thread-ui-shell .matter-workbench .matter-tab-close {
+  display: flex; flex: none; align-items: center; justify-content: center; align-self: center; width: 22px; height: 22px;
+  margin: 0 6px 0 2px; padding: 0; border: 0; border-radius: 5px; background: transparent; color: var(--theme-fg-muted); opacity: 0;
+}
+.matter-tab-close svg { width: 13px; height: 13px; }
+.matter-thread-group:is(:hover, :focus-within, :has(> .matter-group-tab[aria-current='page'])) > .matter-tab-close { opacity: 1; }
+.thread-ui-shell .matter-workbench .matter-tab-close:hover { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: none) { .thread-ui-shell .matter-workbench .matter-tab-close { opacity: 1; } }
 .matter-new-thread {
   align-self: center;
   margin: 0 6px;
@@ -1122,7 +1168,7 @@
 .matter-command-step:is(:hover, :focus-visible) .matter-step-chevron { opacity: 1; }
 @media (max-width: 1000px) and (min-width: 640px) {
   .thread-ui-shell .matter-workbench {
-    grid-template-columns: 43px 200px minmax(0, 1fr);
+    grid-template-columns: 43px var(--matter-sidebar-width, 200px) minmax(0, 1fr);
   }
   .thread-ui-shell .matter-workbench.is-sidebar-hidden {
     grid-template-columns: 43px 0 minmax(0, 1fr);

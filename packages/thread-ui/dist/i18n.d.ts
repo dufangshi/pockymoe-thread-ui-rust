@@ -169,6 +169,9 @@ declare const en: {
     readonly 'search.assistant': "Assistant";
     readonly 'search.title': "Title";
     readonly 'search.localDevice': "Local device";
+    readonly "workbench.resizeSidebar": "Resize sidebar";
+    readonly "workbench.resizeSidebarHint": "Drag to resize; double-click to reset";
+    readonly "workbench.closeTab": "Close {{title}}";
     readonly "workbench.agentThreadsRunningShort": "Agent threads running";
     readonly "workbench.uninstallPluginTitle": "Uninstall {{value1}}?";
     readonly "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.";
@@ -4084,6 +4087,9 @@ declare const zhCN: {
     'search.assistant': "助手";
     'search.title': "标题";
     'search.localDevice': "本地设备";
+    "workbench.resizeSidebar": "调整侧栏宽度";
+    "workbench.resizeSidebarHint": "拖动调整宽度，双击恢复默认";
+    "workbench.closeTab": "关闭 {{title}}";
     "workbench.agentThreadsRunningShort": "智能体线程运行中";
     "workbench.uninstallPluginTitle": "卸载 {{value1}}？";
     "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。";
@@ -8021,6 +8027,9 @@ declare const resources: {
         readonly 'search.assistant': "Assistant";
         readonly 'search.title': "Title";
         readonly 'search.localDevice': "Local device";
+        readonly "workbench.resizeSidebar": "Resize sidebar";
+        readonly "workbench.resizeSidebarHint": "Drag to resize; double-click to reset";
+        readonly "workbench.closeTab": "Close {{title}}";
         readonly "workbench.agentThreadsRunningShort": "Agent threads running";
         readonly "workbench.uninstallPluginTitle": "Uninstall {{value1}}?";
         readonly "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.";
@@ -11935,6 +11944,9 @@ declare const resources: {
         'search.assistant': "助手";
         'search.title': "标题";
         'search.localDevice': "本地设备";
+        "workbench.resizeSidebar": "调整侧栏宽度";
+        "workbench.resizeSidebarHint": "拖动调整宽度，双击恢复默认";
+        "workbench.closeTab": "关闭 {{title}}";
         "workbench.agentThreadsRunningShort": "智能体线程运行中";
         "workbench.uninstallPluginTitle": "卸载 {{value1}}？";
         "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。";

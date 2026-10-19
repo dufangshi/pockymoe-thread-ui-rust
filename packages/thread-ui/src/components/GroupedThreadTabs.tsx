@@ -1,7 +1,7 @@
 import { translate, useI18n } from '../i18n';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 import type { WorkbenchThread } from './MatterWorkbench';
 import { navigationStatusLabel } from './StatusMark';
 
@@ -27,8 +27,10 @@ export function groupThreads(threads: WorkbenchThread[]) {
   return groups;
 }
 
-export function GroupedThreadTabs({ threads, currentKey, onNavigate }: {
+export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose }: {
   threads: WorkbenchThread[]; currentKey: string; onNavigate: (href: string) => void;
+  /** Tabs that can be closed (the desktop's open conversations): a ✕, and a middle click. */
+  onClose?: ((rootKey: string) => void) | undefined;
 }) {
   useI18n();
   const [menu, setMenu] = useState<{ key: string; left: number; top: number } | null>(null);
@@ -60,7 +62,8 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate }: {
       return <div key={root.key} className="matter-thread-group" data-reorder-key={root.key} style={{ display: 'flex', flexShrink: 0, minWidth: 0 }}>
         <a className="matter-group-tab" href={root.href} aria-current={active ? 'page' : undefined}
           title={`${selected ? `${root.title} · ${selected.title}` : root.title}\n${activity.label}`}
-          onClick={event => { event.preventDefault(); onNavigate(root.href); }}>
+          onClick={event => { event.preventDefault(); onNavigate(root.href); }}
+          onAuxClick={onClose ? event => { if (event.button === 1) { event.preventDefault(); onClose(root.key); } } : undefined}>
           {root.agent && <span className="matter-thread-avatar" data-agent={root.agent} aria-hidden="true" />}
           <span className="matter-status-dot" role="img" aria-label={activity.label} data-status={activity.status} />
           <span>{root.title}{selected ? ` · ${selected.title}` : ''}</span>
@@ -70,6 +73,8 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate }: {
             const bounds = event.currentTarget.getBoundingClientRect(); trigger.current = event.currentTarget;
             setMenu(menu?.key === root.key ? null : { key: root.key, left: Math.max(8, Math.min(bounds.left, window.innerWidth - 296)), top: bounds.bottom + 4 });
           }}>{children.length}<ChevronDown size={12} /></button>}
+        {onClose && <button type="button" className="matter-tab-close" aria-label={translate('workbench.closeTab', { title: root.title })}
+          title={translate('workbench.closeTab', { title: root.title })} onClick={() => onClose(root.key)}><X aria-hidden="true" /></button>}
       </div>;
     })}
     {menu && activeMenu && createPortal(<div ref={popup} id="matter-agent-threads" className="matter-agent-threads-menu" role="region" aria-label={translate("workbench.agentThreads_187f89", { value1: activeMenu.root.title })}

@@ -3247,6 +3247,9 @@ var sharingEn = {
 
 // src/i18n/workbench.en.ts
 var workbenchEn = {
+  "workbench.resizeSidebar": "Resize sidebar",
+  "workbench.resizeSidebarHint": "Drag to resize; double-click to reset",
+  "workbench.closeTab": "Close {{title}}",
   "workbench.agentThreadsRunningShort": "Agent threads running",
   "workbench.uninstallPluginTitle": "Uninstall {{value1}}?",
   "workbench.uninstallPluginBody": "The plugin and its settings are removed from this device.",
@@ -7127,6 +7130,9 @@ var sharingZhCN = {
 
 // src/i18n/workbench.zh-CN.ts
 var workbenchZhCN = {
+  "workbench.resizeSidebar": "\u8C03\u6574\u4FA7\u680F\u5BBD\u5EA6",
+  "workbench.resizeSidebarHint": "\u62D6\u52A8\u8C03\u6574\u5BBD\u5EA6\uFF0C\u53CC\u51FB\u6062\u590D\u9ED8\u8BA4",
+  "workbench.closeTab": "\u5173\u95ED {{title}}",
   "workbench.agentThreadsRunningShort": "\u667A\u80FD\u4F53\u7EBF\u7A0B\u8FD0\u884C\u4E2D",
   "workbench.uninstallPluginTitle": "\u5378\u8F7D {{value1}}\uFF1F",
   "workbench.uninstallPluginBody": "\u63D2\u4EF6\u548C\u5B83\u7684\u8BBE\u7F6E\u4F1A\u4ECE\u8FD9\u53F0\u8BBE\u5907\u79FB\u9664\u3002",

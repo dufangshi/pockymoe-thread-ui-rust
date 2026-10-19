@@ -4,7 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppShellNavContext, type AppShellNavContextValue } from '../app-shell/AppShellNavContext';
 import { setLocale } from '../i18n';
-import { MatterWorkbench, type MatterWorkbenchOptions } from './MatterWorkbench';
+import { MatterWorkbench, type MatterWorkbenchOptions, type WorkbenchThread } from './MatterWorkbench';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 let host: HTMLDivElement, root: Root;
@@ -482,5 +482,26 @@ describe('icon hooks', () => {
     expect(icon('.matter-toolbar-toggle')).toBe('thread-tools');
     // The hook is an attribute only: Classic renders the same lucide glyph.
     expect(host.querySelector('[data-icon="back"]')?.classList.contains('lucide')).toBe(true);
+  });
+});
+
+describe('desktop tabs', () => {
+  const tab = (key: string, extra: Partial<WorkbenchThread> = {}): WorkbenchThread => ({ key, title: key.toUpperCase(), subtitle: '', href: `/threads/${key}`, status: 'idle', favorite: false, ...extra });
+  it('lists the open conversations and closes them like editor tabs', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+    const onNavigate = vi.fn(), onCloseTab = vi.fn();
+    options = { ...baseOptions, currentKey: 'local:b', onNavigate, onCloseTab,
+      workspaceThreads: [tab('local:z')],
+      openTabs: [tab('local:a'), tab('local:b'), tab('local:b1', { rootKey: 'local:b' }), tab('local:c')] };
+    render();
+    const titles = [...host.querySelectorAll('.matter-thread-tabs .matter-group-tab > span:last-child')].map(node => node.textContent);
+    expect(titles).toEqual(['LOCAL:A', 'LOCAL:B', 'LOCAL:C']);
+    // Closing another tab only closes it; closing the open one moves to its neighbour.
+    act(() => host.querySelector<HTMLButtonElement>('[aria-label="Close LOCAL:A"]')!.click());
+    expect(onCloseTab).toHaveBeenLastCalledWith('local:a');
+    expect(onNavigate).not.toHaveBeenCalled();
+    act(() => host.querySelector<HTMLButtonElement>('[aria-label="Close LOCAL:B"]')!.click());
+    expect(onNavigate).toHaveBeenCalledWith('/threads/local:c');
+    expect(onCloseTab).toHaveBeenLastCalledWith('local:b');
   });
 });

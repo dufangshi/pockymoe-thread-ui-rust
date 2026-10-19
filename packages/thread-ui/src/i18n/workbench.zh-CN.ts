@@ -1,4 +1,7 @@
 export const workbenchZhCN = {
+  "workbench.resizeSidebar": "调整侧栏宽度",
+  "workbench.resizeSidebarHint": "拖动调整宽度，双击恢复默认",
+  "workbench.closeTab": "关闭 {{title}}",
   "workbench.agentThreadsRunningShort": "智能体线程运行中",
   "workbench.uninstallPluginTitle": "卸载 {{value1}}？",
   "workbench.uninstallPluginBody": "插件和它的设置会从这台设备移除。",

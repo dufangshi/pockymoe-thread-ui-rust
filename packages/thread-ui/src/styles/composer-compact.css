@@ -53,9 +53,12 @@
   display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis;
   line-height: 16px;
 }
+/* The effort under the model name wears its colour on the slider's scale; in
+   light themes the colour is deepened enough to read. */
 [data-composer-layout] .composer-model-effort {
-  display: block; font-size: 10px; line-height: 11px; opacity: .7;
+  display: block; font-size: 10px; font-weight: 600; line-height: 11px; color: var(--effort-color, currentColor);
 }
+:root[data-theme-effective='light'] [data-composer-layout] .composer-model-effort { color: color-mix(in oklab, var(--effort-color, currentColor) 72%, black); }
 [data-composer-layout] .composer-model-label:disabled { cursor: not-allowed; opacity: .5; }
 [data-composer-layout] .thread-graph-composer-toolbar { cursor: default; }
 [data-composer-layout] .thread-graph-composer-toolbar button:not(:disabled) { cursor: pointer; }
@@ -228,7 +231,5 @@
     width: 34px; height: 34px; min-width: 34px; min-height: 34px;
   }
   [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button)::after { inset: -3px; }
-  /* A phone shows the model's name on one line; its reasoning effort is in its menu. */
-  [data-composer-layout] .composer-model-effort { display: none; }
   [data-composer-layout] .composer-model-label { min-height: 34px; }
 }

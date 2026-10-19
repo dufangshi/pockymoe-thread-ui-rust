@@ -2,28 +2,7 @@ import * as Slider from '@radix-ui/react-slider';
 import { useEffect, useState, type CSSProperties } from 'react';
 import type { ModelOptionDto, ReasoningEffortDto } from '@pockymoe/shared';
 import { translate } from '../../i18n';
-import { formatReasoningEffortLabel } from './composerUtils';
-
-const effortOrder = [
-  'none',
-  'minimal',
-  'low',
-  'medium',
-  'high',
-  'xhigh',
-  'max',
-  'ultra',
-];
-const effortColors = [
-  '#64a8f5',
-  '#5e9fe8',
-  '#48b9b5',
-  '#56b987',
-  '#d2b354',
-  '#e09863',
-  '#cc7c9a',
-  '#a787df',
-];
+import { formatReasoningEffortLabel, REASONING_EFFORT_ORDER as effortOrder, reasoningEffortColor } from './composerUtils';
 
 export function ComposerReasoningSlider({
   efforts,
@@ -67,16 +46,7 @@ export function ComposerReasoningSlider({
   const index = Math.min(preview, options.length - 1);
   const option = options[index];
   if (!option) return null;
-  const colorIndex = effortOrder.indexOf(option.reasoningEffort);
-  const color =
-    effortColors[
-      colorIndex >= 0
-        ? colorIndex
-        : Math.round(
-            (index / Math.max(1, options.length - 1)) *
-              (effortColors.length - 1),
-          )
-    ]!;
+  const color = reasoningEffortColor(option.reasoningEffort, index, options.length);
   const label = formatReasoningEffortLabel(
     interacting || index !== selection ? option.reasoningEffort : effort,
   );

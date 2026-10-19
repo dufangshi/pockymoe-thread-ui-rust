@@ -658,3 +658,15 @@ export function modelSupportsReasoningEffort(
     ),
   );
 }
+
+/** Reasoning levels in their semantic order, each with its colour: cool for
+    light thinking, warm to hot for heavy. The slider and the label under the
+    model name share it. */
+export const REASONING_EFFORT_ORDER = ['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'];
+const REASONING_EFFORT_COLORS = ['#3d8bff', '#2f7cf6', '#0fb5c8', '#16b364', '#f5b000', '#ff7a1a', '#f43f7a', '#9b5cff'];
+/** An unknown level takes its place on the same scale by position, when known. */
+export function reasoningEffortColor(effort: string | null | undefined, index = 0, count = 1) {
+  const known = REASONING_EFFORT_ORDER.indexOf(effort ?? '');
+  const at = known >= 0 ? known : Math.round((index / Math.max(1, count - 1)) * (REASONING_EFFORT_COLORS.length - 1));
+  return REASONING_EFFORT_COLORS[at]!;
+}

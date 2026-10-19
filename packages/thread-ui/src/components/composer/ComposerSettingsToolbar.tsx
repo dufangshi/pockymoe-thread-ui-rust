@@ -6,11 +6,11 @@ import type {
   ThreadContextUsageDto,
   UpdateThreadSettingsInput,
 } from '@pockymoe/shared';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 import { InputGroupButton } from '../graph-ui/InputGroup';
 import type { SettingsMenu } from './types';
-import { formatContextTokenKilocount, formatReasoningEffortLabel } from './composerUtils';
+import { formatContextTokenKilocount, formatReasoningEffortLabel, reasoningEffortColor } from './composerUtils';
 import { ContextProgressBar } from './composerPresentation';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
 import { Check, ChevronDown, Send, Target } from 'lucide-react';
@@ -142,7 +142,8 @@ export function ComposerSettingsToolbar({
           ) : null}
           <span className="composer-model-name">{selectedModelLabel}</span>
           {supportsEffort && (
-            <span className="composer-model-effort">{effortLabel}</span>
+            <span className="composer-model-effort" data-effort={reasoningEffort ?? undefined}
+              style={{ '--effort-color': reasoningEffortColor(reasoningEffort) } as CSSProperties}>{effortLabel}</span>
           )}
           {modelAvatar ? <ChevronDown aria-hidden="true" className="composer-model-chevron" /> : null}
         </button>

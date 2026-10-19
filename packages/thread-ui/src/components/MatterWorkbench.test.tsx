@@ -463,7 +463,7 @@ describe('icon hooks', () => {
     vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
     render();
     const icon = (selector: string) => host.querySelector(selector)?.querySelector('svg')?.getAttribute('data-icon');
-    expect(icon('nav.matter-rail > button[aria-expanded]')).toBe('sidebar');
+    expect(icon('.matter-nav-strip > button[aria-expanded]')).toBe('sidebar');
     expect(icon('button[aria-label="Go back"]')).toBe('back');
     expect(icon('button[aria-label="Go forward"]')).toBe('forward');
     // On the desktop the rail's brand is the way home; the tabs row starts with search.
@@ -503,5 +503,16 @@ describe('desktop tabs', () => {
     act(() => host.querySelector<HTMLButtonElement>('[aria-label="Close LOCAL:B"]')!.click());
     expect(onNavigate).toHaveBeenCalledWith('/threads/local:c');
     expect(onCloseTab).toHaveBeenLastCalledWith('local:b');
+  });
+
+  it('keeps the sidebar switch, Back and Forward atop the sidebar, then in the tabs row when it folds', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+    render();
+    const strip = () => host.querySelector('.matter-nav-strip');
+    expect(strip()?.parentElement?.classList.contains('matter-sidebar')).toBe(true);
+    expect(host.querySelector('nav.matter-rail button[aria-label="Go back"]')).toBeNull();
+    act(() => host.querySelector<HTMLButtonElement>('.matter-nav-strip button[aria-expanded]')!.click());
+    expect(strip()?.parentElement?.classList.contains('matter-tabs-row')).toBe(true);
+    expect([...strip()!.querySelectorAll('button')].map(button => button.getAttribute('aria-label'))).toEqual(['Toggle shortcuts sidebar', 'Go back', 'Go forward']);
   });
 });

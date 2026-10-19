@@ -1,4 +1,5 @@
 export const workbenchEn = {
+  "workbench.pageNavigation": "Page navigation",
   "workbench.resizeSidebar": "Resize sidebar",
   "workbench.resizeSidebarHint": "Drag to resize; double-click to reset",
   "workbench.closeTab": "Close {{title}}",

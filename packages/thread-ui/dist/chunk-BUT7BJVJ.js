@@ -3307,6 +3307,7 @@ var sharingEn = {
 
 // src/i18n/workbench.en.ts
 var workbenchEn = {
+  "workbench.pageNavigation": "Page navigation",
   "workbench.resizeSidebar": "Resize sidebar",
   "workbench.resizeSidebarHint": "Drag to resize; double-click to reset",
   "workbench.closeTab": "Close {{title}}",
@@ -7250,6 +7251,7 @@ var sharingZhCN = {
 
 // src/i18n/workbench.zh-CN.ts
 var workbenchZhCN = {
+  "workbench.pageNavigation": "\u9875\u9762\u5BFC\u822A",
   "workbench.resizeSidebar": "\u8C03\u6574\u4FA7\u680F\u5BBD\u5EA6",
   "workbench.resizeSidebarHint": "\u62D6\u52A8\u8C03\u6574\u5BBD\u5EA6\uFF0C\u53CC\u51FB\u6062\u590D\u9ED8\u8BA4",
   "workbench.closeTab": "\u5173\u95ED {{title}}",

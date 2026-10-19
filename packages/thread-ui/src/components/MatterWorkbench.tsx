@@ -574,6 +574,18 @@ export function MatterWorkbench({
   // The thread sheet lists the current thread's group first, then by attention.
   const currentRootKey = tabs.find(thread => thread.key === o.currentKey)?.rootKey ?? o.currentKey;
   const inCurrentGroup = (thread: WorkbenchThread) => thread.key === o.currentKey || thread.key === currentRootKey || thread.rootKey === currentRootKey;
+  // Desktop navigation: the sidebar switch, Back and Forward head the sidebar,
+  // level with the tabs row; with the sidebar folded they lead the tabs row.
+  const navStrip = (
+    <div className="matter-nav-strip" role="group" aria-label={translate('workbench.pageNavigation')}>
+      <button aria-label={translate("workbench.toggleShortcutsSidebar")} aria-expanded={!sidebarHidden}
+        title={translate("workbench.toggleShortcutsSidebar")} onClick={() => setSidebarHidden(!sidebarHidden)}>
+        <PanelLeft data-icon="sidebar" />
+      </button>
+      <button aria-label={translate("workbench.goBack")} title={translate("workbench.goBack")} onClick={() => history.back()}><ArrowLeft data-icon="back" /></button>
+      <button data-action="go-forward" aria-label={translate("workbench.goForward")} title={translate("workbench.goForward")} onClick={() => history.forward()}><ArrowRight data-icon="forward" /></button>
+    </div>
+  );
   const bell = (
     <button
       aria-label={translate("workbench.notifications")}
@@ -704,16 +716,6 @@ export function MatterWorkbench({
         >
           p<span>m</span>
         </a>}
-        {/* The desktop has one bar, the tabs row: the old top bar's navigation lives here. */}
-        <button aria-label={translate("workbench.toggleShortcutsSidebar")} aria-expanded={!sidebarHidden}
-          title={translate("workbench.toggleShortcutsSidebar")} onClick={() => setSidebarHidden(!sidebarHidden)}>
-          <PanelLeft data-icon="sidebar" />
-        </button>
-        <div className="matter-rail-history">
-          <button aria-label={translate("workbench.goBack")} title={translate("workbench.goBack")} onClick={() => history.back()}><ArrowLeft data-icon="back" /></button>
-          <button data-action="go-forward" aria-label={translate("workbench.goForward")} title={translate("workbench.goForward")} onClick={() => history.forward()}><ArrowRight data-icon="forward" /></button>
-        </div>
-        <span className="matter-rail-separator" aria-hidden="true" />
         <button
           aria-label={translate("workbench.chat")}
           aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'}
@@ -821,6 +823,7 @@ export function MatterWorkbench({
         className={`matter-sidebar ${sidebarOpen ? 'is-open' : ''}`}
         aria-label={translate("workbench.threadNavigation")}
       >
+        {!mobile && !sidebarHidden && navStrip}
         {/* The upper half holds this workspace's threads; recent chats from
             everywhere start halfway down, so the two read apart. Each scrolls on its own. */}
         <div className={`matter-sidebar-upper ${recentThreads.length && recentsOpen ? '' : 'is-alone'}`}>
@@ -927,6 +930,7 @@ export function MatterWorkbench({
           onDoubleClick={() => resizeSidebar(null)}
           onKeyDown={event => { if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); resizeSidebar((sidebarWidth ?? sidebarRef.current?.offsetWidth ?? 236) + (event.key === 'ArrowLeft' ? -16 : 16)); } }} />}
         {!dock && <div className="matter-tabs-row">
+        {!mobile && sidebarHidden && navStrip}
         <div className="matter-tabs-main">
         {/* Desktop: search opens over the tabs rather than pushing them aside. */}
         {!mobile && <div className={`matter-tabs-search ${o.searchOpen ? 'is-open' : ''}`}>{o.search ?? <button

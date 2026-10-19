@@ -169,6 +169,7 @@ declare const en: {
     readonly 'search.assistant': "Assistant";
     readonly 'search.title': "Title";
     readonly 'search.localDevice': "Local device";
+    readonly "workbench.pageNavigation": "Page navigation";
     readonly "workbench.resizeSidebar": "Resize sidebar";
     readonly "workbench.resizeSidebarHint": "Drag to resize; double-click to reset";
     readonly "workbench.closeTab": "Close {{title}}";
@@ -4147,6 +4148,7 @@ declare const zhCN: {
     'search.assistant': "助手";
     'search.title': "标题";
     'search.localDevice': "本地设备";
+    "workbench.pageNavigation": "页面导航";
     "workbench.resizeSidebar": "调整侧栏宽度";
     "workbench.resizeSidebarHint": "拖动调整宽度，双击恢复默认";
     "workbench.closeTab": "关闭 {{title}}";
@@ -8147,6 +8149,7 @@ declare const resources: {
         readonly 'search.assistant': "Assistant";
         readonly 'search.title': "Title";
         readonly 'search.localDevice': "Local device";
+        readonly "workbench.pageNavigation": "Page navigation";
         readonly "workbench.resizeSidebar": "Resize sidebar";
         readonly "workbench.resizeSidebarHint": "Drag to resize; double-click to reset";
         readonly "workbench.closeTab": "Close {{title}}";
@@ -12124,6 +12127,7 @@ declare const resources: {
         'search.assistant': "助手";
         'search.title': "标题";
         'search.localDevice': "本地设备";
+        "workbench.pageNavigation": "页面导航";
         "workbench.resizeSidebar": "调整侧栏宽度";
         "workbench.resizeSidebarHint": "拖动调整宽度，双击恢复默认";
         "workbench.closeTab": "关闭 {{title}}";

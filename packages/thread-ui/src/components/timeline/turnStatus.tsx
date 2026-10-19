@@ -235,12 +235,14 @@ function TurnStatusIndicator({
 export function TurnStatusBar({
   turn,
   variant = 'header',
+  notificationControl,
   lastActivityAt = null,
   backgroundAgentCount = 0,
   waitingForWake = false,
 }: {
   turn: TimelineTurn;
   variant?: 'header' | 'footer';
+  notificationControl?: import('react').ReactNode;
   lastActivityAt?: string | null;
   backgroundAgentCount?: number;
   waitingForWake?: boolean;
@@ -280,6 +282,7 @@ export function TurnStatusBar({
             ? <ProgressIndicator age={progressAge} at={effectiveLastActivityAt} />
             : <TurnStatusIndicator status={turn.status} />}
 
+          {active && turn.status !== 'recovering' ? notificationControl : null}
           <TurnUsageInline turn={turn} />
         </div>
         <div className="thread-graph-turn-footer-meta timeline-meta-text flex min-w-0 shrink items-center justify-end gap-1 whitespace-nowrap">

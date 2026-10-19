@@ -722,6 +722,8 @@ var authEn = {
 
 // src/i18n/chat.en.ts
 var chatEn = {
+  "chat.turnNotificationOn": "Notify you when this turn ends",
+  "chat.turnNotificationOff": "Subscribe to this turn",
   "chat.replyVersion": "Reply version",
   "chat.peerAgent": "Agent",
   "chat.peerQuestion": "Question",
@@ -2549,6 +2551,29 @@ var filesEn = {
 
 // src/i18n/settings.en.ts
 var settingsEn = {
+  "settings.accountScope": "Account settings, shared across devices",
+  "settings.notificationsTab": "Notifications",
+  "settings.notificationsDescription": "Choose which turns notify you when they finish.",
+  "settings.notificationsSubscribed": "Subscribed turns",
+  "settings.notificationsSubscribedHint": "Subscribe with the bell on a working turn to be notified when it ends.",
+  "settings.notificationsAll": "All turns",
+  "settings.notificationsAllHint": "Notify when any turn finishes.",
+  "settings.notificationsSelected": "Selected devices and workspaces",
+  "settings.notificationsSelectedHint": "Notify for all threads on selected devices or in selected workspaces.",
+  "settings.notificationsLocalScope": "Saved to this device\u2019s local owner, shared by its browsers.",
+  "settings.notificationsAddDevice": "Add device",
+  "settings.notificationsAddWorkspace": "Add workspace",
+  "settings.notificationsChooseDevice": "Choose device",
+  "settings.notificationsChooseWorkspace": "Choose a device, then a workspace",
+  "settings.notificationsEmpty": "Add a device or workspace to receive notifications.",
+  "settings.notificationsRemove": "Remove {{name}}",
+  "settings.notificationsRemoved": "Removed",
+  "settings.notificationsUndo": "Undo",
+  "settings.notificationsLoadFailed": "Unable to load notification settings. Try again.",
+  "settings.notificationsSaveFailed": "Unable to save. Try again.",
+  "settings.notificationsTurnError": "The subscription was not saved. Try again.",
+  "settings.notificationsBrowser": "System notifications in this browser",
+  "settings.notificationsLocalBrowser": "Local notifications appear in the workbench bell.",
   "settings.pluginSettings": "{{value1}} settings",
   "settings.threadPluginsTitle": "Plugins in this conversation",
   "settings.threadPluginsHint": "Choose whether each plugin works in this conversation.",
@@ -4605,6 +4630,8 @@ var authZhCN = {
 
 // src/i18n/chat.zh-CN.ts
 var chatZhCN = {
+  "chat.turnNotificationOn": "\u7ED3\u675F\u65F6\u901A\u77E5\u4F60",
+  "chat.turnNotificationOff": "\u8BA2\u9605\u8FD9\u4E00\u8F6E\u7684\u901A\u77E5",
   "chat.replyVersion": "\u56DE\u590D\u7248\u672C",
   "chat.peerAgent": "\u667A\u80FD\u4F53",
   "chat.peerQuestion": "\u63D0\u95EE",
@@ -6432,6 +6459,29 @@ var filesZhCN = {
 
 // src/i18n/settings.zh-CN.ts
 var settingsZhCN = {
+  "settings.accountScope": "\u8D26\u53F7\u8BBE\u7F6E\uFF0C\u6240\u6709\u8BBE\u5907\u901A\u7528",
+  "settings.notificationsTab": "\u901A\u77E5",
+  "settings.notificationsDescription": "\u9009\u62E9\u54EA\u4E9B\u8F6E\u6B21\u7ED3\u675F\u65F6\u901A\u77E5\u4F60\u3002",
+  "settings.notificationsSubscribed": "\u4EC5\u8BA2\u9605\u7684\u8F6E\u6B21",
+  "settings.notificationsSubscribedHint": "\u5728\u5DE5\u4F5C\u4E2D\u7684\u8F6E\u6B21\u4E0A\u70B9\u94C3\u94DB\u8BA2\u9605\uFF0C\u7ED3\u675F\u65F6\u624D\u901A\u77E5\u3002",
+  "settings.notificationsAll": "\u6240\u6709\u8F6E\u6B21",
+  "settings.notificationsAllHint": "\u6BCF\u4E2A\u8F6E\u6B21\u7ED3\u675F\u65F6\u90FD\u901A\u77E5\u3002",
+  "settings.notificationsSelected": "\u6307\u5B9A\u8BBE\u5907\u548C\u5DE5\u4F5C\u533A",
+  "settings.notificationsSelectedHint": "\u901A\u77E5\u6240\u9009\u8BBE\u5907\u4E0A\u7684\u5168\u90E8\u7EBF\u7A0B\uFF0C\u4EE5\u53CA\u6240\u9009\u5DE5\u4F5C\u533A\u91CC\u7684\u7EBF\u7A0B\u3002",
+  "settings.notificationsLocalScope": "\u4FDD\u5B58\u5728\u8FD9\u53F0\u8BBE\u5907\u7684\u672C\u5730\u8D26\u53F7\u4E2D\uFF0C\u6240\u6709\u6D4F\u89C8\u5668\u901A\u7528\u3002",
+  "settings.notificationsAddDevice": "\u6DFB\u52A0\u8BBE\u5907",
+  "settings.notificationsAddWorkspace": "\u6DFB\u52A0\u5DE5\u4F5C\u533A",
+  "settings.notificationsChooseDevice": "\u9009\u62E9\u8BBE\u5907",
+  "settings.notificationsChooseWorkspace": "\u5148\u9009\u8BBE\u5907\uFF0C\u518D\u9009\u5DE5\u4F5C\u533A",
+  "settings.notificationsEmpty": "\u6DFB\u52A0\u8BBE\u5907\u6216\u5DE5\u4F5C\u533A\u540E\u624D\u4F1A\u6536\u5230\u901A\u77E5\u3002",
+  "settings.notificationsRemove": "\u79FB\u9664 {{name}}",
+  "settings.notificationsRemoved": "\u5DF2\u79FB\u9664",
+  "settings.notificationsUndo": "\u64A4\u9500",
+  "settings.notificationsLoadFailed": "\u65E0\u6CD5\u8BFB\u53D6\u901A\u77E5\u8BBE\u7F6E\uFF0C\u8BF7\u91CD\u8BD5\u3002",
+  "settings.notificationsSaveFailed": "\u4FDD\u5B58\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5\u3002",
+  "settings.notificationsTurnError": "\u901A\u77E5\u8BA2\u9605\u672A\u4FDD\u5B58\uFF0C\u8BF7\u91CD\u8BD5\u3002",
+  "settings.notificationsBrowser": "\u6B64\u6D4F\u89C8\u5668\u7684\u7CFB\u7EDF\u901A\u77E5",
+  "settings.notificationsLocalBrowser": "\u672C\u5730\u6A21\u5F0F\u7684\u901A\u77E5\u4F1A\u663E\u793A\u5728\u5DE5\u4F5C\u53F0\u94C3\u94DB\u4E2D\u3002",
   "settings.pluginSettings": "{{value1}}\u8BBE\u7F6E",
   "settings.threadPluginsTitle": "\u6B64\u5BF9\u8BDD\u7684\u63D2\u4EF6",
   "settings.threadPluginsHint": "\u9009\u62E9\u63D2\u4EF6\u662F\u5426\u5728\u8FD9\u4E2A\u5BF9\u8BDD\u4E2D\u751F\u6548\u3002",

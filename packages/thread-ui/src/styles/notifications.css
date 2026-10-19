@@ -1,0 +1,26 @@
+.settings-account-mark { display: inline-flex; margin-inline-start: 6px; color: var(--theme-fg-muted); vertical-align: middle; }
+.turn-notification-control { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.turn-notification-button { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--theme-fg-muted); cursor: pointer; transition: color .12s, background .12s, transform .12s; }
+.turn-notification-button:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.turn-notification-button[aria-pressed='true'] { color: var(--theme-accent-strong); background: var(--theme-accent-soft); }
+.turn-notification-button:active { transform: scale(.92); }
+.turn-notification-button:focus-visible { outline: 2px solid var(--theme-accent-strong); outline-offset: 2px; }
+.turn-notification-button:disabled { cursor: progress; }
+.turn-notification-feedback { color: var(--theme-accent-strong); font-size: 11px; }
+.turn-notification-error { color: var(--status-danger-fg); font-size: 12px; }
+.turn-notification-error button { display: inline-flex; align-items: center; gap: 4px; min-height: 40px; margin-inline-start: 6px; color: inherit; }
+.notification-scope-cards { display: flex; flex-wrap: wrap; gap: 8px; }
+.notification-scope-card { display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; border: 1px solid var(--theme-border); border-radius: 10px; padding: 8px 10px; background: var(--theme-panel); font-size: 13px; }
+.notification-scope-card > span { display: grid; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
+.notification-scope-card small { color: var(--theme-fg-muted); }
+.notification-scope-card > button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 40px; min-height: 40px; border-radius: 7px; }
+.notification-scope-add { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px; border: 1px dashed var(--theme-border-strong); border-radius: 10px; }
+.notification-scope-add .workbench-thread-picker-trigger { width: auto; min-height: 44px; height: auto; padding: 8px 12px; gap: 6px; border-color: var(--theme-border); color: var(--theme-fg); }
+.workbench-thread-picker-dialog { position: static; transform: none; translate: none; animation: none; width: auto; max-width: none; padding: 0; gap: 0; border: 0; background: transparent; box-shadow: none; }
+.workbench-thread-picker-overlay { z-index: 249; backdrop-filter: blur(5px); }
+@media (max-width: 639px) {
+  .turn-notification-button { width: 40px; height: 40px; }
+  .thread-graph-turn-footer-runtime { gap: 4px; }
+  .notification-scope-card { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .turn-notification-button { transition: none; } }

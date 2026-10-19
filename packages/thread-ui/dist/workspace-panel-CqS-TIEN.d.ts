@@ -316,6 +316,7 @@ type SettingsSection = {
     id: string;
     label: string;
     description?: string;
+    account?: boolean;
     content: ReactNode;
 };
 declare function SettingsPanels({ sections, initialId, selected: selectedId, onSelect, scroll }: {

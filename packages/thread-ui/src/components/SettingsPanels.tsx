@@ -1,7 +1,8 @@
+import { UserRound } from 'lucide-react';
 import { translate, useI18n } from '../i18n';
 import { useId, useLayoutEffect, useRef, useState, type MutableRefObject, type ReactNode } from 'react';
 
-export type SettingsSection = { id: string; label: string; description?: string; content: ReactNode };
+export type SettingsSection = { id: string; label: string; description?: string; account?: boolean; content: ReactNode };
 
 export function SettingsPanels({ sections, initialId, selected: selectedId, onSelect, scroll }: {
   sections: SettingsSection[];
@@ -45,7 +46,7 @@ export function SettingsPanels({ sections, initialId, selected: selectedId, onSe
           setSelected(sections[next]!.id);
           document.getElementById(`${scope}-${sections[next]!.id}`)?.focus();
         }}
-      ><span>{section.label}</span></button>)}
+      ><span>{section.label}</span>{section.account && <span className="settings-account-mark" title={translate('settings.accountScope')} aria-label={translate('settings.accountScope')}><UserRound size={13} aria-hidden="true" /></span>}</button>)}
     </nav>
     <section key={active.id} ref={panel} className="settings-panel" role="tabpanel" id={`${scope}-panel`} aria-labelledby={`${scope}-${active.id}`} tabIndex={0}
       onScroll={scroll ? (event) => { scroll.current = event.currentTarget.scrollTop; } : undefined}>

@@ -46,7 +46,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-VACMWEJF.js";
+} from "./chunk-R2VUUKD2.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -73,7 +73,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-E2U3WKMS.js";
+} from "./chunk-QP6YO3PE.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -7277,6 +7277,7 @@ function TokenUsageCost({
 }
 
 // src/components/SettingsPanels.tsx
+import { UserRound } from "lucide-react";
 import { useId as useId3, useLayoutEffect as useLayoutEffect7, useRef as useRef12, useState as useState18 } from "react";
 import { jsx as jsx31, jsxs as jsxs26 } from "react/jsx-runtime";
 function SettingsPanels({ sections, initialId, selected: selectedId, onSelect, scroll }) {
@@ -7296,7 +7297,7 @@ function SettingsPanels({ sections, initialId, selected: selectedId, onSelect, s
   const active = sections.find((section) => section.id === selected) ?? sections[0];
   if (!active) return null;
   return /* @__PURE__ */ jsxs26("div", { className: "settings-workspace", children: [
-    /* @__PURE__ */ jsx31("nav", { className: "settings-navigation", role: "tablist", "aria-label": translate("settings.settingsCategories"), children: sections.map((section, index) => /* @__PURE__ */ jsx31(
+    /* @__PURE__ */ jsx31("nav", { className: "settings-navigation", role: "tablist", "aria-label": translate("settings.settingsCategories"), children: sections.map((section, index) => /* @__PURE__ */ jsxs26(
       "button",
       {
         type: "button",
@@ -7317,7 +7318,10 @@ function SettingsPanels({ sections, initialId, selected: selectedId, onSelect, s
           setSelected(sections[next].id);
           document.getElementById(`${scope}-${sections[next].id}`)?.focus();
         },
-        children: /* @__PURE__ */ jsx31("span", { children: section.label })
+        children: [
+          /* @__PURE__ */ jsx31("span", { children: section.label }),
+          section.account && /* @__PURE__ */ jsx31("span", { className: "settings-account-mark", title: translate("settings.accountScope"), "aria-label": translate("settings.accountScope"), children: /* @__PURE__ */ jsx31(UserRound, { size: 13, "aria-hidden": "true" }) })
+        ]
       },
       section.id
     )) }),
@@ -16035,6 +16039,7 @@ function TurnStatusIndicator({
 function TurnStatusBar({
   turn,
   variant = "header",
+  notificationControl,
   lastActivityAt = null,
   backgroundAgentCount = 0,
   waitingForWake = false
@@ -16065,6 +16070,7 @@ function TurnStatusBar({
             ]
           }
         ) : active && turn.status !== "recovering" ? /* @__PURE__ */ jsx67(ProgressIndicator, { age: progressAge, at: effectiveLastActivityAt }) : /* @__PURE__ */ jsx67(TurnStatusIndicator, { status: turn.status }),
+        active && turn.status !== "recovering" ? notificationControl : null,
         /* @__PURE__ */ jsx67(TurnUsageInline, { turn })
       ] }),
       /* @__PURE__ */ jsx67("div", { className: "thread-graph-turn-footer-meta timeline-meta-text flex min-w-0 shrink items-center justify-end gap-1 whitespace-nowrap", children: elapsedLabel2 ? /* @__PURE__ */ jsx67("span", { "aria-label": translate("chat.runningFor", { value1: elapsedLabel2 }), children: elapsedLabel2 }) : null })
@@ -17362,6 +17368,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
   liveOutput,
   forceActive = false,
   backgroundAgentCount = 0,
+  renderTurnNotification,
   onToggleCollapse,
   onLoadTurnItems,
   narrationMode = false,
@@ -17517,6 +17524,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
     {
       turn: activeFooterTurn,
       variant: "footer",
+      notificationControl: renderTurnNotification?.(activeFooterTurn.id),
       lastActivityAt,
       backgroundAgentCount,
       waitingForWake: peerWaitingForWake ?? mergedItems.some((item) => item.origin === "nativeBackgroundWait" && item.status === "waiting")
@@ -18651,6 +18659,7 @@ function ThreadTimelineComponent({
   activeTurnId = null,
   threadRunning = false,
   backgroundAgentCount = 0,
+  renderTurnNotification,
   pendingSteers = [],
   livePlan = null,
   liveItems = null,
@@ -19186,6 +19195,7 @@ function ThreadTimelineComponent({
         turn: displayTurn,
         revealTarget: searchTarget?.turnId === displayTurn.id ? searchTarget : void 0,
         backgroundAgentCount,
+        renderTurnNotification,
         absoluteIndex: visibleTurnAbsoluteOffset + visibleIndex + 1,
         isCollapsed: rowCollapsed,
         livePlan: rowLivePlan,
@@ -19397,6 +19407,7 @@ function ThreadTimelineComponent({
                     ...adapter ? { adapter } : {},
                     turn: optimisticTurn,
                     backgroundAgentCount,
+                    renderTurnNotification,
                     absoluteIndex: optimisticAbsoluteIndex,
                     isCollapsed: rowCollapsed,
                     livePlan: null,
@@ -19501,6 +19512,7 @@ function ThreadTimelineComponent({
               ...adapter ? { adapter } : {},
               turn: unattachedLiveTurn,
               backgroundAgentCount,
+              renderTurnNotification,
               absoluteIndex: unattachedLiveTurnIndex,
               isCollapsed: collapsedTurnOverrides[unattachedLiveTurn.id] ?? false,
               livePlan: livePlan?.turnId === unattachedLiveTurn.id ? livePlan : null,
@@ -26737,6 +26749,39 @@ function useWorkbenchPresentation(scope, contextKey = null) {
     storageFailed: stored.generation === generation && stored.storageFailed
   };
 }
+
+// src/components/timeline/TurnNotificationButton.tsx
+import { Bell as Bell2, Loader2 as Loader25, RotateCcw as RotateCcw2 } from "lucide-react";
+import { jsx as jsx100, jsxs as jsxs85 } from "react/jsx-runtime";
+function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onRetry }) {
+  useI18n();
+  return /* @__PURE__ */ jsxs85("span", { className: "turn-notification-control", children: [
+    /* @__PURE__ */ jsx100(
+      "button",
+      {
+        type: "button",
+        className: "turn-notification-button",
+        "aria-pressed": subscribed,
+        "aria-label": translate(subscribed ? "chat.turnNotificationOn" : "chat.turnNotificationOff"),
+        title: translate(subscribed ? "chat.turnNotificationOn" : "chat.turnNotificationOff"),
+        disabled: busy,
+        onClick: onToggle,
+        children: busy ? /* @__PURE__ */ jsx100(Loader25, { size: 15, className: "is-spinning", "aria-hidden": "true" }) : /* @__PURE__ */ jsx100(Bell2, { size: 15, fill: subscribed ? "currentColor" : "none", "aria-hidden": "true" })
+      }
+    ),
+    /* @__PURE__ */ jsx100("span", { className: "turn-notification-feedback", role: "status", children: subscribed ? translate("chat.turnNotificationOn") : "" }),
+    error && /* @__PURE__ */ jsxs85("span", { className: "turn-notification-error", role: "alert", children: [
+      error,
+      /* @__PURE__ */ jsxs85("button", { type: "button", onClick: onRetry, "aria-label": translate("settings.retry"), children: [
+        /* @__PURE__ */ jsx100(RotateCcw2, { size: 14 }),
+        translate("settings.retry")
+      ] })
+    ] })
+  ] });
+}
+
+// src/styles/notifications.css
+styleInject(".settings-account-mark {\n  display: inline-flex;\n  margin-inline-start: 6px;\n  color: var(--theme-fg-muted);\n  vertical-align: middle;\n}\n.turn-notification-control {\n  display: inline-flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 4px;\n  min-width: 0;\n}\n.turn-notification-button {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  border: 1px solid transparent;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  cursor: pointer;\n  transition:\n    color .12s,\n    background .12s,\n    transform .12s;\n}\n.turn-notification-button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.turn-notification-button[aria-pressed=true] {\n  color: var(--theme-accent-strong);\n  background: var(--theme-accent-soft);\n}\n.turn-notification-button:active {\n  transform: scale(.92);\n}\n.turn-notification-button:focus-visible {\n  outline: 2px solid var(--theme-accent-strong);\n  outline-offset: 2px;\n}\n.turn-notification-button:disabled {\n  cursor: progress;\n}\n.turn-notification-feedback {\n  color: var(--theme-accent-strong);\n  font-size: 11px;\n}\n.turn-notification-error {\n  color: var(--status-danger-fg);\n  font-size: 12px;\n}\n.turn-notification-error button {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  min-height: 40px;\n  margin-inline-start: 6px;\n  color: inherit;\n}\n.notification-scope-cards {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 8px;\n}\n.notification-scope-card {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  max-width: 100%;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  padding: 8px 10px;\n  background: var(--theme-panel);\n  font-size: 13px;\n}\n.notification-scope-card > span {\n  display: grid;\n  gap: 2px;\n  min-width: 0;\n  overflow-wrap: anywhere;\n}\n.notification-scope-card small {\n  color: var(--theme-fg-muted);\n}\n.notification-scope-card > button {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  min-width: 40px;\n  min-height: 40px;\n  border-radius: 7px;\n}\n.notification-scope-add {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px;\n  padding: 12px;\n  border: 1px dashed var(--theme-border-strong);\n  border-radius: 10px;\n}\n.notification-scope-add .workbench-thread-picker-trigger {\n  width: auto;\n  min-height: 44px;\n  height: auto;\n  padding: 8px 12px;\n  gap: 6px;\n  border-color: var(--theme-border);\n  color: var(--theme-fg);\n}\n.workbench-thread-picker-dialog {\n  position: static;\n  transform: none;\n  translate: none;\n  animation: none;\n  width: auto;\n  max-width: none;\n  padding: 0;\n  gap: 0;\n  border: 0;\n  background: transparent;\n  box-shadow: none;\n}\n.workbench-thread-picker-overlay {\n  z-index: 249;\n  backdrop-filter: blur(5px);\n}\n@media (max-width: 639px) {\n  .turn-notification-button {\n    width: 40px;\n    height: 40px;\n  }\n  .thread-graph-turn-footer-runtime {\n    gap: 4px;\n  }\n  .notification-scope-card {\n    width: 100%;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .turn-notification-button {\n    transition: none;\n  }\n}\n");
 export {
   AppShellMenuButton,
   AppShellNavContext,
@@ -26790,6 +26835,7 @@ export {
   ThreadTimeline,
   ThreadWorkspaceLayout,
   TokenUsageCost,
+  TurnNotificationButton,
   confirmAsync,
   confirmWorkspaceDocumentLeave,
   copyText,

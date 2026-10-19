@@ -26410,24 +26410,64 @@ function PublicTranscript({ snapshot }) {
 }
 
 // src/components/ConversationSearchControls.tsx
-import { Fragment as Fragment34, jsx as jsx99, jsxs as jsxs84 } from "react/jsx-runtime";
+import { useEffect as useEffect50, useRef as useRef49, useState as useState68 } from "react";
+import { Check as Check6, ChevronDown as ChevronDown8 } from "lucide-react";
+import { jsx as jsx99, jsxs as jsxs84 } from "react/jsx-runtime";
 function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }) {
-  return /* @__PURE__ */ jsxs84(
-    "select",
-    {
-      className: "workbench-search-scope",
-      "aria-label": labels.scope,
-      value,
-      onChange: (event) => onChange(event.target.value),
-      children: [
-        /* @__PURE__ */ jsx99("option", { value: "thread", children: labels.thread }),
-        allowGlobal && /* @__PURE__ */ jsxs84(Fragment34, { children: [
-          /* @__PURE__ */ jsx99("option", { value: "workspace", children: labels.workspace }),
-          /* @__PURE__ */ jsx99("option", { value: "device", children: labels.device })
-        ] })
-      ]
-    }
-  );
+  const [open, setOpen] = useState68(false);
+  const root = useRef49(null);
+  const trigger = useRef49(null);
+  const menu = useRef49(null);
+  const scopes = allowGlobal ? ["thread", "workspace", "device"] : ["thread"];
+  const name = (scope) => labels[scope];
+  useMenuKeyboard(menu, open, (restore) => {
+    setOpen(false);
+    if (restore) trigger.current?.focus();
+  });
+  useEffect50(() => {
+    if (!open) return;
+    const outside = (event) => {
+      if (!root.current?.contains(event.target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", outside, true);
+    return () => document.removeEventListener("pointerdown", outside, true);
+  }, [open]);
+  if (scopes.length < 2) return /* @__PURE__ */ jsx99("span", { className: "workbench-search-scope is-fixed", children: name(value) });
+  return /* @__PURE__ */ jsxs84("div", { ref: root, className: "workbench-search-scope-picker", children: [
+    /* @__PURE__ */ jsxs84(
+      "button",
+      {
+        ref: trigger,
+        type: "button",
+        className: "workbench-search-scope",
+        "aria-label": `${labels.scope}: ${name(value)}`,
+        "aria-haspopup": "menu",
+        "aria-expanded": open,
+        onClick: () => setOpen((current) => !current),
+        children: [
+          /* @__PURE__ */ jsx99("span", { children: name(value) }),
+          /* @__PURE__ */ jsx99(ChevronDown8, { "aria-hidden": "true" })
+        ]
+      }
+    ),
+    open && /* @__PURE__ */ jsx99("div", { ref: menu, role: "menu", "aria-label": labels.scope, className: "workbench-search-scope-menu", children: scopes.map((scope) => /* @__PURE__ */ jsxs84(
+      "button",
+      {
+        type: "button",
+        role: "menuitemradio",
+        "aria-checked": scope === value,
+        onClick: () => {
+          setOpen(false);
+          if (scope !== value) onChange(scope);
+        },
+        children: [
+          /* @__PURE__ */ jsx99(Check6, { "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx99("span", { children: name(scope) })
+        ]
+      },
+      scope
+    )) })
+  ] });
 }
 function searchHighlightParts(text, query) {
   const foldedQuery = query.trim().toLowerCase();
@@ -26459,7 +26499,7 @@ function ConversationSearchExcerpt({ text, query }) {
 }
 
 // src/components/workbench/presentation.ts
-import { useCallback as useCallback24, useEffect as useEffect50, useRef as useRef49, useState as useState68 } from "react";
+import { useCallback as useCallback24, useEffect as useEffect51, useRef as useRef50, useState as useState69 } from "react";
 var defaultPresentation = {
   referenceId: null,
   mode: "focus",
@@ -26517,11 +26557,11 @@ function write(scope, value, patch) {
   }
 }
 function useWorkbenchPresentation(scope, contextKey = null) {
-  const owner = useRef49({ scope, contextKey });
+  const owner = useRef50({ scope, contextKey });
   if (owner.current.scope !== scope || owner.current.contextKey !== contextKey)
     owner.current = { scope, contextKey };
   const generation = owner.current;
-  const [stored, setStored] = useState68(() => ({
+  const [stored, setStored] = useState69(() => ({
     generation,
     value: read(scope),
     storageFailed: false,
@@ -26531,7 +26571,7 @@ function useWorkbenchPresentation(scope, contextKey = null) {
   const value = stored.generation === generation ? stored.value : { ...read(scope), ...pending };
   if (stored.generation !== generation)
     setStored({ generation, value, storageFailed: false, pending });
-  useEffect50(() => {
+  useEffect51(() => {
     if (!scope || stored.generation !== generation || !stored.pending) return;
     const storageFailed = write(scope, stored.value, stored.pending);
     setStored(

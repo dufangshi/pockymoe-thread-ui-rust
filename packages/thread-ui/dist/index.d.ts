@@ -1041,7 +1041,8 @@ declare function DialogTitle({ className, ...props }: ComponentProps<typeof Dial
 declare function DialogDescription({ className, ...props }: ComponentProps<typeof DialogPrimitive.Description>): react.JSX.Element;
 
 type ConversationSearchScope = 'thread' | 'workspace' | 'device';
-/** Host supplies labels and permissions; this picker never infers access. */
+/** Where a search looks: a small menu of our own at the field's start (§3
+    keyboard). The host supplies labels and permissions; it never infers access. */
 declare function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }: {
     value: ConversationSearchScope;
     onChange: (scope: ConversationSearchScope) => void;

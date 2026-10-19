@@ -1,18 +1,44 @@
+import { useEffect, useRef, useState } from 'react';
+import { Check, ChevronDown } from 'lucide-react';
+import { useMenuKeyboard } from './menu/useMenuKeyboard';
+
 export type ConversationSearchScope = 'thread' | 'workspace' | 'device';
 
-/** Host supplies labels and permissions; this picker never infers access. */
+/** Where a search looks: a small menu of our own at the field's start (§3
+    keyboard). The host supplies labels and permissions; it never infers access. */
 export function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }: {
   value: ConversationSearchScope;
   onChange: (scope: ConversationSearchScope) => void;
   labels: { scope: string; thread: string; workspace: string; device: string };
   allowGlobal: boolean;
 }) {
-  return <select className="workbench-search-scope" aria-label={labels.scope} value={value}
-    onChange={event => onChange(event.target.value as ConversationSearchScope)}>
-    <option value="thread">{labels.thread}</option>
-    {allowGlobal && <><option value="workspace">{labels.workspace}</option>
-      <option value="device">{labels.device}</option></>}
-  </select>;
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
+  const scopes: ConversationSearchScope[] = allowGlobal ? ['thread', 'workspace', 'device'] : ['thread'];
+  const name = (scope: ConversationSearchScope) => labels[scope];
+  useMenuKeyboard(menu, open, (restore) => { setOpen(false); if (restore) trigger.current?.focus(); });
+  useEffect(() => {
+    if (!open) return;
+    const outside = (event: PointerEvent) => { if (!root.current?.contains(event.target as Node)) setOpen(false); };
+    document.addEventListener('pointerdown', outside, true);
+    return () => document.removeEventListener('pointerdown', outside, true);
+  }, [open]);
+  // One place to look needs no menu; the label still says where it is.
+  if (scopes.length < 2) return <span className="workbench-search-scope is-fixed">{name(value)}</span>;
+  return <div ref={root} className="workbench-search-scope-picker">
+    <button ref={trigger} type="button" className="workbench-search-scope" aria-label={`${labels.scope}: ${name(value)}`}
+      aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(current => !current)}>
+      <span>{name(value)}</span><ChevronDown aria-hidden="true" />
+    </button>
+    {open && <div ref={menu} role="menu" aria-label={labels.scope} className="workbench-search-scope-menu">
+      {scopes.map(scope => <button key={scope} type="button" role="menuitemradio" aria-checked={scope === value}
+        onClick={() => { setOpen(false); if (scope !== value) onChange(scope); }}>
+        <Check aria-hidden="true" /><span>{name(scope)}</span>
+      </button>)}
+    </div>}
+  </div>;
 }
 
 /** Map folded offsets to original Unicode characters (e.g. İ → i + ◌̇). */

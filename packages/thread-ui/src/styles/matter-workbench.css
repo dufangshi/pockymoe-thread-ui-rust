@@ -641,6 +641,12 @@
 .matter-thread-group:has(> .matter-tab-close) > :is(.matter-group-tab, .matter-group-toggle) { border-right: 0; }
 .matter-thread-group:has(> .matter-tab-close):has(> .matter-group-tab[aria-current='page']) { background: var(--theme-bg); }
 .matter-thread-group:has(> .matter-tab-close) > .matter-group-tab { padding-right: 4px; }
+/* However long its name, a tab stays at most 200px with its count and ✕; the
+   name gives way, ended with an ellipsis. */
+.matter-thread-group { max-width: 200px; }
+.matter-thread-group > .matter-group-tab { flex: 0 1 auto; min-width: 0; max-width: none; }
+.matter-thread-group > .matter-group-tab > span:last-child { min-width: 0; }
+.matter-thread-group > :is(.matter-group-toggle, .matter-tab-close) { flex: none; }
 .thread-ui-shell .matter-workbench .matter-tab-close {
   display: flex; flex: none; align-items: center; justify-content: center; align-self: center; width: 22px; height: 22px;
   margin: 0 6px 0 2px; padding: 0; border: 0; border-radius: 5px; background: transparent; color: var(--theme-fg-muted); opacity: 0;

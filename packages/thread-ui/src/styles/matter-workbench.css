@@ -102,7 +102,8 @@
   height: 100%;
   min-height: 0;
   grid-template-columns: 49px 236px minmax(0, 1fr);
-  grid-template-rows: 40px minmax(0, 1fr);
+  /* The desktop has no top bar: the tabs row is the only bar (phones keep theirs). */
+  grid-template-rows: minmax(0, 1fr);
   background: var(--matter-chrome);
   font-size: 13px;
 }
@@ -183,7 +184,7 @@
 }
 .thread-ui-shell .matter-workbench .matter-rail > .matter-brand {
   height: 32px;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -3px;
@@ -513,6 +514,36 @@
   background: var(--theme-surface);
   border-bottom: 1px solid var(--theme-border);
 }
+/* Search, tabs, New thread and tools; an open search covers them, never pushes them. */
+.matter-tabs-main { position: relative; display: flex; flex: 1; min-width: 0; }
+.matter-tabs-search { display: flex; flex: none; align-items: stretch; width: 38px; border-right: 1px solid var(--theme-border); }
+.thread-ui-shell .matter-workbench .matter-tabs-search .matter-search-trigger {
+  display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 0;
+  border: 0; border-radius: 0; background: transparent; color: var(--theme-fg-soft);
+}
+.thread-ui-shell .matter-workbench .matter-tabs-search .matter-search-trigger:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.matter-tabs-search .matter-search-trigger > span { display: none; }
+.matter-tabs-search .matter-search-trigger svg { width: 16px; height: 16px; }
+.matter-tabs-search .workbench-search.is-open {
+  position: absolute; inset: 0; z-index: 8; display: flex; align-items: center; padding: 0 8px;
+  background: var(--theme-surface); animation: matter-tabs-search-in 120ms ease-out;
+}
+/* The field fits the row and takes the room the tabs had. */
+.matter-tabs-search .workbench-search.is-open .workbench-search-field { flex: 1; max-width: 640px; height: 28px; }
+@keyframes matter-tabs-search-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .matter-tabs-search .workbench-search.is-open { animation: none; } }
+/* Connection and notifications close the row on the right. */
+.matter-tabs-end { display: flex; flex: none; align-items: center; gap: 2px; padding: 0 6px; border-left: 1px solid var(--theme-border); }
+.matter-tabs-end .matter-connection:empty { display: none; }
+.thread-ui-shell .matter-workbench .matter-tabs-end > button {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px;
+  border: 0; border-radius: 8px; background: transparent; color: var(--theme-fg-soft);
+}
+.thread-ui-shell .matter-workbench .matter-tabs-end > button:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.matter-tabs-end > button svg { width: 16px; height: 16px; }
+/* The rail's navigation: the sidebar switch, then back and forward. */
+.matter-rail-history { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.matter-rail-separator { width: 18px; height: 1px; margin: 2px 0; background: var(--theme-border); }
 .matter-toolbar-toggle {
   flex-shrink: 0;
   width: 36px;
@@ -1455,15 +1486,18 @@
   background: var(--theme-panel);
   box-shadow: 0 10px 28px rgb(0 0 0 / 24%), 0 0 0 1px var(--theme-border);
 }
-:is(.matter-thread-group, .matter-thread-group-entry)[data-pressing]::after {
-  content: ''; position: absolute; left: 10%; right: 10%; bottom: 1px; height: 2px; border-radius: 2px;
-  background: var(--theme-accent-solid); transform-origin: left; animation: matter-reorder-press 1.5s linear forwards; pointer-events: none;
+/* Holding: the item sinks a little under a tint that deepens until it lifts. */
+:is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing] { position: relative; animation: matter-reorder-sink 700ms ease-out forwards; }
+:is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing]::after {
+  content: ''; position: absolute; inset: 0; border-radius: 10px; pointer-events: none;
+  background: var(--theme-accent-solid); opacity: 0; animation: matter-reorder-tint 700ms ease-in forwards;
 }
-.matter-thread-group[data-pressing] { position: relative; }
-@keyframes matter-reorder-press { from { transform: scaleX(0); opacity: .35; } to { transform: scaleX(1); opacity: 1; } }
+@keyframes matter-reorder-sink { to { transform: scale(.975); } }
+@keyframes matter-reorder-tint { to { opacity: .16; } }
 @media (prefers-reduced-motion: reduce) {
   :is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry) { transition: none; }
-  :is(.matter-thread-group, .matter-thread-group-entry)[data-pressing]::after { animation: none; transform: none; }
+  :is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing] { animation: none; }
+  :is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing]::after { animation: none; opacity: .12; }
 }
 /* On a phone the split picker is a bottom sheet over a scrim, like share and export. */
 .workbench-thread-picker-scrim { position: fixed; inset: 0; z-index: 249; background: var(--overlay-scrim, rgb(0 0 0 / 45%)); backdrop-filter: blur(6px); }

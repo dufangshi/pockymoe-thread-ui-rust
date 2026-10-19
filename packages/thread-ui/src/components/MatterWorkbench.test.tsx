@@ -463,10 +463,13 @@ describe('icon hooks', () => {
     vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
     render();
     const icon = (selector: string) => host.querySelector(selector)?.querySelector('svg')?.getAttribute('data-icon');
-    expect(icon('header.matter-topbar > button[aria-expanded]')).toBe('sidebar');
+    expect(icon('nav.matter-rail > button[aria-expanded]')).toBe('sidebar');
     expect(icon('button[aria-label="Go back"]')).toBe('back');
     expect(icon('button[aria-label="Go forward"]')).toBe('forward');
-    expect(icon('header.matter-topbar a[href="/workspaces"]')).toBe('home');
+    // On the desktop the rail's brand is the way home; the tabs row starts with search.
+    expect(host.querySelector('.matter-rail a.matter-brand')?.getAttribute('href')).toBe('/workspaces');
+    expect(host.querySelector('header.matter-topbar')).toBeNull();
+    expect(host.querySelector('.matter-tabs-row .matter-tabs-search .matter-search-trigger')).not.toBeNull();
     expect(icon('.matter-search-trigger')).toBe('search');
     expect(icon('button[aria-label="Notifications"]')).toBe('notifications');
     expect(icon('.matter-rail button[aria-label="Chat"]')).toBe('chat');

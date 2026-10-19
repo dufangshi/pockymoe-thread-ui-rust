@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 
 /** A touch has to rest this long, without moving, before it drags instead of scrolling. */
-export const REORDER_LONG_PRESS_MS = 1500;
+export const REORDER_LONG_PRESS_MS = 700;
 
 /** Items in a stored order: the listed ones first, in that order, then the rest as given. */
 export function inOrder<T>(items: T[], keyOf: (item: T) => string, order: string[] | null | undefined) {

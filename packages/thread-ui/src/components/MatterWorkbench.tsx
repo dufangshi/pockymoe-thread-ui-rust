@@ -2,7 +2,7 @@ import { WorkbenchPanels, type WorkbenchPanelsOptions } from './workbench/Workbe
 import { useWorkbenchToolPanel } from './workbench/toolPanel';
 import { getLocale } from '../i18n';
 import { translate, useI18n } from '../i18n';
-import { useEffect, useMemo, useState, useRef, type ReactNode, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState, useRef, type ReactNode, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -390,6 +390,24 @@ export function MatterWorkbench({
     window.addEventListener('keydown', toggle, true);
     return () => window.removeEventListener('keydown', toggle, true);
   }, [o.terminalEnabled]);
+  // Ctrl/⌘+F opens the conversation search instead of the browser's find; a
+  // terminal or code editor keeps its own find.
+  const searchKey = useRef({ open: o.onSearch, available: !o.emptyWorkspace, searchOpen: Boolean(o.searchOpen) });
+  searchKey.current = { open: o.onSearch, available: !o.emptyWorkspace, searchOpen: Boolean(o.searchOpen) };
+  useEffect(() => {
+    const find = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || event.key.toLowerCase() !== 'f') return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest('.xterm, .monaco-editor, .cm-editor, [data-native-find]')) return;
+      const { open, available, searchOpen } = searchKey.current;
+      if (!available) return;
+      event.preventDefault();
+      const field = rootRef.current?.querySelector<HTMLInputElement>('.workbench-search.is-open input');
+      if (searchOpen && field) { field.focus(); field.select(); } else open();
+    };
+    window.addEventListener('keydown', find, true);
+    return () => window.removeEventListener('keydown', find, true);
+  }, []);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [workspaceOpen, setWorkspaceOpen] = useState(true);
   const [recentsOpen, setRecentsOpen] = useState(true);
@@ -528,6 +546,19 @@ export function MatterWorkbench({
   );
   // A conversation's agent threads open under its row from a small toggle in it.
   const [agentsOpen, setAgentsOpen] = useState<Record<string, boolean>>({});
+  // They open downward: the row that was tapped keeps its place on screen. A
+  // bottom sheet would grow upward, so it keeps its height and scrolls instead.
+  const agentToggle = useRef<{ row: HTMLElement; top: number } | null>(null);
+  useLayoutEffect(() => {
+    const held = agentToggle.current;
+    agentToggle.current = null;
+    if (!held?.row.isConnected) return;
+    const drift = held.row.getBoundingClientRect().top - held.top;
+    if (!drift) return;
+    let scroller: HTMLElement | null = held.row.parentElement;
+    while (scroller && !(scroller.scrollHeight > scroller.clientHeight && /auto|scroll/.test(getComputedStyle(scroller).overflowY))) scroller = scroller.parentElement;
+    if (scroller) scroller.scrollTop += drift;
+  }, [agentsOpen]);
   const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { count: number; running: number; open: boolean }) => (
     <div key={thread.key} className="matter-thread-entry">
     <a
@@ -556,7 +587,13 @@ export function MatterWorkbench({
     </a>
     {agents && <button type="button" className="matter-agent-toggle" aria-expanded={agents.open} data-running={agents.running > 0 || undefined}
       aria-label={translate('workbench.agentThreads', { value1: thread.title, value2: agents.count })} title={translate('workbench.agentThreads', { value1: thread.title, value2: agents.count })}
-      onClick={() => setAgentsOpen(open => ({ ...open, [thread.key]: !agents.open }))}>
+      onClick={event => {
+        const row = event.currentTarget.closest<HTMLElement>('.matter-thread-entry');
+        const sheet = event.currentTarget.closest<HTMLElement>('.matter-phone-sheet');
+        if (sheet && !sheet.style.height) sheet.style.height = `${sheet.offsetHeight}px`;
+        if (row) agentToggle.current = { row, top: row.getBoundingClientRect().top };
+        setAgentsOpen(open => ({ ...open, [thread.key]: !agents.open }));
+      }}>
       <Bot aria-hidden="true" /><span>{agents.count}</span><ChevronRight className="matter-agent-toggle-chevron" aria-hidden="true" />
     </button>}
     {o.renderThreadMenu?.(thread)}
@@ -606,6 +643,16 @@ export function MatterWorkbench({
         >
           p<span>m</span>
         </a>}
+        {/* The desktop has one bar, the tabs row: the old top bar's navigation lives here. */}
+        <button aria-label={translate("workbench.toggleShortcutsSidebar")} aria-expanded={!sidebarHidden}
+          title={translate("workbench.toggleShortcutsSidebar")} onClick={() => setSidebarHidden(!sidebarHidden)}>
+          <PanelLeft data-icon="sidebar" />
+        </button>
+        <div className="matter-rail-history">
+          <button aria-label={translate("workbench.goBack")} title={translate("workbench.goBack")} onClick={() => history.back()}><ArrowLeft data-icon="back" /></button>
+          <button data-action="go-forward" aria-label={translate("workbench.goForward")} title={translate("workbench.goForward")} onClick={() => history.forward()}><ArrowRight data-icon="forward" /></button>
+        </div>
+        <span className="matter-rail-separator" aria-hidden="true" />
         <button
           aria-label={translate("workbench.chat")}
           aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'}
@@ -646,7 +693,7 @@ export function MatterWorkbench({
         </button>}
         <div className="matter-connection">{connection}</div>
         {bell}
-      </header> : <header className={`matter-topbar ${o.searchOpen ? 'is-search-open' : ''}`}>
+      </header> : mobile && <header className={`matter-topbar ${o.searchOpen ? 'is-search-open' : ''}`}>
         <button
           aria-label={translate("workbench.toggleShortcutsSidebar")}
           aria-expanded={mobile ? sidebarOpen : !sidebarHidden}
@@ -810,6 +857,18 @@ export function MatterWorkbench({
       </aside>
       <main className="matter-main">
         {!dock && <div className="matter-tabs-row">
+        <div className="matter-tabs-main">
+        {/* Desktop: search opens over the tabs rather than pushing them aside. */}
+        {!mobile && <div className={`matter-tabs-search ${o.searchOpen ? 'is-open' : ''}`}>{o.search ?? <button
+          className="matter-search-trigger"
+          aria-label={translate("workbench.searchConversation")}
+          title={`${translate("workbench.searchConversation")} (Ctrl+F)`}
+          disabled={o.emptyWorkspace}
+          onClick={o.onSearch}
+        >
+          <Search data-icon="search" />
+          <span>{translate("workbench.searchConversation")}</span>
+        </button>}</div>}
         <div className="tab-scroll-surface matter-tab-scroll" {...tabScrollEdges}>
         <nav ref={tabsRef} className="matter-thread-tabs" aria-label={translate("workbench.workspaceThreads")}>
           <GroupedThreadTabs threads={tabs} currentKey={o.currentKey} onNavigate={navigate} />
@@ -825,6 +884,11 @@ export function MatterWorkbench({
           {actions}
           {threadMenu}
         </ThreadToolsMenu>
+        </div>
+        {!mobile && <div className="matter-tabs-end">
+          <div className="matter-connection">{connection}</div>
+          {bell}
+        </div>}
         </div>}
         <PhoneDockContext.Provider value={dock}>
         {o.panels ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={dock ? { ...o.panels, onPaneSwitchChange: setPaneSwitch } : o.panels} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (

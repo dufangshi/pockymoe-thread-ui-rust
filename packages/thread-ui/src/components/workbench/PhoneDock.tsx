@@ -109,7 +109,9 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
   }, [open]);
   useEffect(() => {
     const node = sheet.current;
-    if (!open || !node) return;
+    // A height held while agent threads opened lasts until the sheet closes.
+    if (!open) { if (node) node.style.height = ''; return; }
+    if (!node) return;
     node.style.transform = '';
     const body = node.querySelector<HTMLElement>('.matter-phone-sheet-body');
     let start: { x: number; y: number; time: number } | null = null;
@@ -125,6 +127,8 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
     };
     const move = (event: TouchEvent) => {
       if (!start) return;
+      // A held row being dragged into place owns the finger; the sheet stays put.
+      if (!node.hasAttribute('data-dragging') && node.querySelector('[data-reordering], [data-pressing]')) { start = null; return; }
       const dx = event.touches[0]!.clientX - start.x, dy = event.touches[0]!.clientY - start.y;
       if (!node.hasAttribute('data-dragging')) {
         if (Math.abs(dx) > 10 || dy < -10) { start = null; return; }

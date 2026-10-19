@@ -515,4 +515,19 @@ describe('desktop tabs', () => {
     expect(strip()?.parentElement?.classList.contains('matter-tabs-row')).toBe(true);
     expect([...strip()!.querySelectorAll('button')].map(button => button.getAttribute('aria-label'))).toEqual(['Toggle shortcuts sidebar', 'Go back', 'Go forward']);
   });
+
+  it('offers New thread right after this workspace\'s count', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+    options = { ...baseOptions, workspaceThreads: [tab('local:a')] };
+    act(() => root.render(
+      <AppShellNavContext.Provider value={{ phoneDock: false } as AppShellNavContextValue}>
+        <MatterWorkbench options={options} title="A" homeHref="/workspaces" settings={null}
+          newThread={<button aria-label="New thread" />} actions={null} threadMenu={null} connection={null}
+          explorer={null} revealExplorer={0}><p>Conversation</p></MatterWorkbench>
+      </AppShellNavContext.Provider>,
+    ));
+    const row = host.querySelector('.matter-section-heading-row')!;
+    expect(row.querySelector('.matter-section-heading')?.textContent).toContain('This workspace');
+    expect(row.querySelector('.matter-section-add [aria-label="New thread"]')).not.toBeNull();
+  });
 });

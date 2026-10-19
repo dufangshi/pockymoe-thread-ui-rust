@@ -364,6 +364,12 @@
   font-size: 12px;
   text-align: left;
 }
+/* A section heading with an action after its count (This workspace → New thread). */
+.matter-section-heading-row { display: flex; align-items: center; min-width: 0; }
+.matter-section-heading-row > .matter-section-heading { flex: 1; min-width: 0; }
+.matter-section-add { display: flex; flex: none; align-items: center; margin-left: 2px; }
+.thread-ui-shell .matter-workbench .matter-section-add :is(button, a) { width: 26px; height: 26px; border-radius: 7px; }
+.thread-ui-shell .matter-workbench .matter-section-add svg { width: 15px; height: 15px; }
 .matter-section-heading svg {
   width: 13px;
   height: 13px;

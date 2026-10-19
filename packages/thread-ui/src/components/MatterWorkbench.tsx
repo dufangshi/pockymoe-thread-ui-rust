@@ -883,15 +883,19 @@ export function MatterWorkbench({
           </div>
         )}
         {workspaceThreads.length > 0 && <>
-          <button
-            className="matter-section-heading"
-            aria-expanded={workspaceOpen}
-            onClick={() => setWorkspaceOpen(!workspaceOpen)}
-          >
-            {workspaceOpen ? <ChevronDown /> : <ChevronRight />}
-            <span>{translate("workbench.thisWorkspace")}</span>
-            <span className="matter-section-count">{groupThreads(workspaceThreads).length}</span>
-          </button>
+          {/* New thread sits right after the count: this is where the workspace's threads are. */}
+          <div className="matter-section-heading-row">
+            <button
+              className="matter-section-heading"
+              aria-expanded={workspaceOpen}
+              onClick={() => setWorkspaceOpen(!workspaceOpen)}
+            >
+              {workspaceOpen ? <ChevronDown /> : <ChevronRight />}
+              <span>{translate("workbench.thisWorkspace")}</span>
+              <span className="matter-section-count">{groupThreads(workspaceThreads).length}</span>
+            </button>
+            {newThread ? <div className="matter-section-add">{newThread}</div> : null}
+          </div>
           {workspaceOpen && (
             <div ref={workspaceListRef} className="matter-thread-section" data-testid="workspace-threads">
               {renderThreadGroups(workspaceThreads, reorderable)}

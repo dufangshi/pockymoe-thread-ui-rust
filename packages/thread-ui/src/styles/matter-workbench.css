@@ -652,7 +652,7 @@
   margin: 0 6px 0 2px; padding: 0; border: 0; border-radius: 5px; background: transparent; color: var(--theme-fg-muted); opacity: 0;
 }
 .matter-tab-close svg { width: 13px; height: 13px; }
-.matter-thread-group:is(:hover, :focus-within, :has(> .matter-group-tab[aria-current='page'])) > .matter-tab-close { opacity: 1; }
+.matter-thread-group:is(:hover, :has(:focus-visible), :has(> .matter-group-tab[aria-current='page'])) > .matter-tab-close { opacity: 1; }
 .thread-ui-shell .matter-workbench .matter-tab-close:hover { background: var(--theme-hover); color: var(--theme-fg); }
 @media (hover: none) { .thread-ui-shell .matter-workbench .matter-tab-close { opacity: 1; } }
 .matter-new-thread {

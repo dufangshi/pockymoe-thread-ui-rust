@@ -258,6 +258,8 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  /* The thread sheet's sections fold from their headings. */
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-body .matter-sheet-section-heading { height: 36px; margin: 6px 0 2px; padding: 0 8px; font-weight: 600; color: var(--theme-fg-muted); }
   /* The More sheet names the thread in up to two lines, then its workspace. */
   .matter-phone-sheet-head { display: grid; gap: 4px; margin: 10px 8px 8px; }
   .matter-phone-sheet-body .matter-phone-sheet-head h3.matter-phone-sheet-title {

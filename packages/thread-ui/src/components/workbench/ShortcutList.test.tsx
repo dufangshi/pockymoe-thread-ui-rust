@@ -89,7 +89,7 @@ it('lets a quick touch scroll and drags only after a long press', () => {
     touch(row, 'touchend', 60);
     expect(onReorder).not.toHaveBeenCalled();
     touch(row, 'touchstart', 20);
-    act(() => { vi.advanceTimersByTime(400); });
+    act(() => { vi.advanceTimersByTime(1600); });
     expect(host.querySelector('[data-dragging]')).not.toBeNull();
     expect(touch(row, 'touchmove', 72).defaultPrevented).toBe(true);
     touch(row, 'touchend', 72);

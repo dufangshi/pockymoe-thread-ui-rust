@@ -57,7 +57,7 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate }: {
       const selected = children.find(child => child.key === currentKey);
       const active = root.key === currentKey || !!selected;
       const activity = threadGroupActivity(root, children);
-      return <div key={root.key} className="matter-thread-group" style={{ display: 'flex', flexShrink: 0, minWidth: 0 }}>
+      return <div key={root.key} className="matter-thread-group" data-reorder-key={root.key} style={{ display: 'flex', flexShrink: 0, minWidth: 0 }}>
         <a className="matter-group-tab" href={root.href} aria-current={active ? 'page' : undefined}
           title={`${selected ? `${root.title} · ${selected.title}` : root.title}\n${activity.label}`}
           onClick={event => { event.preventDefault(); onNavigate(root.href); }}>

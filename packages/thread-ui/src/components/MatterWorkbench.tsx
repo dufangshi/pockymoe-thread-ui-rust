@@ -2,11 +2,12 @@ import { WorkbenchPanels, type WorkbenchPanelsOptions } from './workbench/Workbe
 import { useWorkbenchToolPanel } from './workbench/toolPanel';
 import { getLocale } from '../i18n';
 import { translate, useI18n } from '../i18n';
-import { useEffect, useState, useRef, type ReactNode, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
+import { useEffect, useMemo, useState, useRef, type ReactNode, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
   Bell,
+  Bot,
   ChevronDown,
   ChevronRight,
   Home,
@@ -34,6 +35,7 @@ import { useThemeFeature } from './themeHooks';
 import { PhoneDock, PhoneSheet, type PhonePane } from './workbench/PhoneDock';
 import { PhoneDockContext } from './workbench/phoneDockContext';
 import { ShortcutList } from './workbench/ShortcutList';
+import { inOrder, useDragReorder, usePendingOrder } from './workbench/useDragReorder';
 import type { WorkbenchPaneSwitch } from './workbench/paneSwitch';
 import { ComposerSubscriptionUsage, visibleSubscriptionWindows } from './composer/ComposerSubscriptionUsage';
 import type { AgentSubscriptionUsageDto } from '@pockymoe/shared';
@@ -123,6 +125,10 @@ export interface MatterWorkbenchOptions {
   onPrefetchThread?: (href: string) => void;
   /** Store a new shortcut order (thread keys, first to last). */
   onReorderShortcuts?: (keys: string[]) => void;
+  /** Store a new order of this workspace's conversations (root thread keys,
+      first to last); `workspaceThreads` should then arrive in it. Without it
+      tabs and lists keep the host's order and cannot be dragged. */
+  onReorderWorkspaceThreads?: ((rootKeys: string[]) => void) | undefined;
   onSearch: () => void;
   search?: ReactNode;
   searchOpen?: boolean;
@@ -160,8 +166,18 @@ export function MatterWorkbench({
   children: ReactNode;
 }) {
   useI18n();
-  const tabs = o.workspaceThreads ?? o.threads.filter(thread => thread.key === o.currentKey);
+  const listedTabs = o.workspaceThreads ?? o.threads.filter(thread => thread.key === o.currentKey);
+  // Conversations keep the order the reader dragged them into, shown at once
+  // while the host stores it. An agent thread stays with its root.
+  const rootOfTab = (thread: WorkbenchThread) => thread.rootKey && thread.rootKey !== thread.key && listedTabs.some(tab => tab.key === thread.rootKey) ? thread.rootKey : thread.key;
+  const [workspaceOrder, setPendingWorkspaceOrder] = usePendingOrder(groupThreads(listedTabs).map(group => group.root.key));
+  const tabs = inOrder(listedTabs, rootOfTab, workspaceOrder);
+  const reorderable = Boolean(o.onReorderWorkspaceThreads && o.workspaceThreads);
+  const reorderWorkspace = useRef<(keys: string[]) => void>(() => undefined);
+  reorderWorkspace.current = keys => { setPendingWorkspaceOrder(keys); o.onReorderWorkspaceThreads?.(keys); };
+  const commitWorkspaceOrder = useMemo(() => (keys: string[]) => reorderWorkspace.current(keys), []);
   const tabsRef = useRef<HTMLElement>(null);
+  useDragReorder(tabsRef, { axis: 'x', itemSelector: '.matter-thread-group', enabled: reorderable, onCommit: commitWorkspaceOrder });
   const tabScrollEdges = useTabScrollEdges(tabsRef);
   useEffect(() => {
     tabsRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -377,6 +393,12 @@ export function MatterWorkbench({
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [workspaceOpen, setWorkspaceOpen] = useState(true);
   const [recentsOpen, setRecentsOpen] = useState(true);
+  const workspaceListRef = useRef<HTMLDivElement>(null);
+  const sheetListRef = useRef<HTMLDivElement>(null);
+  const workspaceScroll = useMemo(() => ({ get current() { return workspaceListRef.current?.closest<HTMLElement>('.matter-sidebar-scroll') ?? null; } }), []);
+  const sheetScroll = useMemo(() => ({ get current() { return sheetListRef.current?.closest<HTMLElement>('.matter-phone-sheet-body') ?? null; } }), []);
+  useDragReorder(workspaceListRef, { axis: 'y', itemSelector: '.matter-thread-group-entry', enabled: reorderable && workspaceOpen && tabs.length > 1, onCommit: commitWorkspaceOrder, scrollRef: workspaceScroll });
+  useDragReorder(sheetListRef, { axis: 'y', itemSelector: '.matter-thread-group-entry', enabled: reorderable && workspaceOpen && threadsOpen && tabs.length > 1, onCommit: commitWorkspaceOrder, scrollRef: sheetScroll });
   const [bellOpen, setBellOpen] = useState(false);
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const toolbarToggleRef = useRef<HTMLButtonElement>(null);
@@ -504,7 +526,9 @@ export function MatterWorkbench({
       </span>
     </a>
   );
-  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread)) => (
+  // A conversation's agent threads open under its row from a small toggle in it.
+  const [agentsOpen, setAgentsOpen] = useState<Record<string, boolean>>({});
+  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { count: number; running: number; open: boolean }) => (
     <div key={thread.key} className="matter-thread-entry">
     <a
       href={thread.href}
@@ -530,18 +554,23 @@ export function MatterWorkbench({
         <small>{thread.subtitle}</small>
       </span>
     </a>
+    {agents && <button type="button" className="matter-agent-toggle" aria-expanded={agents.open} data-running={agents.running > 0 || undefined}
+      aria-label={translate('workbench.agentThreads', { value1: thread.title, value2: agents.count })} title={translate('workbench.agentThreads', { value1: thread.title, value2: agents.count })}
+      onClick={() => setAgentsOpen(open => ({ ...open, [thread.key]: !agents.open }))}>
+      <Bot aria-hidden="true" /><span>{agents.count}</span><ChevronRight className="matter-agent-toggle-chevron" aria-hidden="true" />
+    </button>}
     {o.renderThreadMenu?.(thread)}
     </div>
   );
-  const renderThreadGroups = (threads: WorkbenchThread[]) => groupThreads(threads).map(({ root, children }) => (
-    <div key={root.key}>
-      {renderThread(root, threadGroupActivity(root, children))}
-      {children.length > 0 && <details className="matter-agent-threads" open={children.some(child => child.key === o.currentKey) || undefined} style={{ margin: '0 0 6px 14px' }}>
-        <summary className="matter-agent-threads-summary" style={{ padding: '4px 8px', fontSize: 12, cursor: 'pointer', color: 'var(--theme-fg-soft)' }}>{children.length} {translate("workbench.agentThreads_655dcc")}</summary>
+  const renderThreadGroups = (threads: WorkbenchThread[], reorder = false) => groupThreads(threads).map(({ root, children }) => {
+    const open = agentsOpen[root.key] ?? children.some(child => child.key === o.currentKey);
+    return <div key={root.key} className="matter-thread-group-entry" data-reorder-key={reorder ? root.key : undefined}>
+      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.length, running: children.filter(child => child.status === 'running').length, open } : undefined)}
+      {children.length > 0 && open && <div className="matter-agent-children" role="group" aria-label={translate('workbench.agentThreads_187f89', { value1: root.title })}>
         {children.map(child => renderThread(child))}
-      </details>}
-    </div>
-  ));
+      </div>}
+    </div>;
+  });
   return (
     <div
       ref={rootRef}
@@ -753,8 +782,8 @@ export function MatterWorkbench({
             <span className="matter-section-count">{groupThreads(workspaceThreads).length}</span>
           </button>
           {workspaceOpen && (
-            <div className="matter-thread-section" data-testid="workspace-threads">
-              {renderThreadGroups(workspaceThreads)}
+            <div ref={workspaceListRef} className="matter-thread-section" data-testid="workspace-threads">
+              {renderThreadGroups(workspaceThreads, reorderable)}
             </div>
           )}
         </>}
@@ -790,8 +819,7 @@ export function MatterWorkbench({
         {/* New thread stays in reach however many tabs there are. */}
         <div className="matter-tab-add">{newThread}</div>
         {!o.emptyWorkspace && <button ref={toolbarToggleRef} className="matter-toolbar-toggle" aria-label={translate("workbench.threadTools")} aria-haspopup="menu" aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal data-icon="thread-tools" /></button>}
-        {o.statusActions}
-        <ThreadToolsMenu id="matter-thread-tools" open={toolbarOpen && !o.emptyWorkspace} anchorRef={toolbarToggleRef}
+        <ThreadToolsMenu id="matter-thread-tools" open={toolbarOpen && !o.emptyWorkspace} anchorRef={toolbarToggleRef} panels={o.statusActions}
           path={o.workspacePath} title={title} favorite={o.favorite} favoriteBusy={o.favoriteBusy} onToggleFavorite={o.onToggleFavorite}
           onClose={(restore) => { setToolbarOpen(false); if (restore) toolbarToggleRef.current?.focus(); }}>
           {actions}
@@ -837,11 +865,20 @@ export function MatterWorkbench({
           threadsOpen={threadsOpen} moreOpen={moreOpen} />
         <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
           footer={newThread}>
-          <h3>{translate('workbench.thisWorkspace')}</h3>
-          <div className="matter-thread-section">{renderThreadGroups([...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)))}</div>
+          {/* Both sections fold; this workspace's conversations keep the order dragged into them. */}
+          <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={workspaceOpen} onClick={() => setWorkspaceOpen(!workspaceOpen)}>
+            {workspaceOpen ? <ChevronDown /> : <ChevronRight />}
+            <span>{translate('workbench.thisWorkspace')}</span>
+            <span className="matter-section-count">{groupThreads(tabs).length}</span>
+          </button>
+          {workspaceOpen && <div ref={sheetListRef} className="matter-thread-section" data-testid="sheet-workspace-threads">{renderThreadGroups(reorderable ? tabs : [...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)), reorderable)}</div>}
           {o.threads.some(thread => !tabs.some(tab => tab.key === thread.key)) && <>
-            <h3>{translate('workbench.recentChats')}</h3>
-            <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>
+            <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={recentsOpen} onClick={() => setRecentsOpen(!recentsOpen)}>
+              {recentsOpen ? <ChevronDown /> : <ChevronRight />}
+              <span>{translate('workbench.recentChats')}</span>
+              <span className="matter-section-count">{groupThreads(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key))).length}</span>
+            </button>
+            {recentsOpen && <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>}
           </>}
         </PhoneSheet>
         <PhoneSheet open={runningOpen} label={translate('workbench.runningSheet')} onClose={() => setRunningOpen(false)}

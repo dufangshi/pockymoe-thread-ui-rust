@@ -10,8 +10,13 @@ import { homeRelativePath } from '../WorkbenchPath';
 /** The thread tools: a dropdown under their toggle. Its head is the workspace
     path (with copy) and the thread it belongs to, beside that thread's shortcut
     star; below are the host's thread actions (share, permissions, download,
-    port mappings), each an icon with its accessible name as the label. */
-export function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteBusy, onToggleFavorite, onClose, children }: {
+    port mappings), then the thread's panels (agents, automations, plugins,
+    split), each an icon with its accessible name as the label.
+
+    It stays mounted and only hides when closed: a control in it keeps the
+    window it opened (those live in portals) and its state, like the phone's
+    More sheet. */
+export function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteBusy, onToggleFavorite, onClose, children, panels }: {
   id: string;
   open: boolean;
   anchorRef: RefObject<HTMLElement | null>;
@@ -22,20 +27,28 @@ export function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, fa
   onToggleFavorite: () => void;
   onClose: (restoreFocus: boolean) => void;
   children: ReactNode;
+  panels?: ReactNode;
 }) {
   useI18n();
   const menuRef = useRef<HTMLDivElement>(null);
-  const [place, setPlace] = useState<{ top: number; right: number } | null>(null);
+  const [place, setPlace] = useState<{ top: number; left: number } | null>(null);
+  // Found once: a portal that changed its host would remount the controls.
+  const [host, setHost] = useState<Element | null>(null);
+  useLayoutEffect(() => { setHost(anchorRef.current?.closest('.thread-ui-shell') ?? document.body); }, [anchorRef]);
   const close = useRef(onClose);
   close.current = onClose;
   // Keyboard once it is placed and rendered: focus moves in, arrows move, Esc closes.
   useMenuKeyboard(menuRef, open && place !== null, (restore) => close.current(restore), 'button:not([disabled]), a[href]');
 
   useLayoutEffect(() => {
-    if (!open) return;
+    if (!open) { setPlace(null); return; }
     const update = () => {
       const anchor = anchorRef.current?.getBoundingClientRect();
-      if (anchor) setPlace({ top: anchor.bottom + 6, right: Math.max(8, window.innerWidth - anchor.right) });
+      if (!anchor) return;
+      // Right-aligned with its toggle, but never past either edge of the screen.
+      const width = menuRef.current?.offsetWidth ?? 304;
+      const left = Math.max(8, Math.min(anchor.right - width, window.innerWidth - width - 8));
+      setPlace({ top: anchor.bottom + 6, left });
     };
     update();
     // It belongs to its toggle: a press outside closes it, a resize moves it.
@@ -51,15 +64,16 @@ export function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, fa
     return () => { window.removeEventListener('resize', update); document.removeEventListener('pointerdown', outside, true); };
   }, [open, anchorRef]);
 
-  if (!open || !place) return null;
-  const host = anchorRef.current?.closest('.thread-ui-shell') ?? document.body;
+  if (!host) return null;
+  const shown = open && place !== null;
   return createPortal(
     <div ref={menuRef} id={id} role="menu" aria-label={translate('workbench.threadTools')} className="matter-thread-tools-menu"
-      style={{ top: place.top, right: place.right }}
+      data-open={shown || undefined} aria-hidden={!shown} inert={!shown}
+      style={{ top: place?.top ?? 0, left: place?.left ?? 0 }}
       onClick={(event) => {
         // An action opens its window; the menu steps aside. The head's controls keep it open.
         const target = event.target instanceof Element ? event.target : null;
-        if (target?.closest('.matter-thread-tools-items') && target.closest('button, a')) window.setTimeout(() => close.current(false), 0);
+        if (target?.closest('.matter-thread-tools-items, .matter-thread-tools-panels') && target.closest('button, a')) window.setTimeout(() => close.current(false), 0);
       }}>
       <div className="matter-thread-tools-head">
         <div className="matter-thread-tools-path" title={path}>
@@ -78,6 +92,7 @@ export function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, fa
         <div className="matter-thread-tools-title" title={title}>{title}</div>
       </div>
       <div className="matter-thread-tools-items">{children}</div>
+      {panels ? <div className="matter-thread-tools-panels">{panels}</div> : null}
     </div>,
     host,
   );

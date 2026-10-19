@@ -322,7 +322,13 @@ describe('one-handed phone dock', () => {
     const [running, unread] = [...sheet.querySelectorAll('.matter-thread-section')];
     // The root leads its group (its dot says its agent threads run); the agents fold under it.
     expect([...running!.querySelectorAll(':scope > div > .matter-thread-entry .matter-thread-copy > span')].map(row => row.textContent)).toEqual(['ROOT', 'SOLO']);
-    expect(running!.querySelector('.matter-agent-threads-summary')?.textContent).toBe('2 agent threads');
+    // The count is a small toggle in the root's row; the agents open under it on demand.
+    const toggle = running!.querySelector<HTMLButtonElement>('.matter-agent-toggle')!;
+    expect(toggle.textContent).toBe('2');
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(running!.querySelector('.matter-agent-children')).toBeNull();
+    act(() => toggle.click());
+    expect([...running!.querySelectorAll('.matter-agent-children .matter-thread-copy > span')].map(row => row.textContent)).toEqual(['W1', 'W2']);
     expect(running!.querySelector('.matter-status-dot')?.getAttribute('data-status')).toBe('agents-running');
     expect([...unread!.querySelectorAll(':scope > div > .matter-thread-entry .matter-thread-copy > span')].map(row => row.textContent)).toEqual(['ROOT']);
   });

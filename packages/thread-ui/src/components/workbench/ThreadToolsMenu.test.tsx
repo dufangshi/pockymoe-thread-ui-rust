@@ -37,7 +37,7 @@ beforeEach(() => {
 afterEach(() => { act(() => root.unmount()); host.remove(); vi.unstubAllGlobals(); vi.clearAllMocks(); });
 
 const toggle = () => document.querySelector<HTMLButtonElement>('[aria-label="Thread tools"]')!;
-const menu = () => document.querySelector<HTMLElement>('#tools');
+const menu = () => document.querySelector<HTMLElement>('#tools[data-open]');
 
 it('opens under its toggle with the workspace path, the thread and its star, then the actions', async () => {
   act(() => toggle().click());
@@ -55,6 +55,13 @@ it('opens under its toggle with the workspace path, the thread and its star, the
   vi.useRealTimers();
   expect(onDownload).toHaveBeenCalledOnce();
   expect(menu()).toBeNull();
+});
+
+it('stays mounted while closed, so the windows its controls opened live on', () => {
+  expect(document.querySelector('#tools')?.getAttribute('aria-hidden')).toBe('true');
+  act(() => toggle().click());
+  act(() => { document.body.dispatchEvent(new Event('pointerdown', { bubbles: true })); });
+  expect(document.querySelector('#tools [aria-label="Download transcript"]')).not.toBeNull();
 });
 
 it('closes on Escape and on a press outside', () => {

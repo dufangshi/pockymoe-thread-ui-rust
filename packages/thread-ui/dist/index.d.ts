@@ -350,6 +350,10 @@ interface MatterWorkbenchOptions {
     onPrefetchThread?: (href: string) => void;
     /** Store a new shortcut order (thread keys, first to last). */
     onReorderShortcuts?: (keys: string[]) => void;
+    /** Store a new order of this workspace's conversations (root thread keys,
+        first to last); `workspaceThreads` should then arrive in it. Without it
+        tabs and lists keep the host's order and cannot be dragged. */
+    onReorderWorkspaceThreads?: ((rootKeys: string[]) => void) | undefined;
     onSearch: () => void;
     search?: ReactNode;
     searchOpen?: boolean;

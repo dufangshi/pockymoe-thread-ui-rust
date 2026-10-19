@@ -853,6 +853,24 @@
 .matter-thread-entry { display: flex; align-items: center; min-width: 0; position: relative; }
 .matter-thread-entry > .matter-thread-row { flex: 1; min-width: 0; padding-right: 32px; }
 .matter-thread-entry > .recent-thread-actions { position: absolute; right: 3px; }
+/* A conversation's agent threads: a small robot and count inside its row, left
+   of its menu; they open under the row, on a guide line. */
+.matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 84px; }
+.thread-ui-shell .matter-workbench .matter-agent-toggle {
+  position: absolute; right: 34px; display: inline-flex; align-items: center; gap: 3px; height: 24px; padding: 0 5px 0 6px;
+  border: 1px solid var(--theme-border); border-radius: 999px; background: transparent; color: var(--theme-fg-muted);
+  font-size: 11px; font-variant-numeric: tabular-nums; line-height: 1;
+}
+.thread-ui-shell .matter-workbench .matter-agent-toggle:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded='true'] { border-color: var(--theme-border-strong, var(--theme-border)); color: var(--theme-fg-soft, var(--theme-fg)); }
+.thread-ui-shell .matter-workbench .matter-agent-toggle > svg { width: 13px; height: 13px; }
+.thread-ui-shell .matter-workbench .matter-agent-toggle > .matter-agent-toggle-chevron { width: 11px; height: 11px; transition: transform 140ms ease; }
+.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded='true'] > .matter-agent-toggle-chevron { transform: rotate(90deg); }
+/* Agents still running: the robot takes the running colour. */
+.thread-ui-shell .matter-workbench .matter-agent-toggle[data-running] > svg:first-child { color: #20bc87; }
+.matter-agent-children { position: relative; margin: 0 0 4px 22px; padding-left: 6px; }
+.matter-agent-children::before { content: ''; position: absolute; top: 2px; bottom: 6px; left: 0; width: 1px; background: var(--theme-border); }
+@media (prefers-reduced-motion: reduce) { .thread-ui-shell .matter-workbench .matter-agent-toggle > .matter-agent-toggle-chevron { transition: none; } }
 @media (prefers-reduced-transparency: reduce) {
   .thread-ui-shell .matter-workbench .thread-graph-composer-shell { background: var(--theme-panel); backdrop-filter: none; }
 }
@@ -1422,6 +1440,31 @@
 @media (prefers-reduced-motion: reduce) {
   .matter-shortcut-list[data-reordering] .matter-shortcut { transition: none; }
 }
+/* This workspace's conversations, in tabs and lists, go where they are dragged.
+   A touch first rests still (useDragReorder); the item shows the wait filling. */
+.matter-thread-group, .matter-thread-group-entry[data-reorder-key] { -webkit-touch-callout: none; user-select: none; }
+.matter-thread-group-entry[data-reorder-key] { position: relative; }
+:is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry) { transition: transform 160ms ease; }
+:is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry)[data-dragging] { z-index: 3; transition: none; }
+:is(.matter-thread-tabs, .matter-thread-section)[data-reordering] { cursor: grabbing; }
+.thread-ui-shell .matter-workbench .matter-thread-group[data-dragging] {
+  border-radius: 10px 10px 0 0; background: var(--theme-panel);
+  box-shadow: 0 8px 22px rgb(0 0 0 / 28%), 0 0 0 1px var(--theme-border);
+}
+.thread-ui-shell .matter-workbench .matter-thread-group-entry[data-dragging] > .matter-thread-entry > .matter-thread-row {
+  background: var(--theme-panel);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 24%), 0 0 0 1px var(--theme-border);
+}
+:is(.matter-thread-group, .matter-thread-group-entry)[data-pressing]::after {
+  content: ''; position: absolute; left: 10%; right: 10%; bottom: 1px; height: 2px; border-radius: 2px;
+  background: var(--theme-accent-solid); transform-origin: left; animation: matter-reorder-press 1.5s linear forwards; pointer-events: none;
+}
+.matter-thread-group[data-pressing] { position: relative; }
+@keyframes matter-reorder-press { from { transform: scaleX(0); opacity: .35; } to { transform: scaleX(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  :is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry) { transition: none; }
+  :is(.matter-thread-group, .matter-thread-group-entry)[data-pressing]::after { animation: none; transform: none; }
+}
 /* On a phone the split picker is a bottom sheet over a scrim, like share and export. */
 .workbench-thread-picker-scrim { position: fixed; inset: 0; z-index: 249; background: var(--overlay-scrim, rgb(0 0 0 / 45%)); backdrop-filter: blur(6px); }
 .workbench-thread-picker-popover.is-sheet { border-bottom: 0; border-radius: 18px 18px 0 0; padding-bottom: env(safe-area-inset-bottom); animation: workbench-picker-rise .18s ease-out; }
@@ -1438,10 +1481,12 @@
   border: 1px solid var(--theme-border-strong, var(--theme-border)); border-radius: 12px;
   background: var(--theme-panel); color: var(--theme-fg); font-size: 13px;
   box-shadow: 0 12px 32px -8px rgb(0 0 0 / 28%), 0 2px 6px rgb(0 0 0 / 10%);
-  animation: matter-thread-tools-in 140ms ease-out;
 }
+/* Closed, it stays mounted for the windows its controls opened, unseen. */
+.thread-ui-shell .matter-thread-tools-menu:not([data-open]) { visibility: hidden; pointer-events: none; }
+.thread-ui-shell .matter-thread-tools-menu[data-open] { animation: matter-thread-tools-in 140ms ease-out; }
 @keyframes matter-thread-tools-in { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
-@media (prefers-reduced-motion: reduce) { .thread-ui-shell .matter-thread-tools-menu { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .thread-ui-shell .matter-thread-tools-menu[data-open] { animation: none; } }
 .thread-ui-shell .matter-thread-tools-head {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; align-items: center;
   margin-bottom: 4px; padding: 6px 4px 10px 10px; border-bottom: 1px solid var(--theme-border);
@@ -1462,16 +1507,19 @@
 .thread-ui-shell .matter-thread-tools-star:hover { background: var(--theme-hover); color: var(--theme-fg); }
 .thread-ui-shell .matter-thread-tools-star[aria-pressed='true'] { color: #e3a33b; }
 .thread-ui-shell .matter-thread-tools-star svg { width: 17px; height: 17px; }
-.thread-ui-shell .matter-thread-tools-items { display: flex; flex-direction: column; }
-.thread-ui-shell .matter-thread-tools-items :is(div, span):has(> :is(button, a)) { display: contents; }
-.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label] {
-  display: flex; align-items: center; gap: 10px; width: 100%; height: auto; min-height: 36px; padding: 0 10px;
+/* The thread's panels follow the actions, set apart by a hairline. */
+.thread-ui-shell .matter-thread-tools-panels { position: relative; margin-top: 5px; padding-top: 5px; }
+.thread-ui-shell .matter-thread-tools-panels::before { content: ''; position: absolute; top: 0; left: 4px; right: 4px; height: 1px; background: var(--theme-border); }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) { display: flex; flex-direction: column; }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(div, span):has(> :is(button, a)) { display: contents; }
+.thread-ui-shell .matter-thread-tools-menu :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label] {
+  display: flex; align-items: center; justify-content: flex-start; gap: 10px; width: 100%; height: auto; min-height: 36px; padding: 0 10px;
   border: 0; border-radius: 8px; background: transparent; color: var(--theme-fg); font-size: 13px; text-align: left;
 }
-.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label]::after { content: attr(aria-label); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label] > svg { flex: none; width: 16px; height: 16px; color: var(--theme-fg-soft, var(--theme-fg-muted)); }
-.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label]:is(:hover, :focus-visible):not(:disabled) { background: var(--theme-hover); outline: none; }
-.thread-ui-shell .matter-thread-tools-items :is(button, a)[aria-label]:disabled { opacity: .45; }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]::after { content: attr(aria-label); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label] > svg { flex: none; width: 16px; height: 16px; color: var(--theme-fg-soft, var(--theme-fg-muted)); }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:is(:hover, :focus-visible):not(:disabled) { background: var(--theme-hover); outline: none; }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:disabled { opacity: .45; }
 /* Port mappings (remote devices only) last, set apart. */
 .thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports']) { order: 10; margin-top: 5px; position: relative; }
 .thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports'])::before { content: ''; position: absolute; top: -3px; left: 4px; right: 4px; height: 1px; background: var(--theme-border); }

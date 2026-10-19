@@ -8,6 +8,7 @@ import { ThreadTimeline } from '../ThreadTimeline';
 import { TurnStatusBar } from './turnStatus';
 import { TurnUsageInline } from './TurnUsageInline';
 import { shortModelName } from './TurnHead';
+import { TurnModels } from './TurnModels';
 
 const total = {
   totalTokens: 3500,
@@ -49,6 +50,37 @@ const turn: ThreadTurnDto = {
     { id: 'agent-1', kind: 'agentMessage', text: 'Fixed.' },
   ],
 };
+
+describe('TurnModels', () => {
+  const render = (models?: { model: string; calls: number }[]) => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    const root = createRoot(host);
+    flushSync(() => root.render(<TurnModels turn={{ ...turn, model: 'claude-sonnet-4-6', reasoningEffort: 'max', tokenUsage: { ...turn.tokenUsage!, ...(models ? { models } : {}) } } as never} />));
+    return { host, done: () => { act(() => root.unmount()); host.remove(); } };
+  };
+
+  it('names the one model a turn ran with and its effort', () => {
+    const view = render([{ model: 'claude-sonnet-4-6', calls: 4 }]);
+    expect(view.host.textContent).toBe('sonnet 4.6 · max');
+    expect(view.host.querySelector('button')).toBeNull();
+    view.done();
+  });
+
+  it('shows a switch mid-turn as the models in the order they ran', () => {
+    const view = render([{ model: 'claude-opus-4-7', calls: 12 }, { model: 'claude-sonnet-4-6', calls: 5 }]);
+    const button = view.host.querySelector('button.thread-turn-head-models')!;
+    expect(button.textContent).toBe('opus 4.7 → sonnet 4.6 · max');
+    expect(button.getAttribute('aria-label')).toBe('Models this turn called: opus 4.7 → sonnet 4.6');
+    view.done();
+  });
+
+  it('falls back to the turn model for turns recorded before the runs', () => {
+    const view = render();
+    expect(view.host.textContent).toBe('sonnet 4.6 · max');
+    view.done();
+  });
+});
 
 describe('shortModelName', () => {
   it('drops the vendor and a date stamp, and joins numbered parts into a version', () => {

@@ -42,6 +42,8 @@ export interface ComposerToolbarCapabilities {
   planMode: boolean;
   sandboxMode: boolean;
   forkFromTurn: boolean;
+  /** A model chosen mid-turn applies from the turn's next model call. */
+  liveModelSwitch?: boolean;
 }
 
 export interface UseComposerToolbarPropsInput {
@@ -409,6 +411,7 @@ export function useComposerToolbarProps({
         supportedEfforts,
         sandboxMode,
         sandboxModeAvailable: capabilities.sandboxMode,
+        liveModelSwitch: capabilities.liveModelSwitch ?? false,
         settingsBusy,
         goalComposeMode,
         goalBusy,

@@ -111,8 +111,11 @@
 }
 .thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > * { flex: none; white-space: nowrap; }
 .thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > .thread-turn-head-model { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* A turn that switched models: the sequence opens the calls each made. */
+.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > .thread-turn-head-models { display: inline-flex; overflow: visible; }
+.thread-ui-shell .thread-turn-head-models > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* The time and the speed open more; a dotted underline says so. */
-.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed) {
+.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models) {
   padding: 0 2px;
   border-radius: 4px;
   color: inherit;
@@ -120,8 +123,8 @@
   text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
   text-underline-offset: 3px;
 }
-.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed):is(:hover, [aria-expanded='true'], [aria-pressed='true']) { color: var(--theme-fg); }
-.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed):focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
+.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):is(:hover, [aria-expanded='true'], [aria-pressed='true']) { color: var(--theme-fg); }
+.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
 /* A wide screen shows the whole head on its one line; nothing opens. */
 .thread-ui-shell .thread-turn-head.is-wide { gap: 12px; cursor: default; }
 .thread-ui-shell .thread-turn-head.is-wide .thread-turn-head-main { color: var(--theme-fg); }

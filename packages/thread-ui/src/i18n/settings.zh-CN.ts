@@ -220,8 +220,10 @@ export const settingsZhCN = {
   'settings.reasoningEffort': '推理强度',
   'settings.harnessReasoningEffort': 'Harness 推理强度',
   'settings.providerDefault': '提供商默认值',
-  'settings.sessionSettingsCanBeChangedAfterThe':
-    '当前轮次结束后可修改会话设置。',
+  'settings.sessionSettingsApplyNextCall':
+    '轮次正在运行：新的模型或推理强度从下一次模型调用起生效。',
+  'settings.sessionSettingsApplyNextTurn':
+    '轮次正在运行：修改从下一轮起生效。',
   'settings.loadingHarnessCapabilities': '正在加载 Harness 能力…',
   'settings.harnessPlugins': 'Harness 插件',
   'settings.plugins': '插件 ·',

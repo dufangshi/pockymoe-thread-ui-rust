@@ -75,6 +75,7 @@ function renderToolbar({
   availableModels = modelOptions,
   agent,
   queueing = false,
+  liveModelSwitch = false,
   promptEmpty = false,
   contextUsage = null,
 }: {
@@ -93,6 +94,7 @@ function renderToolbar({
   availableModels?: ModelOptionDto[];
   agent?: string;
   queueing?: boolean;
+  liveModelSwitch?: boolean;
   promptEmpty?: boolean;
   contextUsage?: ThreadContextUsageDto | null;
 } = {}) {
@@ -110,6 +112,7 @@ function renderToolbar({
           model={model}
           agent={agent}
           queueing={queueing}
+          liveModelSwitch={liveModelSwitch}
           modelOptions={availableModels}
           modelContextTitle="1k / 8k tokens"
           contextUsage={contextUsage}
@@ -159,6 +162,19 @@ describe('ComposerSettingsToolbar', () => {
     expect(document.querySelector('.composer-context-summary')?.textContent).toContain('Context');
     act(() => element.querySelector<HTMLButtonElement>('[data-testid="composer-model-label"]')!.click());
     expect(document.querySelector('.composer-context-summary')).toBeNull();
+  });
+
+  it.each([
+    [true, 'Applies from the next model call'],
+    [false, 'Applies from the next turn'],
+  ])('says when a model chosen during a turn takes effect (live switch: %s)', (liveModelSwitch, note) => {
+    renderToolbar({ initialOpenMenu: 'model', queueing: true, liveModelSwitch });
+    expect(document.querySelector('.composer-model-menu-note')?.textContent).toBe(note);
+  });
+
+  it('says nothing about timing while no turn runs', () => {
+    renderToolbar({ initialOpenMenu: 'model', liveModelSwitch: true });
+    expect(document.querySelector('.composer-model-menu-note')).toBeNull();
   });
 
   it('shows the send intent in every theme; Plum Pocket adds the mascot, chevron and a paper plane', () => {

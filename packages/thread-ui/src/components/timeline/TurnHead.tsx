@@ -7,22 +7,9 @@ import type { TimelineTurn } from './timelineItems';
 import { TokenSpeedDetails } from './TokenSpeedDetails';
 import { TokenUsageCost } from './TokenUsageCost';
 import { formatElapsedDuration, useSecondClock } from './turnStatus';
-import { knownTurnModel } from './TurnUsageInline';
+import { TurnModels } from './TurnModels';
 
-/** "claude-opus-5-5" reads "opus 5.5" and "gpt-6-astra" "6 astra": the vendor
-    part goes, a date stamp goes, and numbered parts join into a version. */
-export function shortModelName(model: string) {
-  const parts = model.split('-').filter(Boolean);
-  if (parts.length < 2) return model;
-  const words: string[] = [];
-  for (const part of parts.slice(1)) {
-    if (/^\d{8}$/.test(part)) continue;
-    const previous = words.at(-1);
-    if (previous && /^\d+(\.\d+)*$/.test(part) && /^\d+(\.\d+)*$/.test(previous)) words[words.length - 1] = `${previous}.${part}`;
-    else words.push(part);
-  }
-  return words.length ? words.join(' ') : model;
-}
+export { shortModelName } from './TurnModels';
 
 // A wide screen has room for the whole head on one line; a phone opens the rest on tap.
 const wideQuery = '(min-width: 640px)';
@@ -59,8 +46,6 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
   const now = useSecondClock(active);
   const started = turn.startedAt;
   const took = formatElapsedDuration(started, active ? now : Date.parse(turn.completedAt ?? ''));
-  const model = knownTurnModel(turn);
-  const effort = turn.reasoningEffort?.trim();
   const usage = turn.tokenUsage?.total;
   const speed = turn.tokenUsage?.generationSpeed;
   // While the turn works, the speed so far counts only model calls whose output
@@ -86,7 +71,7 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
         <time dateTime={started}>{withDate ? dated(started) : clock(started)}</time>
       </button>
     ) : null}
-    {model ? <span className="thread-turn-head-model" title={model}>{shortModelName(model)}{effort ? ` · ${effort}` : ''}</span> : null}
+    <TurnModels turn={turn} />
     {speed && rate != null && Number.isFinite(rate) && rate > 0 ? <TokenSpeedDetails speed={speed} value={rate} live={active} /> : null}
     {added ? (
       <span className="thread-turn-head-added" role="img" title={translate('chat.turnHeadAddedValue', { count: added })}

@@ -6,6 +6,7 @@
     .thread-turn-usage-price,
     .thread-turn-head-time,
     .thread-turn-head-speed,
+    .thread-turn-head-models,
     .thread-graph-message-failure,
     .matter-mobile-close,
     .thread-graph-editor-toolbar-button,
@@ -19,7 +20,8 @@
     .thread-turn-head-main,
     .thread-turn-usage-price,
     .thread-turn-head-time,
-    .thread-turn-head-speed
+    .thread-turn-head-speed,
+    .thread-turn-head-models
   )::after { content: ''; position: absolute; inset: -10px -3px; }
   .thread-ui-shell :is(
     .thread-graph-message-failure,

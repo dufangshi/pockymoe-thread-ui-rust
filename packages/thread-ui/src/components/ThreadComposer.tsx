@@ -193,6 +193,8 @@ export interface ThreadComposerProps {
   onJumpToNextTurn?: () => void;
   subscriptionUsage?: AgentSubscriptionUsageDto | null;
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => Promise<void> | void;
+  /** The model menu opened: the host may refresh the model list. */
+  onModelMenuOpen?: () => void;
   onToggleView?: () => void;
   onShellCopy?: () => Promise<void> | void;
   onShellControl?: (
@@ -291,6 +293,7 @@ export function ThreadComposer({
   onJumpToNextTurn,
   subscriptionUsage,
   onUpdateSettings,
+  onModelMenuOpen,
   onToggleView,
   onShellCopy,
   onShellControl,
@@ -309,6 +312,11 @@ export function ThreadComposer({
   useEffect(() => {
     if (openMenu !== 'slash' && slashQuery !== null) setSlashQuery(null);
   }, [openMenu, slashQuery]);
+  const modelMenuOpened = useRef(onModelMenuOpen);
+  modelMenuOpened.current = onModelMenuOpen;
+  useEffect(() => {
+    if (openMenu === 'model') modelMenuOpened.current?.();
+  }, [openMenu]);
   const submitInFlightRef = useRef(false);
   const [mcpPanelMode, setMcpPanelMode] = useState<McpPanelMode>('list');
   const slashCapabilities = useMemo(
@@ -330,6 +338,7 @@ export function ThreadComposer({
       hookTrust: capabilities?.management.hookTrust ?? false,
       planMode: capabilities?.controls.planMode ?? false,
       sandboxMode: capabilities?.controls.sandboxMode ?? false,
+      liveModelSwitch: capabilities?.controls.liveModelSwitch ?? false,
     }),
     [
       capabilities,
@@ -1063,6 +1072,7 @@ export function ThreadComposer({
       planMode: slashCapabilities.planMode,
       forkFromTurn: slashCapabilities.forkFromTurn,
       sandboxMode: hideSandboxModeControl ? false : slashCapabilities.sandboxMode,
+      liveModelSwitch: slashCapabilities.liveModelSwitch,
     },
     shellControlState,
     onToggleView,

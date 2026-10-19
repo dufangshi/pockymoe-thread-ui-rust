@@ -244,8 +244,10 @@ export const settingsEn = {
   'settings.reasoningEffort': 'Reasoning effort',
   'settings.harnessReasoningEffort': 'Harness reasoning effort',
   'settings.providerDefault': 'Provider default',
-  'settings.sessionSettingsCanBeChangedAfterThe':
-    'Session settings can be changed after the current turn finishes.',
+  'settings.sessionSettingsApplyNextCall':
+    'A turn is running: a new model or effort applies from its next model call.',
+  'settings.sessionSettingsApplyNextTurn':
+    'A turn is running: changes apply from the next turn.',
   'settings.loadingHarnessCapabilities': 'Loading harness capabilities…',
   'settings.harnessPlugins': 'Harness plugins',
   'settings.plugins': 'Plugins ·',

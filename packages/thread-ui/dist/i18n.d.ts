@@ -1209,7 +1209,8 @@ declare const en: {
     readonly 'settings.reasoningEffort': "Reasoning effort";
     readonly 'settings.harnessReasoningEffort': "Harness reasoning effort";
     readonly 'settings.providerDefault': "Provider default";
-    readonly 'settings.sessionSettingsCanBeChangedAfterThe': "Session settings can be changed after the current turn finishes.";
+    readonly 'settings.sessionSettingsApplyNextCall': "A turn is running: a new model or effort applies from its next model call.";
+    readonly 'settings.sessionSettingsApplyNextTurn': "A turn is running: changes apply from the next turn.";
     readonly 'settings.loadingHarnessCapabilities': "Loading harness capabilities…";
     readonly 'settings.harnessPlugins': "Harness plugins";
     readonly 'settings.plugins': "Plugins ·";
@@ -3344,6 +3345,11 @@ declare const en: {
     readonly "chat.speedDecode": "Decode";
     readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
     readonly "chat.speedRequests": "Model calls";
+    readonly "chat.modelSwitchNextCall": "Applies from the next model call";
+    readonly "chat.modelSwitchNextTurn": "Applies from the next turn";
+    readonly "chat.turnModelsShow": "Models this turn called: {{models}}";
+    readonly "chat.turnModelsTitle": "Models this turn called";
+    readonly "chat.turnModelsNote": "A model switched while the turn worked takes over from its next model call. Subagents are not counted.";
     readonly "chat.speedRequestsValue": {
         readonly one: "{{count}} call";
         readonly other: "{{count}} calls";
@@ -5108,7 +5114,8 @@ declare const zhCN: {
     'settings.reasoningEffort': "推理强度";
     'settings.harnessReasoningEffort': "Harness 推理强度";
     'settings.providerDefault': "提供商默认值";
-    'settings.sessionSettingsCanBeChangedAfterThe': "当前轮次结束后可修改会话设置。";
+    'settings.sessionSettingsApplyNextCall': "轮次正在运行：新的模型或推理强度从下一次模型调用起生效。";
+    'settings.sessionSettingsApplyNextTurn': "轮次正在运行：修改从下一轮起生效。";
     'settings.loadingHarnessCapabilities': "正在加载 Harness 能力…";
     'settings.harnessPlugins': "Harness 插件";
     'settings.plugins': "插件 ·";
@@ -7243,6 +7250,11 @@ declare const zhCN: {
     "chat.speedDecode": "解码";
     "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
     "chat.speedRequests": "模型调用";
+    "chat.modelSwitchNextCall": "从下一次模型调用起生效";
+    "chat.modelSwitchNextTurn": "从下一轮起生效";
+    "chat.turnModelsShow": "这一轮调用的模型：{{models}}";
+    "chat.turnModelsTitle": "这一轮调用的模型";
+    "chat.turnModelsNote": "轮次运行中切换的模型，从下一次模型调用起接手。不含子智能体的调用。";
     "chat.speedRequestsValue": {
         readonly one: "{{count}} 次";
         readonly other: "{{count}} 次";
@@ -9029,7 +9041,8 @@ declare const resources: {
         readonly 'settings.reasoningEffort': "Reasoning effort";
         readonly 'settings.harnessReasoningEffort': "Harness reasoning effort";
         readonly 'settings.providerDefault': "Provider default";
-        readonly 'settings.sessionSettingsCanBeChangedAfterThe': "Session settings can be changed after the current turn finishes.";
+        readonly 'settings.sessionSettingsApplyNextCall': "A turn is running: a new model or effort applies from its next model call.";
+        readonly 'settings.sessionSettingsApplyNextTurn': "A turn is running: changes apply from the next turn.";
         readonly 'settings.loadingHarnessCapabilities': "Loading harness capabilities…";
         readonly 'settings.harnessPlugins': "Harness plugins";
         readonly 'settings.plugins': "Plugins ·";
@@ -11164,6 +11177,11 @@ declare const resources: {
         readonly "chat.speedDecode": "Decode";
         readonly "chat.speedDecodeValue": "{{speed}} · {{tokens}} in {{time}}";
         readonly "chat.speedRequests": "Model calls";
+        readonly "chat.modelSwitchNextCall": "Applies from the next model call";
+        readonly "chat.modelSwitchNextTurn": "Applies from the next turn";
+        readonly "chat.turnModelsShow": "Models this turn called: {{models}}";
+        readonly "chat.turnModelsTitle": "Models this turn called";
+        readonly "chat.turnModelsNote": "A model switched while the turn worked takes over from its next model call. Subagents are not counted.";
         readonly "chat.speedRequestsValue": {
             readonly one: "{{count}} call";
             readonly other: "{{count}} calls";
@@ -12927,7 +12945,8 @@ declare const resources: {
         'settings.reasoningEffort': "推理强度";
         'settings.harnessReasoningEffort': "Harness 推理强度";
         'settings.providerDefault': "提供商默认值";
-        'settings.sessionSettingsCanBeChangedAfterThe': "当前轮次结束后可修改会话设置。";
+        'settings.sessionSettingsApplyNextCall': "轮次正在运行：新的模型或推理强度从下一次模型调用起生效。";
+        'settings.sessionSettingsApplyNextTurn': "轮次正在运行：修改从下一轮起生效。";
         'settings.loadingHarnessCapabilities': "正在加载 Harness 能力…";
         'settings.harnessPlugins': "Harness 插件";
         'settings.plugins': "插件 ·";
@@ -15062,6 +15081,11 @@ declare const resources: {
         "chat.speedDecode": "解码";
         "chat.speedDecodeValue": "{{speed}} · {{time}} 输出 {{tokens}}";
         "chat.speedRequests": "模型调用";
+        "chat.modelSwitchNextCall": "从下一次模型调用起生效";
+        "chat.modelSwitchNextTurn": "从下一轮起生效";
+        "chat.turnModelsShow": "这一轮调用的模型：{{models}}";
+        "chat.turnModelsTitle": "这一轮调用的模型";
+        "chat.turnModelsNote": "轮次运行中切换的模型，从下一次模型调用起接手。不含子智能体的调用。";
         "chat.speedRequestsValue": {
             readonly one: "{{count}} 次";
             readonly other: "{{count}} 次";

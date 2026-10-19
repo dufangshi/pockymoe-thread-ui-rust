@@ -34,6 +34,7 @@ export function ComposerSettingsToolbar({
   model,
   agent,
   queueing = false,
+  liveModelSwitch = false,
   modelOptions,
   modelContextTitle,
   contextUsage,
@@ -60,6 +61,9 @@ export function ComposerSettingsToolbar({
   agent?: string | undefined;
   /** A turn is running, so sending adds the prompt to its queue. */
   queueing?: boolean;
+  /** A model or effort chosen while a turn runs applies from its next model
+      call; otherwise from the next turn. */
+  liveModelSwitch?: boolean;
   modelOptions: ModelOptionDto[];
   modelContextTitle: string;
   contextUsage: ThreadContextUsageDto | null | undefined;
@@ -148,8 +152,14 @@ export function ComposerSettingsToolbar({
             align="end"
             className="composer-model-menu w-[min(19rem,calc(100vw-2rem))] rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1.5 text-[var(--theme-fg)] shadow-xl"
           >
-            <p className="composer-model-menu-heading px-2 py-1 text-xs text-[var(--theme-fg-muted)]">
-              {translate('chat.model')}
+            <p className="composer-model-menu-heading flex items-baseline justify-between gap-3 px-2 py-1 text-xs text-[var(--theme-fg-muted)]">
+              <span>{translate('chat.model')}</span>
+              {/* While a turn runs, say when a change takes effect. */}
+              {queueing ? (
+                <span className="composer-model-menu-note text-[11px]">
+                  {translate(liveModelSwitch ? 'chat.modelSwitchNextCall' : 'chat.modelSwitchNextTurn')}
+                </span>
+              ) : null}
             </p>
             {modelOptions.map((entry) => (
               <button

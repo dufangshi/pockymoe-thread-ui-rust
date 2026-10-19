@@ -4,12 +4,18 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
 import type { AgentSubscriptionUsageDto } from '@pockymoe/shared';
 
-function resetLabel(value: string | null) {
+/** When a window resets: by default how long from now (days and hours, or
+    hours and minutes within a day); `absolute` gives the date and time. */
+export function resetLabel(value: string | null, absolute = false, now = Date.now()) {
   if (!value) return translate("chat.resetTimeUnavailable");
   const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? translate("chat.resetTimeUnavailable")
-    : translate("chat.resets", { value1: date.toLocaleString(getLocale()) });
+  if (Number.isNaN(date.getTime())) return translate("chat.resetTimeUnavailable");
+  if (absolute) return translate("chat.resets", { value1: date.toLocaleString(getLocale()) });
+  const minutes = Math.max(0, Math.ceil((date.getTime() - now) / 60_000));
+  const days = Math.floor(minutes / 1440), hours = Math.floor((minutes % 1440) / 60), rest = minutes % 60;
+  if (days > 0) return translate("chat.resetsInDays", { days, hours });
+  if (hours > 0) return translate("chat.resetsInHours", { hours, minutes: rest });
+  return translate("chat.resetsInMinutes", { minutes: rest });
 }
 
 /** The (at most two) usage windows the composer badge shows. */
@@ -27,7 +33,16 @@ export function ComposerSubscriptionUsage({
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [keyboardFocused, setKeyboardFocused] = useState(false);
+  // Reset times read as "in 2 days 5 hours"; a tap on one shows the date instead.
+  const [absoluteReset, setAbsoluteReset] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
   const open = detailsVisible || hovered || keyboardFocused;
+  useEffect(() => {
+    if (!open) return;
+    setNow(Date.now());
+    const timer = window.setInterval(() => setNow(Date.now()), 30_000);
+    return () => window.clearInterval(timer);
+  }, [open]);
   const detailsId = useId();
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -44,7 +59,7 @@ export function ComposerSubscriptionUsage({
   const description = windows
     .map((window) => {
       const remaining = Math.max(0, Math.round(100 - window.usedPercent));
-      return `${window.label}: ${translate("chat.remainingPercentage", { value1: remaining })}, ${resetLabel(window.resetsAt)}`;
+      return `${window.label}: ${translate("chat.remainingPercentage", { value1: remaining })}, ${resetLabel(window.resetsAt, false, now)}`;
     })
     .join(translate("chat.listSeparator"));
   const observed = new Date(usage.observedAt);
@@ -92,14 +107,17 @@ export function ComposerSubscriptionUsage({
       {usage.stale ? <span aria-hidden="true">~</span> : null}
     </button>
     {open ? (
-      <ComposerMenuSurface id={detailsId} role="tooltip" align="end" anchorSelector=".thread-graph-composer-shell" className="thread-subscription-usage-details">
+      <ComposerMenuSurface id={detailsId} role="group" aria-label={translate("chat.subscriptionUsageDetails")} align="end" anchorSelector=".thread-graph-composer-shell" className="thread-subscription-usage-details">
         {windows.map((window) => (
           <div key={window.id} className="thread-subscription-usage-detail-window">
             <div className="thread-subscription-usage-detail-heading">
               <span>{window.label}</span>
               <strong>{translate("chat.remainingPercentage", { value1: Math.max(0, Math.round(100 - window.usedPercent)) })}</strong>
             </div>
-            <div className="thread-subscription-usage-detail-reset">{resetLabel(window.resetsAt)}</div>
+            <button type="button" className="thread-subscription-usage-detail-reset" aria-pressed={absoluteReset}
+              title={resetLabel(window.resetsAt, !absoluteReset, now)} onClick={() => setAbsoluteReset(value => !value)}>
+              {resetLabel(window.resetsAt, absoluteReset, now)}
+            </button>
           </div>
         ))}
         <div className="thread-subscription-usage-detail-freshness">{freshness}</div>

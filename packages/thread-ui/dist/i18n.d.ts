@@ -3114,6 +3114,10 @@ declare const en: {
     readonly "chat.full": "Full";
     readonly "chat.resetTimeUnavailable": "reset time unavailable";
     readonly "chat.resets": "resets {{value1}}";
+    readonly "chat.subscriptionUsageDetails": "Usage window details";
+    readonly "chat.resetsInDays": "resets in {{days}}d {{hours}}h";
+    readonly "chat.resetsInHours": "resets in {{hours}}h {{minutes}}m";
+    readonly "chat.resetsInMinutes": "resets in {{minutes}}m";
     readonly "chat.updateTimeUnavailable": "update time unavailable";
     readonly "chat.updated": "updated {{value1}}";
     readonly "chat.lastKnown": "last known · ";
@@ -7088,6 +7092,10 @@ declare const zhCN: {
     "chat.full": "完整";
     "chat.resetTimeUnavailable": "重置时间不可用";
     "chat.resets": "重置于 {{value1}}";
+    "chat.subscriptionUsageDetails": "用量窗口详情";
+    "chat.resetsInDays": "{{days}} 天 {{hours}} 小时后重置";
+    "chat.resetsInHours": "{{hours}} 小时 {{minutes}} 分钟后重置";
+    "chat.resetsInMinutes": "{{minutes}} 分钟后重置";
     "chat.updateTimeUnavailable": "更新时间不可用";
     "chat.updated": "更新于 {{value1}}";
     "chat.lastKnown": "上次已知 · ";
@@ -11084,6 +11092,10 @@ declare const resources: {
         readonly "chat.full": "Full";
         readonly "chat.resetTimeUnavailable": "reset time unavailable";
         readonly "chat.resets": "resets {{value1}}";
+        readonly "chat.subscriptionUsageDetails": "Usage window details";
+        readonly "chat.resetsInDays": "resets in {{days}}d {{hours}}h";
+        readonly "chat.resetsInHours": "resets in {{hours}}h {{minutes}}m";
+        readonly "chat.resetsInMinutes": "resets in {{minutes}}m";
         readonly "chat.updateTimeUnavailable": "update time unavailable";
         readonly "chat.updated": "updated {{value1}}";
         readonly "chat.lastKnown": "last known · ";
@@ -15057,6 +15069,10 @@ declare const resources: {
         "chat.full": "完整";
         "chat.resetTimeUnavailable": "重置时间不可用";
         "chat.resets": "重置于 {{value1}}";
+        "chat.subscriptionUsageDetails": "用量窗口详情";
+        "chat.resetsInDays": "{{days}} 天 {{hours}} 小时后重置";
+        "chat.resetsInHours": "{{hours}} 小时 {{minutes}} 分钟后重置";
+        "chat.resetsInMinutes": "{{minutes}} 分钟后重置";
         "chat.updateTimeUnavailable": "更新时间不可用";
         "chat.updated": "更新于 {{value1}}";
         "chat.lastKnown": "上次已知 · ";

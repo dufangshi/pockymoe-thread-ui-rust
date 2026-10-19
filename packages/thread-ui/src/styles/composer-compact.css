@@ -155,7 +155,11 @@
 .thread-subscription-usage-detail-window + .thread-subscription-usage-detail-window { margin-top: 10px; }
 .thread-subscription-usage-detail-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .thread-subscription-usage-detail-heading strong { font-weight: 600; }
-.thread-subscription-usage-detail-reset { margin-top: 3px; color: var(--theme-fg-muted, #a1a1aa); font-size: 11px; }
+.thread-subscription-usage-detail-reset {
+  display: block; margin-top: 3px; padding: 0; border: 0; background: none; color: var(--theme-fg-muted, #a1a1aa);
+  font: inherit; font-size: 11px; font-variant-numeric: tabular-nums; text-align: left; cursor: pointer;
+}
+.thread-subscription-usage-detail-reset:hover { color: var(--theme-fg, inherit); text-decoration: underline dotted; text-underline-offset: 2px; }
 .thread-subscription-usage-detail-freshness { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--theme-border, #3f3f46); color: var(--theme-fg-muted, #a1a1aa); font-size: 10px; }
 
 /* A folded draft of several lines: "+N lines" at the end of its first line. */

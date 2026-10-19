@@ -219,14 +219,15 @@
 [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button):is(:hover, [aria-expanded='true']) {
   background: var(--theme-hover) !important;
 }
-[data-composer-layout] .thread-graph-composer-toolbar button::after { content: ''; position: absolute; inset: -4px; }
+/* Hit area: only the toolbar's own keys, never buttons inside a menu surface. */
+[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button)::after { content: ''; position: absolute; inset: -4px; }
 [data-composer-layout] .composer-model-label { min-height: 32px; }
 @media (max-width: 639px) {
   [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button),
   .thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button) {
     width: 34px; height: 34px; min-width: 34px; min-height: 34px;
   }
-  [data-composer-layout] .thread-graph-composer-toolbar button::after { inset: -3px; }
+  [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button)::after { inset: -3px; }
   /* A phone shows the model's name on one line; its reasoning effort is in its menu. */
   [data-composer-layout] .composer-model-effort { display: none; }
   [data-composer-layout] .composer-model-label { min-height: 34px; }

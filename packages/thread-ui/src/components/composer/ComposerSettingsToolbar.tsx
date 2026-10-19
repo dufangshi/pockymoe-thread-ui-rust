@@ -151,29 +151,27 @@ export function ComposerSettingsToolbar({
             <p className="composer-model-menu-heading px-2 py-1 text-xs text-[var(--theme-fg-muted)]">
               {translate('chat.model')}
             </p>
-            <div className="max-h-[min(192px,28dvh)] overflow-y-auto">
-              {modelOptions.map((entry) => (
-                <button
-                  key={entry.id}
-                  type="button"
-                  role="menuitemradio"
-                  aria-checked={entry.model === model}
-                  disabled={modelControlsDisabled || settingsBusy}
-                  onClick={() =>
-                    onUpdateSettings({
-                      model: entry.model,
-                      reasoningEffort: entry.defaultReasoningEffort ?? null,
-                    })
-                  }
-                  className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-left text-xs hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed"
-                >
-                  <span>{entry.displayName}</span>
-                  {entry.model === model && (
-                    <Check size={14} className="shrink-0" />
-                  )}
-                </button>
-              ))}
-            </div>
+            {modelOptions.map((entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                role="menuitemradio"
+                aria-checked={entry.model === model}
+                disabled={modelControlsDisabled || settingsBusy}
+                onClick={() =>
+                  onUpdateSettings({
+                    model: entry.model,
+                    reasoningEffort: entry.defaultReasoningEffort ?? null,
+                  })
+                }
+                className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-left text-xs hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed"
+              >
+                <span>{entry.displayName}</span>
+                {entry.model === model && (
+                  <Check size={14} className="shrink-0" />
+                )}
+              </button>
+            ))}
             {supportedEfforts.length > 0 && (
               <ComposerReasoningSlider
                 key={model}

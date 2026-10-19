@@ -1450,6 +1450,10 @@ declare const en: {
     readonly 'settings.storageNothingToClean': "Nothing to clean up";
     readonly 'settings.storageCompact': "Reclaim disk space";
     readonly 'settings.storageCompactAction': "Reclaim";
+    readonly 'settings.storageJobFinding': "Finding output to clean up…";
+    readonly 'settings.storageJobPruning': "Cleaning up {{done}} / {{total}} · {{size}} removed";
+    readonly 'settings.storageJobCompacting': "Reclaiming disk space; Pockymoe pauses for a few seconds…";
+    readonly 'settings.storageJobFailed': "Did not finish: {{reason}}";
     readonly 'settings.storageCompacting': "Reclaiming…";
     readonly 'settings.storageCompactHint': "Cleaned-up space stays in the database file for new content. Reclaiming rewrites the file; Pockymoe pauses for a few seconds.";
     readonly 'settings.storageCompactTitle': "Reclaim disk space?";
@@ -5355,6 +5359,10 @@ declare const zhCN: {
     'settings.storageNothingToClean': "没有需要清理的输出";
     'settings.storageCompact': "回收磁盘空间";
     'settings.storageCompactAction': "回收";
+    'settings.storageJobFinding': "正在查找要清理的输出…";
+    'settings.storageJobPruning': "正在清理 {{done}} / {{total}} 条 · 已减少 {{size}}";
+    'settings.storageJobCompacting': "正在回收磁盘空间，期间 Pockymoe 会暂停几秒…";
+    'settings.storageJobFailed': "没有完成：{{reason}}";
     'settings.storageCompacting': "回收中…";
     'settings.storageCompactHint': "清理掉的空间先留在数据库文件里供新内容复用；回收会重写文件，期间 Pockymoe 暂停几秒。";
     'settings.storageCompactTitle': "回收磁盘空间？";
@@ -9282,6 +9290,10 @@ declare const resources: {
         readonly 'settings.storageNothingToClean': "Nothing to clean up";
         readonly 'settings.storageCompact': "Reclaim disk space";
         readonly 'settings.storageCompactAction': "Reclaim";
+        readonly 'settings.storageJobFinding': "Finding output to clean up…";
+        readonly 'settings.storageJobPruning': "Cleaning up {{done}} / {{total}} · {{size}} removed";
+        readonly 'settings.storageJobCompacting': "Reclaiming disk space; Pockymoe pauses for a few seconds…";
+        readonly 'settings.storageJobFailed': "Did not finish: {{reason}}";
         readonly 'settings.storageCompacting': "Reclaiming…";
         readonly 'settings.storageCompactHint': "Cleaned-up space stays in the database file for new content. Reclaiming rewrites the file; Pockymoe pauses for a few seconds.";
         readonly 'settings.storageCompactTitle': "Reclaim disk space?";
@@ -13186,6 +13198,10 @@ declare const resources: {
         'settings.storageNothingToClean': "没有需要清理的输出";
         'settings.storageCompact': "回收磁盘空间";
         'settings.storageCompactAction': "回收";
+        'settings.storageJobFinding': "正在查找要清理的输出…";
+        'settings.storageJobPruning': "正在清理 {{done}} / {{total}} 条 · 已减少 {{size}}";
+        'settings.storageJobCompacting': "正在回收磁盘空间，期间 Pockymoe 会暂停几秒…";
+        'settings.storageJobFailed': "没有完成：{{reason}}";
         'settings.storageCompacting': "回收中…";
         'settings.storageCompactHint': "清理掉的空间先留在数据库文件里供新内容复用；回收会重写文件，期间 Pockymoe 暂停几秒。";
         'settings.storageCompactTitle': "回收磁盘空间？";

@@ -135,6 +135,7 @@ function rowTitle(item: ThreadHistoryItemDto, root?: string): { text: string; fu
   const full = item.text.trim();
   switch (item.kind) {
     case 'commandExecution': {
+      if (item.textPruned === 'removed') return { text: translate('chat.logCommandRemoved'), full: '', mono: false };
       const command = unwrapShellCommand(item.text);
       const { line, more } = firstLine(command);
       return { text: more ? `${line} …` : line, full: command.trim(), mono: true };
@@ -222,8 +223,11 @@ function Viewable({ className, label, onOpen, more, children }: {
 function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: { full: string; text: string }; path?: string }) {
   const actions = useContext(TranscriptLogContext);
   const isReasoning = item.kind === 'reasoning';
-  // Storage cleanup kept only the command and its input: there is nothing to fetch.
-  const pruned = item.kind === 'commandExecution' && Boolean(item.outputPrunedAt);
+  // Storage cleanup removed the output or diff: there is nothing to fetch.
+  const pruned = (item.kind === 'commandExecution' || item.kind === 'fileChange') && Boolean(item.outputPrunedAt);
+  const textNote = item.kind === 'commandExecution' && item.textPruned === 'truncated'
+    ? <p className="tlog-empty is-pruned">{translate('chat.logCommandTruncated')}</p>
+    : null;
   const detail = useItemDetail(item, !isReasoning && !pruned);
   const workspaceRoot = actions?.workspaceRoot;
   const formatPath = useCallback((path: string) => displayPath(path, workspaceRoot), [workspaceRoot]);
@@ -235,8 +239,9 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
     const date = new Date(item.outputPrunedAt!);
     return (
       <div className="tlog-detail">
-        {title.full !== title.text.replace(/ …$/, '') ? <pre className="tlog-command">{title.full}</pre> : null}
-        <p className="tlog-empty is-pruned">{translate('chat.logOutputPruned', {
+        {item.kind === 'commandExecution' && title.full !== title.text.replace(/ …$/, '') ? <pre className="tlog-command">{title.full}</pre> : null}
+        {textNote}
+        <p className="tlog-empty is-pruned">{translate(item.kind === 'fileChange' ? 'chat.logDiffPruned' : 'chat.logOutputPruned', {
           date: Number.isNaN(date.getTime()) ? item.outputPrunedAt! : date.toLocaleDateString(getLocale()),
           size: formatFileSize(item.outputPrunedBytes ?? 0),
         })}</p>
@@ -275,10 +280,11 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
   }
   const output = text ? toolResultText(text) : '';
   const clipped = clip(output);
-  const whole = item.kind === 'commandExecution' ? `$ ${title.full}\n\n${output}` : text || output;
+  const whole = item.kind === 'commandExecution' && title.full ? `$ ${title.full}\n\n${output}` : text || output;
   return (
     <div className="tlog-detail">
       {command ? <pre className="tlog-command">{command}</pre> : null}
+      {textNote}
       {output ? (
         <Viewable className="tlog-output" label={translate('chat.logOpenFull')}
           onOpen={actions ? () => actions.openText(viewTitle, whole) : undefined}>
@@ -313,7 +319,7 @@ export const LogRow = memo(function LogRow({ item, defaultOpen = false, path }: 
           {item.kind === 'fileChange' ? <DeltaBadges added={item.addedLines} removed={item.removedLines} /> : null}
           {statusTag(status)}
         </button>
-        {item.kind === 'commandExecution' ? <CopyCommand text={title.full} /> : null}
+        {item.kind === 'commandExecution' && title.full ? <CopyCommand text={title.full} /> : null}
       </div>
       <Collapse open={open}><RowDetail item={item} title={title} {...(path ? { path } : {})} /></Collapse>
     </div>

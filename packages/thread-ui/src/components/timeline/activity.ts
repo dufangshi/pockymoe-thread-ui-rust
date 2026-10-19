@@ -122,7 +122,7 @@ export function itemsDuration(items: readonly ThreadHistoryItemDto[]): number | 
 
 /** Tool details are stored as "Tool: …\n\nInput:\n…\n\nOutput:\n…"; the log shows the result. */
 export function toolResultText(detail: string): string {
-  const match = /\n\n(?:Output|Result):\n([\s\S]*)$/.exec(detail);
+  const match = /(?:^|\n\n)(?:Output|Result):\n([\s\S]*)$/.exec(detail);
   if (!match) return detail.trim();
   const body = match[1]!.trim();
   if (body.startsWith('"') && body.endsWith('"')) {

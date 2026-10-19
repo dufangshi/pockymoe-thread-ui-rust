@@ -46,7 +46,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-VQSGTRGG.js";
+} from "./chunk-BMDTRLXX.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -73,7 +73,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-H2T4EMBK.js";
+} from "./chunk-UZZRU4FQ.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -16405,7 +16405,7 @@ function itemsDuration(items) {
   return Number.isFinite(start) && end > start ? end - start : null;
 }
 function toolResultText(detail) {
-  const match = /\n\n(?:Output|Result):\n([\s\S]*)$/.exec(detail);
+  const match = /(?:^|\n\n)(?:Output|Result):\n([\s\S]*)$/.exec(detail);
   if (!match) return detail.trim();
   const body = match[1].trim();
   if (body.startsWith('"') && body.endsWith('"')) {
@@ -16678,6 +16678,7 @@ function rowTitle(item, root) {
   const full = item.text.trim();
   switch (item.kind) {
     case "commandExecution": {
+      if (item.textPruned === "removed") return { text: translate("chat.logCommandRemoved"), full: "", mono: false };
       const command = unwrapShellCommand(item.text);
       const { line, more } = firstLine(command);
       return { text: more ? `${line} \u2026` : line, full: command.trim(), mono: true };
@@ -16744,7 +16745,8 @@ function Viewable({ className, label, onOpen, more, children }) {
 function RowDetail({ item, title, path }) {
   const actions = useContext12(TranscriptLogContext);
   const isReasoning = item.kind === "reasoning";
-  const pruned = item.kind === "commandExecution" && Boolean(item.outputPrunedAt);
+  const pruned = (item.kind === "commandExecution" || item.kind === "fileChange") && Boolean(item.outputPrunedAt);
+  const textNote = item.kind === "commandExecution" && item.textPruned === "truncated" ? /* @__PURE__ */ jsx71("p", { className: "tlog-empty is-pruned", children: translate("chat.logCommandTruncated") }) : null;
   const detail = useItemDetail(item, !isReasoning && !pruned);
   const workspaceRoot = actions?.workspaceRoot;
   const formatPath = useCallback14((path2) => displayPath(path2, workspaceRoot), [workspaceRoot]);
@@ -16754,8 +16756,9 @@ function RowDetail({ item, title, path }) {
   if (pruned) {
     const date = new Date(item.outputPrunedAt);
     return /* @__PURE__ */ jsxs61("div", { className: "tlog-detail", children: [
-      title.full !== title.text.replace(/ …$/, "") ? /* @__PURE__ */ jsx71("pre", { className: "tlog-command", children: title.full }) : null,
-      /* @__PURE__ */ jsx71("p", { className: "tlog-empty is-pruned", children: translate("chat.logOutputPruned", {
+      item.kind === "commandExecution" && title.full !== title.text.replace(/ …$/, "") ? /* @__PURE__ */ jsx71("pre", { className: "tlog-command", children: title.full }) : null,
+      textNote,
+      /* @__PURE__ */ jsx71("p", { className: "tlog-empty is-pruned", children: translate(item.kind === "fileChange" ? "chat.logDiffPruned" : "chat.logOutputPruned", {
         date: Number.isNaN(date.getTime()) ? item.outputPrunedAt : date.toLocaleDateString(getLocale()),
         size: formatFileSize(item.outputPrunedBytes ?? 0)
       }) })
@@ -16791,11 +16794,12 @@ function RowDetail({ item, title, path }) {
   }
   const output = text ? toolResultText(text) : "";
   const clipped = clip(output);
-  const whole = item.kind === "commandExecution" ? `$ ${title.full}
+  const whole = item.kind === "commandExecution" && title.full ? `$ ${title.full}
 
 ${output}` : text || output;
   return /* @__PURE__ */ jsxs61("div", { className: "tlog-detail", children: [
     command ? /* @__PURE__ */ jsx71("pre", { className: "tlog-command", children: command }) : null,
+    textNote,
     output ? /* @__PURE__ */ jsx71(
       Viewable,
       {
@@ -16829,7 +16833,7 @@ var LogRow = memo6(function LogRow2({ item, defaultOpen = false, path }) {
         item.kind === "fileChange" ? /* @__PURE__ */ jsx71(DeltaBadges, { added: item.addedLines, removed: item.removedLines }) : null,
         statusTag(status)
       ] }),
-      item.kind === "commandExecution" ? /* @__PURE__ */ jsx71(CopyCommand, { text: title.full }) : null
+      item.kind === "commandExecution" && title.full ? /* @__PURE__ */ jsx71(CopyCommand, { text: title.full }) : null
     ] }),
     /* @__PURE__ */ jsx71(Collapse, { open, children: /* @__PURE__ */ jsx71(RowDetail, { item, title, ...path ? { path } : {} }) })
   ] });

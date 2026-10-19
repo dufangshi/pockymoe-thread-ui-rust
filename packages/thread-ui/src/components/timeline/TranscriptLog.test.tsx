@@ -66,6 +66,23 @@ describe('TranscriptLog', () => {
     expect(container.querySelector('.tlog-output')).toBeNull();
   });
 
+  it('marks a removed or shortened command and a cleaned-up diff', async () => {
+    const loadDetail = vi.fn(async (id: string) => detail(id, 'Output:\nbuilt'));
+    await render(<TranscriptLogContext.Provider value={actions({ loadDetail })}>
+      <LogRow item={item('', 'commandExecution', { textPruned: 'removed', hasDeferredDetail: true })} />
+      <LogRow item={item('make all…', 'commandExecution', { textPruned: 'truncated', outputPrunedAt: '2026-10-18T09:00:00.000Z', outputPrunedBytes: 10 })} />
+      <LogRow item={item('src/a.ts', 'fileChange', { addedLines: 3, outputPrunedAt: '2026-10-18T09:00:00.000Z', outputPrunedBytes: 4096 })} />
+    </TranscriptLogContext.Provider>);
+    const rows = [...container.querySelectorAll('.tlog-row')];
+    expect(rows[0]!.querySelector('.tlog-title')?.textContent).toBe('Command (cleaned up)');
+    expect(rows[0]!.querySelector('.tlog-copy')).toBeNull();
+    for (const head of container.querySelectorAll<HTMLButtonElement>('.tlog-row-head')) await act(async () => head.click());
+    expect(rows[0]!.querySelector('.tlog-output')?.textContent).toBe('built');
+    expect(rows[1]!.querySelector('.tlog-empty.is-pruned')?.textContent).toBe('Command shortened by storage cleanup');
+    expect(rows[2]!.querySelector('.tlog-empty.is-pruned')?.textContent).toMatch(/^Diff cleaned up on .+ \(was 4 KB\)$/);
+    expect(loadDetail).toHaveBeenCalledExactlyOnceWith('');
+  });
+
   it('loads details only after a row click and reuses the cache across close and remount', async () => {
     const loadDetail = vi.fn(async (id: string) => detail(id, 'Tool: shell\n\nOutput:\n"loaded output\\n"'));
     const context = actions({ loadDetail });

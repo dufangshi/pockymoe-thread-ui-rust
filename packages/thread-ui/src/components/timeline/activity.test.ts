@@ -77,6 +77,7 @@ describe('transcript activity', () => {
     ['Tool: lookup\n\nResult:\nplain result', 'plain result'],
     ['Tool: shell\n\nOutput:\n```text\nhello\nworld\n```', 'hello\nworld'],
     ['  unstructured output\n', 'unstructured output'],
+    ['Output:\nimported output', 'imported output'],
     ['Tool: x\n\nOutput:\n"invalid json\\x"', '"invalid json\\x"'],
   ])('extracts output from stored detail %#', (detail, expected) => expect(toolResultText(detail)).toBe(expected));
 

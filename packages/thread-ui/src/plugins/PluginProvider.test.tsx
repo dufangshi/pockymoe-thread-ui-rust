@@ -94,7 +94,7 @@ describe('PluginProvider', () => {
 
   it('shows browser-only settings only while the plugin is enabled', async () => {
     let reported: PluginDto[] = [{ ...terminalPluginManifest, enabled: true, available: true }];
-    const adapter: PluginProviderAdapter = { fetchPlugins: () => reported, updatePlugin: async (_id, input) => { reported = [{ ...reported[0]!, enabled: input.enabled }]; return reported[0]!; } };
+    const adapter: PluginProviderAdapter = { fetchPlugins: () => reported, updatePlugin: async (_id, input) => { reported = [{ ...reported[0]!, enabled: input.enabled ?? reported[0]!.enabled }]; return reported[0]!; } };
     const module: FrontendPluginModule = {
       ...terminalModule,
       browserSettingsSections: [{ id: 'clipboard', label: 'Terminal', render: () => <p>Copy on select</p> }],

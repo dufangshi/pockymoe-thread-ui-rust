@@ -46,7 +46,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-G7A3UUWN.js";
+} from "./chunk-GS2PWFJR.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -73,7 +73,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-CSH26ISX.js";
+} from "./chunk-DUW7FZJ3.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -11529,6 +11529,8 @@ function createDefaultPluginContextValue(modules = []) {
     async importPluginManifest() {
     },
     async setPluginEnabled() {
+    },
+    async setPluginDefaultEnabled() {
     },
     async uninstallPlugin() {
     },
@@ -24144,6 +24146,23 @@ function PluginProvider({
     },
     [adapter]
   );
+  const setPluginDefaultEnabled = useCallback22(
+    async (pluginId, defaultEnabled) => {
+      const previous = plugins.find((plugin) => plugin.id === pluginId)?.defaultEnabled;
+      setError(null);
+      setPlugins((current) => current.map((plugin) => plugin.id === pluginId ? { ...plugin, defaultEnabled } : plugin));
+      if (!adapter.updatePlugin) return;
+      try {
+        const updated = await adapter.updatePlugin(pluginId, { defaultEnabled });
+        setPlugins((current) => current.map((plugin) => plugin.id === updated.id ? updated : plugin));
+      } catch (err) {
+        setPlugins((current) => current.map((plugin) => plugin.id === pluginId && plugin.defaultEnabled === defaultEnabled ? { ...plugin, defaultEnabled: previous } : plugin));
+        setError(err instanceof Error ? err.message : translate("workbench.unableToUpdatePlugin"));
+        throw err;
+      }
+    },
+    [adapter, plugins]
+  );
   const importPluginManifest = useCallback22(
     async (input) => {
       if (!adapter.importPlugin) {
@@ -24201,6 +24220,7 @@ function PluginProvider({
       refresh,
       importPluginManifest,
       setPluginEnabled,
+      setPluginDefaultEnabled,
       uninstallPlugin,
       getSettingsSections,
       ...capabilities,
@@ -24221,6 +24241,7 @@ function PluginProvider({
       plugins,
       refresh,
       setPluginEnabled,
+      setPluginDefaultEnabled,
       settingsVersion,
       uninstallPlugin
     ]
@@ -24392,7 +24413,7 @@ function ThreadPluginScope({
         ...plugin,
         enabledOverride: enabled,
         // A conversation can never switch on what the device has off.
-        enabled: plugin.globalEnabled && (enabled ?? plugin.globalEnabled)
+        enabled: plugin.globalEnabled && (enabled ?? plugin.defaultEnabled ?? true)
       })
     ),
     [change]
@@ -24697,7 +24718,8 @@ function PluginRow({
   const options = [
     {
       value: "inherit",
-      label: t2("settings.threadPluginsInherit"),
+      // Following the device says what it resolves to: the plugin's default.
+      label: plugin.defaultEnabled === void 0 ? t2("settings.threadPluginsInherit") : t2(plugin.globalEnabled && plugin.defaultEnabled ? "settings.threadPluginsInheritOn" : "settings.threadPluginsInheritOff"),
       aria: t2("settings.threadPluginsInheritAria")
     },
     {

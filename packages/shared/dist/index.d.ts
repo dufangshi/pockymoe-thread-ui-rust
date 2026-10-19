@@ -432,9 +432,13 @@ interface PluginDto extends PluginManifestDto {
     available?: boolean;
     unavailableReasonCode?: string | null;
     unavailableReason?: string | null;
+    /** Whether a conversation that follows the device has it on (absent from older Supervisors). */
+    defaultEnabled?: boolean;
 }
 interface UpdatePluginInput {
-    enabled: boolean;
+    enabled?: boolean;
+    /** Whether conversations that follow the device have the plugin on. */
+    defaultEnabled?: boolean;
 }
 interface ImportPluginInput {
     manifest?: unknown;

@@ -238,7 +238,10 @@ function PluginRow({
   const options: Array<{ value: Choice; label: string; aria: string }> = [
     {
       value: 'inherit',
-      label: t('settings.threadPluginsInherit'),
+      // Following the device says what it resolves to: the plugin's default.
+      label: plugin.defaultEnabled === undefined
+        ? t('settings.threadPluginsInherit')
+        : t(plugin.globalEnabled && plugin.defaultEnabled ? 'settings.threadPluginsInheritOn' : 'settings.threadPluginsInheritOff'),
       aria: t('settings.threadPluginsInheritAria'),
     },
     {

@@ -204,7 +204,7 @@ export function ThreadPluginScope({
           ...plugin,
           enabledOverride: enabled,
           // A conversation can never switch on what the device has off.
-          enabled: plugin.globalEnabled && (enabled ?? plugin.globalEnabled),
+          enabled: plugin.globalEnabled && (enabled ?? plugin.defaultEnabled ?? true),
         }),
       ),
     [change],

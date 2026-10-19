@@ -156,6 +156,24 @@ export function PluginProvider({
     [adapter],
   );
 
+  const setPluginDefaultEnabled = useCallback(
+    async (pluginId: string, defaultEnabled: boolean) => {
+      const previous = plugins.find((plugin) => plugin.id === pluginId)?.defaultEnabled;
+      setError(null);
+      setPlugins((current) => current.map((plugin) => (plugin.id === pluginId ? { ...plugin, defaultEnabled } : plugin)));
+      if (!adapter.updatePlugin) return;
+      try {
+        const updated = await adapter.updatePlugin(pluginId, { defaultEnabled });
+        setPlugins((current) => current.map((plugin) => (plugin.id === updated.id ? updated : plugin)));
+      } catch (err) {
+        setPlugins((current) => current.map((plugin) => (plugin.id === pluginId && plugin.defaultEnabled === defaultEnabled ? { ...plugin, defaultEnabled: previous } : plugin)));
+        setError(err instanceof Error ? err.message : translate("workbench.unableToUpdatePlugin"));
+        throw err;
+      }
+    },
+    [adapter, plugins],
+  );
+
   const importPluginManifest = useCallback(
     async (input: ImportPluginInput) => {
       if (!adapter.importPlugin) {
@@ -221,6 +239,7 @@ export function PluginProvider({
       refresh,
       importPluginManifest,
       setPluginEnabled,
+      setPluginDefaultEnabled,
       uninstallPlugin,
       getSettingsSections,
       ...capabilities,
@@ -241,6 +260,7 @@ export function PluginProvider({
       plugins,
       refresh,
       setPluginEnabled,
+      setPluginDefaultEnabled,
       settingsVersion,
       uninstallPlugin,
     ],

@@ -27,6 +27,8 @@ export interface PluginContextValue {
   refresh: () => Promise<void>;
   importPluginManifest: (input: ImportPluginInput) => Promise<void>;
   setPluginEnabled: (pluginId: string, enabled: boolean) => Promise<void>;
+  /** Whether conversations that follow the device have the plugin on. */
+  setPluginDefaultEnabled: (pluginId: string, enabled: boolean) => Promise<void>;
   uninstallPlugin: (pluginId: string) => Promise<void>;
   renderArtifact: (context: ArtifactRenderContext) => ReactNode | null;
   renderInlineCode: (context: InlineCodeRenderContext) => ReactNode | null;
@@ -188,6 +190,7 @@ export function createDefaultPluginContextValue(
     async refresh() {},
     async importPluginManifest() {},
     async setPluginEnabled() {},
+    async setPluginDefaultEnabled() {},
     async uninstallPlugin() {},
     getSettingsSections: () => [],
     ...pluginCapabilities(modules, plugins),

@@ -95,7 +95,9 @@ interface FrontendPluginModule {
 /** A plugin as one conversation sees it; `enabled` is the effective switch there. */
 interface ThreadPluginDto extends PluginDto {
     globalEnabled: boolean;
-    /** null follows the device-wide switch. */
+    /** What following the device means here: the plugin's default for conversations. */
+    defaultEnabled?: boolean;
+    /** null follows the device: its switch and the plugin's default. */
     enabledOverride: boolean | null;
     settingsOverridden: boolean;
 }

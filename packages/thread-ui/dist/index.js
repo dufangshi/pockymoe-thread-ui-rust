@@ -46,7 +46,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-XXR5CO3R.js";
+} from "./chunk-7SNIXNCW.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -73,7 +73,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-BUT7BJVJ.js";
+} from "./chunk-UKRUPNJB.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";

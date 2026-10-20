@@ -2759,6 +2759,7 @@ declare const en: {
     readonly "devices.yourAccountId": "Your account ID: {{value1}}";
     readonly "devices.howToFix": "How to fix";
     readonly "devices.learnMore": "Learn more";
+    readonly "devices.finishProtection": "Finish protection";
     readonly "devices.retryProtection": "Retry";
     readonly "devices.onlineSince": "Online since {{value1}}";
     readonly "devices.lastSeen": "Last seen {{value1}}";
@@ -6738,6 +6739,7 @@ declare const zhCN: {
     "devices.yourAccountId": "你的账户 ID：{{value1}}";
     "devices.howToFix": "查看解决办法";
     "devices.learnMore": "了解更多";
+    "devices.finishProtection": "完成保护";
     "devices.retryProtection": "重试";
     "devices.onlineSince": "{{value1}} 起在线";
     "devices.lastSeen": "最后在线 {{value1}}";
@@ -10739,6 +10741,7 @@ declare const resources: {
         readonly "devices.yourAccountId": "Your account ID: {{value1}}";
         readonly "devices.howToFix": "How to fix";
         readonly "devices.learnMore": "Learn more";
+        readonly "devices.finishProtection": "Finish protection";
         readonly "devices.retryProtection": "Retry";
         readonly "devices.onlineSince": "Online since {{value1}}";
         readonly "devices.lastSeen": "Last seen {{value1}}";
@@ -14717,6 +14720,7 @@ declare const resources: {
         "devices.yourAccountId": "你的账户 ID：{{value1}}";
         "devices.howToFix": "查看解决办法";
         "devices.learnMore": "了解更多";
+        "devices.finishProtection": "完成保护";
         "devices.retryProtection": "重试";
         "devices.onlineSince": "{{value1}} 起在线";
         "devices.lastSeen": "最后在线 {{value1}}";

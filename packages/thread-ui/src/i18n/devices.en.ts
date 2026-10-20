@@ -517,6 +517,7 @@ export const devicesEn = {
   "devices.yourAccountId": "Your account ID: {{value1}}",
   "devices.howToFix": "How to fix",
   "devices.learnMore": "Learn more",
+  "devices.finishProtection": "Finish protection",
   "devices.retryProtection": "Retry",
   "devices.onlineSince": "Online since {{value1}}",
   "devices.lastSeen": "Last seen {{value1}}",

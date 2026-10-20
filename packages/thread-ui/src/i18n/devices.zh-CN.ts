@@ -517,6 +517,7 @@ export const devicesZhCN = {
   "devices.yourAccountId": "你的账户 ID：{{value1}}",
   "devices.howToFix": "查看解决办法",
   "devices.learnMore": "了解更多",
+  "devices.finishProtection": "完成保护",
   "devices.retryProtection": "重试",
   "devices.onlineSince": "{{value1}} 起在线",
   "devices.lastSeen": "最后在线 {{value1}}",

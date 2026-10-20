@@ -228,7 +228,7 @@ export const workbenchZhCN = {
   "workbench.newThread_02057e": "新建线程",
   "workbench.openingWorkspace": "正在打开工作区…",
   "workbench.startAThreadIn": "启动线程，工作区：",
-  "workbench.yourConversationsInThisWorkspaceWillAppear": "从侧栏选择线程，或新建线程。",
+  "workbench.yourConversationsInThisWorkspaceWillAppear": "选择一个线程，或新建线程。",
   "workbench.threadMapOpenWorkspace": "打开工作区：{{name}}",
   "workbench.threadMapOpenDevice": "打开设备工作区：{{name}}",
   "workbench.createThread": "创建线程",

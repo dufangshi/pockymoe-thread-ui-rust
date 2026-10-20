@@ -228,7 +228,7 @@ export const workbenchEn = {
   "workbench.newThread_02057e": "New thread",
   "workbench.openingWorkspace": "Opening workspace…",
   "workbench.startAThreadIn": "Start a thread in",
-  "workbench.yourConversationsInThisWorkspaceWillAppear": "Choose a thread from the sidebar, or create a new one.",
+  "workbench.yourConversationsInThisWorkspaceWillAppear": "Choose a thread, or create a new one.",
   "workbench.threadMapOpenWorkspace": "Open workspace: {{name}}",
   "workbench.threadMapOpenDevice": "Open device workspaces: {{name}}",
   "workbench.createThread": "Create thread",

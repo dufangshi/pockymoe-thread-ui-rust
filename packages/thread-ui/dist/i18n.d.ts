@@ -397,7 +397,9 @@ declare const en: {
     readonly "workbench.newThread_02057e": "New thread";
     readonly "workbench.openingWorkspace": "Opening workspace…";
     readonly "workbench.startAThreadIn": "Start a thread in";
-    readonly "workbench.yourConversationsInThisWorkspaceWillAppear": "Your conversations in this workspace will appear here.";
+    readonly "workbench.yourConversationsInThisWorkspaceWillAppear": "Choose a thread, or create a new one.";
+    readonly "workbench.threadMapOpenWorkspace": "Open workspace: {{name}}";
+    readonly "workbench.threadMapOpenDevice": "Open device workspaces: {{name}}";
     readonly "workbench.createThread": "Create thread";
     readonly "workbench.chooseAnAvailableBackendBeforeCreatingA": "Choose an available backend before creating a thread.";
     readonly "workbench.loadingCreationForm": "Loading creation form...";
@@ -4390,7 +4392,9 @@ declare const zhCN: {
     "workbench.newThread_02057e": "新建线程";
     "workbench.openingWorkspace": "正在打开工作区…";
     "workbench.startAThreadIn": "启动线程，工作区：";
-    "workbench.yourConversationsInThisWorkspaceWillAppear": "此工作区中的对话将显示在这里。";
+    "workbench.yourConversationsInThisWorkspaceWillAppear": "选择一个线程，或新建线程。";
+    "workbench.threadMapOpenWorkspace": "打开工作区：{{name}}";
+    "workbench.threadMapOpenDevice": "打开设备工作区：{{name}}";
     "workbench.createThread": "创建线程";
     "workbench.chooseAnAvailableBackendBeforeCreatingA": "创建线程前请选择可用的 Harness。";
     "workbench.loadingCreationForm": "正在加载创建表单…";
@@ -8405,7 +8409,9 @@ declare const resources: {
         readonly "workbench.newThread_02057e": "New thread";
         readonly "workbench.openingWorkspace": "Opening workspace…";
         readonly "workbench.startAThreadIn": "Start a thread in";
-        readonly "workbench.yourConversationsInThisWorkspaceWillAppear": "Your conversations in this workspace will appear here.";
+        readonly "workbench.yourConversationsInThisWorkspaceWillAppear": "Choose a thread, or create a new one.";
+        readonly "workbench.threadMapOpenWorkspace": "Open workspace: {{name}}";
+        readonly "workbench.threadMapOpenDevice": "Open device workspaces: {{name}}";
         readonly "workbench.createThread": "Create thread";
         readonly "workbench.chooseAnAvailableBackendBeforeCreatingA": "Choose an available backend before creating a thread.";
         readonly "workbench.loadingCreationForm": "Loading creation form...";
@@ -12397,7 +12403,9 @@ declare const resources: {
         "workbench.newThread_02057e": "新建线程";
         "workbench.openingWorkspace": "正在打开工作区…";
         "workbench.startAThreadIn": "启动线程，工作区：";
-        "workbench.yourConversationsInThisWorkspaceWillAppear": "此工作区中的对话将显示在这里。";
+        "workbench.yourConversationsInThisWorkspaceWillAppear": "选择一个线程，或新建线程。";
+        "workbench.threadMapOpenWorkspace": "打开工作区：{{name}}";
+        "workbench.threadMapOpenDevice": "打开设备工作区：{{name}}";
         "workbench.createThread": "创建线程";
         "workbench.chooseAnAvailableBackendBeforeCreatingA": "创建线程前请选择可用的 Harness。";
         "workbench.loadingCreationForm": "正在加载创建表单…";

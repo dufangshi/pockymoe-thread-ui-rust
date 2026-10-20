@@ -981,12 +981,15 @@ interface ThreadMapThread {
 interface ThreadMapWorkspace {
     id: string;
     label: string;
+    href?: string | undefined;
     path?: string | undefined;
     threads: ThreadMapThread[];
 }
 interface ThreadMapDevice {
     id: string;
     name: string;
+    /** The device's workspace list. */
+    href?: string | undefined;
     state: 'ready' | 'loading' | 'offline' | 'error';
     error?: string | null | undefined;
     workspaces: ThreadMapWorkspace[];
@@ -1000,13 +1003,15 @@ interface ThreadMapDevice {
  * then), tapping a thread opens it. On touch, pinching in goes up a level,
  * spreading opens the block under the fingers and dragging down dismisses.
  */
-declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onRetry, onDismiss }: {
+declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onNavigate, onRetry, onDismiss }: {
     devices: ThreadMapDevice[];
     currentKey?: string | undefined;
     hours?: number;
     heading?: ReactNode;
     actions?: ReactNode;
     onOpen: (thread: ThreadMapThread) => void;
+    /** Open a device or workspace page; modified clicks keep normal link behavior. */
+    onNavigate?: ((href: string) => void) | undefined;
     onRetry?: ((deviceId: string) => void) | undefined;
     /** Closes the map; a downward drag on it asks for this. */
     onDismiss?: (() => void) | undefined;

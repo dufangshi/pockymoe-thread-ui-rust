@@ -669,15 +669,19 @@
   width: 8px; height: 8px; margin: 0; box-shadow: 0 0 0 2px var(--theme-surface);
 }
 .matter-thread-group[data-avatar] > .matter-group-tab[aria-current='page'] > .matter-thread-avatar + .matter-status-dot { box-shadow: 0 0 0 2px var(--theme-bg); }
-.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot:is([data-status='idle'], [data-status='running']) { visibility: hidden; }
-.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='running']) > .matter-thread-avatar { animation: matter-tab-running 1.8s ease-in-out infinite; }
-.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='agents-running']) > .matter-thread-avatar { box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--theme-accent-solid) 70%, transparent); }
+.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot:is([data-status='idle'], [data-status='running'], [data-status='agents-running']) { visibility: hidden; }
+/* With an icon, working shows as a ring around it: the accent while the thread
+   itself runs, pink-violet while only its agent threads do. */
+.matter-thread-group[data-avatar] > .matter-group-tab { --tab-agents-ring: #b65bd3; }
+.thread-ui-shell[data-theme-effective='dark'] .matter-thread-group[data-avatar] > .matter-group-tab { --tab-agents-ring: #d99cf3; }
+.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='running']) > .matter-thread-avatar { --tab-ring: var(--theme-accent-solid); animation: matter-tab-running 1.8s ease-in-out infinite; }
+.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='agents-running']) > .matter-thread-avatar { --tab-ring: var(--tab-agents-ring); animation: matter-tab-running 1.8s ease-in-out infinite; }
 @keyframes matter-tab-running {
-  0%, 100% { box-shadow: 0 0 0 1.5px var(--theme-accent-solid); }
-  50% { box-shadow: 0 0 0 1.5px var(--theme-accent-solid), 0 0 0 4px color-mix(in srgb, var(--theme-accent-solid) 28%, transparent); }
+  0%, 100% { box-shadow: 0 0 0 2px var(--tab-ring); }
+  50% { box-shadow: 0 0 0 2px var(--tab-ring), 0 0 0 4.5px color-mix(in srgb, var(--tab-ring) 28%, transparent); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='running']) > .matter-thread-avatar { animation: none; box-shadow: 0 0 0 1.5px var(--theme-accent-solid); }
+  .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot:is([data-status='running'], [data-status='agents-running'])) > .matter-thread-avatar { animation: none; box-shadow: 0 0 0 2px var(--tab-ring); }
 }
 
 /* Desktop tabs are open conversations, closed with a ✕. The open tab keeps its ✕

@@ -51,6 +51,9 @@ interface GraphChatThreadChatPanelProps {
   floatingDesktopComposer?: boolean;
   floatingMobileComposerBottomOffset?: number;
   composerHostRef?: RefObject<HTMLDivElement | null>;
+  /** While another conversation loads: shown in the transcript's place, so the
+      panel and its composer stay mounted (no flash, the draft keeps its focus). */
+  timelinePending?: ReactNode;
 }
 
 export function GraphChatThreadChatPanel({
@@ -67,6 +70,7 @@ export function GraphChatThreadChatPanel({
   floatingDesktopComposer = false,
   floatingMobileComposerBottomOffset = 0,
   composerHostRef,
+  timelinePending,
 }: GraphChatThreadChatPanelProps) {
   useI18n();
   const [isMobileViewport, setIsMobileViewport] = useState(false);
@@ -413,7 +417,7 @@ export function GraphChatThreadChatPanel({
       style={panelStyle}
     >
       {/* A sub-thread names the thread that started it, pinned above its conversation. */}
-      {parentThreadId && adapter.describeThread ? (
+      {!timelinePending && parentThreadId && adapter.describeThread ? (
         <ThreadRelationBar
           parentThreadId={parentThreadId}
           parent={adapter.describeThread(parentThreadId)}
@@ -423,10 +427,14 @@ export function GraphChatThreadChatPanel({
         />
       ) : null}
       {beforeTimelineContent}
-      <TranscriptAgentProvider agent={transcriptAgent}>
-        {timelineElement}
-      </TranscriptAgentProvider>
-      <div className="thread-chat-usage-footer hidden shrink-0 items-center px-4 py-1 text-[10px] leading-4 sm:flex">
+      {timelinePending ? (
+        <div className="thread-timeline-surface thread-timeline-pending flex min-h-0 flex-1 flex-col">{timelinePending}</div>
+      ) : (
+        <TranscriptAgentProvider agent={transcriptAgent}>
+          {timelineElement}
+        </TranscriptAgentProvider>
+      )}
+      <div className={`thread-chat-usage-footer hidden shrink-0 items-center px-4 py-1 text-[10px] leading-4 ${timelinePending ? '' : 'sm:flex'}`}>
         <span className="min-w-0">
           {detail.turns.length} {translate("chat.turn_b09c73")}{detail.turns.length !== 1 ? translate("chat.s") : ''}
           <span className="mx-1 text-[var(--theme-border-contrast)]">|</span>

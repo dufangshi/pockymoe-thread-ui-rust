@@ -886,7 +886,10 @@ declare function useDevicePlugins(): PluginContextValue;
 /**
  * Gives one conversation its effective plugins: renderers, panels and actions below
  * follow its switches, while global management (switches, device settings) still
- * reaches the device. Each conversation gets its own scope, keyed by the host.
+ * reaches the device. It follows `threadId` in place: when the conversation
+ * changes, the previous one's answers are never shown as the new one's; until the
+ * new one answers, the device's plugins stand. So a host need not remount the
+ * conversation (and lose its drafts and chrome) to switch it.
  */
 declare function ThreadPluginScope({ threadId, adapter, children, }: {
     threadId: string;
@@ -1115,8 +1118,11 @@ interface GraphChatThreadChatPanelProps {
     floatingDesktopComposer?: boolean;
     floatingMobileComposerBottomOffset?: number;
     composerHostRef?: RefObject<HTMLDivElement | null>;
+    /** While another conversation loads: shown in the transcript's place, so the
+        panel and its composer stay mounted (no flash, the draft keeps its focus). */
+    timelinePending?: ReactNode;
 }
-declare function GraphChatThreadChatPanel({ detail, adapter, timelineAdapter, TimelineComponent, liveOutput, beforeTimelineContent, composerProps, timelineProps, transcriptItemCount, useFloatingMobileComposer, floatingDesktopComposer, floatingMobileComposerBottomOffset, composerHostRef, }: GraphChatThreadChatPanelProps): react.JSX.Element;
+declare function GraphChatThreadChatPanel({ detail, adapter, timelineAdapter, TimelineComponent, liveOutput, beforeTimelineContent, composerProps, timelineProps, transcriptItemCount, useFloatingMobileComposer, floatingDesktopComposer, floatingMobileComposerBottomOffset, composerHostRef, timelinePending, }: GraphChatThreadChatPanelProps): react.JSX.Element;
 
 /** Capability flags a theme pack may declare in `theme.json` `features`. Unknown
  *  flags are ignored. Version 1 of the catalog; see docs/theme-packs.md. */

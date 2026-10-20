@@ -45,7 +45,10 @@ type Loaded = {
 /**
  * Gives one conversation its effective plugins: renderers, panels and actions below
  * follow its switches, while global management (switches, device settings) still
- * reaches the device. Each conversation gets its own scope, keyed by the host.
+ * reaches the device. It follows `threadId` in place: when the conversation
+ * changes, the previous one's answers are never shown as the new one's; until the
+ * new one answers, the device's plugins stand. So a host need not remount the
+ * conversation (and lose its drafts and chrome) to switch it.
  */
 export function ThreadPluginScope({
   threadId,
@@ -64,29 +67,39 @@ export function ThreadPluginScope({
   const threadsRef = useRef(adapter ?? device.adapter?.threads);
   threadsRef.current = adapter ?? device.adapter?.threads;
   const supported = Boolean(threadsRef.current);
-  const [loaded, setLoaded] = useState<Loaded>({
+  const [stored, setLoaded] = useState<Loaded & { threadId: string }>({
+    threadId,
     status: supported ? 'loading' : 'unsupported',
     plugins: [],
     error: null,
   });
+  // Another conversation's answer is not this one's: until this one's lands it is loading.
+  const loaded: Loaded = stored.threadId === threadId ? stored : { status: supported ? 'loading' : 'unsupported', plugins: [], error: null };
   const [pluginErrors, setPluginErrors] = useState<
     ThreadPluginScopeState['pluginErrors']
   >({});
   const [pending, setPending] = useState<Record<string, boolean>>({});
+  const [scopeOf, setScopeOf] = useState(threadId);
+  if (scopeOf !== threadId) {
+    setScopeOf(threadId);
+    setPluginErrors({});
+    setPending({});
+  }
   const request = useRef(0);
 
   const reload = useCallback(async () => {
     const threads = threadsRef.current;
     if (!threads) {
-      setLoaded({ status: 'unsupported', plugins: [], error: null });
+      setLoaded({ threadId, status: 'unsupported', plugins: [], error: null });
       return;
     }
     const id = ++request.current;
-    setLoaded((current) => ({ ...current, status: 'loading', error: null }));
+    setLoaded((current) => current.threadId === threadId ? { ...current, status: 'loading', error: null } : { threadId, status: 'loading', plugins: [], error: null });
     try {
       const plugins = await threads.fetchPlugins(threadId);
       if (id !== request.current) return;
       setLoaded({
+        threadId,
         status: 'ready',
         plugins: Array.isArray(plugins) ? plugins : [],
         error: null,
@@ -96,6 +109,7 @@ export function ThreadPluginScope({
       const status = errorStatus(error);
       // Older Supervisors have no conversation scope: fall back to the device's.
       setLoaded({
+        threadId,
         status:
           status === 404 || status === 405
             ? 'unsupported'

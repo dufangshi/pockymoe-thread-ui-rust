@@ -518,3 +518,32 @@ it('trusts the conversation when a view-only share cannot read the device plugin
     'panels:1 stored:stored result',
   );
 });
+
+it('follows a new conversation in place without showing the previous one\'s answer', async () => {
+  const backend = fakeBackend();
+  backend.own('a').enabled = false;
+  let release: (() => void) | null = null;
+  const fetchPlugins = backend.adapter.fetchPlugins;
+  backend.adapter.fetchPlugins = vi.fn(async (thread: string) => {
+    if (thread === 'b') await new Promise<void>((resolve) => { release = resolve; });
+    return fetchPlugins(thread);
+  });
+  const adapter: PluginProviderAdapter = {
+    fetchPlugins: () => [{ ...demo.manifest, enabled: true, available: true }],
+    loadPluginSettings: vi.fn().mockResolvedValue({ revision: 1, values: { tone: 'global' } }),
+    savePluginSettings: vi.fn(),
+    threads: backend.adapter,
+  };
+  const view = (threadId: string) => (
+    <PluginProvider adapter={adapter} builtinPlugins={[demo]}>
+      <ThreadPluginScope threadId={threadId}><Probe name="probe" /></ThreadPluginScope>
+    </PluginProvider>
+  );
+  await act(async () => root.render(view('a')));
+  expect(q('[data-testid="probe"]').textContent).toContain('panels:0');
+  // Same scope, now b: until b answers, the device's plugins stand, never a's "off".
+  await act(async () => root.render(view('b')));
+  expect(q('[data-testid="probe"]').textContent).toContain('panels:1');
+  await act(async () => { release?.(); });
+  expect(q('[data-testid="probe"]').textContent).toContain('panels:1');
+});

@@ -41,7 +41,9 @@ export function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, fa
   useMenuKeyboard(menuRef, open && place !== null, (restore) => close.current(restore), 'button:not([disabled]), a[href]');
 
   useLayoutEffect(() => {
-    if (!open) { setPlace(null); return; }
+    // Closed, it keeps its place: windows its controls opened (the split picker)
+    // stay anchored to them, even when they re-measure on a scroll.
+    if (!open) return;
     const update = () => {
       const anchor = anchorRef.current?.getBoundingClientRect();
       if (!anchor) return;

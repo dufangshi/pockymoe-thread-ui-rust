@@ -650,12 +650,47 @@
   font-size: 12px;
 }
 .matter-group-toggle:hover { background: var(--theme-hover); }
-/* Desktop tabs are open conversations, closed with a ✕ that shows on the open
-   tab and the one pointed at (always, without hover). One divider per tab. */
+/* A tab: [icon][agents][title]. Where a theme shows icons, the icon carries the
+   status: a mark on its lower-right corner, a breathing ring while it runs, nothing
+   when idle. Agent threads are a small count in the slot right after the icon. */
+.matter-thread-group { position: relative; }
+.matter-group-tab { position: relative; }
+.matter-tab-agents-slot { flex: none; align-self: stretch; }
+.thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge {
+  position: absolute; top: 50%; left: var(--tab-agents-x, 0); z-index: 1; transform: translateY(-50%);
+  display: inline-flex; align-items: center; gap: 2px; height: 17px; padding: 0 5px 0 4px;
+  border: 0; border-radius: 9px; background: color-mix(in srgb, var(--theme-fg) 10%, transparent);
+  color: var(--theme-fg-soft); font-size: 10.5px; font-variant-numeric: tabular-nums; line-height: 1;
+}
+.thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:hover, [aria-expanded='true']) { background: color-mix(in srgb, var(--theme-fg) 18%, transparent); color: var(--theme-fg); }
+.matter-thread-group > .matter-group-toggle.is-badge > svg { width: 11px; height: 11px; }
+.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot {
+  position: absolute; left: var(--tab-icon-right); top: var(--tab-icon-bottom); translate: -70% -70%;
+  width: 8px; height: 8px; margin: 0; box-shadow: 0 0 0 2px var(--theme-surface);
+}
+.matter-thread-group[data-avatar] > .matter-group-tab[aria-current='page'] > .matter-thread-avatar + .matter-status-dot { box-shadow: 0 0 0 2px var(--theme-bg); }
+.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot:is([data-status='idle'], [data-status='running']) { visibility: hidden; }
+.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='running']) > .matter-thread-avatar { animation: matter-tab-running 1.8s ease-in-out infinite; }
+.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='agents-running']) > .matter-thread-avatar { box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--theme-accent-solid) 70%, transparent); }
+@keyframes matter-tab-running {
+  0%, 100% { box-shadow: 0 0 0 1.5px var(--theme-accent-solid); }
+  50% { box-shadow: 0 0 0 1.5px var(--theme-accent-solid), 0 0 0 4px color-mix(in srgb, var(--theme-accent-solid) 28%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='running']) > .matter-thread-avatar { animation: none; box-shadow: 0 0 0 1.5px var(--theme-accent-solid); }
+}
+
+/* Desktop tabs are open conversations, closed with a ✕. The open tab keeps its ✕
+   in place; any other shows it only when pointed at, floating over the tab's end
+   on a near-opaque chip, so it takes no room. Without hover it always shows. */
 .matter-thread-group:has(> .matter-tab-close) { border-right: 1px solid var(--theme-border); }
 .matter-thread-group:has(> .matter-tab-close) > :is(.matter-group-tab, .matter-group-toggle) { border-right: 0; }
 .matter-thread-group:has(> .matter-tab-close):has(> .matter-group-tab[aria-current='page']) { background: var(--theme-bg); }
-.matter-thread-group:has(> .matter-tab-close) > .matter-group-tab { padding-right: 4px; }
+.matter-thread-group:has(> .matter-tab-close):has(> .matter-group-tab[aria-current='page']) > .matter-group-tab { padding-right: 4px; }
+.thread-ui-shell .matter-workbench .matter-thread-group:not(:has(> .matter-group-tab[aria-current='page'])) > .matter-tab-close {
+  position: absolute; top: 50%; right: 4px; z-index: 2; margin: 0; transform: translateY(-50%);
+  background: color-mix(in srgb, var(--theme-surface) 92%, transparent); box-shadow: 0 0 0 1px var(--theme-border), -6px 0 8px var(--theme-surface);
+}
 /* However long its name, a tab stays at most 200px with its count and ✕; the
    name gives way, ended with an ellipsis. */
 .matter-thread-group { max-width: 200px; }

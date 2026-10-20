@@ -1,7 +1,7 @@
 import { translate, useI18n } from '../i18n';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronDown, X } from 'lucide-react';
+import { Bot, X } from 'lucide-react';
 import type { WorkbenchThread } from './MatterWorkbench';
 import { navigationStatusLabel } from './StatusMark';
 
@@ -27,12 +27,14 @@ export function groupThreads(threads: WorkbenchThread[]) {
   return groups;
 }
 
-export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, onThreadMenu }: {
+export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, onThreadMenu, onPrefetch }: {
   threads: WorkbenchThread[]; currentKey: string; onNavigate: (href: string) => void;
   /** Tabs that can be closed (the desktop's open conversations): a ✕, and a middle click. */
   onClose?: ((rootKey: string) => void) | undefined;
   /** Right-click or the menu key on a tab opens the conversation's menu here. */
   onThreadMenu?: ((thread: WorkbenchThread, x: number, y: number, returnFocus?: HTMLElement) => void) | undefined;
+  /** Warm a conversation before it is opened, so the switch shows it at once. */
+  onPrefetch?: ((href: string) => void) | undefined;
 }) {
   useI18n();
   const [menu, setMenu] = useState<{ key: string; left: number; top: number } | null>(null);
@@ -56,15 +58,48 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
   }, [menu]);
   const groups = groupThreads(threads);
   const activeMenu = groups.find(group => group.root.key === menu?.key);
+  // Where each tab's icon and agent slot are, measured: a theme decides whether an
+  // icon shows and how big it is. A shown icon carries the status on its corner;
+  // the agent count sits in the slot right after it.
+  const groupNodes = useRef(new Map<string, HTMLDivElement>());
+  useLayoutEffect(() => {
+    const measure = () => {
+      for (const group of groupNodes.current.values()) {
+        const tab = group.querySelector<HTMLElement>(':scope > .matter-group-tab');
+        if (!tab) continue;
+        const base = group.getBoundingClientRect(), link = tab.getBoundingClientRect();
+        const avatar = tab.querySelector<HTMLElement>(':scope > .matter-thread-avatar')?.getBoundingClientRect();
+        const shown = Boolean(avatar && avatar.width > 0);
+        group.toggleAttribute('data-avatar', shown);
+        if (shown) {
+          tab.style.setProperty('--tab-icon-right', `${avatar!.right - link.left}px`);
+          tab.style.setProperty('--tab-icon-bottom', `${avatar!.bottom - link.top}px`);
+        }
+        const slot = tab.querySelector<HTMLElement>(':scope > .matter-tab-agents-slot');
+        const badge = group.querySelector<HTMLElement>(':scope > .matter-group-toggle');
+        if (slot && badge) {
+          slot.style.width = `${badge.offsetWidth}px`;
+          group.style.setProperty('--tab-agents-x', `${slot.getBoundingClientRect().left - base.left}px`);
+        }
+      }
+    };
+    measure();
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    for (const group of groupNodes.current.values()) observer?.observe(group);
+    return () => observer?.disconnect();
+  });
   return <>
     {groups.map(({ root, children }) => {
       const selected = children.find(child => child.key === currentKey);
       const active = root.key === currentKey || !!selected;
       const activity = threadGroupActivity(root, children);
-      return <div key={root.key} className="matter-thread-group" data-reorder-key={root.key} style={{ display: 'flex', flexShrink: 0, minWidth: 0 }}>
+      return <div key={root.key} ref={node => { if (node) groupNodes.current.set(root.key, node); else groupNodes.current.delete(root.key); }}
+        className="matter-thread-group" data-reorder-key={root.key} style={{ display: 'flex', flexShrink: 0, minWidth: 0 }}>
         <a className="matter-group-tab" href={root.href} aria-current={active ? 'page' : undefined}
           title={`${selected ? `${root.title} · ${selected.title}` : root.title}\n${activity.label}`}
           onClick={event => { event.preventDefault(); onNavigate(root.href); }}
+          onPointerEnter={onPrefetch ? () => onPrefetch(root.href) : undefined}
+          onPointerDown={onPrefetch ? () => onPrefetch(root.href) : undefined}
           onAuxClick={onClose ? event => { if (event.button === 1) { event.preventDefault(); onClose(root.key); } } : undefined}
           onContextMenu={onThreadMenu ? event => { if (event.defaultPrevented) return; event.preventDefault(); onThreadMenu(root, event.clientX, event.clientY, event.currentTarget); } : undefined}
           onKeyDown={onThreadMenu ? event => {
@@ -75,13 +110,14 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
           } : undefined}>
           {root.agent && <span className="matter-thread-avatar" data-agent={root.agent} aria-hidden="true" />}
           <span className="matter-status-dot" role="img" aria-label={activity.label} data-status={activity.status} />
+          {children.length > 0 && <span className="matter-tab-agents-slot" aria-hidden="true" />}
           <span>{root.title}{selected ? ` · ${selected.title}` : ''}</span>
         </a>
-        {children.length > 0 && <button className="matter-group-toggle" aria-label={translate("workbench.agentThreads", { value1: root.title, value2: children.length })}
+        {children.length > 0 && <button className="matter-group-toggle is-badge" aria-label={translate("workbench.agentThreads", { value1: root.title, value2: children.length })}
           aria-expanded={menu?.key === root.key} aria-controls="matter-agent-threads" onClick={event => {
             const bounds = event.currentTarget.getBoundingClientRect(); trigger.current = event.currentTarget;
             setMenu(menu?.key === root.key ? null : { key: root.key, left: Math.max(8, Math.min(bounds.left, window.innerWidth - 296)), top: bounds.bottom + 4 });
-          }}>{children.length}<ChevronDown size={12} /></button>}
+          }}><Bot aria-hidden="true" />{children.length}</button>}
         {onClose && <button type="button" className="matter-tab-close" aria-label={translate('workbench.closeTab', { title: root.title })}
           title={translate('workbench.closeTab', { title: root.title })} onClick={() => onClose(root.key)}><X aria-hidden="true" /></button>}
       </div>;

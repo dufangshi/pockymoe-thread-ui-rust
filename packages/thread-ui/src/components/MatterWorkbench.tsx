@@ -198,6 +198,24 @@ export function MatterWorkbench({
   reorderWorkspace.current = keys => { setPendingWorkspaceOrder(keys); o.onReorderWorkspaceThreads?.(keys); };
   const commitWorkspaceOrder = useMemo(() => (keys: string[]) => reorderWorkspace.current(keys), []);
   const tabsRef = useRef<HTMLElement>(null);
+  // A mouse wheel scrolls the tab strip sideways, as in an editor; sideways
+  // trackpad gestures keep their own scrolling, and the ends let the page have it.
+  useEffect(() => {
+    const strip = tabsRef.current;
+    if (!strip) return;
+    const wheel = (event: WheelEvent) => {
+      if (event.ctrlKey || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      const room = strip.scrollWidth - strip.clientWidth;
+      if (room <= 0) return;
+      const delta = event.deltaMode === 1 ? event.deltaY * 32 : event.deltaMode === 2 ? event.deltaY * strip.clientWidth : event.deltaY;
+      const next = Math.max(0, Math.min(room, strip.scrollLeft + delta));
+      if (next === strip.scrollLeft) return;
+      event.preventDefault();
+      strip.scrollLeft = next;
+    };
+    strip.addEventListener('wheel', wheel, { passive: false });
+    return () => strip.removeEventListener('wheel', wheel);
+  });
   // On the desktop the tabs are the open conversations, like an editor's files.
   const desktopTabs = typeof window !== 'undefined' && !window.matchMedia('(max-width: 639px)').matches;
   const editorTabs = desktopTabs && o.openTabs?.length ? o.openTabs : null;
@@ -983,6 +1001,7 @@ export function MatterWorkbench({
         <nav ref={tabsRef} className="matter-thread-tabs" aria-label={translate("workbench.workspaceThreads")}>
           <GroupedThreadTabs threads={tabStrip} currentKey={o.currentKey} onNavigate={navigate}
             onThreadMenu={o.renderThreadMenu && !mobile ? openThreadMenuAt : undefined}
+            onPrefetch={o.onPrefetchThread}
             onClose={editorTabs && o.onCloseTab ? closeTab : undefined} />
         </nav>
         <TabScrollButtons targetRef={tabsRef} edges={tabScrollEdges} />

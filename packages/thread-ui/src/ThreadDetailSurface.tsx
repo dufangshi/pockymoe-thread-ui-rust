@@ -3,6 +3,7 @@ import { ThreadLoadingIndicator } from './components/ThreadLoadingIndicator';
 import { translate, useI18n } from './i18n';
 import {
   useMemo,
+  useRef,
   type ComponentType,
   type ForwardRefExoticComponent,
   type Ref,
@@ -402,9 +403,17 @@ export function ThreadDetailSurface({
       />
     ) : null);
 
-  const defaultContent = loading ? (
-    (loadingContent ?? <ThreadLoadingIndicator />)
-  ) : detail ? (
+  // Switching to a conversation that is still loading keeps the last one's frame
+  // mounted (composer, layout) with the loading state in the transcript's place,
+  // rather than replacing the whole panel and flashing it back.
+  const lastDetail = useRef(detail);
+  if (detail) lastDetail.current = detail;
+  const pending = !detail && loading && lastDetail.current !== null;
+  const shownDetail = detail ?? (pending ? lastDetail.current : null);
+  const pendingContent = loadingContent ?? <ThreadLoadingIndicator />;
+  const defaultContent = loading && !shownDetail ? (
+    pendingContent
+  ) : shownDetail ? (
     <div className={className}>
       {floatingPanel ? (
         <div className="fixed right-3 top-20 z-50 lg:absolute lg:right-4 lg:top-16">
@@ -418,12 +427,12 @@ export function ThreadDetailSurface({
             {error}
           </div>
         ))}
-      {detail.workspacePathStatus === "missing" &&
+      {!pending && shownDetail.workspacePathStatus === "missing" &&
         (workspaceMissingContent ?? (
           <div className="shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6">
             <p className="font-medium text-rose-50">{translate("workbench.workspacePathMissing")}</p>
             <p className="mt-1 break-words text-rose-100/90">
-              {detail.workspace.absPath}
+              {shownDetail.workspace.absPath}
             </p>
           </div>
         ))}
@@ -433,7 +442,8 @@ export function ThreadDetailSurface({
         }
       >
         <GraphChatThreadChatPanel
-          detail={detail}
+          detail={shownDetail}
+          {...(pending ? { timelinePending: pendingContent } : {})}
           adapter={adapter}
           timelineAdapter={timelineAdapter}
           TimelineComponent={TimelineComponent}
@@ -455,11 +465,11 @@ export function ThreadDetailSurface({
           activeView === "shell" ? "flex min-h-0 flex-1 flex-col" : "hidden"
         }
       >
-        {shellContent ??
-          (detail.thread.isLoaded && terminalPanelEnabled && adapter.shell ? (
+        {pending ? pendingContent : shellContent ??
+          (shownDetail.thread.isLoaded && terminalPanelEnabled && adapter.shell ? (
             <ShellPanelComponent
               ref={shellPanelRef}
-              threadId={detail.thread.id}
+              threadId={shownDetail.thread.id}
               shellAdapter={adapter.shell}
               effectiveTheme={shellEffectiveTheme}
               isVisible={activeView === "shell"}
@@ -470,7 +480,7 @@ export function ThreadDetailSurface({
                 ? { onStateChange: onShellStateChange }
                 : {})}
             />
-          ) : detail.thread.isLoaded && !terminalPanelEnabled ? (
+          ) : shownDetail.thread.isLoaded && !terminalPanelEnabled ? (
             (shellUnavailableContent ?? (
               <div className="flex min-h-0 flex-1 items-center justify-center p-4 sm:p-6">
                 <div className="thread-empty-surface max-w-md rounded-[1.6rem] border px-6 py-8 text-center">

@@ -45,13 +45,15 @@ const reducedMotion = () => typeof window !== 'undefined' && typeof window.match
  * then), tapping a thread opens it. On touch, pinching in goes up a level,
  * spreading opens the block under the fingers and dragging down dismisses.
  */
-export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, onRetry, onDismiss }: {
+export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, onNavigate, onRetry, onDismiss }: {
   devices: ThreadMapDevice[];
   currentKey?: string | undefined;
   hours?: number;
   heading?: ReactNode;
   actions?: ReactNode;
   onOpen: (thread: ThreadMapThread) => void;
+  /** Open a device or workspace page; modified clicks keep normal link behavior. */
+  onNavigate?: ((href: string) => void) | undefined;
   onRetry?: ((deviceId: string) => void) | undefined;
   /** Closes the map; a downward drag on it asks for this. */
   onDismiss?: (() => void) | undefined;
@@ -388,12 +390,21 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           <ArrowLeft aria-hidden="true" />
         </button>
         <nav ref={crumbs} tabIndex={-1} className="thread-map-crumbs" aria-label={translate('workbench.threadMapPath')}>
-          {chain.map((node, index) => (
-            <span key={node.id} className="thread-map-crumb">
-              {index > 0 && <ChevronRight aria-hidden="true" />}
-              <button type="button" aria-current={node === current ? 'location' : undefined} onClick={() => navigate(node)} title={node.label}>{node.label}</button>
-            </span>
-          ))}
+          {chain.map((node, index) => {
+            const href = node.workspace ? node.workspace.href : node.device?.href;
+            const label = translate(node.workspace ? 'workbench.threadMapOpenWorkspace' : 'workbench.threadMapOpenDevice', { name: node.label });
+            return (
+              <span key={node.id} className="thread-map-crumb">
+                {index > 0 && <ChevronRight aria-hidden="true" />}
+                <button type="button" aria-current={node === current ? 'location' : undefined} onClick={() => navigate(node)} title={node.label}>{node.label}</button>
+                {href && <a className="thread-map-crumb-open" href={href} aria-label={label} title={label} onClick={event => {
+                  if (!onNavigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+                  event.preventDefault();
+                  onNavigate(href);
+                }}><ArrowUpRight data-icon="open" aria-hidden="true" /></a>}
+              </span>
+            );
+          })}
         </nav>
         {children.length > 0 && <label className="thread-map-goto" title={translate('workbench.threadMapGoTo')}>
           <List aria-hidden="true" />

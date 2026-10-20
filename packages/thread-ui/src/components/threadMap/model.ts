@@ -45,10 +45,12 @@ export interface ThreadMapThread {
    */
   from?: string | undefined;
 }
-export interface ThreadMapWorkspace { id: string; label: string; path?: string | undefined; threads: ThreadMapThread[] }
+export interface ThreadMapWorkspace { id: string; label: string; href?: string | undefined; path?: string | undefined; threads: ThreadMapThread[] }
 export interface ThreadMapDevice {
   id: string;
   name: string;
+  /** The device's workspace list. */
+  href?: string | undefined;
   state: 'ready' | 'loading' | 'offline' | 'error';
   error?: string | null | undefined;
   workspaces: ThreadMapWorkspace[];
@@ -107,7 +109,7 @@ export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: s
     into.weight += from.weight; into.turns += from.turns; into.activeMs += from.activeMs;
     into.threads += from.threads; into.running += from.running; into.usd += from.usd; into.tokens += from.tokens;
   };
-  const deviceNodes = devices.map(device => {
+  const deviceNodes = devices.filter(device => device.state !== 'offline').map(device => {
     const node: MapNode = { ...blank, children: [], id: `device:${device.id}`, kind: 'device', label: device.name, device };
     for (const workspace of device.workspaces) {
       const space: MapNode = { ...blank, children: [], id: `workspace:${device.id}:${workspace.id}`, kind: 'workspace', label: workspace.label, parent: node, workspace, device };

@@ -1,5 +1,16 @@
 # Finite workbench panels
 
+Workspace navigation can render the workbench without a selected thread. The
+host supplies `workspaceThreads` for the chosen workspace so its conversations
+remain available in the sidebar and tabs; loading or refreshing that list does
+not open a conversation.
+
+The thread map omits devices marked `offline`. Device and workspace models may
+carry `href` links. Breadcrumb labels zoom within the map, while their adjacent
+arrow links open the device's workspace list or the workspace page through
+`onNavigate`. Modified clicks retain normal browser link behavior, including
+when a single device becomes the map root.
+
 `MatterWorkbenchOptions.panels` is optional. Hosts can keep the original Matter
 layout or supply a primary identity, protected reference renderer, collaboration
 renderer, same-device candidates and explicit `onMakePrimary` action. The shared

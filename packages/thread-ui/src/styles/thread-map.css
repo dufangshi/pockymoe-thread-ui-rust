@@ -152,6 +152,22 @@
 }
 .thread-map-crumb button:hover { background: var(--theme-hover); color: var(--theme-fg); }
 .thread-map-crumb button[aria-current] { color: var(--theme-fg); font-weight: 600; }
+.thread-map-crumb-open {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--theme-fg-muted);
+}
+.thread-map-crumb-open:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.thread-map-crumb-open:active { background: var(--theme-hover); color: var(--theme-accent-solid); }
+.thread-map-crumb-open:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
+@media (max-width: 639px) {
+  .thread-map-crumb-open { width: 40px; height: 40px; }
+  .thread-map-crumb button { height: 40px; }
+}
 
 .thread-map-canvas {
   position: relative;

@@ -12,12 +12,12 @@ const thread = (key: string, extra: Partial<ThreadMapThread> = {}): ThreadMapThr
   key, title: `Thread ${key}`, href: `/threads/${key}`, agent: 'codex', running: false, turns: 4, activeMs: 0, ...extra,
 });
 const devices: ThreadMapDevice[] = [
-  { id: 'laptop', name: 'Laptop', state: 'ready', workspaces: [
-    { id: 'app', label: 'app', threads: [thread('a', { turns: 100, activeMs: 4 * 3_600_000, running: true }), thread('b', { agent: 'claude' })] },
+  { id: 'laptop', name: 'Laptop', href: '/devices/laptop/workspaces', state: 'ready', workspaces: [
+    { id: 'app', label: 'app', href: '/devices/laptop/threads?workspaceId=app', threads: [thread('a', { turns: 100, activeMs: 4 * 3_600_000, running: true }), thread('b', { agent: 'claude' })] },
     { id: 'docs', label: 'docs', threads: [thread('c', { turns: null, activeMs: null })] },
     { id: 'empty', label: 'empty', threads: [] },
   ] },
-  { id: 'server', name: 'Server', state: 'offline', workspaces: [] },
+  { id: 'server', name: 'Server', state: 'error', workspaces: [] },
 ];
 
 describe('thread map model', () => {
@@ -61,6 +61,13 @@ describe('thread map model', () => {
     expect(root.children[1]!.weight).toBeGreaterThan(0);
     // One device needs no device level.
     expect(buildThreadMap([devices[0]!], 'All')).toMatchObject({ kind: 'root', label: 'Laptop' });
+  });
+
+  it('omits offline devices, including any stale threads they still carry', () => {
+    const root = buildThreadMap([...devices, { ...devices[0]!, id: 'offline', state: 'offline' }], 'All');
+    expect(root.children.map(node => node.label)).toEqual(['Laptop', 'Server']);
+    expect(root.threads).toBe(3);
+    expect(buildThreadMap([{ ...devices[0]!, state: 'offline' }], 'All').children).toEqual([]);
   });
 });
 
@@ -111,7 +118,7 @@ describe('ThreadMap', () => {
     expect(link('b')!.getAttribute('aria-label')).toMatch(/^Thread b · Claude · app · 4 turns · idle for 24 h$/);
     expect(link('b')!.getAttribute('aria-current')).toBe('page');
     expect(current.dataset.heat).toBe('0');
-    expect(host.querySelector('section[aria-label="Server · Offline"]')!.getAttribute('data-state')).toBe('offline');
+    expect(host.querySelector('section[data-map-id="device:server"]')!.getAttribute('data-state')).toBe('error');
     expect(host.querySelector('.thread-map-summary')!.textContent).toBe('3 threads · 1 running');
     // Every level answers: a thread opens from its tile inside its device...
     expect(host.querySelector('[inert]')).toBeNull();
@@ -162,6 +169,30 @@ describe('ThreadMap', () => {
     expect(crumbs()).toEqual(['All devices', 'Laptop*']);
     click(button('All devices'));
     expect(button('Up one level').disabled).toBe(true);
+  });
+
+  it('opens device and workspace pages from breadcrumb links without changing map focus', () => {
+    const onNavigate = vi.fn();
+    act(() => root.render(<ThreadMap devices={devices} onOpen={vi.fn()} onNavigate={onNavigate} />));
+    click(button(/^Open Laptop/));
+    const deviceLink = host.querySelector<HTMLAnchorElement>('.thread-map-crumb-open')!;
+    expect(deviceLink.getAttribute('aria-label')).toBe('Open device workspaces: Laptop');
+    expect(deviceLink.getAttribute('href')).toBe('/devices/laptop/workspaces');
+    click(deviceLink);
+    expect(onNavigate).toHaveBeenLastCalledWith('/devices/laptop/workspaces');
+    expect(crumbs()).toEqual(['All devices', 'Laptop*']);
+    click(button(/^Open app/));
+    const workspaceLink = host.querySelector<HTMLAnchorElement>('.thread-map-crumb:last-child .thread-map-crumb-open')!;
+    expect(workspaceLink.getAttribute('aria-label')).toBe('Open workspace: app');
+    click(workspaceLink);
+    expect(onNavigate).toHaveBeenLastCalledWith('/devices/laptop/threads?workspaceId=app');
+    // The automatic single-device root keeps the same page link.
+    show([devices[0]!]);
+    click(button('Laptop'));
+    expect(host.querySelector('.thread-map-crumb-open')?.getAttribute('href')).toBe('/devices/laptop/workspaces');
+    choose('workspace:laptop:docs');
+    // A workspace without its own URL never borrows the device's destination.
+    expect(host.querySelector('.thread-map-crumb:last-child .thread-map-crumb-open')).toBeNull();
   });
 
   it('reaches every block from the Go to picker', () => {

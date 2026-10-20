@@ -336,7 +336,7 @@
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-copy { gap: 0; line-height: 16px; }
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-copy small { line-height: 14px; }
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .matter-thread-row { padding-right: 24px; }
-  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 70px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 58px; }
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-agent-toggle { right: 24px; height: 22px; }
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions { right: 2px; width: 22px; height: 26px; }
   .thread-ui-shell .matter-workbench .matter-sidebar .recent-thread-actions svg { transform: rotate(90deg); }
@@ -656,13 +656,16 @@
 .matter-thread-group { position: relative; }
 .matter-group-tab { position: relative; }
 .matter-tab-agents-slot { flex: none; align-self: stretch; }
+/* The count sits close between icon and title (the tab's gap less 5px on each
+   side), plain on the tab: no fill of its own, only on hover. */
+.matter-thread-group > .matter-group-tab > .matter-tab-agents-slot { margin-inline: -5px; }
 .thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge {
   position: absolute; top: 50%; left: var(--tab-agents-x, 0); z-index: 1; transform: translateY(-50%);
-  display: inline-flex; align-items: center; gap: 2px; height: 17px; padding: 0 5px 0 4px;
-  border: 0; border-radius: 9px; background: color-mix(in srgb, var(--theme-fg) 10%, transparent);
-  color: var(--theme-fg-soft); font-size: 10.5px; font-variant-numeric: tabular-nums; line-height: 1;
+  display: inline-flex; align-items: center; gap: 1px; height: 17px; padding: 0 1px;
+  border: 0; border-radius: 4px; background: transparent;
+  color: var(--theme-fg-muted); font-size: 10.5px; font-variant-numeric: tabular-nums; line-height: 1;
 }
-.thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:hover, [aria-expanded='true']) { background: color-mix(in srgb, var(--theme-fg) 18%, transparent); color: var(--theme-fg); }
+.thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:hover, [aria-expanded='true']) { background: var(--theme-hover); color: var(--theme-fg); }
 .matter-thread-group > .matter-group-toggle.is-badge > svg { width: 11px; height: 11px; }
 .matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot {
   position: absolute; left: var(--tab-icon-right); top: var(--tab-icon-bottom); translate: -70% -70%;
@@ -992,16 +995,16 @@
 .matter-thread-entry > .recent-thread-actions { position: absolute; right: 3px; }
 /* A conversation's agent threads: a small robot and count inside its row, left
    of its menu; they open under the row, on a guide line. */
-.matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 84px; }
+.matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 70px; }
 .thread-ui-shell .matter-workbench .matter-agent-toggle {
-  position: absolute; right: 34px; display: inline-flex; align-items: center; gap: 3px; height: 24px; padding: 0 5px 0 6px;
-  border: 1px solid var(--theme-border); border-radius: 999px; background: transparent; color: var(--theme-fg-muted);
+  position: absolute; right: 34px; display: inline-flex; align-items: center; gap: 1px; height: 22px; padding: 0 2px;
+  border: 0; border-radius: 4px; background: transparent; color: var(--theme-fg-muted);
   font-size: 11px; font-variant-numeric: tabular-nums; line-height: 1;
 }
 .thread-ui-shell .matter-workbench .matter-agent-toggle:hover { background: var(--theme-hover); color: var(--theme-fg); }
-.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded='true'] { border-color: var(--theme-border-strong, var(--theme-border)); color: var(--theme-fg-soft, var(--theme-fg)); }
-.thread-ui-shell .matter-workbench .matter-agent-toggle > svg { width: 13px; height: 13px; }
-.thread-ui-shell .matter-workbench .matter-agent-toggle > .matter-agent-toggle-chevron { width: 11px; height: 11px; transition: transform 140ms ease; }
+.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded='true'] { color: var(--theme-fg-soft, var(--theme-fg)); }
+.thread-ui-shell .matter-workbench .matter-agent-toggle > svg { width: 12px; height: 12px; }
+.thread-ui-shell .matter-workbench .matter-agent-toggle > .matter-agent-toggle-chevron { width: 10px; height: 10px; transition: transform 140ms ease; }
 .thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded='true'] > .matter-agent-toggle-chevron { transform: rotate(90deg); }
 /* Agents still running: the robot takes the running colour. */
 .thread-ui-shell .matter-workbench .matter-agent-toggle[data-running] > svg:first-child { color: #20bc87; }

@@ -27,14 +27,25 @@
     box-shadow 160ms ease;
 }
 
-.thread-ui-shell .thread-workspace-collapse-tab:hover,
-.thread-ui-shell .thread-workspace-small-toggle:hover,
-.thread-ui-shell .thread-workspace-expand-fab:hover,
-.thread-ui-shell .thread-graph-panel-expand-fab:hover {
+.thread-ui-shell .thread-workspace-collapse-tab:active,
+.thread-ui-shell .thread-workspace-small-toggle:active,
+.thread-ui-shell .thread-workspace-expand-fab:active,
+.thread-ui-shell .thread-graph-panel-expand-fab:active {
   border-color: var(--theme-border-strong);
   background: var(--theme-hover);
   color: var(--theme-fg);
   box-shadow: 0 14px 30px color-mix(in oklch, var(--theme-bg) 72%, transparent);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-workspace-collapse-tab:hover,
+  .thread-ui-shell .thread-workspace-small-toggle:hover,
+  .thread-ui-shell .thread-workspace-expand-fab:hover,
+  .thread-ui-shell .thread-graph-panel-expand-fab:hover {
+    border-color: var(--theme-border-strong);
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+    box-shadow: 0 14px 30px color-mix(in oklch, var(--theme-bg) 72%, transparent);
+  }
 }
 
 .thread-ui-shell .thread-workspace-collapse-tab {
@@ -45,8 +56,13 @@
   transform: translateY(-50%);
 }
 
-.thread-ui-shell .thread-workspace-collapse-tab:hover {
+.thread-ui-shell .thread-workspace-collapse-tab:active {
   transform: translateY(-50%) translateX(-1px);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-workspace-collapse-tab:hover {
+    transform: translateY(-50%) translateX(-1px);
+  }
 }
 
 .thread-ui-shell .thread-workspace-expand-fab {
@@ -57,8 +73,13 @@
   transform: translateY(-50%);
 }
 
-.thread-ui-shell .thread-workspace-expand-fab:hover {
+.thread-ui-shell .thread-workspace-expand-fab:active {
   transform: translateY(-50%) translateX(-1px);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-workspace-expand-fab:hover {
+    transform: translateY(-50%) translateX(-1px);
+  }
 }
 
 .thread-ui-shell .thread-chat-usage-footer {
@@ -437,11 +458,18 @@
   background: var(--theme-border);
 }
 
-.thread-ui-shell .thread-resize-handle:hover span,
+.thread-ui-shell .thread-resize-handle:active span,
 .thread-ui-shell .thread-resize-handle:focus-visible span {
   background: var(--theme-border-strong);
   box-shadow: 0 0 0 3px
     color-mix(in oklch, var(--theme-accent-border) 24%, transparent);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-resize-handle:hover span {
+    background: var(--theme-border-strong);
+    box-shadow: 0 0 0 3px
+      color-mix(in oklch, var(--theme-accent-border) 24%, transparent);
+  }
 }
 
 .thread-ui-shell .thread-graph-right-tabs {
@@ -458,10 +486,17 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-workspace-tab:hover,
-.thread-ui-shell .thread-graph-right-tab:hover {
+.thread-ui-shell .thread-workspace-tab:active,
+.thread-ui-shell .thread-graph-right-tab:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-workspace-tab:hover,
+  .thread-ui-shell .thread-graph-right-tab:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-workspace-tab.is-active,
@@ -521,9 +556,15 @@
   color: var(--theme-fg-soft);
 }
 
-.thread-ui-shell .thread-graph-flow .react-flow__controls-button:hover {
+.thread-ui-shell .thread-graph-flow .react-flow__controls-button:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-flow .react-flow__controls-button:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-flow .react-flow__controls-button svg {
@@ -569,9 +610,14 @@
   background: var(--theme-border);
 }
 
-.thread-ui-shell .thread-graph-workspace-resize-handle:hover::after,
+.thread-ui-shell .thread-graph-workspace-resize-handle:active::after,
 .thread-ui-shell .thread-graph-workspace-resize-handle:focus-visible::after {
   background: var(--theme-border-contrast);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-workspace-resize-handle:hover::after {
+    background: var(--theme-border-contrast);
+  }
 }
 
 .thread-ui-shell .thread-graph-explorer,
@@ -601,12 +647,21 @@
   color: var(--theme-fg-soft);
 }
 
-.thread-ui-shell .thread-graph-explorer-icon-button:hover,
-.thread-ui-shell .thread-graph-explorer-collapse-button:hover,
-.thread-ui-shell .thread-graph-viewer-header button:hover {
+.thread-ui-shell .thread-graph-explorer-icon-button:active,
+.thread-ui-shell .thread-graph-explorer-collapse-button:active,
+.thread-ui-shell .thread-graph-viewer-header button:active {
   border-color: var(--theme-border-strong);
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-explorer-icon-button:hover,
+  .thread-ui-shell .thread-graph-explorer-collapse-button:hover,
+  .thread-ui-shell .thread-graph-viewer-header button:hover {
+    border-color: var(--theme-border-strong);
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-panel-expand-fab {
@@ -680,15 +735,22 @@
   cursor: pointer;
 }
 .thread-graph-download-preview-actions a { text-decoration: none; }
-.thread-graph-download-preview button:hover,
-.thread-graph-download-preview-actions a:hover { background: var(--theme-bg); }
+.thread-graph-download-preview button:active,
+.thread-graph-download-preview-actions a:active { background: var(--theme-bg); }
+@media (hover: hover) {
+  .thread-graph-download-preview button:hover,
+  .thread-graph-download-preview-actions a:hover { background: var(--theme-bg); }
+}
 .thread-graph-download-preview button:disabled { opacity: .6; cursor: wait; }
 
 /* Safe small-file documents reuse the workspace surface and existing themes. */
 .workspace-document-status { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px; padding:8px 12px; border-bottom:1px solid var(--theme-border); color:var(--theme-fg-muted); font-size:11px; flex-shrink:0; }
 .workspace-document-actions { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
 .workspace-document-actions button, .workspace-document-conflict select, .thread-graph-editor-close-confirm button { padding:5px 8px; border:1px solid var(--theme-border); border-radius:5px; background:var(--theme-surface); font-size:11px; color:var(--theme-fg); }
-.workspace-document-actions button:hover { background:var(--theme-hover); }
+.workspace-document-actions button:active { background:var(--theme-hover); }
+@media (hover: hover) {
+  .workspace-document-actions button:hover { background:var(--theme-hover); }
+}
 .workspace-document-actions button:disabled { opacity:.45; cursor:not-allowed; }
 .workspace-document-conflict { padding:12px; border-bottom:1px solid #c58c31; background:color-mix(in srgb, #d89f35 9%, transparent); flex-shrink:0; max-height:65%; overflow:auto; min-width:0; font-size:12px; }
 .workspace-document-conflict strong { color:var(--theme-fg); }
@@ -708,11 +770,17 @@
 .thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tab { flex: 0 0 auto; min-width: 88px; max-width: 156px; }
 .thread-ui-shell .workspace-file-tab-name { display: flex; min-width: 0; white-space: nowrap; text-align: left; }
 .thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tab-close { flex: 0 0 24px; width: 24px; height: 28px; opacity: .7; }
-.thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tab-close:hover { opacity: 1; }
+.thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tab-close:active { opacity: 1; }
+@media (hover: hover) {
+  .thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tab-close:hover { opacity: 1; }
+}
 .thread-ui-shell .workspace-file-navigation { display: flex; flex: none; padding: 0; border-right: 1px solid var(--theme-border); }
 .thread-ui-shell .workspace-file-toolbar .workspace-preview-back,
 .thread-ui-shell .workspace-file-toolbar .workspace-file-more { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 34px; height: var(--workbench-tab-height); border-radius: 0; color: var(--theme-fg-muted); }
-.thread-ui-shell .workspace-preview-back:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.thread-ui-shell .workspace-preview-back:active { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-ui-shell .workspace-preview-back:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
 .thread-ui-shell .workspace-file-toolbar .thread-graph-editor-tabs-action { padding: 0; border-left: 1px solid var(--theme-border); }
 .thread-ui-shell .workspace-file-more[aria-expanded="true"] { color: var(--theme-accent-strong); background: var(--theme-accent-soft); }
 .thread-ui-shell .workspace-file-actions {
@@ -721,7 +789,10 @@
   background: var(--theme-surface); color: var(--theme-fg-soft);
 }
 .thread-ui-shell .workspace-file-actions button { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: inherit; }
-.thread-ui-shell .workspace-file-actions button:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.thread-ui-shell .workspace-file-actions button:active { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-ui-shell .workspace-file-actions button:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
 .thread-ui-shell .workspace-file-actions button:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: -2px; }
 .thread-ui-shell .workspace-file-actions button:disabled { opacity: .4; }
 .thread-ui-shell .workspace-file-action-feedback { min-width: 0; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; color: var(--theme-fg-muted); }
@@ -754,7 +825,10 @@
 .thread-ui-shell .thread-graph-window-controls > .is-close { background: #ff5f57; }
 .thread-ui-shell .thread-graph-window-controls > .is-minimize { background: #febc2e; }
 .thread-ui-shell .thread-graph-window-controls svg { width: 8px; height: 8px; stroke-width: 3.2; }
-.thread-ui-shell .thread-graph-window-controls:is(:hover, :focus-visible, :has(:focus-visible)) > button { color: rgb(0 0 0 / 58%); }
+.thread-ui-shell .thread-graph-window-controls:is(:active, :focus-visible, :has(:focus-visible)) > button { color: rgb(0 0 0 / 58%); }
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-window-controls:is(:hover, :focus-visible, :has(:focus-visible)) > button { color: rgb(0 0 0 / 58%); }
+}
 .thread-ui-shell .thread-graph-window-controls > button:focus-visible { outline: 2px solid var(--theme-accent-ring, var(--theme-accent-solid)); outline-offset: 2px; }
 
 /* The explorer's item menu: short one-line items in a small type. */
@@ -777,7 +851,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.workspace-node-menu > button:is(:hover, :focus-visible) { background: var(--theme-hover); outline: none; }
+.workspace-node-menu > button:is(:active, :focus-visible) { background: var(--theme-hover); outline: none; }
+@media (hover: hover) {
+  .workspace-node-menu > button:is(:hover, :focus-visible) { background: var(--theme-hover); outline: none; }
+}
 .workspace-node-menu > button svg { flex: none; width: 14px; height: 14px; color: var(--theme-fg-muted); }
 .workspace-node-menu-separator { height: 1px; margin: 3px 4px; background: var(--theme-border); }
 
@@ -812,7 +889,10 @@
 .workspace-properties .workspace-properties-title { display: -webkit-box; flex: 1; min-width: 0; overflow: hidden; font-size: 14px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .workspace-properties-close { position: relative; display: grid; flex: none; place-items: center; align-self: flex-start; width: 28px; height: 28px; border-radius: 6px; color: var(--theme-fg-muted); }
 .workspace-properties-close::after { content: ''; position: absolute; inset: -6px; }
-.workspace-properties-close:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.workspace-properties-close:active { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  .workspace-properties-close:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
 .workspace-properties-close svg { width: 16px; height: 16px; }
 .workspace-properties dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 0; font-size: 12.5px; line-height: 1.45; }
 .workspace-properties dl > div { display: contents; }

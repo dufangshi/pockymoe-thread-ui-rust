@@ -6,8 +6,13 @@
   right: 0.75rem;
 }
 
-.thread-ui-shell .thread-graph-panel-expand-fab:hover {
+.thread-ui-shell .thread-graph-panel-expand-fab:active {
   transform: translateY(-50%) scale(1.04);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-panel-expand-fab:hover {
+    transform: translateY(-50%) scale(1.04);
+  }
 }
 
 .thread-ui-shell .thread-graph-workspace-label,
@@ -74,9 +79,15 @@
   content: '';
 }
 
-.thread-ui-shell .thread-graph-editor-tab:hover {
+.thread-ui-shell .thread-graph-editor-tab:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-editor-tab:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-editor-tab.is-active {
@@ -93,15 +104,25 @@
   opacity: 0;
 }
 
-.thread-ui-shell .thread-graph-editor-tab:hover .thread-graph-editor-tab-close,
 .thread-ui-shell .thread-graph-editor-tab.is-active .thread-graph-editor-tab-close,
 .thread-ui-shell .thread-graph-editor-tab-close:focus-visible {
   opacity: 1;
 }
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-editor-tab:hover .thread-graph-editor-tab-close {
+    opacity: 1;
+  }
+}
 
-.thread-ui-shell .thread-graph-editor-tab-close:hover {
+.thread-ui-shell .thread-graph-editor-tab-close:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-editor-tab-close:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-editor-close-confirm {
@@ -125,12 +146,19 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-editor-toolbar-button:hover:not(:disabled),
+.thread-ui-shell .thread-graph-editor-toolbar-button:active:not(:disabled),
 .thread-ui-shell .thread-graph-editor-toolbar-button:focus-visible,
-.thread-ui-shell .thread-graph-editor-tabs-action button:hover,
+.thread-ui-shell .thread-graph-editor-tabs-action button:active,
 .thread-ui-shell .thread-graph-editor-tabs-action button:focus-visible {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-editor-toolbar-button:hover:not(:disabled),
+  .thread-ui-shell .thread-graph-editor-tabs-action button:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-explorer-header .thread-graph-explorer-icon-button,
@@ -178,10 +206,17 @@
 }
 .thread-ui-shell .workspace-linked-directory-label > bdi { direction: ltr; unicode-bidi: isolate; }
 
-.thread-ui-shell .thread-graph-tree-row:hover {
+.thread-ui-shell .thread-graph-tree-row:active {
   --thread-graph-tree-row-background: var(--theme-hover);
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-tree-row:hover {
+    --thread-graph-tree-row-background: var(--theme-hover);
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-tree-row:is(:focus-visible, :has(:focus-visible)) {
@@ -230,10 +265,19 @@
 
 .thread-ui-shell
   .thread-graph-tree-row.is-selected
-  .thread-graph-tree-action:hover,
-.thread-ui-shell .thread-graph-tree-action.is-selected:hover {
+  .thread-graph-tree-action:active,
+.thread-ui-shell .thread-graph-tree-action.is-selected:active {
   background: color-mix(in oklch, var(--theme-accent-solid) 12%, transparent);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell
+    .thread-graph-tree-row.is-selected
+    .thread-graph-tree-action:hover,
+  .thread-ui-shell .thread-graph-tree-action.is-selected:hover {
+    background: color-mix(in oklch, var(--theme-accent-solid) 12%, transparent);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-tree-action {
@@ -251,17 +295,28 @@
   transition: opacity 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.thread-ui-shell .thread-graph-tree-row:hover .thread-graph-tree-actions,
 .thread-ui-shell
   .thread-graph-tree-row:is(:focus-visible, :has(:focus-visible))
   .thread-graph-tree-actions {
   opacity: 1;
   pointer-events: auto;
 }
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-tree-row:hover .thread-graph-tree-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
 
-.thread-ui-shell .thread-graph-tree-action:hover {
+.thread-ui-shell .thread-graph-tree-action:active {
   background: var(--theme-surface-strong);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-tree-action:hover {
+    background: var(--theme-surface-strong);
+    color: var(--theme-fg);
+  }
 }
 
 .workspace-node-menu button { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 4px; text-align: left; }
@@ -273,7 +328,10 @@
 }
 /* A held name is read, not selected or called out by the system. */
 .thread-ui-shell .thread-graph-tree-row .explorer-name { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
-.workspace-node-menu button:hover, .workspace-node-menu button:focus-visible { background: var(--theme-hover); }
+.workspace-node-menu button:active, .workspace-node-menu button:focus-visible { background: var(--theme-hover); }
+@media (hover: hover) {
+  .workspace-node-menu button:hover { background: var(--theme-hover); }
+}
 @media (hover: none) {
   .thread-ui-shell .thread-graph-tree-actions { opacity: 1; pointer-events: auto; }
 }
@@ -282,9 +340,14 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-explorer-filter-mode button:hover,
+.thread-ui-shell .thread-graph-explorer-filter-mode button:active,
 .thread-ui-shell .thread-graph-explorer-filter-mode button:focus-visible {
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-explorer-filter-mode button:hover {
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-explorer-filter-mode button.is-active {
@@ -385,10 +448,17 @@
     opacity 140ms ease;
 }
 
-.thread-ui-shell .thread-graph-molecule-button:hover:not(:disabled) {
+.thread-ui-shell .thread-graph-molecule-button:active:not(:disabled) {
   border-color: var(--theme-border);
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-molecule-button:hover:not(:disabled) {
+    border-color: var(--theme-border);
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-molecule-button:disabled {
@@ -447,9 +517,15 @@
     color 140ms ease;
 }
 
-.thread-ui-shell .thread-graph-molecule-live-button:hover {
+.thread-ui-shell .thread-graph-molecule-live-button:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-molecule-live-button:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-molecule-camera {
@@ -520,14 +596,28 @@
 .thread-ui-shell
   .thread-graph-molecule-preview
   .xyz-viewer-plugin__toolbar
-  button:hover,
+  button:active,
 .thread-ui-shell
   .thread-graph-molecule-preview
   .xyz-viewer-plugin__timeline
-  button:hover {
+  button:active {
   border-color: var(--theme-border-strong);
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell
+    .thread-graph-molecule-preview
+    .xyz-viewer-plugin__toolbar
+    button:hover,
+  .thread-ui-shell
+    .thread-graph-molecule-preview
+    .xyz-viewer-plugin__timeline
+    button:hover {
+    border-color: var(--theme-border-strong);
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell
@@ -617,7 +707,7 @@
     color 140ms ease;
 }
 
-.thread-ui-shell .thread-graph-load-more-button:hover:not(:disabled) {
+.thread-ui-shell .thread-graph-load-more-button:active:not(:disabled) {
   border-color: color-mix(
     in oklch,
     var(--theme-accent-solid) 28%,
@@ -629,6 +719,21 @@
     var(--theme-panel)
   );
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-load-more-button:hover:not(:disabled) {
+    border-color: color-mix(
+      in oklch,
+      var(--theme-accent-solid) 28%,
+      var(--theme-border)
+    );
+    background: color-mix(
+      in oklch,
+      var(--theme-accent-solid) 14%,
+      var(--theme-panel)
+    );
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-code-preview {
@@ -835,11 +940,18 @@
     color 160ms ease-out;
 }
 
-.thread-graph-image-lightbox-toolbar button:hover:not(:disabled),
+.thread-graph-image-lightbox-toolbar button:active:not(:disabled),
 .thread-graph-image-lightbox-toolbar button:focus-visible {
   background: rgb(71 85 105 / 0.62);
   color: rgb(248 250 252);
   outline: none;
+}
+@media (hover: hover) {
+  .thread-graph-image-lightbox-toolbar button:hover:not(:disabled) {
+    background: rgb(71 85 105 / 0.62);
+    color: rgb(248 250 252);
+    outline: none;
+  }
 }
 
 .thread-graph-image-lightbox-toolbar button:disabled {
@@ -935,9 +1047,14 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-markdown-view-switch button:hover,
+.thread-ui-shell .thread-graph-markdown-view-switch button:active,
 .thread-ui-shell .thread-graph-markdown-view-switch button:focus-visible {
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-markdown-view-switch button:hover {
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-markdown-view-switch button.is-active {
@@ -952,8 +1069,13 @@
   overflow: hidden;
 }
 
-.thread-ui-shell .thread-tool-call:hover {
+.thread-ui-shell .thread-tool-call:active {
   border-color: var(--theme-border-strong);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-tool-call:hover {
+    border-color: var(--theme-border-strong);
+  }
 }
 
 .thread-ui-shell .thread-graph-tool-call {
@@ -999,8 +1121,13 @@
     color 160ms ease;
 }
 
-.thread-ui-shell .thread-graph-tool-trigger:hover {
+.thread-ui-shell .thread-graph-tool-trigger:active {
   background: var(--theme-hover);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-tool-trigger:hover {
+    background: var(--theme-hover);
+  }
 }
 
 .thread-ui-shell .thread-graph-tool-trigger svg {
@@ -1175,13 +1302,22 @@
 .thread-ui-shell
   .thread-graph-tool-call
   > .thread-graph-tool-accordion
-  .thread-graph-tool-trigger:hover,
+  .thread-graph-tool-trigger:active,
 .thread-ui-shell
   .thread-graph-tool-call
   > .thread-graph-tool-accordion
   .thread-graph-tool-trigger:focus-visible {
   background: transparent;
   color: var(--theme-fg-soft);
+}
+@media (hover: hover) {
+  .thread-ui-shell
+    .thread-graph-tool-call
+    > .thread-graph-tool-accordion
+    .thread-graph-tool-trigger:hover {
+    background: transparent;
+    color: var(--theme-fg-soft);
+  }
 }
 
 .thread-ui-shell
@@ -1301,9 +1437,15 @@
   color: var(--theme-fg-soft);
 }
 
-.thread-ui-shell .thread-graph-history-tool-open:hover {
+.thread-ui-shell .thread-graph-history-tool-open:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-tool-open:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-event {
@@ -1419,9 +1561,15 @@
     color 160ms ease;
 }
 
-.thread-ui-shell .thread-graph-history-event-summary.is-clickable:hover {
+.thread-ui-shell .thread-graph-history-event-summary.is-clickable:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-event-summary.is-clickable:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-event-prose {
@@ -1458,9 +1606,15 @@
     color 160ms ease;
 }
 
-.thread-ui-shell .thread-graph-history-event-action:hover {
+.thread-ui-shell .thread-graph-history-event-action:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-event-action:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-event-path {
@@ -1475,8 +1629,13 @@
   text-align: left;
 }
 
-.thread-ui-shell .thread-graph-history-event-path:hover {
+.thread-ui-shell .thread-graph-history-event-path:active {
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-event-path:hover {
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-event-image {
@@ -1544,9 +1703,15 @@
   color: var(--theme-fg);
 }
 
-.thread-ui-shell .thread-graph-history-detail-row:hover {
+.thread-ui-shell .thread-graph-history-detail-row:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-detail-row:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-detail-text {
@@ -1598,12 +1763,22 @@
 }
 
 .thread-ui-shell
-  .thread-graph-file-change-inline-button:hover
+  .thread-graph-file-change-inline-button:active
   .thread-graph-history-detail-text {
   color: var(--theme-fg);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
+}
+@media (hover: hover) {
+  .thread-ui-shell
+    .thread-graph-file-change-inline-button:hover
+    .thread-graph-history-detail-text {
+    color: var(--theme-fg);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
 }
 
 .thread-ui-shell .thread-graph-history-detail-meta {
@@ -1703,10 +1878,17 @@
   color: var(--theme-fg-soft);
 }
 
-.thread-ui-shell .xyz-viewer-plugin__toolbar button:hover,
-.thread-ui-shell .xyz-viewer-plugin__timeline button:hover {
+.thread-ui-shell .xyz-viewer-plugin__toolbar button:active,
+.thread-ui-shell .xyz-viewer-plugin__timeline button:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .xyz-viewer-plugin__toolbar button:hover,
+  .thread-ui-shell .xyz-viewer-plugin__timeline button:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .xyz-viewer-plugin__toolbar-divider {
@@ -2135,11 +2317,18 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-show-more:hover,
+.thread-ui-shell .thread-graph-show-more:active,
 .thread-ui-shell .thread-graph-show-more:focus-visible {
   opacity: 1;
   background: transparent;
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-show-more:hover {
+    opacity: 1;
+    background: transparent;
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell
@@ -2262,9 +2451,15 @@
   box-shadow: 0 4px 12px rgb(15 23 42 / 0.08);
 }
 
-.thread-ui-shell .thread-graph-code-copy:hover {
+.thread-ui-shell .thread-graph-code-copy:active {
   background: rgb(255 255 255);
   color: rgb(15 23 42);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-code-copy:hover {
+    background: rgb(255 255 255);
+    color: rgb(15 23 42);
+  }
 }
 
 .thread-ui-shell[data-theme-effective='dark'] .thread-graph-code-copy,
@@ -2274,11 +2469,19 @@
   color: rgb(226 232 240);
 }
 
-.thread-ui-shell[data-theme-effective='dark'] .thread-graph-code-copy:hover,
-.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy:hover,
-.thread-ui-shell.dark .thread-graph-code-copy:hover {
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-code-copy:active,
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy:active,
+.thread-ui-shell.dark .thread-graph-code-copy:active {
   background: #2b313d;
   color: rgb(248 250 252);
+}
+@media (hover: hover) {
+  .thread-ui-shell[data-theme-effective='dark'] .thread-graph-code-copy:hover,
+  .thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy:hover,
+  .thread-ui-shell.dark .thread-graph-code-copy:hover {
+    background: #2b313d;
+    color: rgb(248 250 252);
+  }
 }
 
 .thread-ui-shell .thread-graph-inline-code {
@@ -2317,11 +2520,18 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-message-copy:hover,
-.thread-ui-shell .thread-graph-thinking-toggle:hover,
+.thread-ui-shell .thread-graph-message-copy:active,
+.thread-ui-shell .thread-graph-thinking-toggle:active,
 .thread-ui-shell .thread-graph-thinking-toggle.is-open {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-message-copy:hover,
+  .thread-ui-shell .thread-graph-thinking-toggle:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-message-header-actions {
@@ -2343,9 +2553,15 @@
   white-space: nowrap;
 }
 
-.thread-ui-shell .thread-graph-relative-time:hover {
+.thread-ui-shell .thread-graph-relative-time:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-relative-time:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-tool-time {
@@ -2502,11 +2718,18 @@
   box-shadow: none;
 }
 
-.thread-ui-shell .thread-graph-message-copy:hover,
+.thread-ui-shell .thread-graph-message-copy:active,
 .thread-ui-shell .thread-graph-message-copy:focus-visible {
   background: var(--theme-hover);
   color: var(--theme-fg-soft);
   outline: none;
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-message-copy:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg-soft);
+    outline: none;
+  }
 }
 
 .thread-ui-shell .thread-graph-message-copy:focus-visible {
@@ -2577,10 +2800,16 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-history-tool-trigger:hover,
+.thread-ui-shell .thread-graph-history-tool-trigger:active,
 .thread-ui-shell .thread-graph-history-tool-trigger:focus-visible {
   background: transparent;
   color: var(--theme-fg-soft);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-tool-trigger:hover {
+    background: transparent;
+    color: var(--theme-fg-soft);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-tool-trigger:focus-visible {
@@ -2873,9 +3102,14 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-artifact-inline-toggle:hover,
+.thread-ui-shell .thread-graph-artifact-inline-toggle:active,
 .thread-ui-shell .thread-graph-artifact-inline-toggle:focus-visible {
   color: var(--theme-fg-soft);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-artifact-inline-toggle:hover {
+    color: var(--theme-fg-soft);
+  }
 }
 
 .thread-ui-shell .thread-graph-artifact-inline-toggle:focus-visible {
@@ -2924,10 +3158,17 @@
   box-shadow: none;
 }
 
-.thread-ui-shell .thread-graph-history-event-summary.is-clickable:hover,
-.thread-ui-shell .thread-graph-history-event-action:hover {
+.thread-ui-shell .thread-graph-history-event-summary.is-clickable:active,
+.thread-ui-shell .thread-graph-history-event-action:active {
   background: transparent;
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-event-summary.is-clickable:hover,
+  .thread-ui-shell .thread-graph-history-event-action:hover {
+    background: transparent;
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-event-action,
@@ -2964,9 +3205,14 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-history-group-toggle:hover,
+.thread-ui-shell .thread-graph-history-group-toggle:active,
 .thread-ui-shell .thread-graph-history-group-toggle:focus-visible {
   color: var(--theme-fg-soft);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-group-toggle:hover {
+    color: var(--theme-fg-soft);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-group-toggle:focus-visible {
@@ -2992,9 +3238,15 @@
   padding: 0.4rem 0.25rem;
 }
 
-.thread-ui-shell .thread-graph-history-detail-row:hover {
+.thread-ui-shell .thread-graph-history-detail-row:active {
   background: transparent;
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-detail-row:hover {
+    background: transparent;
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-history-tool {
@@ -3046,7 +3298,10 @@
   opacity: 0; pointer-events: none; transition: opacity 140ms ease;
 }
 .thread-ui-shell .thread-graph-message-bubble .thread-graph-message-copy-desktop > * { opacity: 0.7; transition: opacity 120ms ease; }
-.thread-ui-shell .thread-graph-message-bubble .thread-graph-message-copy-desktop > :is(:hover, :focus-visible) { opacity: 1; }
+.thread-ui-shell .thread-graph-message-bubble .thread-graph-message-copy-desktop > :is(:active, :focus-visible) { opacity: 1; }
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-message-bubble .thread-graph-message-copy-desktop > :is(:hover, :focus-visible) { opacity: 1; }
+}
 .thread-ui-shell .thread-graph-code-copy { opacity: 0; pointer-events: none; transition: opacity 140ms ease; }
 .thread-ui-shell .thread-graph-message-bubble[data-touch-actions="true"] .thread-graph-message-copy-desktop { opacity: 1; pointer-events: auto; }
 .thread-ui-shell .thread-graph-code-block[data-touch-actions="true"] .thread-graph-code-copy { opacity: .6; pointer-events: auto; }
@@ -3123,7 +3378,10 @@
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
   transition: transform 120ms ease;
 }
-.thread-ui-shell .thread-graph-message-sender:hover { transform: scale(1.08); }
+.thread-ui-shell .thread-graph-message-sender:active { transform: scale(1.08); }
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-message-sender:hover { transform: scale(1.08); }
+}
 .thread-ui-shell .thread-graph-message-sender:focus-visible { outline: 2px solid var(--theme-accent-ring, oklch(0.6 0.12 var(--sender-hue, 250))); outline-offset: 1px; }
 .thread-message-sender-card {
   position: fixed; z-index: 130; box-sizing: border-box; min-width: 150px;
@@ -3154,13 +3412,19 @@
 .thread-workspace-link-menu { position:fixed; z-index:120; min-width:180px; padding:4px; border:1px solid var(--theme-border-strong); border-radius:9px; background:var(--theme-panel); color:var(--theme-fg); box-shadow:0 8px 24px rgb(0 0 0 / 22%); font-size:13px; }
 .thread-workspace-link-menu button { display:flex; align-items:center; gap:8px; width:100%; min-height:36px; border-radius:6px; padding:0 10px; text-align:left; }
 .thread-workspace-link-menu button svg { width:14px; height:14px; flex:none; }
-.thread-workspace-link-menu button:hover,.thread-workspace-link-menu button:focus-visible { background:var(--theme-hover); outline:none; }
+.thread-workspace-link-menu button:active,.thread-workspace-link-menu button:focus-visible { background:var(--theme-hover); outline:none; }
+@media (hover: hover) {
+  .thread-workspace-link-menu button:hover { background:var(--theme-hover); outline:none; }
+}
 .thread-workspace-link-menu [data-copy-state='copied'] svg { color:var(--theme-accent-solid); }
 .thread-workspace-link-menu [data-copy-state='failed'] { color:var(--theme-danger, #e5484d); }
 /* A long press opens the app's own menu, not the system's link callout. */
 [data-file-link] { -webkit-touch-callout: none; }
 html[data-theme-effective="light"] .thread-workspace-link-menu { background:#f3f5f5; color:#24292c; border-color:#c8cecd; }
-html[data-theme-effective="light"] .thread-workspace-link-menu button:hover,html[data-theme-effective="light"] .thread-workspace-link-menu button:focus-visible { background:#e0e6e5; }
+html[data-theme-effective="light"] .thread-workspace-link-menu button:active,html[data-theme-effective="light"] .thread-workspace-link-menu button:focus-visible { background:#e0e6e5; }
+@media (hover: hover) {
+  html[data-theme-effective="light"] .thread-workspace-link-menu button:hover { background:#e0e6e5; }
+}
 @keyframes thread-operation-sheen { from { background-position:150% 0; } to { background-position:-150% 0; } }
 /* Quiet, single-line disclosures. Text never competes with a boxed icon or a full date. */
 .thread-ui-shell .thread-graph-history-group.is-compact-group {
@@ -3312,7 +3576,10 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:hover,html
   padding: 0; color: var(--theme-fg-muted); font: inherit; text-align: left;
   cursor: pointer;
 }
-.thread-ui-shell .thread-graph-task-notice-toggle:hover { color: var(--theme-fg); }
+.thread-ui-shell .thread-graph-task-notice-toggle:active { color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-task-notice-toggle:hover { color: var(--theme-fg); }
+}
 .thread-ui-shell .thread-graph-task-notice-toggle:focus-visible { outline: 1px solid var(--theme-border-contrast); outline-offset: 3px; }
 .thread-ui-shell .thread-graph-task-notice-icon { width: 12px; height: 12px; flex-shrink: 0; opacity: .8; }
 .thread-ui-shell .thread-graph-task-notice-label { flex-shrink: 0; }
@@ -3336,7 +3603,10 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:hover,html
 .workspace-image-viewport img.is-dragging { cursor: grabbing; }
 .workspace-image-controls { position: absolute; z-index: 1; left: 50%; top: 8px; transform: translateX(-50%); display: flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid var(--theme-border); border-radius: 999px; background: color-mix(in srgb, var(--theme-panel) 78%, transparent); backdrop-filter: blur(12px); }
 .workspace-image-controls button { display: flex; align-items: center; justify-content: center; height: 28px; min-width: 28px; padding: 0 6px; border-radius: 999px; color: var(--theme-fg-soft); font-size: 10px; font-variant-numeric: tabular-nums; }
-.workspace-image-controls button:hover { background: var(--theme-hover); }
+.workspace-image-controls button:active { background: var(--theme-hover); }
+@media (hover: hover) {
+  .workspace-image-controls button:hover { background: var(--theme-hover); }
+}
 .workspace-image-controls button:disabled { opacity: .35; }
 
 /* GitHub-style README layout, including inline badges and small heading icons. */

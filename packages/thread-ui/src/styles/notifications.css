@@ -1,8 +1,11 @@
 .settings-account-mark { display: inline-flex; margin-inline-start: 6px; color: var(--theme-fg-muted); vertical-align: middle; }
 .turn-notification-control { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; min-width: 0; }
 .turn-notification-button { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--theme-fg-muted); cursor: pointer; transition: color .12s, background .12s, transform .12s; }
-.turn-notification-button:hover { background: var(--theme-hover); color: var(--theme-fg); }
-.turn-notification-button[aria-pressed='true'] { color: var(--theme-accent-strong); background: var(--theme-accent-soft); }
+.turn-notification-button:active { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  .turn-notification-button:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
+.turn-notification-button[aria-pressed='true'] { color: var(--theme-accent-strong); }
 .turn-notification-button:active { transform: scale(.92); }
 .turn-notification-button:focus-visible { outline: 2px solid var(--theme-accent-strong); outline-offset: 2px; }
 .turn-notification-button:disabled { cursor: progress; }

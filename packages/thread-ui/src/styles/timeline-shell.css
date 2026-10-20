@@ -65,9 +65,15 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-history-button:hover {
+.thread-ui-shell .thread-graph-history-button:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-history-button:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-turn {
@@ -87,8 +93,13 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-worked-summary:hover {
+.thread-ui-shell .thread-graph-worked-summary:active {
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-worked-summary:hover {
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-graph-worked-interrupted {
@@ -528,7 +539,10 @@
 }
 
 .thread-ui-shell .shell-chat-return { position: absolute; right: 20px; bottom: 20px; z-index: 30; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--theme-border); color: var(--theme-fg); background: var(--theme-panel); box-shadow: 0 3px 12px #0002; }
-.thread-ui-shell .shell-chat-return:hover { background: var(--theme-hover); }
+.thread-ui-shell .shell-chat-return:active { background: var(--theme-hover); }
+@media (hover: hover) {
+  .thread-ui-shell .shell-chat-return:hover { background: var(--theme-hover); }
+}
 .thread-turn-token-speed {
   flex-shrink: 0;
   white-space: nowrap;
@@ -670,7 +684,10 @@
   cursor: pointer;
 }
 .thread-relation-bar[data-loading] .thread-relation-parent { font-weight: 500; color: var(--theme-fg-muted); }
-.thread-relation-parent:hover { text-decoration-color: currentColor; }
+.thread-relation-parent:active { text-decoration-color: currentColor; }
+@media (hover: hover) {
+  .thread-relation-parent:hover { text-decoration-color: currentColor; }
+}
 /* The workspace gives way first when the line is short. */
 .thread-relation-place { flex: 0 10 auto; }
 .thread-relation-back {
@@ -691,7 +708,10 @@
   white-space: nowrap;
   cursor: pointer;
 }
-.thread-relation-back:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.thread-relation-back:active { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-relation-back:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
 .thread-relation-back svg { flex: none; width: 13px; height: 13px; }
 .thread-relation-parent:focus-visible,
 .thread-relation-back:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }

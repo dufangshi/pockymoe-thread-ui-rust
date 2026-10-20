@@ -13,7 +13,10 @@
 .plugin-report-disclosure > summary::-webkit-details-marker { display: none; }
 .plugin-report-disclosure > summary::before { content: ''; width: 5px; height: 5px; margin: 0 2px 0 1px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
 .plugin-report-disclosure[open] > summary::before { transform: rotate(45deg); }
-.plugin-report-disclosure > summary:hover { color: var(--theme-fg); }
+.plugin-report-disclosure > summary:active { color: var(--theme-fg); }
+@media (hover: hover) {
+  .plugin-report-disclosure > summary:hover { color: var(--theme-fg); }
+}
 .plugin-report-disclosure > summary:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 2px; border-radius: 4px; }
 .quality-report { display: grid; gap: 10px; min-width: 0; }
 .quality-report-reply { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }

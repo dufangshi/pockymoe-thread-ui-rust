@@ -48,7 +48,10 @@
   max-width: min(24rem, max(4rem, calc(100cqi - 11rem)));
   cursor: pointer; min-height: 28px; border-radius: 6px;
 }
-[data-composer-layout] .composer-model-label:hover { background: var(--theme-hover); }
+[data-composer-layout] .composer-model-label:active { background: var(--theme-hover); }
+@media (hover: hover) {
+  [data-composer-layout] .composer-model-label:hover { background: var(--theme-hover); }
+}
 [data-composer-layout] .composer-model-name {
   display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis;
   line-height: 16px;
@@ -117,7 +120,10 @@
   cursor: pointer;
   pointer-events: auto;
 }
-.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:hover { color: var(--theme-fg); }
+.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:active { color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:hover { color: var(--theme-fg); }
+}
 .thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:focus-visible {
   outline: 1px solid var(--theme-accent-strong);
   outline-offset: 2px;
@@ -159,7 +165,10 @@
   display: block; margin-top: 3px; padding: 0; border: 0; background: none; color: var(--theme-fg-muted, #a1a1aa);
   font: inherit; font-size: 11px; font-variant-numeric: tabular-nums; text-align: left; cursor: pointer;
 }
-.thread-subscription-usage-detail-reset:hover { color: var(--theme-fg, inherit); text-decoration: underline dotted; text-underline-offset: 2px; }
+.thread-subscription-usage-detail-reset:active { color: var(--theme-fg, inherit); text-decoration: underline dotted; text-underline-offset: 2px; }
+@media (hover: hover) {
+  .thread-subscription-usage-detail-reset:hover { color: var(--theme-fg, inherit); text-decoration: underline dotted; text-underline-offset: 2px; }
+}
 .thread-subscription-usage-detail-freshness { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--theme-border, #3f3f46); color: var(--theme-fg-muted, #a1a1aa); font-size: 10px; }
 
 /* A folded draft of several lines: "+N lines" at the end of its first line. */
@@ -223,8 +232,13 @@
 [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button) {
   background: transparent !important; border-color: transparent !important; box-shadow: none !important;
 }
-[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button):is(:hover, [aria-expanded='true']) {
+[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button):is(:active, [aria-expanded='true']) {
   background: var(--theme-hover) !important;
+}
+@media (hover: hover) {
+  [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button):is(:hover, [aria-expanded='true']) {
+    background: var(--theme-hover) !important;
+  }
 }
 /* Hit area: only the toolbar's own keys, never buttons inside a menu surface. */
 [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button)::after { content: ''; position: absolute; inset: -4px; }

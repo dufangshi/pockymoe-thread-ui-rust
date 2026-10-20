@@ -15,7 +15,10 @@
   cursor: pointer;
 }
 :where(.copy-button) > svg { width: 14px; height: 14px; }
-:where(.copy-button):hover { background: var(--theme-hover); color: var(--theme-fg); }
+:where(.copy-button):active { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  :where(.copy-button):hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
 :where(.copy-button):focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
 .copy-button[data-state='copied'] { color: var(--theme-accent-solid); }
 .copy-button[data-state='failed'] { color: var(--theme-danger, #e5484d); }

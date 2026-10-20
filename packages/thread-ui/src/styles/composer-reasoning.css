@@ -89,7 +89,7 @@
   top: 6.5px;
   transition: left 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.composer-reasoning-thumb:hover,
+.composer-reasoning-thumb:active,
 .composer-reasoning-thumb:focus-visible,
 .composer-reasoning[data-interacting='true'] .composer-reasoning-thumb {
   transform: scale(1.12);
@@ -97,6 +97,15 @@
     0 2px 8px rgb(0 0 0 / 15%),
     0 0 0 7px color-mix(in srgb, var(--effort-color) 14%, transparent),
     0 0 22px color-mix(in srgb, var(--effort-color) 25%, transparent);
+}
+@media (hover: hover) {
+  .composer-reasoning-thumb:hover {
+    transform: scale(1.12);
+    box-shadow:
+      0 2px 8px rgb(0 0 0 / 15%),
+      0 0 0 7px color-mix(in srgb, var(--effort-color) 14%, transparent),
+      0 0 22px color-mix(in srgb, var(--effort-color) 25%, transparent);
+  }
 }
 .composer-reasoning-stops {
   position: absolute;

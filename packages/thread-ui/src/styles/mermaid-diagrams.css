@@ -34,8 +34,11 @@
   color: inherit;
   cursor: pointer;
 }
-.thread-graph-mermaid-actions button:hover,
+.thread-graph-mermaid-actions button:active,
 .thread-graph-mermaid-actions button[aria-pressed='true'] { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-graph-mermaid-actions button:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
 .thread-graph-mermaid-actions button:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 1px; }
 .thread-graph-mermaid-canvas { padding: 20px 16px; overflow: auto; }
 .thread-graph-mermaid-canvas > svg { display: block; width: 100%; height: auto; max-height: min(600px, 60svh); margin: auto; }

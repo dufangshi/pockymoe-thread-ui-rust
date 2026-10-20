@@ -29,10 +29,16 @@
   -webkit-user-select: none;
   transition: border-color 120ms ease, background 120ms ease;
 }
-.attachment-tile:hover,
+.attachment-tile:active,
 .attachment-tile[aria-expanded='true'] {
   border-color: color-mix(in srgb, var(--file-color) 55%, var(--theme-border));
   background: color-mix(in srgb, var(--file-color) 7%, var(--theme-surface));
+}
+@media (hover: hover) {
+  .attachment-tile:hover {
+    border-color: color-mix(in srgb, var(--file-color) 55%, var(--theme-border));
+    background: color-mix(in srgb, var(--file-color) 7%, var(--theme-surface));
+  }
 }
 .attachment-tile:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
 .attachment-tile-icon { position: relative; display: grid; flex: none; place-items: center; width: 100%; height: 40px; }
@@ -140,11 +146,17 @@ button.attachment-card-preview:focus-visible { outline: 2px solid var(--theme-ac
   white-space: nowrap;
 }
 .attachment-card-actions > button > svg { flex: none; width: 14px; height: 14px; }
-.attachment-card-actions > button:hover { background: var(--theme-hover); }
+.attachment-card-actions > button:active { background: var(--theme-hover); }
+@media (hover: hover) {
+  .attachment-card-actions > button:hover { background: var(--theme-hover); }
+}
 .attachment-card-actions > button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
 .attachment-card-actions > button.is-primary {
   border-color: color-mix(in srgb, var(--theme-accent-solid) 40%, var(--theme-border));
   background: color-mix(in srgb, var(--theme-accent-solid) 13%, transparent);
 }
-.attachment-card-actions > button.is-primary:hover { background: color-mix(in srgb, var(--theme-accent-solid) 20%, transparent); }
+.attachment-card-actions > button.is-primary:active { background: color-mix(in srgb, var(--theme-accent-solid) 20%, transparent); }
+@media (hover: hover) {
+  .attachment-card-actions > button.is-primary:hover { background: color-mix(in srgb, var(--theme-accent-solid) 20%, transparent); }
+}
 .attachment-card-actions > button.is-danger { color: var(--theme-danger, #e5484d); }

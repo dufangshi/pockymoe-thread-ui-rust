@@ -114,9 +114,14 @@
   color: rgb(148 163 184);
 }
 
-.thread-ui-shell .thread-graph-thinking-trigger:hover,
+.thread-ui-shell .thread-graph-thinking-trigger:active,
 .thread-ui-shell .thread-graph-thinking-trigger[data-state="open"] {
   color: rgb(125 211 252);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-thinking-trigger:hover {
+    color: rgb(125 211 252);
+  }
 }
 
 .thread-ui-shell .thread-graph-thinking-label {
@@ -134,10 +139,16 @@
 }
 
 .thread-ui-shell[data-theme-effective="light"]
-  .thread-graph-thinking-trigger:hover,
+  .thread-graph-thinking-trigger:active,
 .thread-ui-shell[data-theme-effective="light"]
   .thread-graph-thinking-trigger[data-state="open"] {
   color: rgb(3 105 161);
+}
+@media (hover: hover) {
+  .thread-ui-shell[data-theme-effective="light"]
+    .thread-graph-thinking-trigger:hover {
+    color: rgb(3 105 161);
+  }
 }
 
 .thread-ui-shell[data-theme-effective="light"] .thread-graph-thinking-body {
@@ -263,9 +274,15 @@
   color: var(--theme-fg-soft);
 }
 
-.thread-ui-shell .thread-goal-compose-cancel:hover {
+.thread-ui-shell .thread-goal-compose-cancel:active {
   background: var(--theme-hover);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-goal-compose-cancel:hover {
+    background: var(--theme-hover);
+    color: var(--theme-fg);
+  }
 }
 
 .thread-ui-shell .thread-goal-compose-error {
@@ -309,11 +326,19 @@
   color: rgb(203 213 225);
 }
 
-.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel:hover,
-.thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-cancel:hover,
-.thread-ui-shell.dark .thread-goal-compose-cancel:hover {
+.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel:active,
+.thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-cancel:active,
+.thread-ui-shell.dark .thread-goal-compose-cancel:active {
   background: #222733;
   color: rgb(241 245 249);
+}
+@media (hover: hover) {
+  .thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel:hover,
+  .thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-cancel:hover,
+  .thread-ui-shell.dark .thread-goal-compose-cancel:hover {
+    background: #222733;
+    color: rgb(241 245 249);
+  }
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-error,
@@ -561,18 +586,33 @@
   color: var(--theme-fg-soft) !important;
 }
 
-.thread-ui-shell .thread-composer-icon-button:hover,
-.thread-ui-shell .thread-composer-inline-toggle:hover,
-.thread-ui-shell .thread-composer-chip-button:hover,
-.thread-ui-shell .thread-composer-menu-item:hover,
-.thread-ui-shell .thread-composer-panel-button:hover,
-.thread-ui-shell .thread-graph-composer-icon-button:hover,
-.thread-ui-shell .thread-graph-composer-inline-toggle:hover,
-.thread-ui-shell .thread-graph-composer-chip-button:hover,
-.thread-ui-shell .thread-graph-composer-menu-item:hover,
-.thread-ui-shell .thread-graph-composer-panel-button:hover {
+.thread-ui-shell .thread-composer-icon-button:active,
+.thread-ui-shell .thread-composer-inline-toggle:active,
+.thread-ui-shell .thread-composer-chip-button:active,
+.thread-ui-shell .thread-composer-menu-item:active,
+.thread-ui-shell .thread-composer-panel-button:active,
+.thread-ui-shell .thread-graph-composer-icon-button:active,
+.thread-ui-shell .thread-graph-composer-inline-toggle:active,
+.thread-ui-shell .thread-graph-composer-chip-button:active,
+.thread-ui-shell .thread-graph-composer-menu-item:active,
+.thread-ui-shell .thread-graph-composer-panel-button:active {
   background: var(--theme-hover) !important;
   color: var(--theme-fg) !important;
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-composer-icon-button:hover,
+  .thread-ui-shell .thread-composer-inline-toggle:hover,
+  .thread-ui-shell .thread-composer-chip-button:hover,
+  .thread-ui-shell .thread-composer-menu-item:hover,
+  .thread-ui-shell .thread-composer-panel-button:hover,
+  .thread-ui-shell .thread-graph-composer-icon-button:hover,
+  .thread-ui-shell .thread-graph-composer-inline-toggle:hover,
+  .thread-ui-shell .thread-graph-composer-chip-button:hover,
+  .thread-ui-shell .thread-graph-composer-menu-item:hover,
+  .thread-ui-shell .thread-graph-composer-panel-button:hover {
+    background: var(--theme-hover) !important;
+    color: var(--theme-fg) !important;
+  }
 }
 
 .thread-ui-shell .thread-composer-icon-button,
@@ -592,16 +632,29 @@
   color: rgb(203 213 225) !important;
 }
 
-.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button:hover,
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button:active,
 .thread-ui-shell[data-theme-effective="dark"]
-  .thread-composer-icon-button:hover,
-.thread-ui-shell.dark .thread-composer-icon-button:hover,
-.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button:hover,
+  .thread-composer-icon-button:active,
+.thread-ui-shell.dark .thread-composer-icon-button:active,
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button:active,
 .thread-ui-shell[data-theme-effective="dark"]
-  .thread-graph-composer-icon-button:hover,
-.thread-ui-shell.dark .thread-graph-composer-icon-button:hover {
+  .thread-graph-composer-icon-button:active,
+.thread-ui-shell.dark .thread-graph-composer-icon-button:active {
   background: #2b313d !important;
   color: rgb(241 245 249) !important;
+}
+@media (hover: hover) {
+  .thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button:hover,
+  .thread-ui-shell[data-theme-effective="dark"]
+    .thread-composer-icon-button:hover,
+  .thread-ui-shell.dark .thread-composer-icon-button:hover,
+  .thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button:hover,
+  .thread-ui-shell[data-theme-effective="dark"]
+    .thread-graph-composer-icon-button:hover,
+  .thread-ui-shell.dark .thread-graph-composer-icon-button:hover {
+    background: #2b313d !important;
+    color: rgb(241 245 249) !important;
+  }
 }
 
 .thread-ui-shell .thread-composer-menu,
@@ -856,8 +909,13 @@
   color: var(--theme-accent-solid-fg);
 }
 
-.thread-ui-shell .ui-action-primary:hover {
+.thread-ui-shell .ui-action-primary:active {
   background: var(--theme-accent-solid-hover);
+}
+@media (hover: hover) {
+  .thread-ui-shell .ui-action-primary:hover {
+    background: var(--theme-accent-solid-hover);
+  }
 }
 
 .thread-ui-shell .ui-action-info {
@@ -892,10 +950,17 @@
   color: rgb(241 245 249) !important;
 }
 
-.thread-ui-shell .thread-composer-send-button.ui-action-danger:hover,
-.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger:hover {
+.thread-ui-shell .thread-composer-send-button.ui-action-danger:active,
+.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger:active {
   background: var(--theme-hover) !important;
   color: var(--theme-fg) !important;
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-composer-send-button.ui-action-danger:hover,
+  .thread-ui-shell .thread-graph-composer-send-button.ui-action-danger:hover {
+    background: var(--theme-hover) !important;
+    color: var(--theme-fg) !important;
+  }
 }
 
 .thread-ui-shell .thread-empty-surface,

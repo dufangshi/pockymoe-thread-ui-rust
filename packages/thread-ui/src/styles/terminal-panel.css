@@ -51,8 +51,11 @@
   border-radius: 6px;
   color: var(--theme-fg-muted) !important;
 }
-.terminal-icon-button:not(:disabled):hover,
+.terminal-icon-button:not(:disabled):active,
 .terminal-icon-button[aria-expanded='true'] { background: var(--theme-hover) !important; color: var(--theme-fg) !important; }
+@media (hover: hover) {
+  .terminal-icon-button:not(:disabled):hover { background: var(--theme-hover) !important; color: var(--theme-fg) !important; }
+}
 .terminal-switcher {
   display: inline-flex;
   flex: 0 1 auto;
@@ -67,7 +70,10 @@
   font-weight: 500;
 }
 .terminal-switcher > span:first-of-type { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.terminal-switcher:not(:disabled):hover, .terminal-switcher[aria-expanded='true'] { background: var(--theme-hover) !important; }
+.terminal-switcher:not(:disabled):active, .terminal-switcher[aria-expanded='true'] { background: var(--theme-hover) !important; }
+@media (hover: hover) {
+  .terminal-switcher:not(:disabled):hover { background: var(--theme-hover) !important; }
+}
 
 .terminal-banner {
   display: flex;
@@ -101,7 +107,10 @@
 .terminal-groups[data-orientation='vertical'] > .terminal-pane-sash { cursor: row-resize; }
 .terminal-pane-sash::before { content: ''; position: absolute; inset: 0 -4px; z-index: 2; }
 .terminal-groups[data-orientation='vertical'] > .terminal-pane-sash::before { inset: -4px 0; }
-.terminal-pane-sash:hover, .terminal-pane-sash:active, .terminal-pane-sash:focus-visible { background: var(--theme-accent-solid); }
+.terminal-pane-sash:active, .terminal-pane-sash:active, .terminal-pane-sash:focus-visible { background: var(--theme-accent-solid); }
+@media (hover: hover) {
+  .terminal-pane-sash:hover { background: var(--theme-accent-solid); }
+}
 
 .terminal-pane-status {
   position: absolute;
@@ -123,17 +132,26 @@
 .terminal-pane-status > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .terminal-pane-status.is-connecting { padding-right: 10px; opacity: 0; animation: terminal-status-in .2s ease-out .6s forwards; }
 .terminal-pane-status button { display: inline-flex; flex-shrink: 0; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 999px !important; color: var(--theme-accent-strong) !important; }
-.terminal-pane-status button:hover { background: var(--theme-hover) !important; }
+.terminal-pane-status button:active { background: var(--theme-hover) !important; }
+@media (hover: hover) {
+  .terminal-pane-status button:hover { background: var(--theme-hover) !important; }
+}
 @keyframes terminal-status-in { to { opacity: 1; } }
 
 .terminal-empty { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; font-size: 12px; color: var(--theme-fg-muted); }
 .terminal-empty button { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--theme-border-strong) !important; border-radius: 7px; font-size: 12px; color: var(--theme-fg) !important; background: var(--theme-panel) !important; }
-.terminal-empty button:hover { background: var(--theme-hover) !important; }
+.terminal-empty button:active { background: var(--theme-hover) !important; }
+@media (hover: hover) {
+  .terminal-empty button:hover { background: var(--theme-hover) !important; }
+}
 
 /* Tab list (VS Code: right side, 22px rows, icon-only when narrow). */
 .terminal-tabs-sash { position: relative; flex: 0 0 1px; background: var(--theme-border); cursor: col-resize; touch-action: none; }
 .terminal-tabs-sash::before { content: ''; position: absolute; inset: 0 -4px; z-index: 2; }
-.terminal-tabs-sash:hover, .terminal-tabs-sash:active, .terminal-tabs-sash:focus-visible { background: var(--theme-accent-solid); }
+.terminal-tabs-sash:active, .terminal-tabs-sash:active, .terminal-tabs-sash:focus-visible { background: var(--theme-accent-solid); }
+@media (hover: hover) {
+  .terminal-tabs-sash:hover { background: var(--theme-accent-solid); }
+}
 .terminal-tabs-host { flex-shrink: 0; min-width: 0; overflow: hidden; background: var(--theme-panel); }
 .terminal-tabs { display: flex; flex-direction: column; height: 100%; padding: 4px 0; overflow-y: auto; }
 .terminal-tab {
@@ -150,7 +168,10 @@
   outline: none;
 }
 .terminal-tabs.is-narrow .terminal-tab { justify-content: center; padding: 0; }
-.terminal-tab:hover { background: var(--theme-hover); color: var(--theme-fg); }
+.terminal-tab:active { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  .terminal-tab:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
 .terminal-tab.is-active { background: var(--theme-accent-soft); color: var(--theme-fg); }
 .terminal-tab.is-active::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 2px; background: var(--theme-accent-solid); }
 .terminal-tab-prefix { flex-shrink: 0; width: 1ch; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--theme-fg-muted); }
@@ -158,14 +179,21 @@
 .terminal-tab.is-active .terminal-tab-icon { color: var(--theme-accent-strong); }
 .terminal-tab-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .terminal-tab-actions { display: none; flex-shrink: 0; align-items: center; }
-.terminal-tab:hover .terminal-tab-actions,
 .terminal-tab:is(:focus-visible, :has(:focus-visible)) .terminal-tab-actions,
 .terminal-tab.is-active .terminal-tab-actions { display: inline-flex; }
-.terminal-tab:hover .terminal-status-dot,
+@media (hover: hover) {
+  .terminal-tab:hover .terminal-tab-actions { display: inline-flex; }
+}
 .terminal-tab:is(:focus-visible, :has(:focus-visible)) .terminal-status-dot,
 .terminal-tab.is-active .terminal-status-dot { display: none; }
+@media (hover: hover) {
+  .terminal-tab:hover .terminal-status-dot { display: none; }
+}
 .terminal-tab-actions button { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 5px; color: var(--theme-fg-muted) !important; }
-.terminal-tab-actions button:not(:disabled):hover { background: var(--theme-hover) !important; color: var(--theme-fg) !important; }
+.terminal-tab-actions button:not(:disabled):active { background: var(--theme-hover) !important; color: var(--theme-fg) !important; }
+@media (hover: hover) {
+  .terminal-tab-actions button:not(:disabled):hover { background: var(--theme-hover) !important; color: var(--theme-fg) !important; }
+}
 .terminal-tab-rename { flex: 1; min-width: 0; }
 .terminal-tab-rename input { width: 100%; height: 20px; padding: 0 4px; border: 1px solid var(--theme-accent-solid); border-radius: 4px; font-size: 12px; color: var(--theme-fg); background: var(--theme-bg); outline: none; }
 
@@ -194,13 +222,20 @@
 }
 .terminal-menu-item { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; min-height: 30px; padding: 4px 8px; border-radius: 6px; font-size: 12px; text-align: left; }
 .terminal-menu-item > span:not(.terminal-status-dot):not(.terminal-tab-prefix) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.terminal-menu-item:not(:disabled):hover, .terminal-menu-item:focus-visible { background: var(--theme-hover); }
+.terminal-menu-item:not(:disabled):active, .terminal-menu-item:focus-visible { background: var(--theme-hover); }
+@media (hover: hover) {
+  .terminal-menu-item:not(:disabled):hover { background: var(--theme-hover); }
+}
 .terminal-menu-item.is-danger { color: #d1555f; }
 /* Every kill entry carries the danger color, not only the menu's. */
 .terminal-icon-button.is-danger,
 .terminal-tab-actions button.is-danger { color: #d1555f !important; }
-.terminal-icon-button.is-danger:not(:disabled):hover,
-.terminal-tab-actions button.is-danger:not(:disabled):hover { background: color-mix(in srgb, #d1555f 14%, transparent) !important; color: #d1555f !important; }
+.terminal-icon-button.is-danger:not(:disabled):active,
+.terminal-tab-actions button.is-danger:not(:disabled):active { background: color-mix(in srgb, #d1555f 14%, transparent) !important; color: #d1555f !important; }
+@media (hover: hover) {
+  .terminal-icon-button.is-danger:not(:disabled):hover,
+  .terminal-tab-actions button.is-danger:not(:disabled):hover { background: color-mix(in srgb, #d1555f 14%, transparent) !important; color: #d1555f !important; }
+}
 .terminal-menu-item[aria-checked='true'] { background: var(--theme-accent-soft); }
 .terminal-menu-row { display: flex; align-items: center; gap: 2px; }
 .terminal-menu-rename { display: flex; flex: 1; gap: 4px; padding: 2px; }

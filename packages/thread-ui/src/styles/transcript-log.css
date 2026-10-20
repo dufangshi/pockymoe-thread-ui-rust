@@ -20,9 +20,14 @@
   min-width: 0;
   color: var(--theme-fg-soft);
 }
-.thread-ui-shell .thread-worked-toggle:hover,
+.thread-ui-shell .thread-worked-toggle:active,
 .thread-ui-shell .thread-worked-toggle:focus-visible {
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-worked-toggle:hover {
+    color: var(--theme-fg);
+  }
 }
 .thread-ui-shell .thread-worked-chevron {
   width: 14px;
@@ -80,9 +85,12 @@
   color: inherit;
   white-space: nowrap;
 }
-.thread-ui-shell .thread-turn-head:hover .thread-turn-head-main,
+.thread-ui-shell .thread-turn-head:active .thread-turn-head-main,
 .thread-ui-shell .thread-turn-head-main[aria-expanded='true'],
 .thread-ui-shell .thread-turn-head[data-active] .thread-turn-head-main { color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-ui-shell .thread-turn-head:hover .thread-turn-head-main { color: var(--theme-fg); }
+}
 .thread-ui-shell .thread-turn-head-main:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
 .thread-ui-shell .thread-turn-head-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--turn-head-dot, #2fb37a); opacity: 0.55; }
 .thread-ui-shell .thread-turn-head[data-active] .thread-turn-head-dot {
@@ -123,7 +131,10 @@
   text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
   text-underline-offset: 3px;
 }
-.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):is(:hover, [aria-expanded='true'], [aria-pressed='true']) { color: var(--theme-fg); }
+.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):is(:active, [aria-expanded='true'], [aria-pressed='true']) { color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):is(:hover, [aria-expanded='true'], [aria-pressed='true']) { color: var(--theme-fg); }
+}
 .thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
 /* A wide screen shows the whole head on its one line; nothing opens. */
 .thread-ui-shell .thread-turn-head.is-wide { gap: 12px; cursor: default; }
@@ -180,8 +191,11 @@
   color: var(--theme-fg-soft);
   text-align: left;
 }
-.tlog-run-head:hover .tlog-summary,
+.tlog-run-head:active .tlog-summary,
 .tlog-run-head:focus-visible .tlog-summary { color: var(--theme-fg); }
+@media (hover: hover) {
+  .tlog-run-head:hover .tlog-summary { color: var(--theme-fg); }
+}
 .tlog-run-head .tlog-summary { flex: 0 1 auto; color: var(--theme-fg-soft); }
 .tlog-chev {
   width: 13px;
@@ -215,7 +229,10 @@
   margin-left: -6px;
   border-radius: 5px;
 }
-.tlog-row-line:hover { background: var(--theme-hover); }
+.tlog-row-line:active { background: var(--theme-hover); }
+@media (hover: hover) {
+  .tlog-row-line:hover { background: var(--theme-hover); }
+}
 .tlog-row-head {
   display: flex;
   flex: 1;
@@ -228,7 +245,10 @@
   color: var(--theme-fg-soft);
   text-align: left;
 }
-.tlog-row-line:hover .tlog-row-head { color: var(--theme-fg); }
+.tlog-row-line:active .tlog-row-head { color: var(--theme-fg); }
+@media (hover: hover) {
+  .tlog-row-line:hover .tlog-row-head { color: var(--theme-fg); }
+}
 /* Copy: a faint key beside a command on hover; on phones once the row is open. */
 .tlog-copy {
   display: grid;
@@ -249,7 +269,10 @@
 @media (hover: hover) {
   .tlog-row-line:hover .tlog-copy { opacity: 0.55; pointer-events: auto; }
 }
-.tlog-copy:hover { opacity: 1; background: var(--theme-surface); color: var(--theme-fg); }
+.tlog-copy:active { opacity: 1; background: var(--theme-surface); color: var(--theme-fg); }
+@media (hover: hover) {
+  .tlog-copy:hover { opacity: 1; background: var(--theme-surface); color: var(--theme-fg); }
+}
 .tlog-glyph {
   flex: none;
   width: 1.6ch;
@@ -313,7 +336,10 @@
   font-size: 11.5px;
   color: var(--theme-accent-strong, var(--theme-accent-solid));
 }
-.tlog-more:hover { text-decoration: underline; }
+.tlog-more:active { text-decoration: underline; }
+@media (hover: hover) {
+  .tlog-more:hover { text-decoration: underline; }
+}
 .tlog-single { min-width: 0; }
 .tlog-other { min-width: 0; margin: 2px 0; }
 
@@ -388,7 +414,10 @@
   font-size: 11px;
   color: var(--theme-accent-strong, var(--theme-accent-solid));
 }
-.tlog-open:hover { text-decoration: underline; }
+.tlog-open:active { text-decoration: underline; }
+@media (hover: hover) {
+  .tlog-open:hover { text-decoration: underline; }
+}
 
 /* Narration between runs reads as the agent talking, a step quieter than the answer. */
 .thread-ui-shell .thread-execution-timeline .thread-graph-message[data-role='assistant'] .thread-graph-message-content {
@@ -461,8 +490,11 @@
   text-decoration: underline dotted var(--tlog-rule);
   text-underline-offset: 3px;
 }
-.thread-ui-shell .tlog-files-toggle:hover,
+.thread-ui-shell .tlog-files-toggle:active,
 .thread-ui-shell .tlog-files-toggle[aria-expanded='true'] { color: var(--theme-fg); text-decoration-style: solid; }
+@media (hover: hover) {
+  .thread-ui-shell .tlog-files-toggle:hover { color: var(--theme-fg); text-decoration-style: solid; }
+}
 .tlog-files {
   display: flex;
   flex-direction: column;
@@ -529,7 +561,10 @@
   text-underline-offset: 3px;
   border-radius: 3px;
 }
-.prompt-envelope-link:hover { color: var(--theme-accent-strong, var(--theme-fg)); text-decoration-style: solid; }
+.prompt-envelope-link:active { color: var(--theme-accent-strong, var(--theme-fg)); text-decoration-style: solid; }
+@media (hover: hover) {
+  .prompt-envelope-link:hover { color: var(--theme-accent-strong, var(--theme-fg)); text-decoration-style: solid; }
+}
 .prompt-envelope-link:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
 .prompt-envelope-subject { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--theme-fg); font-weight: 600; }
 .prompt-envelope-head[data-kind='result'] .prompt-envelope-glyph { color: var(--tlog-add); }
@@ -540,7 +575,10 @@
   min-height: var(--tlog-row-height);
   text-align: left;
 }
-.prompt-notice-head:hover .prompt-notice-preview { color: var(--theme-fg); }
+.prompt-notice-head:active .prompt-notice-preview { color: var(--theme-fg); }
+@media (hover: hover) {
+  .prompt-notice-head:hover .prompt-notice-preview { color: var(--theme-fg); }
+}
 .prompt-notice-preview { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prompt-notice-chev { flex: none; width: 12px; height: 12px; align-self: center; transition: transform 120ms; }
 .prompt-notice[data-open] .prompt-notice-chev { transform: rotate(90deg); }
@@ -588,7 +626,10 @@
 .tlog-output:has(> pre) { padding: 0; overflow: hidden; max-height: none; }
 .tlog-output > pre { border: 0; border-radius: 0; background: none; }
 .tlog-viewable { position: relative; }
-.tlog-viewable:hover { border-color: var(--theme-border-strong); }
+.tlog-viewable:active { border-color: var(--theme-border-strong); }
+@media (hover: hover) {
+  .tlog-viewable:hover { border-color: var(--theme-border-strong); }
+}
 .tlog-viewable:focus-visible { outline: 2px solid var(--theme-accent-border); outline-offset: 1px; }
 .tlog-more-lines {
   position: sticky;
@@ -634,9 +675,14 @@
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-border) 80%, transparent), 0 4px 14px rgb(0 0 0 / 0.14);
   opacity: 1;
 }
-.thread-ui-shell .thread-graph-show-more[aria-expanded='true']:hover,
+.thread-ui-shell .thread-graph-show-more[aria-expanded='true']:active,
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:focus-visible {
   background: color-mix(in srgb, var(--theme-panel) 96%, transparent);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:hover {
+    background: color-mix(in srgb, var(--theme-panel) 96%, transparent);
+  }
 }
 
 /* Counts: an icon and a number each, quiet; failures are not a headline. */
@@ -736,7 +782,10 @@
   color: var(--theme-fg-soft);
   font-size: 12px;
 }
-.thread-ui-shell .workspace-missing-file-copy:hover { color: var(--theme-fg); background: var(--theme-hover); }
+.thread-ui-shell .workspace-missing-file-copy:active { color: var(--theme-fg); background: var(--theme-hover); }
+@media (hover: hover) {
+  .thread-ui-shell .workspace-missing-file-copy:hover { color: var(--theme-fg); background: var(--theme-hover); }
+}
 
 /* A file's error keeps its download one tap away. */
 .thread-ui-shell .workspace-file-alert-download {
@@ -752,7 +801,10 @@
   color: var(--theme-fg);
   font-size: 12.5px;
 }
-.thread-ui-shell .workspace-file-alert-download:hover:not(:disabled) { background: var(--theme-hover); }
+.thread-ui-shell .workspace-file-alert-download:active:not(:disabled) { background: var(--theme-hover); }
+@media (hover: hover) {
+  .thread-ui-shell .workspace-file-alert-download:hover:not(:disabled) { background: var(--theme-hover); }
+}
 
 /* Loading Files: one skeleton, shown only if loading takes a moment. */
 .workspace-loading-skeleton { animation: workspace-skeleton-in 160ms ease-out 120ms both; }
@@ -771,7 +823,10 @@
   border-radius: 6px; background: var(--theme-panel); color: var(--theme-fg-muted);
   opacity: .75; box-shadow: 0 0 0 1px var(--theme-border);
 }
-.tlog-open-full:hover, .tlog-open-full:focus-visible { opacity: 1; color: var(--theme-fg); }
+.tlog-open-full:active, .tlog-open-full:focus-visible { opacity: 1; color: var(--theme-fg); }
+@media (hover: hover) {
+  .tlog-open-full:hover { opacity: 1; color: var(--theme-fg); }
+}
 .tlog-open-full > svg { width: 13px; height: 13px; }
 .tlog-open-full::after { content: ''; position: absolute; inset: -6px; }
 
@@ -800,4 +855,7 @@
   font: inherit;
   cursor: pointer;
 }
-.tlog-detail-retry:hover { background: color-mix(in srgb, var(--tlog-failed) 14%, transparent); }
+.tlog-detail-retry:active { background: color-mix(in srgb, var(--tlog-failed) 14%, transparent); }
+@media (hover: hover) {
+  .tlog-detail-retry:hover { background: color-mix(in srgb, var(--tlog-failed) 14%, transparent); }
+}

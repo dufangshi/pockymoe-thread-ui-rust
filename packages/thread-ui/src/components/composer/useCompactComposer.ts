@@ -184,8 +184,34 @@ export function useCompactComposer(
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(measure);
     };
+    // A tap on the folded composer opens it, and the open layout puts its tools
+    // (send, the model) where the finger is. The rest of that tap (pointerup, the
+    // phone's mousedown and click) lands after the layout changed, so it must not
+    // press whatever is under the finger now: it only opens, and the prompt gets focus.
+    let openingTap: { target: Node; until: number } | null = null;
+    const onTapRest = (event: Event) => {
+      const tap = openingTap;
+      if (!tap) return;
+      if (performance.now() > tap.until) {
+        openingTap = null;
+        return;
+      }
+      const target = event.target instanceof Node ? event.target : null;
+      if (!target || !form.contains(target) || tap.target.contains(target) || target.contains(tap.target)) {
+        if (event.type === "click") openingTap = null;
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.type !== "click") return;
+      openingTap = null;
+      if (!(tap.target instanceof Element && tap.target.closest("button, [role='button'], a, input, select"))) editor.focus();
+    };
     // A press inside the composer (its buttons, owned portals) counts as being in it.
     const onPointerDown = (event: PointerEvent) => {
+      openingTap = !opened && event.target instanceof Node && form.contains(event.target)
+        ? { target: event.target, until: performance.now() + 1000 }
+        : null;
       // Read after React capture has marked portal events, even if a menu
       // stops native propagation before it can reach document's bubble phase.
       pendingPointerEvent = event;
@@ -212,6 +238,7 @@ export function useCompactComposer(
       schedule();
     };
     document.addEventListener("pointerdown", onPointerDown, true);
+    for (const type of ["pointerup", "mousedown", "mouseup", "click"]) document.addEventListener(type, onTapRest, true);
     document.addEventListener("click", onClick, true);
     document.addEventListener("focusin", onFocusIn);
     document.addEventListener("focusout", onFocusOut);
@@ -245,6 +272,7 @@ export function useCompactComposer(
       mutation.disconnect();
       resize?.disconnect();
       document.removeEventListener("pointerdown", onPointerDown, true);
+      for (const type of ["pointerup", "mousedown", "mouseup", "click"]) document.removeEventListener(type, onTapRest, true);
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("focusin", onFocusIn);
       document.removeEventListener("focusout", onFocusOut);

@@ -106,6 +106,26 @@ describe("composer interaction scope", () => {
     expect(form.dataset.expanded).toBe("true");
   });
 
+  it("a tap that opens the folded composer never presses the tool that moved under the finger", async () => {
+    const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
+    const form = host.querySelector("form")!;
+    const tool = button("Tool");
+    const pressed = vi.fn();
+    tool.addEventListener("click", pressed);
+    expect(form.dataset.expanded).toBe("false");
+    await settle(() => editor.dispatchEvent(new Event("pointerdown", { bubbles: true })));
+    expect(form.dataset.expanded).toBe("true");
+    // The open layout put the tool where the finger was: the rest of the tap lands on it.
+    const down = new MouseEvent("mousedown", { bubbles: true, cancelable: true });
+    await settle(() => { tool.dispatchEvent(down); tool.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true })); });
+    expect(down.defaultPrevented).toBe(true);
+    expect(pressed).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(editor);
+    // Once open, the tool works.
+    await settle(() => tap(tool));
+    expect(pressed).toHaveBeenCalledTimes(1);
+  });
+
   it("opens as soon as the reader edits, and a composition keeps it open", async () => {
     const editor = host.querySelector<HTMLDivElement>('[role="textbox"]')!;
     const form = host.querySelector("form")!;

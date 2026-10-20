@@ -1418,7 +1418,27 @@ function useCompactComposer(formRef, enabled) {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(measure);
     };
+    let openingTap = null;
+    const onTapRest = (event) => {
+      const tap = openingTap;
+      if (!tap) return;
+      if (performance.now() > tap.until) {
+        openingTap = null;
+        return;
+      }
+      const target = event.target instanceof Node ? event.target : null;
+      if (!target || !form.contains(target) || tap.target.contains(target) || target.contains(tap.target)) {
+        if (event.type === "click") openingTap = null;
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.type !== "click") return;
+      openingTap = null;
+      if (!(tap.target instanceof Element && tap.target.closest("button, [role='button'], a, input, select"))) editor.focus();
+    };
     const onPointerDown = (event) => {
+      openingTap = !opened && event.target instanceof Node && form.contains(event.target) ? { target: event.target, until: performance.now() + 1e3 } : null;
       pendingPointerEvent = event;
       schedule();
     };
@@ -1441,6 +1461,7 @@ function useCompactComposer(formRef, enabled) {
       schedule();
     };
     document.addEventListener("pointerdown", onPointerDown, true);
+    for (const type of ["pointerup", "mousedown", "mouseup", "click"]) document.addEventListener(type, onTapRest, true);
     document.addEventListener("click", onClick, true);
     document.addEventListener("focusin", onFocusIn);
     document.addEventListener("focusout", onFocusOut);
@@ -1471,6 +1492,7 @@ function useCompactComposer(formRef, enabled) {
       mutation.disconnect();
       resize?.disconnect();
       document.removeEventListener("pointerdown", onPointerDown, true);
+      for (const type of ["pointerup", "mousedown", "mouseup", "click"]) document.removeEventListener(type, onTapRest, true);
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("focusin", onFocusIn);
       document.removeEventListener("focusout", onFocusOut);

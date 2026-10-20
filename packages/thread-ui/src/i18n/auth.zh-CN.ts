@@ -308,6 +308,7 @@ export const authZhCN = {
   "auth.accountReason.change-password": "授权更改账户密码",
   "auth.accountReason.recovery-code": "授权更换恢复码",
   "auth.invalid_credentials": "登录名或密码不正确。",
+  "auth.browser_limit": "此账号登记的浏览器已达上限，请在已登录的设备上到「账号安全」移除旧浏览器。",
   "auth.registration_password_invalid": "注册邀请码不正确。",
   "auth.accountRecover": "恢复账户",
   "auth.accountOAuthFactorRequired": "请使用已有的身份验证器或通行密钥确认此更改。OAuth 解锁密码仅在此浏览器中使用。",

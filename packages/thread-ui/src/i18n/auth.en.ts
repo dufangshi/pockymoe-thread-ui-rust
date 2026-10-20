@@ -308,6 +308,7 @@ export const authEn = {
   "auth.accountReason.change-password": "Authorize changing your account password",
   "auth.accountReason.recovery-code": "Authorize replacing your recovery code",
   "auth.invalid_credentials": "Incorrect login or password.",
+  "auth.browser_limit": "This account has registered too many browsers. Remove old browsers in Account security on a device that is signed in.",
   "auth.registration_password_invalid": "The registration invite code is incorrect.",
   "auth.accountRecover": "Recover account",
   "auth.accountOAuthFactorRequired": "Use an existing authenticator or passkey to confirm this change. Your OAuth unlock password stays in this browser.",

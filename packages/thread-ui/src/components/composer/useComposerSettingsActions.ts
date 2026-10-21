@@ -36,6 +36,7 @@ export function useComposerSettingsActions({
       const settingsUpdateDecision = deriveComposerSettingsUpdateDecision({
         nextMode: input.collaborationMode,
         previousOptimisticMode: optimisticCollaborationMode,
+        changed: Object.keys(input).filter((key) => input[key as keyof UpdateThreadSettingsInput] !== undefined),
       });
       if (settingsUpdateDecision.optimisticMode) {
         setOptimisticCollaborationMode(settingsUpdateDecision.optimisticMode);

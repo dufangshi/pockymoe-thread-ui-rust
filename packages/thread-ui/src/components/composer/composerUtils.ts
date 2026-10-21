@@ -356,15 +356,20 @@ export function derivePromptKeyDownAction({
 export function deriveComposerSettingsUpdateDecision({
   nextMode,
   previousOptimisticMode,
+  changed = [],
 }: {
   nextMode: CollaborationModeDto | null | undefined;
   previousOptimisticMode: CollaborationModeDto | null;
+  /** The settings this update changes. */
+  changed?: readonly string[];
 }): ComposerSettingsUpdateDecision {
   return {
     optimisticMode: nextMode ?? null,
     rollbackMode: nextMode ? previousOptimisticMode : null,
     shouldRollbackMode: Boolean(nextMode),
-    closeMenuOnSuccess: true,
+    // A model and its reasoning effort are chosen together: the menu stays
+    // open after either, so the other can follow.
+    closeMenuOnSuccess: !(changed.length > 0 && changed.every((key) => key === 'model' || key === 'reasoningEffort')),
   };
 }
 

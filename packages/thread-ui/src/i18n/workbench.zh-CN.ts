@@ -621,5 +621,7 @@ export const workbenchZhCN = {
   "workbench.allThreads": "所有线程",
   "workbench.runningJustNow": "刚开始运行",
   "workbench.runningForMinutes": { one: "已运行 {{count}} 分钟", other: "已运行 {{count}} 分钟" },
+  "workbench.splitDropLeft": "在左侧分屏打开",
+  "workbench.splitDropRight": "在右侧分屏打开",
   "workbench.runningForHours": "已运行 {{hours}} 小时 {{minutes}} 分钟",
 } as const;

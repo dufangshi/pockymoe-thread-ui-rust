@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizePresentation } from './presentation';
+import { closeFilesPatch, normalizePresentation, openFilesPatch, splitShown } from './presentation';
 describe('workbench presentation recovery', () => {
   it('keeps the member when arrangement is corrupt or a future schema', () => {
     const members = { schemaVersion: 1, referenceId: 'thread-b' };
@@ -62,5 +62,24 @@ describe('cross-device split membership', () => {
         null,
       ),
     ).toMatchObject({ referenceId: null, referenceDeviceId: null });
+  });
+});
+
+describe('the files view over a split', () => {
+  const split = { referenceId: 'b', mode: 'thread' as const, ratio: 55 };
+  it('keeps an open split beside it and returns to it', () => {
+    const files = { ...split, ...openFilesPatch(split) };
+    expect(files).toMatchObject({ mode: 'files', filesOver: 'thread' });
+    expect(splitShown(files)).toBe(true);
+    expect(closeFilesPatch(files)).toEqual({ mode: 'thread' });
+  });
+  it('does not reopen a split that was closed', () => {
+    const closed = { ...split, mode: 'focus' as const };
+    const files = { ...closed, ...openFilesPatch(closed) };
+    expect(splitShown(files)).toBe(false);
+    expect(closeFilesPatch(files)).toEqual({ mode: 'focus' });
+  });
+  it('restores what it opened over', () => {
+    expect(normalizePresentation({ schemaVersion: 1, referenceId: 'b' }, { schemaVersion: 1, mode: 'files', filesOver: 'focus', ratio: 55 }).filesOver).toBe('focus');
   });
 });

@@ -811,6 +811,8 @@ declare const en: {
         readonly one: "running {{count}} min";
         readonly other: "running {{count}} min";
     };
+    readonly "workbench.splitDropLeft": "Open on the left";
+    readonly "workbench.splitDropRight": "Open on the right";
     readonly "workbench.runningForHours": "running {{hours}} h {{minutes}} min";
     readonly "sharing.open": "Open";
     readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
@@ -4834,6 +4836,8 @@ declare const zhCN: {
         readonly one: "已运行 {{count}} 分钟";
         readonly other: "已运行 {{count}} 分钟";
     };
+    "workbench.splitDropLeft": "在左侧分屏打开";
+    "workbench.splitDropRight": "在右侧分屏打开";
     "workbench.runningForHours": "已运行 {{hours}} 小时 {{minutes}} 分钟";
     "sharing.open": "打开";
     "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";
@@ -8879,6 +8883,8 @@ declare const resources: {
             readonly one: "running {{count}} min";
             readonly other: "running {{count}} min";
         };
+        readonly "workbench.splitDropLeft": "Open on the left";
+        readonly "workbench.splitDropRight": "Open on the right";
         readonly "workbench.runningForHours": "running {{hours}} h {{minutes}} min";
         readonly "sharing.open": "Open";
         readonly "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor offline — reconnect the device to open";
@@ -12901,6 +12907,8 @@ declare const resources: {
             readonly one: "已运行 {{count}} 分钟";
             readonly other: "已运行 {{count}} 分钟";
         };
+        "workbench.splitDropLeft": "在左侧分屏打开";
+        "workbench.splitDropRight": "在右侧分屏打开";
         "workbench.runningForHours": "已运行 {{hours}} 小时 {{minutes}} 分钟";
         "sharing.open": "打开";
         "sharing.supervisorOfflineReconnectTheDeviceToOpen": "Supervisor 离线，请重新连接设备后打开";

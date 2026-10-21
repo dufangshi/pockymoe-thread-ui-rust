@@ -1400,7 +1400,14 @@
     inset: 44px 0 0 0;
     background: rgb(0 0 0 / 25%);
     z-index: 64;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms;
   }
+  .matter-sidebar-scrim[data-open] { opacity: 1; pointer-events: auto; }
+  /* A sideways drag pulls the drawer in under the finger (MatterWorkbench). */
+  .matter-workbench .matter-sidebar[data-dragging]:not(#_) { visibility: visible; transition: none; }
+  .matter-sidebar-scrim[data-dragging]:not(#_) { transition: none; }
   .matter-thread-tabs {
     scrollbar-width: none;
     height: 36px;
@@ -1714,7 +1721,12 @@
 }
 /* This workspace's conversations, in tabs and lists, go where they are dragged.
    A touch first rests still (useDragReorder); the item shows the wait filling. */
-.matter-thread-group, .matter-thread-group-entry[data-reorder-key] { -webkit-touch-callout: none; user-select: none; }
+.matter-thread-group, .matter-thread-group-entry[data-reorder-key] { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
+/* The bars' long presses drag tabs: no text selection or callout from the system
+   fights them (Safari still needs the prefixed property). Fields keep theirs. */
+.thread-ui-shell .matter-workbench :is(.matter-topbar, .matter-tabs-row) { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.thread-ui-shell .matter-workbench :is(.matter-topbar, .matter-tabs-row) :is(input, textarea, [contenteditable]) { -webkit-user-select: text; user-select: text; }
+.matter-thread-group a { -webkit-user-drag: none; }
 .matter-thread-group-entry[data-reorder-key] { position: relative; }
 :is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry) { transition: transform 160ms ease; }
 :is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry)[data-dragging] { z-index: 3; transition: none; }
@@ -1739,6 +1751,35 @@
   :is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry) { transition: none; }
   :is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing] { animation: none; }
   :is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing]::after { animation: none; opacity: .12; }
+}
+/* A desktop tab held out of the strip: each side of the conversation says what a
+   drop there does; the side under the pointer deepens. */
+.matter-split-drop {
+  position: fixed; z-index: 60; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px;
+  pointer-events: none; animation: matter-split-drop-in 180ms ease-out;
+}
+.matter-split-drop-zone {
+  display: flex; align-items: center; justify-content: center; border-radius: 12px;
+  border: 1.5px dashed color-mix(in srgb, var(--theme-accent-solid) 40%, transparent);
+  background: color-mix(in srgb, var(--theme-accent-solid) 6%, transparent);
+  color: var(--theme-fg-muted); transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+.matter-split-drop-zone[data-active] {
+  border-style: solid; border-color: color-mix(in srgb, var(--theme-accent-solid) 70%, transparent);
+  background: color-mix(in srgb, var(--theme-accent-solid) 16%, transparent); color: var(--theme-fg);
+}
+.matter-split-drop-zone > span {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px;
+  background: var(--theme-panel); box-shadow: 0 6px 18px rgb(0 0 0 / 18%); font-size: 13px;
+  transition: transform 140ms ease;
+}
+.matter-split-drop-zone[data-active] > span { transform: scale(1.06); }
+.matter-split-drop-zone svg { width: 16px; height: 16px; }
+@keyframes matter-split-drop-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .matter-split-drop { animation: none; }
+  .matter-split-drop-zone, .matter-split-drop-zone > span { transition: none; }
+  .matter-split-drop-zone[data-active] > span { transform: none; }
 }
 /* On a phone the split picker is a bottom sheet over a scrim, like share and export. */
 .workbench-thread-picker-scrim { position: fixed; inset: 0; z-index: 249; background: var(--overlay-scrim, rgb(0 0 0 / 45%)); backdrop-filter: blur(6px); }

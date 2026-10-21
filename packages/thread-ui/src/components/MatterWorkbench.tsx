@@ -1,4 +1,5 @@
 import { WorkbenchPanels, type WorkbenchPanelsOptions } from './workbench/WorkbenchPanels';
+import { closeFilesPatch, openFilesPatch } from './workbench/presentation';
 import { useWorkbenchToolPanel } from './workbench/toolPanel';
 import { getLocale } from '../i18n';
 import { translate, useI18n } from '../i18n';
@@ -17,6 +18,7 @@ import {
   MessageSquare,
   MessagesSquare,
   PanelLeft,
+  PanelRight,
   Search,
   SlidersHorizontal,
   Star,
@@ -228,7 +230,39 @@ export function MatterWorkbench({
   const commitTabOrder = useMemo(() => (keys: string[]) => (editorTabsRef.current ? reorderOpen.current : reorderWorkspace.current)(keys), []);
   const editorTabsRef = useRef(Boolean(editorTabs));
   editorTabsRef.current = Boolean(editorTabs);
-  useDragReorder(tabsRef, { axis: 'x', itemSelector: '.matter-thread-group', enabled: editorTabs ? Boolean(o.onReorderOpenTabs) : reorderable, onCommit: commitTabOrder });
+  // A desktop tab dragged out of the strip opens on a side of the conversation,
+  // split. While one is held, both sides show where it would go.
+  const [splitDrop, setSplitDrop] = useState<{ box: { left: number; top: number; width: number; height: number }; side: 'left' | 'right' | null } | null>(null);
+  const splitThread = o.panels?.onSplitThread;
+  const currentTabKey = groupThreads(tabStrip).find(group => group.root.key === o.currentKey || group.children.some(child => child.key === o.currentKey))?.root.key;
+  const splitDropSide = (x: number, y: number, box: { left: number; top: number; width: number; height: number }) =>
+    y < box.top + 8 || y > box.top + box.height || x < box.left || x > box.left + box.width ? null : x < box.left + box.width / 2 ? 'left' as const : 'right' as const;
+  const splitOutside = useRef<{ move: (key: string, x: number, y: number) => void; drop: (key: string, x: number, y: number) => boolean; end: () => void }>(null!);
+  splitOutside.current = {
+    move: (key, x, y) => {
+      if (key === currentTabKey) return;
+      const main = rootRef.current?.querySelector<HTMLElement>('.matter-main')?.getBoundingClientRect();
+      const row = rootRef.current?.querySelector<HTMLElement>('.matter-tabs-row')?.getBoundingClientRect();
+      if (!main || !row) return;
+      const box = { left: main.left, top: row.bottom, width: main.width, height: main.bottom - row.bottom };
+      const side = splitDropSide(x, y, box);
+      setSplitDrop(current => current && current.side === side && current.box.left === box.left && current.box.top === box.top && current.box.width === box.width && current.box.height === box.height ? current : { box, side });
+    },
+    drop: (key, x, y) => {
+      const side = splitDrop && key !== currentTabKey ? splitDropSide(x, y, splitDrop.box) : null;
+      if (!side || !splitThread) return false;
+      splitThread(key, side);
+      return true;
+    },
+    end: () => setSplitDrop(null),
+  };
+  const tabOutside = useMemo(() => ({
+    move: (key: string, x: number, y: number) => splitOutside.current.move(key, x, y),
+    drop: (key: string, x: number, y: number) => splitOutside.current.drop(key, x, y),
+    end: () => splitOutside.current.end(),
+  }), []);
+  useDragReorder(tabsRef, { axis: 'x', itemSelector: '.matter-thread-group', enabled: editorTabs ? Boolean(o.onReorderOpenTabs) : reorderable, onCommit: commitTabOrder,
+    outside: editorTabs && splitThread ? tabOutside : undefined });
   const tabScrollEdges = useTabScrollEdges(tabsRef);
   useEffect(() => {
     tabsRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
@@ -305,7 +339,7 @@ export function MatterWorkbench({
   const scrimRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const root = rootRef.current, drawer = sidebarRef.current;
-    if (!dock || !root || !drawer) return;
+    if (!mobile || !root || !drawer) return;
     // The workspace drawer follows a sideways drag: rightwards from the left part
     // of the conversation opens it, leftwards on it or on the dimmed page closes
     // it. Browsers give pages no way to reserve the screen edge from the system
@@ -378,7 +412,7 @@ export function MatterWorkbench({
       root.removeEventListener('touchend', end);
       root.removeEventListener('touchcancel', end);
     };
-  }, [dock, sidebarOpen]);
+  }, [mobile, sidebarOpen]);
   useEffect(() => {
     const root = rootRef.current;
     if (!dock || !root) return;
@@ -502,7 +536,7 @@ export function MatterWorkbench({
   const explorerOpen = o.panels ? o.panels.presentation.mode === 'files' : legacyExplorerOpen;
   const setExplorerOpen = (value: boolean | ((open: boolean) => boolean)) => {
     const next = typeof value === 'function' ? value(explorerOpen) : value;
-    if (o.panels) o.panels.onPresentationChange({ mode: next ? 'files' : o.panels.presentation.referenceId ? 'thread' : 'focus' });
+    if (o.panels) o.panels.onPresentationChange(next ? openFilesPatch(o.panels.presentation) : closeFilesPatch(o.panels.presentation));
     else setLegacyExplorerOpen(next);
   };
   const [explorerWidth, setExplorerWidth] = useState(() => {
@@ -869,8 +903,8 @@ export function MatterWorkbench({
           {bell}
         </div>
       </header>}
-      {/* Under the dock the scrim stays mounted so a drag can fade it in. */}
-      {(sidebarOpen || dock) && (
+      {/* On a phone the scrim stays mounted so a drag can fade it in. */}
+      {(sidebarOpen || mobile) && (
         <button
           ref={scrimRef}
           className="matter-sidebar-scrim"
@@ -1067,6 +1101,15 @@ export function MatterWorkbench({
         </div>
         )}
         </PhoneDockContext.Provider>
+        {splitDrop && <div className="matter-split-drop" aria-hidden="true"
+          style={{ left: splitDrop.box.left, top: splitDrop.box.top, width: splitDrop.box.width, height: splitDrop.box.height }}>
+          <div className="matter-split-drop-zone" data-side="left" data-active={splitDrop.side === 'left' || undefined}>
+            <span><PanelLeft />{translate('workbench.splitDropLeft')}</span>
+          </div>
+          <div className="matter-split-drop-zone" data-side="right" data-active={splitDrop.side === 'right' || undefined}>
+            <span><PanelRight />{translate('workbench.splitDropRight')}</span>
+          </div>
+        </div>}
       </main>
       {dock && <>
         <PhoneDock title={title} thread={currentThread} paneSwitch={paneSwitch} pane={pane}

@@ -621,5 +621,7 @@ export const workbenchEn = {
   "workbench.allThreads": "All threads",
   "workbench.runningJustNow": "just started",
   "workbench.runningForMinutes": { one: "running {{count}} min", other: "running {{count}} min" },
+  "workbench.splitDropLeft": "Open on the left",
+  "workbench.splitDropRight": "Open on the right",
   "workbench.runningForHours": "running {{hours}} h {{minutes}} min",
 } as const;

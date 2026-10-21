@@ -370,10 +370,11 @@ describe('split panes and independent tools', () => {
     );
     expect(options.onPresentationChange).toHaveBeenLastCalledWith({
       mode: 'files',
+      filesOver: 'thread',
     });
     options = {
       ...options,
-      presentation: { ...options.presentation, mode: 'files' },
+      presentation: { ...options.presentation, mode: 'files', filesOver: 'thread' },
     };
     renderWorkbench();
     act(() =>

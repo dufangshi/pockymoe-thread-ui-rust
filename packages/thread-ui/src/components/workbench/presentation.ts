@@ -6,6 +6,8 @@ export interface WorkbenchPresentation {
   /** Null (and legacy absence) resolves to the host device. */
   referenceDeviceId?: string | null;
   mode: ReferenceMode;
+  /** What the files view opened over: a split stays beside it, a closed one stays closed. */
+  filesOver?: 'thread' | 'focus' | undefined;
   ratio: number;
 }
 export const defaultPresentation: WorkbenchPresentation = {
@@ -25,6 +27,7 @@ export function normalizePresentation(
   const a = arrangement as {
     schemaVersion?: number;
     mode?: unknown;
+    filesOver?: unknown;
     ratio?: unknown;
   } | null;
   const referenceId =
@@ -59,8 +62,21 @@ export function normalizePresentation(
         }
       : {}),
     mode: mode === 'thread' && !referenceId ? 'focus' : mode,
+    ...(mode === 'files' && (a?.filesOver === 'thread' || a?.filesOver === 'focus') ? { filesOver: a.filesOver } : {}),
     ratio,
   };
+}
+/** Whether the split shows: in its own mode, or beside a files view opened over it. */
+export function splitShown(value: WorkbenchPresentation) {
+  return Boolean(value.referenceId) && (value.mode === 'thread' || (value.mode === 'files' && value.filesOver !== 'focus'));
+}
+export function openFilesPatch(value: WorkbenchPresentation): Partial<WorkbenchPresentation> {
+  if (value.mode === 'files') return { mode: 'files' };
+  return { mode: 'files', filesOver: splitShown(value) ? 'thread' : 'focus' };
+}
+/** Back to what the files view opened over. */
+export function closeFilesPatch(value: WorkbenchPresentation): Partial<WorkbenchPresentation> {
+  return { mode: splitShown(value) ? 'thread' : 'focus' };
 }
 function read(scope: string | null): WorkbenchPresentation {
   if (!scope) return defaultPresentation;
@@ -73,7 +89,7 @@ function read(scope: string | null): WorkbenchPresentation {
   };
   const saved = normalizePresentation(parse('members'), parse('arrangement'));
   // A thread always opens on its conversation: the files view is opened, not restored.
-  return saved.mode === 'files' ? { ...saved, mode: saved.referenceId ? 'thread' : 'focus' } : saved;
+  return saved.mode === 'files' ? { ...saved, ...closeFilesPatch(saved) } : saved;
 }
 function write(
   scope: string,
@@ -96,6 +112,7 @@ function write(
       JSON.stringify({
         schemaVersion: 1,
         mode: value.mode,
+        ...(value.mode === 'files' && value.filesOver ? { filesOver: value.filesOver } : {}),
         ratio: value.ratio,
       }),
     );

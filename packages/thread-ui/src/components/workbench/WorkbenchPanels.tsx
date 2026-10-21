@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { ChevronLeft, FolderOpen, X } from 'lucide-react';
 import { translate as t, useI18n } from '../../i18n';
-import type { WorkbenchPresentation } from './presentation';
+import { closeFilesPatch, openFilesPatch, splitShown, type WorkbenchPresentation } from './presentation';
 import { FilePanelContext } from './FilePanelContext';
 import { useTerminalKeyboardInset } from './useTerminalKeyboardInset';
 import {
@@ -45,6 +45,8 @@ export interface WorkbenchPanelsOptions {
   referenceContent?: ReactNode;
   collaborationContent?: ReactNode;
   onMakePrimary: () => void;
+  /** A desktop tab dropped on a side of the conversation opens it there, split. */
+  onSplitThread?: ((key: string, side: 'left' | 'right') => void) | undefined;
   storageFailed?: boolean;
   focusedPane?: 'primary' | 'reference';
   onFocusPane?: (pane: 'primary' | 'reference') => boolean | void;
@@ -157,7 +159,7 @@ export function WorkbenchPanels({
     if (lastReveal !== revealExplorer) {
       setLastReveal(revealExplorer);
       if (revealExplorer > 0) {
-        o.onPresentationChange({ mode: 'files' });
+        o.onPresentationChange(openFilesPatch(o.presentation));
       }
     }
   }, [revealExplorer, lastReveal, o.onPresentationChange]);
@@ -250,11 +252,9 @@ export function WorkbenchPanels({
     if (o.onPresentationChange({ mode: 'focus' }) === false) return;
     setMobileView('primary');
   };
-  const showThread =
-    Boolean(referenceId) && (mode === 'thread' || mode === 'files');
+  const showThread = splitShown(o.presentation);
   const showReference = showThread || mode === 'collaboration';
-  const closeFiles = () =>
-    o.onPresentationChange({ mode: referenceId ? 'thread' : 'focus' });
+  const closeFiles = () => o.onPresentationChange(closeFilesPatch(o.presentation));
   // Minimized, the files view keeps only its tree, a strip at the right edge, and
   // folds its editor into a tab on the strip's left edge. Closing it, or a screen
   // too narrow to dock it, ends that.
@@ -291,11 +291,13 @@ export function WorkbenchPanels({
     </div>
   );
   const historyHandlers = useRef({
+    presentation: o.presentation,
     onFocusPane: o.onFocusPane,
     onPresentationChange: o.onPresentationChange,
     onCloseTools: o.onCloseTools,
   });
   historyHandlers.current = {
+    presentation: o.presentation,
     onFocusPane: o.onFocusPane,
     onPresentationChange: o.onPresentationChange,
     onCloseTools: o.onCloseTools,
@@ -314,9 +316,7 @@ export function WorkbenchPanels({
       const handlers = historyHandlers.current;
       if (o.toolsOpen) handlers.onCloseTools?.();
       else if (mode === 'files')
-        handlers.onPresentationChange({
-          mode: referenceId ? 'thread' : 'focus',
-        });
+        handlers.onPresentationChange(closeFilesPatch(handlers.presentation));
       else {
         if (handlers.onFocusPane?.('primary') === false) {
           history.pushState(
@@ -487,7 +487,7 @@ export function WorkbenchPanels({
               <button
                 aria-label={t('workbench.referenceFiles')}
                 title={t('workbench.referenceFiles')}
-                onClick={() => o.onPresentationChange({ mode: 'files' })}
+                onClick={() => o.onPresentationChange(openFilesPatch(o.presentation))}
               >
                 <FolderOpen size={16} />
               </button>

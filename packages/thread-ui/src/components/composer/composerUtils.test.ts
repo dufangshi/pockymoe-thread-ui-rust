@@ -327,6 +327,14 @@ describe('composer utilities', () => {
     });
   });
 
+  it('keeps the model menu open after a model or an effort is picked', () => {
+    const decide = (changed: string[]) => deriveComposerSettingsUpdateDecision({ nextMode: undefined, previousOptimisticMode: null, changed }).closeMenuOnSuccess;
+    expect(decide(['model', 'reasoningEffort'])).toBe(false);
+    expect(decide(['reasoningEffort'])).toBe(false);
+    expect(decide(['collaborationMode'])).toBe(true);
+    expect(decide([])).toBe(true);
+  });
+
   it('parses and formats goal token budgets in thousands', () => {
     expect(parseGoalTokenBudgetThousands('')).toBeNull();
     expect(parseGoalTokenBudgetThousands('12.5')).toBe(12_500);

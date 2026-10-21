@@ -3970,6 +3970,8 @@ var workbenchEn = {
   "workbench.allThreads": "All threads",
   "workbench.runningJustNow": "just started",
   "workbench.runningForMinutes": { one: "running {{count}} min", other: "running {{count}} min" },
+  "workbench.splitDropLeft": "Open on the left",
+  "workbench.splitDropRight": "Open on the right",
   "workbench.runningForHours": "running {{hours}} h {{minutes}} min"
 };
 
@@ -7958,6 +7960,8 @@ var workbenchZhCN = {
   "workbench.allThreads": "\u6240\u6709\u7EBF\u7A0B",
   "workbench.runningJustNow": "\u521A\u5F00\u59CB\u8FD0\u884C",
   "workbench.runningForMinutes": { one: "\u5DF2\u8FD0\u884C {{count}} \u5206\u949F", other: "\u5DF2\u8FD0\u884C {{count}} \u5206\u949F" },
+  "workbench.splitDropLeft": "\u5728\u5DE6\u4FA7\u5206\u5C4F\u6253\u5F00",
+  "workbench.splitDropRight": "\u5728\u53F3\u4FA7\u5206\u5C4F\u6253\u5F00",
   "workbench.runningForHours": "\u5DF2\u8FD0\u884C {{hours}} \u5C0F\u65F6 {{minutes}} \u5206\u949F"
 };
 

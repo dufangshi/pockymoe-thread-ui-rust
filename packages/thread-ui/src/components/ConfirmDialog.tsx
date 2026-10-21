@@ -18,6 +18,8 @@ interface ConfirmDialogProps {
   onSecondary?: () => void | Promise<void>;
   /** The cancel button's label, "Cancel" by default. */
   cancelLabel?: string;
+  /** `primary` for a confirmation that destroys nothing (docs/ui-principles.md §11). */
+  tone?: 'danger' | 'primary';
 }
 
 export function ConfirmDialog({
@@ -33,6 +35,7 @@ export function ConfirmDialog({
   secondaryLabel,
   onSecondary,
   cancelLabel,
+  tone = 'danger',
 }: ConfirmDialogProps) {
   useI18n();
   const windowRef = useRef<HTMLDivElement>(null);
@@ -100,7 +103,7 @@ export function ConfirmDialog({
             type="button"
             onClick={() => void onConfirm()}
             disabled={busy}
-            className="ui-action-danger min-h-10 rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed"
+            className={`${tone === 'primary' ? 'ui-action-primary' : 'ui-action-danger'} min-h-10 rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed`}
           >
             {busy ? busyLabel : confirmLabel}
           </button>

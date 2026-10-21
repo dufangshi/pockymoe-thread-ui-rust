@@ -350,8 +350,10 @@ export function ThreadDetailSurface({
         : {}),
       ...(loadTurnDetail ? { onLoadTurnDetail: loadTurnDetail } : {}),
       ...(cancelPendingSteer ? { cancelPendingSteer } : {}),
+      ...(adapter.forkTurn ? { onForkTurn: adapter.forkTurn } : {}),
     }),
     [
+      adapter.forkTurn,
       detail?.workspace.absPath,
       detail?.workspace.id,
       detail?.thread.id,

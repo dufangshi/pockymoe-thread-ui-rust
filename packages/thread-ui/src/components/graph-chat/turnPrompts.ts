@@ -1,12 +1,24 @@
 import { createContext, useContext } from 'react';
 
-/** The turn a prompt belongs to: which prompt started it, and its error if it failed. */
-export const TurnPromptContext = createContext<{ firstPromptId: string; error: string | null } | null>(null);
+/** The turn a message belongs to: which prompt started it, its error if it
+    failed, and the reply a fork from this turn ends with once it finished. */
+export const TurnPromptContext = createContext<{
+  firstPromptId: string;
+  error: string | null;
+  turnId?: string;
+  forkReplyId?: string | null;
+} | null>(null);
 
 /** The error of the failed turn this prompt started. */
 export function useTurnFailure(itemId: string) {
   const turn = useContext(TurnPromptContext);
   return turn?.firstPromptId === itemId ? turn.error : null;
+}
+
+/** The finished turn a fork ends at, when this reply is that turn's last one. */
+export function useForkTurn(itemId: string) {
+  const turn = useContext(TurnPromptContext);
+  return turn?.forkReplyId === itemId ? turn.turnId ?? null : null;
 }
 
 /** Whether this prompt was added while the turn was already working. */

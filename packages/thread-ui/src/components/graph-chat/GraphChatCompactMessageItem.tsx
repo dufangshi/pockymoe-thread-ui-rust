@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { Brain } from 'lucide-react';
 import { CopyButton } from '../copy/CopyButton';
+import { ForkTurnButton } from './ForkTurnButton';
 
 import type { ThreadHistoryItemDto } from '@pockymoe/shared';
 import type { ThreadTimelineAdapter } from '../../adapters';
@@ -21,7 +22,7 @@ import {
 import { GraphChatMessageFrame } from './GraphChatMessageFrame';
 import { parsePromptEnvelope, PromptEnvelopeHeader, PromptNotice } from './PromptEnvelope';
 import { formatMessageTimestamp } from '../threadPresentation';
-import { useAddedPrompt, useTurnFailure } from './turnPrompts';
+import { useAddedPrompt, useForkTurn, useTurnFailure } from './turnPrompts';
 import { AddedPromptIcon } from '../timeline/AddedPromptIcon';
 import {
   Accordion,
@@ -98,6 +99,8 @@ export const GraphChatCompactMessageItem = memo(
     const [reasoningOpen, setReasoningOpen] = useState(false);
     const failure = useTurnFailure(item.id);
     const added = useAddedPrompt(item.id) && item.kind === 'userMessage';
+    const forkTurnId = useForkTurn(item.id);
+    const onForkTurn = item.kind === 'agentMessage' && !streaming && forkTurnId ? adapter?.onForkTurn : undefined;
     const { presentation, text, showingOriginal, showOriginal } = useMessagePresentation({ item, streaming });
     const reasoningItems =
       item.kind === 'agentMessage' ? (item.reasoningItems ?? []) : [];
@@ -118,8 +121,12 @@ export const GraphChatCompactMessageItem = memo(
     }
 
     const copyLabel = item.kind === 'agentMessage' ? translate("chat.agentReply") : 'prompt';
+    // Fork sits beside copy and appears with it (hover, focus or a tap).
     const copyButton = (
-      <CopyButton value={text} label={translate("chat.copy_6b0f10", { value1: copyLabel })} className="thread-graph-message-copy" />
+      <>
+        {onForkTurn && forkTurnId ? <ForkTurnButton onFork={() => onForkTurn(forkTurnId)} /> : null}
+        <CopyButton value={text} label={translate("chat.copy_6b0f10", { value1: copyLabel })} className="thread-graph-message-copy" />
+      </>
     );
 
     const hasRunningReasoning = reasoningItems.some((entry) =>

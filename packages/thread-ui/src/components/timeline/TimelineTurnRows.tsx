@@ -637,9 +637,15 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   // The first prompt started the turn; any later one was added while it worked.
   const prompts = preparedItems.filter(item => item.kind === 'userMessage');
   const firstPromptId = prompts[0]?.id;
+  // A completed turn's last reply is where a fork from this turn ends.
+  const forkReplyId = turn.status === 'completed'
+    ? preparedItems.findLast(item => item.kind === 'agentMessage' && item.text.trim())?.id ?? null
+    : null;
   const promptContext = useMemo(
-    () => firstPromptId ? { firstPromptId, error: failedWith } : null,
-    [failedWith, firstPromptId],
+    () => firstPromptId || forkReplyId
+      ? { firstPromptId: firstPromptId ?? '', error: failedWith, turnId: turn.id, forkReplyId }
+      : null,
+    [failedWith, firstPromptId, forkReplyId, turn.id],
   );
   const groupedItems = useMemo(
     () => groupTimelineHistoryItems(preparedItems),

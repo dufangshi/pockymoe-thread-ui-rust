@@ -15,6 +15,11 @@ describe('delegate wake reports', () => {
     expect(messages[0]).toMatchObject({ state: 'idle', text: 'All tests passed.\n\n- Test one: PASS\n- Test two: PASS' });
     expect(messages[1]).toMatchObject({ state: 'blocked', text: 'Please review the API.' });
   });
+  it('reads a wake that fired because a delegate is blocked, past its note line', () => {
+    const messages = delegateWakeMessages(turn(`[Pockymoe wake: a delegate you registered a wake for is blocked]\nThis continues the task you delegated from: it adds information, not a new instruction.\n- b-lab (${first}): running\n- reviewer (${second}): blocked, waiting on: question\n\nVerify results before acting on them. Full transcripts: pockymoe transcript ID --limit 1`), context);
+    expect(messages[0]).toMatchObject({ state: 'running', text: null });
+    expect(messages[1]).toMatchObject({ state: 'blocked', text: null });
+  });
   it('does not turn status into report text or parse quoted wakes without a system header', () => {
     expect(delegateWakeMessages(turn('Quoted text\n- b-lab (' + first + '): idle\n  closing message: Unrelated report'), context)[0]).toMatchObject({ state: 'idle', text: null });
     const question = { ...context, messages: [{ id: 'q', kind: 'question' as const, subject: 'Scope?', text: 'Which scope?' }] };

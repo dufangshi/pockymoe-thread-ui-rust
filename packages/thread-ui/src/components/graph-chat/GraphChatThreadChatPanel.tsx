@@ -130,6 +130,7 @@ export function GraphChatThreadChatPanel({
         ? {
             ...composerProps,
             pendingPrompts: queuedPrompts,
+            pendingWakes: detail.pendingWakes ?? [],
             ...(adapter.steerPendingPrompt &&
             composerProps.capabilities?.turns.steer
               ? {

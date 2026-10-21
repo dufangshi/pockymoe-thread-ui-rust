@@ -4,17 +4,7 @@ import { BellRing, ChevronRight, MessageCircle, LoaderCircle } from 'lucide-reac
 import { translate, useI18n } from '../../i18n';
 import { GraphChatAgentMessageBody } from '../graph-chat/GraphChatMessageBody';
 import { TokenUsageCost } from './TokenUsageCost';
-import { delegateWakeMessages } from './delegateWake';
-
-function wakeState(state?: string) {
-  switch (state) {
-    case 'idle': case 'completed': case 'closed': return translate('chat.peerExecutionEnded');
-    case 'blocked': return translate('chat.peerWaitingForAnswer');
-    case 'failed': return translate('chat.peerExecutionFailed');
-    case 'interrupted': return translate('chat.peerExecutionInterrupted');
-    default: return translate('chat.peerUpdates');
-  }
-}
+import { delegateWakeMessages, wakeState } from './delegateWake';
 
 export function PeerWorkGroup({ turn, context, expanded, loading, error, onToggle, children, scrollRootRef }: {
   turn: ThreadTurnDto; context: ThreadPeerWorkDto; expanded: boolean;

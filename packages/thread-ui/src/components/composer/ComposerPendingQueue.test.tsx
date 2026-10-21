@@ -148,4 +148,22 @@ describe("ComposerPendingQueue", () => {
     });
     expect(onCancel).toHaveBeenCalledWith("claude-queued-1");
   });
+  it("names where a prompt the Supervisor wrote came from instead of its header", async () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    cleanup = () => {
+      root.unmount();
+      container.remove();
+    };
+    const wake = "[Pockymoe wake: the delegates you registered a wake for have settled]\n- xa-oil (14b40fee-0794-4fc4-ac30-9f98cc75adfa): idle\n\nVerify results before acting on them. Full transcripts: pockymoe transcript ID --limit 1";
+    await act(async () => {
+      root.render(<ComposerPendingQueue prompts={[{ id: "wake-1", prompt: wake }]} />);
+    });
+    const row = container.querySelector<HTMLButtonElement>(".thread-composer-pending-text")!;
+    expect(row.querySelector(".thread-composer-pending-source")?.textContent).toBe("Delegate wake");
+    expect(row.textContent).toBe("Delegate wake xa-oil Execution ended");
+    await act(async () => row.click());
+    expect(row.textContent).toBe(wake);
+  });
 });

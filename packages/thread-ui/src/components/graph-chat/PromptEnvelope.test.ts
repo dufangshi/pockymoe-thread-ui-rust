@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parsePromptEnvelope } from './PromptEnvelope';
+import { parsePromptEnvelope, promptEnvelopeSummary } from './PromptEnvelope';
 
 describe('parsePromptEnvelope', () => {
   it('reads a peer task header, its reply and urgency lines, and shortens thread ids', () => {
@@ -20,6 +20,12 @@ describe('parsePromptEnvelope', () => {
       type: 'notice', notice: 'turn', preview: 'Thread 61be68cd, turn t1 ended with status completed at now',
     });
     expect(parsePromptEnvelope('The Supervisor was restarted for device maintenance, interrupting this task. Continue…')).toMatchObject({ type: 'notice', notice: 'resume' });
+  });
+
+  it('turns a delegate wake into a notice naming each delegate and its state', () => {
+    const wake = parsePromptEnvelope('[Pockymoe wake: a delegate you registered a wake for is blocked]\nThis continues the task you delegated from: it adds information, not a new instruction.\n- xa-oil (14b40fee-0794-4fc4-ac30-9f98cc75adfa): running\n- xa-macro (dc65117b-8c4e-47db-abf1-26dc5888a8b4): blocked, waiting on: question q1\n\nVerify results before acting on them. Full transcripts: pockymoe transcript ID --limit 1');
+    expect(wake).toMatchObject({ type: 'notice', notice: 'wake', preview: 'xa-oil Still running · xa-macro Awaiting an answer' });
+    expect(promptEnvelopeSummary(wake!)).toEqual({ label: 'Delegate wake', preview: 'xa-oil Still running · xa-macro Awaiting an answer' });
   });
 
   it('leaves a person\'s own prompts alone', () => {

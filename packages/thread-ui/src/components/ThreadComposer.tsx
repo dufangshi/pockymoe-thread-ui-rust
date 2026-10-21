@@ -29,6 +29,7 @@ import type {
   ThreadForkTurnOptionDto,
   ThreadGoalDto,
   ThreadGoalStatusDto,
+  ThreadPendingWakeDto,
   ModelOptionDto,
   ThreadContextUsageDto,
   ReasoningEffortDto,
@@ -76,6 +77,7 @@ import {
 } from './composer/contentEditablePrompt';
 import { ComposerFrame } from './composer/ComposerFrame';
 import { ComposerPendingQueue } from './composer/ComposerPendingQueue';
+import { ComposerPendingWakes } from './composer/ComposerPendingWakes';
 import { ComposerToolbar } from './composer/ComposerToolbar';
 import { useComposerAttachments } from './composer/useComposerAttachments';
 import { useAttachmentPreviewUrls } from './composer/useAttachmentPreviewUrls';
@@ -208,6 +210,7 @@ export interface ThreadComposerProps {
   }>;
   onSteerPendingPrompt?: (pendingPromptId: string) => Promise<void> | void;
   onCancelPendingPrompt?: (pendingPromptId: string) => Promise<void> | void;
+  pendingWakes?: ThreadPendingWakeDto[];
 }
 
 export function ThreadComposer({
@@ -301,6 +304,7 @@ export function ThreadComposer({
   pendingPrompts = [],
   onSteerPendingPrompt,
   onCancelPendingPrompt,
+  pendingWakes = [],
 }: ThreadComposerProps) {
   useI18n();
   const [openMenu, setOpenMenu] = useState<SettingsMenu>(null);
@@ -1204,13 +1208,18 @@ export function ThreadComposer({
       formRef={menuRef}
       promptSlot={promptSlot}
       pendingQueueSlot={
-        !isShellView && pendingPrompts.length > 0 ? (
-          <ComposerPendingQueue
-            prompts={pendingPrompts}
-            onSteer={onSteerPendingPrompt}
-            onCancel={onCancelPendingPrompt}
-            {...(onCancelPendingPrompt ? { onEdit: editPendingPrompt } : {})}
-          />
+        !isShellView && (pendingPrompts.length > 0 || pendingWakes.length > 0) ? (
+          <>
+            {pendingWakes.length > 0 ? <ComposerPendingWakes wakes={pendingWakes} /> : null}
+            {pendingPrompts.length > 0 ? (
+              <ComposerPendingQueue
+                prompts={pendingPrompts}
+                onSteer={onSteerPendingPrompt}
+                onCancel={onCancelPendingPrompt}
+                {...(onCancelPendingPrompt ? { onEdit: editPendingPrompt } : {})}
+              />
+            ) : null}
+          </>
         ) : null
       }
       toolbarSlot={

@@ -1,17 +1,18 @@
 import { createContext, useContext, useState, type MouseEvent, type ReactNode } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { BellRing, ChevronRight } from 'lucide-react';
 
 import { translate, useI18n } from '../../i18n';
 import type { DescribeThread } from '../../adapters';
 import { GraphChatLinkifiedPlainText } from './GraphChatMessageBody';
+import { wakeEntries, wakeState } from '../timeline/delegateWake';
 
 /* Prompts the Supervisor writes on an agent's behalf (runtime interaction/mod.rs,
-   inbox_reminder.rs) start with a bracketed header. They are not the person
-   typing, so they read as a labelled envelope or a one-line notice. */
+   inbox_reminder.rs, agents.rs wakes) start with a bracketed header. They are
+   not the person typing, so they read as a labelled envelope or a one-line notice. */
 
 export type PromptEnvelope =
   | { type: 'peer'; kind: string; from: string; fromThreadId: string | null; subject: string | null; urgent: string | null; body: string }
-  | { type: 'notice'; notice: 'inbox' | 'turn' | 'resume'; preview: string; body: string };
+  | { type: 'notice'; notice: 'inbox' | 'turn' | 'resume' | 'wake'; preview: string; body: string };
 
 // runtime service/update.rs RESUME_PROMPT
 const RESUME_PREFIX = 'The Supervisor was restarted for device maintenance, interrupting this task.';
@@ -40,6 +41,11 @@ export function parsePromptEnvelope(text: string): PromptEnvelope | null {
     const lines = rest.split('\n').map((line) => line.trim()).filter(Boolean);
     const first = lines.find((line) => line.startsWith('- '))?.slice(2) ?? lines[0] ?? '';
     return { type: 'notice', notice: 'inbox', preview: shortIds(first), body: rest.trim() };
+  }
+  if (inner.startsWith('wake: ')) {
+    // Each delegate the wake reports on, with its state.
+    const preview = wakeEntries(rest).map((entry) => `${entry[1]} ${wakeState(entry[3]!.split(',')[0]!.trim())}`).join(' · ');
+    return { type: 'notice', notice: 'wake', preview, body: rest.trim() };
   }
   if (inner === 'turn notification') {
     const first = rest.split('\n')[0] ?? '';
@@ -123,7 +129,15 @@ const NOTICE = {
   inbox: { glyph: '✉', label: 'chat.envelopeInbox' },
   turn: { glyph: '⚑', label: 'chat.envelopeTurn' },
   resume: { glyph: '↻', label: 'chat.envelopeResume' },
+  wake: { glyph: <BellRing className="prompt-envelope-icon" />, label: 'chat.peerRegisteredWake' },
 } as const;
+
+/** Where a queued prompt came from and its gist, for one-line lists. */
+export function promptEnvelopeSummary(envelope: PromptEnvelope): { label: string; preview: string } {
+  if (envelope.type === 'notice') return { label: translate(NOTICE[envelope.notice].label), preview: envelope.preview };
+  const kind = KIND_LABEL[envelope.kind] ? translate(KIND_LABEL[envelope.kind]!) : envelope.kind;
+  return { label: `${kind} · ${translate('chat.envelopeFrom', { from: envelope.from })}`, preview: envelope.subject ?? envelope.body.split('\n')[0] ?? '' };
+}
 
 /** Inbox reminders, turn notifications and maintenance resumes: one line, opened in place. */
 export function PromptNotice({ envelope, actions }: { envelope: PromptEnvelope & { type: 'notice' }; actions?: ReactNode }) {

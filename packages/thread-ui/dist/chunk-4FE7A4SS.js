@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-GFE36FSY.js";
+} from "./chunk-44DFZU4B.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -635,6 +635,69 @@ function downloadDraft(doc, disk = false) {
   URL.revokeObjectURL(url);
 }
 
+// src/components/workspacePaths.ts
+function normalizeFileSystemPath(value) {
+  return value.trim().replace(/\\/g, "/").replace(/^\/([a-z]:\/)/i, "$1");
+}
+var APP_LOCAL_PATH_PREFIXES = [
+  "/api/",
+  "/assets/",
+  "/control-plane",
+  "/devices/",
+  "/relay/",
+  "/relay-account",
+  "/relay-admin",
+  "/relay-devices",
+  "/relay-portal",
+  "/threads",
+  "/workspaces"
+];
+function localFileHref(value, origin) {
+  let candidate = value.trim();
+  if (!candidate || candidate.startsWith("#") || candidate.startsWith("//")) return null;
+  if (/^(https?:|file:)/i.test(candidate)) {
+    try {
+      const url = new URL(candidate);
+      if (url.protocol !== "file:" && url.origin !== origin) return null;
+      candidate = (url.protocol === "file:" && url.hostname ? `//${url.hostname}` : "") + url.pathname + url.hash;
+    } catch {
+      return null;
+    }
+  } else {
+    candidate = candidate.split("?")[0] ?? "";
+  }
+  try {
+    candidate = decodeURIComponent(candidate);
+  } catch {
+  }
+  candidate = normalizeFileSystemPath(candidate);
+  if (/^[a-z][a-z+.-]*:/i.test(candidate) && !/^[a-z]:\//i.test(candidate)) return null;
+  if (APP_LOCAL_PATH_PREFIXES.some((prefix) => candidate === prefix || candidate.startsWith(prefix))) return null;
+  return candidate || null;
+}
+function relativeWorkspacePath(value, workspaceRoot) {
+  let path = normalizeFileSystemPath(value);
+  const root = normalizeFileSystemPath(workspaceRoot).replace(/\/+$/, "");
+  const absolute = path.startsWith("/") || /^[a-z]:\//i.test(path);
+  if (absolute) {
+    const windows = /^[a-z]:\//i.test(root) || root.startsWith("//");
+    const comparePath = windows ? path.toLowerCase() : path;
+    const compareRoot = windows ? root.toLowerCase() : root;
+    if (comparePath === compareRoot) return "";
+    if (!comparePath.startsWith(`${compareRoot}/`)) return null;
+    path = path.slice(root.length + 1);
+  }
+  const segments = [];
+  for (const part of path.split("/")) {
+    if (!part || part === ".") continue;
+    if (part === "..") {
+      if (!segments.length) return null;
+      segments.pop();
+    } else segments.push(part);
+  }
+  return segments.join("/");
+}
+
 // src/components/graph-ui/Tooltip.tsx
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { jsx as jsx6, jsxs as jsxs5 } from "react/jsx-runtime";
@@ -915,69 +978,6 @@ function ResizableHandle({
       children: withHandle ? /* @__PURE__ */ jsx9("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx9(GripVerticalIcon, { className: "size-2.5" }) }) : null
     }
   );
-}
-
-// src/components/workspacePaths.ts
-function normalizeFileSystemPath(value) {
-  return value.trim().replace(/\\/g, "/").replace(/^\/([a-z]:\/)/i, "$1");
-}
-var APP_LOCAL_PATH_PREFIXES = [
-  "/api/",
-  "/assets/",
-  "/control-plane",
-  "/devices/",
-  "/relay/",
-  "/relay-account",
-  "/relay-admin",
-  "/relay-devices",
-  "/relay-portal",
-  "/threads",
-  "/workspaces"
-];
-function localFileHref(value, origin) {
-  let candidate = value.trim();
-  if (!candidate || candidate.startsWith("#") || candidate.startsWith("//")) return null;
-  if (/^(https?:|file:)/i.test(candidate)) {
-    try {
-      const url = new URL(candidate);
-      if (url.protocol !== "file:" && url.origin !== origin) return null;
-      candidate = (url.protocol === "file:" && url.hostname ? `//${url.hostname}` : "") + url.pathname + url.hash;
-    } catch {
-      return null;
-    }
-  } else {
-    candidate = candidate.split("?")[0] ?? "";
-  }
-  try {
-    candidate = decodeURIComponent(candidate);
-  } catch {
-  }
-  candidate = normalizeFileSystemPath(candidate);
-  if (/^[a-z][a-z+.-]*:/i.test(candidate) && !/^[a-z]:\//i.test(candidate)) return null;
-  if (APP_LOCAL_PATH_PREFIXES.some((prefix) => candidate === prefix || candidate.startsWith(prefix))) return null;
-  return candidate || null;
-}
-function relativeWorkspacePath(value, workspaceRoot) {
-  let path = normalizeFileSystemPath(value);
-  const root = normalizeFileSystemPath(workspaceRoot).replace(/\/+$/, "");
-  const absolute = path.startsWith("/") || /^[a-z]:\//i.test(path);
-  if (absolute) {
-    const windows = /^[a-z]:\//i.test(root) || root.startsWith("//");
-    const comparePath = windows ? path.toLowerCase() : path;
-    const compareRoot = windows ? root.toLowerCase() : root;
-    if (comparePath === compareRoot) return "";
-    if (!comparePath.startsWith(`${compareRoot}/`)) return null;
-    path = path.slice(root.length + 1);
-  }
-  const segments = [];
-  for (const part of path.split("/")) {
-    if (!part || part === ".") continue;
-    if (part === "..") {
-      if (!segments.length) return null;
-      segments.pop();
-    } else segments.push(part);
-  }
-  return segments.join("/");
 }
 
 // src/components/graph-workspace/workspaceTree.ts
@@ -1580,113 +1580,6 @@ function WorkspaceImagePreview({ src, alt }) {
   ] });
 }
 
-// src/components/workbench/FilePanelContext.tsx
-import { createContext as createContext2, useContext as useContext2 } from "react";
-var FilePanelContext = createContext2(null);
-var useFilePanel = () => useContext2(FilePanelContext);
-
-// src/components/graph-chat/graphChatShiki.ts
-var CSS_VARIABLES_SYNTAX_THEME = "pockymoe-css-variables";
-function syntaxThemeFor(dark, cssPalette) {
-  if (cssPalette) return CSS_VARIABLES_SYNTAX_THEME;
-  return dark ? "ayu-dark" : "github-light-default";
-}
-var graphChatHighlighterPromise = null;
-function getGraphChatHighlighter() {
-  graphChatHighlighterPromise ??= Promise.all([
-    import("shiki/core"),
-    import("shiki/engine/javascript"),
-    import("shiki/themes/github-light-default.mjs"),
-    import("shiki/themes/ayu-dark.mjs"),
-    import("shiki/langs/javascript.mjs"),
-    import("shiki/langs/typescript.mjs"),
-    import("shiki/langs/tsx.mjs"),
-    import("shiki/langs/jsx.mjs"),
-    import("shiki/langs/python.mjs"),
-    import("shiki/langs/json.mjs"),
-    import("shiki/langs/bash.mjs"),
-    import("shiki/langs/shellscript.mjs"),
-    import("shiki/langs/yaml.mjs"),
-    import("shiki/langs/toml.mjs"),
-    import("shiki/langs/markdown.mjs"),
-    import("shiki/langs/html.mjs"),
-    import("shiki/langs/css.mjs"),
-    import("shiki/langs/sql.mjs"),
-    import("shiki/langs/csv.mjs"),
-    import("shiki/langs/ruby.mjs"),
-    import("shiki/langs/rust.mjs"),
-    import("shiki/langs/go.mjs"),
-    import("shiki/langs/java.mjs"),
-    import("shiki/langs/c.mjs"),
-    import("shiki/langs/cpp.mjs"),
-    import("shiki/langs/csharp.mjs"),
-    import("shiki/langs/xml.mjs")
-  ]).then(
-    ([
-      { createHighlighterCore, createCssVariablesTheme },
-      { createJavaScriptRegexEngine },
-      ayuLight,
-      ayuDark,
-      javascript,
-      typescript,
-      tsx,
-      jsx13,
-      python,
-      json,
-      bash,
-      shellscript,
-      yaml,
-      toml,
-      markdown,
-      html,
-      css,
-      sql,
-      csv,
-      ruby,
-      rust,
-      go,
-      java,
-      c,
-      cpp,
-      csharp,
-      xml
-    ]) => createHighlighterCore({
-      engine: createJavaScriptRegexEngine(),
-      themes: [
-        ayuLight.default,
-        ayuDark.default,
-        createCssVariablesTheme({ name: CSS_VARIABLES_SYNTAX_THEME, variablePrefix: "--shiki-", fontStyle: true })
-      ],
-      langs: [
-        javascript.default,
-        typescript.default,
-        tsx.default,
-        jsx13.default,
-        python.default,
-        json.default,
-        bash.default,
-        shellscript.default,
-        yaml.default,
-        toml.default,
-        markdown.default,
-        html.default,
-        css.default,
-        sql.default,
-        csv.default,
-        ruby.default,
-        rust.default,
-        go.default,
-        java.default,
-        c.default,
-        cpp.default,
-        csharp.default,
-        xml.default
-      ]
-    })
-  );
-  return graphChatHighlighterPromise;
-}
-
 // src/components/externalLinkProps.ts
 function externalLinkProps(href) {
   if (!href) return {};
@@ -1798,6 +1691,113 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
   ] });
 }
 
+// src/components/graph-chat/graphChatShiki.ts
+var CSS_VARIABLES_SYNTAX_THEME = "pockymoe-css-variables";
+function syntaxThemeFor(dark, cssPalette) {
+  if (cssPalette) return CSS_VARIABLES_SYNTAX_THEME;
+  return dark ? "ayu-dark" : "github-light-default";
+}
+var graphChatHighlighterPromise = null;
+function getGraphChatHighlighter() {
+  graphChatHighlighterPromise ??= Promise.all([
+    import("shiki/core"),
+    import("shiki/engine/javascript"),
+    import("shiki/themes/github-light-default.mjs"),
+    import("shiki/themes/ayu-dark.mjs"),
+    import("shiki/langs/javascript.mjs"),
+    import("shiki/langs/typescript.mjs"),
+    import("shiki/langs/tsx.mjs"),
+    import("shiki/langs/jsx.mjs"),
+    import("shiki/langs/python.mjs"),
+    import("shiki/langs/json.mjs"),
+    import("shiki/langs/bash.mjs"),
+    import("shiki/langs/shellscript.mjs"),
+    import("shiki/langs/yaml.mjs"),
+    import("shiki/langs/toml.mjs"),
+    import("shiki/langs/markdown.mjs"),
+    import("shiki/langs/html.mjs"),
+    import("shiki/langs/css.mjs"),
+    import("shiki/langs/sql.mjs"),
+    import("shiki/langs/csv.mjs"),
+    import("shiki/langs/ruby.mjs"),
+    import("shiki/langs/rust.mjs"),
+    import("shiki/langs/go.mjs"),
+    import("shiki/langs/java.mjs"),
+    import("shiki/langs/c.mjs"),
+    import("shiki/langs/cpp.mjs"),
+    import("shiki/langs/csharp.mjs"),
+    import("shiki/langs/xml.mjs")
+  ]).then(
+    ([
+      { createHighlighterCore, createCssVariablesTheme },
+      { createJavaScriptRegexEngine },
+      ayuLight,
+      ayuDark,
+      javascript,
+      typescript,
+      tsx,
+      jsx13,
+      python,
+      json,
+      bash,
+      shellscript,
+      yaml,
+      toml,
+      markdown,
+      html,
+      css,
+      sql,
+      csv,
+      ruby,
+      rust,
+      go,
+      java,
+      c,
+      cpp,
+      csharp,
+      xml
+    ]) => createHighlighterCore({
+      engine: createJavaScriptRegexEngine(),
+      themes: [
+        ayuLight.default,
+        ayuDark.default,
+        createCssVariablesTheme({ name: CSS_VARIABLES_SYNTAX_THEME, variablePrefix: "--shiki-", fontStyle: true })
+      ],
+      langs: [
+        javascript.default,
+        typescript.default,
+        tsx.default,
+        jsx13.default,
+        python.default,
+        json.default,
+        bash.default,
+        shellscript.default,
+        yaml.default,
+        toml.default,
+        markdown.default,
+        html.default,
+        css.default,
+        sql.default,
+        csv.default,
+        ruby.default,
+        rust.default,
+        go.default,
+        java.default,
+        c.default,
+        cpp.default,
+        csharp.default,
+        xml.default
+      ]
+    })
+  );
+  return graphChatHighlighterPromise;
+}
+
+// src/components/workbench/FilePanelContext.tsx
+import { createContext as createContext2, useContext as useContext2 } from "react";
+var FilePanelContext = createContext2(null);
+var useFilePanel = () => useContext2(FilePanelContext);
+
 // src/components/graph-ui/Button.tsx
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
@@ -1861,10 +1861,18 @@ export {
   confirmAsync,
   cn,
   Button,
+  normalizeFileSystemPath,
+  localFileHref,
+  relativeWorkspacePath,
   MarkdownImageLinkContext,
   GraphWorkspaceImageLightbox,
   ZoomableImage,
   WorkspaceImagePreview,
+  externalLinkProps,
+  markdownHtmlPlugins,
+  WorkspaceFileLink,
+  syntaxThemeFor,
+  getGraphChatHighlighter,
   Tooltip,
   TooltipTrigger,
   TooltipContent,
@@ -1883,11 +1891,6 @@ export {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
-  syntaxThemeFor,
-  getGraphChatHighlighter,
-  normalizeFileSystemPath,
-  localFileHref,
-  relativeWorkspacePath,
   MOLECULAR_EXTENSIONS,
   IMAGE_EXTENSIONS,
   PDF_EXTENSIONS,
@@ -1904,9 +1907,6 @@ export {
   flattenWorkspaceNodes,
   findFirstPreviewNode,
   collectAncestorPaths,
-  externalLinkProps,
-  markdownHtmlPlugins,
-  WorkspaceFileLink,
   documentStores,
   documentListeners,
   isProtected,

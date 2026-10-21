@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../../i18n';
 import { CornerUpRight, Loader2, Pencil, X } from "lucide-react";
 import { useState } from "react";
+import { parsePromptEnvelope, promptEnvelopeSummary } from "../graph-chat/PromptEnvelope";
 
 interface ComposerPendingPrompt {
   id: string;
@@ -59,6 +60,10 @@ export function ComposerPendingQueue({
         {prompts.map((prompt) => {
           const busy = busyIds.has(prompt.id);
           const open = openId === prompt.id;
+          // A prompt the Supervisor wrote (a wake, another agent's message)
+          // says where it came from instead of starting with its header.
+          const envelope = parsePromptEnvelope(prompt.prompt);
+          const source = envelope ? promptEnvelopeSummary(envelope) : null;
           return (
             <div
               key={prompt.id}
@@ -71,7 +76,12 @@ export function ComposerPendingQueue({
                 onClick={() => setOpenId(open ? null : prompt.id)}
                 className={`thread-composer-pending-text min-w-0 flex-1 text-left text-sm text-[var(--theme-fg)] ${open ? 'max-h-28 overflow-y-auto whitespace-pre-wrap break-words py-1.5' : 'truncate'}`}
               >
-                {prompt.prompt}
+                {source && !open ? (
+                  <>
+                    <span className="thread-composer-pending-source">{source.label}</span>
+                    {source.preview ? ` ${source.preview}` : null}
+                  </>
+                ) : prompt.prompt}
               </button>
               {prompt.optimistic ? (
                 <span className="inline-flex h-8 items-center gap-1.5 px-1.5 text-xs text-[var(--theme-fg-muted)]">

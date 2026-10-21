@@ -24,6 +24,8 @@ const ANCHOR_HOLD_MS = 900;
 const ANCHOR_EXTEND_MS = 500;
 /** How long a prepend holds the reader's place while the new turns settle. */
 const PREPEND_HOLD_MS = 1500;
+/** The longest a load above holds before its turns arrive. */
+const LOADING_HOLD_MS = 15000;
 const TOUCH_SCROLL_SLOP_PX = 6;
 
 function useChangeRevision(inputs: readonly unknown[]) {
@@ -90,7 +92,10 @@ export function useTimelineScroll({
   const topLoadArmedRef = useRef(false);
   const lastTouchYRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
-  const anchorRef = useRef<{ element: Element; top: number; until: number; frame: number } | null>(null);
+  // `follow`: earlier turns loading above. It is corrected only when content
+  // changes size, and the reader's own scrolling (a swipe, its momentum, a jump)
+  // moves where it is held instead of being undone.
+  const anchorRef = useRef<{ element: Element; top: number; until: number; frame: number; follow?: boolean } | null>(null);
   const touchPullDistanceRef = useRef(0);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_TURNS);
   const [loadMoreClicks, setLoadMoreClicks] = useState(0);
@@ -154,6 +159,12 @@ export function useTimelineScroll({
     }
 
     rememberPrependScrollPosition();
+    const pending = pendingPrependScrollRef.current;
+    if (pending?.element) {
+      // Held from now: the loading row that appears above it moves nothing either.
+      if (anchorRef.current) window.cancelAnimationFrame(anchorRef.current.frame);
+      anchorRef.current = { element: pending.element, top: pending.top, until: performance.now() + LOADING_HOLD_MS, frame: 0, follow: true };
+    }
     autoLoadedEarlierRef.current = true;
     topLoadArmedRef.current = false;
     touchPullDistanceRef.current = 0;
@@ -188,8 +199,11 @@ export function useTimelineScroll({
     anchorRef.current = null;
   }, []);
 
-  /** The reader scrolls: stop holding. */
-  const releaseAnchor = stopAnchor;
+  /** The reader scrolls: stop holding a clicked control. A load above keeps
+      following the reader's scrolling instead (see handleScroll). */
+  const releaseAnchor = useCallback(() => {
+    if (!anchorRef.current?.follow) stopAnchor();
+  }, [stopAnchor]);
 
   // Keeps the control the reader clicked at the same height on screen while
   // what it opens or closes changes size, instead of following the tail.
@@ -229,7 +243,15 @@ export function useTimelineScroll({
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
     if (container && anchorRef.current) {
-      // Scrolling done to hold a clicked control is not the reader moving.
+      const anchor = anchorRef.current;
+      const moved = container.scrollTop - lastScrollTopRef.current;
+      // Scrolling done to hold the turn changes nothing. Any other scrolling is
+      // the reader's (or the browser's own anchoring, which kept it in place):
+      // the turn is held where that scrolling put it.
+      if (anchor.follow && Math.abs(moved) >= 0.5 &&
+          Math.abs(anchor.element.getBoundingClientRect().top - anchor.top) >= 0.5) {
+        anchor.top -= moved;
+      }
       lastScrollTopRef.current = container.scrollTop;
     } else if (container) {
       // Reading on while earlier turns load: they keep what is on screen now.
@@ -268,6 +290,7 @@ export function useTimelineScroll({
       return;
     }
 
+    if (anchorRef.current?.follow) stopAnchor();
     container.scrollTop = container.scrollHeight;
     lastScrollTopRef.current = container.scrollTop;
     lastObservedScrollHeightRef.current = container.scrollHeight;
@@ -275,12 +298,14 @@ export function useTimelineScroll({
     setIsTailVisible((current) => (current ? current : true));
     userScrolledAwayFromTailRef.current = false;
     shouldStickToBottomRef.current = true;
-  }, []);
+  }, [stopAnchor]);
 
   /** Call before content changes size because of the reader; pass the control
       they used to keep it where it is on screen. */
   const preserveScrollPositionForResize = useCallback((anchor?: Element | null) => {
     scrollIntentRevisionRef.current += 1;
+    // The reader acts (a jump, a toggle): a load above stops holding its turn.
+    if (anchorRef.current?.follow) stopAnchor();
     const container = scrollContainerRef.current;
     if (!container) {
       return;
@@ -421,15 +446,20 @@ export function useTimelineScroll({
     userScrolledAwayFromTailRef.current = true;
     shouldStickToBottomRef.current = false;
     topLoadArmedRef.current = false;
-    // Put the turn that was on top back where it was before this frame paints,
-    // then hold it while the new turns settle (Markdown, images); a scroll by
-    // the reader releases it.
-    if (anchor.element?.isConnected) {
-      stopAnchor();
-      anchorRef.current = { element: anchor.element, top: anchor.top, until: performance.now() + PREPEND_HOLD_MS, frame: 0 };
+    // Put the turn that was on top back where it was (or where the reader has
+    // scrolled it since) before this frame paints, then keep it there while the
+    // new turns settle (Markdown, images): corrected on size changes only.
+    const held = anchorRef.current;
+    if (held?.follow && held.element.isConnected) {
+      held.until = performance.now() + PREPEND_HOLD_MS;
       correctAnchor();
-      if (anchorRef.current) anchorRef.current.frame = window.requestAnimationFrame(holdAnchor);
       lastObservedScrollHeightRef.current = container.scrollHeight;
+      return;
+    }
+    // The reader jumped or acted meanwhile: their position stands.
+    if (anchor.element?.isConnected) {
+      lastObservedScrollHeightRef.current = container.scrollHeight;
+      lastScrollTopRef.current = container.scrollTop;
       return;
     }
     const addedHeight = container.scrollHeight - anchor.scrollHeight;
@@ -443,7 +473,7 @@ export function useTimelineScroll({
     container.scrollTop = nextScrollTop;
     lastScrollTopRef.current = nextScrollTop;
     lastObservedScrollHeightRef.current = container.scrollHeight;
-  }, [loadingEarlier, turnsLength, correctAnchor, holdAnchor, stopAnchor]);
+  }, [loadingEarlier, turnsLength, correctAnchor]);
 
   useEffect(() => {
     setVisibleCount((current) => {
@@ -521,7 +551,7 @@ export function useTimelineScroll({
 
       const anchor = anchorRef.current;
       if (anchor) {
-        anchor.until = Math.max(anchor.until, performance.now() + ANCHOR_EXTEND_MS);
+        if (!anchor.follow) anchor.until = Math.max(anchor.until, performance.now() + ANCHOR_EXTEND_MS);
         // Resize observers run after layout and before paint: correct now.
         correctAnchor();
         return;

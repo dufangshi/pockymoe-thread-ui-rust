@@ -306,6 +306,50 @@ describe('useTimelineScroll', () => {
     harness.unmount();
   });
 
+  it('follows the reader while earlier turns settle, and lets a jump go', () => {
+    const onLoadEarlier = vi.fn();
+    let scrollHeight = 900;
+    let scrollTop = 0;
+    let layoutTop = 40;
+    const harness = renderHookHarness({ ...baseInput({ turnsLength: 3, totalTurnCount: 9, onLoadEarlier }), renderNodes: true });
+    const scrollContainer = harness.container.querySelector<HTMLDivElement>('[data-testid="scroll-container"]')!;
+    Object.defineProperties(scrollContainer, {
+      scrollHeight: { configurable: true, get: () => scrollHeight },
+      clientHeight: { configurable: true, value: 300 },
+      scrollTop: { configurable: true, get: () => scrollTop, set: (value: number) => { scrollTop = value; } },
+    });
+    vi.spyOn(scrollContainer, 'getBoundingClientRect').mockImplementation(() => ({ top: 0, bottom: 300 }) as DOMRect);
+    const turn = document.createElement('div');
+    turn.dataset.timelineTurn = '';
+    vi.spyOn(turn, 'getBoundingClientRect').mockImplementation(() => ({ top: layoutTop - scrollTop, bottom: layoutTop - scrollTop + 200 }) as DOMRect);
+    scrollContainer.prepend(turn);
+    const grow = (height: number) => { layoutTop += height; scrollHeight += height; };
+    flushSync(() => {
+      latestResult?.handleScroll();
+      latestResult?.handleWheel({ deltaY: -24 } as unknown as WheelEvent<HTMLDivElement>);
+    });
+    harness.rerender({ ...baseInput({ turnsLength: 3, totalTurnCount: 9, loadingEarlier: true, onLoadEarlier }), renderNodes: true });
+    grow(300);
+    harness.rerender({ ...baseInput({ turnsLength: 6, totalTurnCount: 9, loadingEarlier: false, onLoadEarlier }), renderNodes: true });
+    expect(turn.getBoundingClientRect().top).toBe(40);
+    // A swipe (or its momentum) moves the page by 90: kept, not pulled back.
+    scrollTop += 90;
+    flushSync(() => { latestResult?.handleWheel({ deltaY: 90 } as unknown as WheelEvent<HTMLDivElement>); latestResult?.handleScroll(); });
+    expect(turn.getBoundingClientRect().top).toBe(-50);
+    // New turns finish rendering above: still where the reader put it.
+    grow(120);
+    flushSync(() => { latestResult?.holdAnchorNow(); });
+    expect(turn.getBoundingClientRect().top).toBe(-50);
+    // A jump to another turn ends the hold: later growth no longer scrolls.
+    flushSync(() => { latestResult?.preserveScrollPositionForResize(); });
+    scrollTop = 0;
+    flushSync(() => { latestResult?.handleScroll(); });
+    grow(50);
+    flushSync(() => { latestResult?.holdAnchorNow(); });
+    expect(scrollTop).toBe(0);
+    harness.unmount();
+  });
+
   it('notifies tail visibility changes from scroll geometry', async () => {
     const onTailVisibilityChange = vi.fn();
     const harness = renderHookHarness({

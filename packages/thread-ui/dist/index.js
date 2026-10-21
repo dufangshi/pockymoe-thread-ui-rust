@@ -18482,6 +18482,7 @@ import {
 var ANCHOR_HOLD_MS = 900;
 var ANCHOR_EXTEND_MS = 500;
 var PREPEND_HOLD_MS = 1500;
+var LOADING_HOLD_MS = 15e3;
 var TOUCH_SCROLL_SLOP_PX = 6;
 function useChangeRevision(inputs) {
   const previousInputsRef = useRef34(null);
@@ -18561,6 +18562,11 @@ function useTimelineScroll({
       return false;
     }
     rememberPrependScrollPosition();
+    const pending = pendingPrependScrollRef.current;
+    if (pending?.element) {
+      if (anchorRef.current) window.cancelAnimationFrame(anchorRef.current.frame);
+      anchorRef.current = { element: pending.element, top: pending.top, until: performance.now() + LOADING_HOLD_MS, frame: 0, follow: true };
+    }
     autoLoadedEarlierRef.current = true;
     topLoadArmedRef.current = false;
     touchPullDistanceRef.current = 0;
@@ -18589,7 +18595,9 @@ function useTimelineScroll({
     if (anchor) window.cancelAnimationFrame(anchor.frame);
     anchorRef.current = null;
   }, []);
-  const releaseAnchor = stopAnchor;
+  const releaseAnchor = useCallback17(() => {
+    if (!anchorRef.current?.follow) stopAnchor();
+  }, [stopAnchor]);
   const correctAnchor = useCallback17(() => {
     const anchor = anchorRef.current;
     const container = scrollContainerRef.current;
@@ -18619,6 +18627,11 @@ function useTimelineScroll({
   const handleScroll = useCallback17(() => {
     const container = scrollContainerRef.current;
     if (container && anchorRef.current) {
+      const anchor = anchorRef.current;
+      const moved = container.scrollTop - lastScrollTopRef.current;
+      if (anchor.follow && Math.abs(moved) >= 0.5 && Math.abs(anchor.element.getBoundingClientRect().top - anchor.top) >= 0.5) {
+        anchor.top -= moved;
+      }
       lastScrollTopRef.current = container.scrollTop;
     } else if (container) {
       if (pendingPrependScrollRef.current) rememberPrependScrollPosition();
@@ -18650,6 +18663,7 @@ function useTimelineScroll({
     if (!container) {
       return;
     }
+    if (anchorRef.current?.follow) stopAnchor();
     container.scrollTop = container.scrollHeight;
     lastScrollTopRef.current = container.scrollTop;
     lastObservedScrollHeightRef.current = container.scrollHeight;
@@ -18657,9 +18671,10 @@ function useTimelineScroll({
     setIsTailVisible((current) => current ? current : true);
     userScrolledAwayFromTailRef.current = false;
     shouldStickToBottomRef.current = true;
-  }, []);
+  }, [stopAnchor]);
   const preserveScrollPositionForResize = useCallback17((anchor) => {
     scrollIntentRevisionRef.current += 1;
+    if (anchorRef.current?.follow) stopAnchor();
     const container = scrollContainerRef.current;
     if (!container) {
       return;
@@ -18767,12 +18782,16 @@ function useTimelineScroll({
     userScrolledAwayFromTailRef.current = true;
     shouldStickToBottomRef.current = false;
     topLoadArmedRef.current = false;
-    if (anchor.element?.isConnected) {
-      stopAnchor();
-      anchorRef.current = { element: anchor.element, top: anchor.top, until: performance.now() + PREPEND_HOLD_MS, frame: 0 };
+    const held = anchorRef.current;
+    if (held?.follow && held.element.isConnected) {
+      held.until = performance.now() + PREPEND_HOLD_MS;
       correctAnchor();
-      if (anchorRef.current) anchorRef.current.frame = window.requestAnimationFrame(holdAnchor);
       lastObservedScrollHeightRef.current = container.scrollHeight;
+      return;
+    }
+    if (anchor.element?.isConnected) {
+      lastObservedScrollHeightRef.current = container.scrollHeight;
+      lastScrollTopRef.current = container.scrollTop;
       return;
     }
     const addedHeight = container.scrollHeight - anchor.scrollHeight;
@@ -18785,7 +18804,7 @@ function useTimelineScroll({
     container.scrollTop = nextScrollTop;
     lastScrollTopRef.current = nextScrollTop;
     lastObservedScrollHeightRef.current = container.scrollHeight;
-  }, [loadingEarlier, turnsLength, correctAnchor, holdAnchor, stopAnchor]);
+  }, [loadingEarlier, turnsLength, correctAnchor]);
   useEffect36(() => {
     setVisibleCount((current) => {
       if (current >= turnsLength - 1) {
@@ -18841,7 +18860,7 @@ function useTimelineScroll({
       lastObservedScrollHeightRef.current = nextScrollHeight;
       const anchor = anchorRef.current;
       if (anchor) {
-        anchor.until = Math.max(anchor.until, performance.now() + ANCHOR_EXTEND_MS);
+        if (!anchor.follow) anchor.until = Math.max(anchor.until, performance.now() + ANCHOR_EXTEND_MS);
         correctAnchor();
         return;
       }

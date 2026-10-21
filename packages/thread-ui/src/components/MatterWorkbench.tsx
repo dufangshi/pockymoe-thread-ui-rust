@@ -1026,7 +1026,16 @@ export function MatterWorkbench({
         <div ref={contentRef} style={{ '--explorer-width': `${explorerWidth}px` } as CSSProperties} className={`matter-content ${explorerOpen ? 'has-explorer' : ''}`}>
           <div className="matter-chat">
             <WorkbenchContext.Provider value={true}>
-              {children}
+              {/* A phone has no sidebar: a workspace opened without a thread lists its
+                  threads here, under the host's intro (`.matter-workspace-intro`). */}
+              {o.emptyWorkspace && mobile && workspaceThreads.length > 0
+                ? <div className="matter-workspace-home">
+                    {children}
+                    <section className="matter-workspace-home-list matter-thread-section" aria-label={translate('workbench.thisWorkspace')} data-testid="workspace-home-threads">
+                      {renderThreadGroups(workspaceThreads, reorderable)}
+                    </section>
+                  </div>
+                : children}
             </WorkbenchContext.Provider>
           </div>
           {explorerOpen && (

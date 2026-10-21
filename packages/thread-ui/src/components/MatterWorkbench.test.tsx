@@ -183,6 +183,17 @@ describe('one-handed phone dock', () => {
     expect(sheet.hasAttribute('data-open')).toBe(false);
   });
 
+  it("lists a workspace's threads on its own page, with no thread marked in the dock", () => {
+    const onNavigate = vi.fn();
+    options = { ...baseOptions, emptyWorkspace: true, currentKey: '', onNavigate, workspaceThreads: [thread('a'), thread('b', 'unread')] };
+    render();
+    const list = host.querySelector('[data-testid="workspace-home-threads"]')!;
+    expect([...list.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['Aws', 'Bws']);
+    expect(host.querySelector('.matter-phone-thread .matter-status-dot')).toBeNull();
+    act(() => list.querySelector<HTMLAnchorElement>('a[href="/threads/b"]')!.click());
+    expect(onNavigate).toHaveBeenCalledWith('/threads/b');
+  });
+
   it('lists the current thread first in the sheet, then by attention', () => {
     options = { ...baseOptions, currentKey: 'c', workspaceThreads: [thread('a'), thread('b', 'running'), thread('c')] };
     render();

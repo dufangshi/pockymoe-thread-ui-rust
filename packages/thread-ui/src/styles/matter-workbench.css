@@ -797,6 +797,16 @@
   overflow: hidden;
 }
 .matter-content.has-explorer .matter-chat { --matter-reading-width: 100%; }
+/* A workspace's own page on a phone: its intro shrinks to one row over its threads. */
+.matter-workspace-home { display: flex; flex-direction: column; min-height: 0; }
+.matter-workspace-home > .matter-workspace-intro {
+  flex: none; height: auto; flex-direction: row; justify-content: space-between; align-items: center;
+  gap: 12px; padding: 14px 16px 8px; text-align: left;
+}
+.matter-workspace-home > .matter-workspace-intro > :is(svg, p) { display: none; }
+.matter-workspace-home > .matter-workspace-intro > h1 { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 17px; }
+.matter-workspace-home > .matter-workspace-intro > a { flex: none; padding: 8px 12px; }
+.matter-workspace-home-list { flex: 1; min-height: 0; overflow-y: auto; padding: 0 6px 12px; }
 .matter-chat > div {
   height: 100%;
 }

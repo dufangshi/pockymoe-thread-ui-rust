@@ -39,7 +39,8 @@ export function PhoneDock({
         aria-label={translate('workbench.phoneDockThread', { title })}
         onClick={onOpenThreads}
       >
-        <span className="matter-status-dot" data-status={activity?.status ?? 'idle'} role="img" aria-label={activity?.label ?? ''} />
+        {/* No thread chosen (a workspace's own page): no mark that would look like one. */}
+        {activity && <span className="matter-status-dot" data-status={activity.status} role="img" aria-label={activity.label} />}
         <span className="matter-phone-thread-title">{title}</span>
         <ChevronsUpDown aria-hidden="true" />
       </button>}

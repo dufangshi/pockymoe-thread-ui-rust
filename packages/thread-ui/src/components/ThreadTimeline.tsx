@@ -164,6 +164,24 @@ function mergeOptimisticTurnItems(
 }
 
 /**
+ * How many of a working turn's deferred operations this view holds, from its
+ * loaded detail and its live events. A summary counts every item except the
+ * messages and native wait notices it carries itself (`deferredItemCount`).
+ */
+function knownDeferredItemCount(
+  loaded: ThreadTurnDto | undefined,
+  live: readonly ThreadHistoryItemDto[] | null | undefined,
+) {
+  const ids = new Set<string>();
+  for (const item of [...(loaded?.items ?? []), ...(live ?? [])]) {
+    if (item.kind === 'userMessage' || item.kind === 'agentMessage'
+      || item.origin === 'nativeBackgroundWait' || item.origin === 'nativeTaskNotification') continue;
+    ids.add(item.id);
+  }
+  return ids.size;
+}
+
+/**
  * Turns a reader folded or opened, per thread, for as long as the page lives: a
  * timeline that mounts again (another thread and back, a view that reloads) shows
  * them as they were instead of falling back to the defaults.
@@ -257,6 +275,8 @@ function ThreadTimelineComponent({
   const [loadingTurnDetailIds, setLoadingTurnDetailIds] = useState<Set<string>>(
     () => new Set(),
   );
+  // The summary's deferred count at a working turn's last automatic detail read.
+  const turnDetailRequestedAtRef = useRef<Record<string, number | undefined>>({});
   // A turn's last live operations outlive it until its summary carries them,
   // so its work folds into the work line instead of vanishing first.
   const [endedLiveItems, setEndedLiveItems] = useState<{ turnId: string; items: ThreadHistoryItemDto[] } | null>(null);
@@ -385,6 +405,7 @@ function ThreadTimelineComponent({
 
   useEffect(() => {
     setLoadedTurnDetails({});
+    turnDetailRequestedAtRef.current = {};
     setEndedLiveItems(null);
     setLoadingTurnDetailIds(new Set());
     setTurnDetailErrors({});
@@ -514,21 +535,30 @@ function ThreadTimelineComponent({
 
   useEffect(() => {
     if (!loadTurnDetail) return;
-    // A working turn reads open, so it loads what its summary deferred, once.
+    // A working turn reads open, so it loads what its summary deferred. Live
+    // events add later operations; when a summary reports more than the detail
+    // and those events hold (events missed while the connection was down or the
+    // tab was suspended), it reads the detail again, once per reported count.
     for (const turn of turns) {
       if (turn.status !== 'inProgress' || !turn.hasDeferredItems || collapsedTurnOverrides[turn.id] === true ||
-          loadedTurnDetails[turn.id] || loadingTurnDetailIds.has(turn.id) || turnDetailErrors[turn.id]) continue;
+          loadingTurnDetailIds.has(turn.id)) continue;
+      const loaded = loadedTurnDetails[turn.id];
+      const reported = turn.deferredItemCount ?? 0;
+      if (loaded && knownDeferredItemCount(loaded, liveItems?.turnId === turn.id ? liveItems.items : null) >= reported) continue;
+      if ((loaded || turnDetailErrors[turn.id]) && turnDetailRequestedAtRef.current[turn.id] === reported) continue;
+      turnDetailRequestedAtRef.current[turn.id] = reported;
       setLoadingTurnDetailIds((current) => new Set(current).add(turn.id));
       void Promise.resolve().then(() => loadTurnDetail(turn.id)).then((detail) => {
         if (detail.id !== turn.id) throw new Error(translate("chat.loadedTurnDetailDidNotMatchThe"));
         setLoadedTurnDetails((current) => ({ ...current, [turn.id]: detail }));
+        setTurnDetailErrors((current) => current[turn.id] ? { ...current, [turn.id]: undefined } : current);
       }).catch((error: unknown) => {
         setTurnDetailErrors((current) => ({ ...current, [turn.id]: error instanceof Error ? error.message : translate("chat.unableToLoadCompleteTurnHistory") }));
       }).finally(() => {
         setLoadingTurnDetailIds((current) => { const next = new Set(current); next.delete(turn.id); return next; });
       });
     }
-  }, [turns, loadTurnDetail, loadedTurnDetails, collapsedTurnOverrides, loadingTurnDetailIds, turnDetailErrors]);
+  }, [turns, liveItems, loadTurnDetail, loadedTurnDetails, collapsedTurnOverrides, loadingTurnDetailIds, turnDetailErrors]);
 
   const collapsedStateForTurn = useCallback((
     turn: TimelineTurn,

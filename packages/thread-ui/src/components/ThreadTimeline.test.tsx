@@ -633,6 +633,49 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain('Final checkpoint');
   });
 
+  it('reads a working turn again when its summary reports operations that live events missed', async () => {
+    const prompt = { id: 'prompt', kind: 'userMessage' as const, text: 'Live prompt' };
+    const command = (id: string, status = 'completed') => ({ id, kind: 'commandExecution' as const, text: `${id}-command`, status });
+    const summary = (count: number): ThreadTurnDto => ({ ...completedTurn([prompt]), status: 'inProgress', hasDeferredItems: true, deferredItemCount: count });
+    const detail = (...items: ThreadTurnDto['items']): ThreadTurnDto => ({ ...summary(0), hasDeferredItems: false, items: [prompt, ...items] });
+    const onLoadTurnDetail = vi.fn().mockResolvedValueOnce(detail(command('first')));
+    const props = { onLoadTurnDetail, liveOutput: '', threadRunning: true, activeTurnId: 'turn-1' };
+    const element = render(<ThreadTimeline {...props} turns={[summary(1)]} />);
+    await vi.waitFor(() => expect(element.textContent).toContain('first-command'));
+    // Live events cover what the next summary reports: no read.
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[summary(2)]} liveItems={{ turnId: 'turn-1', items: [command('second')] }} />));
+    expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
+    // After a gap the summary reports two more than the view holds.
+    onLoadTurnDetail.mockResolvedValueOnce(detail(command('first'), command('second'), command('missed'), command('fourth', 'inProgress')));
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[summary(4)]} liveItems={{ turnId: 'turn-1', items: [command('second')] }} />));
+    await vi.waitFor(() => expect(element.textContent).toContain('missed-command'));
+    expect(onLoadTurnDetail).toHaveBeenCalledTimes(2);
+    // A detail behind its summary does not read again for the same count.
+    onLoadTurnDetail.mockResolvedValue(detail(command('first')));
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[summary(9)]} />));
+    await vi.waitFor(() => expect(onLoadTurnDetail).toHaveBeenCalledTimes(3));
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[{ ...summary(9), items: [prompt, { id: 'note', kind: 'agentMessage', text: 'Still working' }] }]} />));
+    await new Promise(resolve => setTimeout(resolve, 20));
+    expect(onLoadTurnDetail).toHaveBeenCalledTimes(3);
+  });
+
+  it('retries a failed working-turn read once its summary changes', async () => {
+    const prompt = { id: 'prompt', kind: 'userMessage' as const, text: 'Live prompt' };
+    const summary = (count: number): ThreadTurnDto => ({ ...completedTurn([prompt]), status: 'inProgress', hasDeferredItems: true, deferredItemCount: count });
+    const onLoadTurnDetail = vi.fn().mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValue({ ...summary(0), hasDeferredItems: false, items: [prompt, { id: 'op', kind: 'commandExecution', text: 'recovered-command', status: 'completed' }] });
+    const props = { onLoadTurnDetail, liveOutput: '', threadRunning: true, activeTurnId: 'turn-1' };
+    const element = render(<ThreadTimeline {...props} turns={[summary(1)]} />);
+    await vi.waitFor(() => expect(onLoadTurnDetail).toHaveBeenCalledTimes(1));
+    await new Promise(resolve => setTimeout(resolve, 20));
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[{ ...summary(1) }]} />));
+    await new Promise(resolve => setTimeout(resolve, 20));
+    expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
+    flushSync(() => root?.render(<ThreadTimeline {...props} turns={[summary(2)]} />));
+    await vi.waitFor(() => expect(element.textContent).toContain('recovered-command'));
+    expect(onLoadTurnDetail).toHaveBeenCalledTimes(2);
+  });
+
   it.each([false, true])('keeps the latest live narration outside folded history with background=%s', (background) => {
     const prompt = { id: 'prompt', kind: 'userMessage' as const, text: 'Check progress' };
     const first = { id: 'first', kind: 'agentMessage' as const, text: 'First checkpoint', responsePhase: 'commentary' as const };

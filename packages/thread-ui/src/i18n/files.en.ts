@@ -241,6 +241,7 @@ export const filesEn = {
   "files.diagramPreviewSupportsFilesUpTo8": "Diagram preview supports files up to 8 MiB. Download this file to view it locally.",
   "files.linkedFilesAreReadOnlyPreviews": "Linked files are read-only previews.",
   "files.linkedFileAccessIsUnavailable": "Linked file access is unavailable.",
+  "files.outsideSharedWorkspace": "Only files in this shared workspace are available.",
   "files.workspaceDownloadFailed": "Workspace download failed.",
   "files.navigation": "Navigation",
   "files.pluginImported": "Plugin imported.",

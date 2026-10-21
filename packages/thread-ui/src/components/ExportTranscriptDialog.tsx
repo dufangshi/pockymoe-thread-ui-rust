@@ -23,22 +23,29 @@ interface ExportTurnsState {
   error: string | null;
 }
 
+export type ThreadShareScope = 'thread' | 'workspace' | 'device';
+
 export interface CreateThreadShareInput {
-  scope?: 'thread' | 'device';
+  scope?: ThreadShareScope;
   targetIdentifier: string;
   threadAccess: RelayThreadAccess;
   workspaceAccess: RelayWorkspaceAccess;
   label?: string | null;
+  /** Workspace and device scope only: may the recipient start threads there. */
+  canCreateThreads?: boolean;
 }
 
 export interface ThreadShareSummary {
   trustContent?: ReactNode;
-  scope?: 'thread' | 'device';
+  scope?: ThreadShareScope;
   id: string;
   targetUsername: string;
   label: string | null;
   threadAccess?: RelayThreadAccess;
   workspaceAccess?: RelayWorkspaceAccess;
+  canCreateThreads?: boolean;
+  /** The shared workspace's name, for a workspace-scope row. */
+  workspaceLabel?: string | null;
   createdAt?: string | null;
 }
 
@@ -64,8 +71,24 @@ export interface ThreadActionsDialogProps {
   onRevokeShare?: (shareId: string) => void | Promise<void>;
   onOpenDeviceSharing?: () => void;
   deviceShareAvailable?: boolean;
+  /** Offer "This workspace" between the thread and the whole device. */
+  workspaceShareAvailable?: boolean;
+  /** The thread's workspace, named in the scope choice. */
+  workspaceLabel?: string | null;
   linkContent?: ReactNode;
   onUpdateShare?: (id: string, input: CreateThreadShareInput) => void | Promise<void>;
+}
+
+function shareScopePrefix(share: ThreadShareSummary) {
+  if (share.scope === 'device') {
+    return translate("sharing.wholeDevice");
+  }
+  if (share.scope === 'workspace') {
+    return share.workspaceLabel
+      ? translate("sharing.workspaceRowNamed", { value1: share.workspaceLabel })
+      : translate("sharing.workspaceRow");
+  }
+  return '';
 }
 
 function formatTurnTime(value: string | null) {
@@ -156,6 +179,8 @@ export function ThreadActionsDialog({
   onCreateShare,
   onRevokeShare,
   deviceShareAvailable = false,
+  workspaceShareAvailable = false,
+  workspaceLabel = null,
   linkContent, onUpdateShare,
 }: ThreadActionsDialogProps) {
   useI18n();
@@ -170,7 +195,8 @@ export function ThreadActionsDialog({
   const [threadAccess, setThreadAccess] = useState<RelayThreadAccess>('read');
   const [workspaceAccess, setWorkspaceAccess] = useState<RelayWorkspaceAccess>('none');
   const [shareLabel, setShareLabel] = useState('');
-  const [shareDevice, setShareDevice] = useState(false);
+  const [shareScope, setShareScope] = useState<ThreadShareScope>('thread');
+  const [canCreateThreads, setCanCreateThreads] = useState(false);
   const [editingShare, setEditingShare] = useState<string | null>(null);
   const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>(() =>
     typeof document !== 'undefined' &&
@@ -190,7 +216,7 @@ export function ThreadActionsDialog({
     setTargetIdentifier('');
     setThreadAccess('read');
     setWorkspaceAccess('none');
-    setShareLabel(''); setEditingShare(null); setShareDevice(false);
+    setShareLabel(''); setEditingShare(null); setShareScope('thread'); setCanCreateThreads(false);
     void onLoadTurns();
   }, [initialMode, onLoadTurns, open]);
 
@@ -259,6 +285,20 @@ export function ThreadActionsDialog({
     Boolean(editingShare ? onUpdateShare : onCreateShare) &&
     targetIdentifier.trim().length > 0;
 
+  const scopeChoices: Array<{ scope: ThreadShareScope; label: string; hint: string }> = [
+    { scope: 'thread', label: translate("sharing.scopeThisThread"), hint: translate("sharing.scopeThisThreadHint") },
+    ...(workspaceShareAvailable ? [{
+      scope: 'workspace' as const,
+      label: translate("sharing.scopeThisWorkspace"),
+      hint: workspaceLabel ? translate("sharing.scopeThisWorkspaceNamedHint", { value1: workspaceLabel }) : translate("sharing.scopeThisWorkspaceHint"),
+    }] : []),
+    ...(deviceShareAvailable ? [{
+      scope: 'device' as const,
+      label: translate("sharing.scopeWholeDevice"),
+      hint: translate("sharing.appliesToAllThreadsOnThisDevice"),
+    }] : []),
+  ];
+
   function toggleTurn(turnId: string) {
     setSelectedTurnIds((current) => {
       const next = new Set(current);
@@ -299,10 +339,11 @@ export function ThreadActionsDialog({
     const submit = editingShare ? (input: CreateThreadShareInput) => onUpdateShare?.(editingShare, input) : onCreateShare;
     void Promise.resolve(submit?.({
       targetIdentifier: targetIdentifier.trim(),
-      scope: shareDevice ? 'device' : 'thread',
+      scope: shareScope,
       threadAccess,
       workspaceAccess,
       label: shareLabel.trim() || null,
+      ...(shareScope === 'thread' ? {} : { canCreateThreads }),
     })).then(() => {setEditingShare(null);setTargetIdentifier('');}).catch(() => {});
   }
 
@@ -394,12 +435,12 @@ export function ThreadActionsDialog({
                             {share.targetUsername}
                           </p>
                           <p className="thread-export-dialog-subtitle mt-0.5 text-xs">
-                            {share.scope === 'device' ? translate("sharing.wholeDevice") : ''}{share.label ? `${share.label} · ` : ''}
+                            {shareScopePrefix(share)}{share.label ? `${share.label} · ` : ''}
                             {shareThreadAccessLabel(share.threadAccess)} / {shareWorkspaceAccessLabel(share.workspaceAccess)}
                           </p>
                           {share.trustContent}
                         </div>
-                        {onUpdateShare && <button type="button" aria-label={translate("sharing.editPermissionsFor", { value1: share.targetUsername })} className="thread-export-dialog-secondary-button ml-auto flex items-center gap-1 rounded-lg border px-2 py-1.5 text-xs" disabled={busy} onClick={() => {setEditingShare(share.id);setShareDevice(share.scope === 'device');setTargetIdentifier(share.targetUsername);setThreadAccess(share.threadAccess ?? 'read');setWorkspaceAccess(share.workspaceAccess ?? 'none');setShareLabel(share.label ?? '');}}><Pencil size={13}/>{translate("sharing.edit")}</button>}
+                        {onUpdateShare && <button type="button" aria-label={translate("sharing.editPermissionsFor", { value1: share.targetUsername })} className="thread-export-dialog-secondary-button ml-auto flex items-center gap-1 rounded-lg border px-2 py-1.5 text-xs" disabled={busy} onClick={() => {setEditingShare(share.id);setShareScope(share.scope ?? 'thread');setCanCreateThreads(Boolean(share.canCreateThreads));setTargetIdentifier(share.targetUsername);setThreadAccess(share.threadAccess ?? 'read');setWorkspaceAccess(share.workspaceAccess ?? 'none');setShareLabel(share.label ?? '');}}><Pencil size={13}/>{translate("sharing.edit")}</button>}
                         {onRevokeShare ? (
                           <button
                             type="button"
@@ -423,11 +464,22 @@ export function ThreadActionsDialog({
                   {shareUnavailableMessage}
                 </p>
               ) : null}
-              {shareAvailable && deviceShareAvailable ? (
-                <label className="matter-share-scope">
-                  <input type="checkbox" checked={shareDevice} disabled={busy || Boolean(editingShare)} onChange={event => setShareDevice(event.target.checked)} />
-                  <span><strong>{translate("sharing.shareWholeDevice")}</strong><small>{shareDevice ? translate("sharing.appliesToAllThreadsOnThisDevice") : translate("sharing.offOnlyThisConversationIsShared")}</small></span>
-                </label>
+              {shareAvailable && scopeChoices.length > 1 ? (
+                <fieldset className="matter-share-scopes">
+                  <legend>{translate("sharing.shareScope")}</legend>
+                  {scopeChoices.map((choice) => (
+                    <label key={choice.scope} className="matter-share-scope">
+                      <input type="radio" name="thread-share-scope" checked={shareScope === choice.scope} disabled={busy || Boolean(editingShare)} onChange={() => setShareScope(choice.scope)} />
+                      <span><strong>{choice.label}</strong><small>{choice.hint}</small></span>
+                    </label>
+                  ))}
+                  {shareScope !== 'thread' ? (
+                    <label className="matter-share-scope matter-share-new-threads">
+                      <input type="checkbox" checked={canCreateThreads} disabled={busy} onChange={(event) => setCanCreateThreads(event.target.checked)} />
+                      <span><strong>{translate("sharing.canCreateNewThreads")}</strong><small>{shareScope === 'workspace' ? translate("sharing.newThreadsInThisWorkspace") : translate("sharing.newThreadsAnywhere")}</small></span>
+                    </label>
+                  ) : null}
+                </fieldset>
               ) : null}
 
               <label className="thread-export-dialog-body-text block text-sm">
@@ -467,7 +519,7 @@ export function ThreadActionsDialog({
                 <legend className="thread-export-dialog-subtitle px-1 text-xs">{translate("sharing.workspace")}</legend>
                 <div className="mt-2 grid gap-2 sm:grid-cols-3">
                   {[
-                    [translate("sharing.none"), translate("sharing.noAccess")],
+                    ['none', translate("sharing.noAccess")],
                     ['read', translate("sharing.readFiles")],
                     ['write', translate("sharing.readAndEdit")],
                   ].map(([value, label]) => (
@@ -483,6 +535,7 @@ export function ThreadActionsDialog({
                   ))}
                 </div>
               </fieldset>
+              <p className="thread-export-dialog-subtitle text-xs">{translate("sharing.noTerminalForShares")}</p>
 
               <label className="thread-export-dialog-body-text block text-sm">
                 {translate("sharing.label")}<input
@@ -588,7 +641,7 @@ export function ThreadActionsDialog({
           <p className="thread-export-dialog-subtitle min-w-0 text-xs">
             {actionMode === 'link' ? translate("sharing.readOnlyNoLoginRequired") : actionMode === 'share'
               ? shareAvailable
-                ? shareDevice ? translate("sharing.accessAppliesToAllThreadsOnThis") : translate("sharing.onlyInvitedMembersCanAccessThisThread")
+                ? shareScope === 'device' ? translate("sharing.accessAppliesToAllThreadsOnThis") : shareScope === 'workspace' ? translate("sharing.accessAppliesToThisWorkspace") : translate("sharing.onlyInvitedMembersCanAccessThisThread")
                 : translate("sharing.sharingIsUnavailableInThisConnection")
               : translate("sharing.selected_06be07", { value1: selectedCount, value2: selectedCount === 1 ? translate("sharing.turn_b09c73") : translate("sharing.turns_7cb1b2") })}
           </p>
@@ -608,7 +661,7 @@ export function ThreadActionsDialog({
                 disabled={!canShare}
                 className={`${matter ? 'matter-dialog-primary' : 'ui-status-warning'} rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60`}
               >
-                {busy ? translate("sharing.saving") : editingShare ? translate("sharing.savePermissions") : shareDevice ? translate("sharing.shareDevice") : translate("sharing.shareThisThread")}
+                {busy ? translate("sharing.saving") : editingShare ? translate("sharing.savePermissions") : shareScope === 'device' ? translate("sharing.shareDevice") : shareScope === 'workspace' ? translate("sharing.shareWorkspace") : translate("sharing.shareThisThread")}
               </button>
             ) : (
               <button

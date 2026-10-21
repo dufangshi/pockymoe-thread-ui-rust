@@ -190,7 +190,7 @@ function Probe({ name }: { name: string }) {
 
 async function renderScopes(
   backend: ReturnType<typeof fakeBackend>,
-  options: { readOnly?: boolean; deviceAdapter?: PluginProviderAdapter } = {},
+  options: { readOnly?: boolean; hiddenPluginIds?: string[]; deviceAdapter?: PluginProviderAdapter } = {},
 ) {
   const adapter: PluginProviderAdapter = options.deviceAdapter ?? {
     fetchPlugins: () => [
@@ -208,7 +208,7 @@ async function renderScopes(
         <section data-testid="a">
           <ThreadPluginScope threadId="a">
             <Probe name="probe-a" />
-            <ThreadPluginsControl readOnly={options.readOnly ?? false} />
+            <ThreadPluginsControl readOnly={options.readOnly ?? false} {...(options.hiddenPluginIds ? { hiddenPluginIds: options.hiddenPluginIds } : {})} />
           </ThreadPluginScope>
         </section>
         <section data-testid="b">
@@ -546,4 +546,12 @@ it('follows a new conversation in place without showing the previous one\'s answ
   expect(q('[data-testid="probe"]').textContent).toContain('panels:1');
   await act(async () => { release?.(); });
   expect(q('[data-testid="probe"]').textContent).toContain('panels:1');
+});
+
+it('hides a plugin the person never uses here, such as the terminal for a share recipient', async () => {
+  const backend = fakeBackend();
+  await renderScopes(backend, { hiddenPluginIds: [demo.manifest.id] });
+  await openPanel();
+  expect(document.querySelector('input[aria-label="Use the global setting"]')).toBeNull();
+  expect(document.body.textContent).not.toContain(demo.manifest.name);
 });

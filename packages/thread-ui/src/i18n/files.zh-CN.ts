@@ -241,6 +241,7 @@ export const filesZhCN = {
   "files.diagramPreviewSupportsFilesUpTo8": "图表预览支持最大 8 MiB 的文件，请下载到本地查看。",
   "files.linkedFilesAreReadOnlyPreviews": "链接的文件仅支持只读预览。",
   "files.linkedFileAccessIsUnavailable": "链接文件访问不可用。",
+  "files.outsideSharedWorkspace": "只能打开此共享工作区中的文件。",
   "files.workspaceDownloadFailed": "工作区下载失败。",
   "files.navigation": "导航",
   "files.pluginImported": "已导入插件。",

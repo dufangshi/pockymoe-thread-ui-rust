@@ -2136,6 +2136,7 @@ var filesEn = {
   "files.diagramPreviewSupportsFilesUpTo8": "Diagram preview supports files up to 8 MiB. Download this file to view it locally.",
   "files.linkedFilesAreReadOnlyPreviews": "Linked files are read-only previews.",
   "files.linkedFileAccessIsUnavailable": "Linked file access is unavailable.",
+  "files.outsideSharedWorkspace": "Only files in this shared workspace are available.",
   "files.workspaceDownloadFailed": "Workspace download failed.",
   "files.navigation": "Navigation",
   "files.pluginImported": "Plugin imported.",
@@ -3322,7 +3323,22 @@ var sharingEn = {
   "sharing.reviewSafetyCodeHint": "Check that the recipient sees the same code.",
   "sharing.reviewChangesTitle": "Changes",
   "sharing.reviewTechnical": "Signed content (technical details)",
-  "sharing.signAndShare": "Sign and share"
+  "sharing.signAndShare": "Sign and share",
+  "sharing.shareScope": "Share",
+  "sharing.scopeThisThread": "This thread",
+  "sharing.scopeThisThreadHint": "This conversation and the agent threads it starts.",
+  "sharing.scopeThisWorkspace": "This workspace",
+  "sharing.scopeThisWorkspaceHint": "Every thread in this workspace, with the permissions below.",
+  "sharing.scopeThisWorkspaceNamedHint": "Every thread in {{value1}}, with the permissions below.",
+  "sharing.scopeWholeDevice": "Whole device",
+  "sharing.canCreateNewThreads": "Can create new threads",
+  "sharing.newThreadsInThisWorkspace": "Only in this workspace.",
+  "sharing.newThreadsAnywhere": "In any workspace on this device.",
+  "sharing.workspaceRow": "Workspace \xB7 ",
+  "sharing.workspaceRowNamed": "Workspace {{value1}} \xB7 ",
+  "sharing.accessAppliesToThisWorkspace": "Access applies to every thread in this workspace.",
+  "sharing.shareWorkspace": "Share workspace",
+  "sharing.noTerminalForShares": "People you share with never get a terminal."
 };
 
 // src/i18n/workbench.en.ts
@@ -6102,6 +6118,7 @@ var filesZhCN = {
   "files.diagramPreviewSupportsFilesUpTo8": "\u56FE\u8868\u9884\u89C8\u652F\u6301\u6700\u5927 8 MiB \u7684\u6587\u4EF6\uFF0C\u8BF7\u4E0B\u8F7D\u5230\u672C\u5730\u67E5\u770B\u3002",
   "files.linkedFilesAreReadOnlyPreviews": "\u94FE\u63A5\u7684\u6587\u4EF6\u4EC5\u652F\u6301\u53EA\u8BFB\u9884\u89C8\u3002",
   "files.linkedFileAccessIsUnavailable": "\u94FE\u63A5\u6587\u4EF6\u8BBF\u95EE\u4E0D\u53EF\u7528\u3002",
+  "files.outsideSharedWorkspace": "\u53EA\u80FD\u6253\u5F00\u6B64\u5171\u4EAB\u5DE5\u4F5C\u533A\u4E2D\u7684\u6587\u4EF6\u3002",
   "files.workspaceDownloadFailed": "\u5DE5\u4F5C\u533A\u4E0B\u8F7D\u5931\u8D25\u3002",
   "files.navigation": "\u5BFC\u822A",
   "files.pluginImported": "\u5DF2\u5BFC\u5165\u63D2\u4EF6\u3002",
@@ -7288,7 +7305,22 @@ var sharingZhCN = {
   "sharing.reviewSafetyCodeHint": "\u786E\u8BA4\u63A5\u6536\u4EBA\u770B\u5230\u7684\u5B89\u5168\u7801\u4E0E\u6B64\u4E00\u81F4\u3002",
   "sharing.reviewChangesTitle": "\u53D8\u66F4",
   "sharing.reviewTechnical": "\u7B7E\u540D\u5185\u5BB9\uFF08\u6280\u672F\u8BE6\u60C5\uFF09",
-  "sharing.signAndShare": "\u7B7E\u7F72\u5E76\u5171\u4EAB"
+  "sharing.signAndShare": "\u7B7E\u7F72\u5E76\u5171\u4EAB",
+  "sharing.shareScope": "\u5171\u4EAB\u8303\u56F4",
+  "sharing.scopeThisThread": "\u6B64\u7EBF\u7A0B",
+  "sharing.scopeThisThreadHint": "\u6B64\u5BF9\u8BDD\u53CA\u5176\u542F\u52A8\u7684\u667A\u80FD\u4F53\u7EBF\u7A0B\u3002",
+  "sharing.scopeThisWorkspace": "\u6B64\u5DE5\u4F5C\u533A",
+  "sharing.scopeThisWorkspaceHint": "\u6B64\u5DE5\u4F5C\u533A\u4E2D\u7684\u6240\u6709\u7EBF\u7A0B\uFF0C\u6743\u9650\u5982\u4E0B\u3002",
+  "sharing.scopeThisWorkspaceNamedHint": "{{value1}} \u4E2D\u7684\u6240\u6709\u7EBF\u7A0B\uFF0C\u6743\u9650\u5982\u4E0B\u3002",
+  "sharing.scopeWholeDevice": "\u6574\u4E2A\u8BBE\u5907",
+  "sharing.canCreateNewThreads": "\u53EF\u4EE5\u521B\u5EFA\u65B0\u7EBF\u7A0B",
+  "sharing.newThreadsInThisWorkspace": "\u4EC5\u9650\u6B64\u5DE5\u4F5C\u533A\u3002",
+  "sharing.newThreadsAnywhere": "\u53EF\u5728\u6B64\u8BBE\u5907\u7684\u4EFB\u610F\u5DE5\u4F5C\u533A\u3002",
+  "sharing.workspaceRow": "\u5DE5\u4F5C\u533A \xB7 ",
+  "sharing.workspaceRowNamed": "\u5DE5\u4F5C\u533A {{value1}} \xB7 ",
+  "sharing.accessAppliesToThisWorkspace": "\u8BBF\u95EE\u6743\u9650\u9002\u7528\u4E8E\u6B64\u5DE5\u4F5C\u533A\u7684\u6240\u6709\u7EBF\u7A0B\u3002",
+  "sharing.shareWorkspace": "\u5171\u4EAB\u5DE5\u4F5C\u533A",
+  "sharing.noTerminalForShares": "\u5171\u4EAB\u5BF9\u8C61\u65E0\u6CD5\u4F7F\u7528\u7EC8\u7AEF\u3002"
 };
 
 // src/i18n/workbench.zh-CN.ts

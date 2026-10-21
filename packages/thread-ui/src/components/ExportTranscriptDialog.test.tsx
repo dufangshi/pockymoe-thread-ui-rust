@@ -248,8 +248,11 @@ describe('ThreadActionsDialog', () => {
     });
 
     expect(text('Share this thread')).toBe(true);
-    click(checkedInput('Share whole device'));
-    expect(exportButton('Share whole device')).toBeNull();
+    // Without a workspace option, the choice is this thread or the whole device.
+    expect(text('This workspace')).toBe(false);
+    click(checkedInput('Whole device'));
+    expect(exportButton('Whole device')).toBeNull();
+    expect(checkedInput('Can create new threads').checked).toBe(false);
 
     const relayIdentifier = [...document.body.querySelectorAll('input')]
       .find((input) => input.getAttribute('placeholder') === 'username or email') as HTMLInputElement;
@@ -267,12 +270,92 @@ describe('ThreadActionsDialog', () => {
       threadAccess: 'control',
       workspaceAccess: 'write',
       label: 'Pairing',
+      canCreateThreads: false,
     });
     expect(text('alice')).toBe(true);
     expect(text('Review')).toBe(true);
 
     click(exportButton('Revoke'));
     expect(onRevokeShare).toHaveBeenCalledWith('share-1');
+  });
+
+  it('shares this workspace between the thread and the whole device', async () => {
+    const onCreateShare = vi.fn();
+    renderDialog({
+      initialMode: 'share',
+      shareAvailable: true,
+      shareState: { status: 'ready', error: null, shares: [] },
+      onCreateShare,
+      deviceShareAvailable: true,
+      workspaceShareAvailable: true,
+      workspaceLabel: 'docs-site',
+    });
+    const scopes = [...document.body.querySelectorAll<HTMLInputElement>('input[name="thread-share-scope"]')]
+      .map((input) => input.closest('label')?.querySelector('strong')?.textContent);
+    expect(scopes).toEqual(['This thread', 'This workspace', 'Whole device']);
+    // New threads are a choice only for the workspace and the whole device.
+    expect(text('Can create new threads')).toBe(false);
+    click(checkedInput('This workspace'));
+    expect(text('Every thread in docs-site, with the permissions below.')).toBe(true);
+    expect(text('Only in this workspace.')).toBe(true);
+    expect(text('People you share with never get a terminal.')).toBe(true);
+    click(checkedInput('Can create new threads'));
+    changeInput(
+      [...document.body.querySelectorAll('input')].find((input) => input.getAttribute('placeholder') === 'username or email') as HTMLInputElement,
+      'carol',
+    );
+    click(checkedInput('Collaborator'));
+    // "No access" sends the literal value whatever the language.
+    click(checkedInput('Read files'));
+    click(checkedInput('No access'));
+    await act(async () => { click(exportButton('Share workspace')); });
+    expect(onCreateShare).toHaveBeenCalledWith({
+      scope: 'workspace',
+      targetIdentifier: 'carol',
+      threadAccess: 'control',
+      workspaceAccess: 'none',
+      label: null,
+      canCreateThreads: true,
+    });
+    click(checkedInput('This thread'));
+    expect(text('Can create new threads')).toBe(false);
+  });
+
+  it('edits a workspace share without changing its scope', async () => {
+    const onUpdateShare = vi.fn();
+    renderDialog({
+      initialMode: 'share',
+      shareAvailable: true,
+      shareState: {
+        status: 'ready',
+        error: null,
+        shares: [{
+          id: 'grant:g-1',
+          scope: 'workspace',
+          workspaceLabel: 'docs-site',
+          targetUsername: 'carol',
+          label: null,
+          threadAccess: 'control',
+          workspaceAccess: 'read',
+          canCreateThreads: true,
+        }],
+      },
+      onUpdateShare,
+      deviceShareAvailable: true,
+      workspaceShareAvailable: true,
+    });
+    expect(text('Workspace docs-site · ')).toBe(true);
+    click(document.body.querySelector('[aria-label="Edit permissions for carol"]'));
+    expect(checkedInput('This workspace').checked).toBe(true);
+    expect(checkedInput('This workspace').disabled).toBe(true);
+    expect(checkedInput('Can create new threads').checked).toBe(true);
+    click(checkedInput('Can create new threads'));
+    await act(async () => { click(exportButton('Save permissions')); });
+    expect(onUpdateShare).toHaveBeenCalledWith('grant:g-1', expect.objectContaining({
+      scope: 'workspace',
+      workspaceAccess: 'read',
+      canCreateThreads: false,
+    }));
   });
 
   it('shows a custom unavailable message when sharing is not allowed', () => {

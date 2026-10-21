@@ -726,21 +726,27 @@ interface ExportTurnsState {
     data: ThreadExportTurnOptionsDto | null;
     error: string | null;
 }
+type ThreadShareScope = 'thread' | 'workspace' | 'device';
 interface CreateThreadShareInput {
-    scope?: 'thread' | 'device';
+    scope?: ThreadShareScope;
     targetIdentifier: string;
     threadAccess: RelayThreadAccess;
     workspaceAccess: RelayWorkspaceAccess;
     label?: string | null;
+    /** Workspace and device scope only: may the recipient start threads there. */
+    canCreateThreads?: boolean;
 }
 interface ThreadShareSummary {
     trustContent?: ReactNode;
-    scope?: 'thread' | 'device';
+    scope?: ThreadShareScope;
     id: string;
     targetUsername: string;
     label: string | null;
     threadAccess?: RelayThreadAccess;
     workspaceAccess?: RelayWorkspaceAccess;
+    canCreateThreads?: boolean;
+    /** The shared workspace's name, for a workspace-scope row. */
+    workspaceLabel?: string | null;
     createdAt?: string | null;
 }
 interface ShareState {
@@ -764,10 +770,14 @@ interface ThreadActionsDialogProps {
     onRevokeShare?: (shareId: string) => void | Promise<void>;
     onOpenDeviceSharing?: () => void;
     deviceShareAvailable?: boolean;
+    /** Offer "This workspace" between the thread and the whole device. */
+    workspaceShareAvailable?: boolean;
+    /** The thread's workspace, named in the scope choice. */
+    workspaceLabel?: string | null;
     linkContent?: ReactNode;
     onUpdateShare?: (id: string, input: CreateThreadShareInput) => void | Promise<void>;
 }
-declare function ThreadActionsDialog({ appearance, open, busy, turnsState, shareAvailable, shareUnavailableMessage, shareState, initialMode, onCancel, onLoadTurns, onExport, onCreateShare, onRevokeShare, deviceShareAvailable, linkContent, onUpdateShare, }: ThreadActionsDialogProps): react.ReactPortal | null;
+declare function ThreadActionsDialog({ appearance, open, busy, turnsState, shareAvailable, shareUnavailableMessage, shareState, initialMode, onCancel, onLoadTurns, onExport, onCreateShare, onRevokeShare, deviceShareAvailable, workspaceShareAvailable, workspaceLabel, linkContent, onUpdateShare, }: ThreadActionsDialogProps): react.ReactPortal | null;
 declare const ExportTranscriptDialog: typeof ThreadActionsDialog;
 
 interface LongTextDialogProps {
@@ -910,9 +920,11 @@ declare function ThreadPluginScope({ threadId, adapter, children, }: {
  * The conversation's plugin button: one place to see which plugins work here, follow
  * or override the global switch, and edit this conversation's own settings.
  */
-declare function ThreadPluginsControl({ readOnly, onOpenGlobalSettings, }: {
+declare function ThreadPluginsControl({ readOnly, hiddenPluginIds, onOpenGlobalSettings, }: {
     /** View-only sessions see the effective state but cannot change it. */
     readOnly?: boolean;
+    /** Plugins this person never uses here, such as the terminal for a share recipient. */
+    hiddenPluginIds?: readonly string[];
     onOpenGlobalSettings?: () => void;
 }): react.JSX.Element | null;
 
@@ -1174,4 +1186,4 @@ declare function TurnNotificationButton({ subscribed, busy, error, onToggle, onR
     onRetry: () => void;
 }): react.JSX.Element;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ExportTranscriptDialog, GraphChatThreadChatPanel, LongTextDialog, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ExportTranscriptDialog, GraphChatThreadChatPanel, LongTextDialog, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };

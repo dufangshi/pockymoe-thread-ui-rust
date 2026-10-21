@@ -40,10 +40,13 @@ function threadScoped(plugin: ThreadPluginDto) {
  */
 export function ThreadPluginsControl({
   readOnly = false,
+  hiddenPluginIds,
   onOpenGlobalSettings,
 }: {
   /** View-only sessions see the effective state but cannot change it. */
   readOnly?: boolean;
+  /** Plugins this person never uses here, such as the terminal for a share recipient. */
+  hiddenPluginIds?: readonly string[];
   onOpenGlobalSettings?: () => void;
 }) {
   const { t } = useI18n();
@@ -59,9 +62,13 @@ export function ThreadPluginsControl({
   const title = useRef<HTMLHeadingElement>(null);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ThreadPluginDto | null>(null);
+  const hidden = hiddenPluginIds?.join('\n') ?? '';
   const visible = useMemo(
-    () => (scope?.plugins ?? []).filter(threadScoped),
-    [scope?.plugins],
+    () =>
+      (scope?.plugins ?? []).filter(
+        (plugin) => threadScoped(plugin) && !hidden.split('\n').includes(plugin.id),
+      ),
+    [scope?.plugins, hidden],
   );
   if (!scope) return null;
   const customized = visible.some(

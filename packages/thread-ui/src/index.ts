@@ -77,6 +77,7 @@ export {
   type CreateThreadShareInput,
   type ThreadActionsDialogProps,
   type ThreadShareSummary,
+  type ThreadShareScope,
 } from './components/ExportTranscriptDialog';
 export { LongTextDialog } from './components/LongTextDialog';
 export {

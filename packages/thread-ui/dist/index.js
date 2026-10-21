@@ -18866,6 +18866,14 @@ function mergeOptimisticTurnItems(turn, optimisticTurn) {
     items: [...optimisticOnlyItems, ...turn.items]
   };
 }
+function knownDeferredItemCount(loaded, live) {
+  const ids = /* @__PURE__ */ new Set();
+  for (const item of [...loaded?.items ?? [], ...live ?? []]) {
+    if (item.kind === "userMessage" || item.kind === "agentMessage" || item.origin === "nativeBackgroundWait" || item.origin === "nativeTaskNotification") continue;
+    ids.add(item.id);
+  }
+  return ids.size;
+}
 var foldChoices = /* @__PURE__ */ new Map();
 var FOLD_CHOICE_THREADS = 40;
 function rememberFoldChoices(threadId, choices) {
@@ -18946,6 +18954,7 @@ function ThreadTimelineComponent({
   const [loadingTurnDetailIds, setLoadingTurnDetailIds] = useState56(
     () => /* @__PURE__ */ new Set()
   );
+  const turnDetailRequestedAtRef = useRef35({});
   const [endedLiveItems, setEndedLiveItems] = useState56(null);
   if (liveItems?.items.length && endedLiveItems?.items !== liveItems.items) {
     setEndedLiveItems({ turnId: liveItems.turnId, items: liveItems.items });
@@ -19064,6 +19073,7 @@ function ThreadTimelineComponent({
   }, [bottomSpacer, scrollContainerRef]);
   useEffect37(() => {
     setLoadedTurnDetails({});
+    turnDetailRequestedAtRef.current = {};
     setEndedLiveItems(null);
     setLoadingTurnDetailIds(/* @__PURE__ */ new Set());
     setTurnDetailErrors({});
@@ -19165,11 +19175,17 @@ function ThreadTimelineComponent({
   useEffect37(() => {
     if (!loadTurnDetail) return;
     for (const turn of turns) {
-      if (turn.status !== "inProgress" || !turn.hasDeferredItems || collapsedTurnOverrides[turn.id] === true || loadedTurnDetails[turn.id] || loadingTurnDetailIds.has(turn.id) || turnDetailErrors[turn.id]) continue;
+      if (turn.status !== "inProgress" || !turn.hasDeferredItems || collapsedTurnOverrides[turn.id] === true || loadingTurnDetailIds.has(turn.id)) continue;
+      const loaded = loadedTurnDetails[turn.id];
+      const reported = turn.deferredItemCount ?? 0;
+      if (loaded && knownDeferredItemCount(loaded, liveItems?.turnId === turn.id ? liveItems.items : null) >= reported) continue;
+      if ((loaded || turnDetailErrors[turn.id]) && turnDetailRequestedAtRef.current[turn.id] === reported) continue;
+      turnDetailRequestedAtRef.current[turn.id] = reported;
       setLoadingTurnDetailIds((current) => new Set(current).add(turn.id));
       void Promise.resolve().then(() => loadTurnDetail(turn.id)).then((detail) => {
         if (detail.id !== turn.id) throw new Error(translate("chat.loadedTurnDetailDidNotMatchThe"));
         setLoadedTurnDetails((current) => ({ ...current, [turn.id]: detail }));
+        setTurnDetailErrors((current) => current[turn.id] ? { ...current, [turn.id]: void 0 } : current);
       }).catch((error) => {
         setTurnDetailErrors((current) => ({ ...current, [turn.id]: error instanceof Error ? error.message : translate("chat.unableToLoadCompleteTurnHistory") }));
       }).finally(() => {
@@ -19180,7 +19196,7 @@ function ThreadTimelineComponent({
         });
       });
     }
-  }, [turns, loadTurnDetail, loadedTurnDetails, collapsedTurnOverrides, loadingTurnDetailIds, turnDetailErrors]);
+  }, [turns, liveItems, loadTurnDetail, loadedTurnDetails, collapsedTurnOverrides, loadingTurnDetailIds, turnDetailErrors]);
   const collapsedStateForTurn = useCallback18((turn, input) => {
     const override = collapsedTurnOverrides[turn.id];
     if (override !== void 0) {

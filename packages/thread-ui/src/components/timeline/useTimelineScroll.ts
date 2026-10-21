@@ -22,6 +22,8 @@ import {
 // so a detail that loads and then animates open stays under the pointer.
 const ANCHOR_HOLD_MS = 900;
 const ANCHOR_EXTEND_MS = 500;
+/** How long a prepend holds the reader's place while the new turns settle. */
+const PREPEND_HOLD_MS = 1500;
 const TOUCH_SCROLL_SLOP_PX = 6;
 
 function useChangeRevision(inputs: readonly unknown[]) {
@@ -73,6 +75,10 @@ export function useTimelineScroll({
   const pendingPrependScrollRef = useRef<{
     scrollHeight: number;
     scrollTop: number;
+    /** The topmost turn on screen and where it was: earlier turns load above
+        it without moving it. */
+    element: Element | null;
+    top: number;
   } | null>(null);
   const tailSentinelRef = useRef<HTMLDivElement | null>(null);
   const topSentinelRef = useRef<HTMLDivElement | null>(null);
@@ -127,9 +133,14 @@ export function useTimelineScroll({
       return;
     }
 
+    const top = container.getBoundingClientRect().top;
+    const element = Array.from(container.querySelectorAll('[data-timeline-turn]'))
+      .find(turn => turn.getBoundingClientRect().bottom > top + 1) ?? null;
     pendingPrependScrollRef.current = {
       scrollHeight: container.scrollHeight,
       scrollTop: container.scrollTop,
+      element,
+      top: element?.getBoundingClientRect().top ?? 0,
     };
   }, []);
 
@@ -221,6 +232,8 @@ export function useTimelineScroll({
       // Scrolling done to hold a clicked control is not the reader moving.
       lastScrollTopRef.current = container.scrollTop;
     } else if (container) {
+      // Reading on while earlier turns load: they keep what is on screen now.
+      if (pendingPrependScrollRef.current) rememberPrependScrollPosition();
       userScrolledHistoryRef.current = true;
       const nextScrollTop = container.scrollTop;
       const previousScrollTop = lastScrollTopRef.current;
@@ -247,7 +260,7 @@ export function useTimelineScroll({
       }
     }
     recomputeTailVisibility();
-  }, [recomputeTailVisibility]);
+  }, [recomputeTailVisibility, rememberPrependScrollPosition]);
 
   const scrollToBottom = useCallback(() => {
     const container = scrollContainerRef.current;
@@ -405,6 +418,20 @@ export function useTimelineScroll({
     }
 
     pendingPrependScrollRef.current = null;
+    userScrolledAwayFromTailRef.current = true;
+    shouldStickToBottomRef.current = false;
+    topLoadArmedRef.current = false;
+    // Put the turn that was on top back where it was before this frame paints,
+    // then hold it while the new turns settle (Markdown, images); a scroll by
+    // the reader releases it.
+    if (anchor.element?.isConnected) {
+      stopAnchor();
+      anchorRef.current = { element: anchor.element, top: anchor.top, until: performance.now() + PREPEND_HOLD_MS, frame: 0 };
+      correctAnchor();
+      if (anchorRef.current) anchorRef.current.frame = window.requestAnimationFrame(holdAnchor);
+      lastObservedScrollHeightRef.current = container.scrollHeight;
+      return;
+    }
     const addedHeight = container.scrollHeight - anchor.scrollHeight;
     if (addedHeight <= 0) {
       lastObservedScrollHeightRef.current = container.scrollHeight;
@@ -416,10 +443,7 @@ export function useTimelineScroll({
     container.scrollTop = nextScrollTop;
     lastScrollTopRef.current = nextScrollTop;
     lastObservedScrollHeightRef.current = container.scrollHeight;
-    userScrolledAwayFromTailRef.current = true;
-    shouldStickToBottomRef.current = false;
-    topLoadArmedRef.current = false;
-  }, [loadingEarlier, turnsLength]);
+  }, [loadingEarlier, turnsLength, correctAnchor, holdAnchor, stopAnchor]);
 
   useEffect(() => {
     setVisibleCount((current) => {

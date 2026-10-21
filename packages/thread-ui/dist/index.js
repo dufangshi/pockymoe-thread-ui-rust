@@ -18326,6 +18326,7 @@ import {
 } from "react";
 var ANCHOR_HOLD_MS = 900;
 var ANCHOR_EXTEND_MS = 500;
+var PREPEND_HOLD_MS = 1500;
 var TOUCH_SCROLL_SLOP_PX = 6;
 function useChangeRevision(inputs) {
   const previousInputsRef = useRef34(null);
@@ -18391,9 +18392,13 @@ function useTimelineScroll({
       pendingPrependScrollRef.current = null;
       return;
     }
+    const top = container.getBoundingClientRect().top;
+    const element = Array.from(container.querySelectorAll("[data-timeline-turn]")).find((turn) => turn.getBoundingClientRect().bottom > top + 1) ?? null;
     pendingPrependScrollRef.current = {
       scrollHeight: container.scrollHeight,
-      scrollTop: container.scrollTop
+      scrollTop: container.scrollTop,
+      element,
+      top: element?.getBoundingClientRect().top ?? 0
     };
   }, []);
   const triggerServerLoadEarlier = useCallback17(() => {
@@ -18461,6 +18466,7 @@ function useTimelineScroll({
     if (container && anchorRef.current) {
       lastScrollTopRef.current = container.scrollTop;
     } else if (container) {
+      if (pendingPrependScrollRef.current) rememberPrependScrollPosition();
       userScrolledHistoryRef.current = true;
       const nextScrollTop = container.scrollTop;
       const previousScrollTop = lastScrollTopRef.current;
@@ -18483,7 +18489,7 @@ function useTimelineScroll({
       }
     }
     recomputeTailVisibility();
-  }, [recomputeTailVisibility]);
+  }, [recomputeTailVisibility, rememberPrependScrollPosition]);
   const scrollToBottom = useCallback17(() => {
     const container = scrollContainerRef.current;
     if (!container) {
@@ -18603,6 +18609,17 @@ function useTimelineScroll({
       return;
     }
     pendingPrependScrollRef.current = null;
+    userScrolledAwayFromTailRef.current = true;
+    shouldStickToBottomRef.current = false;
+    topLoadArmedRef.current = false;
+    if (anchor.element?.isConnected) {
+      stopAnchor();
+      anchorRef.current = { element: anchor.element, top: anchor.top, until: performance.now() + PREPEND_HOLD_MS, frame: 0 };
+      correctAnchor();
+      if (anchorRef.current) anchorRef.current.frame = window.requestAnimationFrame(holdAnchor);
+      lastObservedScrollHeightRef.current = container.scrollHeight;
+      return;
+    }
     const addedHeight = container.scrollHeight - anchor.scrollHeight;
     if (addedHeight <= 0) {
       lastObservedScrollHeightRef.current = container.scrollHeight;
@@ -18613,10 +18630,7 @@ function useTimelineScroll({
     container.scrollTop = nextScrollTop;
     lastScrollTopRef.current = nextScrollTop;
     lastObservedScrollHeightRef.current = container.scrollHeight;
-    userScrolledAwayFromTailRef.current = true;
-    shouldStickToBottomRef.current = false;
-    topLoadArmedRef.current = false;
-  }, [loadingEarlier, turnsLength]);
+  }, [loadingEarlier, turnsLength, correctAnchor, holdAnchor, stopAnchor]);
   useEffect36(() => {
     setVisibleCount((current) => {
       if (current >= turnsLength - 1) {

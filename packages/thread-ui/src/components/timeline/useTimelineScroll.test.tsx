@@ -269,6 +269,43 @@ describe('useTimelineScroll', () => {
     harness.unmount();
   });
 
+  it('keeps the turn on top of the screen in place while earlier turns load above it', () => {
+    const onLoadEarlier = vi.fn();
+    let scrollHeight = 900;
+    let scrollTop = 0;
+    // Where the reader's top turn sits in the content; prepends push it down.
+    let layoutTop = 40;
+    const harness = renderHookHarness({ ...baseInput({ turnsLength: 3, totalTurnCount: 9, onLoadEarlier }), renderNodes: true });
+    const scrollContainer = harness.container.querySelector<HTMLDivElement>('[data-testid="scroll-container"]')!;
+    Object.defineProperties(scrollContainer, {
+      scrollHeight: { configurable: true, get: () => scrollHeight },
+      clientHeight: { configurable: true, value: 300 },
+      scrollTop: { configurable: true, get: () => scrollTop, set: (value: number) => { scrollTop = value; } },
+    });
+    vi.spyOn(scrollContainer, 'getBoundingClientRect').mockImplementation(() => ({ top: 0, bottom: 300 }) as DOMRect);
+    const turn = document.createElement('div');
+    turn.dataset.timelineTurn = '';
+    vi.spyOn(turn, 'getBoundingClientRect').mockImplementation(() => ({ top: layoutTop - scrollTop, bottom: layoutTop - scrollTop + 200 }) as DOMRect);
+    scrollContainer.prepend(turn);
+    const grow = (height: number) => { layoutTop += height; scrollHeight += height; };
+
+    flushSync(() => {
+      latestResult?.handleScroll();
+      latestResult?.handleWheel({ deltaY: -24 } as unknown as WheelEvent<HTMLDivElement>);
+    });
+    expect(onLoadEarlier).toHaveBeenCalledTimes(1);
+    harness.rerender({ ...baseInput({ turnsLength: 3, totalTurnCount: 9, loadingEarlier: true, onLoadEarlier }), renderNodes: true });
+    grow(48); // the loading row above it
+    grow(300 - 48); // the loaded turns replace it
+    harness.rerender({ ...baseInput({ turnsLength: 6, totalTurnCount: 9, loadingEarlier: false, onLoadEarlier }), renderNodes: true });
+    expect(turn.getBoundingClientRect().top).toBe(40);
+    // The new turns finish rendering (Markdown, images): still in place.
+    grow(120);
+    flushSync(() => { latestResult?.holdAnchorNow(); });
+    expect(turn.getBoundingClientRect().top).toBe(40);
+    harness.unmount();
+  });
+
   it('notifies tail visibility changes from scroll geometry', async () => {
     const onTailVisibilityChange = vi.fn();
     const harness = renderHookHarness({

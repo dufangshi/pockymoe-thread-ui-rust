@@ -847,7 +847,13 @@
   border-radius: inherit;
 }
 
-.thread-ui-shell .thread-composer-pending-wake-head:hover {
+@media (hover: hover) {
+  .thread-ui-shell .thread-composer-pending-wake-head:hover {
+    background: var(--theme-hover);
+  }
+}
+
+.thread-ui-shell .thread-composer-pending-wake-head:active {
   background: var(--theme-hover);
 }
 

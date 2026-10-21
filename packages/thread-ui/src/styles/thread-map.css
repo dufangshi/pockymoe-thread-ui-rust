@@ -171,7 +171,9 @@
   border-radius: 6px;
   color: var(--theme-fg-muted);
 }
-.thread-map-crumb-open:hover { background: var(--theme-hover); color: var(--theme-fg); }
+@media (hover: hover) {
+  .thread-map-crumb-open:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
 .thread-map-crumb-open:active { background: var(--theme-hover); color: var(--theme-accent-solid); }
 .thread-map-crumb-open:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
 @media (max-width: 639px) {

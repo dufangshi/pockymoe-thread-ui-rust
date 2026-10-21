@@ -880,6 +880,7 @@ declare const en: {
     readonly "sharing.wholeDevice": "Whole device · ";
     readonly "sharing.editPermissionsFor": "Edit permissions for {{value1}}";
     readonly "sharing.edit": "Edit";
+    readonly "sharing.noActiveSharesForThisWorkspace": "No active shares for this workspace.";
     readonly "sharing.noActiveSharesForThisThread": "No active shares for this thread.";
     readonly "sharing.shareWholeDevice": "Share whole device";
     readonly "sharing.appliesToAllThreadsOnThisDevice": "Applies to all threads on this device, with the permissions below.";
@@ -937,6 +938,7 @@ declare const en: {
     readonly "sharing.sharingPermissions": "Sharing permissions";
     readonly "sharing.downloadHTML": "Download HTML";
     readonly "sharing.chooseWhatToShareAndWhetherIt": "Choose what to share and whether it stays up to date.";
+    readonly "sharing.chooseWhoCanUseThisWorkspace": "Choose who can view or collaborate on the threads in this workspace.";
     readonly "sharing.chooseWhoCanViewOrCollaborateOn": "Choose who can view or collaborate on this thread.";
     readonly "sharing.saveAReadableCopyOfYourConversation": "Save a readable copy of your conversation.";
     readonly "sharing.noAccess": "No access";
@@ -4897,6 +4899,7 @@ declare const zhCN: {
     "sharing.wholeDevice": "整个设备 · ";
     "sharing.editPermissionsFor": "编辑 {{value1}} 的权限";
     "sharing.edit": "编辑";
+    "sharing.noActiveSharesForThisWorkspace": "此工作区没有活跃共享。";
     "sharing.noActiveSharesForThisThread": "此线程没有活跃共享。";
     "sharing.shareWholeDevice": "共享整个设备";
     "sharing.appliesToAllThreadsOnThisDevice": "应用于此设备上的所有线程，权限如下。";
@@ -4954,6 +4957,7 @@ declare const zhCN: {
     "sharing.sharingPermissions": "共享权限";
     "sharing.downloadHTML": "下载 HTML";
     "sharing.chooseWhatToShareAndWhetherIt": "选择共享内容及是否持续更新。";
+    "sharing.chooseWhoCanUseThisWorkspace": "选择可以查看或协作此工作区线程的成员。";
     "sharing.chooseWhoCanViewOrCollaborateOn": "选择可以查看或协作此线程的成员。";
     "sharing.saveAReadableCopyOfYourConversation": "保存易于阅读的对话副本。";
     "sharing.noAccess": "无权限";
@@ -8936,6 +8940,7 @@ declare const resources: {
         readonly "sharing.wholeDevice": "Whole device · ";
         readonly "sharing.editPermissionsFor": "Edit permissions for {{value1}}";
         readonly "sharing.edit": "Edit";
+        readonly "sharing.noActiveSharesForThisWorkspace": "No active shares for this workspace.";
         readonly "sharing.noActiveSharesForThisThread": "No active shares for this thread.";
         readonly "sharing.shareWholeDevice": "Share whole device";
         readonly "sharing.appliesToAllThreadsOnThisDevice": "Applies to all threads on this device, with the permissions below.";
@@ -8993,6 +8998,7 @@ declare const resources: {
         readonly "sharing.sharingPermissions": "Sharing permissions";
         readonly "sharing.downloadHTML": "Download HTML";
         readonly "sharing.chooseWhatToShareAndWhetherIt": "Choose what to share and whether it stays up to date.";
+        readonly "sharing.chooseWhoCanUseThisWorkspace": "Choose who can view or collaborate on the threads in this workspace.";
         readonly "sharing.chooseWhoCanViewOrCollaborateOn": "Choose who can view or collaborate on this thread.";
         readonly "sharing.saveAReadableCopyOfYourConversation": "Save a readable copy of your conversation.";
         readonly "sharing.noAccess": "No access";
@@ -12952,6 +12958,7 @@ declare const resources: {
         "sharing.wholeDevice": "整个设备 · ";
         "sharing.editPermissionsFor": "编辑 {{value1}} 的权限";
         "sharing.edit": "编辑";
+        "sharing.noActiveSharesForThisWorkspace": "此工作区没有活跃共享。";
         "sharing.noActiveSharesForThisThread": "此线程没有活跃共享。";
         "sharing.shareWholeDevice": "共享整个设备";
         "sharing.appliesToAllThreadsOnThisDevice": "应用于此设备上的所有线程，权限如下。";
@@ -13009,6 +13016,7 @@ declare const resources: {
         "sharing.sharingPermissions": "共享权限";
         "sharing.downloadHTML": "下载 HTML";
         "sharing.chooseWhatToShareAndWhetherIt": "选择共享内容及是否持续更新。";
+        "sharing.chooseWhoCanUseThisWorkspace": "选择可以查看或协作此工作区线程的成员。";
         "sharing.chooseWhoCanViewOrCollaborateOn": "选择可以查看或协作此线程的成员。";
         "sharing.saveAReadableCopyOfYourConversation": "保存易于阅读的对话副本。";
         "sharing.noAccess": "无权限";

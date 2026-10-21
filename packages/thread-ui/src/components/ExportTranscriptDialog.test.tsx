@@ -321,6 +321,32 @@ describe('ThreadActionsDialog', () => {
     expect(text('Can create new threads')).toBe(false);
   });
 
+  it('shares only the workspace when opened from a workspace menu', async () => {
+    const onCreateShare = vi.fn();
+    renderDialog({
+      appearance: 'matter',
+      initialMode: 'share',
+      shareAvailable: true,
+      shareState: { status: 'ready', error: null, shares: [] },
+      onCreateShare,
+      deviceShareAvailable: true,
+      workspaceOnly: true,
+      workspaceLabel: 'docs-site',
+    });
+    const scopes = [...document.body.querySelectorAll<HTMLInputElement>('input[name="thread-share-scope"]')]
+      .map((input) => input.closest('label')?.querySelector('strong')?.textContent);
+    expect(scopes).toEqual(['This workspace']);
+    expect(text('Choose who can view or collaborate on the threads in this workspace.')).toBe(true);
+    expect(text('No active shares for this workspace.')).toBe(true);
+    expect(text('Can create new threads')).toBe(true);
+    changeInput(
+      [...document.body.querySelectorAll('input')].find((input) => input.getAttribute('placeholder') === 'username or email') as HTMLInputElement,
+      'dave',
+    );
+    await act(async () => { click(exportButton('Share workspace')); });
+    expect(onCreateShare).toHaveBeenCalledWith(expect.objectContaining({ scope: 'workspace', targetIdentifier: 'dave', canCreateThreads: false }));
+  });
+
   it('edits a workspace share without changing its scope', async () => {
     const onUpdateShare = vi.fn();
     renderDialog({

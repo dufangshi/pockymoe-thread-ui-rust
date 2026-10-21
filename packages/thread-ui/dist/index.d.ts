@@ -774,10 +774,12 @@ interface ThreadActionsDialogProps {
     workspaceShareAvailable?: boolean;
     /** The thread's workspace, named in the scope choice. */
     workspaceLabel?: string | null;
+    /** Opened for a workspace (its menu), not a thread: only workspace shares. */
+    workspaceOnly?: boolean;
     linkContent?: ReactNode;
     onUpdateShare?: (id: string, input: CreateThreadShareInput) => void | Promise<void>;
 }
-declare function ThreadActionsDialog({ appearance, open, busy, turnsState, shareAvailable, shareUnavailableMessage, shareState, initialMode, onCancel, onLoadTurns, onExport, onCreateShare, onRevokeShare, deviceShareAvailable, workspaceShareAvailable, workspaceLabel, linkContent, onUpdateShare, }: ThreadActionsDialogProps): react.ReactPortal | null;
+declare function ThreadActionsDialog({ appearance, open, busy, turnsState, shareAvailable, shareUnavailableMessage, shareState, initialMode, onCancel, onLoadTurns, onExport, onCreateShare, onRevokeShare, deviceShareAvailable, workspaceShareAvailable, workspaceLabel, workspaceOnly, linkContent, onUpdateShare, }: ThreadActionsDialogProps): react.ReactPortal | null;
 declare const ExportTranscriptDialog: typeof ThreadActionsDialog;
 
 interface LongTextDialogProps {

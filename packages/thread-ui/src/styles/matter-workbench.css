@@ -1518,6 +1518,10 @@
   .thread-ui-shell .matter-workbench .matter-topbar-end > button,
   .thread-ui-shell .matter-workbench .matter-topbar-end > [data-slot='dialog-trigger'] { width: 34px; min-width: 34px; margin: 0; padding: 0; }
   .matter-topbar-end .matter-connection:empty { display: none; }
+  /* A healthy connection shows nothing but keeps a 28px slot: on a phone that
+     space goes to the bar, so its controls sit further right and the device
+     monitor no longer runs into search. A real indicator still shows. */
+  .matter-topbar-end .matter-connection:has(.device-connection-slot:empty):not(:has(button, a, svg)) { display: none; }
 }
 
 /* Keep the drawer boundary draggable even when its contents fill the panel. */

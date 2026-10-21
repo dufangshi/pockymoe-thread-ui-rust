@@ -31,6 +31,9 @@ import type { WorkspaceExplorerModel } from './workspaceExplorerTypes';
 import { useWorkspaceExplorerPersistence } from './useWorkspaceExplorerPersistence';
 import { linkedDirectoryNodes, linkedParentDirectory } from './workspaceLinkedFiles';
 
+/** How long a first load waits for a saved open folder before showing the tree. */
+const RESTORE_WAIT_MS = 2500;
+
 export interface UseWorkspaceExplorerControllerInput {
   activeView: 'chat' | 'shell';
   detail: ThreadDetailDto;
@@ -79,6 +82,9 @@ export function useWorkspaceExplorerController({
   );
   const fallbackFirstSelectableNode = findFirstPreviewNode(fallbackTree);
   const initialPersistedState = useRef(persistence.read());
+  // The folders saved open when this workspace was opened, for its first load
+  // only (later expansions are loaded as they happen).
+  const restorePathsRef = useRef<string[]>(initialPersistedState.current.expandedPaths ?? []);
   const [adapterModel, setAdapterModel] =
     useState<WorkspaceExplorerModel | null>(null);
   const adapterTree = useMemo(
@@ -158,6 +164,41 @@ export function useWorkspaceExplorerController({
   const directoryRequestGenerationsRef = useRef(new Map<string, number>());
   const skipPersistenceWriteRef = useRef(true);
 
+  // A first load brings back the folders the reader had open (as saved), a
+  // level at a time with each level's folders read together, before the tree
+  // shows: one change instead of a jump for each folder as its listing arrives.
+  // A folder slower than RESTORE_WAIT_MS is left to the per-folder load.
+  const restoreExpandedDirectories = useCallback(
+    async (model: NonNullable<typeof adapterModel>, isCurrent: () => boolean) => {
+      if (!workspaceAdapter) return model;
+      const saved = new Set(restorePathsRef.current);
+      restorePathsRef.current = [];
+      const levels = new Map<number, string[]>();
+      for (const path of saved) {
+        if (!path) continue;
+        const depth = path.split('/').length;
+        levels.set(depth, [...(levels.get(depth) ?? []), path]);
+      }
+      let next = model;
+      for (const depth of [...levels.keys()].sort((a, b) => a - b)) {
+        const wanted = levels.get(depth)!.filter((path) => {
+          const node = findWorkspaceExplorerNodeByPath(next, path);
+          return node?.kind === 'directory' && node.childrenState !== 'resolved';
+        });
+        const listed = await Promise.all(wanted.map((path) => Promise.race([
+          workspaceAdapter.listTree({ ...workspaceIdentity, path })
+            // A folder that fails is left to the per-folder load, which shows why.
+            .then(workspaceTreeNodeToGraphNode, () => null),
+          new Promise<null>((resolve) => window.setTimeout(() => resolve(null), RESTORE_WAIT_MS)),
+        ])));
+        if (!isCurrent()) return null;
+        for (const node of listed) if (node) next = mergeWorkspaceExplorerSubtree(next, node);
+      }
+      return next;
+    },
+    [workspaceAdapter, workspaceIdentity],
+  );
+
   const refreshWorkspaceTree = useCallback(
     async (preferredPath?: string | null) => {
       if (!workspaceAdapter) {
@@ -185,7 +226,13 @@ export function useWorkspaceExplorerController({
           refreshedTree,
           currentModel,
         );
-        if (currentModel) {
+        if (!currentModel) {
+          const restored = await restoreExpandedDirectories(nextModel, () =>
+            workspaceGenerationRef.current === workspaceGeneration &&
+            refreshGenerationRef.current === refreshGeneration);
+          if (!restored) return;
+          nextModel = restored;
+        } else {
           const expandedDirectories = [...expandedPathsRef.current]
             .filter((path) => path)
             .sort(
@@ -250,7 +297,7 @@ export function useWorkspaceExplorerController({
         }
       }
     },
-    [workspaceAdapter, workspaceIdentity],
+    [restoreExpandedDirectories, workspaceAdapter, workspaceIdentity],
   );
 
   const loadDirectoryChildren = useCallback(
@@ -370,6 +417,7 @@ export function useWorkspaceExplorerController({
       setLoadingTree(true);
       setWorkspaceError(null);
       try {
+        const firstLoad = !adapterModelRef.current;
         let nextModel =
           adapterModelRef.current ??
           createWorkspaceExplorerModel(
@@ -419,6 +467,11 @@ export function useWorkspaceExplorerController({
           nextModel = mergeWorkspaceExplorerSubtree(nextModel, loadedNode);
           setExpandedPaths(current => new Set(current).add(targetPath));
         }
+        if (firstLoad) {
+          const restored = await restoreExpandedDirectories(nextModel, isCurrent);
+          if (!restored) return;
+          nextModel = restored;
+        }
         adapterModelRef.current = nextModel;
         setAdapterModel(nextModel);
         if (!hasWorkspaceExplorerPath(nextModel, targetPath)) {
@@ -445,7 +498,7 @@ export function useWorkspaceExplorerController({
         }
       }
     },
-    [detail.workspace.absPath, workspaceAdapter, workspaceIdentity],
+    [detail.workspace.absPath, restoreExpandedDirectories, workspaceAdapter, workspaceIdentity],
   );
 
   const toggleDirectory = useCallback(
@@ -484,6 +537,7 @@ export function useWorkspaceExplorerController({
     setLinkedFiles([]);
     skipPersistenceWriteRef.current = true;
     const persisted = persistence.read();
+    restorePathsRef.current = persisted.expandedPaths ?? [];
     const fallbackNode = fallbackFirstSelectableNodeRef.current;
     const selectedPath = focusPathRequest ? workspaceRelativeFocusPath(focusPathRequest.path, detail.workspace.absPath) : persisted.selectedPath;
     const nextSelectedId = selectedPath

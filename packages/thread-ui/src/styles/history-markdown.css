@@ -265,6 +265,14 @@
 }
 
 .workspace-node-menu button { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 4px; text-align: left; }
+/* An explorer row's full name, while pointed at or held (ExplorerNameBubble). */
+.explorer-name-bubble {
+  pointer-events: none; width: max-content; padding: 5px 8px; border: 1px solid var(--theme-border);
+  border-radius: 6px; background: var(--theme-panel); color: var(--theme-fg); box-shadow: 0 6px 18px #0004;
+  font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; white-space: normal;
+}
+/* A held name is read, not selected or called out by the system. */
+.thread-ui-shell .thread-graph-tree-row .explorer-name { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 .workspace-node-menu button:hover, .workspace-node-menu button:focus-visible { background: var(--theme-hover); }
 @media (hover: none) {
   .thread-ui-shell .thread-graph-tree-actions { opacity: 1; pointer-events: auto; }

@@ -17,7 +17,7 @@ import type { KeyboardEvent, ReactNode, Ref } from 'react';
 import { extensionOf, type WorkspaceTreeNode } from '../workspaceTree';
 import type { WorkspaceExplorerRowProjection } from './workspaceExplorerTypes';
 import { WorkspaceNodeActions, type WorkspaceNodeActionProps } from './WorkspaceNodeActions';
-import { useLongPress } from '../../menu/useLongPress';
+import { useExplorerNameBubble } from './ExplorerNameBubble';
 import { LINKED_DIRECTORY_ID_PREFIX } from './workspaceLinkedFiles';
 import { MiddleName } from '../../copy/MiddleName';
 
@@ -105,11 +105,10 @@ export function WorkspaceExplorerRow({
   onDownload?: (node: WorkspaceTreeNode) => void;
 } & WorkspaceNodeActionProps) {
   useI18n();
-  // A long press opens the row's menu, like a right click or its ⋯ button.
-  const rowPress = useLongPress(({ x, y }) => {
-    const row = document.elementFromPoint(x, y)?.closest<HTMLElement>('[role="treeitem"]');
-    if (row) openRowMenu(row);
-  });
+  // Exception to "a long press opens the menu" (ui-principles): here a long press
+  // shows the file's full name while held. The menu is the always-shown ⋯ on
+  // touch, a right click or the menu key.
+  const nameBubble = useExplorerNameBubble(row.compactPathSegments?.join('/') ?? row.node.source.name);
   const node: WorkspaceTreeNode = {
     ...row.node.source,
     children: [],
@@ -172,7 +171,6 @@ export function WorkspaceExplorerRow({
         onKeyDown(event);
       }}
       onContextMenu={(event) => { if (openRowMenu(event.currentTarget)) event.preventDefault(); }}
-      {...rowPress}
       onDoubleClick={() => {
         if (isDirectory && node.path) {
           onToggle(node.path);
@@ -233,7 +231,7 @@ export function WorkspaceExplorerRow({
             <bdi>{displayName}</bdi>
           </span>
         ) : (
-          <span className="flex min-w-0 flex-1" title={displayName}>
+          <span ref={nameBubble.label} className="explorer-name flex min-w-0 flex-1" {...nameBubble.handlers}>
             {row.matchRanges?.length ? <span className="min-w-0 truncate">{label}</span> : <MiddleName name={displayName} />}
           </span>
         )}
@@ -256,6 +254,7 @@ export function WorkspaceExplorerRow({
         {...(onDownload ? {onDownload} : {})} {...(onCopyPath ? {onCopyPath} : {})}
         {...(onRename && !node.path.startsWith('/') && !/^[a-z]:/i.test(node.path) ? {onRename} : {})}
         {...(onDelete && !node.path.startsWith('/') && !/^[a-z]:/i.test(node.path) ? {onDelete} : {})} /> : null}
+      {nameBubble.bubble}
     </div>
   );
 }

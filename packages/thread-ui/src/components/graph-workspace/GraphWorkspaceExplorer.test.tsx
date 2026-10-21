@@ -318,6 +318,27 @@ describe('GraphWorkspaceExplorer', () => {
     expect(readFile.mock.calls.map(([input])=>input.path)).toEqual(['src/index.ts']);
   });
 
+  it('brings back the folders saved open in one change, not one jump per folder', async () => {
+    window.localStorage.setItem('remote-codex:graphchat:workspace:expanded:workspace-1:thread-1', JSON.stringify({ version: 2, expandedPaths: ['', 'docs', 'docs/deep', 'src'] }));
+    const docs = deferred<ThreadWorkspaceTreeNode>();
+    const deep = deferred<ThreadWorkspaceTreeNode>();
+    const adapter: ThreadWorkspaceAdapter = {
+      listTree: vi.fn(async ({ path }) => path === 'docs' ? docs.promise : path === 'docs/deep' ? deep.promise
+        : path === 'src' ? directory('src', [file('src/a.ts')])
+        : directory('', [directory('docs', [], false), directory('src', [], false)])),
+      readFile: vi.fn(async ({ path }) => filePreview(path)),
+    };
+    const rows = () => [...(host?.querySelectorAll('[role="treeitem"]') ?? [])].map((row) => row.getAttribute('aria-label'));
+    await renderExplorer(adapter);
+    // The root and src are in, docs is not: nothing shows yet.
+    expect(rows()).not.toContain('a.ts');
+    await act(async () => docs.resolve(directory('docs', [directory('docs/deep', [], false), file('docs/b.md')])));
+    expect(rows()).not.toContain('b.md');
+    await act(async () => deep.resolve(directory('docs/deep', [file('docs/deep/c.md')])));
+    await vi.waitFor(() => expect(rows()).toEqual(expect.arrayContaining(['docs', 'deep', 'c.md', 'b.md', 'src', 'a.ts'])));
+    window.localStorage.clear();
+  });
+
   it('the newest link wins when ancestor loads finish out of order', async () => {
     const slow = deferred<ThreadWorkspaceTreeNode>();
     const readFile = vi.fn<ThreadWorkspaceAdapter['readFile']>(async ({path})=>filePreview(path));

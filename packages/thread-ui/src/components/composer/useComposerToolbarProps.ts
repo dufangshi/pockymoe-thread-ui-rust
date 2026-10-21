@@ -420,6 +420,7 @@ export function useComposerToolbarProps({
         ...(promptEmpty !== undefined ? { promptEmpty } : {}),
         fastMode,
         sendButtonLabel,
+        sending: busy && activeView === 'chat',
         sendButtonClassName,
         modelControlsDisabled,
         effortControlsDisabled,

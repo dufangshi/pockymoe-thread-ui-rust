@@ -181,9 +181,8 @@ export function buildComposerClassNames({
         ? 'is-drag-target border-sky-300/80 bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]'
         : ''
     }`,
-    graphChatInputGroupClassName: `thread-graph-composer-input-group relative border-0 bg-transparent shadow-none ring-0 ${
-      busy ? 'bg-amber-50/40 dark:bg-amber-400/10' : 'bg-transparent'
-    }`,
+    // Sending shows on the send key (a spinner), not as a tint over the prompt.
+    graphChatInputGroupClassName: 'thread-graph-composer-input-group relative border-0 bg-transparent shadow-none ring-0',
     graphChatInputClassName: `${composerInputClassName} min-h-[68px] max-h-32 w-full overflow-y-auto px-3 pt-3 text-[16px] leading-relaxed text-slate-800 outline-none transition sm:min-h-[92px] sm:max-h-40 sm:px-4 sm:pt-4 sm:text-[14px] dark:text-slate-100 ${
       isDragTargetActive
         ? 'is-drag-target bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]'

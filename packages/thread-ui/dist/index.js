@@ -748,7 +748,8 @@ function buildComposerClassNames({
     composerSendButtonClassName: isShellView ? "thread-composer-send-button" : "thread-graph-composer-send-button",
     composerPromptRegionClassName: isShellView ? "thread-composer-prompt-region" : "thread-graph-composer-prompt-region",
     promptInputClassName: `${composerInputClassName} min-h-[5.25rem] w-full px-4 pr-14 pt-3 outline-none transition sm:min-h-[5.75rem] ${isDragTargetActive ? "is-drag-target border-sky-300/80 bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]" : ""}`,
-    graphChatInputGroupClassName: `thread-graph-composer-input-group relative border-0 bg-transparent shadow-none ring-0 ${busy ? "bg-amber-50/40 dark:bg-amber-400/10" : "bg-transparent"}`,
+    // Sending shows on the send key (a spinner), not as a tint over the prompt.
+    graphChatInputGroupClassName: "thread-graph-composer-input-group relative border-0 bg-transparent shadow-none ring-0",
     graphChatInputClassName: `${composerInputClassName} min-h-[68px] max-h-32 w-full overflow-y-auto px-3 pt-3 text-[16px] leading-relaxed text-slate-800 outline-none transition sm:min-h-[92px] sm:max-h-40 sm:px-4 sm:pt-4 sm:text-[14px] dark:text-slate-100 ${isDragTargetActive ? "is-drag-target bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]" : ""}`
   };
 }
@@ -2278,7 +2279,7 @@ function ComposerAttachmentMenu({
 }
 
 // src/components/composer/ComposerSettingsToolbar.tsx
-import { Check, ChevronDown as ChevronDown2, Send, Target } from "lucide-react";
+import { Check, ChevronDown as ChevronDown2, Loader2 as Loader22, Send, Target } from "lucide-react";
 
 // src/components/composer/ComposerReasoningSlider.tsx
 import * as Slider from "@radix-ui/react-slider";
@@ -2419,6 +2420,7 @@ function ComposerSettingsToolbar({
   disabled,
   promptEmpty = false,
   sendButtonLabel,
+  sending = false,
   sendButtonClassName,
   sendButtonBaseClassName,
   beforeSend,
@@ -2533,10 +2535,12 @@ ${modelContextTitle}`,
         "data-empty": sendEmpty ? "true" : void 0,
         "aria-label": sendIntentLabel,
         "aria-disabled": sendEmpty || void 0,
+        "aria-busy": sending || void 0,
+        "data-sending": sending ? "true" : void 0,
         title: sendEmpty ? translate("chat.typeToSend") : sendLater || goalComposeMode ? sendIntentLabel : sendButtonLabel,
         disabled: goalBusy || (activeView === "chat" ? disabled : false),
         className: `${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`,
-        children: goalComposeMode ? /* @__PURE__ */ jsx13(Target, { "aria-hidden": "true", className: "h-[18px] w-[18px]", strokeWidth: 2.2 }) : sendLater ? /* @__PURE__ */ jsx13(SendLaterIcon, {}) : intentIcons ? /* @__PURE__ */ jsx13(Send, { "aria-hidden": "true", className: "composer-send-plane h-[17px] w-[17px]", strokeWidth: 2.2 }) : /* @__PURE__ */ jsxs10(
+        children: sending && !goalComposeMode ? /* @__PURE__ */ jsx13(Loader22, { "aria-hidden": "true", className: "composer-send-spinner h-[17px] w-[17px] animate-spin", strokeWidth: 2.4 }) : goalComposeMode ? /* @__PURE__ */ jsx13(Target, { "aria-hidden": "true", className: "h-[18px] w-[18px]", strokeWidth: 2.2 }) : sendLater ? /* @__PURE__ */ jsx13(SendLaterIcon, {}) : intentIcons ? /* @__PURE__ */ jsx13(Send, { "aria-hidden": "true", className: "composer-send-plane h-[17px] w-[17px]", strokeWidth: 2.2 }) : /* @__PURE__ */ jsxs10(
           "svg",
           {
             "aria-hidden": "true",
@@ -5797,6 +5801,7 @@ function useComposerToolbarProps({
     ...promptEmpty !== void 0 ? { promptEmpty } : {},
     fastMode,
     sendButtonLabel,
+    sending: busy && activeView === "chat",
     sendButtonClassName,
     modelControlsDisabled,
     effortControlsDisabled,
@@ -11904,7 +11909,7 @@ function usePlugins() {
 
 // src/components/graph-chat/GraphChatToolCall.tsx
 import { useEffect as useEffect23, useMemo as useMemo7, useState as useState33 } from "react";
-import { CheckCircle2, Loader2 as Loader22, Wrench, XCircle } from "lucide-react";
+import { CheckCircle2, Loader2 as Loader23, Wrench, XCircle } from "lucide-react";
 
 // src/components/graph-workspace/GraphAccordion.tsx
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
@@ -12038,7 +12043,7 @@ function GraphChatToolCall({
       default:
         return {
           className: "is-pending",
-          icon: /* @__PURE__ */ jsx47(Loader22, { className: "h-3.5 w-3.5 animate-spin" }),
+          icon: /* @__PURE__ */ jsx47(Loader23, { className: "h-3.5 w-3.5 animate-spin" }),
           label: translate("chat.running")
         };
     }
@@ -13253,7 +13258,7 @@ function useMessagePresentation(context) {
 
 // src/components/graph-chat/GraphChatMessageFrame.tsx
 import { useState as useState39 } from "react";
-import { CheckCircle2 as CheckCircle22, Circle, CircleAlert as CircleAlert2, Loader2 as Loader23, XCircle as XCircle2 } from "lucide-react";
+import { CheckCircle2 as CheckCircle22, Circle, CircleAlert as CircleAlert2, Loader2 as Loader24, XCircle as XCircle2 } from "lucide-react";
 
 // src/components/graph-chat/turnPrompts.ts
 import { createContext as createContext9, useContext as useContext8 } from "react";
@@ -13406,7 +13411,7 @@ function GraphChatMessageStatusBadge({
   const isFailed = normalized.includes("failed") || normalized.includes("error");
   const isCompleted = normalized.includes("accepted") || normalized.includes("complete");
   const className = isRunning ? "ui-status-warning" : isFailed ? "ui-status-danger" : isCompleted ? "ui-status-success" : "ui-status-neutral";
-  const icon = isRunning ? /* @__PURE__ */ jsx53(Loader23, { className: "h-3.5 w-3.5 animate-spin" }) : isFailed ? /* @__PURE__ */ jsx53(XCircle2, { className: "h-3.5 w-3.5" }) : isCompleted ? /* @__PURE__ */ jsx53(CheckCircle22, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx53(Circle, { className: "h-3.5 w-3.5" });
+  const icon = isRunning ? /* @__PURE__ */ jsx53(Loader24, { className: "h-3.5 w-3.5 animate-spin" }) : isFailed ? /* @__PURE__ */ jsx53(XCircle2, { className: "h-3.5 w-3.5" }) : isCompleted ? /* @__PURE__ */ jsx53(CheckCircle22, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx53(Circle, { className: "h-3.5 w-3.5" });
   return /* @__PURE__ */ jsxs45(
     "span",
     {
@@ -14791,7 +14796,7 @@ import {
   FileText as FileText2,
   Image as ImageIconLucide,
   Info,
-  Loader2 as Loader24,
+  Loader2 as Loader25,
   PackageOpen,
   Search as Search2,
   Sparkles as Sparkles2,
@@ -14987,7 +14992,7 @@ function graphHistoryStatusConfig(status) {
   if (isRunningHistoryStatus2(status)) {
     return {
       className: "is-pending",
-      icon: /* @__PURE__ */ jsx59(Loader24, { className: "h-3.5 w-3.5 animate-spin" }),
+      icon: /* @__PURE__ */ jsx59(Loader25, { className: "h-3.5 w-3.5 animate-spin" }),
       label: status?.trim() || translate("chat.running")
     };
   }
@@ -19174,7 +19179,7 @@ function ThreadTimelineComponent({
       canCancel: true,
       sender: steer.sender ?? null
     })),
-    ...optimisticSteers.map((steer) => ({
+    ...optimisticSteers.filter((steer) => steer.delivery !== "continuation").map((steer) => ({
       id: steer.id,
       prompt: steer.prompt,
       status: steer.status === "steering" ? "Steering" : null,
@@ -23782,26 +23787,26 @@ function GraphChatThreadChatPanel({
   const [panelBottomGap, setPanelBottomGap] = useState61(0);
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
+  const sendingRequestId = timelineProps?.optimisticTurn?.clientRequestId ?? null;
+  const optimisticSteers = timelineProps?.optimisticSteers;
   const queuedPrompts = useMemo18(() => {
-    const pendingSteers = detail.pendingSteers ?? [];
-    const materializedClientRequestIds = new Set(
-      pendingSteers.map((prompt) => prompt.clientRequestId).filter((value) => Boolean(value))
+    const rows = detail.pendingSteers ?? [];
+    const elsewhere = new Set(
+      (optimisticSteers ?? []).filter((prompt) => prompt.delivery !== "continuation").map((prompt) => prompt.clientRequestId)
     );
+    if (sendingRequestId) elsewhere.add(sendingRequestId);
+    const held = new Set(rows.map((prompt) => prompt.clientRequestId).filter(Boolean));
     return [
-      ...pendingSteers.filter((prompt) => prompt.delivery === "continuation").map((prompt) => ({
+      ...rows.filter(
+        (prompt) => prompt.delivery === "continuation" && !(prompt.clientRequestId && elsewhere.has(prompt.clientRequestId))
+      ).map((prompt) => ({
         id: prompt.id,
         prompt: prompt.prompt,
         ...prompt.id.startsWith("optimistic-") ? { optimistic: true } : {}
       })),
-      ...(timelineProps?.optimisticSteers ?? []).filter(
-        (prompt) => !materializedClientRequestIds.has(prompt.clientRequestId)
-      ).map((prompt) => ({
-        id: prompt.id,
-        prompt: prompt.prompt,
-        optimistic: true
-      }))
+      ...(optimisticSteers ?? []).filter((prompt) => prompt.delivery === "continuation" && !held.has(prompt.clientRequestId)).map((prompt) => ({ id: prompt.id, prompt: prompt.prompt, optimistic: true }))
     ];
-  }, [detail.pendingSteers, timelineProps?.optimisticSteers]);
+  }, [detail.pendingSteers, optimisticSteers, sendingRequestId]);
   const steeredPrompts = useMemo18(
     () => (detail.pendingSteers ?? []).filter(
       (prompt) => prompt.delivery === "steer"
@@ -26938,7 +26943,7 @@ function useWorkbenchPresentation(scope, contextKey = null) {
 }
 
 // src/components/timeline/TurnNotificationButton.tsx
-import { Bell as Bell2, Loader2 as Loader25, RotateCcw as RotateCcw2 } from "lucide-react";
+import { Bell as Bell2, Loader2 as Loader26, RotateCcw as RotateCcw2 } from "lucide-react";
 import { jsx as jsx100, jsxs as jsxs85 } from "react/jsx-runtime";
 function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onRetry }) {
   useI18n();
@@ -26953,7 +26958,7 @@ function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onR
         title: translate(subscribed ? "chat.turnNotificationOn" : "chat.turnNotificationOff"),
         disabled: busy,
         onClick: onToggle,
-        children: busy ? /* @__PURE__ */ jsx100(Loader25, { size: 15, className: "is-spinning", "aria-hidden": "true" }) : /* @__PURE__ */ jsx100(Bell2, { size: 15, fill: subscribed ? "currentColor" : "none", "aria-hidden": "true" })
+        children: busy ? /* @__PURE__ */ jsx100(Loader26, { size: 15, className: "is-spinning", "aria-hidden": "true" }) : /* @__PURE__ */ jsx100(Bell2, { size: 15, fill: subscribed ? "currentColor" : "none", "aria-hidden": "true" })
       }
     ),
     /* @__PURE__ */ jsx100("span", { className: "turn-notification-feedback", role: "status", children: subscribed ? translate("chat.turnNotificationOn") : "" }),

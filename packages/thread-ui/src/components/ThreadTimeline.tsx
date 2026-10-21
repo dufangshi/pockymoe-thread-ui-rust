@@ -99,6 +99,8 @@ export interface ThreadTimelineProps {
     prompt: string;
     createdAt: string;
     status: 'steering' | 'accepted';
+    /** Queued after the turn: shown under Queued, not in the conversation. */
+    delivery?: 'steer' | 'continuation';
   }>;
   optimisticTurn?: TimelineTurn | null;
   onLoadHistoryItemDetail?: (
@@ -633,7 +635,7 @@ function ThreadTimelineComponent({
       canCancel: true,
       sender: steer.sender ?? null,
     })),
-    ...optimisticSteers.map((steer) => ({
+    ...optimisticSteers.filter((steer) => steer.delivery !== 'continuation').map((steer) => ({
       id: steer.id,
       prompt: steer.prompt,
       status: steer.status === 'steering' ? 'Steering' : null,

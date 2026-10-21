@@ -127,7 +127,8 @@ describe('composer presentation helpers', () => {
       'thread-graph-composer-form-floating',
     );
     expect(chatClasses.graphChatInputClassName).toContain('is-drag-target');
-    expect(chatClasses.graphChatInputGroupClassName).toContain('bg-amber-50/40');
+    // Sending shows on the send key, not as a tint over the prompt.
+    expect(chatClasses.graphChatInputGroupClassName).not.toContain('amber');
 
     const shellClasses = buildComposerClassNames({
       isShellView: true,

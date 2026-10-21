@@ -13,7 +13,7 @@ import type { SettingsMenu } from './types';
 import { formatContextTokenKilocount, formatReasoningEffortLabel, reasoningEffortColor } from './composerUtils';
 import { ContextProgressBar } from './composerPresentation';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
-import { Check, ChevronDown, Send, Target } from 'lucide-react';
+import { Check, ChevronDown, Loader2, Send, Target } from 'lucide-react';
 import { useThemeFeature } from '../themeHooks';
 import { ComposerReasoningSlider } from './ComposerReasoningSlider';
 
@@ -49,6 +49,7 @@ export function ComposerSettingsToolbar({
   disabled,
   promptEmpty = false,
   sendButtonLabel,
+  sending = false,
   sendButtonClassName,
   sendButtonBaseClassName,
   beforeSend,
@@ -80,6 +81,8 @@ export function ComposerSettingsToolbar({
   promptEmpty?: boolean;
   fastMode: boolean;
   sendButtonLabel: string;
+  /** A prompt is on its way: the key turns into a spinner until it lands. */
+  sending?: boolean;
   sendButtonClassName: string;
   modelControlsDisabled: boolean;
   effortControlsDisabled: boolean;
@@ -219,11 +222,15 @@ export function ComposerSettingsToolbar({
         data-empty={sendEmpty ? 'true' : undefined}
         aria-label={sendIntentLabel}
         aria-disabled={sendEmpty || undefined}
+        aria-busy={sending || undefined}
+        data-sending={sending ? 'true' : undefined}
         title={sendEmpty ? translate('chat.typeToSend') : sendLater || goalComposeMode ? sendIntentLabel : sendButtonLabel}
         disabled={goalBusy || (activeView === 'chat' ? disabled : false)}
         className={`${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
       >
-        {goalComposeMode ? (
+        {sending && !goalComposeMode ? (
+          <Loader2 aria-hidden="true" className="composer-send-spinner h-[17px] w-[17px] animate-spin" strokeWidth={2.4} />
+        ) : goalComposeMode ? (
           <Target aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
         ) : sendLater ? (
           <SendLaterIcon />

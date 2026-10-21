@@ -80,6 +80,8 @@ export type TimelineHistoryEntry =
 
 export type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
   status: ThreadTurnDto["status"] | "sending";
+  /** An optimistic turn's request: its row in the server's queue is this turn. */
+  clientRequestId?: string | null;
 };
 
 /**

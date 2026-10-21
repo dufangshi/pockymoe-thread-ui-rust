@@ -78,6 +78,7 @@ function renderToolbar({
   liveModelSwitch = false,
   promptEmpty = false,
   contextUsage = null,
+  sending = false,
 }: {
   initialOpenMenu?: SettingsMenu;
   reasoningEffort?: ReasoningEffortDto | null;
@@ -97,6 +98,7 @@ function renderToolbar({
   liveModelSwitch?: boolean;
   promptEmpty?: boolean;
   contextUsage?: ThreadContextUsageDto | null;
+  sending?: boolean;
 } = {}) {
   function Harness() {
     const [openMenu, setOpenMenu] = useState<SettingsMenu>(initialOpenMenu);
@@ -128,6 +130,7 @@ function renderToolbar({
           promptEmpty={promptEmpty}
           fastMode={false}
           sendButtonLabel="Send"
+          sending={sending}
           sendButtonClassName="send-state"
           modelControlsDisabled={false}
           effortControlsDisabled={effortControlsDisabled}
@@ -152,6 +155,16 @@ function buttonByText(view: HTMLElement, text: string) {
 }
 
 describe('ComposerSettingsToolbar', () => {
+  it('turns the send key into a spinner while a prompt is on its way', () => {
+    const view = renderToolbar({ sending: true });
+    const send = view.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    expect(send.getAttribute('aria-busy')).toBe('true');
+    expect(send.querySelector('.composer-send-spinner')).not.toBeNull();
+    const idle = renderToolbar();
+    expect(idle.querySelector('button[type="submit"] .composer-send-spinner')).toBeNull();
+  });
+
+
   it.each([
     [{ availability: 'available', tokensInContextWindow: 64400, modelContextWindow: 200000 }, '64.4K / 200K'],
     [{ availability: 'available', tokensInContextWindow: 0, modelContextWindow: 128000 }, '0K / 128K'],

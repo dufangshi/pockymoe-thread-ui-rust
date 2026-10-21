@@ -85,32 +85,38 @@ export function GraphChatThreadChatPanel({
   const [panelBottomGap, setPanelBottomGap] = useState(0);
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
+  // Queued is what waits for the running turn to end. A prompt being sent shows
+  // once, where it is going: a prompt starting a turn as that turn, a steer in
+  // the conversation, a queued prompt here; never here for the moment its row
+  // waits on the server to be picked up or steered.
+  const sendingRequestId = timelineProps?.optimisticTurn?.clientRequestId ?? null;
+  const optimisticSteers = timelineProps?.optimisticSteers;
   const queuedPrompts = useMemo(() => {
-    const pendingSteers = detail.pendingSteers ?? [];
-    const materializedClientRequestIds = new Set(
-      pendingSteers
-        .map((prompt) => prompt.clientRequestId)
-        .filter((value): value is string => Boolean(value)),
+    const rows = detail.pendingSteers ?? [];
+    const elsewhere = new Set(
+      (optimisticSteers ?? [])
+        .filter((prompt) => prompt.delivery !== "continuation")
+        .map((prompt) => prompt.clientRequestId),
     );
+    if (sendingRequestId) elsewhere.add(sendingRequestId);
+    const held = new Set(rows.map((prompt) => prompt.clientRequestId).filter(Boolean));
     return [
-      ...pendingSteers
-        .filter((prompt) => prompt.delivery === "continuation")
+      ...rows
+        .filter(
+          (prompt) =>
+            prompt.delivery === "continuation" &&
+            !(prompt.clientRequestId && elsewhere.has(prompt.clientRequestId)),
+        )
         .map((prompt) => ({
           id: prompt.id,
           prompt: prompt.prompt,
           ...(prompt.id.startsWith("optimistic-") ? { optimistic: true } : {}),
         })),
-      ...(timelineProps?.optimisticSteers ?? [])
-        .filter(
-          (prompt) => !materializedClientRequestIds.has(prompt.clientRequestId),
-        )
-        .map((prompt) => ({
-          id: prompt.id,
-          prompt: prompt.prompt,
-          optimistic: true,
-        })),
+      ...(optimisticSteers ?? [])
+        .filter((prompt) => prompt.delivery === "continuation" && !held.has(prompt.clientRequestId))
+        .map((prompt) => ({ id: prompt.id, prompt: prompt.prompt, optimistic: true })),
     ];
-  }, [detail.pendingSteers, timelineProps?.optimisticSteers]);
+  }, [detail.pendingSteers, optimisticSteers, sendingRequestId]);
   const steeredPrompts = useMemo(
     () =>
       (detail.pendingSteers ?? []).filter(

@@ -523,6 +523,8 @@ declare function ThreadWorkspaceLayout({ workbench, threads, status, loading, er
 
 type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
     status: ThreadTurnDto["status"] | "sending";
+    /** An optimistic turn's request: its row in the server's queue is this turn. */
+    clientRequestId?: string | null;
 };
 
 interface ThreadTimelineProps {
@@ -583,6 +585,8 @@ interface ThreadTimelineProps {
         prompt: string;
         createdAt: string;
         status: 'steering' | 'accepted';
+        /** Queued after the turn: shown under Queued, not in the conversation. */
+        delivery?: 'steer' | 'continuation';
     }>;
     optimisticTurn?: TimelineTurn | null;
     onLoadHistoryItemDetail?: (itemId: string) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;

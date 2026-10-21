@@ -1,7 +1,7 @@
 import * as react from 'react';
 import { RefObject, TouchEvent, MouseEvent, Dispatch, SetStateAction, ReactNode, Component, ErrorInfo, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
-import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-CqS-TIEN.js';
-export { D as DescribeThread, i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as SendPromptInput, m as ShellSocketConnection, n as ShellSocketHandlers, o as ThreadImageAssetVariant, p as ThreadLinkInfo, W as WorkspaceDocumentSaveInput, q as WorkspaceDocumentSnapshot, r as WorkspaceSaveReceipt, s as WorkspaceTab, t as createDefaultPluginContextValue, u as mergePluginState } from './workspace-panel-CqS-TIEN.js';
+import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-DBFLZ6zs.js';
+export { D as DescribeThread, i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as SendPromptInput, m as ShellSocketConnection, n as ShellSocketHandlers, o as ThreadImageAssetVariant, p as ThreadLinkInfo, W as WorkspaceDocumentSaveInput, q as WorkspaceDocumentSnapshot, r as WorkspaceSaveReceipt, s as WorkspaceTab, t as createDefaultPluginContextValue, u as mergePluginState } from './workspace-panel-DBFLZ6zs.js';
 import { ReasoningEffortDto, CollaborationModeDto, SandboxModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
 import { P as PluginActionOutputContext, T as ThreadPluginAdapter } from './plugin-types-gLBkjCue.js';
 export { A as ArtifactRenderContext, F as FrontendPluginModule, I as InlineCodeRenderContext, M as MessagePresentation, a as MessagePresentationContext, b as PluginSettingsContext, c as PluginSettingsContribution, d as PluginSettingsSnapshot, e as ThreadPanelContribution, f as ThreadPluginDto, g as ThreadPluginSettingsInput, h as ThreadPluginSettingsSnapshot, U as UpstreamConnectionHost, i as UpstreamConnectionPickerProps, j as UpstreamConnectionPickerValue, k as UpstreamConnectionProtocol } from './plugin-types-gLBkjCue.js';
@@ -73,11 +73,12 @@ declare function useLongPress(onLongPress: (point: {
 
 /** The app's own confirmation in place of `window.confirm` (see
     docs/ui-principles.md §11): resolves true when confirmed. */
-declare function confirmAsync({ title, description, confirmLabel, cancelLabel }: {
+declare function confirmAsync({ title, description, confirmLabel, cancelLabel, tone }: {
     title: string;
     description: string;
     confirmLabel: string;
     cancelLabel?: string;
+    tone?: 'danger' | 'primary';
 }): Promise<boolean>;
 
 /** What each navigation status is called (see docs/ui-principles.md §6). */
@@ -685,8 +686,10 @@ interface ConfirmDialogProps {
     onSecondary?: () => void | Promise<void>;
     /** The cancel button's label, "Cancel" by default. */
     cancelLabel?: string;
+    /** `primary` for a confirmation that destroys nothing (docs/ui-principles.md §11). */
+    tone?: 'danger' | 'primary';
 }
-declare function ConfirmDialog({ open, title, description, confirmLabel, busyLabel, busy, error, onCancel, onConfirm, secondaryLabel, onSecondary, cancelLabel, }: ConfirmDialogProps): react.ReactPortal | null;
+declare function ConfirmDialog({ open, title, description, confirmLabel, busyLabel, busy, error, onCancel, onConfirm, secondaryLabel, onSecondary, cancelLabel, tone, }: ConfirmDialogProps): react.ReactPortal | null;
 
 /** A page opened before a deployment asks for a build chunk that no longer exists. */
 declare function isStaleBuildError(error: unknown): boolean;

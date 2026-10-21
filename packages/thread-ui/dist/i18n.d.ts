@@ -2851,6 +2851,9 @@ declare const en: {
     readonly "chat.forkFromLatest": "Fork from latest";
     readonly "chat.forking": "Forking";
     readonly "chat.run": "Run";
+    readonly "chat.forkFromThisTurn": "Fork from this turn";
+    readonly "chat.forkFromThisTurnTitle": "Fork from this turn?";
+    readonly "chat.forkFromThisTurnBody": "The new thread keeps the conversation through this turn, without the turns after it. This thread stays as it is.";
     readonly "chat.forkFromSelectedTurn": "Fork from selected turn";
     readonly "chat.pick": "Pick";
     readonly "chat.forkIsOnlyAvailableWhileTheThread": "Fork is only available while the thread is idle.";
@@ -6846,6 +6849,9 @@ declare const zhCN: {
     "chat.forkFromLatest": "从最新轮次分叉";
     "chat.forking": "正在分叉";
     "chat.run": "运行";
+    "chat.forkFromThisTurn": "从这一轮分叉";
+    "chat.forkFromThisTurnTitle": "从这一轮分叉？";
+    "chat.forkFromThisTurnBody": "新线程保留到这一轮为止的对话，之后的轮次不带过去。当前线程不变。";
     "chat.forkFromSelectedTurn": "从所选轮次分叉";
     "chat.pick": "选择";
     "chat.forkIsOnlyAvailableWhileTheThread": "仅在线程空闲时可以分叉。";
@@ -10863,6 +10869,9 @@ declare const resources: {
         readonly "chat.forkFromLatest": "Fork from latest";
         readonly "chat.forking": "Forking";
         readonly "chat.run": "Run";
+        readonly "chat.forkFromThisTurn": "Fork from this turn";
+        readonly "chat.forkFromThisTurnTitle": "Fork from this turn?";
+        readonly "chat.forkFromThisTurnBody": "The new thread keeps the conversation through this turn, without the turns after it. This thread stays as it is.";
         readonly "chat.forkFromSelectedTurn": "Fork from selected turn";
         readonly "chat.pick": "Pick";
         readonly "chat.forkIsOnlyAvailableWhileTheThread": "Fork is only available while the thread is idle.";
@@ -14857,6 +14866,9 @@ declare const resources: {
         "chat.forkFromLatest": "从最新轮次分叉";
         "chat.forking": "正在分叉";
         "chat.run": "运行";
+        "chat.forkFromThisTurn": "从这一轮分叉";
+        "chat.forkFromThisTurnTitle": "从这一轮分叉？";
+        "chat.forkFromThisTurnBody": "新线程保留到这一轮为止的对话，之后的轮次不带过去。当前线程不变。";
         "chat.forkFromSelectedTurn": "从所选轮次分叉";
         "chat.pick": "选择";
         "chat.forkIsOnlyAvailableWhileTheThread": "仅在线程空闲时可以分叉。";

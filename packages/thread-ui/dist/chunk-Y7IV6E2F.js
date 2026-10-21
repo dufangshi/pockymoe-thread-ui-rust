@@ -1,7 +1,7 @@
 import {
   translate,
   useI18n
-} from "./chunk-MV7DNA6J.js";
+} from "./chunk-GFE36FSY.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -256,7 +256,8 @@ function ConfirmDialog({
   onConfirm,
   secondaryLabel,
   onSecondary,
-  cancelLabel
+  cancelLabel,
+  tone = "danger"
 }) {
   useI18n();
   const windowRef = useRef5(null);
@@ -331,7 +332,7 @@ function ConfirmDialog({
                   type: "button",
                   onClick: () => void onConfirm(),
                   disabled: busy,
-                  className: "ui-action-danger min-h-10 rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed",
+                  className: `${tone === "primary" ? "ui-action-primary" : "ui-action-danger"} min-h-10 rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed`,
                   children: busy ? busyLabel : confirmLabel
                 }
               )
@@ -347,7 +348,7 @@ function ConfirmDialog({
 // src/components/menu/confirmAsync.tsx
 import { createRoot } from "react-dom/client";
 import { jsx as jsx4 } from "react/jsx-runtime";
-function confirmAsync({ title, description, confirmLabel, cancelLabel }) {
+function confirmAsync({ title, description, confirmLabel, cancelLabel, tone }) {
   return new Promise((resolve) => {
     const host = document.createElement("div");
     document.body.append(host);
@@ -366,6 +367,7 @@ function confirmAsync({ title, description, confirmLabel, cancelLabel }) {
           description,
           confirmLabel,
           ...cancelLabel ? { cancelLabel } : {},
+          ...tone ? { tone } : {},
           onCancel: () => finish(false),
           onConfirm: () => finish(true)
         }

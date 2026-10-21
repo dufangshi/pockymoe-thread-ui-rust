@@ -68,6 +68,9 @@ interface ThreadTimelineAdapter {
     cancelPendingSteer?: (threadId: string, pendingSteerId: string) => Promise<void> | void;
     onLoadHistoryItemDetail?: (itemId: string) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
     onLoadTurnDetail?: (turnId: string) => Promise<ThreadTurnDto> | ThreadTurnDto;
+    /** Forks a new thread keeping history through this finished turn, then opens
+        it. Set only where the harness can fork at a chosen turn. */
+    onForkTurn?: (turnId: string) => Promise<void>;
 }
 interface ShellSocketHandlers {
     onConnected?: (event: unknown) => void;
@@ -239,6 +242,8 @@ interface ThreadShellAdapter {
 }
 interface ThreadDetailUiAdapter {
     openThread(threadId: string): void;
+    /** Forks at a finished turn of the open thread; see ThreadTimelineAdapter.onForkTurn. */
+    forkTurn?: (turnId: string) => Promise<void>;
     getThreadHref?: (threadId: string) => string;
     /**
      * Names linked threads by their titles. With it, a sub-thread (one with a

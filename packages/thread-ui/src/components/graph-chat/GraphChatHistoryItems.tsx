@@ -354,6 +354,7 @@ function GraphChatHistoryEventFrame({
   timeMeta,
   title,
   tone,
+  expandableTitle = false,
 }: {
   actions?: ReactNode;
   children?: ReactNode;
@@ -364,8 +365,11 @@ function GraphChatHistoryEventFrame({
   timeMeta?: ReactNode;
   title: string;
   tone: GraphHistoryEventTone;
+  /** A title that may not fit (a harness's notice): a tap shows it whole. */
+  expandableTitle?: boolean;
 }) {
   const { locale: i18nLocale } = useI18n();
+  const [titleOpen, setTitleOpen] = useState(false);
   const statusConfig = graphHistoryStatusConfig(item.status);
   const showStatus = Boolean(
     statusConfig.className === 'is-pending' || statusConfig.className === 'is-failed',
@@ -383,9 +387,21 @@ function GraphChatHistoryEventFrame({
       <div className="thread-graph-history-event-card">
         <div className="thread-graph-history-event-header">
           <div className="thread-graph-history-event-heading flex min-w-0 items-center gap-2">
-            <span className="thread-graph-history-event-title min-w-0 truncate font-mono text-sm font-semibold">
-              {title}
-            </span>
+            {expandableTitle ? (
+              <button
+                type="button"
+                className={`thread-graph-history-event-title thread-graph-expandable-title min-w-0 text-left font-mono text-sm font-semibold${titleOpen ? ' is-open' : ' truncate'}`}
+                aria-expanded={titleOpen}
+                title={titleOpen ? undefined : translate('common.showFullText')}
+                onClick={() => setTitleOpen((open) => !open)}
+              >
+                {title}
+              </button>
+            ) : (
+              <span className="thread-graph-history-event-title min-w-0 truncate font-mono text-sm font-semibold">
+                {title}
+              </span>
+            )}
             {item.status && showStatus ? (
               <Badge
                 variant="outline"
@@ -500,6 +516,7 @@ export const GraphChatContextCompactionItem = memo(
     timeMeta?: ReactNode;
   }) {
   const { locale: i18nLocale } = useI18n();
+    const [detailOpen, setDetailOpen] = useState(false);
     const isRunning =
       isRunningHistoryStatus(item.status) || item.text === 'Compacting context';
     const primaryText = isRunning ? translate("chat.compactingContext") : translate("chat.contextCompacted");
@@ -513,7 +530,13 @@ export const GraphChatContextCompactionItem = memo(
       <div className="tlog-notice thread-graph-event-context" data-kind="contextCompaction" data-status={isRunning ? 'running' : 'done'}>
         <span className="tlog-glyph" aria-hidden="true">≋</span>
         <span className="tlog-title">{primaryText}</span>
-        {secondaryText ? <span className="tlog-notice-detail" title={secondaryText}>{secondaryText}</span> : null}
+        {secondaryText ? (
+          // Shortened to one line; a tap shows it whole.
+          <button type="button" className={`tlog-notice-detail${detailOpen ? ' is-open' : ''}`} aria-expanded={detailOpen}
+            title={detailOpen ? undefined : translate('common.showFullText')} onClick={() => setDetailOpen((open) => !open)}>
+            {secondaryText}
+          </button>
+        ) : null}
         {isRunning ? <RunningDots tone="emerald" /> : null}
         {graphHistoryStatusConfig(item.status).className === 'is-failed'
           ? <span className="tlog-tag is-failed thread-graph-tool-badge">{translate('chat.failed')}</span> : null}
@@ -608,6 +631,7 @@ export const GraphChatGenericHistoryItem = memo(
           timeMeta={timeMeta}
           title={item.text}
           tone="generic"
+          expandableTitle
         >
           {item.detailText ? <div className="thread-graph-history-event-note"><GraphChatLinkifiedPlainText text={item.detailText} /></div> : null}
         </GraphChatHistoryEventFrame>

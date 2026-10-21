@@ -2801,6 +2801,10 @@ declare const en: {
     readonly "common.updatedTitle": "Pockymoe was updated";
     readonly "common.updatedBody": "Reload to use the new version.";
     readonly "common.reload": "Reload";
+    readonly "common.whyFailed": "Why it failed";
+    readonly "common.whyUnavailable": "Why it is unavailable";
+    readonly "common.retry": "Retry";
+    readonly "common.showFullText": "Show the full text";
     readonly "common.help": "Help";
     readonly "common.helpTopics": "Help topics";
     readonly "common.helpIntro": "What device, connection and account messages mean, and how to fix them.";
@@ -6820,6 +6824,10 @@ declare const zhCN: {
     "common.updatedTitle": "Pockymoe 已更新";
     "common.updatedBody": "重新加载即可使用新版本。";
     "common.reload": "重新加载";
+    "common.whyFailed": "查看失败原因";
+    "common.whyUnavailable": "查看不可用原因";
+    "common.retry": "重试";
+    "common.showFullText": "展开全文";
     "common.help": "帮助";
     "common.helpTopics": "帮助主题";
     "common.helpIntro": "设备、连接和账户提示的含义，以及解决办法。";
@@ -10861,6 +10869,10 @@ declare const resources: {
         readonly "common.updatedTitle": "Pockymoe was updated";
         readonly "common.updatedBody": "Reload to use the new version.";
         readonly "common.reload": "Reload";
+        readonly "common.whyFailed": "Why it failed";
+        readonly "common.whyUnavailable": "Why it is unavailable";
+        readonly "common.retry": "Retry";
+        readonly "common.showFullText": "Show the full text";
         readonly "common.help": "Help";
         readonly "common.helpTopics": "Help topics";
         readonly "common.helpIntro": "What device, connection and account messages mean, and how to fix them.";
@@ -14879,6 +14891,10 @@ declare const resources: {
         "common.updatedTitle": "Pockymoe 已更新";
         "common.updatedBody": "重新加载即可使用新版本。";
         "common.reload": "重新加载";
+        "common.whyFailed": "查看失败原因";
+        "common.whyUnavailable": "查看不可用原因";
+        "common.retry": "重试";
+        "common.showFullText": "展开全文";
         "common.help": "帮助";
         "common.helpTopics": "帮助主题";
         "common.helpIntro": "设备、连接和账户提示的含义，以及解决办法。";

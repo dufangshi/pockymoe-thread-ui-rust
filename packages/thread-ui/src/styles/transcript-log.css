@@ -606,7 +606,10 @@
 }
 .tlog-notice .tlog-glyph { color: var(--theme-fg-muted); }
 .tlog-notice .tlog-title { flex: 0 1 auto; }
-.tlog-notice-detail { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.8; }
+.tlog-notice-detail { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.8;
+  padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.tlog-notice:has(> .tlog-notice-detail.is-open) { flex-wrap: wrap; }
+.tlog-notice-detail.is-open { flex-basis: 100%; white-space: pre-wrap; overflow-wrap: anywhere; overflow: visible; }
 
 /* A message's time appears beside its copy button on hover, over the actions' fade. */
 .thread-ui-shell .thread-graph-message-hover-time {

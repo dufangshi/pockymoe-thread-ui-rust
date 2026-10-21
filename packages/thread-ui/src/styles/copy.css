@@ -77,3 +77,30 @@
 .middle-name { display: inline-flex; min-width: 0; max-width: 100%; white-space: nowrap; }
 .middle-name-head { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .middle-name-tail { flex: none; }
+
+/* A failure or an unavailable control: a small, quiet mark; the reason opens on a
+   tap (ErrorMark). Never a paragraph of red text in the page. */
+.error-mark {
+  position: relative; display: inline-flex; flex: none; align-items: center; justify-content: center;
+  width: 20px; height: 20px; padding: 0; border: 0; border-radius: 999px; background: transparent;
+  color: color-mix(in srgb, var(--status-danger-fg, #d76363) 62%, var(--theme-fg-muted, #8a8a8a));
+  cursor: pointer; vertical-align: middle;
+}
+.error-mark[data-kind='unavailable'] { color: var(--theme-fg-muted, #8a8a8a); }
+.error-mark::after { content: ''; position: absolute; inset: -10px; }
+.error-mark svg { width: 14px; height: 14px; }
+.error-mark:is(:focus-visible) { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
+@media (hover: hover) { .error-mark:hover { background: var(--theme-hover); } }
+.error-mark-bubble {
+  position: fixed; z-index: 1100; width: max-content; max-width: min(300px, calc(100vw - 16px));
+  padding: 8px 10px; border: 1px solid var(--theme-border); border-radius: 8px;
+  background: var(--theme-panel); color: var(--theme-fg); box-shadow: 0 8px 22px #0004;
+  font-size: 12px; line-height: 1.5;
+}
+.error-mark-message { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
+.error-mark-retry {
+  display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; padding: 4px 8px;
+  border: 1px solid var(--theme-border); border-radius: 6px; background: transparent; color: var(--theme-fg); font-size: 12px;
+}
+.error-mark-retry svg { width: 12px; height: 12px; }
+@media (hover: hover) { .error-mark-retry:hover { background: var(--theme-hover); } }

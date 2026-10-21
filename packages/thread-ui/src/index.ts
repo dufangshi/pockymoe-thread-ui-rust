@@ -21,6 +21,7 @@ export { CopyButton, useCopy } from './components/copy/CopyButton';
 export { formatFileSize } from './components/attachments/attachmentFiles';
 export { copyText } from './components/shell/terminalClipboard';
 export { PathChip } from './components/copy/PathChip';
+export { ErrorMark } from './components/copy/ErrorMark';
 export { useMenuKeyboard } from './components/menu/useMenuKeyboard';
 export { useModalFocus } from './components/menu/useModalFocus';
 export { useLongPress } from './components/menu/useLongPress';

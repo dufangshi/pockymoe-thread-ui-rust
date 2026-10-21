@@ -2,6 +2,7 @@ import { translate, useI18n } from '../i18n';
 import { FormEvent, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useModalFocus } from './menu/useModalFocus';
+import { ErrorMark } from './copy/ErrorMark';
 
 interface RenameDialogProps {
   open: boolean;
@@ -101,7 +102,6 @@ export function RenameDialog({
         </div>
 
         <div className="mt-5 flex items-center justify-end gap-2">
-          {error ? <p role="alert" className="text-sm text-rose-500">{error}</p> : null}
           <button
             type="button"
             onClick={onCancel}
@@ -115,6 +115,8 @@ export function RenameDialog({
             className="ui-action-success rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed"
           >
             {submitLabel ?? translate("workbench.save")}</button>
+          {/* Saving failed: why, after the button that tries again. */}
+          {error ? <ErrorMark message={error} /> : null}
         </div>
       </form>
     </div>,

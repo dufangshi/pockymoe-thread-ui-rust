@@ -61,6 +61,7 @@ import { groupAnswerSections, isSubstantiveAnswer } from './answerSections';
 import { TurnTokenSummary } from './tokenFormatting';
 import { TurnStatusBar } from './turnStatus';
 import { Collapse } from './Collapse';
+import { ErrorMark } from '../copy/ErrorMark';
 import { turnErrorText } from './turnErrors';
 import { activityParts, hasActivity, storySegments, stretchBetween, stretchFromItems, turnActivity, turnChangedFiles } from './activity';
 import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff, Parts, RunPlaceholder } from './TranscriptLog';
@@ -927,7 +928,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
               ? <span className="tlog-spinner thread-worked-spinner" role="img" aria-label={translate("chat.loadingCompleteHistory")} />
               : <ChevronRight className={`thread-worked-chevron h-4 w-4 shrink-0 transition ${effectiveCollapsed ? '' : 'rotate-90'}`} />}
             <span className="thread-graph-worked-label shrink-0">
-              {deferredItemsError ? translate("chat.historyUnavailableRetry") : workedLabel}
+              {workedLabel}
             </span>
             {interruptedLabel}
             {workParts.length
@@ -940,6 +941,11 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
               <span className="tlog-sep" aria-hidden="true">·</span><Parts parts={fileParts} />
             </button>
           ) : fileParts.length ? <span className="tlog-summary"><span className="tlog-sep" aria-hidden="true">·</span><Parts parts={fileParts} /></span> : null}
+          {/* The turn's full history did not load: the line keeps its summary and
+              a mark says why; the line, or the mark's Retry, loads it again. */}
+          {deferredItemsError ? (
+            <ErrorMark message={deferredItemsError} onRetry={() => onToggleCollapse(turn, true, true)} />
+          ) : null}
           <span
             className="thread-graph-worked-rule h-px min-w-0 flex-1"
             aria-hidden="true"
@@ -1033,7 +1039,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
 
   if (nestedPeerWork) return <MessageExpansionScope key={`${threadId ?? ''}:${turn.id}`}>
     <div className="thread-peer-execution">{historyNode}{liveHookPromptNode}{liveOutputNode}
-      {turn.error ? <p role="alert">{turn.error}</p> : null}
+      {turn.error ? <ErrorMark message={turnErrorText(turn.error)} announce={false} /> : null}
     </div>
   </MessageExpansionScope>;
 

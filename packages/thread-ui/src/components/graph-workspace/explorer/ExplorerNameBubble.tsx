@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent, type TouchEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { shellThemeProps } from '../../themeHooks';
+import { shellThemeProps, surfaceBehind } from '../../themeHooks';
 
 const HOVER_DELAY_MS = 400;
 const PRESS_DELAY_MS = 400;
@@ -68,15 +68,6 @@ export function useExplorerNameBubble(name: string) {
     document.body,
   ) : null;
   return { label, handlers, bubble };
-}
-
-/** The first painted background behind an element. */
-function surfaceBehind(element: HTMLElement) {
-  for (let node: HTMLElement | null = element; node; node = node.parentElement) {
-    const color = getComputedStyle(node).backgroundColor;
-    if (color && color !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(color)) return color;
-  }
-  return undefined;
 }
 
 function truncated(element: HTMLElement) {

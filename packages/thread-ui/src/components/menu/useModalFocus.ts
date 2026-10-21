@@ -25,6 +25,8 @@ export function useModalFocus(windowRef: RefObject<HTMLElement | null>, open: bo
       // A window stacked above this one (another dialog with focus) handles its own keys.
       const active = document.activeElement;
       if (active && !root.contains(active) && active.closest('[role="dialog"], [role="alertdialog"], [role="menu"]')) return;
+      // An open ErrorMark bubble takes Esc first: it closes, the window stays.
+      if (event.key === 'Escape' && document.querySelector('.error-mark-bubble')) return;
       if (event.key === 'Escape' && close.current) { event.preventDefault(); event.stopPropagation(); close.current(); return; }
       if (event.key !== 'Tab') return;
       const list = focusables();

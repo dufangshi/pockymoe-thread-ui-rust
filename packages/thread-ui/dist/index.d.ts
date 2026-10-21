@@ -51,14 +51,20 @@ declare function PathChip({ path, display, copyValue, label, className }: {
  * still hear the reason when it appears. Put it after the control it explains;
  * a control that cannot be used stays in place, greyed and disabled.
  */
-declare function ErrorMark({ message, kind, label, onRetry, retryLabel, className, }: {
+declare function ErrorMark({ message, detail, kind, label, onRetry, retryLabel, className, announce, tabIndex, }: {
     message: string;
+    /** The raw error under a readable message, in small type. */
+    detail?: string | undefined;
     /** `unavailable`: the reason a control next to it is disabled. */
     kind?: 'error' | 'unavailable';
     label?: string | undefined;
     onRetry?: (() => void) | undefined;
     retryLabel?: string | undefined;
     className?: string | undefined;
+    /** Say the reason aloud when it appears (an action that just failed). A
+        record of an earlier failure (a past turn) is not announced. */
+    announce?: boolean;
+    tabIndex?: number | undefined;
 }): react.JSX.Element;
 
 /**

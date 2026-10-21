@@ -38,6 +38,7 @@ import { WorkspaceFileActions } from './WorkspaceFileMenu';
 import ReactMarkdown, { defaultUrlTransform, type Components } from 'react-markdown';
 import { localFileHref, relativeWorkspacePath, normalizeFileSystemPath } from '../workspacePaths';
 import { confirmAsync } from '../menu/confirmAsync';
+import { ErrorMark } from '../copy/ErrorMark';
 import remarkGfm from 'remark-gfm';
 import { markdownHtmlPlugins } from '../markdownHtml';
 import { MarkdownImageLinkContext } from '../ZoomableImage';
@@ -135,9 +136,12 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }: {
       {sizeLabel ? <span>{sizeLabel}</span> : null}
       <p>{translate("files.thisFileIsAvailableToDownload")}</p>
       {readOnlyReason ? <p>{translateReadOnly(readOnlyReason)}</p> : null}
-      {onDownload ? (
-        <button type="button" disabled={pending} aria-label={translate("files.download", { value1: node.name })}
+      {/* A failed download, or no download on this connection: Download stays
+          (greyed when unavailable) with a mark after it that says why. */}
+      <span className="inline-flex items-center gap-1">
+        <button type="button" disabled={pending || !onDownload} aria-label={translate("files.download", { value1: node.name })}
           onClick={async () => {
+            if (!onDownload) return;
             setPending(true);
             setError(null);
             try { await onDownload(); }
@@ -147,8 +151,10 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }: {
           <Download aria-hidden="true" size={16} />
           {pending ? translate("files.downloading") : translate("files.downloadFile")}
         </button>
-      ) : <span>{translate("files.downloadsAreUnavailableForThisConnection")}</span>}
-      {error ? <p role="alert">{error}</p> : null}
+        {!onDownload
+          ? <ErrorMark kind="unavailable" message={translate("files.downloadsAreUnavailableForThisConnection")} />
+          : error ? <ErrorMark message={error} /> : null}
+      </span>
     </div>
   );
 }
@@ -777,7 +783,20 @@ export function GraphWorkspacePreviewPane({
   ) : null;
 
   const previewNavigation = (onNavigateBack || onReturnToFiles || onExpandExplorer) && <button type="button" className="workspace-preview-back" onClick={onNavigateBack ?? onReturnToFiles ?? onExpandExplorer} aria-label={onNavigateBack ? backLabel : translate('files.backToFiles')} title={onNavigateBack ? backLabel : translate('files.backToFiles')} data-testid="expand-explorer"><ArrowLeft data-icon="back" size={18}/></button>;
-  const previewActions = <button ref={actionTrigger} type="button" className="thread-graph-editor-toolbar-button workspace-file-more" aria-label={translate('files.fileActions')} title={translate('files.fileActions')} aria-expanded={actionsOpen} onClick={() => setActionsOpen(open => !open)}><MoreHorizontal data-icon="more" size={18}/></button>;
+  // A failure (opening, reading or saving the file, or a workspace action) is a
+  // mark beside the file's actions, not a banner over it. A file that cannot be
+  // shown keeps its download one tap away beside the mark.
+  const failureMarks = (error || saveError) ? <>
+    {error ? <ErrorMark message={translateReadOnly(error)} /> : null}
+    {saveError && saveError !== error ? <ErrorMark message={saveError} /> : null}
+    {error && onDownloadFile && selectedTarget?.kind === 'workspace-file'
+      ? <AlertDownloadButton name={selectedTarget.node.name} onDownload={onDownloadFile} /> : null}
+  </> : null;
+  const fileHeaderShown = fileTabs.length === 0 || Boolean(onCloseFileTab && onSelectFileTab);
+  const previewActions = <>
+    {failureMarks}
+    <button ref={actionTrigger} type="button" className="thread-graph-editor-toolbar-button workspace-file-more" aria-label={translate('files.fileActions')} title={translate('files.fileActions')} aria-expanded={actionsOpen} onClick={() => setActionsOpen(open => !open)}><MoreHorizontal data-icon="more" size={18}/></button>
+  </>;
 
   return (
     <section
@@ -811,12 +830,10 @@ export function GraphWorkspacePreviewPane({
       ) : null}
       {actionsOpen && fileActions}
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        {error ? (
-          <div role="alert" className="workspace-file-alert flex items-center gap-3 border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-5 py-3">
-            <span className="min-w-0 flex-1">{translateReadOnly(error)}</span>
-            {/* The file may still be useful: its download sits beside the error. */}
-            {onDownloadFile && selectedTarget?.kind === 'workspace-file'
-              ? <AlertDownloadButton name={selectedTarget.node.name} onDownload={onDownloadFile} /> : null}
+        {/* No file header to carry the marks: they keep a slim row instead. */}
+        {failureMarks && !fileHeaderShown ? (
+          <div className="workspace-file-alert flex shrink-0 items-center justify-end gap-2 border-b border-[var(--theme-border)] px-3 py-1">
+            {failureMarks}
           </div>
         ) : null}
         {!selectedTarget && missingPath ? (
@@ -873,11 +890,6 @@ export function GraphWorkspacePreviewPane({
                     language={fileLanguage} dark={dark} compact={compactViewer} /></Suspense></div>
                   <p className="workspace-document-snapshot">{translate('files.safeFixedSnapshot')} · {document.conflict.contentHash?.slice(0,23)}</p>
                 </> : <p>{translate('files.safeMissing')}</p>}
-              </div>
-            ) : null}
-            {saveError ? (
-              <div role="alert" className="workspace-file-alert border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-4 py-2">
-                {saveError}
               </div>
             ) : null}
             {editing && compactViewer ? (

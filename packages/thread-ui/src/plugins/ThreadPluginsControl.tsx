@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from '../components/graph-ui/Dialog';
 import { useI18n } from '../i18n';
+import { ErrorMark } from '../components/copy/ErrorMark';
 import type { ThreadPluginScopeState } from './plugin-context';
 import type {
   FrontendPluginModule,
@@ -173,12 +174,16 @@ function ScopeBody({
           : scope.status === 'forbidden'
             ? t('settings.threadPluginsForbidden')
             : t('settings.threadPluginsLoadFailed');
+    // Nothing loaded: the short line stays with Reload as the way out; the
+    // reason itself is behind the mark.
     return (
-      <div
-        className="thread-plugins-message"
-        role={scope.status === 'error' ? 'alert' : 'status'}
-      >
-        <p>{message}</p>
+      <div className="thread-plugins-message" role="status">
+        <p className="flex items-center gap-1">
+          <span>{message}</span>
+          {scope.status === 'error' && scope.error && scope.error !== message ? (
+            <ErrorMark message={scope.error} />
+          ) : null}
+        </p>
         {scope.status === 'error' && (
           <button type="button" onClick={() => void scope.reload()}>
             {t('settings.threadPluginsReload')}
@@ -265,7 +270,17 @@ function PluginRow({
   return (
     <li className="thread-plugins-row" aria-label={plugin.name}>
       <div className="thread-plugins-row-head">
-        <strong>{plugin.name}</strong>
+        {/* A change that failed: why (and Reload after a conflict) behind a mark after the name. */}
+        <span className="flex min-w-0 items-center gap-1">
+          <strong>{plugin.name}</strong>
+          {failure ? (
+            <ErrorMark
+              message={failure.message}
+              onRetry={failure.conflict ? () => void scope.reload() : undefined}
+              retryLabel={t('settings.threadPluginsReload')}
+            />
+          ) : null}
+        </span>
         <span
           className={`thread-plugins-state ${plugin.enabled ? 'is-on' : 'is-off'}`}
         >
@@ -311,19 +326,26 @@ function PluginRow({
           );
         })}
       </div>
-      {!plugin.globalEnabled && (
-        <p className="thread-plugins-note">
-          {t('settings.threadPluginsGlobalOff')}
-          {onOpenGlobal && (
-            <button type="button" onClick={onOpenGlobal}>
-              {t('settings.threadPluginsOpenGlobal')}
-            </button>
+      {/* Why a choice is greyed: a mark after the choices; the way to the
+          global switch stays a link beside it. */}
+      {!plugin.globalEnabled || (unavailable && plugin.unavailableReason) ? (
+        <div className="flex flex-wrap items-center gap-1">
+          <ErrorMark
+            kind="unavailable"
+            message={[
+              !plugin.globalEnabled ? t('settings.threadPluginsGlobalOff') : null,
+              unavailable ? plugin.unavailableReason : null,
+            ].filter(Boolean).join('\n')}
+          />
+          {!plugin.globalEnabled && onOpenGlobal && (
+            <p className="thread-plugins-note">
+              <button type="button" onClick={onOpenGlobal}>
+                {t('settings.threadPluginsOpenGlobal')}
+              </button>
+            </p>
           )}
-        </p>
-      )}
-      {unavailable && plugin.unavailableReason && (
-        <p className="thread-plugins-note">{plugin.unavailableReason}</p>
-      )}
+        </div>
+      ) : null}
       {(hasSettings || plugin.settingsOverridden) && (
         <div className="thread-plugins-actions">
           {hasSettings && !readOnly && (
@@ -350,16 +372,6 @@ function PluginRow({
             </>
           )}
         </div>
-      )}
-      {failure && (
-        <p className="thread-plugins-error" role="alert">
-          {failure.message}
-          {failure.conflict && (
-            <button type="button" onClick={() => void scope.reload()}>
-              {t('settings.threadPluginsReload')}
-            </button>
-          )}
-        </p>
       )}
     </li>
   );

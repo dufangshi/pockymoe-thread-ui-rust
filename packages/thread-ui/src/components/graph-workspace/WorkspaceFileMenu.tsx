@@ -1,5 +1,6 @@
 import { Download, RefreshCw } from 'lucide-react';
 import { CopyButton } from '../copy/CopyButton';
+import { ErrorMark } from '../copy/ErrorMark';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { translate, useI18n } from '../../i18n';
 
@@ -19,18 +20,20 @@ export function WorkspaceFileActions({ children, metadata, path, relativePath, o
   const [error, setError] = useState<string | null>(null);
   const generation = useRef(0);
   useEffect(() => () => { generation.current++; }, []);
+  const reload = onRefresh ? async () => {
+    const current = generation.current;
+    setBusy(true); setFeedback(null); setError(null);
+    try { const result = await onRefresh(); if (current === generation.current) setFeedback(result); }
+    catch (cause) { if (current === generation.current) setError(cause instanceof Error ? cause.message : translate('files.fileOperationFailed')); }
+    finally { if (current === generation.current) setBusy(false); }
+  } : undefined;
   return <div className="workspace-file-actions" role="toolbar" aria-label={translate('files.fileActions')} title={metadata}>
     {children}
-    {onRefresh && <button type="button" className="thread-graph-editor-toolbar-button" disabled={busy} title={translate('files.reloadFile')} aria-label={translate('files.reloadFile')} onClick={async () => {
-      const current = generation.current;
-      setBusy(true); setFeedback(null); setError(null);
-      try { const result = await onRefresh(); if (current === generation.current) setFeedback(result); }
-      catch (cause) { if (current === generation.current) setError(cause instanceof Error ? cause.message : translate('files.fileOperationFailed')); }
-      finally { if (current === generation.current) setBusy(false); }
-    }}><RefreshCw size={15} className={busy ? 'animate-spin motion-reduce:animate-none' : ''}/></button>}
+    {reload && <button type="button" className="thread-graph-editor-toolbar-button" disabled={busy} title={translate('files.reloadFile')} aria-label={translate('files.reloadFile')} onClick={() => void reload()}><RefreshCw size={15} className={busy ? 'animate-spin motion-reduce:animate-none' : ''}/></button>}
+    {/* Reloading failed: why (and Retry) behind a mark right after Reload. */}
+    {reload && error && <ErrorMark message={error} onRetry={() => void reload()} />}
     {onDownload && <button type="button" className="thread-graph-editor-toolbar-button" title={translate('files.downloadFile')} aria-label={translate('files.downloadFile')} onClick={onDownload}><Download size={15}/></button>}
     <CopyButton value={relativePath || path} label={translate('common.copyPath')} />
     {feedback && <span role="status" className="workspace-file-action-feedback" title={feedback}>{feedback}</span>}
-    {error && <span role="alert" className="workspace-file-action-feedback is-error" title={error}>{error}</span>}
   </div>;
 }

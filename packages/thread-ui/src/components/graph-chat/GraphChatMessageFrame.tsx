@@ -3,7 +3,8 @@ import { useState, type PointerEvent, type ReactNode } from 'react';
 
 /** Room a prompt's time and copy need beside its bubble. */
 const SIDE_ACTIONS_WIDTH = 132;
-import { CheckCircle2, Circle, CircleAlert, Loader2, XCircle } from 'lucide-react';
+import { CheckCircle2, Circle, Loader2, XCircle } from 'lucide-react';
+import { ErrorMark } from '../copy/ErrorMark';
 import { failureMessage } from './turnPrompts';
 import { MessageSenderMark, type MessageSenderView } from './MessageSenderMark';
 
@@ -90,7 +91,6 @@ export function GraphChatMessageFrame({
   actionsTime,
   failure,
   kicker,
-  onBeforeResize,
   messageId,
   variant,
   sender,
@@ -108,11 +108,10 @@ export function GraphChatMessageFrame({
   timeTitle?: string | null | undefined;
   /** A short time beside the copy button; the full one stays in its title. */
   actionsTime?: string | null | undefined;
-  /** The error of the failed turn this prompt started, behind a red mark. */
+  /** The error of the failed turn this prompt started, behind a quiet mark. */
   failure?: string | null | undefined;
   /** A small line above the message, such as when a prompt was added mid-turn. */
   kicker?: ReactNode;
-  onBeforeResize?: (() => void) | undefined;
   /** Who sent a prompt when it was not the device owner. */
   sender?: MessageSenderView | null | undefined;
 }) {
@@ -129,7 +128,6 @@ export function GraphChatMessageFrame({
     const box = bubble.getBoundingClientRect();
     setActionsBeside(Boolean(row && box.left - row.left >= SIDE_ACTIONS_WIDTH));
   };
-  const [failureOpen, setFailureOpen] = useState(false);
   const failureText = failure ? failureMessage(failure) : null;
   const normalizedStatus = status?.trim().toLowerCase() ?? '';
   const showStatus = Boolean(
@@ -196,12 +194,11 @@ export function GraphChatMessageFrame({
           >
             {children}
           </div>
-          {isUser && failure ? (
-            <button type="button" className="thread-graph-message-failure" aria-expanded={failureOpen}
-              aria-label={translate('chat.turnFailedShow')} title={translate('chat.turnFailedShow')}
-              onClick={() => { onBeforeResize?.(); setFailureOpen(open => !open); }}>
-              <CircleAlert aria-hidden="true" />
-            </button>
+          {/* A record of an earlier failure: not announced. */}
+          {isUser && failure && failureText ? (
+            <ErrorMark className="thread-graph-message-failure" label={translate('chat.turnFailedShow')} announce={false}
+              message={`${translate('chat.turnFailedTitle')}\n${failureText}`}
+              detail={failureText !== failure.trim() ? failure : undefined} />
           ) : null}
           {copyButton || (!timeNode && timeTitle) ? (
             <div className="thread-graph-message-copy-desktop">
@@ -211,13 +208,6 @@ export function GraphChatMessageFrame({
             </div>
           ) : null}
         </div>
-        {isUser && failure && failureOpen ? (
-          <div className="thread-graph-message-failure-detail" role="note">
-            <strong>{translate('chat.turnFailedTitle')}</strong>
-            <p>{failureText}</p>
-            {failureText !== failure.trim() ? <pre>{failure}</pre> : null}
-          </div>
-        ) : null}
         {isUser && showStatus ? (
           <div
             className={`thread-graph-message-user-meta flex items-center justify-end gap-2 ${showStatus || timeNode ? 'has-persistent-meta' : ''}`}

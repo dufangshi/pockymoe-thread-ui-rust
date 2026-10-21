@@ -4,6 +4,7 @@ import { Users, Link2, FileCode, Pencil } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type ReactNode, type FormEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useModalFocus } from './menu/useModalFocus';
+import { ErrorMark } from './copy/ErrorMark';
 
 import type {
   ExportThreadTranscriptInput,
@@ -423,14 +424,17 @@ export function ThreadActionsDialog({
             <form id="thread-actions-share-form" className="mt-4 space-y-4" onSubmit={handleShare}>
               <div className="thread-export-dialog-box rounded-2xl border">
                 <div className="thread-export-dialog-box-header flex items-center justify-between border-b px-3 py-2.5">
-                  <p className="thread-export-dialog-strong text-sm font-medium">{translate("sharing.peopleWithAccess")}</p>
+                  {/* Loading or changing the shares failed: a mark after the heading.
+                      The people already listed stay; a failed list claims no one. */}
+                  <p className="thread-export-dialog-strong flex items-center gap-1 text-sm font-medium">
+                    <span>{translate("sharing.peopleWithAccess")}</span>
+                    {shareState?.status === 'failed' && shareState.error ? <ErrorMark message={shareState.error} /> : null}
+                  </p>
                   <span className="thread-export-dialog-status-pill rounded-full border px-2 py-0.5 text-[10px]">
                     {shareState?.shares.length ?? 0}
                   </span>
                 </div>
-                {shareState?.status === 'failed' ? (
-                  <p className="px-3 py-3 text-sm text-rose-500 dark:text-rose-200">{shareState.error}</p>
-                ) : shareState?.shares.length ? (
+                {shareState?.shares.length ? (
                   <div className="divide-y">
                     {shareState.shares.map((share) => (
                       <div key={share.id} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 text-sm">
@@ -457,17 +461,11 @@ export function ThreadActionsDialog({
                       </div>
                     ))}
                   </div>
-                ) : (
+                ) : shareState?.status === 'failed' ? null : (
                   <p className="thread-export-dialog-subtitle px-3 py-3 text-sm">
                     {translate(workspaceOnly ? "sharing.noActiveSharesForThisWorkspace" : "sharing.noActiveSharesForThisThread")}</p>
                 )}
               </div>
-
-              {!shareAvailable ? (
-                <p className="thread-export-dialog-box thread-export-dialog-subtitle rounded-2xl border px-3 py-3 text-sm">
-                  {shareUnavailableMessage}
-                </p>
-              ) : null}
               {shareAvailable && (scopeChoices.length > 1 || workspaceOnly) ? (
                 <fieldset className="matter-share-scopes">
                   <legend>{translate("sharing.shareScope")}</legend>
@@ -592,7 +590,10 @@ export function ThreadActionsDialog({
                   {turnsState.status === 'loading' ? (
                     <p className="thread-export-dialog-subtitle px-3 py-6 text-sm">{translate("sharing.loadingTurns_3ea426")}</p>
                   ) : turnsState.status === 'failed' ? (
-                    <p className="px-3 py-6 text-sm text-rose-500 dark:text-rose-200">{turnsState.error}</p>
+                    <p className="thread-export-dialog-subtitle flex items-center gap-1 px-3 py-6 text-sm">
+                      <span>{translate("workbench.unableToLoadExportTurns")}</span>
+                      <ErrorMark message={turnsState.error ?? translate("workbench.unableToLoadExportTurns")} onRetry={() => void onLoadTurns()} />
+                    </p>
                   ) : (
                     <div className="max-h-80 overflow-auto p-2">
                       {turns.map((turn) => (
@@ -659,14 +660,18 @@ export function ThreadActionsDialog({
               {matter ? translate("sharing.close") : translate("sharing.cancel")}
             </button>
             {actionMode === 'link' || (matter && actionMode === 'share' && !shareAvailable) ? null : actionMode === 'share' ? (
-              <button
-                type="submit"
-                form="thread-actions-share-form"
-                disabled={!canShare}
-                className={`${matter ? 'matter-dialog-primary' : 'ui-status-warning'} rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60`}
-              >
-                {busy ? translate("sharing.saving") : editingShare ? translate("sharing.savePermissions") : shareScope === 'device' ? translate("sharing.shareDevice") : shareScope === 'workspace' ? translate("sharing.shareWorkspace") : translate("sharing.shareThisThread")}
-              </button>
+              <>
+                <button
+                  type="submit"
+                  form="thread-actions-share-form"
+                  disabled={!canShare}
+                  className={`${matter ? 'matter-dialog-primary' : 'ui-status-warning'} rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60`}
+                >
+                  {busy ? translate("sharing.saving") : editingShare ? translate("sharing.savePermissions") : shareScope === 'device' ? translate("sharing.shareDevice") : shareScope === 'workspace' ? translate("sharing.shareWorkspace") : translate("sharing.shareThisThread")}
+                </button>
+                {/* The form stays, greyed; why sharing is off is behind the mark. */}
+                {!shareAvailable ? <ErrorMark kind="unavailable" message={shareUnavailableMessage} /> : null}
+              </>
             ) : (
               <button
                 type="button"

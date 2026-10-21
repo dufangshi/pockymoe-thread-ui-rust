@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../../i18n';
 import type { ThreadSkillsDto } from '@pockymoe/shared';
 
+import { ErrorMark } from '../copy/ErrorMark';
 import { ClipboardIcon, skillScopeLabel } from './composerPresentation';
 import type { SlashPanelState } from './types';
 
@@ -24,9 +25,11 @@ export function ComposerSkillsPanel({
         <p className="rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
           {translate("chat.loadingSkills")}</p>
       ) : null}
-      {skillsState.error ? (
-        <p className="mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90">
-          {skillsState.error}
+      {/* A failed reload keeps the skills already listed; only an empty list says so. */}
+      {skillsState.error && !skillsState.data?.skills.length ? (
+        <p className="mb-2 flex items-center gap-1 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
+          <span className="min-w-0">{translate("workbench.unableToLoadSkills")}</span>
+          <ErrorMark message={skillsState.error} />
         </p>
       ) : null}
       {skillsState.data?.skills.length ? (
@@ -68,17 +71,16 @@ export function ComposerSkillsPanel({
           ))}
         </div>
       ) : null}
+      {/* A skill file that could not be read: its path, and why behind a mark. */}
       {skillsState.data?.errors.length ? (
         <div className="mt-2 space-y-2">
           {skillsState.data.errors.map((entry) => (
             <div
               key={`${entry.path}:${entry.message}`}
-              className="rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100/85"
+              className="flex items-center gap-1 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2 text-xs text-stone-400"
             >
-              <p className="font-medium">{entry.message}</p>
-              <p className="mt-1 break-all text-amber-100/60">
-                {entry.path}
-              </p>
+              <p className="min-w-0 break-all">{entry.path}</p>
+              <ErrorMark message={entry.message} />
             </div>
           ))}
         </div>

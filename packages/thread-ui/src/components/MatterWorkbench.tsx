@@ -30,6 +30,7 @@ import { homeRelativePath } from './WorkbenchPath';
 import { PathChip } from './copy/PathChip';
 import { ThreadToolsMenu } from './workbench/ThreadToolsMenu';
 import { StatusMark } from './StatusMark';
+import { ErrorMark } from './copy/ErrorMark';
 import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
 import { useThemeFeature } from './themeHooks';
 import { PhoneDock, PhoneSheet, type PhonePane } from './workbench/PhoneDock';
@@ -595,6 +596,17 @@ export function MatterWorkbench({
   const unreadThreads = inConversations((o.activeThreads ?? o.threads).filter(thread => thread.status === 'unread' && thread.key !== o.currentKey));
   const unreadCount = groupThreads(unreadThreads).length;
   const favorites = o.threads.filter(thread => thread.favorite);
+  const shortcutsHeading = (
+    <button
+      className="matter-section-heading"
+      aria-expanded={shortcutsOpen}
+      onClick={() => setShortcutsOpen(!shortcutsOpen)}
+    >
+      {shortcutsOpen ? <ChevronDown /> : <ChevronRight />}
+      <span>{translate("workbench.shortcuts")}</span>
+      {favorites.length > 0 ? <span className="matter-section-count">{favorites.length}</span> : <Star data-icon="shortcuts" />}
+    </button>
+  );
   // The sidebar and the thread sheet list this workspace's threads apart from
   // the recent ones elsewhere.
   const workspaceThreads = o.workspaceThreads ? tabs : [];
@@ -906,21 +918,15 @@ export function MatterWorkbench({
             <LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span><ChevronRight aria-hidden="true" />
           </button>
         )}
-        {o.error && (
-          <p className="matter-sidebar-error" role="alert">
-            {o.error}
-          </p>
-        )}
         <div className="matter-sidebar-scroll">
-        <button
-          className="matter-section-heading"
-          aria-expanded={shortcutsOpen}
-          onClick={() => setShortcutsOpen(!shortcutsOpen)}
-        >
-          {shortcutsOpen ? <ChevronDown /> : <ChevronRight />}
-          <span>{translate("workbench.shortcuts")}</span>
-          {favorites.length > 0 ? <span className="matter-section-count">{favorites.length}</span> : <Star data-icon="shortcuts" />}
-        </button>
+        {/* Saving or reading the conversation lists failed: a mark after the
+            first heading; the lists keep what they last showed. */}
+        {o.error ? (
+          <div className="matter-section-heading-row">
+            {shortcutsHeading}
+            <ErrorMark message={o.error} />
+          </div>
+        ) : shortcutsHeading}
         {shortcutsOpen && (
           <div className="matter-thread-section" data-testid="shortcuts">
             <ShortcutList threads={favorites} onReorder={o.onReorderShortcuts}

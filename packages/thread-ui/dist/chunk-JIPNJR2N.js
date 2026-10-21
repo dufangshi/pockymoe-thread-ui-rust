@@ -54,6 +54,13 @@ function cssHexVariable(element, name) {
   const value = getComputedStyle(element).getPropertyValue(name).trim();
   return /^#(?:[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value) ? value : void 0;
 }
+function surfaceBehind(element) {
+  for (let node = element; node instanceof Element; node = node.parentElement) {
+    const color = getComputedStyle(node).backgroundColor;
+    if (color && color !== "transparent" && !/rgba\([^)]*,\s*0\)$/.test(color)) return color;
+  }
+  return void 0;
+}
 
 export {
   THEME_FEATURES,
@@ -62,5 +69,6 @@ export {
   useThemeFeature,
   useDocumentThemeRevision,
   shellThemeProps,
-  cssHexVariable
+  cssHexVariable,
+  surfaceBehind
 };

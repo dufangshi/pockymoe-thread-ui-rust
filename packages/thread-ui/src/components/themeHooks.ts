@@ -81,3 +81,13 @@ export function cssHexVariable(element: Element | null | undefined, name: string
   const value = getComputedStyle(element).getPropertyValue(name).trim();
   return /^#(?:[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value) ? value : undefined;
 }
+
+/** The first painted background behind an element: a popup on the page's body
+    takes the inks of the place it explains, whatever the theme paints there. */
+export function surfaceBehind(element: Element | null | undefined) {
+  for (let node = element; node instanceof Element; node = node.parentElement) {
+    const color = getComputedStyle(node).backgroundColor;
+    if (color && color !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(color)) return color;
+  }
+  return undefined;
+}

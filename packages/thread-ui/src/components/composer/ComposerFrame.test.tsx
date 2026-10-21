@@ -87,6 +87,10 @@ describe('ComposerFrame', () => {
 
     expect(container.querySelector('[data-testid="chat-composer"]')).toBeNull();
     expect(container.textContent).toContain('failed');
+    // The failure is a mark above the composer, outside its form, so pressing it
+    // does not open the composer.
+    expect(container.querySelector('.thread-composer-error-tag .error-mark')).toBeTruthy();
+    expect(container.querySelector('form .error-mark')).toBeNull();
     expect(container.querySelector('[data-slot="goal"]')).toBeTruthy();
     expect(container.querySelector('[data-slot="shell-prompt"]')).toBeTruthy();
   });

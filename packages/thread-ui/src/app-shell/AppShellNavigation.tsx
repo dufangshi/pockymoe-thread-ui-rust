@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { ImportPluginInput } from '@pockymoe/shared';
 import { usePlugins } from '../plugins/usePlugins';
 import { confirmAsync } from '../components/menu/confirmAsync';
+import { ErrorMark } from '../components/copy/ErrorMark';
 import { type ThemeMode, useAppShellNav } from './AppShellNavContext';
 import { PhoneHandChoice } from './PhoneHandChoice';
 
@@ -419,14 +420,19 @@ export function AppShellSettingsDialog({
                   <p className="mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]">
                     {translate("files.enableRenderersAndThreadExtensionsLoadedBy")}</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => void plugins.refresh()}
-                  disabled={plugins.loading}
-                  className="rounded-full border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-1.5 text-xs font-medium text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:text-[var(--theme-fg-muted)]"
-                >
-                  {plugins.loading ? translate("files.loading") : translate("files.refresh")}
-                </button>
+                <span className="flex shrink-0 items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => void plugins.refresh()}
+                    disabled={plugins.loading}
+                    className="rounded-full border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-1.5 text-xs font-medium text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:text-[var(--theme-fg-muted)]"
+                  >
+                    {plugins.loading ? translate("files.loading") : translate("files.refresh")}
+                  </button>
+                  {plugins.error && !plugins.loading ? (
+                    <ErrorMark message={plugins.error} onRetry={() => void plugins.refresh()} />
+                  ) : null}
+                </span>
               </div>
               <div className="mt-3 grid gap-2">
                 {plugins.plugins.map((plugin) => (
@@ -498,23 +504,23 @@ export function AppShellSettingsDialog({
                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                   <p className="max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]">
                     {translate("files.importsRegisterManifestDeclaredArtifactTypesRendering")}</p>
-                  <button
-                    type="button"
-                    onClick={() => void handleImportPlugin()}
-                    disabled={!pluginImportDraft.trim() || pluginImportState.busy}
-                    className="rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-3 py-1.5 text-xs font-medium text-[var(--theme-accent-strong)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:border-[var(--theme-border)] disabled:bg-[var(--theme-muted)] disabled:text-[var(--theme-fg-muted)]"
-                  >
-                    {pluginImportState.busy ? translate("files.importing") : translate("files.import")}
-                  </button>
+                  <span className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => void handleImportPlugin()}
+                      disabled={!pluginImportDraft.trim() || pluginImportState.busy}
+                      className="rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-3 py-1.5 text-xs font-medium text-[var(--theme-accent-strong)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:border-[var(--theme-border)] disabled:bg-[var(--theme-muted)] disabled:text-[var(--theme-fg-muted)]"
+                    >
+                      {pluginImportState.busy ? translate("files.importing") : translate("files.import")}
+                    </button>
+                    {/* An import or an uninstall failed; the button beside it tries again. */}
+                    {pluginImportState.error ? <ErrorMark message={pluginImportState.error} /> : null}
+                  </span>
                 </div>
-                {pluginImportState.error && (
-                  <p className="mt-2 text-xs text-rose-300">{pluginImportState.error}</p>
-                )}
                 {pluginImportState.message && (
                   <p className="mt-2 text-xs text-emerald-300">{pluginImportState.message}</p>
                 )}
               </div>
-              {plugins.error && <p className="mt-2 text-xs text-rose-300">{plugins.error}</p>}
             </div>
 
             {extraContent}

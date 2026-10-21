@@ -391,6 +391,9 @@ describe('ThreadActionsDialog', () => {
       shareUnavailableMessage: 'Only the owner can share this session.',
     });
 
+    // The reason sits behind the mark after the greyed Share button.
+    expect(text('Only the owner can share this session.')).toBe(false);
+    click(document.body.querySelector('button[aria-label="Why it is unavailable"]'));
     expect(text('Only the owner can share this session.')).toBe(true);
     expect(text('Relay sharing will be enabled after the relay permission model is connected.')).toBe(false);
   });

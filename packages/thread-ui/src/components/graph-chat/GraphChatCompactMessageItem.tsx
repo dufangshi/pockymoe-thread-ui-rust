@@ -214,7 +214,6 @@ export const GraphChatCompactMessageItem = memo(
             <AddedPromptIcon />{formatMessageTimestamp(item.createdAt)}
           </span>
         ) : null}
-        onBeforeResize={onBeforeMessageResize}
       >
         {item.kind === 'agentMessage' ? (
           <GraphChatAgentMessageBody

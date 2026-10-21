@@ -32,6 +32,7 @@ import {
   threadStatusLabel,
 } from "./threadPresentation";
 import { RenameDialog } from "./RenameDialog";
+import { ErrorMark } from "./copy/ErrorMark";
 import { MatterWorkbench, type MatterWorkbenchOptions } from './MatterWorkbench';
 import type { ThemeMode } from "../app-shell/AppShellNavContext";
 import {
@@ -878,6 +879,8 @@ export function ThreadWorkspaceLayout({
           >
             <Rows3 className="h-3.5 w-3.5" />
             <span className={collapsed ? "sr-only" : ""}>{translate("files.rooms")}</span>
+            {/* A failure is a mark after the heading; the list keeps its rooms. */}
+            {error ? <ErrorMark message={error} /> : null}
             {!collapsed && loading ? (
               <span className="ml-auto text-xs text-[var(--theme-fg-muted)]">
                 {translate("files.refreshing")}</span>
@@ -885,12 +888,6 @@ export function ThreadWorkspaceLayout({
           </div>
 
           <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-1">
-            {error ? (
-              <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-3 text-sm text-rose-900 dark:text-rose-100">
-                {error}
-              </div>
-            ) : null}
-
             {!error && visibleThreads.length === 0 && !loading ? (
               <div className="rounded-xl border border-dashed border-[var(--theme-border)] bg-[var(--theme-surface)] px-4 py-6 text-sm text-[var(--theme-fg-muted)]">
                 {translate("files.noThreadsAvailableInThisView")}</div>

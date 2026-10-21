@@ -6,6 +6,7 @@ import type {
   UpdateThreadGoalInput,
 } from '@pockymoe/shared';
 
+import { ErrorMark } from '../copy/ErrorMark';
 import type { SlashPanelState } from './types';
 
 function goalKey(goal: ThreadGoalDto) {
@@ -60,12 +61,15 @@ export function ComposerGoalsPanel({
   busy,
   onBack,
   onUpdateGoal,
+  onRetry,
 }: {
   goalState: SlashPanelState<ThreadGoalDto | null | undefined>;
   goalHistory: ThreadGoalDto[];
   busy: boolean;
   onBack: () => void;
   onUpdateGoal?: (input: UpdateThreadGoalInput) => Promise<void> | void;
+  /** Load the goals again after a failed load. */
+  onRetry?: (() => Promise<void> | void) | undefined;
 }) {
   useI18n();
   const goals = mergeGoals(goalState.data, goalHistory);
@@ -79,18 +83,22 @@ export function ComposerGoalsPanel({
           className="min-h-9 rounded-lg px-2 text-xs font-medium text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent-border)]"
         >
           {translate("chat.back")}</button>
-        <span className="text-xs font-semibold text-[var(--theme-fg)]">{translate("chat.goals")}</span>
+        <span className="flex items-center gap-1">
+          <span className="text-xs font-semibold text-[var(--theme-fg)]">{translate("chat.goals")}</span>
+          {/* A failed change (or reload) of listed goals: a mark after the heading. */}
+          {goalState.error && goals.length > 0 ? <ErrorMark message={goalState.error} /> : null}
+        </span>
       </div>
-      {goalState.error ? (
-        <p className="m-3 rounded-lg border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-2 text-xs text-[var(--status-danger-fg)]">
-          {goalState.error}
-        </p>
-      ) : null}
       {goalState.status === 'loading' && goals.length === 0 ? (
         <div className="space-y-2 p-3" role="status" aria-label={translate("chat.loadingGoals")}>
           <div className="h-12 animate-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" />
           <div className="h-12 animate-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" />
         </div>
+      ) : goalState.error && goals.length === 0 ? (
+        <p className="flex items-center justify-center gap-1 px-4 py-5 text-center text-sm text-[var(--theme-fg-muted)]">
+          <span>{translate("workbench.unableToLoadGoal")}</span>
+          <ErrorMark message={goalState.error} onRetry={onRetry ? () => void onRetry() : undefined} />
+        </p>
       ) : goals.length === 0 ? (
         <p className="px-4 py-5 text-center text-sm text-[var(--theme-fg-muted)]">
           {translate("chat.noGoalsInThisThreadYet")}</p>

@@ -1,5 +1,6 @@
 import { translate, useI18n } from '../../i18n';
 import { type ReactNode, type RefCallback } from 'react';
+import { ErrorMark } from '../copy/ErrorMark';
 
 export interface GraphChatTurnFrameProps {
   absoluteIndex: number;
@@ -60,22 +61,20 @@ export function GraphChatTurnFrame({
               {timeLabel}
             </time>
             {headerStatus}
-            {error ? (
-              <p className="hidden truncate text-[11px] text-rose-200 sm:block">
-                {error}
-              </p>
-            ) : null}
           </div>
           {tokenSummary}
         </div>
       </div>
 
-      {error ? (
-        <p className="mt-1 text-[11px] text-rose-200 sm:hidden">{error}</p>
-      ) : null}
-
       <div className="thread-graph-turn-body mt-2 space-y-2">
-        {head}
+        {/* Why the turn failed (when its prompt does not say): a mark at the end
+            of the turn's head line, since the shell styles hide the header above. */}
+        {error ? (
+          <div className="thread-graph-turn-head-row flex items-center gap-1">
+            <div className="min-w-0 flex-1">{head}</div>
+            <ErrorMark message={error} announce={false} />
+          </div>
+        ) : head}
         {collapsed ? collapsedBody : body}
         {!collapsed ? footer : null}
       </div>

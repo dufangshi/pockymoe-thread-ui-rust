@@ -29,6 +29,7 @@ import type { WorkspaceTreeNode } from '../workspaceTree';
 import { WorkspaceExplorerTree } from './WorkspaceExplorerTree';
 import type { WorkspaceNodeActionProps } from './WorkspaceNodeActions';
 import { useMenuKeyboard } from '../../menu/useMenuKeyboard';
+import { ErrorMark } from '../../copy/ErrorMark';
 
 const iconButtonClassName =
   'thread-graph-explorer-icon-button flex h-6 w-6 items-center justify-center rounded transition disabled:cursor-not-allowed disabled:opacity-40';
@@ -357,15 +358,12 @@ export function WorkspaceExplorerPanel({
           ))}
         </div>
       ) : rootError ? (
-        <div role="alert" className="mx-3 mt-2 rounded-md border border-rose-500/25 bg-rose-500/10 px-3 py-3 text-sm text-rose-700 dark:text-rose-200">
-          <p>{rootError}</p>
-          <button
-            type="button"
-            onClick={onRefresh}
-            className="mt-2 h-8 rounded px-2 font-medium hover:bg-rose-500/10"
-          >
-            {translate("files.retry")}</button>
-        </div>
+        // Nothing loaded yet: a short line in the tree's place, the reason (and
+        // Retry) behind its mark; Refresh in the toolbar stays the way out too.
+        <p className="thread-graph-workspace-failed mx-4 my-3 flex items-center gap-1 text-sm text-[var(--theme-fg-muted)]">
+          <span className="min-w-0">{translate("files.failedToLoadWorkspace")}</span>
+          <ErrorMark message={rootError} onRetry={onRefresh} retryLabel={translate("files.retry")} />
+        </p>
       ) : (
         <WorkspaceExplorerTree
           tree={visibleTree}
@@ -402,7 +400,7 @@ export function WorkspaceExplorerPanel({
       filterResult.matchCount === 0 ? (
         <p className="thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400">
           {translate("files.noMatchesInLoadedFolders")}</p>
-      ) : visibleTree.children.length === 0 ? (
+      ) : !rootError && visibleTree.children.length === 0 ? (
         <p className="thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400">
           {translate("files.thisWorkspaceIsEmptyAgentToolRuns")}</p>
       ) : null}

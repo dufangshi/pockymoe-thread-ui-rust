@@ -2,7 +2,6 @@ import { translate, useI18n } from '../../../i18n';
 import {
   ChevronDown,
   ChevronRight,
-  CircleAlert,
   File,
   FileArchive,
   FileCode2,
@@ -20,6 +19,7 @@ import { WorkspaceNodeActions, type WorkspaceNodeActionProps } from './Workspace
 import { useExplorerNameBubble } from './ExplorerNameBubble';
 import { LINKED_DIRECTORY_ID_PREFIX } from './workspaceLinkedFiles';
 import { MiddleName } from '../../copy/MiddleName';
+import { ErrorMark } from '../../copy/ErrorMark';
 
 function iconForNode(node: WorkspaceTreeNode, expanded: boolean) {
   if (node.kind === 'directory') {
@@ -236,19 +236,15 @@ export function WorkspaceExplorerRow({
           </span>
         )}
       </button>
-      {isDirectory && error && onRetry ? (
-        <button
-          type="button"
+      {/* The folder did not load: why, and its Retry, behind the mark after its name. */}
+      {isDirectory && error ? (
+        <ErrorMark
+          className="mr-1"
           tabIndex={-1}
-          onClick={() => onRetry(node.path)}
-          className="mr-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-rose-600 hover:bg-rose-500/10 dark:text-rose-300"
-          title={translate("files.retry_f4914f", { value1: error, value2: node.name })}
-          aria-label={translate("files.retryLoading", { value1: node.name })}
-        >
-          <CircleAlert className="h-3.5 w-3.5" />
-          {/* Announced once when the folder fails to load. */}
-          <span className="sr-only" role="alert">{translate("files.retry_f4914f", { value1: error, value2: node.name })}</span>
-        </button>
+          message={error}
+          onRetry={onRetry ? () => onRetry(node.path) : undefined}
+          retryLabel={translate("files.retryLoading", { value1: node.name })}
+        />
       ) : null}
       {!linkedDirectory && node.path ? <WorkspaceNodeActions node={node}
         {...(onDownload ? {onDownload} : {})} {...(onCopyPath ? {onCopyPath} : {})}

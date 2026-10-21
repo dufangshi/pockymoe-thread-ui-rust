@@ -52,6 +52,7 @@ import { ShellTouchControls } from './shell/ShellTouchControls';
 import { controlSequenceForLetter } from './shell/shellSnapshot';
 import { TerminalMenu } from './shell/TerminalMenu';
 import { confirmAsync } from './menu/confirmAsync';
+import { ErrorMark } from './copy/ErrorMark';
 import {
   TERMINAL_TABS_DEFAULT,
   TERMINAL_TABS_MAX,
@@ -676,6 +677,15 @@ export const ThreadShellPanel = forwardRef<
     return null;
   };
 
+  // A failed terminal action (or the first load) is a mark beside the toolbar,
+  // not a banner; a missing workspace folder greys New and says why on a tap.
+  const errorMark = error ? (
+    <ErrorMark message={error} onRetry={shellState ? undefined : () => { setLoading(true); void loadShellState(); }} />
+  ) : null;
+  const missingMark = workspacePathMissing
+    ? <ErrorMark kind="unavailable" message={t('files.workspacePathIsMissingOnThisMachine')} />
+    : null;
+
   const header = showHeader && (
     <div className="terminal-header" onDoubleClick={(event) => {
       if (panelControls && event.target === event.currentTarget) panelControls.toggleMaximized();
@@ -712,10 +722,12 @@ export const ThreadShellPanel = forwardRef<
         </span>
       )}
       <span className="terminal-feedback" aria-live="polite">{feedback}</span>
+      {errorMark}
       <div className="terminal-actions" role="toolbar" aria-label={t('workbench.terminal')}>
         <IconButton label={t('workbench.terminalNew')} disabled={busy || loading || workspacePathMissing} onClick={() => void createTerminal('group')} testId="terminal-new">
           <Plus size={16} />
         </IconButton>
+        {missingMark}
         {!compact && (
           <IconButton label={t('workbench.terminalSplit')} disabled={busy || !activeShell || !canSplit(activeShell.id)} onClick={() => void createTerminal('split', activeShell?.id)} testId="terminal-split">
             <SplitIcon size={16} />
@@ -772,10 +784,10 @@ export const ThreadShellPanel = forwardRef<
       data-testid="terminal-panel"
     >
       {header}
-      {(error || workspacePathMissing) && !collapsed && (
-        <div role="alert" className="terminal-banner">
-          <span>{workspacePathMissing ? t('files.workspacePathIsMissingOnThisMachine') : error}</span>
-          {error && <IconButton label={t('files.cancel')} onClick={() => setError(null)}><X size={14} /></IconButton>}
+      {/* Without the header (the host draws its own), the marks keep a slim row. */}
+      {!header && (errorMark || missingMark) && !collapsed && (
+        <div className="terminal-marks flex shrink-0 items-center justify-end gap-1 px-2 py-1">
+          {errorMark}{missingMark}
         </div>
       )}
       <div className="terminal-body" hidden={collapsed}>
@@ -844,12 +856,16 @@ export const ThreadShellPanel = forwardRef<
             <div className="terminal-empty">
               {loading || busy ? (
                 <span>{loading ? t('files.loadingShellState') : t('chat.creating')}</span>
-              ) : !workspacePathMissing && (
+              ) : (
                 <>
                   <span>{t('workbench.terminalEmpty')}</span>
-                  <button type="button" onClick={() => void createTerminal('group')}>
-                    <Plus size={15} aria-hidden="true" />{t('workbench.terminalNew')}
-                  </button>
+                  {/* A missing workspace folder: New in the header (or the marks row) is
+                      greyed with its mark; this area only says there is no terminal. */}
+                  {!workspacePathMissing && (
+                    <button type="button" onClick={() => void createTerminal('group')}>
+                      <Plus size={15} aria-hidden="true" />{t('workbench.terminalNew')}
+                    </button>
+                  )}
                 </>
               )}
             </div>

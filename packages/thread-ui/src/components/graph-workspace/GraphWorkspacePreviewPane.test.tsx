@@ -435,9 +435,12 @@ describe('files that cannot be previewed', () => {
     const onDownloadFile = vi.fn(async () => undefined);
     const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
       selectedTarget={{ kind: 'workspace-file', node: themeNode }} error="unsupportedEncodingOrBinaryFile" onDownloadFile={onDownloadFile} />);
+    // The reason sits behind a mark beside the file's actions, with the download next to it.
     const alert = element.querySelector('[role=alert]')!;
     expect(alert.textContent).toContain('This file is not text, so it cannot be previewed.');
-    await act(async () => { alert.querySelector<HTMLButtonElement>('.workspace-file-alert-download')!.click(); });
+    const mark = element.querySelector('.error-mark')!;
+    expect(mark.parentElement?.querySelector('.workspace-file-alert-download')).not.toBeNull();
+    await act(async () => { element.querySelector<HTMLButtonElement>('.workspace-file-alert-download')!.click(); });
     expect(onDownloadFile).toHaveBeenCalledTimes(1);
   });
 });

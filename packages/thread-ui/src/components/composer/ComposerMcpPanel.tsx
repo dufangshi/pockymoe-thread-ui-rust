@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../../i18n';
 import type { ThreadMcpServersDto } from '@pockymoe/shared';
 
+import { ErrorMark } from '../copy/ErrorMark';
 import { authStatusLabel } from './composerPresentation';
 import type { McpPanelMode, SlashPanelState } from './types';
 
@@ -50,11 +51,25 @@ export function ComposerMcpPanel({
   onSaveRawMcpBlock,
 }: ComposerMcpPanelProps) {
   useI18n();
+  const form = mcpPanelMode === 'http' || mcpPanelMode === 'stdio';
+  // A failed save sits after its button; other failures (a load with servers
+  // already listed, preparing a block) after the heading; nothing loaded at all
+  // takes the list's place.
+  const saveError = form ? mcpConfigError : null;
+  const headingErrors = [
+    mcpState.data || mcpPanelMode !== 'list' ? mcpState.error : null,
+    form ? null : mcpConfigError,
+  ].filter((message, index, all): message is string =>
+    Boolean(message) && all.indexOf(message) === index && message !== saveError);
+  const saveMark = saveError ? <ErrorMark message={saveError} /> : null;
   return (
     <div className="p-2">
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-xs text-stone-400">{translate("chat.mCPConfigSource")}</p>
+          <p className="flex items-center gap-1 text-xs text-stone-400">
+            <span>{translate("chat.mCPConfigSource")}</span>
+            {headingErrors.map((message) => <ErrorMark key={message} message={message} />)}
+          </p>
           <p className="truncate text-[11px] text-stone-500">
             {mcpConfigPath ?? translate("chat.providerConfig")}
           </p>
@@ -76,14 +91,10 @@ export function ComposerMcpPanel({
         <p className="rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
           {translate("chat.loadingMCPServers")}</p>
       ) : null}
-      {mcpState.error ? (
-        <p className="mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90">
-          {mcpState.error}
-        </p>
-      ) : null}
-      {mcpConfigError ? (
-        <p className="mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90">
-          {mcpConfigError}
+      {mcpState.error && !mcpState.data && mcpPanelMode === 'list' ? (
+        <p className="mb-2 flex items-center gap-1 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
+          <span className="min-w-0">{translate("workbench.unableToLoadMCPServers")}</span>
+          <ErrorMark message={mcpState.error} />
         </p>
       ) : null}
       {mcpConfigSuccess ? (
@@ -162,14 +173,17 @@ export function ComposerMcpPanel({
               className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition`}
             >
               {translate("chat.back")}</button>
-            <button
-              type="button"
-              onClick={() => void onSaveHttpMcp()}
-              disabled={mcpConfigBusy}
-              className="ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {mcpConfigBusy ? translate("chat.saving") : translate("chat.writeHTTPMCP")}
-            </button>
+            <span className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => void onSaveHttpMcp()}
+                disabled={mcpConfigBusy}
+                className="ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {mcpConfigBusy ? translate("chat.saving") : translate("chat.writeHTTPMCP")}
+              </button>
+              {saveMark}
+            </span>
           </div>
         </div>
       ) : null}
@@ -191,14 +205,17 @@ export function ComposerMcpPanel({
               className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition`}
             >
               {translate("chat.back")}</button>
-            <button
-              type="button"
-              onClick={() => void onSaveRawMcpBlock()}
-              disabled={mcpConfigBusy}
-              className="ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {mcpConfigBusy ? translate("chat.saving") : translate("chat.writeRawBlock")}
-            </button>
+            <span className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => void onSaveRawMcpBlock()}
+                disabled={mcpConfigBusy}
+                className="ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {mcpConfigBusy ? translate("chat.saving") : translate("chat.writeRawBlock")}
+              </button>
+              {saveMark}
+            </span>
           </div>
         </div>
       ) : null}

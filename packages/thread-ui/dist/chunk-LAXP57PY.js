@@ -1,7 +1,7 @@
 import {
   cssHexVariable,
   useDocumentThemeRevision
-} from "./chunk-TZIQBT3H.js";
+} from "./chunk-JIPNJR2N.js";
 import {
   translate,
   useI18n

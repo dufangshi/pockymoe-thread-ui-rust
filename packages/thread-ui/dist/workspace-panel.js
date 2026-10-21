@@ -6,6 +6,7 @@ import {
   DialogClose,
   DialogContent,
   DialogTitle,
+  ErrorMark,
   IMAGE_EXTENSIONS,
   MOLECULAR_EXTENSIONS,
   MarkdownImageLinkContext,
@@ -55,11 +56,12 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-ODE2UB2N.js";
+} from "./chunk-DO6Q7LKG.js";
 import {
   shellThemeProps,
+  surfaceBehind,
   useThemeFeature
-} from "./chunk-TZIQBT3H.js";
+} from "./chunk-JIPNJR2N.js";
 import {
   en,
   getLocale,
@@ -1693,7 +1695,6 @@ function workspaceExplorerCommandForKey(input) {
 import {
   ChevronDown,
   ChevronRight,
-  CircleAlert,
   File as File2,
   FileArchive,
   FileCode2,
@@ -2126,13 +2127,6 @@ function useExplorerNameBubble(name) {
   ) : null;
   return { label, handlers, bubble };
 }
-function surfaceBehind(element) {
-  for (let node = element; node; node = node.parentElement) {
-    const color = getComputedStyle(node).backgroundColor;
-    if (color && color !== "transparent" && !/rgba\([^)]*,\s*0\)$/.test(color)) return color;
-  }
-  return void 0;
-}
 function truncated(element) {
   return [element, ...element.querySelectorAll("*")].some((node) => node.scrollWidth > node.clientWidth + 1);
 }
@@ -2322,19 +2316,14 @@ ${translate("files.linkedFilesAreReadOnlyPreviews")}`, children: /* @__PURE__ */
             ]
           }
         ),
-        isDirectory && error && onRetry ? /* @__PURE__ */ jsxs4(
-          "button",
+        isDirectory && error ? /* @__PURE__ */ jsx5(
+          ErrorMark,
           {
-            type: "button",
+            className: "mr-1",
             tabIndex: -1,
-            onClick: () => onRetry(node.path),
-            className: "mr-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-rose-600 hover:bg-rose-500/10 dark:text-rose-300",
-            title: translate("files.retry_f4914f", { value1: error, value2: node.name }),
-            "aria-label": translate("files.retryLoading", { value1: node.name }),
-            children: [
-              /* @__PURE__ */ jsx5(CircleAlert, { className: "h-3.5 w-3.5" }),
-              /* @__PURE__ */ jsx5("span", { className: "sr-only", role: "alert", children: translate("files.retry_f4914f", { value1: error, value2: node.name }) })
-            ]
+            message: error,
+            onRetry: onRetry ? () => onRetry(node.path) : void 0,
+            retryLabel: translate("files.retryLoading", { value1: node.name })
           }
         ) : null,
         !linkedDirectory && node.path ? /* @__PURE__ */ jsx5(
@@ -2963,18 +2952,14 @@ function WorkspaceExplorerPanel({
           index
         ))
       }
-    ) : rootError ? /* @__PURE__ */ jsxs5("div", { role: "alert", className: "mx-3 mt-2 rounded-md border border-rose-500/25 bg-rose-500/10 px-3 py-3 text-sm text-rose-700 dark:text-rose-200", children: [
-      /* @__PURE__ */ jsx7("p", { children: rootError }),
-      /* @__PURE__ */ jsx7(
-        "button",
-        {
-          type: "button",
-          onClick: onRefresh,
-          className: "mt-2 h-8 rounded px-2 font-medium hover:bg-rose-500/10",
-          children: translate("files.retry")
-        }
-      )
-    ] }) : /* @__PURE__ */ jsx7(
+    ) : rootError ? (
+      // Nothing loaded yet: a short line in the tree's place, the reason (and
+      // Retry) behind its mark; Refresh in the toolbar stays the way out too.
+      /* @__PURE__ */ jsxs5("p", { className: "thread-graph-workspace-failed mx-4 my-3 flex items-center gap-1 text-sm text-[var(--theme-fg-muted)]", children: [
+        /* @__PURE__ */ jsx7("span", { className: "min-w-0", children: translate("files.failedToLoadWorkspace") }),
+        /* @__PURE__ */ jsx7(ErrorMark, { message: rootError, onRetry: onRefresh, retryLabel: translate("files.retry") })
+      ] })
+    ) : /* @__PURE__ */ jsx7(
       WorkspaceExplorerTree,
       {
         tree: visibleTree,
@@ -3004,7 +2989,7 @@ function WorkspaceExplorerPanel({
         onToggle
       }
     ),
-    !initialLoading && !rootError && filterQuery && filterMode === "filter" && filterResult.matchCount === 0 ? /* @__PURE__ */ jsx7("p", { className: "thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400", children: translate("files.noMatchesInLoadedFolders") }) : visibleTree.children.length === 0 ? /* @__PURE__ */ jsx7("p", { className: "thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400", children: translate("files.thisWorkspaceIsEmptyAgentToolRuns") }) : null
+    !initialLoading && !rootError && filterQuery && filterMode === "filter" && filterResult.matchCount === 0 ? /* @__PURE__ */ jsx7("p", { className: "thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400", children: translate("files.noMatchesInLoadedFolders") }) : !rootError && visibleTree.children.length === 0 ? /* @__PURE__ */ jsx7("p", { className: "thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400", children: translate("files.thisWorkspaceIsEmptyAgentToolRuns") }) : null
   ] });
 }
 function ExplorerMoreMenu({ triggerClassName, children }) {
@@ -3095,26 +3080,27 @@ function WorkspaceFileActions({ children, metadata, path, relativePath, onDownlo
   useEffect7(() => () => {
     generation.current++;
   }, []);
+  const reload = onRefresh ? async () => {
+    const current = generation.current;
+    setBusy(true);
+    setFeedback(null);
+    setError(null);
+    try {
+      const result = await onRefresh();
+      if (current === generation.current) setFeedback(result);
+    } catch (cause) {
+      if (current === generation.current) setError(cause instanceof Error ? cause.message : translate("files.fileOperationFailed"));
+    } finally {
+      if (current === generation.current) setBusy(false);
+    }
+  } : void 0;
   return /* @__PURE__ */ jsxs6("div", { className: "workspace-file-actions", role: "toolbar", "aria-label": translate("files.fileActions"), title: metadata, children: [
     children,
-    onRefresh && /* @__PURE__ */ jsx8("button", { type: "button", className: "thread-graph-editor-toolbar-button", disabled: busy, title: translate("files.reloadFile"), "aria-label": translate("files.reloadFile"), onClick: async () => {
-      const current = generation.current;
-      setBusy(true);
-      setFeedback(null);
-      setError(null);
-      try {
-        const result = await onRefresh();
-        if (current === generation.current) setFeedback(result);
-      } catch (cause) {
-        if (current === generation.current) setError(cause instanceof Error ? cause.message : translate("files.fileOperationFailed"));
-      } finally {
-        if (current === generation.current) setBusy(false);
-      }
-    }, children: /* @__PURE__ */ jsx8(RefreshCw2, { size: 15, className: busy ? "animate-spin motion-reduce:animate-none" : "" }) }),
+    reload && /* @__PURE__ */ jsx8("button", { type: "button", className: "thread-graph-editor-toolbar-button", disabled: busy, title: translate("files.reloadFile"), "aria-label": translate("files.reloadFile"), onClick: () => void reload(), children: /* @__PURE__ */ jsx8(RefreshCw2, { size: 15, className: busy ? "animate-spin motion-reduce:animate-none" : "" }) }),
+    reload && error && /* @__PURE__ */ jsx8(ErrorMark, { message: error, onRetry: () => void reload() }),
     onDownload && /* @__PURE__ */ jsx8("button", { type: "button", className: "thread-graph-editor-toolbar-button", title: translate("files.downloadFile"), "aria-label": translate("files.downloadFile"), onClick: onDownload, children: /* @__PURE__ */ jsx8(Download2, { size: 15 }) }),
     /* @__PURE__ */ jsx8(CopyButton, { value: relativePath || path, label: translate("common.copyPath") }),
-    feedback && /* @__PURE__ */ jsx8("span", { role: "status", className: "workspace-file-action-feedback", title: feedback, children: feedback }),
-    error && /* @__PURE__ */ jsx8("span", { role: "alert", className: "workspace-file-action-feedback is-error", title: error, children: error })
+    feedback && /* @__PURE__ */ jsx8("span", { role: "status", className: "workspace-file-action-feedback", title: feedback, children: feedback })
   ] });
 }
 
@@ -4039,12 +4025,15 @@ function GraphMoleculeViewer({
               "data-testid": "molecule-viewer",
               className: "thread-graph-molecule-stage relative min-h-0 flex-1 overflow-hidden",
               children: [
-                viewerInitError ? /* @__PURE__ */ jsx16(
+                viewerInitError ? /* @__PURE__ */ jsxs12(
                   "div",
                   {
                     "data-testid": "molecule-viewer-error",
-                    className: "thread-graph-molecule-error absolute inset-0 flex items-center justify-center bg-red-50 p-4 text-sm text-red-700",
-                    children: viewerInitError
+                    className: "thread-graph-molecule-empty thread-graph-molecule-failed absolute inset-0 flex items-center justify-center gap-1 p-4 text-sm text-slate-400",
+                    children: [
+                      /* @__PURE__ */ jsx16("span", { children: translate("files.unableToRenderThisMolecularStructure") }),
+                      /* @__PURE__ */ jsx16(ErrorMark, { message: viewerInitError })
+                    ]
                   }
                 ) : null,
                 !viewerInitError && !xyzContent ? /* @__PURE__ */ jsx16("div", { className: "thread-graph-molecule-empty absolute inset-0 flex items-center justify-center p-4 text-sm text-slate-400", children: translate("files.noMoleculeDataAvailable") }) : null,
@@ -4345,7 +4334,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment6, jsx as jsx19, jsxs as jsxs14 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-RKIDWYDC.js")
+  () => import("./GraphWorkspaceMonacoEditor-3DTQHSGQ.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4389,30 +4378,33 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }) {
     sizeLabel ? /* @__PURE__ */ jsx19("span", { children: sizeLabel }) : null,
     /* @__PURE__ */ jsx19("p", { children: translate("files.thisFileIsAvailableToDownload") }),
     readOnlyReason ? /* @__PURE__ */ jsx19("p", { children: translateReadOnly(readOnlyReason) }) : null,
-    onDownload ? /* @__PURE__ */ jsxs14(
-      "button",
-      {
-        type: "button",
-        disabled: pending,
-        "aria-label": translate("files.download", { value1: node.name }),
-        onClick: async () => {
-          setPending(true);
-          setError(null);
-          try {
-            await onDownload();
-          } catch (caught) {
-            setError(caught instanceof Error ? caught.message : translate("files.downloadFailedPleaseTryAgain"));
-          } finally {
-            setPending(false);
-          }
-        },
-        children: [
-          /* @__PURE__ */ jsx19(Download4, { "aria-hidden": "true", size: 16 }),
-          pending ? translate("files.downloading") : translate("files.downloadFile")
-        ]
-      }
-    ) : /* @__PURE__ */ jsx19("span", { children: translate("files.downloadsAreUnavailableForThisConnection") }),
-    error ? /* @__PURE__ */ jsx19("p", { role: "alert", children: error }) : null
+    /* @__PURE__ */ jsxs14("span", { className: "inline-flex items-center gap-1", children: [
+      /* @__PURE__ */ jsxs14(
+        "button",
+        {
+          type: "button",
+          disabled: pending || !onDownload,
+          "aria-label": translate("files.download", { value1: node.name }),
+          onClick: async () => {
+            if (!onDownload) return;
+            setPending(true);
+            setError(null);
+            try {
+              await onDownload();
+            } catch (caught) {
+              setError(caught instanceof Error ? caught.message : translate("files.downloadFailedPleaseTryAgain"));
+            } finally {
+              setPending(false);
+            }
+          },
+          children: [
+            /* @__PURE__ */ jsx19(Download4, { "aria-hidden": "true", size: 16 }),
+            pending ? translate("files.downloading") : translate("files.downloadFile")
+          ]
+        }
+      ),
+      !onDownload ? /* @__PURE__ */ jsx19(ErrorMark, { kind: "unavailable", message: translate("files.downloadsAreUnavailableForThisConnection") }) : error ? /* @__PURE__ */ jsx19(ErrorMark, { message: error }) : null
+    ] })
   ] });
 }
 function AlertDownloadButton({ name, onDownload }) {
@@ -4444,7 +4436,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-KVVO4ZV7.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-ZB46JO5E.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -4947,7 +4939,16 @@ function GraphWorkspacePreviewPane({
     }
   ) : null;
   const previewNavigation = (onNavigateBack || onReturnToFiles || onExpandExplorer) && /* @__PURE__ */ jsx19("button", { type: "button", className: "workspace-preview-back", onClick: onNavigateBack ?? onReturnToFiles ?? onExpandExplorer, "aria-label": onNavigateBack ? backLabel : translate("files.backToFiles"), title: onNavigateBack ? backLabel : translate("files.backToFiles"), "data-testid": "expand-explorer", children: /* @__PURE__ */ jsx19(ArrowLeft, { "data-icon": "back", size: 18 }) });
-  const previewActions = /* @__PURE__ */ jsx19("button", { ref: actionTrigger, type: "button", className: "thread-graph-editor-toolbar-button workspace-file-more", "aria-label": translate("files.fileActions"), title: translate("files.fileActions"), "aria-expanded": actionsOpen, onClick: () => setActionsOpen((open) => !open), children: /* @__PURE__ */ jsx19(MoreHorizontal3, { "data-icon": "more", size: 18 }) });
+  const failureMarks = error || saveError ? /* @__PURE__ */ jsxs14(Fragment6, { children: [
+    error ? /* @__PURE__ */ jsx19(ErrorMark, { message: translateReadOnly(error) }) : null,
+    saveError && saveError !== error ? /* @__PURE__ */ jsx19(ErrorMark, { message: saveError }) : null,
+    error && onDownloadFile && selectedTarget?.kind === "workspace-file" ? /* @__PURE__ */ jsx19(AlertDownloadButton, { name: selectedTarget.node.name, onDownload: onDownloadFile }) : null
+  ] }) : null;
+  const fileHeaderShown = fileTabs.length === 0 || Boolean(onCloseFileTab && onSelectFileTab);
+  const previewActions = /* @__PURE__ */ jsxs14(Fragment6, { children: [
+    failureMarks,
+    /* @__PURE__ */ jsx19("button", { ref: actionTrigger, type: "button", className: "thread-graph-editor-toolbar-button workspace-file-more", "aria-label": translate("files.fileActions"), title: translate("files.fileActions"), "aria-expanded": actionsOpen, onClick: () => setActionsOpen((open) => !open), children: /* @__PURE__ */ jsx19(MoreHorizontal3, { "data-icon": "more", size: 18 }) })
+  ] });
   return /* @__PURE__ */ jsxs14(
     "section",
     {
@@ -4980,10 +4981,7 @@ function GraphWorkspacePreviewPane({
         ) : null,
         actionsOpen && fileActions,
         /* @__PURE__ */ jsxs14("div", { className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: [
-          error ? /* @__PURE__ */ jsxs14("div", { role: "alert", className: "workspace-file-alert flex items-center gap-3 border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-5 py-3", children: [
-            /* @__PURE__ */ jsx19("span", { className: "min-w-0 flex-1", children: translateReadOnly(error) }),
-            onDownloadFile && selectedTarget?.kind === "workspace-file" ? /* @__PURE__ */ jsx19(AlertDownloadButton, { name: selectedTarget.node.name, onDownload: onDownloadFile }) : null
-          ] }) : null,
+          failureMarks && !fileHeaderShown ? /* @__PURE__ */ jsx19("div", { className: "workspace-file-alert flex shrink-0 items-center justify-end gap-2 border-b border-[var(--theme-border)] px-3 py-1", children: failureMarks }) : null,
           !selectedTarget && missingPath ? /* @__PURE__ */ jsx19(MissingLinkedFile, { path: missingPath }) : !selectedTarget ? /* @__PURE__ */ jsx19("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: translate("files.pickALiveMoleculeWorkspaceFileArtifact") }) : selectedTarget.kind === "workspace-file" && previewLoading ? /* @__PURE__ */ jsx19("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: translate("files.loadingFilePreview") }) : selectedTarget.kind === "workspace-file" && downloadOnly ? /* @__PURE__ */ jsx19(DownloadFilePreview, { node: selectedTarget.node, onDownload: onDownloadFile, ...downloadReason ? { readOnlyReason: downloadReason } : activeFilePath && documents?.documents.get(activeFilePath)?.snapshot.readOnlyReason ? { readOnlyReason: documents.documents.get(activeFilePath).snapshot.readOnlyReason } : {} }, selectedTarget.node.path) : selectedTarget.kind === "workspace-file" && moleculeSnapshot ? /* @__PURE__ */ jsx19("div", { className: "thread-graph-molecule-preview min-h-0 flex-1 overflow-hidden", children: /* @__PURE__ */ jsx19(
             GraphMoleculeViewer,
             {
@@ -5052,7 +5050,6 @@ function GraphWorkspacePreviewPane({
                 ] })
               ] }) : /* @__PURE__ */ jsx19("p", { children: translate("files.safeMissing") })
             ] }) : null,
-            saveError ? /* @__PURE__ */ jsx19("div", { role: "alert", className: "workspace-file-alert border-b border-[color-mix(in_srgb,#e11d48_30%,var(--theme-border))] bg-[color-mix(in_srgb,#e11d48_8%,var(--theme-panel))] text-sm text-[color-mix(in_srgb,#e11d48_58%,var(--theme-fg))] px-4 py-2", children: saveError }) : null,
             editing && compactViewer ? /* @__PURE__ */ jsx19(
               "textarea",
               {

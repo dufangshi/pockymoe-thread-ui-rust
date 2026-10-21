@@ -2,6 +2,7 @@ import type { ReactNode, RefObject } from 'react';
 import type { ThreadPeerWorkDto, ThreadTurnDto } from '@pockymoe/shared';
 import { BellRing, ChevronRight, MessageCircle, LoaderCircle } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
+import { ErrorMark } from '../copy/ErrorMark';
 import { GraphChatAgentMessageBody } from '../graph-chat/GraphChatMessageBody';
 import { TokenUsageCost } from './TokenUsageCost';
 import { delegateWakeMessages, wakeState } from './delegateWake';
@@ -23,9 +24,11 @@ export function PeerWorkGroup({ turn, context, expanded, loading, error, onToggl
       <button type="button" className="thread-peer-work-toggle" onClick={onToggle} aria-expanded={expanded} disabled={loading} title={title}>
         {loading ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : wake ? <BellRing aria-hidden="true" /> : <MessageCircle aria-hidden="true" />}
         <span className="thread-peer-work-kind">{label}</span>
-        <span className="thread-peer-work-title">{error ? translate('chat.historyUnavailableRetry') : `${sources}${!wake && first.subject ? ` · ${first.subject}` : ''}`}</span>
+        <span className="thread-peer-work-title">{`${sources}${!wake && first.subject ? ` · ${first.subject}` : ''}`}</span>
         <ChevronRight className={expanded ? 'rotate-90' : ''} aria-hidden="true" />
       </button>
+      {/* Its history did not load: why, and a retry (the toggle reads it again). */}
+      {error ? <ErrorMark message={error} onRetry={onToggle} /> : null}
       <TokenUsageCost usage={turn.tokenUsage?.total} price={turn.priceEstimate} />
     </div>
     {expanded ? <div className="thread-peer-work-content">

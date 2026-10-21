@@ -1,9 +1,9 @@
 import {
   editorThemeFor
-} from "./chunk-UF33GR6G.js";
+} from "./chunk-LAXP57PY.js";
 import {
   useDocumentThemeRevision
-} from "./chunk-TZIQBT3H.js";
+} from "./chunk-JIPNJR2N.js";
 import {
   translate
 } from "./chunk-57I6LVJ5.js";

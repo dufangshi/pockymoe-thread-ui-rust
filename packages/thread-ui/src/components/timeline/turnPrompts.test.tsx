@@ -42,19 +42,21 @@ async function render(turn: ThreadTurnDto) {
 }
 
 describe('a failed turn', () => {
-  it('marks its prompt and opens the error there, without echoing it as a reply', async () => {
+  it('marks its prompt and opens the error from there, without echoing it as a reply', async () => {
     await render(failed);
     expect(container.querySelector('[data-message-id="echo"]')).toBeNull();
     expect(container.textContent).not.toContain('<synthetic>');
     const mark = container.querySelector<HTMLButtonElement>('[data-message-id="prompt"] .thread-graph-message-failure')!;
     expect(mark.getAttribute('aria-label')).toBe('Why this turn failed');
-    expect(container.querySelector('.thread-graph-message-failure-detail')).toBeNull();
+    expect(document.querySelector('.error-mark-bubble')).toBeNull();
+    // A record of an earlier failure is not read out when the page loads.
+    expect(container.querySelector('[role="alert"]')).toBeNull();
     await act(async () => mark.click());
-    const detail = container.querySelector('[data-message-id="prompt"] .thread-graph-message-failure-detail')!;
-    expect(detail.querySelector('p')?.textContent).toBe(reason);
-    expect(detail.querySelector('pre')?.textContent).toBe(error);
+    const bubble = document.querySelector('.error-mark-bubble')!;
+    expect(bubble.querySelector('.error-mark-message')?.textContent).toBe(`This turn did not finish\n${reason}`);
+    expect(bubble.querySelector('.error-mark-detail')?.textContent).toBe(error);
     await act(async () => mark.click());
-    expect(container.querySelector('.thread-graph-message-failure-detail')).toBeNull();
+    expect(document.querySelector('.error-mark-bubble')).toBeNull();
   });
 
   it('keeps a reply that says more than the error', async () => {

@@ -14,6 +14,7 @@ import {
   hookSourceLabel,
   hookTrustLabel,
 } from './composerPresentation';
+import { ErrorMark } from '../copy/ErrorMark';
 import type { HookScope, HooksPanelMode, SlashPanelState } from './types';
 
 interface ComposerHooksPanelProps {
@@ -80,11 +81,23 @@ export function ComposerHooksPanel({
   onUntrustHook,
 }: ComposerHooksPanelProps) {
   useI18n();
+  const editing = hooksPanelMode === 'add' || hooksPanelMode === 'edit';
+  // A failed load with hooks already listed, or a failed trust change, is a mark
+  // after the heading; a failed save sits after its button; nothing loaded at
+  // all takes the list's place.
+  const headingErrors = [
+    hooksState.data || editing ? hooksState.error : null,
+    editing ? null : hookConfigError,
+  ].filter((message, index, all): message is string =>
+    Boolean(message) && all.indexOf(message) === index && !(editing && message === hookConfigError));
   return (
     <div className="p-2">
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-xs text-stone-400">{translate("chat.hookConfigSources")}</p>
+          <p className="flex items-center gap-1 text-xs text-stone-400">
+            <span>{translate("chat.hookConfigSources")}</span>
+            {headingErrors.map((message) => <ErrorMark key={message} message={message} />)}
+          </p>
           <p className="truncate text-[11px] text-stone-500">
             {hooksState.data?.projectHooksPath ?? translate("chat.workspaceHooksConfig")}
           </p>
@@ -107,14 +120,10 @@ export function ComposerHooksPanel({
         <p className="rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
           {translate("chat.loadingHooks")}</p>
       ) : null}
-      {hooksState.error ? (
-        <p className="mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90">
-          {hooksState.error}
-        </p>
-      ) : null}
-      {hookConfigError ? (
-        <p className="mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90">
-          {hookConfigError}
+      {hooksState.error && !hooksState.data && !editing ? (
+        <p className="mb-2 flex items-center gap-1 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
+          <span className="min-w-0">{translate("workbench.unableToLoadHooks")}</span>
+          <ErrorMark message={hooksState.error} />
         </p>
       ) : null}
       {hookConfigSuccess ? (
@@ -213,18 +222,21 @@ export function ComposerHooksPanel({
               className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition`}
             >
               {translate("chat.back")}</button>
-            <button
-              type="button"
-              onClick={() => void onSaveHook()}
-              disabled={hookConfigBusy}
-              className="ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {hookConfigBusy
-                ? translate("chat.saving")
-                : hooksPanelMode === 'edit'
-                  ? translate("chat.updateHook")
-                  : translate("chat.writeHook")}
-            </button>
+            <span className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => void onSaveHook()}
+                disabled={hookConfigBusy}
+                className="ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {hookConfigBusy
+                  ? translate("chat.saving")
+                  : hooksPanelMode === 'edit'
+                    ? translate("chat.updateHook")
+                    : translate("chat.writeHook")}
+              </button>
+              {hookConfigError ? <ErrorMark message={hookConfigError} /> : null}
+            </span>
           </div>
         </div>
       ) : null}
@@ -240,17 +252,16 @@ export function ComposerHooksPanel({
           ))}
         </div>
       ) : null}
+      {/* A config file that could not be read: its path, and why behind a mark. */}
       {hooksPanelMode === 'list' && hooksState.data?.errors.length ? (
         <div className="mb-2 space-y-2">
           {hooksState.data.errors.map((entry) => (
             <div
               key={`${entry.path}:${entry.message}`}
-              className="rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-2 text-xs text-rose-100/90"
+              className="flex items-center gap-1 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2 text-xs text-stone-400"
             >
-              <p className="font-medium">{entry.message}</p>
-              <p className="mt-1 break-all text-rose-100/60">
-                {entry.path}
-              </p>
+              <p className="min-w-0 break-all">{entry.path}</p>
+              <ErrorMark message={entry.message} />
             </div>
           ))}
         </div>

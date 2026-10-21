@@ -1,6 +1,7 @@
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { ChevronRight, Maximize2, TriangleAlert } from 'lucide-react';
+import { ChevronRight, Maximize2 } from 'lucide-react';
 import { CopyButton } from '../copy/CopyButton';
+import { ErrorMark } from '../copy/ErrorMark';
 
 import type { ThreadHistoryItemDetailDto, ThreadHistoryItemDto, ThreadTurnActivitySegmentDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
 
@@ -267,14 +268,14 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
 
   const command = item.kind === 'commandExecution' && title.full !== title.text.replace(/ …$/, '') ? title.full : null;
   if (detail.error) {
+    // Nothing loaded: a muted line in the output's place, the reason and Retry behind the mark.
     return (
       <div className="tlog-detail">
         {command ? <pre className="tlog-command">{command}</pre> : null}
-        <div className="tlog-detail-error" role="alert">
-          <TriangleAlert aria-hidden="true" />
-          <span>{translate('chat.logDetailFailed', { reason: detail.error })}</span>
-          <button type="button" className="tlog-detail-retry" onClick={detail.retry}>{translate('chat.retry')}</button>
-        </div>
+        <p className="tlog-empty is-failed flex items-center gap-1">
+          <span className="min-w-0">{translate('chat.unableToLoadFullToolCallDetails')}</span>
+          <ErrorMark message={translate('chat.logDetailFailed', { reason: detail.error })} onRetry={detail.retry} retryLabel={translate('chat.retry')} />
+        </p>
       </div>
     );
   }

@@ -642,16 +642,24 @@ describe('GraphWorkspaceExplorer', () => {
         ?.querySelector<HTMLButtonElement>('[aria-label="Expand src"]')
         ?.click();
     });
+    // The folder's row gets a mark; its bubble holds the reason and the Retry.
     await vi.waitFor(() =>
       expect(
-        host?.querySelector('[aria-label="Retry loading src"]'),
+        host?.querySelector('[data-explorer-path="src"] .error-mark'),
       ).not.toBeNull(),
     );
+    expect(host?.querySelector('[data-explorer-path="src"] [role="alert"]')?.textContent).toBe('Directory unavailable');
 
     await act(async () => {
       host
-        ?.querySelector<HTMLButtonElement>('[aria-label="Retry loading src"]')
+        ?.querySelector<HTMLButtonElement>('[data-explorer-path="src"] .error-mark')
         ?.click();
+    });
+    const retry = [...document.body.querySelectorAll<HTMLButtonElement>('.error-mark-retry')]
+      .find((button) => button.textContent === 'Retry loading src');
+    expect(retry).toBeDefined();
+    await act(async () => {
+      retry?.click();
     });
     await vi.waitFor(() => expect(buttonNamed('index.ts')).not.toBeUndefined());
   });

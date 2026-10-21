@@ -7,6 +7,7 @@ import type { GraphMoleculeCameraInfo } from './GraphMoleculeViewerControls';
 import { load3Dmol, type GLModel, type GLViewer } from './load3Dmol';
 import { Button } from '../graph-ui/Button';
 import { Slider } from '../graph-ui/Slider';
+import { ErrorMark } from '../copy/ErrorMark';
 import {
   readGraphMoleculeViewerData,
   type GraphMoleculeViewerSource,
@@ -459,12 +460,14 @@ export function GraphMoleculeViewer({
           data-testid="molecule-viewer"
           className="thread-graph-molecule-stage relative min-h-0 flex-1 overflow-hidden"
         >
+          {/* Nothing could be drawn: a muted line in the viewer's place, why behind its mark. */}
           {viewerInitError ? (
             <div
               data-testid="molecule-viewer-error"
-              className="thread-graph-molecule-error absolute inset-0 flex items-center justify-center bg-red-50 p-4 text-sm text-red-700"
+              className="thread-graph-molecule-empty thread-graph-molecule-failed absolute inset-0 flex items-center justify-center gap-1 p-4 text-sm text-slate-400"
             >
-              {viewerInitError}
+              <span>{translate("files.unableToRenderThisMolecularStructure")}</span>
+              <ErrorMark message={viewerInitError} />
             </div>
           ) : null}
           {!viewerInitError && !xyzContent ? (

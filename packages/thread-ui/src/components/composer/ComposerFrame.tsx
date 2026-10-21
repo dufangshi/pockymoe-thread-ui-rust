@@ -1,4 +1,5 @@
 import { usePhoneDock } from '../workbench/phoneDockContext';
+import { useAppShellNav } from '../../app-shell/AppShellNavContext';
 import type {
   FormEvent,
   MutableRefObject,
@@ -8,6 +9,7 @@ import type {
 import type { AgentSubscriptionUsageDto, PromptAttachmentKindDto } from '@pockymoe/shared';
 import { useCompactComposer } from './useCompactComposer';
 import { InputGroup } from '../graph-ui/InputGroup';
+import { ErrorMark } from '../copy/ErrorMark';
 import { ComposerHiddenAttachmentInputs } from './ComposerHiddenAttachmentInputs';
 import { ComposerJumpLatestButton } from './ComposerJumpLatestButton';
 import { ComposerSubscriptionUsage, visibleSubscriptionWindows } from './ComposerSubscriptionUsage';
@@ -74,6 +76,8 @@ export function ComposerFrame({
   const { expanded, focusOwner, ...focusEvents } = useCompactComposer(formRef, activeView === 'chat');
   // The phone dock's status bar shows usage instead.
   const dock = usePhoneDock();
+  const phoneHand = useAppShellNav()?.phoneHand;
+  const leftHanded = Boolean(dock) && phoneHand === 'left';
   const usage = !dock && activeView === 'chat' && visibleSubscriptionWindows(subscriptionUsage).length > 0
     ? <ComposerSubscriptionUsage usage={subscriptionUsage} />
     : null;
@@ -95,6 +99,18 @@ export function ComposerFrame({
       />
 
       {pendingQueueSlot}
+
+      {/* The last failure is a quiet mark above the composer, across from the
+          turn navigation (which a left-handed phone dock moves to the left), so
+          nothing moves. It stays outside the form: pressing it must not open the
+          composer (and a phone's keyboard). */}
+      {error ? (
+        <div className={`thread-composer-error-tag pointer-events-none absolute top-0 z-[90] flex h-11 -translate-y-full items-center sm:h-10 ${leftHanded ? 'right-0 pr-3' : 'left-0 pl-3 sm:pl-5'}`}>
+          <span className="pointer-events-auto inline-flex rounded-full bg-[var(--theme-panel)]">
+            <ErrorMark message={error} />
+          </span>
+        </div>
+      ) : null}
 
       <form
         ref={formRef}
@@ -119,11 +135,6 @@ export function ComposerFrame({
           {shellPromptSlot}
           {usage ? <div className="thread-composer-usage-tag">{usage}</div> : null}
         </div>
-        {error ? (
-          <div className="mt-2 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-            {error}
-          </div>
-        ) : null}
       </form>
     </div>
   );

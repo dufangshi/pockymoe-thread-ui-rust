@@ -146,15 +146,20 @@ describe('TranscriptLog', () => {
     await click('.tlog-row-head');
     expect(container.querySelector('.tlog-detail[role="status"]')).not.toBeNull();
     await act(async () => reject(new Error('Unavailable')));
-    const failure = container.querySelector('.tlog-detail-error[role="alert"]');
+    // A muted line in the output's place; the reason is behind its mark.
+    expect(container.querySelector('.tlog-empty.is-failed .error-mark')).not.toBeNull();
+    const failure = container.querySelector('[role="alert"]');
     expect(failure?.textContent).toContain("Couldn't load the details: Unavailable");
     expect(container.querySelector('.tlog-output')).toBeNull();
     await click('.tlog-row-head');
     await click('.tlog-row-head');
     expect(loadDetail).toHaveBeenCalledTimes(2);
     await act(async () => reject(new Error('Still unavailable')));
-    // Retry asks again in place.
-    await click('.tlog-detail-retry');
+    // Retry, in the mark's bubble, asks again in place.
+    await click('.error-mark');
+    const retry = document.body.querySelector<HTMLButtonElement>('.error-mark-retry');
+    expect(retry).not.toBeNull();
+    await act(async () => retry!.click());
     expect(loadDetail).toHaveBeenCalledTimes(3);
     expect(container.querySelector('.tlog-detail[role="status"]')).not.toBeNull();
   });

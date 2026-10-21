@@ -1,5 +1,6 @@
 import { createWorkspacePathResolver } from './components/workspacePathLinks';
 import { ThreadLoadingIndicator } from './components/ThreadLoadingIndicator';
+import { ErrorMark } from './components/copy/ErrorMark';
 import { translate, useI18n } from './i18n';
 import {
   useMemo,
@@ -413,6 +414,24 @@ export function ThreadDetailSurface({
   const pending = !detail && loading && lastDetail.current !== null;
   const shownDetail = detail ?? (pending ? lastDetail.current : null);
   const pendingContent = loadingContent ?? <ThreadLoadingIndicator />;
+  // The page's failure and a missing workspace folder are not banners over the
+  // conversation: a quiet mark on the composer's edge says why on a tap. Without
+  // a composer in view (the terminal view) the mark keeps a slim row instead.
+  // A host's own `errorContent`/`workspaceMissingContent` still renders as given.
+  const workspaceMissing = !pending && shownDetail?.workspacePathStatus === "missing";
+  const pageMark = [
+    error && !loading && !errorContent ? error : null,
+    workspaceMissing && !workspaceMissingContent && shownDetail
+      ? `${translate("workbench.workspacePathMissing")}\n${shownDetail.workspace.absPath}`
+      : null,
+  ].filter(Boolean).join("\n\n") || null;
+  const pageMarkOnComposer = Boolean(pageMark && composerProps && activeView === "chat");
+  const chatComposerProps = useMemo(
+    () => composerProps && pageMarkOnComposer && pageMark
+      ? { ...composerProps, error: composerProps.error ? `${composerProps.error}\n\n${pageMark}` : pageMark }
+      : composerProps,
+    [composerProps, pageMark, pageMarkOnComposer],
+  );
   const defaultContent = loading && !shownDetail ? (
     pendingContent
   ) : shownDetail ? (
@@ -422,22 +441,13 @@ export function ThreadDetailSurface({
           {floatingPanel}
         </div>
       ) : null}
-      {error &&
-        !loading &&
-        (errorContent ?? (
-          <div className="shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6">
-            {error}
-          </div>
-        ))}
-      {!pending && shownDetail.workspacePathStatus === "missing" &&
-        (workspaceMissingContent ?? (
-          <div className="shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6">
-            <p className="font-medium text-rose-50">{translate("workbench.workspacePathMissing")}</p>
-            <p className="mt-1 break-words text-rose-100/90">
-              {shownDetail.workspace.absPath}
-            </p>
-          </div>
-        ))}
+      {error && !loading ? errorContent : null}
+      {workspaceMissing ? workspaceMissingContent : null}
+      {pageMark && !pageMarkOnComposer ? (
+        <div className="thread-detail-error-mark flex shrink-0 justify-end px-4 py-1 sm:px-6">
+          <ErrorMark message={pageMark} />
+        </div>
+      ) : null}
       <div
         className={
           activeView === "chat" ? "flex min-h-0 flex-1 flex-col" : "hidden"
@@ -457,7 +467,7 @@ export function ThreadDetailSurface({
             floatingMobileComposerBottomOffset
           }
           {...(beforeTimelineContent ? { beforeTimelineContent } : {})}
-          {...(composerProps ? { composerProps } : {})}
+          {...(chatComposerProps ? { composerProps: chatComposerProps } : {})}
           {...(timelineProps ? { timelineProps } : {})}
           {...(composerHostRef ? { composerHostRef } : {})}
         />

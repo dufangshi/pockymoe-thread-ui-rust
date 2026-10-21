@@ -311,6 +311,8 @@ it('cannot switch on what the device has off and points to the global settings',
   await renderScopes(backend);
   await openPanel();
   expect(radio('On in this conversation').disabled).toBe(true);
+  // Why is behind the mark after the greyed choices.
+  await act(async () => q('.thread-plugins-row button[aria-label="Why it is unavailable"]').click());
   expect(document.body.textContent).toContain(
     'Off globally, so it cannot be turned on for one conversation.',
   );
@@ -329,17 +331,19 @@ it('rolls back a failed change and asks for an explicit reload after a conflict'
   expect(q('[data-testid="probe-a"]').textContent).toBe(
     'panels:1 stored:stored result',
   );
-  expect(q('.thread-plugins-error').textContent).toContain(
+  // The reason, and Reload, are behind the mark after the plugin's name.
+  expect(q('.thread-plugins-row [role="alert"]').textContent).toContain(
     'Changed elsewhere. Reload, then try again.',
   );
   const fetches = vi.mocked(backend.adapter.fetchPlugins).mock.calls.length;
+  await act(async () => q('.thread-plugins-row .error-mark').click());
   await act(async () => byText('Reload')!.click());
   expect(vi.mocked(backend.adapter.fetchPlugins).mock.calls.length).toBe(
     fetches + 1,
   );
   backend.failNextWith(500);
   await pick('Off in this conversation');
-  expect(q('.thread-plugins-error').textContent).toBe('nope');
+  expect(q('.thread-plugins-row [role="alert"]').textContent).toBe('nope');
   expect(radio('Use the global setting').checked).toBe(true);
 });
 

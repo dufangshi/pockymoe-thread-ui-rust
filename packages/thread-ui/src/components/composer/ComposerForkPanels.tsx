@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../../i18n';
 import type { ThreadForkTurnOptionDto } from '@pockymoe/shared';
 
+import { ErrorMark } from '../copy/ErrorMark';
 import type { SlashPanelState } from './types';
 
 interface ComposerForkPanelProps {
@@ -21,21 +22,30 @@ export function ComposerForkPanel({
   onSelectForkTurnPanel,
 }: ComposerForkPanelProps) {
   const { locale: i18nLocale } = useI18n();
+  const forkLatest = (
+    <button
+      type="button"
+      disabled={busy || forkBusy}
+      onClick={() => void onForkLatest()}
+      className={`${composerMenuItemClassName} block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span>{translate("chat.forkFromLatest")}</span>
+        <span className="text-[11px] uppercase tracking-[0.16em] text-stone-400">
+          {forkBusy ? translate("chat.forking") : translate("chat.run")}
+        </span>
+      </div>
+    </button>
+  );
   return (
     <div className="p-2">
-      <button
-        type="button"
-        disabled={busy || forkBusy}
-        onClick={() => void onForkLatest()}
-        className={`${composerMenuItemClassName} block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`}
-      >
-        <div className="flex items-center justify-between gap-3">
-          <span>{translate("chat.forkFromLatest")}</span>
-          <span className="text-[11px] uppercase tracking-[0.16em] text-stone-400">
-            {forkBusy ? translate("chat.forking") : translate("chat.run")}
-          </span>
+      {/* While a turn runs the fork rows stay, greyed; the mark says why. */}
+      {busy ? (
+        <div className="flex items-center gap-1">
+          {forkLatest}
+          <ErrorMark kind="unavailable" message={translate("chat.forkIsOnlyAvailableWhileTheThread")} />
         </div>
-      </button>
+      ) : forkLatest}
       {forkFromTurnAvailable ? (
         <button
           type="button"
@@ -53,10 +63,6 @@ export function ComposerForkPanel({
           </div>
         </button>
       ) : null}
-      {busy ? (
-        <p className="mt-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
-          {translate("chat.forkIsOnlyAvailableWhileTheThread")}</p>
-      ) : null}
     </div>
   );
 }
@@ -66,6 +72,8 @@ interface ComposerForkTurnsPanelProps {
   forkBusy: boolean;
   composerPanelButtonClassName: string;
   onForkTurn: (turnId: string) => Promise<void> | void;
+  /** Load the turns again after a failed load. */
+  onRetry?: () => Promise<void> | void;
 }
 
 export function ComposerForkTurnsPanel({
@@ -73,6 +81,7 @@ export function ComposerForkTurnsPanel({
   forkBusy,
   composerPanelButtonClassName,
   onForkTurn,
+  onRetry,
 }: ComposerForkTurnsPanelProps) {
   const { locale: i18nLocale } = useI18n();
   return (
@@ -82,10 +91,12 @@ export function ComposerForkTurnsPanel({
         <p className="rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
           {translate("chat.loadingTurns")}</p>
       ) : null}
-      {forkTurnOptionsState.error ? (
-        <p className="mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90">
-          {forkTurnOptionsState.error}
-        </p>
+      {/* A failed reload keeps the turns already listed; only an empty list says so. */}
+      {forkTurnOptionsState.error && !forkTurnOptionsState.data?.length ? (
+        <div className="flex items-center gap-1 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
+          <span className="min-w-0">{translate("workbench.unableToLoadTurnsForForking")}</span>
+          <ErrorMark message={forkTurnOptionsState.error} onRetry={onRetry ? () => void onRetry() : undefined} />
+        </div>
       ) : null}
       {forkTurnOptionsState.data?.length ? (
         <div className="space-y-2">

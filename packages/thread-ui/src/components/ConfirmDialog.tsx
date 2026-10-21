@@ -2,6 +2,7 @@ import { translate, useI18n } from '../i18n';
 import { useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useModalFocus } from './menu/useModalFocus';
+import { ErrorMark } from './copy/ErrorMark';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -66,7 +67,6 @@ export function ConfirmDialog({
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium">{title}</p>
             <p className="mt-2 text-sm leading-6 text-[var(--theme-fg-muted)]">{description}</p>
-            {error ? <p role="alert" className="mt-2 text-sm text-rose-500">{error}</p> : null}
           </div>
           <button
             type="button"
@@ -107,6 +107,8 @@ export function ConfirmDialog({
           >
             {busy ? busyLabel : confirmLabel}
           </button>
+          {/* The action failed: why, after the button that tries it again. */}
+          {error ? <ErrorMark message={error} /> : null}
         </div>
       </div>
     </div>,

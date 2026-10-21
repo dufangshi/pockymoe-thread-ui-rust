@@ -41,6 +41,7 @@ import { ComposerHooksPanel } from './ComposerHooksPanel';
 import { ComposerGoalsPanel } from './ComposerGoalsPanel';
 import { ComposerMcpPanel } from './ComposerMcpPanel';
 import { ComposerSkillsPanel } from './ComposerSkillsPanel';
+import { ErrorMark } from '../copy/ErrorMark';
 import type {
   HookScope,
   HooksPanelMode,
@@ -414,12 +415,8 @@ export function ComposerSlashToolboxMenu({
                 <p role="status" className="shrink-0 px-3 py-2 text-sm text-[var(--theme-fg-muted)]">
                   {translate("chat.creatingForkYouWillBeTakenTo")}</p>
               ) : null}
-              {forkError && (slashPanelView === 'fork' || slashPanelView === 'forkTurns') ? (
-                <p role="alert" className="m-2 shrink-0 rounded-xl border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-3 text-sm text-[var(--status-danger-fg)]">
-                  {forkError}
-                </p>
-              ) : null}
-              {/* Every second-level panel leads back to the toolbox; goals has its own header. */}
+              {/* Every second-level panel leads back to the toolbox; goals has its own header.
+                  A failed fork is a mark after the panel's name; its rows try again. */}
               {panelCommand[slashPanelView] ? (
                 <div className="flex min-h-11 shrink-0 items-center justify-between gap-3 border-b border-[var(--theme-border)] px-3 py-2">
                   <button
@@ -428,7 +425,12 @@ export function ComposerSlashToolboxMenu({
                     className="min-h-9 rounded-lg px-2 text-xs font-medium text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent-border)]"
                   >
                     {translate("chat.back")}</button>
-                  <span className="text-xs font-semibold text-[var(--theme-fg)]">{panelCommand[slashPanelView]}</span>
+                  <span className="flex items-center gap-1">
+                    <span className="text-xs font-semibold text-[var(--theme-fg)]">{panelCommand[slashPanelView]}</span>
+                    {forkError && (slashPanelView === 'fork' || slashPanelView === 'forkTurns') ? (
+                      <ErrorMark message={forkError} />
+                    ) : null}
+                  </span>
                 </div>
               ) : null}
               <div className="min-h-0 overflow-auto">
@@ -439,6 +441,7 @@ export function ComposerSlashToolboxMenu({
                   busy={goalBusy}
                   onBack={() => onSetSlashPanelView('root')}
                   onUpdateGoal={onUpdateGoal}
+                  onRetry={onViewGoals}
                 />
               ) : slashPanelView === 'fork' ? (
                 <ComposerForkPanel
@@ -458,6 +461,7 @@ export function ComposerSlashToolboxMenu({
                   forkBusy={forkBusy}
                   composerPanelButtonClassName={panelButtonClassName}
                   onForkTurn={onForkTurn}
+                  onRetry={onOpenForkTurns}
                 />
               ) : slashPanelView === 'skills' ? (
                 <ComposerSkillsPanel

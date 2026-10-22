@@ -36,9 +36,11 @@ import {
 } from './shellEvents';
 import {
   getVisibleTerminalText,
+  isReplayingShellSnapshot,
   renderShellSnapshot,
 } from './shellTerminal';
 import { createShellAttachPromiseController } from './shellAttachPromise';
+import { installTouchTextInput } from './touchTextInput';
 import {
   basenameFromPath,
   buildPromptLabel,
@@ -138,6 +140,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
   useI18n();
     const themeRevision = useDocumentThemeRevision();
     const transformRef = useRef(inputTransform);
+    const touchInputRef = useRef<ReturnType<typeof installTouchTextInput> | null>(null);
     transformRef.current = inputTransform;
     const terminalRef = useRef<Terminal | null>(null);
     const fitAddonRef = useRef<FitAddon | null>(null);
@@ -557,8 +560,16 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
         resizeObserverRef.current.observe(terminalHostNode);
 
         terminalInputSubscriptionRef.current = terminal.onData((data) => {
+          if (isReplayingShellSnapshot(terminal)) return;
           sendShellInputRef.current(transformRef.current?.(data) ?? data);
         });
+        // Touch keyboards type into the field as into any other, so their input
+        // methods (candidates, predictions) work; the shell gets what changed.
+        if (terminal.textarea && (isMobileShellRef.current || window.matchMedia?.('(pointer: coarse)').matches)) {
+          touchInputRef.current = installTouchTextInput(terminalHostNode, terminal.textarea, (data) => {
+            sendShellInputRef.current(transformRef.current?.(data) ?? data);
+          });
+        }
       })().catch((error: unknown) => {
         if (cancelled) return;
         terminalInitializingRef.current = false;
@@ -570,6 +581,8 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
         terminalInitializingRef.current = false;
         terminalInputSubscriptionRef.current?.dispose();
         terminalInputSubscriptionRef.current = null;
+        touchInputRef.current?.dispose();
+        touchInputRef.current = null;
         resizeObserverRef.current?.disconnect();
         resizeObserverRef.current = null;
         if (backendResizeTimerRef.current) clearTimeout(backendResizeTimerRef.current);
@@ -889,6 +902,8 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
           return attachPromise;
         },
         sendInput(data: string) {
+          // A key from the bar (an arrow, Tab) moves the shell's line away from the field.
+          touchInputRef.current?.forget();
           return sendShellInput(data);
         },
         sendCommand(command: string) {

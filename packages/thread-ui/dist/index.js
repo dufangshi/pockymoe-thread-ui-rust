@@ -20683,6 +20683,7 @@ function normalizeShellOutputEvent(payload, fallbackCwd) {
   return {
     data: typeof payload.data === "string" ? payload.data : "",
     replace: payload.replace === true,
+    replay: payload.replay === true,
     cursorX: typeof payload.cursorX === "number" ? payload.cursorX : void 0,
     cursorY: typeof payload.cursorY === "number" ? payload.cursorY : void 0,
     paneHeight: typeof payload.paneHeight === "number" ? payload.paneHeight : void 0,
@@ -20818,6 +20819,16 @@ function deriveShellLifecycleEventAction({
 }
 
 // src/components/shell/shellTerminal.ts
+var replaying = /* @__PURE__ */ new WeakMap();
+function isReplayingShellSnapshot(terminal) {
+  return (replaying.get(terminal) ?? 0) > 0;
+}
+function writeShellReplay(terminal, data) {
+  replaying.set(terminal, (replaying.get(terminal) ?? 0) + 1);
+  terminal.write(data, () => {
+    replaying.set(terminal, Math.max(0, (replaying.get(terminal) ?? 1) - 1));
+  });
+}
 function renderShellSnapshot(terminal, snapshot, cursorX, cursorY, paneHeight) {
   const normalizedSnapshot = snapshot.replace(/\r\n/g, "\n");
   const lines = normalizedSnapshot.split("\n");
@@ -20836,7 +20847,9 @@ function renderShellSnapshot(terminal, snapshot, cursorX, cursorY, paneHeight) {
     frame += `\r\x1B[${cursorX + 1}G`;
   }
   terminal.reset();
+  replaying.set(terminal, (replaying.get(terminal) ?? 0) + 1);
   terminal.write(frame, () => {
+    replaying.set(terminal, Math.max(0, (replaying.get(terminal) ?? 1) - 1));
     terminal.scrollToBottom();
   });
 }
@@ -20887,6 +20900,89 @@ function createShellAttachPromiseController({
       const current = pending;
       pending = null;
       clearPendingTimer(current);
+    }
+  };
+}
+
+// src/components/shell/touchTextInput.ts
+function installTouchTextInput(host, textarea, send) {
+  let sent = "";
+  let composing = false;
+  const ours = (event) => event.target === textarea;
+  const sync = () => {
+    const value = textarea.value;
+    const before = Array.from(sent), after = Array.from(value);
+    let common = 0;
+    while (common < before.length && common < after.length && before[common] === after[common]) common += 1;
+    const data = "\x7F".repeat(before.length - common) + after.slice(common).join("");
+    sent = value;
+    if (data) send(data);
+    if (value.length > 400) {
+      textarea.value = "";
+      sent = "";
+    }
+  };
+  const forget = () => {
+    textarea.value = "";
+    sent = "";
+  };
+  const keydown = (event) => {
+    if (!ours(event)) return;
+    if (event.isComposing || event.keyCode === 229) {
+      event.stopImmediatePropagation();
+      return;
+    }
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key.length === 1 || event.key === "Backspace" && textarea.value.length > 0) {
+      event.stopImmediatePropagation();
+      return;
+    }
+    if (event.key !== "Shift" && event.key !== "CapsLock") forget();
+  };
+  const keypress = (event) => {
+    if (ours(event) && !event.ctrlKey && !event.metaKey && !event.altKey && event.key.length === 1) event.stopImmediatePropagation();
+  };
+  const beforeinput = (event) => {
+    if (ours(event) && !composing && textarea.value !== sent) sent = textarea.value;
+  };
+  const input = (event) => {
+    if (!ours(event)) return;
+    event.stopImmediatePropagation();
+    if (composing || event.isComposing) return;
+    sync();
+  };
+  const compositionstart = (event) => {
+    if (!ours(event)) return;
+    event.stopImmediatePropagation();
+    if (!composing && textarea.value !== sent) sent = textarea.value;
+    composing = true;
+  };
+  const compositionupdate = (event) => {
+    if (ours(event)) event.stopImmediatePropagation();
+  };
+  const compositionend = (event) => {
+    if (!ours(event)) return;
+    event.stopImmediatePropagation();
+    composing = false;
+    window.setTimeout(() => {
+      if (!composing) sync();
+    }, 0);
+  };
+  const listeners = [
+    ["keydown", keydown],
+    ["keypress", keypress],
+    ["beforeinput", beforeinput],
+    ["input", input],
+    ["compositionstart", compositionstart],
+    ["compositionupdate", compositionupdate],
+    ["compositionend", compositionend]
+  ];
+  for (const [type, listener] of listeners) host.addEventListener(type, listener, true);
+  return {
+    /** The shell's line changed without the field (a key from the key bar). */
+    forget,
+    dispose: () => {
+      for (const [type, listener] of listeners) host.removeEventListener(type, listener, true);
     }
   };
 }
@@ -21394,6 +21490,8 @@ function useShellSocketLifecycle({
                 output.cursorY,
                 output.paneHeight
               );
+            } else if (output.replay) {
+              writeShellReplay(terminal, output.data);
             } else {
               terminal.write(output.data);
             }
@@ -21715,6 +21813,7 @@ var ShellPane = forwardRef(
     useI18n();
     const themeRevision = useDocumentThemeRevision();
     const transformRef = useRef39(inputTransform);
+    const touchInputRef = useRef39(null);
     transformRef.current = inputTransform;
     const terminalRef = useRef39(null);
     const fitAddonRef = useRef39(null);
@@ -22050,8 +22149,14 @@ var ShellPane = forwardRef(
         });
         resizeObserverRef.current.observe(terminalHostNode);
         terminalInputSubscriptionRef.current = terminal.onData((data) => {
+          if (isReplayingShellSnapshot(terminal)) return;
           sendShellInputRef.current(transformRef.current?.(data) ?? data);
         });
+        if (terminal.textarea && (isMobileShellRef.current || window.matchMedia?.("(pointer: coarse)").matches)) {
+          touchInputRef.current = installTouchTextInput(terminalHostNode, terminal.textarea, (data) => {
+            sendShellInputRef.current(transformRef.current?.(data) ?? data);
+          });
+        }
       })().catch((error) => {
         if (cancelled) return;
         terminalInitializingRef.current = false;
@@ -22062,6 +22167,8 @@ var ShellPane = forwardRef(
         terminalInitializingRef.current = false;
         terminalInputSubscriptionRef.current?.dispose();
         terminalInputSubscriptionRef.current = null;
+        touchInputRef.current?.dispose();
+        touchInputRef.current = null;
         resizeObserverRef.current?.disconnect();
         resizeObserverRef.current = null;
         if (backendResizeTimerRef.current) clearTimeout(backendResizeTimerRef.current);
@@ -22356,6 +22463,7 @@ var ShellPane = forwardRef(
           return attachPromise;
         },
         sendInput(data) {
+          touchInputRef.current?.forget();
           return sendShellInput(data);
         },
         sendCommand(command) {

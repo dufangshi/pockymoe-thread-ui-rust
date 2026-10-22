@@ -55,6 +55,7 @@ describe('shellEvents utilities', () => {
     ).toEqual({
       data: 'hello',
       replace: true,
+      replay: false,
       cursorX: 3,
       cursorY: 4,
       paneHeight: 20,

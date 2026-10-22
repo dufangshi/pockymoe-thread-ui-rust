@@ -1010,6 +1010,8 @@ interface ShellEventPayloadMap {
     'shell.output': {
         data: string;
         replace?: boolean;
+        /** Recorded output a viewer gets on attaching, written after a reset. */
+        replay?: boolean;
         cursorX?: number;
         cursorY?: number;
         paneHeight?: number;

@@ -22,6 +22,8 @@ export interface PendingShellCommand {
 export interface NormalizedShellOutputEvent {
   data: string;
   replace: boolean;
+  /** Recorded output replayed on attaching: its queries were answered already. */
+  replay: boolean;
   cursorX: number | undefined;
   cursorY: number | undefined;
   paneHeight: number | undefined;
@@ -530,6 +532,7 @@ export function normalizeShellOutputEvent(
   return {
     data: typeof payload.data === 'string' ? payload.data : '',
     replace: payload.replace === true,
+    replay: payload.replay === true,
     cursorX: typeof payload.cursorX === 'number' ? payload.cursorX : undefined,
     cursorY: typeof payload.cursorY === 'number' ? payload.cursorY : undefined,
     paneHeight:

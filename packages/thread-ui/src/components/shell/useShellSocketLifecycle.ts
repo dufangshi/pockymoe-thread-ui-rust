@@ -36,7 +36,7 @@ import {
   deriveShellSocketOpenApplication,
   shouldHandleShellSocketEvent,
 } from './shellSocketLifecycle';
-import { renderShellSnapshot } from './shellTerminal';
+import { renderShellSnapshot, writeShellReplay } from './shellTerminal';
 
 export interface ShellPendingCommand {
   command: string;
@@ -279,6 +279,8 @@ export function useShellSocketLifecycle({
                 output.cursorY,
                 output.paneHeight,
               );
+            } else if (output.replay) {
+              writeShellReplay(terminal, output.data);
             } else {
               terminal.write(output.data);
             }

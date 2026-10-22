@@ -179,9 +179,13 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
         inert={!open}
         // Actions and modal dialog triggers hide the sheet (their dialogs live in
         // portals); popover triggers keep it, since their popovers anchor inside.
+        // A press in a menu or window a row opened (React passes its clicks up
+        // through portals) keeps the sheet: a confirmation hosted here would hide
+        // with it. Opening a conversation from such a menu closes it on arrival.
         onClick={event => {
           const target = event.target instanceof Element ? event.target : null;
-          if (target?.closest('[data-sheet-keep]')) return;
+          if (!target?.closest('.matter-phone-sheet-body, .matter-phone-sheet-footer') || target.closest('[role="dialog"], [role="alertdialog"]') !== event.currentTarget) return;
+          if (target.closest('[data-sheet-keep]')) return;
           if (target?.closest('a[href], button:not([aria-expanded]), [data-slot="dialog-trigger"]')) window.setTimeout(onClose, 0);
         }}
       >

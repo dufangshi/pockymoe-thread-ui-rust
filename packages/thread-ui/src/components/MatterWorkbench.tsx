@@ -584,6 +584,8 @@ export function MatterWorkbench({
     }
     o.onCloseTab?.(rootKey);
   };
+  // Arriving at another conversation (from a sheet's row menu too) closes the sheets.
+  useEffect(() => { setThreadsOpen(false); setMoreOpen(false); }, [o.currentKey]);
   const navigate = (href: string) => {
     setSidebarOpen(false);
     setBellOpen(false);

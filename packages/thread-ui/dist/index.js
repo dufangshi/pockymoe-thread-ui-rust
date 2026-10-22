@@ -10706,7 +10706,8 @@ function PhoneSheet({ open, label, onClose, children, footer }) {
         inert: !open,
         onClick: (event) => {
           const target = event.target instanceof Element ? event.target : null;
-          if (target?.closest("[data-sheet-keep]")) return;
+          if (!target?.closest(".matter-phone-sheet-body, .matter-phone-sheet-footer") || target.closest('[role="dialog"], [role="alertdialog"]') !== event.currentTarget) return;
+          if (target.closest("[data-sheet-keep]")) return;
           if (target?.closest('a[href], button:not([aria-expanded]), [data-slot="dialog-trigger"]')) window.setTimeout(onClose, 0);
         },
         children: [
@@ -11460,6 +11461,10 @@ function MatterWorkbench({
     }
     o.onCloseTab?.(rootKey);
   };
+  useEffect25(() => {
+    setThreadsOpen(false);
+    setMoreOpen(false);
+  }, [o.currentKey]);
   const navigate = (href) => {
     setSidebarOpen(false);
     setBellOpen(false);

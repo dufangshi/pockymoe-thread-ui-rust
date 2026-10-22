@@ -4328,6 +4328,10 @@ declare const en: {
     readonly "admin.limitAuthIp": "Per address";
     readonly "admin.limitEnroll": "Authenticator setup";
     readonly "admin.limitChallenge": "Second factor";
+    readonly "admin.limitReauth": "Re-verification";
+    readonly "admin.limitVault": "Account key changes";
+    readonly "admin.limitPasskey": "Passkeys";
+    readonly "admin.limitRecover": "Account recovery";
     readonly "admin.eventsPerDay": "Per day · {{days}} days";
     readonly "admin.auditKeeps": "The audit holds {{count}} events since {{time}}.";
     readonly "admin.categoryLogin": "Sign-in";
@@ -4439,7 +4443,7 @@ declare const en: {
     readonly "admin.apnsOff": "APNs is not configured";
     readonly "admin.versionDistribution": "Device versions";
     readonly "admin.versionDistributionSubtitle": "{{online}} online devices; the relay reads each device's version when it connects and every 6 hours";
-    readonly "admin.versionOverTime": "Online devices on {{version}}";
+    readonly "admin.versionsOverTime": "Online devices on the main versions, per day";
     readonly "admin.storageSubtitle": "Database {{database}} · WAL {{wal}}";
     readonly "admin.table": "Table";
     readonly "admin.rows": "Rows";
@@ -8805,6 +8809,10 @@ declare const zhCN: {
     "admin.limitAuthIp": "按地址";
     "admin.limitEnroll": "设置验证器";
     "admin.limitChallenge": "二步验证";
+    "admin.limitReauth": "重新验证";
+    "admin.limitVault": "账号密钥变更";
+    "admin.limitPasskey": "通行密钥";
+    "admin.limitRecover": "账号恢复";
     "admin.eventsPerDay": "每日 · {{days}} 天";
     "admin.auditKeeps": "审计中有自 {{time}} 起的 {{count}} 条事件。";
     "admin.categoryLogin": "登录";
@@ -8916,7 +8924,7 @@ declare const zhCN: {
     "admin.apnsOff": "未配置 APNs";
     "admin.versionDistribution": "设备版本分布";
     "admin.versionDistributionSubtitle": "{{online}} 台在线设备；设备每次连接及每 6 小时读取一次版本";
-    "admin.versionOverTime": "{{version}} 的在线设备数";
+    "admin.versionsOverTime": "主要版本每天的在线设备数";
     "admin.storageSubtitle": "数据库 {{database}} · WAL {{wal}}";
     "admin.table": "表";
     "admin.rows": "行数";
@@ -13304,6 +13312,10 @@ declare const resources: {
         readonly "admin.limitAuthIp": "Per address";
         readonly "admin.limitEnroll": "Authenticator setup";
         readonly "admin.limitChallenge": "Second factor";
+        readonly "admin.limitReauth": "Re-verification";
+        readonly "admin.limitVault": "Account key changes";
+        readonly "admin.limitPasskey": "Passkeys";
+        readonly "admin.limitRecover": "Account recovery";
         readonly "admin.eventsPerDay": "Per day · {{days}} days";
         readonly "admin.auditKeeps": "The audit holds {{count}} events since {{time}}.";
         readonly "admin.categoryLogin": "Sign-in";
@@ -13415,7 +13427,7 @@ declare const resources: {
         readonly "admin.apnsOff": "APNs is not configured";
         readonly "admin.versionDistribution": "Device versions";
         readonly "admin.versionDistributionSubtitle": "{{online}} online devices; the relay reads each device's version when it connects and every 6 hours";
-        readonly "admin.versionOverTime": "Online devices on {{version}}";
+        readonly "admin.versionsOverTime": "Online devices on the main versions, per day";
         readonly "admin.storageSubtitle": "Database {{database}} · WAL {{wal}}";
         readonly "admin.table": "Table";
         readonly "admin.rows": "Rows";
@@ -17780,6 +17792,10 @@ declare const resources: {
         "admin.limitAuthIp": "按地址";
         "admin.limitEnroll": "设置验证器";
         "admin.limitChallenge": "二步验证";
+        "admin.limitReauth": "重新验证";
+        "admin.limitVault": "账号密钥变更";
+        "admin.limitPasskey": "通行密钥";
+        "admin.limitRecover": "账号恢复";
         "admin.eventsPerDay": "每日 · {{days}} 天";
         "admin.auditKeeps": "审计中有自 {{time}} 起的 {{count}} 条事件。";
         "admin.categoryLogin": "登录";
@@ -17891,7 +17907,7 @@ declare const resources: {
         "admin.apnsOff": "未配置 APNs";
         "admin.versionDistribution": "设备版本分布";
         "admin.versionDistributionSubtitle": "{{online}} 台在线设备；设备每次连接及每 6 小时读取一次版本";
-        "admin.versionOverTime": "{{version}} 的在线设备数";
+        "admin.versionsOverTime": "主要版本每天的在线设备数";
         "admin.storageSubtitle": "数据库 {{database}} · WAL {{wal}}";
         "admin.table": "表";
         "admin.rows": "行数";

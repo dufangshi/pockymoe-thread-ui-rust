@@ -16,6 +16,7 @@ import {
   FilePanelContext,
   GraphWorkspaceImageLightbox,
   MarkdownImageLinkContext,
+  MiddleName,
   PathChip,
   RenameDialog,
   ResizableHandle,
@@ -47,7 +48,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-4U3LMWYL.js";
+} from "./chunk-ERVAQUOI.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -74,7 +75,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-WSZ6D4IF.js";
+} from "./chunk-VSYRNSZC.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -27569,6 +27570,7 @@ export {
   LongTextDialog,
   MatterWorkbench,
   MemoizedThreadGraphWorkspacePanel,
+  MiddleName,
   PathChip,
   PhoneHandChoice,
   PluginActionOutput,

@@ -1,3 +1,4 @@
+import { adminZhCN } from './admin.zh-CN';
 import { automationZhCN } from './automation.zh-CN';
 import { contentQualityZhCN } from './content-quality.zh-CN';
 import { searchZhCN } from './search.zh-CN';
@@ -12,6 +13,7 @@ import { settingsZhCN } from './settings.zh-CN';
 import { sharingZhCN } from './sharing.zh-CN';
 import { workbenchZhCN } from './workbench.zh-CN';
 export const zhCN = {
+  ...adminZhCN,
   ...automationZhCN,
   ...contentQualityZhCN,
   ...authZhCN,

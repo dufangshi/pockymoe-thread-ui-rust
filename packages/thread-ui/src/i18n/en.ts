@@ -1,3 +1,4 @@
+import { adminEn } from './admin.en';
 import { automationEn } from './automation.en';
 import { contentQualityEn } from './content-quality.en';
 import { searchEn } from './search.en';
@@ -11,6 +12,7 @@ import { settingsEn } from './settings.en';
 import { sharingEn } from './sharing.en';
 import { workbenchEn } from './workbench.en';
 export const en = {
+  ...adminEn,
   ...automationEn,
   ...contentQualityEn,
   ...authEn,

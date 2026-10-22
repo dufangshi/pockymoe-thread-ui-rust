@@ -19235,6 +19235,32 @@ function latestTimestamp(...timestamps) {
   }
   return latest?.timestamp ?? null;
 }
+function withDeliveredSteers(turns, steers) {
+  const delivered = steers.filter((steer) => steer.delivery === "steer" && steer.turnId);
+  if (delivered.length === 0) return turns;
+  let changed = false;
+  const next = turns.map((turn) => {
+    const missing = delivered.filter((steer) => steer.turnId === turn.id && !turn.items.some((item) => item.id === `steer:${steer.id}`));
+    if (missing.length === 0) return turn;
+    changed = true;
+    return {
+      ...turn,
+      items: [
+        ...turn.items,
+        ...missing.map((steer) => ({
+          id: `steer:${steer.id}`,
+          kind: "userMessage",
+          text: steer.prompt,
+          createdAt: steer.createdAt,
+          sourceTurnId: turn.id,
+          origin: "user",
+          ...steer.sender ? { sender: steer.sender } : {}
+        }))
+      ]
+    };
+  });
+  return changed ? next : turns;
+}
 function mergeOptimisticTurnItems(turn, optimisticTurn) {
   if (!optimisticTurn || optimisticTurn.id !== turn.id || optimisticTurn.items.length === 0) {
     return turn;
@@ -19268,7 +19294,7 @@ function rememberFoldChoices(threadId, choices) {
 }
 function ThreadTimelineComponent({
   threadId,
-  turns,
+  turns: loadedTurns,
   totalTurnCount,
   pendingRequests = [],
   activeTurnId = null,
@@ -19307,6 +19333,7 @@ function ThreadTimelineComponent({
   autoCollapseCompletedTurns
 }) {
   const { locale: i18nLocale } = useI18n();
+  const turns = useMemo13(() => withDeliveredSteers(loadedTurns, pendingSteers), [loadedTurns, pendingSteers]);
   const shellNav = useAppShellNav();
   const effectiveAutoCollapseCompletedTurns = autoCollapseCompletedTurns ?? shellNav?.autoCollapseCompletedTurns ?? false;
   const [folds, setFolds] = useState58(() => ({ threadId, choices: threadId && foldChoices.get(threadId) || {} }));

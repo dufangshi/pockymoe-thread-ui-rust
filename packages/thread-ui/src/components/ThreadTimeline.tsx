@@ -140,6 +140,40 @@ function latestTimestamp(...timestamps: Array<string | null | undefined>) {
   return latest?.timestamp ?? null;
 }
 
+/**
+ * A steered prompt is part of its turn once delivered: the Supervisor writes its
+ * `steer:` history item in the same step that marks the row a steer. Place it
+ * there at once, as that item, rather than in a separate bubble below the
+ * conversation that moves into the turn when history next refreshes.
+ */
+function withDeliveredSteers(turns: ThreadTurnDto[], steers: ThreadPendingSteerDto[]) {
+  const delivered = steers.filter((steer) => steer.delivery === 'steer' && steer.turnId);
+  if (delivered.length === 0) return turns;
+  let changed = false;
+  const next = turns.map((turn) => {
+    const missing = delivered.filter((steer) => steer.turnId === turn.id
+      && !turn.items.some((item) => item.id === `steer:${steer.id}`));
+    if (missing.length === 0) return turn;
+    changed = true;
+    return {
+      ...turn,
+      items: [
+        ...turn.items,
+        ...missing.map((steer): ThreadHistoryItemDto => ({
+          id: `steer:${steer.id}`,
+          kind: 'userMessage',
+          text: steer.prompt,
+          createdAt: steer.createdAt,
+          sourceTurnId: turn.id,
+          origin: 'user',
+          ...(steer.sender ? { sender: steer.sender } : {}),
+        })),
+      ],
+    };
+  });
+  return changed ? next : turns;
+}
+
 function mergeOptimisticTurnItems(
   turn: TimelineTurn,
   optimisticTurn: TimelineTurn | null,
@@ -197,7 +231,7 @@ type FoldChoicesUpdate = Record<string, boolean> | ((current: Record<string, boo
 
 function ThreadTimelineComponent({
   threadId,
-  turns,
+  turns: loadedTurns,
   totalTurnCount,
   pendingRequests = [],
   activeTurnId = null,
@@ -236,6 +270,7 @@ function ThreadTimelineComponent({
   autoCollapseCompletedTurns,
 }: ThreadTimelineProps) {
   const { locale: i18nLocale } = useI18n();
+  const turns = useMemo(() => withDeliveredSteers(loadedTurns, pendingSteers), [loadedTurns, pendingSteers]);
   const shellNav = useAppShellNav();
   const effectiveAutoCollapseCompletedTurns =
     autoCollapseCompletedTurns ??

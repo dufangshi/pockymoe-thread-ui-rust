@@ -4080,6 +4080,13 @@ declare const en: {
     readonly "admin.versionsSubtitle": "{{online}} online devices · relay {{latest}}";
     readonly "admin.otherVersions": "Older and other";
     readonly "admin.noVersionsYet": "No online device has reported its version yet.";
+    readonly "admin.onRelayVersion": "Same as relay";
+    readonly "admin.onOlderVersion": "Older";
+    readonly "admin.versionNotReported": "Not reported";
+    readonly "admin.viewOlderDevices": {
+        readonly one: "{{count}} device on an older version";
+        readonly other: "{{count}} devices on an older version";
+    };
     readonly "admin.version": "Version";
     readonly "admin.allDevices": "All devices";
     readonly "admin.tunnels": "Tunnels and forwarding";
@@ -8561,6 +8568,13 @@ declare const zhCN: {
     "admin.versionsSubtitle": "{{online}} 台在线设备 · Relay {{latest}}";
     "admin.otherVersions": "更旧及其他";
     "admin.noVersionsYet": "还没有在线设备上报版本。";
+    "admin.onRelayVersion": "同 Relay";
+    "admin.onOlderVersion": "较旧";
+    "admin.versionNotReported": "尚未报告";
+    "admin.viewOlderDevices": {
+        readonly one: "{{count}} 台设备版本较旧";
+        readonly other: "{{count}} 台设备版本较旧";
+    };
     "admin.version": "版本";
     "admin.allDevices": "全部设备";
     "admin.tunnels": "隧道与转发";
@@ -13064,6 +13078,13 @@ declare const resources: {
         readonly "admin.versionsSubtitle": "{{online}} online devices · relay {{latest}}";
         readonly "admin.otherVersions": "Older and other";
         readonly "admin.noVersionsYet": "No online device has reported its version yet.";
+        readonly "admin.onRelayVersion": "Same as relay";
+        readonly "admin.onOlderVersion": "Older";
+        readonly "admin.versionNotReported": "Not reported";
+        readonly "admin.viewOlderDevices": {
+            readonly one: "{{count}} device on an older version";
+            readonly other: "{{count}} devices on an older version";
+        };
         readonly "admin.version": "Version";
         readonly "admin.allDevices": "All devices";
         readonly "admin.tunnels": "Tunnels and forwarding";
@@ -17544,6 +17565,13 @@ declare const resources: {
         "admin.versionsSubtitle": "{{online}} 台在线设备 · Relay {{latest}}";
         "admin.otherVersions": "更旧及其他";
         "admin.noVersionsYet": "还没有在线设备上报版本。";
+        "admin.onRelayVersion": "同 Relay";
+        "admin.onOlderVersion": "较旧";
+        "admin.versionNotReported": "尚未报告";
+        "admin.viewOlderDevices": {
+            readonly one: "{{count}} 台设备版本较旧";
+            readonly other: "{{count}} 台设备版本较旧";
+        };
         "admin.version": "版本";
         "admin.allDevices": "全部设备";
         "admin.tunnels": "隧道与转发";

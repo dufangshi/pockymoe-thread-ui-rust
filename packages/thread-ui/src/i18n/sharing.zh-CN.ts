@@ -275,4 +275,9 @@ export const sharingZhCN = {
   "sharing.countDevices": "{{count}} 台设备",
   "sharing.countWorkspaces": "{{count}} 个工作区",
   "sharing.countThreads": "{{count}} 个线程",
+  "sharing.leaveAccess": "放弃访问",
+  "sharing.leaveTitle": "放弃这项共享？",
+  "sharing.leaveDescription": "你将不再能访问 {{owner}} 共享给你的{{scope}}「{{name}}」。之后如需再次访问，需要 {{owner}} 重新共享。",
+  "sharing.leaving": "正在放弃…",
+  "sharing.unableToLeave": "无法放弃这项共享。",
 } as const;

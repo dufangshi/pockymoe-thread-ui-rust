@@ -3394,7 +3394,12 @@ var sharingEn = {
   "sharing.youShareWith": "You share with them",
   "sharing.countDevices": "{{count}} devices",
   "sharing.countWorkspaces": "{{count}} workspaces",
-  "sharing.countThreads": "{{count}} threads"
+  "sharing.countThreads": "{{count}} threads",
+  "sharing.leaveAccess": "Leave",
+  "sharing.leaveTitle": "Leave this share?",
+  "sharing.leaveDescription": "You will no longer have access to \u201C{{name}}\u201D ({{scope}}), shared with you by {{owner}}. To use it again, {{owner}} has to share it again.",
+  "sharing.leaving": "Leaving\u2026",
+  "sharing.unableToLeave": "Could not leave this share."
 };
 
 // src/i18n/workbench.en.ts
@@ -7434,7 +7439,12 @@ var sharingZhCN = {
   "sharing.youShareWith": "\u4F60\u5171\u4EAB\u7ED9\u5BF9\u65B9",
   "sharing.countDevices": "{{count}} \u53F0\u8BBE\u5907",
   "sharing.countWorkspaces": "{{count}} \u4E2A\u5DE5\u4F5C\u533A",
-  "sharing.countThreads": "{{count}} \u4E2A\u7EBF\u7A0B"
+  "sharing.countThreads": "{{count}} \u4E2A\u7EBF\u7A0B",
+  "sharing.leaveAccess": "\u653E\u5F03\u8BBF\u95EE",
+  "sharing.leaveTitle": "\u653E\u5F03\u8FD9\u9879\u5171\u4EAB\uFF1F",
+  "sharing.leaveDescription": "\u4F60\u5C06\u4E0D\u518D\u80FD\u8BBF\u95EE {{owner}} \u5171\u4EAB\u7ED9\u4F60\u7684{{scope}}\u300C{{name}}\u300D\u3002\u4E4B\u540E\u5982\u9700\u518D\u6B21\u8BBF\u95EE\uFF0C\u9700\u8981 {{owner}} \u91CD\u65B0\u5171\u4EAB\u3002",
+  "sharing.leaving": "\u6B63\u5728\u653E\u5F03\u2026",
+  "sharing.unableToLeave": "\u65E0\u6CD5\u653E\u5F03\u8FD9\u9879\u5171\u4EAB\u3002"
 };
 
 // src/i18n/workbench.zh-CN.ts

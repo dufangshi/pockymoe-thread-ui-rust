@@ -275,4 +275,9 @@ export const sharingEn = {
   "sharing.countDevices": "{{count}} devices",
   "sharing.countWorkspaces": "{{count}} workspaces",
   "sharing.countThreads": "{{count}} threads",
+  "sharing.leaveAccess": "Leave",
+  "sharing.leaveTitle": "Leave this share?",
+  "sharing.leaveDescription": "You will no longer have access to “{{name}}” ({{scope}}), shared with you by {{owner}}. To use it again, {{owner}} has to share it again.",
+  "sharing.leaving": "Leaving…",
+  "sharing.unableToLeave": "Could not leave this share.",
 } as const;

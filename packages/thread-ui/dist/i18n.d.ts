@@ -1090,6 +1090,11 @@ declare const en: {
     readonly "sharing.countDevices": "{{count}} devices";
     readonly "sharing.countWorkspaces": "{{count}} workspaces";
     readonly "sharing.countThreads": "{{count}} threads";
+    readonly "sharing.leaveAccess": "Leave";
+    readonly "sharing.leaveTitle": "Leave this share?";
+    readonly "sharing.leaveDescription": "You will no longer have access to “{{name}}” ({{scope}}), shared with you by {{owner}}. To use it again, {{owner}} has to share it again.";
+    readonly "sharing.leaving": "Leaving…";
+    readonly "sharing.unableToLeave": "Could not leave this share.";
     readonly "settings.accountScope": "Account settings, shared across devices";
     readonly "settings.notificationsTab": "Notifications";
     readonly "settings.notificationsDescription": "Choose which turns notify you when they finish.";
@@ -5165,6 +5170,11 @@ declare const zhCN: {
     "sharing.countDevices": "{{count}} 台设备";
     "sharing.countWorkspaces": "{{count}} 个工作区";
     "sharing.countThreads": "{{count}} 个线程";
+    "sharing.leaveAccess": "放弃访问";
+    "sharing.leaveTitle": "放弃这项共享？";
+    "sharing.leaveDescription": "你将不再能访问 {{owner}} 共享给你的{{scope}}「{{name}}」。之后如需再次访问，需要 {{owner}} 重新共享。";
+    "sharing.leaving": "正在放弃…";
+    "sharing.unableToLeave": "无法放弃这项共享。";
     "settings.accountScope": "账号设置，所有设备通用";
     "settings.notificationsTab": "通知";
     "settings.notificationsDescription": "选择哪些轮次结束时通知你。";
@@ -9262,6 +9272,11 @@ declare const resources: {
         readonly "sharing.countDevices": "{{count}} devices";
         readonly "sharing.countWorkspaces": "{{count}} workspaces";
         readonly "sharing.countThreads": "{{count}} threads";
+        readonly "sharing.leaveAccess": "Leave";
+        readonly "sharing.leaveTitle": "Leave this share?";
+        readonly "sharing.leaveDescription": "You will no longer have access to “{{name}}” ({{scope}}), shared with you by {{owner}}. To use it again, {{owner}} has to share it again.";
+        readonly "sharing.leaving": "Leaving…";
+        readonly "sharing.unableToLeave": "Could not leave this share.";
         readonly "settings.accountScope": "Account settings, shared across devices";
         readonly "settings.notificationsTab": "Notifications";
         readonly "settings.notificationsDescription": "Choose which turns notify you when they finish.";
@@ -13336,6 +13351,11 @@ declare const resources: {
         "sharing.countDevices": "{{count}} 台设备";
         "sharing.countWorkspaces": "{{count}} 个工作区";
         "sharing.countThreads": "{{count}} 个线程";
+        "sharing.leaveAccess": "放弃访问";
+        "sharing.leaveTitle": "放弃这项共享？";
+        "sharing.leaveDescription": "你将不再能访问 {{owner}} 共享给你的{{scope}}「{{name}}」。之后如需再次访问，需要 {{owner}} 重新共享。";
+        "sharing.leaving": "正在放弃…";
+        "sharing.unableToLeave": "无法放弃这项共享。";
         "settings.accountScope": "账号设置，所有设备通用";
         "settings.notificationsTab": "通知";
         "settings.notificationsDescription": "选择哪些轮次结束时通知你。";

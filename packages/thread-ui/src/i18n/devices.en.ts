@@ -397,7 +397,7 @@ export const devicesEn = {
   "devices.agentIsolationMenu": "Agent isolation…",
   "devices.isolateDevice": "Isolate this device",
   "devices.deviceIsolated": "Isolated",
-  "devices.deviceIsolationDescription": "Agents on other devices cannot list, read or message this device's threads, or read its workspaces and files. You and the people you share with are not affected.",
+  "devices.deviceIsolationDescription": "Agents on other devices cannot list, read or message this device's threads, or read its workspaces and files. Agents on this device can still reach your other devices. You and the people you share with are not affected.",
   "devices.deviceIsolationOffline": "The device is offline. Change this when it is online.",
   "devices.deviceIsolationUpdate": "Update this device to change this.",
   "devices.deviceIsolationLoading": "Loading…",

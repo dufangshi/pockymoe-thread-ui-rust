@@ -4,7 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GraphChatMessageContent } from './GraphChatMessageContent';
 import { GraphChatMermaidDiagram } from './GraphChatMermaidDiagram';
-import { hasClosedMarkdownFence, isMermaidCode, renderChatMermaid } from './graphChatMermaid';
+import { hasClosedMarkdownFence, isMermaidCode, MermaidLoadError, renderChatMermaid } from './graphChatMermaid';
 
 vi.mock('./graphChatMermaid', async importOriginal => ({
   ...await importOriginal<typeof import('./graphChatMermaid')>(),
@@ -78,6 +78,26 @@ describe('chat Mermaid diagrams', () => {
     await render(<GraphChatMermaidDiagram source={'flowchart TD\nA-->B'} dark />);
     expect(container.querySelector('section')?.getAttribute('data-state')).toBe('ready');
     expect(container.querySelector('.thread-graph-mermaid-error')).toBeNull();
+  });
+
+  it('says why a diagram did not render, behind a mark, and offers what helps', async () => {
+    renderer.mockRejectedValueOnce(new Error('Parse error on line 3'));
+    await render(<GraphChatMermaidDiagram source={'flowchart LR\nA-->'} dark />);
+    const mark = container.querySelector<HTMLButtonElement>('.thread-graph-mermaid-error button.error-mark')!;
+    expect(mark).not.toBeNull();
+    await act(async () => mark.click());
+    expect(document.querySelector('.error-mark-bubble')?.textContent).toContain('Parse error on line 3');
+    // Retry renders again.
+    await act(async () => document.querySelector<HTMLButtonElement>('.error-mark-retry')!.click());
+    expect(renderer).toHaveBeenCalledTimes(2);
+    expect(container.querySelector('svg text')?.textContent).toBe('Rendered diagram');
+
+    // The renderer's code missing (a page older than a deployment) asks for a reload.
+    renderer.mockRejectedValueOnce(new MermaidLoadError('Importing a module script failed.'));
+    await render(<GraphChatMermaidDiagram source={'flowchart LR\nB-->C'} dark />);
+    await act(async () => container.querySelector<HTMLButtonElement>('.thread-graph-mermaid-error button.error-mark')!.click());
+    expect(document.querySelector('.error-mark-bubble')?.textContent).toContain('reload');
+    expect(document.querySelector('.error-mark-retry')?.textContent).toBe('Reload page');
   });
 
   it('recognizes diagram headers and matching Markdown fences conservatively', () => {

@@ -18,6 +18,12 @@ export function hasClosedMarkdownFence(markdown: string, startLine?: number, end
     && closing[1]!.length >= opening[1]!.length);
 }
 
+/** Mermaid's code could not be fetched: a page opened before a deployment asks
+    for build files that are gone (Chromium and WebKit word it differently). */
+export class MermaidLoadError extends Error {}
+const moduleLoadFailure = (error: unknown) => error instanceof TypeError
+  && /dynamically imported module|module script failed|error loading dynamically|load failed/i.test(error.message);
+
 let library: Promise<typeof import('mermaid')['default']> | undefined;
 let queue: Promise<void> = Promise.resolve();
 let nextId = 0;
@@ -28,7 +34,7 @@ export function renderChatMermaid(source: string, dark: boolean, signal?: AbortS
     if (signal?.aborted) throw new Error('Diagram rendering canceled');
     library ??= import('mermaid').then(module => module.default).catch(error => {
       library = undefined;
-      throw error;
+      throw moduleLoadFailure(error) ? new MermaidLoadError(String((error as Error).message)) : error;
     });
     const mermaid = await library;
     await document.fonts?.ready;
@@ -51,7 +57,10 @@ export function renderChatMermaid(source: string, dark: boolean, signal?: AbortS
     }
     const id = `thread-mermaid-${++nextId}`;
     try {
-      const { svg } = await mermaid.render(id, source);
+      // Mermaid fetches each diagram type's own code on first use.
+      const { svg } = await mermaid.render(id, source).catch((error: unknown) => {
+        throw moduleLoadFailure(error) ? new MermaidLoadError(String((error as Error).message)) : error;
+      });
       return DOMPurify.sanitize(svg, {
         USE_PROFILES: { svg: true, svgFilters: true },
         FORBID_TAGS: ['foreignObject'],

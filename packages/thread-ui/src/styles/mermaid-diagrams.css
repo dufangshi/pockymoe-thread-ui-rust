@@ -53,7 +53,7 @@
   font-size: 12px;
   line-height: 1.7;
 }
-.thread-graph-mermaid-error { display: block; padding: 0 16px 12px; color: var(--theme-fg-muted); font-size: 12px; }
+.thread-graph-mermaid-error { display: flex; align-items: center; gap: 4px; padding: 0 16px 12px; color: var(--theme-fg-muted); font-size: 12px; }
 @media (max-width: 640px) {
   .thread-graph-mermaid-canvas { padding: 16px 8px; }
   .thread-graph-mermaid-actions button { width: 36px; height: 36px; }

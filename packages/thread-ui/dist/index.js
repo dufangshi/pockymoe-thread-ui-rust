@@ -48,7 +48,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-2NBPJYMG.js";
+} from "./chunk-LDKZSGOQ.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -75,7 +75,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-AXBQ6LFG.js";
+} from "./chunk-TQAGSNHI.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -111,7 +111,7 @@ styleInject('[data-composer-layout] {\n  container-type: inline-size;\n}\n[data-
 styleInject('@property --effort-color { syntax: "<color>"; inherits: true; initial-value: #56b987; }\n.composer-reasoning {\n  border-top: 1px solid var(--theme-border);\n  margin-top: 6px;\n  padding: 8px 10px 2px;\n  transition: --effort-color 240ms ease;\n}\n.composer-reasoning-heading {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.composer-reasoning-value {\n  color: var(--effort-color);\n  background: color-mix(in srgb, var(--effort-color) 12%, transparent);\n  border: 1px solid color-mix(in srgb, var(--effort-color) 20%, transparent);\n  border-radius: 7px;\n  padding: 2px 8px;\n  font-size: 11px;\n  line-height: 16px;\n  animation: composer-effort-reveal 180ms ease-out;\n}\n:root[data-theme-effective=light] .composer-reasoning-value {\n  color: color-mix(in oklab, var(--effort-color) 72%, black);\n}\n.composer-reasoning-slider {\n  position: relative;\n  display: block;\n  height: 60px;\n  margin: 0 0 -2px;\n  touch-action: none;\n  user-select: none;\n  cursor: pointer;\n}\n.composer-reasoning-slider[data-disabled] {\n  cursor: default;\n  opacity: 0.5;\n}\n.composer-reasoning-track {\n  position: absolute;\n  top: 14px;\n  right: 0;\n  left: 0;\n  height: 7px;\n  overflow: hidden;\n  border-radius: 999px;\n  background: color-mix(in srgb, var(--theme-fg-muted) 26%, transparent);\n  box-shadow: inset 0 1px 2px rgb(0 0 0 / 12%);\n}\n.composer-reasoning-range {\n  position: absolute;\n  height: 100%;\n  border-radius: inherit;\n  background:\n    linear-gradient(\n      90deg,\n      color-mix(in oklab, var(--effort-color) 62%, white),\n      var(--effort-color));\n  transition: right 200ms cubic-bezier(0.2, 0.8, 0.2, 1), background 200ms ease;\n}\n.composer-reasoning-thumb {\n  display: block;\n  width: 22px;\n  height: 22px;\n  border: 3px solid var(--theme-panel);\n  border-radius: 50%;\n  outline: 1px solid color-mix(in srgb, var(--effort-color) 50%, transparent);\n  background:\n    radial-gradient(\n      circle at 35% 25%,\n      color-mix(in srgb, var(--effort-color) 50%, white),\n      var(--effort-color) 65%);\n  box-shadow: 0 2px 7px rgb(0 0 0 / 15%), 0 0 0 4px color-mix(in srgb, var(--effort-color) 10%, transparent);\n  transition:\n    transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1),\n    box-shadow 200ms ease,\n    background 200ms ease;\n}\n.composer-reasoning-slider > span[style] {\n  top: 6.5px;\n  transition: left 200ms cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.composer-reasoning-thumb:active,\n.composer-reasoning-thumb:focus-visible,\n.composer-reasoning[data-interacting=true] .composer-reasoning-thumb {\n  transform: scale(1.12);\n  box-shadow:\n    0 2px 8px rgb(0 0 0 / 15%),\n    0 0 0 7px color-mix(in srgb, var(--effort-color) 14%, transparent),\n    0 0 22px color-mix(in srgb, var(--effort-color) 25%, transparent);\n}\n@media (hover: hover) {\n  .composer-reasoning-thumb:hover {\n    transform: scale(1.12);\n    box-shadow:\n      0 2px 8px rgb(0 0 0 / 15%),\n      0 0 0 7px color-mix(in srgb, var(--effort-color) 14%, transparent),\n      0 0 22px color-mix(in srgb, var(--effort-color) 25%, transparent);\n  }\n}\n.composer-reasoning-stops {\n  position: absolute;\n  inset: 31px 0 0;\n  pointer-events: none;\n}\n.composer-reasoning-stops > span {\n  position: absolute;\n  top: 0;\n  transform: translateX(-50%);\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 4px;\n  min-width: 24px;\n  padding: 0 0 4px;\n  font-size: 9px;\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n  transition: color 180ms ease;\n}\n.composer-reasoning-stops i {\n  height: 3px;\n  width: 1px;\n  background: var(--theme-border);\n}\n.composer-reasoning-stops > [data-preview] {\n  color: var(--effort-color);\n}\n@keyframes composer-effort-reveal {\n  from {\n    opacity: 0.5;\n    transform: translateY(2px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .composer-reasoning,\n  .composer-reasoning *,\n  .composer-reasoning-slider > span[style] {\n    transition: none;\n    animation: none;\n  }\n}\n.composer-model-menu-heading {\n  line-height: 16px;\n}\n.composer-context-summary {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  border-top: 1px solid var(--theme-border);\n  margin-top: 4px;\n  padding: 7px 10px 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 16px;\n}\n.composer-context-value {\n  color: var(--theme-fg);\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.composer-context-separator {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .composer-model-menu[data-composer-menu-surface] {\n  --composer-menu-surface-bg: var(--theme-panel);\n}\n');
 
 // src/styles/mermaid-diagrams.css
-styleInject(".thread-graph-message-markdown .thread-graph-mermaid {\n  min-width: 0;\n  max-width: 100%;\n  margin: 1rem 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 14px;\n  background: var(--theme-panel);\n  white-space: normal;\n}\n.thread-graph-mermaid-toolbar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 6px 10px 6px 14px;\n  border-bottom: 1px solid var(--theme-border);\n  color: var(--theme-fg-muted);\n  font: 500 11px/1.4 system-ui, sans-serif;\n}\n.thread-graph-mermaid-label,\n.thread-graph-mermaid-actions {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n.thread-graph-mermaid-actions {\n  gap: 2px;\n}\n.thread-graph-mermaid-actions button {\n  display: grid;\n  place-items: center;\n  width: 32px;\n  height: 32px;\n  padding: 0;\n  border: 0;\n  border-radius: 7px;\n  background: transparent;\n  color: inherit;\n  cursor: pointer;\n}\n.thread-graph-mermaid-actions button:active,\n.thread-graph-mermaid-actions button[aria-pressed=true] {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-graph-mermaid-actions button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-graph-mermaid-actions button:focus-visible {\n  outline: 2px solid var(--theme-accent);\n  outline-offset: 1px;\n}\n.thread-graph-mermaid-canvas {\n  padding: 20px 16px;\n  overflow: auto;\n}\n.thread-graph-mermaid-canvas > svg {\n  display: block;\n  width: 100%;\n  height: auto;\n  max-height: min(600px, 60svh);\n  margin: auto;\n}\n.thread-graph-message-markdown .thread-graph-mermaid-source {\n  margin: 0;\n  padding: 16px;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  overflow: auto;\n  white-space: pre;\n  font-size: 12px;\n  line-height: 1.7;\n}\n.thread-graph-mermaid-error {\n  display: block;\n  padding: 0 16px 12px;\n  color: var(--theme-fg-muted);\n  font-size: 12px;\n}\n@media (max-width: 640px) {\n  .thread-graph-mermaid-canvas {\n    padding: 16px 8px;\n  }\n  .thread-graph-mermaid-actions button {\n    width: 36px;\n    height: 36px;\n  }\n}\n");
+styleInject(".thread-graph-message-markdown .thread-graph-mermaid {\n  min-width: 0;\n  max-width: 100%;\n  margin: 1rem 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 14px;\n  background: var(--theme-panel);\n  white-space: normal;\n}\n.thread-graph-mermaid-toolbar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 6px 10px 6px 14px;\n  border-bottom: 1px solid var(--theme-border);\n  color: var(--theme-fg-muted);\n  font: 500 11px/1.4 system-ui, sans-serif;\n}\n.thread-graph-mermaid-label,\n.thread-graph-mermaid-actions {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n.thread-graph-mermaid-actions {\n  gap: 2px;\n}\n.thread-graph-mermaid-actions button {\n  display: grid;\n  place-items: center;\n  width: 32px;\n  height: 32px;\n  padding: 0;\n  border: 0;\n  border-radius: 7px;\n  background: transparent;\n  color: inherit;\n  cursor: pointer;\n}\n.thread-graph-mermaid-actions button:active,\n.thread-graph-mermaid-actions button[aria-pressed=true] {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-graph-mermaid-actions button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-graph-mermaid-actions button:focus-visible {\n  outline: 2px solid var(--theme-accent);\n  outline-offset: 1px;\n}\n.thread-graph-mermaid-canvas {\n  padding: 20px 16px;\n  overflow: auto;\n}\n.thread-graph-mermaid-canvas > svg {\n  display: block;\n  width: 100%;\n  height: auto;\n  max-height: min(600px, 60svh);\n  margin: auto;\n}\n.thread-graph-message-markdown .thread-graph-mermaid-source {\n  margin: 0;\n  padding: 16px;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  overflow: auto;\n  white-space: pre;\n  font-size: 12px;\n  line-height: 1.7;\n}\n.thread-graph-mermaid-error {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  padding: 0 16px 12px;\n  color: var(--theme-fg-muted);\n  font-size: 12px;\n}\n@media (max-width: 640px) {\n  .thread-graph-mermaid-canvas {\n    padding: 16px 8px;\n  }\n  .thread-graph-mermaid-actions button {\n    width: 36px;\n    height: 36px;\n  }\n}\n");
 
 // src/styles/plugin-reports.css
 styleInject('.plugin-action-output {\n  display: grid;\n  gap: 8px;\n  min-width: 0;\n  font-size: 12px;\n  line-height: 1.55;\n  color: var(--theme-fg);\n}\n.plugin-report-line {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 8px;\n  color: var(--theme-fg-muted);\n}\n.plugin-report-meta {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.plugin-report-note {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.plugin-report-error {\n  padding: 6px 9px;\n  border-radius: 7px;\n  border: 1px solid var(--status-danger-border, color-mix(in srgb, #d85b64 35%, transparent));\n  background: var(--status-danger-bg, color-mix(in srgb, #d85b64 10%, transparent));\n  color: var(--status-danger-fg, #b4323d);\n  overflow-wrap: anywhere;\n  white-space: pre-wrap;\n}\n.plugin-report-tag {\n  display: inline-flex;\n  align-items: center;\n  min-height: 18px;\n  padding: 0 6px;\n  border-radius: 5px;\n  font-size: 10.5px;\n  font-weight: 500;\n  line-height: 1;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  background: var(--theme-hover);\n}\n.plugin-report-tag.is-success {\n  color: var(--status-success-fg, var(--theme-accent-strong));\n  background: var(--status-success-bg, var(--theme-accent-soft));\n}\n.plugin-report-tag.is-accent {\n  color: var(--theme-accent-strong);\n  background: var(--theme-accent-soft);\n}\n.plugin-report-tag.is-danger {\n  color: var(--status-danger-fg, #b4323d);\n  background: var(--status-danger-bg, color-mix(in srgb, #d85b64 12%, transparent));\n}\n.plugin-report-pre {\n  max-height: 16rem;\n  margin-top: 6px;\n  padding: 8px 10px;\n  overflow: auto;\n  border-radius: 7px;\n  background: color-mix(in srgb, var(--theme-fg) 5%, transparent);\n  font:\n    11px/1.6 ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    monospace;\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n  color: var(--theme-fg);\n}\n.plugin-report-disclosure > summary {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  cursor: pointer;\n  list-style: none;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.plugin-report-disclosure > summary::-webkit-details-marker {\n  display: none;\n}\n.plugin-report-disclosure > summary::before {\n  content: "";\n  width: 5px;\n  height: 5px;\n  margin: 0 2px 0 1px;\n  border-right: 1.5px solid currentColor;\n  border-bottom: 1.5px solid currentColor;\n  transform: rotate(-45deg);\n  transition: transform .15s;\n}\n.plugin-report-disclosure[open] > summary::before {\n  transform: rotate(45deg);\n}\n.plugin-report-disclosure > summary:active {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .plugin-report-disclosure > summary:hover {\n    color: var(--theme-fg);\n  }\n}\n.plugin-report-disclosure > summary:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 2px;\n  border-radius: 4px;\n}\n.quality-report {\n  display: grid;\n  gap: 10px;\n  min-width: 0;\n}\n.quality-report-reply {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: baseline;\n  gap: 4px 10px;\n}\n.quality-report-reply > div {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 8px;\n  min-width: 0;\n}\n.quality-report-label {\n  font-size: 11px;\n  font-weight: 500;\n  color: var(--theme-fg-soft, var(--theme-fg-muted));\n}\n.quality-docs {\n  display: grid;\n  min-width: 0;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  overflow: hidden;\n}\n.quality-doc {\n  display: grid;\n  gap: 6px;\n  min-width: 0;\n  padding: 10px 12px;\n}\n.quality-doc + .quality-doc {\n  border-top: 1px solid var(--theme-border);\n}\n.quality-doc[data-status=failed] {\n  box-shadow: inset 2px 0 0 var(--status-danger-fg, #b4323d);\n}\n.quality-doc-header {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: space-between;\n  gap: 4px 10px;\n  min-width: 0;\n}\n.quality-doc-path {\n  min-width: 0;\n  font:\n    500 12px/1.4 ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    monospace;\n  color: var(--theme-fg);\n  overflow-wrap: anywhere;\n}\n.quality-doc-tags {\n  display: inline-flex;\n  flex-wrap: wrap;\n  gap: 4px;\n}\n.quality-doc-findings {\n  display: grid;\n  gap: 3px;\n  padding-left: 14px;\n  list-style: disc;\n  color: var(--theme-fg);\n}\n.quality-doc-findings li {\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n}\n.quality-doc-findings li::marker {\n  color: var(--theme-fg-muted);\n}\n.quality-doc-actions {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 2px 14px;\n}\n.quality-doc-actions:empty {\n  display: none;\n}\n.quality-doc-actions > details[open] {\n  flex-basis: 100%;\n}\n.quality-doc-actions > .plugin-report-meta {\n  margin-left: auto;\n}\n.quality-diff .is-add {\n  color: var(--status-success-fg, #1d7a4c);\n}\n.quality-diff .is-del {\n  color: var(--status-danger-fg, #b4323d);\n}\n.quality-diff .is-hunk {\n  color: var(--theme-fg-muted);\n}\n.plugin-settings-dialog:focus-visible {\n  outline: none;\n}\n');
@@ -2920,6 +2920,9 @@ function hasClosedMarkdownFence(markdown, startLine, endLine) {
   const closing = lines[endLine - 1]?.match(/^\s*(?:>\s*)*(`{3,}|~{3,})\s*$/);
   return Boolean(opening && closing && opening[1]?.[0] === closing[1]?.[0] && closing[1].length >= opening[1].length);
 }
+var MermaidLoadError = class extends Error {
+};
+var moduleLoadFailure = (error) => error instanceof TypeError && /dynamically imported module|module script failed|error loading dynamically|load failed/i.test(error.message);
 var library;
 var queue = Promise.resolve();
 var nextId = 0;
@@ -2928,7 +2931,7 @@ function renderChatMermaid(source, dark, signal) {
     if (signal?.aborted) throw new Error("Diagram rendering canceled");
     library ??= import("mermaid").then((module) => module.default).catch((error) => {
       library = void 0;
-      throw error;
+      throw moduleLoadFailure(error) ? new MermaidLoadError(String(error.message)) : error;
     });
     const mermaid = await library;
     await document.fonts?.ready;
@@ -2962,7 +2965,9 @@ function renderChatMermaid(source, dark, signal) {
     }
     const id = `thread-mermaid-${++nextId}`;
     try {
-      const { svg } = await mermaid.render(id, source);
+      const { svg } = await mermaid.render(id, source).catch((error) => {
+        throw moduleLoadFailure(error) ? new MermaidLoadError(String(error.message)) : error;
+      });
       return DOMPurify.sanitize(svg, {
         USE_PROFILES: { svg: true, svgFilters: true },
         FORBID_TAGS: ["foreignObject"]
@@ -2984,6 +2989,7 @@ var GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram2({
 }) {
   useI18n();
   const [result, setResult] = useState7();
+  const [attempt, setAttempt] = useState7(0);
   const [showSource, setShowSource] = useState7(false);
   const [expanded, setExpanded] = useState7(false);
   const expandButton = useRef5(null);
@@ -2996,12 +3002,19 @@ var GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram2({
       (svg2) => {
         if (!controller.signal.aborted) setResult({ source, dark, svg: svg2 });
       },
-      () => {
-        if (!controller.signal.aborted) setResult({ source, dark });
+      (error) => {
+        if (controller.signal.aborted) return;
+        const stale = error instanceof MermaidLoadError;
+        setResult({
+          source,
+          dark,
+          stale,
+          error: stale ? translate("chat.diagramLoadFailed") : error instanceof Error && error.message ? error.message : translate("chat.diagramInvalid")
+        });
       }
     );
     return () => controller.abort();
-  }, [source, dark, pending]);
+  }, [source, dark, pending, attempt]);
   const closeExpanded = useCallback(() => {
     setExpanded(false);
     expandButton.current?.focus();
@@ -3019,7 +3032,20 @@ var GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram2({
       ] })
     ] }),
     svg && !showSource ? /* @__PURE__ */ jsx15("div", { className: "thread-graph-mermaid-canvas", role: "img", "aria-label": translate("chat.diagram"), dangerouslySetInnerHTML: { __html: svg } }) : /* @__PURE__ */ jsx15("pre", { className: "thread-graph-mermaid-source", children: /* @__PURE__ */ jsx15("code", { children: source }) }),
-    failed && /* @__PURE__ */ jsx15("span", { className: "thread-graph-mermaid-error", children: translate("chat.diagramUnavailable") }),
+    failed && /* @__PURE__ */ jsxs10("span", { className: "thread-graph-mermaid-error", children: [
+      translate("chat.diagramUnavailable"),
+      result?.error ? /* @__PURE__ */ jsx15(
+        ErrorMark,
+        {
+          message: result.error,
+          announce: false,
+          ...result.stale ? { onRetry: () => window.location.reload(), retryLabel: translate("chat.reloadPage") } : { onRetry: () => {
+            setResult(void 0);
+            setAttempt((value) => value + 1);
+          } }
+        }
+      ) : null
+    ] }),
     expanded && svg && /* @__PURE__ */ jsx15(GraphWorkspaceImageLightbox, { alt: translate("chat.diagram"), backgroundColor: dark ? "#0f1419" : "#ffffff", src: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`, onClose: closeExpanded })
   ] });
 });

@@ -3,13 +3,15 @@ import { Code2, Maximize2, Workflow } from 'lucide-react';
 import { CopyButton } from '../copy/CopyButton';
 import { translate, useI18n } from '../../i18n';
 import { GraphWorkspaceImageLightbox } from '../ZoomableImage';
-import { renderChatMermaid } from './graphChatMermaid';
+import { MermaidLoadError, renderChatMermaid } from './graphChatMermaid';
+import { ErrorMark } from '../copy/ErrorMark';
 
 export const GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram({
   source, dark, pending = false,
 }: { source: string; dark: boolean; pending?: boolean }) {
   useI18n();
-  const [result, setResult] = useState<{ source: string; dark: boolean; svg?: string }>();
+  const [result, setResult] = useState<{ source: string; dark: boolean; svg?: string; error?: string; stale?: boolean }>();
+  const [attempt, setAttempt] = useState(0);
   const [showSource, setShowSource] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const expandButton = useRef<HTMLButtonElement>(null);
@@ -21,10 +23,15 @@ export const GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram({
     const controller = new AbortController();
     void renderChatMermaid(source, dark, controller.signal).then(
       svg => { if (!controller.signal.aborted) setResult({ source, dark, svg }); },
-      () => { if (!controller.signal.aborted) setResult({ source, dark }); },
+      (error: unknown) => {
+        if (controller.signal.aborted) return;
+        const stale = error instanceof MermaidLoadError;
+        setResult({ source, dark, stale,
+          error: stale ? translate('chat.diagramLoadFailed') : error instanceof Error && error.message ? error.message : translate('chat.diagramInvalid') });
+      },
     );
     return () => controller.abort();
-  }, [source, dark, pending]);
+  }, [source, dark, pending, attempt]);
 
   const closeExpanded = useCallback(() => {
     setExpanded(false);
@@ -46,7 +53,18 @@ export const GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram({
       {svg && !showSource ? (
         <div className="thread-graph-mermaid-canvas" role="img" aria-label={translate('chat.diagram')} dangerouslySetInnerHTML={{ __html: svg }} />
       ) : <pre className="thread-graph-mermaid-source"><code>{source}</code></pre>}
-      {failed && <span className="thread-graph-mermaid-error">{translate('chat.diagramUnavailable')}</span>}
+      {failed && (
+        <span className="thread-graph-mermaid-error">
+          {translate('chat.diagramUnavailable')}
+          {/* Why, behind the mark: the diagram's own error, or a page that needs reloading. */}
+          {result?.error ? (
+            <ErrorMark message={result.error} announce={false}
+              {...(result.stale
+                ? { onRetry: () => window.location.reload(), retryLabel: translate('chat.reloadPage') }
+                : { onRetry: () => { setResult(undefined); setAttempt(value => value + 1); } })} />
+          ) : null}
+        </span>
+      )}
       {expanded && svg && <GraphWorkspaceImageLightbox alt={translate('chat.diagram')} backgroundColor={dark ? '#0f1419' : '#ffffff'} src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`} onClose={closeExpanded} />}
     </section>
   );

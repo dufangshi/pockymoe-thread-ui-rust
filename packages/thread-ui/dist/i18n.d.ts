@@ -2840,6 +2840,9 @@ declare const en: {
     readonly "chat.diagramSource": "View diagram source";
     readonly "chat.showDiagram": "Show diagram";
     readonly "chat.expandDiagram": "Expand diagram";
+    readonly "chat.diagramLoadFailed": "The diagram renderer did not load. This page may be older than the latest update; reload it to fetch the current version.";
+    readonly "chat.diagramInvalid": "Mermaid could not read this diagram.";
+    readonly "chat.reloadPage": "Reload page";
     readonly "chat.diagramUnavailable": "Unable to render diagram · Source preserved";
     readonly "chat.tokenSpeedUnits": "Output tokens per second";
     readonly "chat.unableToReadYourMessageShortcuts": "Unable to read your message shortcuts.";
@@ -7526,6 +7529,9 @@ declare const zhCN: {
     "chat.diagramSource": "查看图表源码";
     "chat.showDiagram": "显示图表";
     "chat.expandDiagram": "放大图表";
+    "chat.diagramLoadFailed": "图表渲染组件没有加载成功。这个页面可能早于最近一次更新，重新加载页面即可获取当前版本。";
+    "chat.diagramInvalid": "Mermaid 无法解析这个图表。";
+    "chat.reloadPage": "重新加载页面";
     "chat.diagramUnavailable": "图表暂无法渲染 · 已保留源码";
     "chat.tokenSpeedUnits": "每秒输出 token 数";
     "chat.unableToReadYourMessageShortcuts": "无法读取消息快捷键。";
@@ -12234,6 +12240,9 @@ declare const resources: {
         readonly "chat.diagramSource": "View diagram source";
         readonly "chat.showDiagram": "Show diagram";
         readonly "chat.expandDiagram": "Expand diagram";
+        readonly "chat.diagramLoadFailed": "The diagram renderer did not load. This page may be older than the latest update; reload it to fetch the current version.";
+        readonly "chat.diagramInvalid": "Mermaid could not read this diagram.";
+        readonly "chat.reloadPage": "Reload page";
         readonly "chat.diagramUnavailable": "Unable to render diagram · Source preserved";
         readonly "chat.tokenSpeedUnits": "Output tokens per second";
         readonly "chat.unableToReadYourMessageShortcuts": "Unable to read your message shortcuts.";
@@ -16919,6 +16928,9 @@ declare const resources: {
         "chat.diagramSource": "查看图表源码";
         "chat.showDiagram": "显示图表";
         "chat.expandDiagram": "放大图表";
+        "chat.diagramLoadFailed": "图表渲染组件没有加载成功。这个页面可能早于最近一次更新，重新加载页面即可获取当前版本。";
+        "chat.diagramInvalid": "Mermaid 无法解析这个图表。";
+        "chat.reloadPage": "重新加载页面";
         "chat.diagramUnavailable": "图表暂无法渲染 · 已保留源码";
         "chat.tokenSpeedUnits": "每秒输出 token 数";
         "chat.unableToReadYourMessageShortcuts": "无法读取消息快捷键。";

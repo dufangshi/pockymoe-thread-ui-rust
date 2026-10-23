@@ -25144,6 +25144,7 @@ function PluginSettingsSection({ section, pluginId, plugin, adapter, onSaved }) 
 function PluginProvider({
   adapter = DEFAULT_PLUGIN_PROVIDER_ADAPTER,
   builtinPlugins = DEFAULT_BUILTIN_PLUGINS,
+  scope = null,
   children
 }) {
   useI18n();
@@ -25151,24 +25152,40 @@ function PluginProvider({
     () => mergePluginState(builtinPlugins, [])
   );
   const [settingsPluginIds, setSettingsPluginIds] = useState65(/* @__PURE__ */ new Set());
+  const known2 = useRef45(/* @__PURE__ */ new Map());
+  const current = useRef45({ scope, adapter });
+  current.current = { scope, adapter };
   const [settingsVersion, setSettingsVersion] = useState65(0);
   const settingsSaved = useCallback23(() => setSettingsVersion((value2) => value2 + 1), []);
   const [loading, setLoading] = useState65(false);
   const [error, setError] = useState65(null);
   const [devicePluginsKnown, setDevicePluginsKnown] = useState65(false);
+  const [shownScope, setShownScope] = useState65(scope);
+  if (shownScope !== scope) {
+    known2.current.set(shownScope, { plugins, settingsPluginIds, devicePluginsKnown });
+    const next = known2.current.get(scope);
+    setShownScope(scope);
+    setPlugins(next?.plugins ?? mergePluginState(builtinPlugins, []));
+    setSettingsPluginIds(next?.settingsPluginIds ?? /* @__PURE__ */ new Set());
+    setDevicePluginsKnown(next?.devicePluginsKnown ?? false);
+    setError(null);
+  }
   const refresh = useCallback23(async () => {
     setLoading(true);
     setError(null);
+    const stale = () => current.current.adapter !== adapter;
     try {
       const serverPlugins = adapter.fetchPlugins ? await adapter.fetchPlugins() : [];
+      if (stale()) return;
       setPlugins(mergePluginState(builtinPlugins, serverPlugins));
       setSettingsPluginIds(new Set(serverPlugins.filter((plugin) => plugin.available !== false).map((plugin) => plugin.id)));
       setDevicePluginsKnown(Boolean(adapter.fetchPlugins));
     } catch (err) {
+      if (stale()) return;
       setDevicePluginsKnown(false);
       setError(err instanceof Error ? err.message : translate("workbench.unableToLoadPlugins"));
     } finally {
-      setLoading(false);
+      if (!stale()) setLoading(false);
     }
   }, [adapter, builtinPlugins]);
   useEffect46(() => {
@@ -25179,7 +25196,7 @@ function PluginProvider({
       let previousEnabled;
       setError(null);
       setPlugins(
-        (current) => current.map((plugin) => {
+        (current2) => current2.map((plugin) => {
           if (plugin.id !== pluginId) {
             return plugin;
           }
@@ -25193,12 +25210,12 @@ function PluginProvider({
       try {
         const updated = await adapter.updatePlugin(pluginId, { enabled });
         setPlugins(
-          (current) => current.map((plugin) => plugin.id === updated.id ? updated : plugin)
+          (current2) => current2.map((plugin) => plugin.id === updated.id ? updated : plugin)
         );
       } catch (err) {
         if (previousEnabled !== void 0) {
           setPlugins(
-            (current) => current.map(
+            (current2) => current2.map(
               (plugin) => plugin.id === pluginId && plugin.enabled === enabled ? { ...plugin, enabled: previousEnabled } : plugin
             )
           );
@@ -25213,13 +25230,13 @@ function PluginProvider({
     async (pluginId, defaultEnabled) => {
       const previous = plugins.find((plugin) => plugin.id === pluginId)?.defaultEnabled;
       setError(null);
-      setPlugins((current) => current.map((plugin) => plugin.id === pluginId ? { ...plugin, defaultEnabled } : plugin));
+      setPlugins((current2) => current2.map((plugin) => plugin.id === pluginId ? { ...plugin, defaultEnabled } : plugin));
       if (!adapter.updatePlugin) return;
       try {
         const updated = await adapter.updatePlugin(pluginId, { defaultEnabled });
-        setPlugins((current) => current.map((plugin) => plugin.id === updated.id ? updated : plugin));
+        setPlugins((current2) => current2.map((plugin) => plugin.id === updated.id ? updated : plugin));
       } catch (err) {
-        setPlugins((current) => current.map((plugin) => plugin.id === pluginId && plugin.defaultEnabled === defaultEnabled ? { ...plugin, defaultEnabled: previous } : plugin));
+        setPlugins((current2) => current2.map((plugin) => plugin.id === pluginId && plugin.defaultEnabled === defaultEnabled ? { ...plugin, defaultEnabled: previous } : plugin));
         setError(err instanceof Error ? err.message : translate("workbench.unableToUpdatePlugin"));
         throw err;
       }
@@ -25232,9 +25249,9 @@ function PluginProvider({
         throw new Error(translate("workbench.pluginImportIsNotAvailable"));
       }
       const imported = await adapter.importPlugin(input);
-      setSettingsPluginIds((current) => /* @__PURE__ */ new Set([...current, imported.id]));
-      setPlugins((current) => {
-        const next = current.filter((plugin) => plugin.id !== imported.id);
+      setSettingsPluginIds((current2) => /* @__PURE__ */ new Set([...current2, imported.id]));
+      setPlugins((current2) => {
+        const next = current2.filter((plugin) => plugin.id !== imported.id);
         return [...next, imported];
       });
     },
@@ -25246,9 +25263,9 @@ function PluginProvider({
         throw new Error(translate("workbench.pluginUninstallIsNotAvailable"));
       }
       const removed = await adapter.deletePlugin(pluginId);
-      setSettingsPluginIds((current) => new Set([...current].filter((id) => id !== removed.id)));
+      setSettingsPluginIds((current2) => new Set([...current2].filter((id) => id !== removed.id)));
       setPlugins(
-        (current) => current.filter((plugin) => plugin.id !== removed.id)
+        (current2) => current2.filter((plugin) => plugin.id !== removed.id)
       );
     },
     [adapter]

@@ -153,4 +153,33 @@ describe('PluginProvider', () => {
     });
     expect(latest!.plugins[0]?.enabled).toBe(false);
   });
+
+  it('moves to another device in place: the app stays mounted and never shows the old device\'s plugins', async () => {
+    const mounts = vi.fn();
+    function Child() { useEffect(() => { mounts(); }, []); return null; }
+    let value: PluginContextValue | null = null;
+    const capture = (next: PluginContextValue) => { value = next; };
+    let releaseB: (plugins: PluginDto[]) => void = () => {};
+    const deviceA: PluginProviderAdapter = { fetchPlugins: async () => [{ ...terminalPluginManifest, enabled: true, available: true }] };
+    const deviceB: PluginProviderAdapter = { fetchPlugins: () => new Promise<PluginDto[]>(resolve => { releaseB = resolve; }) };
+    container = document.createElement('div');
+    document.body.append(container);
+    root = createRoot(container);
+    const render = (scope: string, adapter: PluginProviderAdapter) => root!.render(
+      <PluginProvider scope={scope} adapter={adapter} builtinPlugins={[terminalModule]}><Child /><Capture onValue={capture} /></PluginProvider>,
+    );
+    await act(async () => render('a', deviceA));
+    expect(value!.devicePluginsKnown).toBe(true);
+    await act(async () => render('b', deviceB));
+    // Device B has not answered: A's answer is not B's.
+    expect(value!.devicePluginsKnown).toBe(false);
+    await act(async () => releaseB([{ ...terminalPluginManifest, enabled: false, available: true }]));
+    expect(value!.devicePluginsKnown).toBe(true);
+    expect(value!.plugins.find(plugin => plugin.id === terminalPluginManifest.id)?.enabled).toBe(false);
+    // Back on A: what A answered shows at once.
+    await act(async () => render('a', deviceA));
+    expect(value!.plugins.find(plugin => plugin.id === terminalPluginManifest.id)?.enabled).toBe(true);
+    expect(mounts).toHaveBeenCalledTimes(1);
+  });
 });
+

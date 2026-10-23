@@ -345,9 +345,15 @@ interface PluginProviderAdapter {
     updatePlugin?: (pluginId: string, input: UpdatePluginInput) => Promise<PluginDto> | PluginDto;
     deletePlugin?: (pluginId: string) => Promise<PluginDto> | PluginDto;
 }
-declare function PluginProvider({ adapter, builtinPlugins, children, }: {
+declare function PluginProvider({ adapter, builtinPlugins, scope, children, }: {
     adapter?: PluginProviderAdapter;
     builtinPlugins?: FrontendPluginModule[];
+    /**
+     * Whose plugins these are (a device). Moving to another scope swaps the plugin
+     * state in place, from what that scope last answered, instead of remounting
+     * the app under the provider (which blanked the page between devices).
+     */
+    scope?: string | null;
     children: ReactNode;
 }): react.JSX.Element;
 

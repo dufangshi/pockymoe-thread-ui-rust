@@ -70,13 +70,22 @@ function PluginSettingsSection({ section, pluginId, plugin, adapter, onSaved }: 
   return section.render(context);
 }
 
+interface ScopePlugins { plugins: PluginDto[]; settingsPluginIds: Set<string>; devicePluginsKnown: boolean }
+
 export function PluginProvider({
   adapter = DEFAULT_PLUGIN_PROVIDER_ADAPTER,
   builtinPlugins = DEFAULT_BUILTIN_PLUGINS,
+  scope = null,
   children,
 }: {
   adapter?: PluginProviderAdapter;
   builtinPlugins?: FrontendPluginModule[];
+  /**
+   * Whose plugins these are (a device). Moving to another scope swaps the plugin
+   * state in place, from what that scope last answered, instead of remounting
+   * the app under the provider (which blanked the page between devices).
+   */
+  scope?: string | null;
   children: ReactNode;
 }) {
   useI18n();
@@ -84,6 +93,9 @@ export function PluginProvider({
     mergePluginState(builtinPlugins, []),
   );
   const [settingsPluginIds, setSettingsPluginIds] = useState<Set<string>>(new Set());
+  const known = useRef(new Map<string | null, ScopePlugins>());
+  const current = useRef({ scope, adapter });
+  current.current = { scope, adapter };
   // Bumped after device-wide settings are saved, so conversation scopes that inherit
   // them can refresh without depending on adapter identity.
   const [settingsVersion, setSettingsVersion] = useState(0);
@@ -93,22 +105,38 @@ export function PluginProvider({
   // True only once the device answered with its plugins; module defaults alone
   // (for example when a view-only share cannot read them) are not authoritative.
   const [devicePluginsKnown, setDevicePluginsKnown] = useState(false);
+  // Another scope: show what it answered last (or the built-in defaults) until it
+  // answers again; never the previous device's plugins.
+  const [shownScope, setShownScope] = useState(scope);
+  if (shownScope !== scope) {
+    known.current.set(shownScope, { plugins, settingsPluginIds, devicePluginsKnown });
+    const next = known.current.get(scope);
+    setShownScope(scope);
+    setPlugins(next?.plugins ?? mergePluginState(builtinPlugins, []));
+    setSettingsPluginIds(next?.settingsPluginIds ?? new Set());
+    setDevicePluginsKnown(next?.devicePluginsKnown ?? false);
+    setError(null);
+  }
 
   const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
+    // An answer that arrives after a move to another scope is that scope's no longer.
+    const stale = () => current.current.adapter !== adapter;
     try {
       const serverPlugins = adapter.fetchPlugins
         ? await adapter.fetchPlugins()
         : [];
+      if (stale()) return;
       setPlugins(mergePluginState(builtinPlugins, serverPlugins));
       setSettingsPluginIds(new Set(serverPlugins.filter(plugin => plugin.available !== false).map(plugin => plugin.id)));
       setDevicePluginsKnown(Boolean(adapter.fetchPlugins));
     } catch (err) {
+      if (stale()) return;
       setDevicePluginsKnown(false);
       setError(err instanceof Error ? err.message : translate("workbench.unableToLoadPlugins"));
     } finally {
-      setLoading(false);
+      if (!stale()) setLoading(false);
     }
   }, [adapter, builtinPlugins]);
 

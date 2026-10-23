@@ -24,6 +24,10 @@ import {
 } from '../ThreadTimeline';
 import { TranscriptAgentProvider, transcriptAgentFor } from './TranscriptAgent';
 import { ThreadRelationBar } from './ThreadRelationBar';
+import { QuoteScopeContext, type QuoteScope } from '../quotes/QuoteScope';
+import { QuoteSelectionPill } from '../quotes/QuoteSelectionPill';
+import { QuoteLens } from '../quotes/QuoteLens';
+import type { PromptQuote } from '../composer/promptQuotes';
 
 export interface GraphChatThreadUsageSummary {
   input: number;
@@ -416,7 +420,24 @@ export function GraphChatThreadChatPanel({
     steeredPrompts,
   ]);
 
+  // Quoting in this pane: its composer takes quotes in; a quote shows where it came from.
+  const quoteSink = useRef<((quote: PromptQuote) => void) | null>(null);
+  const [lensQuote, setLensQuote] = useState<PromptQuote | null>(null);
+  const quoteScope = useMemo<QuoteScope>(() => ({
+    connect: (insert) => { quoteSink.current = insert; return () => { if (quoteSink.current === insert) quoteSink.current = null; }; },
+    insert: (quote) => { if (!quoteSink.current) return false; quoteSink.current(quote); return true; },
+    preview: (quote) => setLensQuote(quote),
+  }), []);
+  const turnsRef = useRef(detail);
+  turnsRef.current = detail;
+  const turnNumber = useCallback((turnId: string) => {
+    const { turns, totalTurnCount } = turnsRef.current;
+    const index = turns.findIndex((turn) => turn.id === turnId);
+    return index < 0 ? null : (totalTurnCount ?? turns.length) - turns.length + index + 1;
+  }, []);
+
   return (
+    <QuoteScopeContext.Provider value={quoteScope}>
     <div
       ref={panelRootRef}
       data-testid="chat-panel"
@@ -481,6 +502,12 @@ export function GraphChatThreadChatPanel({
           </div>
         )
       ) : null}
+      {resolvedComposerProps && !timelinePending ? (
+        <QuoteSelectionPill root={panelRootRef} composerRef={internalComposerHostRef} turnNumber={turnNumber}
+          onQuote={(quote) => { quoteScope.insert(quote); }} />
+      ) : null}
+      {lensQuote ? <QuoteLens quote={lensQuote} root={panelRootRef} onClose={() => setLensQuote(null)} /> : null}
     </div>
+    </QuoteScopeContext.Provider>
   );
 }

@@ -1,3 +1,4 @@
+import { quotedPromptPreview } from './promptQuotes';
 import { translate, useI18n } from '../../i18n';
 import { CornerUpRight, Loader2, Pencil, X } from "lucide-react";
 import { useState } from "react";
@@ -81,7 +82,7 @@ export function ComposerPendingQueue({
                     <span className="thread-composer-pending-source">{source.label}</span>
                     {source.preview ? ` ${source.preview}` : null}
                   </>
-                ) : prompt.prompt}
+                ) : quotedPromptPreview(prompt.prompt)}
               </button>
               {prompt.optimistic ? (
                 <span className="inline-flex h-8 items-center gap-1.5 px-1.5 text-xs text-[var(--theme-fg-muted)]">

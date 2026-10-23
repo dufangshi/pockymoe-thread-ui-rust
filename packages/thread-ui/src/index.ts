@@ -15,6 +15,7 @@ import './styles/transcript-log.css';
 import './styles/thread-map.css';
 import './styles/attachments.css';
 import './styles/copy.css';
+import './styles/quotes.css';
 import './styles/touch.css';
 
 export { CopyButton, useCopy } from './components/copy/CopyButton';

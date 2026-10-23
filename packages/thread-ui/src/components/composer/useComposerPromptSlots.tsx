@@ -9,11 +9,14 @@ import { ComposerGoalComposeCard } from './ComposerGoalComposeCard';
 import { ComposerModeChip } from './ComposerModeChip';
 import { ComposerPromptEditor } from './ComposerPromptEditor';
 import { ComposerShellPromptInput } from './ComposerShellPromptInput';
+import type { ComposerQuoteDraft } from './composerUtils';
 
 export interface UseComposerPromptSlotsInput {
   isShellView: boolean;
   promptRef: RefObject<HTMLDivElement | null>;
   prompt: string;
+  /** The quotes the prompt refers to, in its order. */
+  quotes?: ComposerQuoteDraft[];
   disabled: boolean;
   promptPlaceholder: string;
   promptPlaceholderHint?: string;
@@ -53,6 +56,7 @@ export function useComposerPromptSlots({
   isShellView,
   promptRef,
   prompt,
+  quotes = [],
   disabled,
   promptPlaceholder,
   promptPlaceholderHint = '',
@@ -91,6 +95,7 @@ export function useComposerPromptSlots({
       <ComposerPromptEditor
         promptRef={promptRef}
         prompt={prompt}
+        quotes={quotes}
         disabled={disabled}
         promptPlaceholder={promptPlaceholder}
         promptPlaceholderHint={promptPlaceholderHint}

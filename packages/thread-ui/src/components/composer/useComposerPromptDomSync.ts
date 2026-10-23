@@ -8,6 +8,8 @@ import {
 import {
   attachmentDisplayLabel,
   basenameFromAttachmentPath,
+  isQuoteDraft,
+  type ComposerQuoteDraft,
   type PromptSegment,
   type PromptSelectionRange,
 } from './composerUtils';
@@ -29,6 +31,35 @@ interface UseComposerPromptDomSyncInput {
   restoreSelection: (selection: PromptSelectionRange | null) => void;
 }
 
+/** Lucide's quote mark, for tiles built outside React. */
+export const QUOTE_GLYPH_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>';
+
+/** A quote where the prompt refers to it: its mark and number. Tapping it opens
+    its card (ComposerPromptEditor), which reads the quote kept on the token. */
+function createPromptQuoteToken(attachment: ComposerQuoteDraft) {
+  const n = attachment.placeholder.match(/\d+/)?.[0] ?? '';
+  const token = document.createElement('span');
+  token.dataset.segmentType = 'attachment';
+  token.dataset.clientId = attachment.clientId;
+  token.dataset.placeholder = attachment.placeholder;
+  token.dataset.kind = 'quote';
+  token.dataset.quote = JSON.stringify(attachment.quote);
+  token.contentEditable = 'false';
+  token.className = 'quote-tile';
+  token.setAttribute('role', 'button');
+  token.setAttribute('aria-label', translate('chat.quoteDetails', { n }));
+  token.title = attachment.quote.text.slice(0, 120);
+  token.tabIndex = 0;
+  const icon = document.createElement('span');
+  icon.className = 'quote-tile-icon';
+  icon.innerHTML = QUOTE_GLYPH_SVG;
+  const label = document.createElement('span');
+  label.className = 'quote-tile-number';
+  label.textContent = n;
+  token.append(icon, label);
+  return token;
+}
+
 // The same tile as a sent prompt's attachment: a glyph (or a photo's thumbnail)
 // over its shortened name. Tapping it opens its card (see ComposerPromptEditor),
 // which reads the details kept on the token.
@@ -37,6 +68,7 @@ function createPromptAttachmentToken(
   attachmentPreviewUrls: Record<string, string>,
 ) {
   const { attachment } = segment;
+  if (isQuoteDraft(attachment)) return createPromptQuoteToken(attachment);
   const name = basenameFromAttachmentPath(attachment.originalName || attachmentDisplayLabel(attachment)) || attachmentDisplayLabel(attachment);
   const family = fileFamily(name, attachment.kind, attachment.file?.type);
   const token = document.createElement('span');

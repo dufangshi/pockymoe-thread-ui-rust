@@ -1,0 +1,74 @@
+/* Quotes: tiles where a prompt refers to a quoted passage, the marks above the
+   composer, their card, the Quote offer on a selection and the source window. */
+.thread-ui-shell .quote-tile {
+  display: inline-flex; align-items: center; gap: 2px; height: 20px; margin: 0 1px; padding: 0 5px 0 4px;
+  border: 1px solid color-mix(in srgb, var(--theme-accent-solid, var(--theme-accent)) 35%, var(--theme-border));
+  border-radius: 6px; background: color-mix(in srgb, var(--theme-accent-solid, var(--theme-accent)) 10%, transparent);
+  color: var(--theme-fg); font-size: 12px; font-weight: 600; line-height: 1; vertical-align: -3px; cursor: pointer;
+  -webkit-user-select: none; user-select: none;
+}
+.thread-ui-shell .quote-tile-icon { display: inline-flex; color: var(--theme-accent-solid, var(--theme-accent)); }
+.thread-ui-shell .quote-tile-icon svg { width: 11px; height: 11px; }
+.thread-ui-shell .quote-tile:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 1px; }
+@media (hover: hover) { .thread-ui-shell .quote-tile:hover { background: color-mix(in srgb, var(--theme-accent-solid, var(--theme-accent)) 18%, transparent); } }
+
+.thread-ui-shell .composer-quote-row { display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 12px 0; }
+.thread-ui-shell .composer-quote-mark {
+  display: inline-flex; align-items: center; gap: 2px; height: 22px; padding: 0 6px;
+  border: 1px solid var(--theme-border); border-radius: 999px; background: transparent;
+  color: var(--theme-fg-muted); font-size: 11px; font-weight: 600;
+}
+.thread-ui-shell .composer-quote-mark svg { width: 11px; height: 11px; }
+.thread-ui-shell .composer-quote-mark[aria-expanded='true'] { color: var(--theme-fg); border-color: var(--theme-fg-muted); }
+@media (hover: hover) { .thread-ui-shell .composer-quote-mark:hover { background: var(--theme-hover); color: var(--theme-fg); } }
+
+.quote-card { display: grid; gap: 8px; min-width: 0; padding: 10px; }
+.quote-card-head { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 12px; }
+.quote-card-head svg { width: 13px; height: 13px; flex: none; color: var(--theme-accent-solid, var(--theme-accent)); }
+.quote-card-head > strong { flex: none; }
+.quote-card-head > span { min-width: 0; margin-left: auto; overflow: hidden; color: var(--theme-fg-muted); text-overflow: ellipsis; white-space: nowrap; }
+.quote-card-text {
+  max-height: 10.5em; margin: 0; padding: 6px 10px; overflow: auto; border-left: 3px solid var(--theme-border);
+  color: var(--theme-fg); font-size: 13px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+
+/* The shell class brings the theme only: no page background, no layout, no size. */
+.thread-ui-shell.quote-selection-layer { position: fixed; top: 0; left: 0; z-index: 120; width: 0; height: 0; overflow: visible; background: none; pointer-events: none; }
+.thread-ui-shell .quote-selection-pill {
+  pointer-events: auto;
+  position: fixed; z-index: 120; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px;
+  border: 1px solid var(--theme-border); border-radius: 999px; background: var(--theme-panel); color: var(--theme-fg);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 22%); font-size: 13px; font-weight: 600; transform: translate(-100%, 0);
+  animation: quote-pill-in 140ms ease-out;
+}
+.thread-ui-shell .quote-selection-pill[data-docked] { transform: translate(-50%, -100%); }
+.thread-ui-shell .quote-selection-pill svg { width: 14px; height: 14px; color: var(--theme-accent-solid, var(--theme-accent)); }
+@keyframes quote-pill-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .thread-ui-shell .quote-selection-pill { animation: none; } }
+
+.thread-ui-shell.quote-lens-scrim {
+  flex-direction: row;
+  position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px !important;
+  background: var(--overlay-scrim, rgb(0 0 0 / 45%));
+}
+.quote-lens {
+  display: flex; flex-direction: column; width: min(760px, 100%); max-height: min(72vh, 640px);
+  border: 1px solid var(--theme-border); border-radius: 14px; background: var(--theme-bg, var(--theme-panel));
+  color: var(--theme-fg); box-shadow: 0 18px 48px rgb(0 0 0 / 35%); overflow: hidden;
+}
+.quote-lens-head {
+  display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 14px; border-bottom: 1px solid var(--theme-border);
+  color: var(--theme-fg-muted); font-size: 12px;
+}
+.quote-lens-head > span { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quote-lens-head button { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; color: var(--theme-fg-muted); }
+.quote-lens-head button svg { width: 16px; height: 16px; }
+@media (hover: hover) { .quote-lens-head button:hover { background: var(--theme-hover); color: var(--theme-fg); } }
+.quote-lens-body { display: grid; gap: 14px; min-height: 0; padding: 14px 16px 20px; overflow: auto; }
+.quote-lens-body [data-quote-lens-source='false'] { opacity: 0.6; }
+.quote-lens-note { margin: 0; color: var(--theme-fg-muted); font-size: 12px; }
+::highlight(pockymoe-quote) { background: color-mix(in srgb, #f5c542 45%, transparent); color: inherit; }
+@media (max-width: 639px) {
+  .thread-ui-shell.quote-lens-scrim { align-items: flex-end; padding: 0 !important; }
+  .quote-lens { width: 100%; max-height: 78vh; border-radius: 18px 18px 0 0; border-bottom: 0; padding-bottom: env(safe-area-inset-bottom); }
+}

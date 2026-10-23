@@ -15,7 +15,7 @@ let latestPreviewUrls: AttachmentPreviewMap | null = null;
 
 function makeAttachment(
   clientId: string,
-  kind: ComposerAttachmentDraft['kind'],
+  kind: 'photo' | 'file',
 ): ComposerAttachmentDraft {
   const extension = kind === 'photo' ? 'png' : 'txt';
   return {

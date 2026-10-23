@@ -7,14 +7,26 @@ import type {
   ThreadContextUsageDto,
 } from '@pockymoe/shared';
 import { themeAgentKey } from '../themeAgent';
+import { clipQuote, composeQuotedPrompt, QUOTE_TOKEN, quotePlaceholder, type PromptQuote } from './promptQuotes';
 
-export type ComposerAttachmentDraft = {
+export type ComposerFileAttachmentDraft = {
   clientId: string;
   kind: PromptAttachmentKindDto;
   originalName: string;
   placeholder: string;
   file: File;
 };
+/** A passage of an earlier message, shown as a tile where it is referred to. */
+export type ComposerQuoteDraft = {
+  clientId: string;
+  kind: 'quote';
+  originalName: string;
+  placeholder: string;
+  quote: PromptQuote;
+  file?: undefined;
+};
+export type ComposerAttachmentDraft = ComposerFileAttachmentDraft | ComposerQuoteDraft;
+export const isQuoteDraft = (attachment: ComposerAttachmentDraft): attachment is ComposerQuoteDraft => attachment.kind === 'quote';
 
 export interface PromptTextSegment {
   type: 'text';
@@ -37,7 +49,8 @@ export type ComposerDraft = {
 
 export type ComposerSubmitInput = {
   prompt: string;
-  attachments?: ComposerAttachmentDraft[];
+  /** Files only: quotes are written into the prompt. */
+  attachments?: ComposerFileAttachmentDraft[];
 };
 
 export type PromptPasteAction =
@@ -270,9 +283,30 @@ export function buildComposerSubmitInput({
   const activeAttachments = attachments.filter((attachment) =>
     normalizedPrompt.includes(attachment.placeholder),
   );
-  return activeAttachments.length > 0
-    ? { prompt: normalizedPrompt, attachments: activeAttachments }
-    : { prompt: normalizedPrompt };
+  const files = activeAttachments.filter((attachment): attachment is ComposerFileAttachmentDraft => !isQuoteDraft(attachment));
+  const quotes = new Map(activeAttachments.filter(isQuoteDraft).map((attachment) => [attachment.placeholder, attachment.quote] as const));
+  const quotedPrompt = quotes.size ? composeQuotedPrompt(normalizedPrompt, quotes) : normalizedPrompt;
+  return files.length > 0
+    ? { prompt: quotedPrompt, attachments: files }
+    : { prompt: quotedPrompt };
+}
+
+/**
+ * The draft with a quote added at its end, after a space when the text before
+ * it does not end in one, and a space after it to type on. Where the caret was
+ * does not matter: the composer may be folded or not focused at all.
+ */
+export function buildQuoteInsertionDraft(draft: ComposerDraft, quote: PromptQuote, clientId: string) {
+  const used = new Set(draft.attachments.map((attachment) => attachment.placeholder));
+  for (const match of draft.prompt.matchAll(QUOTE_TOKEN)) used.add(match[0]);
+  let n = 1;
+  while (used.has(quotePlaceholder(n))) n += 1;
+  const placeholder = quotePlaceholder(n);
+  const text = draft.prompt.replace(/[ \t]+$/, '');
+  const prefix = text && !/\s$/.test(text) ? ' ' : '';
+  const prompt = `${text}${prefix}${placeholder} `;
+  const attachment: ComposerQuoteDraft = { clientId, kind: 'quote', originalName: `❝${n}`, placeholder, quote: { ...quote, text: clipQuote(quote.text) } };
+  return { draft: { prompt, attachments: [...draft.attachments, attachment] }, caret: prompt.length };
 }
 
 export function derivePromptPasteAction({
@@ -643,6 +677,7 @@ export function basenameFromAttachmentPath(value: string) {
 }
 
 export function attachmentDisplayLabel(attachment: ComposerAttachmentDraft) {
+  if (isQuoteDraft(attachment)) return attachment.originalName;
   const placeholderMatch = attachment.placeholder.match(
     /^\[(?:PHOTO|FILE)\s+(.+)\]$/,
   );

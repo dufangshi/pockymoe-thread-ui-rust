@@ -20,6 +20,8 @@ import { MessageAttachment } from '../attachments/AttachmentTile';
 import type { ThreadTimelineAdapter } from '../../adapters';
 import { hasLikelyMarkdownSyntax } from '../markdownHeuristics';
 import { GraphChatMessageContent } from './GraphChatMessageContent';
+import { parseQuotedPrompt, type PromptQuote } from '../composer/promptQuotes';
+import { SentQuoteMark } from '../quotes/SentQuoteMark';
 
 const LARGE_MESSAGE_PREVIEW_CHARS = 2_400;
 const PLAIN_URL_PATTERN = /\b(?:https?:\/\/|www\.)[^\s<>"'`]+/gi;
@@ -28,7 +30,8 @@ const TRAILING_URL_PUNCTUATION_PATTERN = /[),.;:!?]+$/;
 type UserMessageSegment =
   | { type: 'text'; key: string; text: string }
   | { type: 'photo'; key: string; path: string }
-  | { type: 'file'; key: string; path: string };
+  | { type: 'file'; key: string; path: string }
+  | { type: 'quote'; key: string; n: number; quote: PromptQuote };
 
 function normalizeHref(value: string) {
   return value.startsWith('www.') ? `https://${value}` : value;
@@ -43,12 +46,12 @@ function basenameFromAssetPath(value: string) {
   return segments.at(-1) ?? normalized;
 }
 
-function tokenizeUserMessageText(text: string): UserMessageSegment[] {
+function tokenizeUserMessageText(text: string, quotes?: Map<number, PromptQuote>): UserMessageSegment[] {
   if (!text) {
     return [];
   }
 
-  const matcher = /\[(PHOTO|FILE)\s+([^\]]+)\]/g;
+  const matcher = /\[(PHOTO|FILE)\s+([^\]]+)\]|\[QUOTE (\d+)\]/g;
   const segments: UserMessageSegment[] = [];
   let cursor = 0;
   let index = 0;
@@ -66,7 +69,10 @@ function tokenizeUserMessageText(text: string): UserMessageSegment[] {
 
     const kind = match[1];
     const path = match[2]?.trim() ?? '';
-    if (kind === 'PHOTO' && path) {
+    const quote = match[3] ? quotes?.get(Number(match[3])) : undefined;
+    if (match[3] && quote) {
+      segments.push({ type: 'quote', key: `quote-${index}`, n: Number(match[3]), quote });
+    } else if (kind === 'PHOTO' && path) {
       segments.push({ type: 'photo', key: `photo-${index}`, path });
     } else if (kind === 'FILE' && path) {
       segments.push({ type: 'file', key: `file-${index}`, path });
@@ -366,7 +372,12 @@ export const GraphChatUserMessageBody = memo(
     onOpenWorkspaceFile?: ThreadTimelineAdapter['onOpenWorkspaceFile'] | undefined;
   }) {
   const { locale: i18nLocale } = useI18n();
-    const allSegments = useMemo(() => tokenizeUserMessageText(text), [text]);
+    // A prompt that quotes earlier messages shows its own words with a mark where
+    // each quote is referred to; the passages open from the marks.
+    const allSegments = useMemo(() => {
+      const quoted = parseQuotedPrompt(text);
+      return quoted ? tokenizeUserMessageText(quoted.body, quoted.quotes) : tokenizeUserMessageText(text);
+    }, [text]);
     const [expanded, setExpanded] = useMessageExpansion(messageId, text, false);
     const messageRef = useRef<HTMLDivElement>(null);
     const toggleRef = useRef<HTMLButtonElement>(null);
@@ -398,6 +409,10 @@ export const GraphChatUserMessageBody = memo(
         {segments.map((segment) => {
           if (segment.type === 'text') {
             return <span key={segment.key} className={isLong && !expanded ? "thread-graph-user-preview-text" : undefined}>{segment.text}</span>;
+          }
+
+          if (segment.type === 'quote') {
+            return <SentQuoteMark key={segment.key} n={segment.n} quote={segment.quote} />;
           }
 
           if (segment.type === 'photo') {

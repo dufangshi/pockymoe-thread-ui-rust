@@ -853,8 +853,7 @@
 .thread-ui-shell .thread-composer-wakes-bell:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 1px; }
 .thread-ui-shell .thread-composer-wakes-count {
   position: absolute; top: -5px; right: -6px; min-width: 16px; height: 16px; padding: 0 4px;
-  border-radius: 999px; /* The panel's colour on the accent reads in light and dark themes alike. */
-  background: var(--theme-accent-solid, var(--theme-accent)); color: var(--theme-panel);
+  border-radius: 999px; background: var(--theme-accent-solid, var(--theme-accent)); color: var(--theme-accent-solid-fg, var(--theme-panel));
   font-size: 10px; font-weight: 700; line-height: 16px; text-align: center;
 }
 .thread-ui-shell .thread-composer-wakes-panel {

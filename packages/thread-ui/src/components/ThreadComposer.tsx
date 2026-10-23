@@ -47,6 +47,9 @@ import type {
 } from './composer/types';
 import {
   buildComposerSubmitInput,
+  buildQuoteInsertionDraft,
+  isQuoteDraft,
+  type ComposerQuoteDraft,
   derivePromptDropAction,
   derivePromptFileDragAction,
   derivePromptKeyDownAction,
@@ -78,6 +81,7 @@ import {
 import { ComposerFrame } from './composer/ComposerFrame';
 import { ComposerPendingQueue } from './composer/ComposerPendingQueue';
 import { ComposerPendingWakes } from './composer/ComposerPendingWakes';
+import { useQuoteSink } from './quotes/QuoteScope';
 import { ComposerToolbar } from './composer/ComposerToolbar';
 import { useComposerAttachments } from './composer/useComposerAttachments';
 import { useAttachmentPreviewUrls } from './composer/useAttachmentPreviewUrls';
@@ -644,6 +648,24 @@ export function ThreadComposer({
     [appendAttachments, dismissPromptFocus, onPickAttachment],
   );
 
+  // A quote from this pane's conversation joins the end of the draft, folded or
+  // not, focused or not. With a keyboard the caret follows it; a phone keeps its
+  // keyboard down, so more passages can be picked first.
+  useQuoteSink((quote) => {
+    if (isShellView) return;
+    const clientId = `quote-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+    const next = buildQuoteInsertionDraft({ prompt, attachments }, quote, clientId);
+    updateDraft(() => next.draft);
+    if (!(window.matchMedia?.('(pointer: coarse)').matches ?? false)) {
+      pendingSelectionRef.current = { start: next.caret, end: next.caret };
+      selectionSnapshotRef.current = { start: next.caret, end: next.caret };
+      promptRef.current?.focus({ preventScroll: true });
+    }
+  });
+  const promptQuotes = attachments
+    .filter((attachment): attachment is ComposerQuoteDraft => isQuoteDraft(attachment) && prompt.includes(attachment.placeholder))
+    .sort((left, right) => prompt.indexOf(left.placeholder) - prompt.indexOf(right.placeholder));
+
   // Take a queued prompt out of the queue and back into the draft, ahead of what is there.
   async function editPendingPrompt(pendingPromptId: string) {
     const queued = pendingPrompts.find((entry) => entry.id === pendingPromptId);
@@ -1140,6 +1162,7 @@ export function ThreadComposer({
     isShellView,
     promptRef,
     prompt,
+    quotes: promptQuotes,
     disabled,
     promptPlaceholder,
     promptPlaceholderHint,

@@ -4447,6 +4447,7 @@ declare const en: {
     readonly "admin.eventPasskeyRemoved": "Removed a passkey";
     readonly "admin.eventShareCreated": "Shared";
     readonly "admin.eventShareRevoked": "Revoked a share";
+    readonly "admin.eventShareApproved": "Share approved with the safety code";
     readonly "admin.eventSharedAccessLeft": "Left a share";
     readonly "admin.eventRegistrationSubmitted": "Asked to register";
     readonly "admin.actionRegistrationApproved": "Approved a registration";
@@ -9128,6 +9129,7 @@ declare const zhCN: {
     "admin.eventPasskeyRemoved": "移除通行密钥";
     "admin.eventShareCreated": "创建共享";
     "admin.eventShareRevoked": "撤销共享";
+    "admin.eventShareApproved": "以安全码批准共享";
     "admin.eventSharedAccessLeft": "退出共享";
     "admin.eventRegistrationSubmitted": "提交注册";
     "admin.actionRegistrationApproved": "批准注册";
@@ -13831,6 +13833,7 @@ declare const resources: {
         readonly "admin.eventPasskeyRemoved": "Removed a passkey";
         readonly "admin.eventShareCreated": "Shared";
         readonly "admin.eventShareRevoked": "Revoked a share";
+        readonly "admin.eventShareApproved": "Share approved with the safety code";
         readonly "admin.eventSharedAccessLeft": "Left a share";
         readonly "admin.eventRegistrationSubmitted": "Asked to register";
         readonly "admin.actionRegistrationApproved": "Approved a registration";
@@ -18511,6 +18514,7 @@ declare const resources: {
         "admin.eventPasskeyRemoved": "移除通行密钥";
         "admin.eventShareCreated": "创建共享";
         "admin.eventShareRevoked": "撤销共享";
+        "admin.eventShareApproved": "以安全码批准共享";
         "admin.eventSharedAccessLeft": "退出共享";
         "admin.eventRegistrationSubmitted": "提交注册";
         "admin.actionRegistrationApproved": "批准注册";

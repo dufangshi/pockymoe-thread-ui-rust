@@ -426,6 +426,7 @@ export const adminZhCN = {
   "admin.eventPasskeyRemoved": "移除通行密钥",
   "admin.eventShareCreated": "创建共享",
   "admin.eventShareRevoked": "撤销共享",
+  "admin.eventShareApproved": "以安全码批准共享",
   "admin.eventSharedAccessLeft": "退出共享",
   "admin.eventRegistrationSubmitted": "提交注册",
   "admin.actionRegistrationApproved": "批准注册",

@@ -426,6 +426,7 @@ export const adminEn = {
   "admin.eventPasskeyRemoved": "Removed a passkey",
   "admin.eventShareCreated": "Shared",
   "admin.eventShareRevoked": "Revoked a share",
+  "admin.eventShareApproved": "Share approved with the safety code",
   "admin.eventSharedAccessLeft": "Left a share",
   "admin.eventRegistrationSubmitted": "Asked to register",
   "admin.actionRegistrationApproved": "Approved a registration",

@@ -338,4 +338,12 @@ export const authZhCN = {
   "auth.passcodeLabel": "访问口令",
   "auth.passcodeWrong": "口令不对。",
   "auth.passcodeRateLimited": "错误次数过多，请一分钟后再试。",
+  "auth.invalid_invite_code": "邀请码不正确。",
+  "auth.ui.inviteCodeHint": "新建账号需要它，使用 Google 或 GitHub 注册也一样。",
+  "auth.ui.inviteCodeFirst": "请先填写邀请码：Google、GitHub 注册也需要。",
+  "auth.ui.adminQuestion": "Relay 管理员？",
+  "auth.ui.adminConsole": "管理后台",
+  "auth.ui.adminSessionTitle": "已以 Relay 管理员身份登录",
+  "auth.ui.adminSessionBody": "管理员在管理后台管理这个 Relay，没有设备。要在这里使用 Relay 账号，请先退出。",
+  "auth.ui.openAdminConsole": "打开管理后台",
 } as const;

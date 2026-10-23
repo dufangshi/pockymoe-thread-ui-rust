@@ -338,4 +338,12 @@ export const authEn = {
   "auth.passcodeLabel": "Passcode",
   "auth.passcodeWrong": "Wrong passcode.",
   "auth.passcodeRateLimited": "Too many wrong passcodes. Wait a minute and try again.",
+  "auth.invalid_invite_code": "The invite code is not valid.",
+  "auth.ui.inviteCodeHint": "Needed to create an account, also with Google or GitHub.",
+  "auth.ui.inviteCodeFirst": "Enter the invite code first: Google and GitHub sign-up need it too.",
+  "auth.ui.adminQuestion": "Relay administrator?",
+  "auth.ui.adminConsole": "Admin console",
+  "auth.ui.adminSessionTitle": "Signed in as the relay administrator",
+  "auth.ui.adminSessionBody": "The administrator manages this relay in the admin console and has no devices. Sign out to use a relay account here.",
+  "auth.ui.openAdminConsole": "Open the admin console",
 } as const;

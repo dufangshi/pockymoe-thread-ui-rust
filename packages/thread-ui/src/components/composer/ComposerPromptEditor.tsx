@@ -54,6 +54,12 @@ function hasIOSNativeBridge() {
   return Boolean(nativeWindow.webkit?.messageHandlers?.remoteCodex);
 }
 
+/** A quote's first few characters, to tell the marks apart. */
+function quoteExcerpt(text: string) {
+  const points = Array.from(text.replace(/\s+/g, ' ').trim());
+  return points.length > 8 ? `${points.slice(0, 8).join('')}…` : points.join('');
+}
+
 export function ComposerPromptEditor({
   promptRef,
   prompt,
@@ -118,7 +124,8 @@ export function ComposerPromptEditor({
                 aria-label={translate('chat.quoteDetails', { n })} title={quote.quote.text.slice(0, 120)}
                 aria-expanded={details?.dataset.clientId === quote.clientId}
                 onClick={(event) => { const button = event.currentTarget; setDetails(current => current === button ? null : button); }}>
-                <Quote aria-hidden="true" /><span>{n}</span>
+                <Quote aria-hidden="true" /><span className="composer-quote-mark-number">{n}</span>
+                <span className="composer-quote-mark-text">{quoteExcerpt(quote.quote.text)}</span>
               </button>
             );
           })}

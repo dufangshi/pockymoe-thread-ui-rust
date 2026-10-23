@@ -12,13 +12,25 @@
 .thread-ui-shell .quote-tile:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 1px; }
 @media (hover: hover) { .thread-ui-shell .quote-tile:hover { background: color-mix(in srgb, var(--theme-accent-solid, var(--theme-accent)) 18%, transparent); } }
 
-.thread-ui-shell .composer-quote-row { display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 12px 0; }
-.thread-ui-shell .composer-quote-mark {
-  display: inline-flex; align-items: center; gap: 2px; height: 22px; padding: 0 6px;
-  border: 1px solid var(--theme-border); border-radius: 999px; background: transparent;
-  color: var(--theme-fg-muted); font-size: 11px; font-weight: 600;
+.thread-ui-shell .composer-quote-row {
+  /* One line at the composer's top left: it scrolls sideways on its own when the
+     marks do not fit; nothing else moves with it. */
+  display: flex; flex-wrap: nowrap; gap: 4px; min-width: 0; max-width: 100%;
+  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none;
+  touch-action: pan-x;
 }
-.thread-ui-shell .composer-quote-mark svg { width: 11px; height: 11px; }
+.thread-ui-shell .composer-quote-row::-webkit-scrollbar { display: none; }
+/* Into the composer's top left corner, past the prompt's own padding. */
+.thread-ui-shell .composer-quote-row { margin: -3px 0 2px -4px; max-width: calc(100% + 4px); }
+@media (max-width: 639px) { .thread-ui-shell .composer-quote-row { margin-left: -11px; max-width: calc(100% + 11px); } }
+.thread-ui-shell .composer-quote-mark {
+  display: inline-flex; flex: none; align-items: center; gap: 3px; height: 22px; padding: 0 7px 0 6px;
+  border: 1px solid var(--theme-border); border-radius: 999px; background: transparent;
+  color: var(--theme-fg-muted); font-size: 11px; white-space: nowrap;
+}
+.thread-ui-shell .composer-quote-mark svg { width: 11px; height: 11px; flex: none; }
+.thread-ui-shell .composer-quote-mark-number { font-weight: 700; }
+.thread-ui-shell .composer-quote-mark-text { max-width: 10em; overflow: hidden; text-overflow: ellipsis; }
 .thread-ui-shell .composer-quote-mark[aria-expanded='true'] { color: var(--theme-fg); border-color: var(--theme-fg-muted); }
 @media (hover: hover) { .thread-ui-shell .composer-quote-mark:hover { background: var(--theme-hover); color: var(--theme-fg); } }
 

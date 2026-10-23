@@ -11,14 +11,23 @@ import { quoteSource } from './QuoteScope';
 const HIGHLIGHT = 'pockymoe-quote';
 const MESSAGE = '[data-testid="chat-message"]';
 
-/** The source message and its neighbours in this pane's conversation, if shown. */
+/**
+ * The source message in this pane's conversation, with the messages around it
+ * that fill about half a screen above and below it (as shown, so it can be read
+ * in context and scrolled a little), or null when it is not shown.
+ */
 function sourceMessages(root: HTMLElement, quote: PromptQuote) {
-  const scope = (quote.turnId && root.querySelector<HTMLElement>(`[data-turn-id="${CSS.escape(quote.turnId)}"]`)) || root;
-  const messages = [...scope.querySelectorAll<HTMLElement>(MESSAGE)];
+  const messages = [...root.querySelectorAll<HTMLElement>(MESSAGE)].filter((message) => message.closest('.thread-timeline-surface'));
   const start = squash(quote.text.split(' … ')[0]!).slice(0, 60);
   let index = quote.itemId ? messages.findIndex((message) => message.dataset.messageId === quote.itemId) : -1;
   if (index < 0 && start) index = messages.findIndex((message) => squash(message.textContent ?? '').includes(start));
-  return index < 0 ? null : { messages: messages.slice(Math.max(0, index - 1), index + 2), source: messages[index]! };
+  if (index < 0) return null;
+  const reach = window.innerHeight / 2;
+  const height = (message: HTMLElement) => message.getBoundingClientRect().height + 14;
+  let first = index, last = index;
+  for (let room = reach; first > 0 && room > 0; ) room -= height(messages[--first]!);
+  for (let room = reach; last < messages.length - 1 && room > 0; ) room -= height(messages[++last]!);
+  return { messages: messages.slice(first, last + 1), source: messages[index]! };
 }
 
 const squash = (text: string) => text.replace(/\s+/g, '');
@@ -83,10 +92,11 @@ export function QuoteLens({ quote, root, onClose }: { quote: PromptQuote; root: 
     const highlights = (CSS as unknown as { highlights?: Map<string, unknown> }).highlights;
     const Highlight = (window as unknown as { Highlight?: new (range: Range) => unknown }).Highlight;
     if (range && highlights && Highlight) highlights.set(HIGHLIGHT, new Highlight(range));
+    // The passage (or its message) opens in the middle; the context scrolls around it.
     const target = range?.getBoundingClientRect() ?? sourceCopy?.getBoundingClientRect();
     if (target) {
       const box = container.getBoundingClientRect();
-      container.scrollTop += target.top - box.top - Math.max(16, (box.height - target.height) / 3);
+      container.scrollTop += target.top - box.top - Math.max(16, (box.height - Math.min(target.height, box.height)) / 2);
     }
     return () => { highlights?.delete(HIGHLIGHT); };
   }, [quote, root]);

@@ -19,6 +19,7 @@ export const chatZhCN = {
   "chat.peerStillRunning": "仍在运行",
   "chat.pendingWakes": "已登记的唤醒",
   "chat.pendingWakeHint": "这些智能体线程全部结束或其中一个卡住时会唤醒本智能体：汇报以插话加入正在运行的一轮，否则作为下一轮开始。",
+  "chat.pendingWakeCount": { one: "{{count}} 个智能体线程", other: "{{count}} 个智能体线程" },
   "chat.waitingForWake": "等待唤醒",
   "chat.backgroundAwakened": "已唤醒",
   "chat.backgroundWaitEnded": "等待已结束",

@@ -63,7 +63,7 @@ import { TurnStatusBar } from './turnStatus';
 import { Collapse } from './Collapse';
 import { ErrorMark } from '../copy/ErrorMark';
 import { turnErrorText } from './turnErrors';
-import { activityParts, hasActivity, storySegments, stretchBetween, stretchFromItems, turnActivity, turnChangedFiles } from './activity';
+import { activityParts, hasActivity, logStatus, storySegments, stretchBetween, stretchFromItems, turnActivity, turnChangedFiles } from './activity';
 import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff, Parts, RunPlaceholder } from './TranscriptLog';
 import { useAppShellNav } from '../../app-shell/AppShellNavContext';
 
@@ -1159,7 +1159,7 @@ function TimelineHistoryEntries({
     );
   };
 
-  const blocks = logBlocks(entries);
+  const blocks = logBlocks(entries, autoOpenLatestToolDetails);
   const lastKey = blocks.at(-1)?.key;
   const lastRunKey = blocks.findLast((block) => block.kind === 'run')?.key;
   // Work that is one run opens with the work line the reader just unfolded: its
@@ -1176,7 +1176,9 @@ function TimelineHistoryEntries({
             : renderItem(block.item, block.key);
         }
         // The run a working turn is in stays open; once narration or another run follows, it folds.
-        const live = autoOpenLatestToolDetails && block.key === lastKey;
+        // Operations still running sit just after it, outside it, and keep it current.
+        const live = autoOpenLatestToolDetails && blocks.slice(index + 1).every((later) =>
+          later.kind === 'item' && isLogItem(later.item) && logStatus(later.item.status) === 'running');
         const next = blocks[index + 1];
         const opened = openRunBefore === null ? block.key === lastRunKey
           : openRunBefore !== undefined && (next?.kind === 'item'
@@ -1248,8 +1250,15 @@ type LogBlock =
   | { kind: 'run'; key: string; parentKey: string; items: ThreadHistoryItemDto[] };
 
 /** Messages and notices stay in the reading flow; operations between them form runs. */
-function logBlocks(entries: TimelineHistoryEntry[]): LogBlock[] {
+/**
+ * Messages and folds of finished operations. An operation still running stays
+ * out of the fold, on its own line after it, while the turn works: a fold sums
+ * up what is done. Two running copies of one command (a harness reporting it
+ * twice before it settles) show once. A finished turn folds whatever it holds.
+ */
+function logBlocks(entries: TimelineHistoryEntry[], working = false): LogBlock[] {
   const blocks: LogBlock[] = [];
+  const runningShown = new Set<string>();
   for (const entry of entries) {
     if (entry.kind === 'item') {
       blocks.push({ kind: 'item', key: entry.key, item: entry.item });
@@ -1264,8 +1273,15 @@ function logBlocks(entries: TimelineHistoryEntry[]): LogBlock[] {
       run = [];
     };
     for (const item of flattenHistoryEntries([entry])) {
-      if (isLogItem(item)) run.push(item);
-      else {
+      const running = working && isLogItem(item) && logStatus(item.status) === 'running';
+      if (isLogItem(item) && !running) run.push(item);
+      else if (running) {
+        const same = `${item.kind}\u0000${item.text}`;
+        if (runningShown.has(same)) continue;
+        runningShown.add(same);
+        flush();
+        blocks.push({ kind: 'item', key: item.id, item });
+      } else {
         flush();
         blocks.push({ kind: 'item', key: item.id, item });
       }

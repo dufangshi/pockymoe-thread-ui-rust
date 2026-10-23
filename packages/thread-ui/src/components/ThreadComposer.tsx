@@ -1207,19 +1207,15 @@ export function ThreadComposer({
       onSubmit={handleSubmit}
       formRef={menuRef}
       promptSlot={promptSlot}
+      cornerSlot={!isShellView && pendingWakes.length > 0 ? <ComposerPendingWakes wakes={pendingWakes} /> : null}
       pendingQueueSlot={
-        !isShellView && (pendingPrompts.length > 0 || pendingWakes.length > 0) ? (
-          <>
-            {pendingWakes.length > 0 ? <ComposerPendingWakes wakes={pendingWakes} /> : null}
-            {pendingPrompts.length > 0 ? (
-              <ComposerPendingQueue
-                prompts={pendingPrompts}
-                onSteer={onSteerPendingPrompt}
-                onCancel={onCancelPendingPrompt}
-                {...(onCancelPendingPrompt ? { onEdit: editPendingPrompt } : {})}
-              />
-            ) : null}
-          </>
+        !isShellView && pendingPrompts.length > 0 ? (
+          <ComposerPendingQueue
+            prompts={pendingPrompts}
+            onSteer={onSteerPendingPrompt}
+            onCancel={onCancelPendingPrompt}
+            {...(onCancelPendingPrompt ? { onEdit: editPendingPrompt } : {})}
+          />
         ) : null
       }
       toolbarSlot={

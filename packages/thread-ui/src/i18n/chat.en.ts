@@ -19,6 +19,7 @@ export const chatEn = {
   "chat.peerStillRunning": "Still running",
   "chat.pendingWakes": "Registered wakes",
   "chat.pendingWakeHint": "These agent threads wake this agent once they have all finished or one of them is blocked: their report joins a running turn as an interjection, or starts the next turn.",
+  "chat.pendingWakeCount": { one: "{{count}} agent thread", other: "{{count}} agent threads" },
   "chat.waitingForWake": "Waiting for wake",
   "chat.backgroundAwakened": "Awakened",
   "chat.backgroundWaitEnded": "Waiting ended",

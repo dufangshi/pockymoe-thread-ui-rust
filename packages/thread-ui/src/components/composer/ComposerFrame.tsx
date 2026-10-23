@@ -41,6 +41,8 @@ export interface ComposerFrameProps {
   formRef: MutableRefObject<HTMLFormElement | null>;
   promptSlot: ReactNode;
   pendingQueueSlot?: ReactNode;
+  /** Small marks above the composer's corner, beside its failure mark. */
+  cornerSlot?: ReactNode;
   toolbarSlot: ReactNode;
   goalSlot: ReactNode;
   shellPromptSlot: ReactNode;
@@ -69,6 +71,7 @@ export function ComposerFrame({
   formRef,
   promptSlot,
   pendingQueueSlot,
+  cornerSlot,
   toolbarSlot,
   goalSlot,
   shellPromptSlot,
@@ -104,11 +107,15 @@ export function ComposerFrame({
           turn navigation (which a left-handed phone dock moves to the left), so
           nothing moves. It stays outside the form: pressing it must not open the
           composer (and a phone's keyboard). */}
-      {error ? (
-        <div className={`thread-composer-error-tag pointer-events-none absolute top-0 z-[90] flex h-11 -translate-y-full items-center sm:h-10 ${leftHanded ? 'right-0 pr-3' : 'left-0 pl-3 sm:pl-5'}`}>
-          <span className="pointer-events-auto inline-flex rounded-full bg-[var(--theme-panel)]">
-            <ErrorMark message={error} />
-          </span>
+      {error || cornerSlot ? (
+        <div className={`thread-composer-error-tag pointer-events-none absolute top-0 z-[90] flex h-11 -translate-y-full items-center gap-1.5 sm:h-10 ${leftHanded ? 'right-0 flex-row-reverse pr-3' : 'left-0 pl-3 sm:pl-5'}`}>
+          {error ? (
+            <span className="pointer-events-auto inline-flex rounded-full bg-[var(--theme-panel)]">
+              <ErrorMark message={error} />
+            </span>
+          ) : null}
+          {/* Small standing notes, such as the wakes this agent waits for. */}
+          {cornerSlot ? <span className="pointer-events-auto inline-flex">{cornerSlot}</span> : null}
         </div>
       ) : null}
 

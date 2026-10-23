@@ -232,7 +232,10 @@ describe('ThreadTimeline', () => {
     const props = { liveOutput: '', autoCollapseCompletedTurns: true, onLoadTurnDetail: load };
     const element = render(<ThreadTimeline {...props} threadRunning activeTurnId={turn.id} turns={[turn]} liveItems={{ turnId: turn.id, items }} />);
     expect(element.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('true');
-    expect(element.querySelector('.tlog-run-head')?.getAttribute('aria-expanded')).toBe('true');
+    // While the turn works, the running command stays out of any fold.
+    expect(element.querySelector('.tlog-run-head')).toBeNull();
+    expect([...element.querySelectorAll('.tlog-single')].map(node => node.textContent)).toEqual([
+      expect.stringContaining('first-command'), expect.stringContaining('second-command')]);
     const finished: ThreadTurnDto = { ...turn, status: 'completed', hasDeferredItems: deferred, deferredItemCount: deferred ? 2 : 0,
       items: [...turn.items, { id: 'final', kind: 'agentMessage', text: 'Finished', responsePhase: 'final' }] };
     flushSync(() => root?.render(<ThreadTimeline {...props} threadRunning={false} activeTurnId={null} turns={[finished]}
@@ -1320,24 +1323,44 @@ describe('ThreadTimeline', () => {
       { id: 'reason-2', kind: 'reasoning', text: 'Reviewing the new result.' },
     ];
     flushSync(() => root?.render(timeline(nextItems)));
-    expect(activityToggle()?.getAttribute('aria-expanded')).toBe('true');
-    expect(commandToggle()?.getAttribute('aria-expanded')).toBe('true');
-    expect(element.textContent).toContain('Inspecting the first issue.');
+    // Narration followed the run, so it folds; the commands still running stay
+    // out of it, each on its own line.
+    expect(activityToggle()?.getAttribute('aria-expanded')).toBe('false');
+    expect([...element.querySelectorAll('.tlog-single .tlog-row[data-kind="commandExecution"]')].map(row => row.textContent))
+      .toEqual([expect.stringContaining('git status'), expect.stringContaining('pnpm test')]);
     expect(element.textContent).toContain('Reviewing the new result.');
-    expect(element.querySelectorAll('.tlog-row[data-kind="commandExecution"]')[2]?.textContent)
-      .toContain('pnpm test');
+    // Opened again, it shows its work.
+    flushSync(() => activityToggle()?.click());
+    expect(element.textContent).toContain('Inspecting the first issue.');
 
+    // The reader's choice holds as more work arrives.
     flushSync(() => activityToggle()?.click());
     flushSync(() => root?.render(timeline([
       ...nextItems,
       { id: 'reason-3', kind: 'reasoning', text: 'Preparing the next step.' },
     ])));
     expect(activityToggle()?.getAttribute('aria-expanded')).toBe('false');
-    expect(element.textContent).not.toContain('Preparing the next step.');
     flushSync(() => activityToggle()?.click());
-    expect(element.textContent).toContain('Preparing the next step.');
     expect(activityToggle()?.getAttribute('aria-expanded')).toBe('true');
     expect(element.querySelectorAll('.tlog-row[data-kind="commandExecution"]')).toHaveLength(3);
+  });
+
+  it('folds only finished commands while a turn works, and shows a running command once', () => {
+    const turn: ThreadTurnDto = { ...completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Deploy' }]), status: 'inProgress' };
+    const items: ThreadTurnDto['items'] = [
+      { id: 'ok', kind: 'commandExecution', text: 'systemctl is-active relay', status: 'completed' },
+      { id: 'bad', kind: 'commandExecution', text: 'ssh relay sleep 120', status: 'failed' },
+      { id: 'pull', kind: 'commandExecution', text: 'git pull --ff-only', status: 'running' },
+      // The same command reported again before it settles.
+      { id: 'pull-echo', kind: 'commandExecution', text: 'git pull --ff-only', status: 'running' },
+    ];
+    const element = render(<ThreadTimeline liveOutput="" threadRunning activeTurnId={turn.id} turns={[turn]} liveItems={{ turnId: turn.id, items }} />);
+    const run = element.querySelector('.tlog-run')!;
+    expect(run.querySelector('.tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('2 commands');
+    expect(run.textContent).not.toContain('git pull');
+    // The fold being worked in stays open beside the command still running.
+    expect(run.querySelector('.tlog-run-head')?.getAttribute('aria-expanded')).toBe('true');
+    expect([...element.querySelectorAll('.tlog-single')].map(node => node.textContent)).toEqual([expect.stringContaining('git pull')]);
   });
 
   it('shows file paths directly without opening a summary or details pane', () => {

@@ -1,6 +1,6 @@
 import type { ThreadPendingWakeDto } from "@pockymoe/shared";
-import { BellRing, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { BellRing } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 import { translate, useI18n } from '../../i18n';
 import { navigationStatusLabel, StatusMark } from "../StatusMark";
 
@@ -17,60 +17,71 @@ function memberLabel(mark: string) {
   return mark === "idle" ? translate("chat.peerExecutionEnded") : navigationStatusLabel(mark);
 }
 
-/** Wakes this thread registered (`thread wait --wake`): the agent threads
-    whose report will reach it. Tapping one explains when and how. */
+/** Wakes this thread registered (`thread wait --wake`): a small bell above the
+    composer counting the agent threads whose report will reach it. A tap lists
+    them with their state and explains when the wake comes. */
 export function ComposerPendingWakes({ wakes }: { wakes: ThreadPendingWakeDto[] }) {
   useI18n();
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const groups = wakes.map((wake) => ({
+    id: wake.id,
+    members: wake.members.map((member) => {
+      const mark = markStatus(member.status);
+      return { threadId: member.threadId, label: member.name ?? member.threadId.slice(0, 8), mark, state: memberLabel(mark) };
+    }),
+  }));
+  const count = groups.reduce((sum, group) => sum + group.members.length, 0);
+  const name = `${translate("chat.waitingForWake")}: ${translate("chat.pendingWakeCount", { count })}`;
+
+  useEffect(() => {
+    if (!open) return;
+    const outside = (event: PointerEvent) => { if (!root.current?.contains(event.target as Node)) setOpen(false); };
+    const key = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.stopPropagation();
+      setOpen(false);
+      trigger.current?.focus();
+    };
+    document.addEventListener("pointerdown", outside, true);
+    document.addEventListener("keydown", key, true);
+    return () => { document.removeEventListener("pointerdown", outside, true); document.removeEventListener("keydown", key, true); };
+  }, [open]);
+
   return (
-    <section
-      aria-label={translate("chat.pendingWakes")}
-      className="thread-composer-pending-queue thread-composer-pending-wakes mx-auto mb-2 w-full max-w-4xl overflow-hidden rounded-xl border"
-    >
-      {wakes.map((wake) => {
-        const open = openId === wake.id;
-        const members = wake.members.map((member) => ({
-          ...member,
-          label: member.name ?? member.threadId.slice(0, 8),
-          mark: markStatus(member.status),
-        })).map((member) => ({ ...member, state: memberLabel(member.mark) }));
-        return (
-          <div key={wake.id} className="thread-composer-pending-wake" data-open={open || undefined}>
-            <button
-              type="button"
-              aria-expanded={open}
-              onClick={() => setOpenId(open ? null : wake.id)}
-              className="thread-composer-pending-wake-head flex min-h-10 w-full items-center gap-2 px-3 py-2 text-left text-sm"
-            >
-              <BellRing className="h-3.5 w-3.5 flex-none" aria-hidden="true" />
-              <span className="thread-composer-pending-source flex-none">{translate("chat.waitingForWake")}</span>
-              <span className="thread-composer-pending-wake-members flex min-w-0 flex-1 items-center gap-3 overflow-hidden">
-                {members.map((member) => (
-                  <span key={member.threadId} className="inline-flex min-w-0 items-center gap-1.5">
-                    <StatusMark status={member.mark} label={member.state} />
-                    <span className="truncate">{member.label}</span>
-                  </span>
-                ))}
-              </span>
-              <ChevronRight className="thread-composer-pending-wake-chev h-3.5 w-3.5 flex-none" aria-hidden="true" />
-            </button>
-            {open ? (
-              <div className="thread-composer-pending-wake-body px-3 pb-2.5 text-xs">
-                <p>{translate("chat.pendingWakeHint")}</p>
-                <ul>
-                  {members.map((member) => (
-                    <li key={member.threadId} className="flex items-center gap-1.5">
-                      <StatusMark status={member.mark} label={member.state} />
-                      <span className="font-medium">{member.label}</span>
-                      <span>{member.state}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </div>
-        );
-      })}
-    </section>
+    <div ref={root} className="thread-composer-wakes">
+      <button
+        ref={trigger}
+        type="button"
+        className="thread-composer-wakes-bell"
+        aria-label={name}
+        title={name}
+        aria-expanded={open}
+        aria-controls={open ? id : undefined}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <BellRing aria-hidden="true" />
+        <span className="thread-composer-wakes-count" aria-hidden="true">{count}</span>
+      </button>
+      {open ? (
+        <section id={id} role="dialog" aria-label={translate("chat.pendingWakes")} className="thread-composer-wakes-panel">
+          <p className="thread-composer-wakes-title">{translate("chat.waitingForWake")}</p>
+          {groups.map((group) => (
+            <ul key={group.id} className="thread-composer-wakes-group">
+              {group.members.map((member) => (
+                <li key={member.threadId}>
+                  <StatusMark status={member.mark} label={member.state} />
+                  <span className="thread-composer-wakes-name">{member.label}</span>
+                  <span className="thread-composer-wakes-state">{member.state}</span>
+                </li>
+              ))}
+            </ul>
+          ))}
+          <p className="thread-composer-wakes-hint">{translate("chat.pendingWakeHint")}</p>
+        </section>
+      ) : null}
+    </div>
   );
 }

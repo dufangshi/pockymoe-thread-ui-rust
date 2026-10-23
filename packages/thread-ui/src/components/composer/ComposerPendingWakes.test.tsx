@@ -41,12 +41,22 @@ describe("ComposerPendingWakes", () => {
         />,
       );
     });
-    const head = container.querySelector<HTMLButtonElement>(".thread-composer-pending-wake-head")!;
-    expect(head.textContent).toBe("Waiting for wakexa-oildc65117b");
-    expect([...head.querySelectorAll("[data-status]")].map((mark) => mark.getAttribute("data-status"))).toEqual(["running", "idle"]);
-    expect(head.getAttribute("aria-expanded")).toBe("false");
-    await act(async () => head.click());
-    expect(head.getAttribute("aria-expanded")).toBe("true");
-    expect(container.querySelector(".thread-composer-pending-wake-body")?.textContent).toContain("one of them is blocked");
+    // A small bell counting the agent threads, not a row per wake.
+    const bell = container.querySelector<HTMLButtonElement>(".thread-composer-wakes-bell")!;
+    expect(bell.getAttribute("aria-label")).toBe("Waiting for wake: 2 agent threads");
+    expect(bell.textContent).toBe("2");
+    expect(container.querySelector('[role="dialog"]')).toBeNull();
+    await act(async () => bell.click());
+    const panel = container.querySelector('[role="dialog"]')!;
+    expect([...panel.querySelectorAll("[data-status]")].map((mark) => mark.getAttribute("data-status"))).toEqual(["running", "idle"]);
+    expect([...panel.querySelectorAll(".thread-composer-wakes-name")].map((name) => name.textContent)).toEqual(["xa-oil", "dc65117b"]);
+    expect(panel.textContent).toContain("one of them is blocked");
+    // Esc and a press elsewhere close it.
+    await act(async () => { document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })); });
+    expect(container.querySelector('[role="dialog"]')).toBeNull();
+    expect(document.activeElement).toBe(bell);
+    await act(async () => bell.click());
+    await act(async () => { document.body.dispatchEvent(new Event("pointerdown", { bubbles: true })); });
+    expect(container.querySelector('[role="dialog"]')).toBeNull();
   });
 });

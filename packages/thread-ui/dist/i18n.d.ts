@@ -2824,6 +2824,10 @@ declare const en: {
     readonly "chat.peerStillRunning": "Still running";
     readonly "chat.pendingWakes": "Registered wakes";
     readonly "chat.pendingWakeHint": "These agent threads wake this agent once they have all finished or one of them is blocked: their report joins a running turn as an interjection, or starts the next turn.";
+    readonly "chat.pendingWakeCount": {
+        readonly one: "{{count}} agent thread";
+        readonly other: "{{count}} agent threads";
+    };
     readonly "chat.waitingForWake": "Waiting for wake";
     readonly "chat.backgroundAwakened": "Awakened";
     readonly "chat.backgroundWaitEnded": "Waiting ended";
@@ -7506,6 +7510,10 @@ declare const zhCN: {
     "chat.peerStillRunning": "仍在运行";
     "chat.pendingWakes": "已登记的唤醒";
     "chat.pendingWakeHint": "这些智能体线程全部结束或其中一个卡住时会唤醒本智能体：汇报以插话加入正在运行的一轮，否则作为下一轮开始。";
+    "chat.pendingWakeCount": {
+        readonly one: "{{count}} 个智能体线程";
+        readonly other: "{{count}} 个智能体线程";
+    };
     "chat.waitingForWake": "等待唤醒";
     "chat.backgroundAwakened": "已唤醒";
     "chat.backgroundWaitEnded": "等待已结束";
@@ -12210,6 +12218,10 @@ declare const resources: {
         readonly "chat.peerStillRunning": "Still running";
         readonly "chat.pendingWakes": "Registered wakes";
         readonly "chat.pendingWakeHint": "These agent threads wake this agent once they have all finished or one of them is blocked: their report joins a running turn as an interjection, or starts the next turn.";
+        readonly "chat.pendingWakeCount": {
+            readonly one: "{{count}} agent thread";
+            readonly other: "{{count}} agent threads";
+        };
         readonly "chat.waitingForWake": "Waiting for wake";
         readonly "chat.backgroundAwakened": "Awakened";
         readonly "chat.backgroundWaitEnded": "Waiting ended";
@@ -16891,6 +16903,10 @@ declare const resources: {
         "chat.peerStillRunning": "仍在运行";
         "chat.pendingWakes": "已登记的唤醒";
         "chat.pendingWakeHint": "这些智能体线程全部结束或其中一个卡住时会唤醒本智能体：汇报以插话加入正在运行的一轮，否则作为下一轮开始。";
+        "chat.pendingWakeCount": {
+            readonly one: "{{count}} 个智能体线程";
+            readonly other: "{{count}} 个智能体线程";
+        };
         "chat.waitingForWake": "等待唤醒";
         "chat.backgroundAwakened": "已唤醒";
         "chat.backgroundWaitEnded": "等待已结束";

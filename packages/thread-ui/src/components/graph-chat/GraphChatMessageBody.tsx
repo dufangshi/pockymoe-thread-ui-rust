@@ -26,6 +26,30 @@ import { SentQuoteMark } from '../quotes/SentQuoteMark';
 
 // Long replies fold past this many characters (it was 2,400: replies read long).
 const LARGE_MESSAGE_PREVIEW_CHARS = 1_200;
+/**
+ * Where a folded reply stops: at a line break or the end of a sentence near the
+ * limit rather than inside a word, and never inside bold or code (an unmatched
+ * marker would show as raw text).
+ */
+export function foldReply(text: string, limit: number) {
+  let cut = text.slice(0, limit);
+  const floor = Math.floor(limit * 0.6);
+  const line = cut.lastIndexOf('\n');
+  const sentence = Math.max(...['。', '！', '？', '. ', '! ', '? ', '；', '; '].map((mark) => {
+    const at = cut.lastIndexOf(mark);
+    return at < 0 ? -1 : at + mark.trimEnd().length;
+  }));
+  const space = cut.lastIndexOf(' ');
+  if (line >= floor) cut = cut.slice(0, line);
+  else if (sentence >= floor) cut = cut.slice(0, sentence);
+  else if (space >= floor) cut = cut.slice(0, space);
+  // An open fence, bold or inline code would read as raw markers: drop the open one.
+  if ((cut.match(/^```/gm)?.length ?? 0) % 2 === 1) cut = cut.slice(0, cut.lastIndexOf('```'));
+  if ((cut.match(/\*\*/g)?.length ?? 0) % 2 === 1) cut = cut.slice(0, cut.lastIndexOf('**'));
+  if (((cut.replace(/```/g, '').match(/`/g)?.length) ?? 0) % 2 === 1) cut = cut.slice(0, cut.lastIndexOf('`'));
+  return `${cut.trimEnd()}\n\n...`;
+}
+
 /** A shorter fold for some messages, by id: a finished turn's narration before its answer. */
 export const MessagePreviewContext = createContext<(messageId: string | undefined) => number | undefined>(() => undefined);
 const PLAIN_URL_PATTERN = /\b(?:https?:\/\/|www\.)[^\s<>"'`]+/gi;
@@ -216,7 +240,7 @@ export const GraphChatMarkdownAwareBody = memo(
     const isLargeText = !streaming && text.length > previewChars;
     const displayText =
       isLargeText && !expanded
-        ? `${text.slice(0, previewChars).trimEnd()}\n\n...`
+        ? foldReply(text, previewChars)
         : text;
     const [isActivated, setIsActivated] = useState(
       streaming || typeof IntersectionObserver === 'undefined',

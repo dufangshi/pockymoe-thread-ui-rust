@@ -3672,6 +3672,25 @@ function SentQuoteMark({ n, quote }) {
 // src/components/graph-chat/GraphChatMessageBody.tsx
 import { Fragment as Fragment7, jsx as jsx19, jsxs as jsxs14 } from "react/jsx-runtime";
 var LARGE_MESSAGE_PREVIEW_CHARS = 1200;
+function foldReply(text, limit) {
+  let cut = text.slice(0, limit);
+  const floor = Math.floor(limit * 0.6);
+  const line = cut.lastIndexOf("\n");
+  const sentence = Math.max(...["\u3002", "\uFF01", "\uFF1F", ". ", "! ", "? ", "\uFF1B", "; "].map((mark) => {
+    const at = cut.lastIndexOf(mark);
+    return at < 0 ? -1 : at + mark.trimEnd().length;
+  }));
+  const space = cut.lastIndexOf(" ");
+  if (line >= floor) cut = cut.slice(0, line);
+  else if (sentence >= floor) cut = cut.slice(0, sentence);
+  else if (space >= floor) cut = cut.slice(0, space);
+  if ((cut.match(/^```/gm)?.length ?? 0) % 2 === 1) cut = cut.slice(0, cut.lastIndexOf("```"));
+  if ((cut.match(/\*\*/g)?.length ?? 0) % 2 === 1) cut = cut.slice(0, cut.lastIndexOf("**"));
+  if ((cut.replace(/```/g, "").match(/`/g)?.length ?? 0) % 2 === 1) cut = cut.slice(0, cut.lastIndexOf("`"));
+  return `${cut.trimEnd()}
+
+...`;
+}
 var MessagePreviewContext = createContext9(() => void 0);
 var PLAIN_URL_PATTERN = /\b(?:https?:\/\/|www\.)[^\s<>"'`]+/gi;
 var TRAILING_URL_PUNCTUATION_PATTERN = /[),.;:!?]+$/;
@@ -3810,9 +3829,7 @@ var GraphChatMarkdownAwareBody = memo3(
     const shouldRenderMarkdown = hasLikelyMarkdownSyntax(text) || Boolean(resolveWorkspacePath && hasWorkspacePathSyntax(text));
     const previewChars = useContext8(MessagePreviewContext)(messageId) ?? LARGE_MESSAGE_PREVIEW_CHARS;
     const isLargeText = !streaming && text.length > previewChars;
-    const displayText = isLargeText && !expanded ? `${text.slice(0, previewChars).trimEnd()}
-
-...` : text;
+    const displayText = isLargeText && !expanded ? foldReply(text, previewChars) : text;
     const [isActivated, setIsActivated] = useState10(
       streaming || typeof IntersectionObserver === "undefined"
     );

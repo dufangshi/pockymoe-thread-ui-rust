@@ -68,7 +68,7 @@ it('replaces waiting with the wake cause using the same timeline anchor', async 
   expect(container.querySelectorAll('.thread-graph-task-notice')).toHaveLength(1);
 });
 
-it.each([['final', true], ['commentary', false], [undefined, false]] as const)('keeps notices top-level in the expanded chronological log and exposes only confirmed final replies when folded (%s)', async (responsePhase, hasFinalReply) => {
+it.each([['final', true], ['commentary', false], [undefined, false]] as const)('keeps wakes in the work they woke and exposes only confirmed final replies when folded (%s)', async (responsePhase, hasFinalReply) => {
   const { ThreadTimeline } = await import('../ThreadTimeline');
   const container=document.createElement('div');
   document.body.appendChild(container);
@@ -101,12 +101,13 @@ it.each([['final', true], ['commentary', false], [undefined, false]] as const)('
     expect(container.textContent).toContain('Waiting for the build');
     expect(container.textContent).toContain('Checking intermediate results');
     expect(container.textContent).toContain('Verified report');
-    expect(container.querySelectorAll('.thread-graph-task-notice')).toHaveLength(2);
-    expect(container.querySelectorAll('.tlog-single')).toHaveLength(1);
-    expect(container.querySelector('.tlog-single')?.textContent).toContain('verify command');
+    // Wakes are rows of the work around them, never a line of their own: a lone
+    // one between messages is one row, one beside a command joins its run.
+    expect(container.querySelectorAll('.thread-graph-task-notice')).toHaveLength(0);
+    expect(container.querySelector('.tlog-single .tlog-row[data-kind="wake"]')?.textContent).toContain('Earlier task finished');
+    const run = container.querySelector('.tlog-run')!;
+    expect([...run.querySelectorAll('.tlog-count')].map((count) => count.getAttribute('data-kind'))).toEqual(['commands', 'wakes']);
     expect(container.querySelector('.thread-graph-history-group')).toBeNull();
-    const notices = [...container.querySelectorAll('.thread-graph-task-notice')];
-    expect(notices[0]!.compareDocumentPosition(notices[1]!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     await act(async () => toggle.click());
     expect(container.textContent).not.toContain('Waiting for the build');
     expect(container.textContent).not.toContain('Checking intermediate results');

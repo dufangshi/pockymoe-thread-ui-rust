@@ -1,5 +1,5 @@
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { ChevronRight, Maximize2 } from 'lucide-react';
+import { BellRing, ChevronRight, Maximize2 } from 'lucide-react';
 import { CopyButton } from '../copy/CopyButton';
 import { ErrorMark } from '../copy/ErrorMark';
 
@@ -45,9 +45,63 @@ const LOG_KINDS = new Set<ThreadHistoryItemDto['kind']>([
   'commandExecution', 'fileChange', 'fileRead', 'webSearch', 'toolCall', 'agentToolCall', 'skillToolCall', 'reasoning',
 ]);
 
-/** Items the log draws as rows; anything else keeps its own component. */
+/** A background task or native sub-agent waking the agent with its report. */
+export const isWakeItem = (item: ThreadHistoryItemDto) => item.origin === 'nativeTaskNotification';
+
+/** Items the log draws as rows; anything else keeps its own component. Wakes are
+    rows too: in the run of work around them, counted, never a line each. */
 export function isLogItem(item: ThreadHistoryItemDto) {
-  return LOG_KINDS.has(item.kind) && item.origin !== 'nativeTaskNotification' && item.origin !== 'nativeBackgroundWait';
+  if (isWakeItem(item)) return true;
+  return LOG_KINDS.has(item.kind) && item.origin !== 'nativeBackgroundWait';
+}
+
+const wakeFailed = (item: ThreadHistoryItemDto) => ['failed', 'failure', 'error', 'errored'].includes(String(item.taskStatus ?? item.status ?? '').toLowerCase());
+
+/** A wake as a row: its bell, what woke it, and its report when opened. */
+function WakeRow({ item }: { item: ThreadHistoryItemDto }) {
+  useI18n();
+  const actions = useContext(TranscriptLogContext);
+  const [open, setOpen] = useState(false);
+  const failed = wakeFailed(item);
+  const label = translate(failed ? 'chat.backgroundTaskFailed' : 'chat.backgroundAwakened');
+  return (
+    <div className="tlog-row" data-kind="wake" data-status={failed ? 'failed' : 'done'} data-open={open || undefined}>
+      <div className="tlog-row-line">
+        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={(event) => { actions?.anchor?.(event.currentTarget); setOpen(!open); }} title={item.text}>
+          <ChevronRight className="tlog-chev tlog-row-chev" aria-hidden="true" />
+          <BellRing className="tlog-glyph tlog-wake-icon" aria-hidden="true" />
+          <span className={`tlog-wake-label${failed ? ' is-failed' : ''}`}>{label}</span>
+          <span className="tlog-title">{item.text}</span>
+        </button>
+      </div>
+      <Collapse open={open}>
+        <div className="tlog-detail tlog-wake-detail">
+          {item.text ? <div><GraphChatLinkifiedPlainText text={item.text} /></div> : null}
+          {item.detailText ? <div><GraphChatLinkifiedPlainText text={item.detailText} /></div> : null}
+        </div>
+      </Collapse>
+    </div>
+  );
+}
+
+/** Wakes in a row are one line, "Woken 3 times"; opened, it lists each. */
+function WakeBatch({ items }: { items: ThreadHistoryItemDto[] }) {
+  const actions = useContext(TranscriptLogContext);
+  const [open, setOpen] = useState(false);
+  const failed = items.filter(wakeFailed).length;
+  return (
+    <div className="tlog-row" data-kind="wake" data-batch="true" data-open={open || undefined}>
+      <div className="tlog-row-line">
+        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={(event) => { actions?.anchor?.(event.currentTarget); setOpen((value) => !value); }}>
+          <ChevronRight className="tlog-chev tlog-row-chev" aria-hidden="true" />
+          <BellRing className="tlog-glyph tlog-wake-icon" aria-hidden="true" />
+          <span className="tlog-title">{translate('chat.wakeCount', { count: items.length })}</span>
+          {failed ? <span className="tlog-tag is-failed">{translate('chat.logFailed', { count: failed })}</span> : null}
+        </button>
+      </div>
+      <Collapse open={open}><div className="tlog-batch">{items.map((item) => <WakeRow key={item.id} item={item} />)}</div></Collapse>
+    </div>
+  );
 }
 
 const GLYPH: Partial<Record<ThreadHistoryItemDto['kind'], string>> = {
@@ -302,6 +356,11 @@ function CopyCommand({ text }: { text: string }) {
 }
 
 export const LogRow = memo(function LogRow({ item, defaultOpen = false, path }: { item: ThreadHistoryItemDto; defaultOpen?: boolean; path?: string }) {
+  if (isWakeItem(item)) return <WakeRow item={item} />;
+  return <OperationRow item={item} defaultOpen={defaultOpen} {...(path ? { path } : {})} />;
+});
+
+function OperationRow({ item, defaultOpen = false, path }: { item: ThreadHistoryItemDto; defaultOpen?: boolean; path?: string }) {
   useI18n();
   const actions = useContext(TranscriptLogContext);
   // An edit the turn is making shows open and folds once the turn moves on,
@@ -325,7 +384,7 @@ export const LogRow = memo(function LogRow({ item, defaultOpen = false, path }: 
       <Collapse open={open}><RowDetail item={item} title={title} {...(path ? { path } : {})} /></Collapse>
     </div>
   );
-});
+}
 
 function DeltaBadges({ added, removed }: { added?: number | null | undefined; removed?: number | null | undefined }) {
   if (!added && !removed) return null;
@@ -358,13 +417,23 @@ function ReadBatch({ items }: { items: ThreadHistoryItemDto[] }) {
 
 type RowBlock =
   | { kind: 'item'; item: ThreadHistoryItemDto }
-  | { kind: 'reads'; items: ThreadHistoryItemDto[] };
+  | { kind: 'reads'; items: ThreadHistoryItemDto[] }
+  | { kind: 'wakes'; items: ThreadHistoryItemDto[] };
 
 function rowBlocks(items: ThreadHistoryItemDto[]): RowBlock[] {
   const blocks: RowBlock[] = [];
   let index = 0;
   while (index < items.length) {
     const item = items[index]!;
+    if (isWakeItem(item)) {
+      let end = index;
+      while (end < items.length && isWakeItem(items[end]!)) end += 1;
+      if (end - index >= 2) {
+        blocks.push({ kind: 'wakes', items: items.slice(index, end) });
+        index = end;
+        continue;
+      }
+    }
     if (item.kind === 'fileRead') {
       let end = index;
       while (end < items.length && items[end]!.kind === 'fileRead') end += 1;
@@ -439,7 +508,9 @@ export const LogRun = memo(function LogRun({
   useI18n();
   const actions = useContext(TranscriptLogContext);
   const counts = useMemo(() => activityFromItems(items), [items]);
-  const parts = activityParts(counts);
+  const wakes = useMemo(() => items.filter(isWakeItem).length, [items]);
+  const parts = [...activityParts(counts),
+    ...(wakes ? [{ key: 'wakes', count: wakes, text: translate('chat.logWakes', { count: wakes }) }] : [])];
   const running = items.some((item) => logStatus(item.status) === 'running');
   const duration = itemsDuration(items);
   const blocks = useMemo(() => rowBlocks(items), [items]);
@@ -469,6 +540,8 @@ export const LogRun = memo(function LogRun({
           {live ? more : null}
           {shown.map((block) => block.kind === 'reads'
             ? <ReadBatch key={block.items[0]!.id} items={block.items} />
+            : block.kind === 'wakes'
+              ? <WakeBatch key={block.items[0]!.id} items={block.items} />
             : <LogRow key={block.item.id} item={block.item} defaultOpen={openDiffs.has(block.item.id)} />)}
           {live ? null : more}
         </div>

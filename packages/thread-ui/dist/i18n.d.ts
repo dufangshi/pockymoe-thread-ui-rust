@@ -3412,6 +3412,14 @@ declare const en: {
     readonly "chat.hint.readsExample": "e.g. src/prompt-queue.ts";
     readonly "chat.hint.searches": "Searches in the code or on the web.";
     readonly "chat.hint.searchesExample": "e.g. searching for \"PromptQueue\"";
+    readonly "chat.logWakes": "{{count}} wakes";
+    readonly "chat.hint.wakes": "Times a background task or a sub-agent woke the agent with its report.";
+    readonly "chat.hint.wakesExample": "e.g. a sub-agent finished its check";
+    readonly "chat.earlierAnswers": {
+        readonly one: "{{count}} earlier answer";
+        readonly other: "{{count}} earlier answers";
+    };
+    readonly "chat.wakeCount": "Woken {{count}} times";
     readonly "chat.hint.agents": "Sub-agents or sub-threads this turn created or handed work to.";
     readonly "chat.hint.agentsExample": "e.g. a reviewer, a test runner thread";
     readonly "chat.hint.tools": "Calls to MCP servers or built-in tools, not terminal commands.";
@@ -8223,6 +8231,14 @@ declare const zhCN: {
     "chat.hint.readsExample": "例：src/prompt-queue.ts";
     "chat.hint.searches": "在代码或网页里的搜索。";
     "chat.hint.searchesExample": "例：搜索 “PromptQueue”";
+    "chat.logWakes": "被唤醒 {{count}} 次";
+    "chat.hint.wakes": "后台任务或子智能体带着结果唤醒智能体的次数。";
+    "chat.hint.wakesExample": "例：子智能体完成一轮检查";
+    "chat.earlierAnswers": {
+        readonly one: "更早的 {{count}} 条说明";
+        readonly other: "更早的 {{count}} 条说明";
+    };
+    "chat.wakeCount": "被唤醒 {{count}} 次";
     "chat.hint.agents": "这一轮创建或交办任务的子代理 / 子线程。";
     "chat.hint.agentsExample": "例：审查子代理、跑测试的子线程";
     "chat.hint.tools": "MCP 服务器或内置工具的调用，不含终端命令。";
@@ -13056,6 +13072,14 @@ declare const resources: {
         readonly "chat.hint.readsExample": "e.g. src/prompt-queue.ts";
         readonly "chat.hint.searches": "Searches in the code or on the web.";
         readonly "chat.hint.searchesExample": "e.g. searching for \"PromptQueue\"";
+        readonly "chat.logWakes": "{{count}} wakes";
+        readonly "chat.hint.wakes": "Times a background task or a sub-agent woke the agent with its report.";
+        readonly "chat.hint.wakesExample": "e.g. a sub-agent finished its check";
+        readonly "chat.earlierAnswers": {
+            readonly one: "{{count}} earlier answer";
+            readonly other: "{{count}} earlier answers";
+        };
+        readonly "chat.wakeCount": "Woken {{count}} times";
         readonly "chat.hint.agents": "Sub-agents or sub-threads this turn created or handed work to.";
         readonly "chat.hint.agentsExample": "e.g. a reviewer, a test runner thread";
         readonly "chat.hint.tools": "Calls to MCP servers or built-in tools, not terminal commands.";
@@ -17866,6 +17890,14 @@ declare const resources: {
         "chat.hint.readsExample": "例：src/prompt-queue.ts";
         "chat.hint.searches": "在代码或网页里的搜索。";
         "chat.hint.searchesExample": "例：搜索 “PromptQueue”";
+        "chat.logWakes": "被唤醒 {{count}} 次";
+        "chat.hint.wakes": "后台任务或子智能体带着结果唤醒智能体的次数。";
+        "chat.hint.wakesExample": "例：子智能体完成一轮检查";
+        "chat.earlierAnswers": {
+            readonly one: "更早的 {{count}} 条说明";
+            readonly other: "更早的 {{count}} 条说明";
+        };
+        "chat.wakeCount": "被唤醒 {{count}} 次";
         "chat.hint.agents": "这一轮创建或交办任务的子代理 / 子线程。";
         "chat.hint.agentsExample": "例：审查子代理、跑测试的子线程";
         "chat.hint.tools": "MCP 服务器或内置工具的调用，不含终端命令。";

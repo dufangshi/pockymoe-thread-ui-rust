@@ -3,6 +3,7 @@ import { translate, useI18n } from '../../i18n';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import {
   memo,
+  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -23,7 +24,10 @@ import { GraphChatMessageContent } from './GraphChatMessageContent';
 import { parseQuotedPrompt, type PromptQuote } from '../composer/promptQuotes';
 import { SentQuoteMark } from '../quotes/SentQuoteMark';
 
-const LARGE_MESSAGE_PREVIEW_CHARS = 2_400;
+// Long replies fold past this many characters (it was 2,400: replies read long).
+const LARGE_MESSAGE_PREVIEW_CHARS = 1_200;
+/** A shorter fold for some messages, by id: a finished turn's narration before its answer. */
+export const MessagePreviewContext = createContext<(messageId: string | undefined) => number | undefined>(() => undefined);
 const PLAIN_URL_PATTERN = /\b(?:https?:\/\/|www\.)[^\s<>"'`]+/gi;
 const TRAILING_URL_PUNCTUATION_PATTERN = /[),.;:!?]+$/;
 
@@ -208,10 +212,11 @@ export const GraphChatMarkdownAwareBody = memo(
     const scrollAnchorRef = useRef<ScrollAnchor | null>(null);
     const [expanded, setExpanded] = useMessageExpansion(messageId, text, streaming);
     const shouldRenderMarkdown = hasLikelyMarkdownSyntax(text) || Boolean(resolveWorkspacePath && hasWorkspacePathSyntax(text));
-    const isLargeText = !streaming && text.length > LARGE_MESSAGE_PREVIEW_CHARS;
+    const previewChars = useContext(MessagePreviewContext)(messageId) ?? LARGE_MESSAGE_PREVIEW_CHARS;
+    const isLargeText = !streaming && text.length > previewChars;
     const displayText =
       isLargeText && !expanded
-        ? `${text.slice(0, LARGE_MESSAGE_PREVIEW_CHARS).trimEnd()}\n\n...`
+        ? `${text.slice(0, previewChars).trimEnd()}\n\n...`
         : text;
     const [isActivated, setIsActivated] = useState(
       streaming || typeof IntersectionObserver === 'undefined',

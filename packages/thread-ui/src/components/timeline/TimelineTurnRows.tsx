@@ -64,10 +64,16 @@ import { Collapse } from './Collapse';
 import { ErrorMark } from '../copy/ErrorMark';
 import { turnErrorText } from './turnErrors';
 import { activityParts, hasActivity, logStatus, storySegments, stretchBetween, stretchFromItems, turnActivity, turnChangedFiles } from './activity';
+import { MessagePreviewContext } from '../graph-chat/GraphChatMessageBody';
 import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff, Parts, RunPlaceholder } from './TranscriptLog';
 import { useAppShellNav } from '../../app-shell/AppShellNavContext';
 
 const FILE_PARTS = new Set(['edits', 'added', 'removed']);
+/** A finished turn's narration before its answer opens on about this much. */
+const NARRATION_PREVIEW_CHARS = 240;
+/** Past this many answers a finished turn folds all but its last KEPT_ANSWERS. */
+const EARLIER_ANSWERS_AFTER = 3;
+const KEPT_ANSWERS = 2;
 
 type LivePlan = {
   turnId: string;
@@ -800,6 +806,15 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     collapsedSummary.hiddenEntries.length > 0 || Boolean(turn.hasDeferredItems) || Boolean(peerWorkChildren);
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const visibleSummaryAgent = collapsedSummary.summaryAgent;
+  // Once the turn is done its answer is what the reader came for: the narration
+  // before it opens on a few lines each, so the answer is near (each expands).
+  const narrationPreview = useMemo(() => {
+    if (activeForRendering) return () => undefined;
+    const messages = mergedItems.filter((item) => item.kind === 'agentMessage' && item.text.trim());
+    const answer = visibleSummaryAgent?.id ?? messages.at(-1)?.id;
+    const narration = new Set(messages.filter((item) => item.id !== answer).map((item) => item.id));
+    return (id: string | undefined) => (id && narration.has(id) ? NARRATION_PREVIEW_CHARS : undefined);
+  }, [activeForRendering, mergedItems, visibleSummaryAgent?.id]);
   const answerSections = useMemo(() =>
     groupedItems.some(entry => entry.kind === 'item' && isSubstantiveAnswer(entry.item) && (entry.item.id !== visibleSummaryAgent?.id || Array.from(entry.item.text.trim()).length >= 300))
       ? groupAnswerSections(groupedItems.filter(entry => entry.kind !== 'item' || entry.item.kind !== 'userMessage'), visibleSummaryAgent?.id) : null,
@@ -813,6 +828,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const fileParts = summaryParts.filter(part => FILE_PARTS.has(part.key));
   const workParts = summaryParts.filter(part => !FILE_PARTS.has(part.key));
   const [filesOpen, setFilesOpen] = useState(false);
+  const [earlierOpen, setEarlierOpen] = useState(false);
   const changedFiles = useMemo(() => turnChangedFiles(turn, mergedItems), [turn, mergedItems]);
   // Only a finished turn is told from its summary; a working one loads as it streams.
   const story = effectiveCollapsed || !narrationMode || !isTerminalTurnStatus(turn.status) ? null : storySegments(turn);
@@ -971,7 +987,24 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           )}
         </Collapse>
         {effectiveCollapsed && answerSections ? <div className="thread-answer-sequence">
-          {foldedAnswerBlocks(answerSections, turn.activity?.segments, finalAnswer?.id).map(block => {
+          {(() => {
+            const blocks = foldedAnswerBlocks(answerSections, turn.activity?.segments, finalAnswer?.id);
+            // A finished turn with much narration keeps its last answers in view:
+            // the earlier ones, with their work, are one line that opens in place.
+            const answers = blocks.flatMap((block, index) => block.kind === 'answer' ? [index] : []);
+            const cut = !activeForRendering && answers.length > EARLIER_ANSWERS_AFTER ? answers[answers.length - KEPT_ANSWERS]! : 0;
+            const earlier = blocks.slice(0, cut);
+            const earlierCount = earlier.filter((block) => block.kind === 'answer').length;
+            return <>
+              {cut > 0 ? (
+                <button type="button" className="thread-earlier-answers" aria-expanded={earlierOpen}
+                  onClick={(event) => { onBeforeMessageResize?.(event.currentTarget); setEarlierOpen((value) => !value); }}>
+                  <ChevronRight className="tlog-chev" aria-hidden="true" />
+                  <span>{translate('chat.earlierAnswers', { count: earlierCount })}</span>
+                  <span className="tlog-rule" aria-hidden="true" />
+                </button>
+              ) : null}
+              {(cut > 0 && !earlierOpen ? blocks.slice(cut) : blocks).map(block => {
             if (block.kind === 'answer') return (
               <div className="thread-answer-section" key={block.entry.key}>
                 {block.entry.item.kind !== 'agentMessage' ? renderHistoryEntries([block.entry]) : <CompactMessageItem threadId={threadId} item={block.entry.item as ThreadHistoryItemDto & { kind: 'agentMessage' }}
@@ -997,6 +1030,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
               </div>
             );
           })}
+            </>;
+          })()}
         </div> : null}
         {/* A finished turn's answer stays below its work, folded or not. */}
         {finalAnswer && (effectiveCollapsed || answerInLog || !mergedItems.some(item => item.id === finalAnswer.id))
@@ -1044,6 +1079,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   </MessageExpansionScope>;
 
   return (
+    <MessagePreviewContext.Provider value={narrationPreview}>
     <MessageExpansionScope key={`${threadId ?? ''}:${turn.id}`}>
     <TurnPromptContext.Provider value={promptContext}>
     <GraphChatTurnFrame
@@ -1064,6 +1100,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     />
     </TurnPromptContext.Provider>
     </MessageExpansionScope>
+    </MessagePreviewContext.Provider>
   );
 });
 

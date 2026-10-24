@@ -668,14 +668,17 @@
    composer until the message's end scrolls into view, then rests in place. */
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true'] {
   position: sticky;
-  bottom: calc(var(--sticky-inset, var(--timeline-bottom-inset, 0px)) + 10px);
+  /* Just above the composer, or above what stands over it at this spot. */
+  bottom: calc(var(--sticky-inset, var(--timeline-bottom-inset, 0px)) + 6px);
   z-index: 6;
-  padding: 0 10px 0 6px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--theme-panel) 90%, transparent);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-border) 80%, transparent), 0 4px 14px rgb(0 0 0 / 0.14);
+  /* The words on a light wash, no box around them. */
+  min-height: 22px;
+  padding: 0 7px 0 4px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--theme-panel) 82%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: none;
   opacity: 1;
 }
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:active,
@@ -862,3 +865,19 @@
 @media (hover: hover) {
   .tlog-detail-retry:hover { background: color-mix(in srgb, var(--tlog-failed) 14%, transparent); }
 }
+
+/* A wake inside a run: its bell where an operation's glyph is, then what woke it. */
+.thread-ui-shell .tlog-row .tlog-wake-icon { width: 12px; height: 12px; flex: none; color: var(--theme-fg-muted); }
+.thread-ui-shell .tlog-wake-label { flex: none; margin-right: 6px; color: var(--theme-fg-muted); font-weight: 600; }
+.thread-ui-shell .tlog-wake-label.is-failed { color: var(--tlog-failed); }
+.thread-ui-shell .tlog-wake-detail { display: grid; gap: 6px; padding: 6px 0 8px 28px; color: var(--theme-fg-muted); font-size: 12.5px; line-height: 1.5; }
+
+/* A finished turn's earlier answers, folded into one line like a run. */
+.thread-ui-shell .thread-earlier-answers {
+  display: flex; align-items: center; gap: 6px; width: 100%; min-height: 28px; margin: 2px 0 6px; padding: 0;
+  border: 0; background: none; color: var(--theme-fg-muted); font-size: 12.5px; text-align: left;
+}
+.thread-ui-shell .thread-earlier-answers .tlog-chev { width: 14px; height: 14px; flex: none; transition: transform 160ms ease; }
+.thread-ui-shell .thread-earlier-answers[aria-expanded='true'] .tlog-chev { transform: rotate(90deg); }
+.thread-ui-shell .thread-earlier-answers .tlog-rule { flex: 1; }
+@media (hover: hover) { .thread-ui-shell .thread-earlier-answers:hover { color: var(--theme-fg); } }

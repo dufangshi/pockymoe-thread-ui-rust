@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState, type ComponentType } from 'react';
 import { createPortal } from 'react-dom';
-import { Bot, Check, FileText, Lightbulb, Search, SquareTerminal, Wrench, X } from 'lucide-react';
+import { BellRing, Bot, Check, FileText, Lightbulb, Search, SquareTerminal, Wrench, X } from 'lucide-react';
 
 import { translate, useI18n } from '../../i18n';
 import type { ActivityPart } from './activity';
 
 const HINT_DELAY_MS = 1000;
 
-type HintKey = 'commands' | 'failed' | 'reads' | 'searches' | 'agents' | 'tools' | 'reasoning';
+type HintKey = 'commands' | 'failed' | 'reads' | 'searches' | 'agents' | 'tools' | 'reasoning' | 'wakes';
 
 const ICONS: Record<HintKey, ComponentType<{ className?: string; 'aria-hidden'?: boolean }>> = {
   commands: Check,
@@ -17,6 +17,7 @@ const ICONS: Record<HintKey, ComponentType<{ className?: string; 'aria-hidden'?:
   agents: Bot,
   tools: Wrench,
   reasoning: Lightbulb,
+  wakes: BellRing,
 };
 
 export function countedPart(part: ActivityPart): part is ActivityPart & { key: HintKey; count: number } {

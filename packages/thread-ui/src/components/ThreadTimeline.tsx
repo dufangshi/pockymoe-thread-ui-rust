@@ -409,19 +409,25 @@ function ThreadTimelineComponent({
     const container = scrollContainerRef.current;
     const composer = container?.closest('.thread-graph-chat-panel')?.querySelector<HTMLElement>(':scope > .thread-graph-composer-host');
     if (!container || typeof ResizeObserver === 'undefined') return;
+    // The composer's own box, not its host: the host also holds the strip,
+    // marks and queued prompts above it, and a padding that varies.
+    const promptBox = () => composer?.querySelector<HTMLElement>('form[data-composer-layout]') ?? composer;
+    // What may stand above the composer where a toggle is: it stops above those.
+    const OBSTACLES = '.thread-jump-nav, .thread-composer-error-tag > *, .thread-composer-pending-queue, .thread-pane-switch';
     const placeToggles = () => {
-      const strip = composer?.querySelector<HTMLElement>('.thread-jump-nav')?.getBoundingClientRect();
       const bottom = container.getBoundingClientRect().bottom;
+      const top = promptBox()?.getBoundingClientRect().top ?? bottom;
+      const obstacles = [...(composer?.querySelectorAll<HTMLElement>(OBSTACLES) ?? [])]
+        .map((element) => element.getBoundingClientRect()).filter((box) => box.width > 0 && box.height > 0 && box.top < top);
       for (const toggle of container.querySelectorAll<HTMLElement>('.thread-graph-show-more[aria-expanded="true"]')) {
         const box = toggle.getBoundingClientRect();
-        if (strip && strip.width > 0 && box.left < strip.right && box.right > strip.left) {
-          toggle.style.setProperty('--sticky-inset', `${Math.max(bottomSpacer, Math.round(bottom - strip.top))}px`);
-        } else toggle.style.removeProperty('--sticky-inset');
+        const above = obstacles.filter((other) => box.left < other.right && box.right > other.left).reduce((highest, other) => Math.min(highest, other.top), top);
+        toggle.style.setProperty('--sticky-inset', `${Math.max(0, Math.round(bottom - above))}px`);
       }
     };
     const measure = () => {
-      const overlap = composer ? container.getBoundingClientRect().bottom - composer.getBoundingClientRect().top : 0;
-      container.style.setProperty('--timeline-bottom-inset', `${Math.max(bottomSpacer, Math.round(overlap))}px`);
+      const overlap = composer ? container.getBoundingClientRect().bottom - (promptBox()?.getBoundingClientRect().top ?? 0) : 0;
+      container.style.setProperty('--timeline-bottom-inset', `${Math.max(0, Math.round(overlap))}px`);
       placeToggles();
     };
     measure();

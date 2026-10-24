@@ -19080,6 +19080,7 @@ import {
 var ANCHOR_HOLD_MS = 900;
 var ANCHOR_EXTEND_MS = 500;
 var PREPEND_HOLD_MS = 1500;
+var FLING_STOP_MS = 120;
 var LOADING_HOLD_MS = 15e3;
 var TOUCH_SCROLL_SLOP_PX = 6;
 function useChangeRevision(inputs) {
@@ -19196,7 +19197,7 @@ function useTimelineScroll({
   const releaseAnchor = useCallback18(() => {
     if (!anchorRef.current?.follow) stopAnchor();
   }, [stopAnchor]);
-  const correctAnchor = useCallback18(() => {
+  const correctAnchor = useCallback18((stopMomentum = false) => {
     const anchor = anchorRef.current;
     const container = scrollContainerRef.current;
     if (!anchor || !container) return false;
@@ -19206,7 +19207,19 @@ function useTimelineScroll({
     }
     const delta = anchor.element.getBoundingClientRect().top - anchor.top;
     if (Math.abs(delta) >= 0.5) {
-      container.scrollTop += delta;
+      const next = container.scrollTop + delta;
+      if (stopMomentum) {
+        const overflow = container.style.overflowY;
+        container.style.overflowY = "hidden";
+        container.scrollTop = next;
+        window.setTimeout(() => {
+          container.style.overflowY = overflow;
+          if (Math.abs(container.scrollTop - next) >= 0.5) container.scrollTop = next;
+          lastScrollTopRef.current = container.scrollTop;
+        }, FLING_STOP_MS);
+      } else {
+        container.scrollTop = next;
+      }
       lastScrollTopRef.current = container.scrollTop;
     }
     return true;
@@ -19383,7 +19396,7 @@ function useTimelineScroll({
     const held = anchorRef.current;
     if (held?.follow && held.element.isConnected) {
       held.until = performance.now() + PREPEND_HOLD_MS;
-      correctAnchor();
+      correctAnchor(window.matchMedia?.("(pointer: coarse)").matches ?? false);
       lastObservedScrollHeightRef.current = container.scrollHeight;
       return;
     }

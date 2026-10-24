@@ -306,6 +306,47 @@ describe('useTimelineScroll', () => {
     harness.unmount();
   });
 
+  it('ends a fling on a touch screen when it puts the turn back after a load at the top', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({ matches: query.includes('coarse'), media: query, addEventListener() {}, removeEventListener() {} }));
+    const frames: FrameRequestCallback[] = [];
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => { frames.push(callback); return frames.length; });
+    vi.stubGlobal('cancelAnimationFrame', () => {});
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    const onLoadEarlier = vi.fn();
+    let scrollHeight = 900;
+    let scrollTop = 0;
+    let layoutTop = 40;
+    const harness = renderHookHarness({ ...baseInput({ turnsLength: 3, totalTurnCount: 9, onLoadEarlier }), renderNodes: true });
+    const scrollContainer = harness.container.querySelector<HTMLDivElement>('[data-testid="scroll-container"]')!;
+    const overflowWhenSet: string[] = [];
+    Object.defineProperties(scrollContainer, {
+      scrollHeight: { configurable: true, get: () => scrollHeight },
+      clientHeight: { configurable: true, value: 300 },
+      scrollTop: { configurable: true, get: () => scrollTop, set: (value: number) => { overflowWhenSet.push(scrollContainer.style.overflowY); scrollTop = value; } },
+    });
+    vi.spyOn(scrollContainer, 'getBoundingClientRect').mockImplementation(() => ({ top: 0, bottom: 300 }) as DOMRect);
+    const turn = document.createElement('div');
+    turn.dataset.timelineTurn = '';
+    vi.spyOn(turn, 'getBoundingClientRect').mockImplementation(() => ({ top: layoutTop - scrollTop, bottom: layoutTop - scrollTop + 200 }) as DOMRect);
+    scrollContainer.prepend(turn);
+    flushSync(() => {
+      latestResult?.handleScroll();
+      latestResult?.handleWheel({ deltaY: -24 } as unknown as WheelEvent<HTMLDivElement>);
+    });
+    expect(onLoadEarlier).toHaveBeenCalledTimes(1);
+    harness.rerender({ ...baseInput({ turnsLength: 3, totalTurnCount: 9, loadingEarlier: true, onLoadEarlier }), renderNodes: true });
+    layoutTop += 300; scrollHeight += 300;
+    harness.rerender({ ...baseInput({ turnsLength: 6, totalTurnCount: 9, loadingEarlier: false, onLoadEarlier }), renderNodes: true });
+    // Set while the overflow is hidden (WebKit drops a fling there), then scrolling returns.
+    expect(turn.getBoundingClientRect().top).toBe(40);
+    expect(overflowWhenSet.at(-1)).toBe('hidden');
+    vi.advanceTimersByTime(200);
+    vi.useRealTimers();
+    expect(scrollContainer.style.overflowY).toBe('');
+    expect(turn.getBoundingClientRect().top).toBe(40);
+    harness.unmount();
+  });
+
   it('follows the reader while earlier turns settle, and lets a jump go', () => {
     const onLoadEarlier = vi.fn();
     let scrollHeight = 900;

@@ -24,6 +24,8 @@ const ANCHOR_HOLD_MS = 900;
 const ANCHOR_EXTEND_MS = 500;
 /** How long a prepend holds the reader's place while the new turns settle. */
 const PREPEND_HOLD_MS = 1500;
+/** How long a touch load keeps the overflow hidden to end the fling that reached the top. */
+const FLING_STOP_MS = 120;
 /** The longest a load above holds before its turns arrive. */
 const LOADING_HOLD_MS = 15000;
 const TOUCH_SCROLL_SLOP_PX = 6;
@@ -208,7 +210,7 @@ export function useTimelineScroll({
   // Keeps the control the reader clicked at the same height on screen while
   // what it opens or closes changes size, instead of following the tail.
   /** One correction toward the held position; false once nothing is held. */
-  const correctAnchor = useCallback(() => {
+  const correctAnchor = useCallback((stopMomentum = false) => {
     const anchor = anchorRef.current;
     const container = scrollContainerRef.current;
     if (!anchor || !container) return false;
@@ -220,7 +222,23 @@ export function useTimelineScroll({
     // scroll position stops at zero rather than leaving a blank above.
     const delta = anchor.element.getBoundingClientRect().top - anchor.top;
     if (Math.abs(delta) >= 0.5) {
-      container.scrollTop += delta;
+      const next = container.scrollTop + delta;
+      if (stopMomentum) {
+        // The fling that reached the top would carry on through the turns just
+        // added (WebKit even over the position set here), ending at their top.
+        // The load stops it where it is: the overflow stays hidden for a few
+        // frames, long enough to reach the compositor; then scrolling is free.
+        const overflow = container.style.overflowY;
+        container.style.overflowY = 'hidden';
+        container.scrollTop = next;
+        window.setTimeout(() => {
+          container.style.overflowY = overflow;
+          if (Math.abs(container.scrollTop - next) >= 0.5) container.scrollTop = next;
+          lastScrollTopRef.current = container.scrollTop;
+        }, FLING_STOP_MS);
+      } else {
+        container.scrollTop = next;
+      }
       lastScrollTopRef.current = container.scrollTop;
     }
     return true;
@@ -452,7 +470,8 @@ export function useTimelineScroll({
     const held = anchorRef.current;
     if (held?.follow && held.element.isConnected) {
       held.until = performance.now() + PREPEND_HOLD_MS;
-      correctAnchor();
+      // A touch load starts at the top, usually mid-fling or bouncing.
+      correctAnchor(window.matchMedia?.('(pointer: coarse)').matches ?? false);
       lastObservedScrollHeightRef.current = container.scrollHeight;
       return;
     }

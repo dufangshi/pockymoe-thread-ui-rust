@@ -1029,6 +1029,7 @@ declare const en: {
     readonly "sharing.workspaceRowNamed": "Workspace {{value1}} · ";
     readonly "sharing.accessAppliesToThisWorkspace": "Access applies to every thread in this workspace.";
     readonly "sharing.shareWorkspace": "Share workspace";
+    readonly "sharing.shareThread": "Share thread";
     readonly "sharing.noTerminalForShares": "People you share with never get a terminal.";
     readonly "sharing.pageTabs": "Devices and sharing";
     readonly "sharing.tabSharing": "Sharing";
@@ -1050,7 +1051,7 @@ declare const en: {
     readonly "sharing.clearSearch": "Clear search";
     readonly "sharing.loadingShares": "Loading shares…";
     readonly "sharing.nothingSharedWithMe": "Nothing has been shared with you yet.";
-    readonly "sharing.nothingSharedByMe": "You have not shared anything yet. Share a device from its row, a workspace from its menu, or a thread from its share window.";
+    readonly "sharing.nothingSharedByMe": "You have not shared anything yet. Share a device from its row, a workspace or a thread from its menu.";
     readonly "sharing.noMatchingShares": "No share matches.";
     readonly "sharing.kindDevice": "Whole device";
     readonly "sharing.kindWorkspace": "Workspace";
@@ -5848,6 +5849,7 @@ declare const zhCN: {
     "sharing.workspaceRowNamed": "工作区 {{value1}} · ";
     "sharing.accessAppliesToThisWorkspace": "访问权限适用于此工作区的所有线程。";
     "sharing.shareWorkspace": "共享工作区";
+    "sharing.shareThread": "共享线程";
     "sharing.noTerminalForShares": "共享对象无法使用终端。";
     "sharing.pageTabs": "设备与共享";
     "sharing.tabSharing": "共享";
@@ -5869,7 +5871,7 @@ declare const zhCN: {
     "sharing.clearSearch": "清除搜索";
     "sharing.loadingShares": "正在加载共享…";
     "sharing.nothingSharedWithMe": "还没有人与你共享。";
-    "sharing.nothingSharedByMe": "你还没有共享任何内容。可以在设备行共享整台设备，在工作区菜单共享工作区，或在线程的共享窗口共享线程。";
+    "sharing.nothingSharedByMe": "你还没有共享任何内容。可以在设备行共享整台设备，在工作区或线程的菜单里共享工作区或线程。";
     "sharing.noMatchingShares": "没有匹配的共享。";
     "sharing.kindDevice": "整台设备";
     "sharing.kindWorkspace": "工作区";
@@ -10689,6 +10691,7 @@ declare const resources: {
         readonly "sharing.workspaceRowNamed": "Workspace {{value1}} · ";
         readonly "sharing.accessAppliesToThisWorkspace": "Access applies to every thread in this workspace.";
         readonly "sharing.shareWorkspace": "Share workspace";
+        readonly "sharing.shareThread": "Share thread";
         readonly "sharing.noTerminalForShares": "People you share with never get a terminal.";
         readonly "sharing.pageTabs": "Devices and sharing";
         readonly "sharing.tabSharing": "Sharing";
@@ -10710,7 +10713,7 @@ declare const resources: {
         readonly "sharing.clearSearch": "Clear search";
         readonly "sharing.loadingShares": "Loading shares…";
         readonly "sharing.nothingSharedWithMe": "Nothing has been shared with you yet.";
-        readonly "sharing.nothingSharedByMe": "You have not shared anything yet. Share a device from its row, a workspace from its menu, or a thread from its share window.";
+        readonly "sharing.nothingSharedByMe": "You have not shared anything yet. Share a device from its row, a workspace or a thread from its menu.";
         readonly "sharing.noMatchingShares": "No share matches.";
         readonly "sharing.kindDevice": "Whole device";
         readonly "sharing.kindWorkspace": "Workspace";
@@ -15507,6 +15510,7 @@ declare const resources: {
         "sharing.workspaceRowNamed": "工作区 {{value1}} · ";
         "sharing.accessAppliesToThisWorkspace": "访问权限适用于此工作区的所有线程。";
         "sharing.shareWorkspace": "共享工作区";
+        "sharing.shareThread": "共享线程";
         "sharing.noTerminalForShares": "共享对象无法使用终端。";
         "sharing.pageTabs": "设备与共享";
         "sharing.tabSharing": "共享";
@@ -15528,7 +15532,7 @@ declare const resources: {
         "sharing.clearSearch": "清除搜索";
         "sharing.loadingShares": "正在加载共享…";
         "sharing.nothingSharedWithMe": "还没有人与你共享。";
-        "sharing.nothingSharedByMe": "你还没有共享任何内容。可以在设备行共享整台设备，在工作区菜单共享工作区，或在线程的共享窗口共享线程。";
+        "sharing.nothingSharedByMe": "你还没有共享任何内容。可以在设备行共享整台设备，在工作区或线程的菜单里共享工作区或线程。";
         "sharing.noMatchingShares": "没有匹配的共享。";
         "sharing.kindDevice": "整台设备";
         "sharing.kindWorkspace": "工作区";

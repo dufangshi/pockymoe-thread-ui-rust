@@ -1498,7 +1498,19 @@ var authEn = {
   "auth.ui.adminConsole": "Admin console",
   "auth.ui.adminSessionTitle": "Signed in as the relay administrator",
   "auth.ui.adminSessionBody": "The administrator manages this relay in the admin console and has no devices. Sign out to use a relay account here.",
-  "auth.ui.openAdminConsole": "Open the admin console"
+  "auth.ui.openAdminConsole": "Open the admin console",
+  "auth.ui.oauthInviteRequired": "No account for this {{provider}} account yet. Enter an invite code and continue.",
+  "auth.ui.oauthInviteInvalid": "The invite code is not valid. Check it and continue with {{provider}} again.",
+  "auth.ui.oauthOtherWay": "Create an account another way",
+  "auth.ui.oauthRegistrationClosed": "No account for this {{provider}} account, and this relay is not accepting new accounts.",
+  "auth.ui.oauthEmailInUse": "An account with this {{provider}} email already exists. Sign in the way you did before.",
+  "auth.ui.oauthCancelled": "{{provider}} sign-in was cancelled.",
+  "auth.ui.oauthExpired": "The {{provider}} sign-in expired or was started in another browser. Try again.",
+  "auth.ui.oauthFailed": "{{provider}} sign-in did not finish. Try again.",
+  "auth.ui.oauthProviderFallback": "Google or GitHub",
+  "auth.ui.accountPendingApproval": "Your account is waiting for an administrator's approval.",
+  "auth.ui.registrationRejected": "Your registration was not approved. Contact the relay administrator.",
+  "auth.ui.accountDisabled": "This account is disabled. Contact the relay administrator."
 };
 
 // src/i18n/chat.en.ts
@@ -6255,7 +6267,19 @@ var authZhCN = {
   "auth.ui.adminConsole": "\u7BA1\u7406\u540E\u53F0",
   "auth.ui.adminSessionTitle": "\u5DF2\u4EE5 Relay \u7BA1\u7406\u5458\u8EAB\u4EFD\u767B\u5F55",
   "auth.ui.adminSessionBody": "\u7BA1\u7406\u5458\u5728\u7BA1\u7406\u540E\u53F0\u7BA1\u7406\u8FD9\u4E2A Relay\uFF0C\u6CA1\u6709\u8BBE\u5907\u3002\u8981\u5728\u8FD9\u91CC\u4F7F\u7528 Relay \u8D26\u53F7\uFF0C\u8BF7\u5148\u9000\u51FA\u3002",
-  "auth.ui.openAdminConsole": "\u6253\u5F00\u7BA1\u7406\u540E\u53F0"
+  "auth.ui.openAdminConsole": "\u6253\u5F00\u7BA1\u7406\u540E\u53F0",
+  "auth.ui.oauthInviteRequired": "\u8FD9\u4E2A {{provider}} \u8D26\u53F7\u8FD8\u6CA1\u6709\u6CE8\u518C\u3002\u586B\u5199\u9080\u8BF7\u7801\u540E\u7EE7\u7EED\u3002",
+  "auth.ui.oauthInviteInvalid": "\u9080\u8BF7\u7801\u65E0\u6548\u3002\u8BF7\u68C0\u67E5\u540E\u518D\u7528 {{provider}} \u7EE7\u7EED\u3002",
+  "auth.ui.oauthOtherWay": "\u7528\u5176\u4ED6\u65B9\u5F0F\u6CE8\u518C",
+  "auth.ui.oauthRegistrationClosed": "\u8FD9\u4E2A {{provider}} \u8D26\u53F7\u8FD8\u6CA1\u6709\u6CE8\u518C\uFF0C\u800C\u8FD9\u4E2A Relay \u76EE\u524D\u4E0D\u63A5\u53D7\u65B0\u6CE8\u518C\u3002",
+  "auth.ui.oauthEmailInUse": "\u5DF2\u6709\u8D26\u53F7\u4F7F\u7528\u8FD9\u4E2A {{provider}} \u90AE\u7BB1\u3002\u8BF7\u7528\u4E4B\u524D\u7684\u65B9\u5F0F\u767B\u5F55\u3002",
+  "auth.ui.oauthCancelled": "\u5DF2\u53D6\u6D88 {{provider}} \u767B\u5F55\u3002",
+  "auth.ui.oauthExpired": "{{provider}} \u767B\u5F55\u5DF2\u8FC7\u671F\uFF0C\u6216\u662F\u5728\u53E6\u4E00\u4E2A\u6D4F\u89C8\u5668\u4E2D\u53D1\u8D77\u7684\u3002\u8BF7\u91CD\u8BD5\u3002",
+  "auth.ui.oauthFailed": "{{provider}} \u767B\u5F55\u6CA1\u6709\u5B8C\u6210\u3002\u8BF7\u91CD\u8BD5\u3002",
+  "auth.ui.oauthProviderFallback": "Google \u6216 GitHub",
+  "auth.ui.accountPendingApproval": "\u4F60\u7684\u8D26\u53F7\u6B63\u5728\u7B49\u5F85\u7BA1\u7406\u5458\u6279\u51C6\u3002",
+  "auth.ui.registrationRejected": "\u4F60\u7684\u6CE8\u518C\u6CA1\u6709\u901A\u8FC7\u5BA1\u6279\u3002\u8BF7\u8054\u7CFB Relay \u7BA1\u7406\u5458\u3002",
+  "auth.ui.accountDisabled": "\u8FD9\u4E2A\u8D26\u53F7\u5DF2\u88AB\u505C\u7528\u3002\u8BF7\u8054\u7CFB Relay \u7BA1\u7406\u5458\u3002"
 };
 
 // src/i18n/chat.zh-CN.ts

@@ -43,6 +43,7 @@ export class AcpAuthenticationRequiredError extends Error {
 
 export interface ThreadState {
   id: string;
+  providerSessionId: string;
   title: string;
   cwd: string;
   model: string | null;
@@ -76,6 +77,9 @@ export class AcpRuntime extends EventEmitter {
   private startPromise: Promise<void> | null = null;
   private readonly threads = new Map<string, ThreadState>();
   private readonly agentSessions = new Map<string, SessionState>();
+  private agentCapabilities: acp.AgentCapabilities = {};
+  private loadingSessionId: string | null = null;
+  private loadingUpdates: acp.SessionUpdate[] = [];
   private currentId: string | null = null;
   models: ModelOption[] = [];
   readonly root: string;
@@ -87,6 +91,7 @@ export class AcpRuntime extends EventEmitter {
     root?: string,
     private readonly displayName = "ACP Agent",
     private readonly harnessId = "codex",
+    private readonly resumeSessionId?: string,
   ) {
     super();
     this.root = inferWorkspaceRoot(cwd, root);
@@ -202,6 +207,7 @@ export class AcpRuntime extends EventEmitter {
         },
       },
     );
+    this.agentCapabilities = initialized.agentCapabilities ?? {};
     const methods = initialized.authMethods ?? [];
     this.authMethods = methods.map((entry) => entry.id);
     this.emit(
@@ -274,17 +280,51 @@ export class AcpRuntime extends EventEmitter {
     const cwd = resolve(input.cwd || this.cwd);
     const context = this.requireContext();
     let response: acp.NewSessionResponse;
+    if (
+      this.resumeSessionId &&
+      !this.agentCapabilities.loadSession &&
+      !this.agentCapabilities.sessionCapabilities?.resume
+    ) {
+      throw new Error(
+        `${this.displayName} does not advertise ACP session restoration; cannot resume ${this.resumeSessionId}`,
+      );
+    }
     try {
-      response = await context.request(acp.methods.agent.session.new, {
-        cwd,
-        mcpServers: [],
-        _meta: { yoloMode: true },
-      });
+      if (this.resumeSessionId) {
+        this.loadingSessionId = this.resumeSessionId;
+        this.loadingUpdates = [];
+        const params = { cwd, mcpServers: [], sessionId: this.resumeSessionId };
+        const restored = this.agentCapabilities.loadSession
+          ? await context.request(acp.methods.agent.session.load, params)
+          : await context.request(acp.methods.agent.session.resume, params);
+        response = {
+          ...(restored as acp.LoadSessionResponse | undefined),
+          sessionId: this.resumeSessionId,
+        };
+        if (!this.agentCapabilities.loadSession) {
+          this.emit(
+            "log",
+            "Session context resumed; this backend does not replay transcript history.",
+          );
+        }
+      } else {
+        response = await context.request(acp.methods.agent.session.new, {
+          cwd,
+          mcpServers: [],
+          _meta: { yoloMode: true },
+        });
+      }
       this.authenticated = true;
       this.authRequired = false;
       this.authError = null;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+      this.loadingSessionId = null;
+      this.loadingUpdates = [];
+      if (this.resumeSessionId)
+        throw new Error(
+          `Could not restore session ${this.resumeSessionId}: ${message}`,
+        );
       this.authenticated = false;
       this.authRequired = true;
       this.authError = message;
@@ -294,6 +334,7 @@ export class AcpRuntime extends EventEmitter {
     const now = new Date().toISOString();
     const thread: ThreadState = {
       id,
+      providerSessionId: response.sessionId,
       title: input.title?.trim() || basename(cwd) || this.displayName,
       cwd,
       model: null,
@@ -315,6 +356,14 @@ export class AcpRuntime extends EventEmitter {
       payload: {},
     };
     this.agentSessions.set(id, session);
+    if (this.loadingUpdates.length) {
+      const history = new AcpTurnMapper(randomUUID());
+      for (const update of this.loadingUpdates) history.apply(update);
+      const turn = history.complete("completed");
+      if (turn.items.length) thread.turns.push(turn);
+    }
+    this.loadingSessionId = null;
+    this.loadingUpdates = [];
     this.applySessionPayload(thread, session, sessionPayloadFromNew(response));
     this.currentId = id;
     if (
@@ -494,6 +543,10 @@ export class AcpRuntime extends EventEmitter {
   }
 
   private handleUpdate(notification: acp.SessionNotification) {
+    if (notification.sessionId === this.loadingSessionId) {
+      this.loadingUpdates.push(notification.update);
+      return;
+    }
     for (const [agentId, session] of this.agentSessions) {
       if (session.providerSessionId !== notification.sessionId) continue;
       const thread = this.threads.get(agentId);

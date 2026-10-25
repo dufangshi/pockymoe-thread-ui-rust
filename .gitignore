@@ -20,3 +20,5 @@ pnpm-debug.log*
 package-lock.json
 !apps/agent-ui-server/package-lock.json
 yarn.lock
+
+apps/agent-ui-server/web-dist/

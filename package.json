@@ -15,8 +15,9 @@
     "dev": "pnpm --filter @pockymoe/thread-ui-playground dev",
     "preview": "pnpm --filter @pockymoe/thread-ui-playground preview",
     "agent-ui:build": "pnpm --filter @pockymoe/agent-ui-web build",
-    "agent-ui:test": "pnpm --filter @pockymoe/agent-ui-server test",
-    "agent-ui:start": "pnpm --filter @pockymoe/agent-ui-server start"
+    "agent-ui:test": "pnpm --filter agent-launch test",
+    "agent-ui:start": "pnpm --filter agent-launch start",
+    "agent-launch": "pnpm --filter agent-launch exec tsx src/cli.ts"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

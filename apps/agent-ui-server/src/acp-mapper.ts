@@ -7,6 +7,8 @@ export class AcpTurnMapper {
   private readonly order: string[] = [];
   private agentIndex = 0;
   private thoughtIndex = 0;
+  private userIndex = 0;
+  private currentUserId: string | null = null;
   private currentAgentId: string | null = null;
   private currentThoughtId: string | null = null;
 
@@ -31,7 +33,22 @@ export class AcpTurnMapper {
   }
 
   apply(update: acp.SessionUpdate) {
+    if (update.sessionUpdate !== "user_message_chunk")
+      this.currentUserId = null;
     switch (update.sessionUpdate) {
+      case "user_message_chunk": {
+        this.finishOpen();
+        const id =
+          this.currentUserId ?? `${this.turnId}:user:${++this.userIndex}`;
+        this.currentUserId = id;
+        this.upsert({
+          id,
+          kind: "userMessage",
+          text: `${this.items.get(id)?.text ?? ""}${contentText(update.content)}`,
+          sourceTurnId: this.turnId,
+        });
+        return;
+      }
       case "agent_message_chunk": {
         this.finishThought();
         const delta = contentText(update.content);

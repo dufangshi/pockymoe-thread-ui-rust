@@ -1,12 +1,13 @@
 {
-  "name": "@pockymoe/agent-ui-server",
+  "name": "agent-launch",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
-    "test": "tsx --test src/path.test.ts src/agent-id.test.ts src/acp-catalog.test.ts src/acp-environment.test.ts src/acp-login.test.ts src/acp-config.test.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "test": "tsx --test src/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.json && node scripts/copy-web.mjs",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "@agentclientprotocol/sdk": "^1.4.0",
@@ -17,5 +18,29 @@
     "@types/node": "^22.14.0",
     "@types/ws": "^8.18.1",
     "typescript": "^5.8.3"
+  },
+  "bin": {
+    "agent-launch": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "web-dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "description": "Launch local coding agents with a structured browser chat and session resume.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dufangshi/pockymoe-thread-ui-rust.git",
+    "directory": "apps/agent-ui-server"
+  },
+  "homepage": "https://github.com/dufangshi/pockymoe-thread-ui-rust#readme",
+  "bugs": {
+    "url": "https://github.com/dufangshi/pockymoe-thread-ui-rust/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

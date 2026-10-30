@@ -1,7 +1,7 @@
 import * as react from 'react';
 import { ReactNode, MutableRefObject } from 'react';
 import * as _pockymoe_shared from '@pockymoe/shared';
-import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, UpdatePluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
+import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, UpdatePluginInput, PluginRunDto, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
 import { U as UpstreamConnectionHost, T as ThreadPluginAdapter, d as PluginSettingsSnapshot, F as FrontendPluginModule, A as ArtifactRenderContext, I as InlineCodeRenderContext, e as ThreadPanelContribution, a as MessagePresentationContext, M as MessagePresentation, P as PluginActionOutputContext, f as ThreadPluginDto, h as ThreadPluginSettingsSnapshot, g as ThreadPluginSettingsInput } from './plugin-types-gLBkjCue.js';
 
 interface PromptAttachmentUpload extends PromptAttachmentManifestEntryDto {
@@ -344,6 +344,11 @@ interface PluginProviderAdapter {
     importPlugin?: (input: ImportPluginInput) => Promise<PluginDto> | PluginDto;
     updatePlugin?: (pluginId: string, input: UpdatePluginInput) => Promise<PluginDto> | PluginDto;
     deletePlugin?: (pluginId: string) => Promise<PluginDto> | PluginDto;
+    /** Installed plugins: run a device-scope action (the settings panel calls `status`). */
+    runPluginAction?: (pluginId: string, action: string, input?: unknown) => Promise<{
+        output: unknown;
+    }>;
+    fetchPluginRuns?: (pluginId: string) => Promise<PluginRunDto[]>;
 }
 declare function PluginProvider({ adapter, builtinPlugins, scope, children, }: {
     adapter?: PluginProviderAdapter;

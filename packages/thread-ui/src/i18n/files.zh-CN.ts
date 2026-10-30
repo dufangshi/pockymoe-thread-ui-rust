@@ -88,6 +88,7 @@ export const filesZhCN = {
   "files.backupRenamed": "已重命名备份。",
   "files.utility": "实用工具",
   "files.importedManifest": "已导入的清单",
+  "files.installedFromGit": "从 git 安装",
   "files.builtInModule": "内置模块",
   "files.enabled": "{{value1}} 已启用",
   "files.noPluginsAreRegistered": "尚未注册插件。",

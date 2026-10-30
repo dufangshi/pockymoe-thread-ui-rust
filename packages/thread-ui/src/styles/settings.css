@@ -146,3 +146,32 @@
   .thread-plugins-actions button { min-height: 40px; padding: 0 12px; }
   .thread-plugins-note button, .thread-plugins-error button, .thread-plugins-message button { min-height: 40px; }
 }
+
+/* Installed (git) plugins: read-only status, runs and details. */
+.installed-plugin-panel { display: grid; gap: 22px; max-width: 640px; font-size: 13px; }
+.installed-plugin-panel h3 { font-size: 13px; font-weight: 600; }
+.installed-plugin-panel h4 { margin-top: 10px; font-size: 12px; font-weight: 500; color: var(--theme-fg-muted); }
+.installed-plugin-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.installed-plugin-refresh { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 8px 12px; border: 1px solid var(--theme-border); border-radius: 8px; background: var(--theme-panel); font-size: 12.5px; }
+.installed-plugin-refresh:disabled { opacity: .6; }
+.installed-plugin-refresh:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 2px; }
+.installed-plugin-summary { margin-top: 8px; font-weight: 500; }
+.installed-plugin-group ul, .installed-plugin-runs { display: grid; margin-top: 6px; border-top: 1px solid var(--theme-border); }
+.installed-plugin-group li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--theme-border); }
+.installed-plugin-label { min-width: 0; overflow-wrap: anywhere; }
+.installed-plugin-detail { grid-column: 1 / -1; font-size: 12px; color: var(--theme-fg-muted); overflow-wrap: anywhere; }
+.installed-plugin-health { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; white-space: nowrap; }
+.installed-plugin-health[data-status='ok'] { color: var(--status-success-fg, var(--theme-fg)); }
+.installed-plugin-health[data-status='needs_reauth'] { color: var(--status-warning-fg, var(--theme-fg)); }
+.installed-plugin-health[data-status='transient'] { color: var(--theme-danger, #d85b64); }
+.installed-plugin-health[data-status='notConfigured'] { color: var(--theme-fg-muted); }
+.installed-plugin-runs li { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 8px 0; border-bottom: 1px solid var(--theme-border); font-size: 12px; color: var(--theme-fg-muted); }
+.installed-plugin-runs li > span:first-child { color: var(--theme-fg); font-variant-numeric: tabular-nums; }
+.installed-plugin-runs li[data-state='failed'] > span:nth-child(4) { color: var(--theme-danger, #d85b64); }
+.installed-plugin-run-error { flex-basis: 100%; overflow-wrap: anywhere; }
+.installed-plugin-details { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin-top: 8px; }
+.installed-plugin-details dt { color: var(--theme-fg-muted); }
+.installed-plugin-details dd { min-width: 0; display: flex; flex-wrap: wrap; gap: 6px; overflow-wrap: anywhere; }
+.installed-plugin-source { align-items: center; }
+.installed-plugin-source > span, .installed-plugin-source > code { min-width: 0; overflow-wrap: anywhere; }
+.installed-plugin-permission { display: block; }

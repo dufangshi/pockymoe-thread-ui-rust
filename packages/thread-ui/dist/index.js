@@ -48,7 +48,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-JVMDBC7Q.js";
+} from "./chunk-I7Z7OSTN.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -75,7 +75,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-MI53B452.js";
+} from "./chunk-7OHH6YWO.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -17383,7 +17383,7 @@ function stretchFromItems(items, beforeId) {
   for (const key of Object.keys(EMPTY)) {
     if (key !== "fileCount" && counts[key]) merged[key] = counts[key];
   }
-  const times = items.flatMap((item) => [item.createdAt, item.updatedAt]).filter((time) => Boolean(time)).sort();
+  const times = items.flatMap((item) => [item.createdAt, item.updatedAt]).filter((time2) => Boolean(time2)).sort();
   if (times.length) {
     merged.startedAt = times[0];
     merged.endedAt = times.at(-1);
@@ -26068,7 +26068,7 @@ function PluginActionOutput({
 
 // src/plugins/PluginSettingsButton.tsx
 import { Settings as Settings2 } from "lucide-react";
-import { useRef as useRef51, useState as useState70 } from "react";
+import { useRef as useRef51, useState as useState71 } from "react";
 
 // src/plugins/ThreadPluginScope.tsx
 import {
@@ -26298,29 +26298,162 @@ function ThreadPluginScope({
   return /* @__PURE__ */ jsx96(PluginContext.Provider, { value, children });
 }
 
+// src/plugins/InstalledPluginPanel.tsx
+import { CircleAlert as CircleAlert2, CircleCheck, CircleDashed, RefreshCw, TriangleAlert as TriangleAlert3 } from "lucide-react";
+import { useCallback as useCallback25, useEffect as useEffect51, useState as useState70 } from "react";
+import { Fragment as Fragment34, jsx as jsx97, jsxs as jsxs83 } from "react/jsx-runtime";
+var HEALTH = {
+  ok: { icon: CircleCheck, label: "settings.healthOk" },
+  needs_reauth: { icon: TriangleAlert3, label: "settings.healthNeedsReauth" },
+  transient: { icon: CircleAlert2, label: "settings.healthTransient" },
+  notConfigured: { icon: CircleDashed, label: "settings.healthNotConfigured" }
+};
+function HealthMark({ item }) {
+  const { t: t2 } = useI18n();
+  const known2 = HEALTH[item.status] ?? HEALTH.transient;
+  const Icon = known2.icon;
+  return /* @__PURE__ */ jsxs83("span", { className: "installed-plugin-health", "data-status": HEALTH[item.status] ? item.status : "transient", children: [
+    /* @__PURE__ */ jsx97(Icon, { size: 15, "aria-hidden": "true" }),
+    /* @__PURE__ */ jsx97("span", { children: item.statusText || t2(known2.label) })
+  ] });
+}
+function statusOf(output) {
+  if (!output || typeof output !== "object") return null;
+  const value = output;
+  return Array.isArray(value.sections) || typeof value.summary === "string" ? value : null;
+}
+function time(value, locale) {
+  if (!value) return "";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString(locale, { dateStyle: "short", timeStyle: "short" });
+}
+function InstalledPluginPanel({ plugin }) {
+  const { t: t2, locale } = useI18n();
+  const adapter = useDevicePlugins().adapter;
+  const actions = plugin.capabilities.actions ?? [];
+  const canStatus = plugin.enabled && actions.includes("status") && !!adapter?.runPluginAction;
+  const [status, setStatus] = useState70(null);
+  const [error, setError] = useState70(null);
+  const [loading, setLoading] = useState70(false);
+  const [runs, setRuns] = useState70(null);
+  const refresh = useCallback25(async () => {
+    if (adapter?.fetchPluginRuns) {
+      adapter.fetchPluginRuns(plugin.id).then(setRuns, () => setRuns((prev) => prev ?? []));
+    }
+    if (!canStatus) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await adapter.runPluginAction(plugin.id, "status", {});
+      setStatus(statusOf(result.output));
+    } catch (failure) {
+      setError(failure instanceof Error ? failure.message : String(failure));
+    } finally {
+      setLoading(false);
+    }
+  }, [adapter, canStatus, plugin.id]);
+  useEffect51(() => {
+    void refresh();
+  }, [refresh]);
+  const install = plugin.capabilities.install;
+  const permissions = plugin.capabilities.permissions ?? [];
+  return /* @__PURE__ */ jsxs83("div", { className: "installed-plugin-panel", children: [
+    canStatus && /* @__PURE__ */ jsxs83("section", { "aria-labelledby": "installed-plugin-status", children: [
+      /* @__PURE__ */ jsxs83("header", { className: "installed-plugin-heading", children: [
+        /* @__PURE__ */ jsx97("h3", { id: "installed-plugin-status", children: t2("settings.installedStatus") }),
+        /* @__PURE__ */ jsxs83(
+          "button",
+          {
+            type: "button",
+            className: "installed-plugin-refresh",
+            onClick: () => void refresh(),
+            disabled: loading,
+            "aria-label": t2("settings.installedRefresh"),
+            children: [
+              /* @__PURE__ */ jsx97(RefreshCw, { size: 14, "aria-hidden": "true" }),
+              /* @__PURE__ */ jsx97("span", { children: loading ? t2("settings.installedLoading") : t2("settings.installedRefresh") })
+            ]
+          }
+        )
+      ] }),
+      error && /* @__PURE__ */ jsx97(ErrorMark, { message: t2("settings.installedStatusFailed"), detail: error, onRetry: () => void refresh() }),
+      status?.summary && /* @__PURE__ */ jsx97("p", { className: "installed-plugin-summary", children: status.summary }),
+      status?.sections?.map((section) => /* @__PURE__ */ jsxs83("div", { className: "installed-plugin-group", children: [
+        /* @__PURE__ */ jsx97("h4", { children: section.title }),
+        /* @__PURE__ */ jsx97("ul", { children: section.items.map((item) => /* @__PURE__ */ jsxs83("li", { children: [
+          /* @__PURE__ */ jsx97("span", { className: "installed-plugin-label", children: item.label }),
+          /* @__PURE__ */ jsx97(HealthMark, { item }),
+          item.detail && /* @__PURE__ */ jsx97("span", { className: "installed-plugin-detail", children: item.detail })
+        ] }, item.label)) })
+      ] }, section.title)),
+      /* @__PURE__ */ jsx97("p", { className: "plugin-settings-hint", children: t2("settings.installedReadOnly") })
+    ] }),
+    /* @__PURE__ */ jsxs83("section", { "aria-labelledby": "installed-plugin-runs", children: [
+      /* @__PURE__ */ jsx97("h3", { id: "installed-plugin-runs", children: t2("settings.installedRuns") }),
+      runs && !runs.length && /* @__PURE__ */ jsx97("p", { className: "plugin-settings-hint", children: t2("settings.installedNoRuns") }),
+      !!runs?.length && /* @__PURE__ */ jsx97("ul", { className: "installed-plugin-runs", children: runs.slice(0, 6).map((run) => /* @__PURE__ */ jsxs83("li", { "data-state": run.state, children: [
+        /* @__PURE__ */ jsx97("span", { children: time(run.startedAt, locale) }),
+        /* @__PURE__ */ jsx97("span", { children: run.action }),
+        /* @__PURE__ */ jsx97("span", { children: t2(run.trigger === "schedule" ? "settings.runSchedule" : "settings.runManual") }),
+        /* @__PURE__ */ jsx97("span", { children: t2(run.state === "completed" ? "settings.runCompleted" : "settings.runFailed") }),
+        run.error && /* @__PURE__ */ jsx97("span", { className: "installed-plugin-run-error", children: run.error })
+      ] }, run.id)) })
+    ] }),
+    /* @__PURE__ */ jsxs83("section", { "aria-labelledby": "installed-plugin-details", children: [
+      /* @__PURE__ */ jsx97("h3", { id: "installed-plugin-details", children: t2("settings.installedDetails") }),
+      /* @__PURE__ */ jsxs83("dl", { className: "installed-plugin-details", children: [
+        /* @__PURE__ */ jsx97("dt", { children: t2("settings.installedVersion") }),
+        /* @__PURE__ */ jsx97("dd", { children: plugin.version }),
+        /* @__PURE__ */ jsx97("dt", { children: t2("settings.installedPermissions") }),
+        /* @__PURE__ */ jsx97("dd", { children: permissions.length ? permissions.map((p) => /* @__PURE__ */ jsx97("span", { className: "installed-plugin-permission", children: p === "pockymoeCli" ? t2("settings.permissionPockymoeCli") : p }, p)) : t2("settings.installedNoPermissions") }),
+        install?.source && /* @__PURE__ */ jsxs83(Fragment34, { children: [
+          /* @__PURE__ */ jsx97("dt", { children: t2("settings.installedSource") }),
+          /* @__PURE__ */ jsxs83("dd", { className: "installed-plugin-source", children: [
+            /* @__PURE__ */ jsx97("span", { children: install.source }),
+            /* @__PURE__ */ jsx97(CopyButton, { value: install.source, label: t2("settings.installedCopySource") })
+          ] })
+        ] }),
+        install?.commit && /* @__PURE__ */ jsxs83(Fragment34, { children: [
+          /* @__PURE__ */ jsx97("dt", { children: t2("settings.installedCommit") }),
+          /* @__PURE__ */ jsxs83("dd", { className: "installed-plugin-source", children: [
+            /* @__PURE__ */ jsx97("code", { children: install.commit.slice(0, 12) }),
+            /* @__PURE__ */ jsx97(CopyButton, { value: install.commit, label: t2("settings.installedCopyCommit") })
+          ] })
+        ] }),
+        install?.updatedAt && /* @__PURE__ */ jsxs83(Fragment34, { children: [
+          /* @__PURE__ */ jsx97("dt", { children: t2("settings.installedUpdated") }),
+          /* @__PURE__ */ jsx97("dd", { children: time(install.updatedAt, locale) })
+        ] })
+      ] })
+    ] })
+  ] });
+}
+
 // src/plugins/PluginSettingsButton.tsx
-import { jsx as jsx97, jsxs as jsxs83 } from "react/jsx-runtime";
+import { jsx as jsx98, jsxs as jsxs84 } from "react/jsx-runtime";
 function PluginSettingsButton({ plugin, className }) {
   const { t: t2 } = useI18n();
   const plugins = useDevicePlugins();
   const trigger = useRef51(null);
   const content = useRef51(null);
-  const [open, setOpen] = useState70(false);
-  const [theme, setTheme] = useState70({});
+  const [open, setOpen] = useState71(false);
+  const [theme, setTheme] = useState71({});
   const sections = plugins.getSettingsSections(plugin.id);
-  const off = plugins.plugins.find((item) => item.id === plugin.id)?.enabled === false;
-  if (!sections.length) return null;
+  const reported = plugins.plugins.find((item) => item.id === plugin.id);
+  const off = reported?.enabled === false;
+  const installed = reported?.source === "external" ? reported : null;
+  if (!sections.length && !installed) return null;
   const label = t2("settings.pluginSettings", { value1: plugin.name });
   const single = sections.length === 1 ? sections[0] : null;
-  return /* @__PURE__ */ jsxs83(Dialog, { open, onOpenChange: (next) => {
+  return /* @__PURE__ */ jsxs84(Dialog, { open, onOpenChange: (next) => {
     if (next) {
       const host = trigger.current?.closest("[data-theme-effective]");
       setTheme({ effective: host?.dataset.themeEffective, mode: host?.dataset.themeMode });
     }
     setOpen(next);
   }, children: [
-    /* @__PURE__ */ jsx97(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx97("button", { ref: trigger, type: "button", className: className ?? "plugin-settings-trigger", "aria-label": label, title: label, children: /* @__PURE__ */ jsx97(Settings2, { "data-icon": "settings", size: 15, "aria-hidden": "true" }) }) }),
-    /* @__PURE__ */ jsxs83(
+    /* @__PURE__ */ jsx98(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx98("button", { ref: trigger, type: "button", className: className ?? "plugin-settings-trigger", "aria-label": label, title: label, children: /* @__PURE__ */ jsx98(Settings2, { "data-icon": "settings", size: 15, "aria-hidden": "true" }) }) }),
+    /* @__PURE__ */ jsxs84(
       DialogContent,
       {
         ref: content,
@@ -26334,16 +26467,16 @@ function PluginSettingsButton({ plugin, className }) {
           content.current?.focus();
         },
         children: [
-          /* @__PURE__ */ jsxs83(DialogHeader, { className: "plugin-settings-dialog-header", children: [
-            /* @__PURE__ */ jsx97(DialogTitle, { children: label }),
-            /* @__PURE__ */ jsx97(DialogDescription, { children: single?.description ?? plugin.description })
+          /* @__PURE__ */ jsxs84(DialogHeader, { className: "plugin-settings-dialog-header", children: [
+            /* @__PURE__ */ jsx98(DialogTitle, { children: label }),
+            /* @__PURE__ */ jsx98(DialogDescription, { children: single?.description ?? plugin.description })
           ] }),
-          /* @__PURE__ */ jsxs83("div", { className: "plugin-settings-dialog-body", children: [
-            off && /* @__PURE__ */ jsx97("p", { role: "note", className: "plugin-settings-off", children: t2("settings.pluginNotEnabled") }),
-            single ? single.content : sections.map((section) => /* @__PURE__ */ jsxs83("section", { className: "plugin-settings-dialog-section", "aria-labelledby": `${section.id}-heading`, children: [
-              /* @__PURE__ */ jsxs83("header", { children: [
-                /* @__PURE__ */ jsx97("h3", { id: `${section.id}-heading`, children: section.label }),
-                section.description && /* @__PURE__ */ jsx97("p", { children: section.description })
+          /* @__PURE__ */ jsxs84("div", { className: "plugin-settings-dialog-body", children: [
+            off && /* @__PURE__ */ jsx98("p", { role: "note", className: "plugin-settings-off", children: t2("settings.pluginNotEnabled") }),
+            installed && !sections.length ? /* @__PURE__ */ jsx98(InstalledPluginPanel, { plugin: installed }) : single ? single.content : sections.map((section) => /* @__PURE__ */ jsxs84("section", { className: "plugin-settings-dialog-section", "aria-labelledby": `${section.id}-heading`, children: [
+              /* @__PURE__ */ jsxs84("header", { children: [
+                /* @__PURE__ */ jsx98("h3", { id: `${section.id}-heading`, children: section.label }),
+                section.description && /* @__PURE__ */ jsx98("p", { children: section.description })
               ] }),
               section.content
             ] }, section.id))
@@ -26356,8 +26489,8 @@ function PluginSettingsButton({ plugin, className }) {
 
 // src/plugins/ThreadPluginsControl.tsx
 import { Puzzle, RotateCcw, Settings as Settings3 } from "lucide-react";
-import { useEffect as useEffect51, useId as useId5, useMemo as useMemo22, useRef as useRef52, useState as useState71 } from "react";
-import { Fragment as Fragment34, jsx as jsx98, jsxs as jsxs84 } from "react/jsx-runtime";
+import { useEffect as useEffect52, useId as useId5, useMemo as useMemo22, useRef as useRef52, useState as useState72 } from "react";
+import { Fragment as Fragment35, jsx as jsx99, jsxs as jsxs85 } from "react/jsx-runtime";
 var choiceOf = (plugin) => plugin.enabledOverride === null ? "inherit" : plugin.enabledOverride ? "on" : "off";
 var overrideOf = (choice) => choice === "inherit" ? null : choice === "on";
 function threadScoped(plugin) {
@@ -26376,8 +26509,8 @@ function ThreadPluginsControl({
   const openGlobal = onOpenGlobalSettings ?? (nav?.openSettingsSection ? () => nav.openSettingsSection("plugins") : void 0);
   const trigger = useRef52(null);
   const title = useRef52(null);
-  const [open, setOpen] = useState71(false);
-  const [editing, setEditing] = useState71(null);
+  const [open, setOpen] = useState72(false);
+  const [editing, setEditing] = useState72(null);
   const hidden = hiddenPluginIds?.join("\n") ?? "";
   const visible = useMemo22(
     () => (scope?.plugins ?? []).filter(
@@ -26390,8 +26523,8 @@ function ThreadPluginsControl({
     (plugin) => plugin.enabledOverride !== null || plugin.settingsOverridden
   );
   const label = t2("settings.threadPluginsTitle");
-  return /* @__PURE__ */ jsxs84(Fragment34, { children: [
-    /* @__PURE__ */ jsxs84(
+  return /* @__PURE__ */ jsxs85(Fragment35, { children: [
+    /* @__PURE__ */ jsxs85(
       "button",
       {
         ref: trigger,
@@ -26403,12 +26536,12 @@ function ThreadPluginsControl({
         "aria-expanded": open,
         onClick: () => setOpen(true),
         children: [
-          /* @__PURE__ */ jsx98(Puzzle, { "data-icon": "plugins", size: 14 }),
-          customized && /* @__PURE__ */ jsx98("span", { className: "thread-plugins-dot", "aria-hidden": true })
+          /* @__PURE__ */ jsx99(Puzzle, { "data-icon": "plugins", size: 14 }),
+          customized && /* @__PURE__ */ jsx99("span", { className: "thread-plugins-dot", "aria-hidden": true })
         ]
       }
     ),
-    /* @__PURE__ */ jsx98(Dialog, { open, onOpenChange: setOpen, children: /* @__PURE__ */ jsxs84(
+    /* @__PURE__ */ jsx99(Dialog, { open, onOpenChange: setOpen, children: /* @__PURE__ */ jsxs85(
       DialogContent,
       {
         className: "thread-plugins-panel",
@@ -26422,11 +26555,11 @@ function ThreadPluginsControl({
           trigger.current?.focus();
         },
         children: [
-          /* @__PURE__ */ jsxs84(DialogHeader, { className: "thread-plugins-header", children: [
-            /* @__PURE__ */ jsx98(DialogTitle, { ref: title, tabIndex: -1, className: "outline-none", children: label }),
-            /* @__PURE__ */ jsx98(DialogDescription, { children: t2("settings.threadPluginsHint") })
+          /* @__PURE__ */ jsxs85(DialogHeader, { className: "thread-plugins-header", children: [
+            /* @__PURE__ */ jsx99(DialogTitle, { ref: title, tabIndex: -1, className: "outline-none", children: label }),
+            /* @__PURE__ */ jsx99(DialogDescription, { children: t2("settings.threadPluginsHint") })
           ] }),
-          /* @__PURE__ */ jsx98(
+          /* @__PURE__ */ jsx99(
             ScopeBody,
             {
               scope,
@@ -26445,7 +26578,7 @@ function ThreadPluginsControl({
         ]
       }
     ) }),
-    editing && /* @__PURE__ */ jsx98(
+    editing && /* @__PURE__ */ jsx99(
       ThreadPluginSettingsDialog,
       {
         scope,
@@ -26469,19 +26602,19 @@ function ScopeBody({
   const { t: t2 } = useI18n();
   if (scope.status !== "ready" && !scope.plugins.length) {
     const message = scope.status === "loading" ? t2("settings.threadPluginsLoading") : scope.status === "unsupported" ? t2("settings.threadPluginsUnsupported") : scope.status === "forbidden" ? t2("settings.threadPluginsForbidden") : t2("settings.threadPluginsLoadFailed");
-    return /* @__PURE__ */ jsxs84("div", { className: "thread-plugins-message", role: "status", children: [
-      /* @__PURE__ */ jsxs84("p", { className: "flex items-center gap-1", children: [
-        /* @__PURE__ */ jsx98("span", { children: message }),
-        scope.status === "error" && scope.error && scope.error !== message ? /* @__PURE__ */ jsx98(ErrorMark, { message: scope.error }) : null
+    return /* @__PURE__ */ jsxs85("div", { className: "thread-plugins-message", role: "status", children: [
+      /* @__PURE__ */ jsxs85("p", { className: "flex items-center gap-1", children: [
+        /* @__PURE__ */ jsx99("span", { children: message }),
+        scope.status === "error" && scope.error && scope.error !== message ? /* @__PURE__ */ jsx99(ErrorMark, { message: scope.error }) : null
       ] }),
-      scope.status === "error" && /* @__PURE__ */ jsx98("button", { type: "button", onClick: () => void scope.reload(), children: t2("settings.threadPluginsReload") })
+      scope.status === "error" && /* @__PURE__ */ jsx99("button", { type: "button", onClick: () => void scope.reload(), children: t2("settings.threadPluginsReload") })
     ] });
   }
   if (!plugins.length)
-    return /* @__PURE__ */ jsx98("p", { className: "thread-plugins-message", role: "status", children: t2("settings.threadPluginsEmpty") });
-  return /* @__PURE__ */ jsxs84("div", { className: "thread-plugins-body", children: [
-    readOnly && /* @__PURE__ */ jsx98("p", { className: "thread-plugins-note", role: "note", children: t2("settings.threadPluginsReadOnly") }),
-    /* @__PURE__ */ jsx98("ul", { className: "thread-plugins-list", children: plugins.map((plugin) => /* @__PURE__ */ jsx98(
+    return /* @__PURE__ */ jsx99("p", { className: "thread-plugins-message", role: "status", children: t2("settings.threadPluginsEmpty") });
+  return /* @__PURE__ */ jsxs85("div", { className: "thread-plugins-body", children: [
+    readOnly && /* @__PURE__ */ jsx99("p", { className: "thread-plugins-note", role: "note", children: t2("settings.threadPluginsReadOnly") }),
+    /* @__PURE__ */ jsx99("ul", { className: "thread-plugins-list", children: plugins.map((plugin) => /* @__PURE__ */ jsx99(
       PluginRow,
       {
         scope,
@@ -26530,11 +26663,11 @@ function PluginRow({
       aria: t2("settings.threadPluginsOffAria")
     }
   ];
-  return /* @__PURE__ */ jsxs84("li", { className: "thread-plugins-row", "aria-label": plugin.name, children: [
-    /* @__PURE__ */ jsxs84("div", { className: "thread-plugins-row-head", children: [
-      /* @__PURE__ */ jsxs84("span", { className: "flex min-w-0 items-center gap-1", children: [
-        /* @__PURE__ */ jsx98("strong", { children: plugin.name }),
-        failure ? /* @__PURE__ */ jsx98(
+  return /* @__PURE__ */ jsxs85("li", { className: "thread-plugins-row", "aria-label": plugin.name, children: [
+    /* @__PURE__ */ jsxs85("div", { className: "thread-plugins-row-head", children: [
+      /* @__PURE__ */ jsxs85("span", { className: "flex min-w-0 items-center gap-1", children: [
+        /* @__PURE__ */ jsx99("strong", { children: plugin.name }),
+        failure ? /* @__PURE__ */ jsx99(
           ErrorMark,
           {
             message: failure.message,
@@ -26543,7 +26676,7 @@ function PluginRow({
           }
         ) : null
       ] }),
-      /* @__PURE__ */ jsx98(
+      /* @__PURE__ */ jsx99(
         "span",
         {
           className: `thread-plugins-state ${plugin.enabled ? "is-on" : "is-off"}`,
@@ -26553,7 +26686,7 @@ function PluginRow({
         }
       )
     ] }),
-    /* @__PURE__ */ jsx98(
+    /* @__PURE__ */ jsx99(
       "div",
       {
         role: "radiogroup",
@@ -26563,13 +26696,13 @@ function PluginRow({
         className: "thread-plugins-choice",
         children: options.map((option) => {
           const blocked = option.value === "on" && !plugin.globalEnabled;
-          return /* @__PURE__ */ jsxs84(
+          return /* @__PURE__ */ jsxs85(
             "label",
             {
               className: blocked ? "is-blocked" : void 0,
               title: blocked ? t2("settings.threadPluginsGlobalOff") : void 0,
               children: [
-                /* @__PURE__ */ jsx98(
+                /* @__PURE__ */ jsx99(
                   "input",
                   {
                     type: "radio",
@@ -26584,7 +26717,7 @@ function PluginRow({
                     )
                   }
                 ),
-                /* @__PURE__ */ jsx98("span", { "aria-hidden": true, children: option.label })
+                /* @__PURE__ */ jsx99("span", { "aria-hidden": true, children: option.label })
               ]
             },
             option.value
@@ -26592,8 +26725,8 @@ function PluginRow({
         })
       }
     ),
-    !plugin.globalEnabled || unavailable && plugin.unavailableReason ? /* @__PURE__ */ jsxs84("div", { className: "flex flex-wrap items-center gap-1", children: [
-      /* @__PURE__ */ jsx98(
+    !plugin.globalEnabled || unavailable && plugin.unavailableReason ? /* @__PURE__ */ jsxs85("div", { className: "flex flex-wrap items-center gap-1", children: [
+      /* @__PURE__ */ jsx99(
         ErrorMark,
         {
           kind: "unavailable",
@@ -26603,23 +26736,23 @@ function PluginRow({
           ].filter(Boolean).join("\n")
         }
       ),
-      !plugin.globalEnabled && onOpenGlobal && /* @__PURE__ */ jsx98("p", { className: "thread-plugins-note", children: /* @__PURE__ */ jsx98("button", { type: "button", onClick: onOpenGlobal, children: t2("settings.threadPluginsOpenGlobal") }) })
+      !plugin.globalEnabled && onOpenGlobal && /* @__PURE__ */ jsx99("p", { className: "thread-plugins-note", children: /* @__PURE__ */ jsx99("button", { type: "button", onClick: onOpenGlobal, children: t2("settings.threadPluginsOpenGlobal") }) })
     ] }) : null,
-    (hasSettings || plugin.settingsOverridden) && /* @__PURE__ */ jsxs84("div", { className: "thread-plugins-actions", children: [
-      hasSettings && !readOnly && /* @__PURE__ */ jsxs84("button", { type: "button", disabled: busy, onClick: onEdit, children: [
-        /* @__PURE__ */ jsx98(Settings3, { size: 13, "aria-hidden": true }),
+    (hasSettings || plugin.settingsOverridden) && /* @__PURE__ */ jsxs85("div", { className: "thread-plugins-actions", children: [
+      hasSettings && !readOnly && /* @__PURE__ */ jsxs85("button", { type: "button", disabled: busy, onClick: onEdit, children: [
+        /* @__PURE__ */ jsx99(Settings3, { size: 13, "aria-hidden": true }),
         t2("settings.threadPluginsSettings")
       ] }),
-      plugin.settingsOverridden && /* @__PURE__ */ jsxs84(Fragment34, { children: [
-        /* @__PURE__ */ jsx98("span", { className: "thread-plugins-tag", children: t2("settings.threadPluginsCustom") }),
-        !readOnly && /* @__PURE__ */ jsxs84(
+      plugin.settingsOverridden && /* @__PURE__ */ jsxs85(Fragment35, { children: [
+        /* @__PURE__ */ jsx99("span", { className: "thread-plugins-tag", children: t2("settings.threadPluginsCustom") }),
+        !readOnly && /* @__PURE__ */ jsxs85(
           "button",
           {
             type: "button",
             disabled: busy,
             onClick: () => void scope.resetSettings(plugin.id),
             children: [
-              /* @__PURE__ */ jsx98(RotateCcw, { size: 13, "aria-hidden": true }),
+              /* @__PURE__ */ jsx99(RotateCcw, { size: 13, "aria-hidden": true }),
               t2("settings.threadPluginsReset")
             ]
           }
@@ -26636,12 +26769,12 @@ function ThreadPluginSettingsDialog({
 }) {
   const { t: t2 } = useI18n();
   const device = useDevicePlugins();
-  const [generation, setGeneration] = useState71(0);
+  const [generation, setGeneration] = useState72(0);
   const enabled = useRef52(null);
   const descriptor = useRef52(plugin);
   descriptor.current = plugin;
   const overridden = useRef52(plugin.settingsOverridden);
-  useEffect51(() => {
+  useEffect52(() => {
     if (overridden.current && !plugin.settingsOverridden)
       setGeneration((value) => value + 1);
     overridden.current = plugin.settingsOverridden;
@@ -26681,20 +26814,20 @@ function ThreadPluginSettingsDialog({
     ]
   );
   const sections = module?.settingsSections ?? [];
-  return /* @__PURE__ */ jsx98(Dialog, { open: true, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxs84(
+  return /* @__PURE__ */ jsx99(Dialog, { open: true, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxs85(
     DialogContent,
     {
       className: "thread-graph-dialog matter-settings-dialog plugin-settings-dialog",
       overlayClassName: "plugin-settings-overlay",
       children: [
-        /* @__PURE__ */ jsxs84(DialogHeader, { className: "plugin-settings-dialog-header", children: [
-          /* @__PURE__ */ jsx98(DialogTitle, { children: t2("settings.threadPluginsSettingsTitle", { name: plugin.name }) }),
-          /* @__PURE__ */ jsx98(DialogDescription, { children: t2("settings.threadPluginsSettingsHint") })
+        /* @__PURE__ */ jsxs85(DialogHeader, { className: "plugin-settings-dialog-header", children: [
+          /* @__PURE__ */ jsx99(DialogTitle, { children: t2("settings.threadPluginsSettingsTitle", { name: plugin.name }) }),
+          /* @__PURE__ */ jsx99(DialogDescription, { children: t2("settings.threadPluginsSettingsHint") })
         ] }),
-        /* @__PURE__ */ jsxs84("div", { className: "plugin-settings-dialog-body", children: [
-          plugin.settingsOverridden && /* @__PURE__ */ jsxs84("p", { className: "thread-plugins-note", role: "note", children: [
+        /* @__PURE__ */ jsxs85("div", { className: "plugin-settings-dialog-body", children: [
+          plugin.settingsOverridden && /* @__PURE__ */ jsxs85("p", { className: "thread-plugins-note", role: "note", children: [
             t2("settings.threadPluginsCustom"),
-            /* @__PURE__ */ jsx98(
+            /* @__PURE__ */ jsx99(
               "button",
               {
                 type: "button",
@@ -26704,7 +26837,7 @@ function ThreadPluginSettingsDialog({
               }
             )
           ] }),
-          sections.map((section) => /* @__PURE__ */ jsx98("div", { children: section.render(context) }, `${section.id}:${generation}`))
+          sections.map((section) => /* @__PURE__ */ jsx99("div", { children: section.render(context) }, `${section.id}:${generation}`))
         ] })
       ]
     }
@@ -26712,21 +26845,21 @@ function ThreadPluginSettingsDialog({
 }
 
 // src/app-shell/PhoneHandChoice.tsx
-import { jsx as jsx99, jsxs as jsxs85 } from "react/jsx-runtime";
+import { jsx as jsx100, jsxs as jsxs86 } from "react/jsx-runtime";
 function PhoneHandChoice({ hand, onChange }) {
   useI18n();
-  return /* @__PURE__ */ jsxs85("div", { className: "mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2", children: [
-    /* @__PURE__ */ jsxs85("div", { className: "min-w-0", children: [
-      /* @__PURE__ */ jsx99("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneHand") }),
-      /* @__PURE__ */ jsx99("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneHandHint") })
+  return /* @__PURE__ */ jsxs86("div", { className: "mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2", children: [
+    /* @__PURE__ */ jsxs86("div", { className: "min-w-0", children: [
+      /* @__PURE__ */ jsx100("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneHand") }),
+      /* @__PURE__ */ jsx100("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneHandHint") })
     ] }),
-    /* @__PURE__ */ jsx99(
+    /* @__PURE__ */ jsx100(
       "div",
       {
         role: "radiogroup",
         "aria-label": translate("workbench.phoneHand"),
         className: "inline-flex shrink-0 rounded-full border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] p-0.5",
-        children: ["left", "right"].map((value) => /* @__PURE__ */ jsx99(
+        children: ["left", "right"].map((value) => /* @__PURE__ */ jsx100(
           "button",
           {
             type: "button",
@@ -26744,15 +26877,15 @@ function PhoneHandChoice({ hand, onChange }) {
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect52, useRef as useRef53, useState as useState72 } from "react";
-import { jsx as jsx100, jsxs as jsxs86 } from "react/jsx-runtime";
+import { useEffect as useEffect53, useRef as useRef53, useState as useState73 } from "react";
+import { jsx as jsx101, jsxs as jsxs87 } from "react/jsx-runtime";
 function MenuIcon() {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx100("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx100("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
+  return /* @__PURE__ */ jsx101("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx101("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
 }
 function CloseIcon() {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx100("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx100("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
+  return /* @__PURE__ */ jsx101("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx101("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
 }
 function menuItemClassName(disabled = false) {
   return `flex w-full items-center rounded-[0.95rem] px-3 py-2 text-left text-sm transition ${disabled ? "cursor-not-allowed bg-[var(--theme-muted)] text-[var(--theme-fg-muted)]" : "text-[var(--theme-fg)] hover:bg-[var(--theme-hover)]"}`;
@@ -26792,7 +26925,7 @@ function AppShellMenuButton({ className = "" }) {
   if (!shellNav) {
     return null;
   }
-  return /* @__PURE__ */ jsx100(
+  return /* @__PURE__ */ jsx101(
     "button",
     {
       type: "button",
@@ -26801,7 +26934,7 @@ function AppShellMenuButton({ className = "" }) {
       "aria-controls": "app-shell-navigation-menu",
       onClick: shellNav.toggleNav,
       className: `inline-flex h-10 w-10 shrink-0 items-center justify-center text-[var(--theme-fg)] transition hover:text-[var(--theme-fg-soft)] ${className}`.trim(),
-      children: shellNav.navOpen ? /* @__PURE__ */ jsx100(CloseIcon, {}) : /* @__PURE__ */ jsx100(MenuIcon, {})
+      children: shellNav.navOpen ? /* @__PURE__ */ jsx101(CloseIcon, {}) : /* @__PURE__ */ jsx101(MenuIcon, {})
     }
   );
 }
@@ -26814,7 +26947,7 @@ function AppShellNavigationMenu({
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
   const menuRef = useRef53(null);
-  useEffect52(() => {
+  useEffect53(() => {
     if (!shellNav?.navOpen) {
       return;
     }
@@ -26842,7 +26975,7 @@ function AppShellNavigationMenu({
   if (!shellNav?.navOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs86(
+  return /* @__PURE__ */ jsxs87(
     "div",
     {
       ref: menuRef,
@@ -26852,14 +26985,14 @@ function AppShellNavigationMenu({
       onTouchStart: (event) => event.stopPropagation(),
       className: `rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] p-4 shadow-2xl shadow-black/15 backdrop-blur ${className}`.trim(),
       children: [
-        /* @__PURE__ */ jsxs86("div", { children: [
-          /* @__PURE__ */ jsx100("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Pockymoe" }),
-          /* @__PURE__ */ jsx100("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.navigation") })
+        /* @__PURE__ */ jsxs87("div", { children: [
+          /* @__PURE__ */ jsx101("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Pockymoe" }),
+          /* @__PURE__ */ jsx101("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.navigation") })
         ] }),
-        /* @__PURE__ */ jsxs86("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
+        /* @__PURE__ */ jsxs87("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
           items.map((item) => {
             const active = currentPath === item.href;
-            return /* @__PURE__ */ jsx100(
+            return /* @__PURE__ */ jsx101(
               "button",
               {
                 type: "button",
@@ -26877,7 +27010,7 @@ function AppShellNavigationMenu({
               item.href
             );
           }),
-          /* @__PURE__ */ jsx100(
+          /* @__PURE__ */ jsx101(
             "button",
             {
               type: "button",
@@ -26906,8 +27039,8 @@ function AppShellSettingsDialog({
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
   const plugins = usePlugins();
-  const [pluginImportDraft, setPluginImportDraft] = useState72("");
-  const [pluginImportState, setPluginImportState] = useState72({
+  const [pluginImportDraft, setPluginImportDraft] = useState73("");
+  const [pluginImportState, setPluginImportState] = useState73({
     busy: false,
     message: null,
     error: null
@@ -26915,7 +27048,7 @@ function AppShellSettingsDialog({
   const selectedThemeMode = shellNav?.themeMode ?? "system";
   const effectiveTheme = shellNav?.effectiveTheme ?? "dark";
   const autoCollapseCompletedTurns = shellNav?.autoCollapseCompletedTurns ?? true;
-  useEffect52(() => {
+  useEffect53(() => {
     if (!shellNav?.settingsOpen) {
       return;
     }
@@ -26974,8 +27107,8 @@ function AppShellSettingsDialog({
   if (!shellNav?.settingsOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs86("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
-    /* @__PURE__ */ jsx100(
+  return /* @__PURE__ */ jsxs87("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
+    /* @__PURE__ */ jsx101(
       "button",
       {
         type: "button",
@@ -26984,7 +27117,7 @@ function AppShellSettingsDialog({
         className: "ui-overlay-scrim absolute inset-0 backdrop-blur-sm"
       }
     ),
-    /* @__PURE__ */ jsxs86(
+    /* @__PURE__ */ jsxs87(
       "section",
       {
         role: "dialog",
@@ -26992,62 +27125,62 @@ function AppShellSettingsDialog({
         "aria-label": translate("files.settings"),
         className: "relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-4xl flex-col overflow-hidden rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] shadow-2xl shadow-black/20",
         children: [
-          /* @__PURE__ */ jsx100("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs86("div", { className: "flex items-start justify-between gap-3", children: [
-            /* @__PURE__ */ jsxs86("div", { children: [
-              /* @__PURE__ */ jsx100("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.settings") }),
-              /* @__PURE__ */ jsx100("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: translate("files.settings") }),
-              /* @__PURE__ */ jsx100("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: translate("files.manageAppearanceAndThreadUIPlugins") })
+          /* @__PURE__ */ jsx101("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs87("div", { className: "flex items-start justify-between gap-3", children: [
+            /* @__PURE__ */ jsxs87("div", { children: [
+              /* @__PURE__ */ jsx101("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: translate("files.settings") }),
+              /* @__PURE__ */ jsx101("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: translate("files.settings") }),
+              /* @__PURE__ */ jsx101("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: translate("files.manageAppearanceAndThreadUIPlugins") })
             ] }),
-            /* @__PURE__ */ jsx100(
+            /* @__PURE__ */ jsx101(
               "button",
               {
                 type: "button",
                 "aria-label": translate("files.closeSettings"),
                 onClick: shellNav.closeSettings,
                 className: "inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--theme-border-strong)] bg-[var(--theme-surface-strong)] text-[var(--theme-fg)] transition hover:border-[var(--theme-border-contrast)] hover:bg-[var(--theme-hover)]",
-                children: /* @__PURE__ */ jsx100(CloseIcon, {})
+                children: /* @__PURE__ */ jsx101(CloseIcon, {})
               }
             )
           ] }) }),
-          /* @__PURE__ */ jsx100("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs86("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsxs86("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsx100("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs86("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx100("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
-                /* @__PURE__ */ jsxs86("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
+          /* @__PURE__ */ jsx101("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs87("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxs87("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsx101("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs87("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx101("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
+                /* @__PURE__ */ jsxs87("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
                   translate("files.chooseLightDarkOrFollowTheSystem"),
                   " ",
                   effectiveTheme,
                   "."
                 ] })
               ] }) }),
-              /* @__PURE__ */ jsx100("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
+              /* @__PURE__ */ jsx101("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
                 const active = selectedThemeMode === option.value;
-                return /* @__PURE__ */ jsxs86(
+                return /* @__PURE__ */ jsxs87(
                   "button",
                   {
                     type: "button",
                     onClick: () => shellNav.setThemeMode(option.value),
                     className: `block rounded-[1rem] border px-3 py-2.5 text-left transition ${active ? "border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)]" : "border-[var(--theme-border)] bg-[var(--theme-surface-strong)] hover:bg-[var(--theme-hover)]"}`,
                     children: [
-                      /* @__PURE__ */ jsxs86("div", { className: "flex items-center justify-between gap-3", children: [
-                        /* @__PURE__ */ jsx100("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
-                        active ? /* @__PURE__ */ jsx100("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: translate("files.active") }) : null
+                      /* @__PURE__ */ jsxs87("div", { className: "flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx101("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
+                        active ? /* @__PURE__ */ jsx101("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: translate("files.active") }) : null
                       ] }),
-                      /* @__PURE__ */ jsx100("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
+                      /* @__PURE__ */ jsx101("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
                     ]
                   },
                   option.value
                 );
               }) })
             ] }),
-            shellNav?.setPhoneDock ? /* @__PURE__ */ jsxs86("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsxs86("div", { className: "flex items-start justify-between gap-4", children: [
-                /* @__PURE__ */ jsxs86("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx100("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneDockSetting") }),
-                  /* @__PURE__ */ jsx100("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneDockSettingHint") })
+            shellNav?.setPhoneDock ? /* @__PURE__ */ jsxs87("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsxs87("div", { className: "flex items-start justify-between gap-4", children: [
+                /* @__PURE__ */ jsxs87("div", { className: "min-w-0", children: [
+                  /* @__PURE__ */ jsx101("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("workbench.phoneDockSetting") }),
+                  /* @__PURE__ */ jsx101("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("workbench.phoneDockSettingHint") })
                 ] }),
-                /* @__PURE__ */ jsxs86("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
-                  /* @__PURE__ */ jsx100(
+                /* @__PURE__ */ jsxs87("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
+                  /* @__PURE__ */ jsx101(
                     "input",
                     {
                       type: "checkbox",
@@ -27056,18 +27189,18 @@ function AppShellSettingsDialog({
                       className: "h-4 w-4 accent-[var(--theme-accent-solid)]"
                     }
                   ),
-                  /* @__PURE__ */ jsx100("span", { children: translate("workbench.phoneDockSettingToggle") })
+                  /* @__PURE__ */ jsx101("span", { children: translate("workbench.phoneDockSettingToggle") })
                 ] })
               ] }),
-              shellNav.setPhoneHand && (shellNav.phoneDock ?? true) ? /* @__PURE__ */ jsx100(PhoneHandChoice, { hand: shellNav.phoneHand ?? "right", onChange: shellNav.setPhoneHand }) : null
+              shellNav.setPhoneHand && (shellNav.phoneDock ?? true) ? /* @__PURE__ */ jsx101(PhoneHandChoice, { hand: shellNav.phoneHand ?? "right", onChange: shellNav.setPhoneHand }) : null
             ] }) : null,
-            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx100("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs86("div", { className: "flex items-start justify-between gap-4", children: [
-              /* @__PURE__ */ jsxs86("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx100("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.threadTimeline") }),
-                /* @__PURE__ */ jsx100("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.collapseCompletedTurnsIntoPromptElapsedWork") })
+            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx101("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs87("div", { className: "flex items-start justify-between gap-4", children: [
+              /* @__PURE__ */ jsxs87("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx101("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.threadTimeline") }),
+                /* @__PURE__ */ jsx101("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.collapseCompletedTurnsIntoPromptElapsedWork") })
               ] }),
-              /* @__PURE__ */ jsxs86("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
-                /* @__PURE__ */ jsx100(
+              /* @__PURE__ */ jsxs87("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
+                /* @__PURE__ */ jsx101(
                   "input",
                   {
                     type: "checkbox",
@@ -27078,17 +27211,17 @@ function AppShellSettingsDialog({
                     className: "h-4 w-4 accent-[var(--theme-accent-solid)]"
                   }
                 ),
-                /* @__PURE__ */ jsx100("span", { children: translate("files.autoCollapse") })
+                /* @__PURE__ */ jsx101("span", { children: translate("files.autoCollapse") })
               ] })
             ] }) }) : null,
-            /* @__PURE__ */ jsxs86("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsxs86("div", { className: "flex items-start justify-between gap-3", children: [
-                /* @__PURE__ */ jsxs86("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx100("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.plugins") }),
-                  /* @__PURE__ */ jsx100("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.enableRenderersAndThreadExtensionsLoadedBy") })
+            /* @__PURE__ */ jsxs87("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsxs87("div", { className: "flex items-start justify-between gap-3", children: [
+                /* @__PURE__ */ jsxs87("div", { className: "min-w-0", children: [
+                  /* @__PURE__ */ jsx101("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: translate("files.plugins") }),
+                  /* @__PURE__ */ jsx101("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.enableRenderersAndThreadExtensionsLoadedBy") })
                 ] }),
-                /* @__PURE__ */ jsxs86("span", { className: "flex shrink-0 items-center gap-1", children: [
-                  /* @__PURE__ */ jsx100(
+                /* @__PURE__ */ jsxs87("span", { className: "flex shrink-0 items-center gap-1", children: [
+                  /* @__PURE__ */ jsx101(
                     "button",
                     {
                       type: "button",
@@ -27098,26 +27231,26 @@ function AppShellSettingsDialog({
                       children: plugins.loading ? translate("files.loading") : translate("files.refresh")
                     }
                   ),
-                  plugins.error && !plugins.loading ? /* @__PURE__ */ jsx100(ErrorMark, { message: plugins.error, onRetry: () => void plugins.refresh() }) : null
+                  plugins.error && !plugins.loading ? /* @__PURE__ */ jsx101(ErrorMark, { message: plugins.error, onRetry: () => void plugins.refresh() }) : null
                 ] })
               ] }),
-              /* @__PURE__ */ jsxs86("div", { className: "mt-3 grid gap-2", children: [
-                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs86(
+              /* @__PURE__ */ jsxs87("div", { className: "mt-3 grid gap-2", children: [
+                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs87(
                   "div",
                   {
                     className: "flex items-start justify-between gap-3 rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2.5",
                     children: [
-                      /* @__PURE__ */ jsxs86("span", { className: "min-w-0", children: [
-                        /* @__PURE__ */ jsx100("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
-                        /* @__PURE__ */ jsx100("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
-                        /* @__PURE__ */ jsx100("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
+                      /* @__PURE__ */ jsxs87("span", { className: "min-w-0", children: [
+                        /* @__PURE__ */ jsx101("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
+                        /* @__PURE__ */ jsx101("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
+                        /* @__PURE__ */ jsx101("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
                           ...plugin.capabilities.artifactTypes.map((type) => type.type),
                           ...plugin.capabilities.threadPanels.map((panel) => panel.kind ?? panel.id)
                         ].join(", ") || translate("files.utility") }),
-                        /* @__PURE__ */ jsx100("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? translate("files.importedManifest") : translate("files.builtInModule") })
+                        /* @__PURE__ */ jsx101("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? translate("files.importedManifest") : translate("files.builtInModule") })
                       ] }),
-                      /* @__PURE__ */ jsxs86("span", { className: "flex shrink-0 items-center gap-2", children: [
-                        plugin.source === "imported" ? /* @__PURE__ */ jsx100(
+                      /* @__PURE__ */ jsxs87("span", { className: "flex shrink-0 items-center gap-2", children: [
+                        plugin.source === "imported" ? /* @__PURE__ */ jsx101(
                           "button",
                           {
                             type: "button",
@@ -27126,12 +27259,12 @@ function AppShellSettingsDialog({
                             children: translate("files.uninstall")
                           }
                         ) : null,
-                        /* @__PURE__ */ jsxs86("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
+                        /* @__PURE__ */ jsxs87("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
                           translate("files.toggle"),
                           " ",
                           plugin.name
                         ] }),
-                        /* @__PURE__ */ jsx100(
+                        /* @__PURE__ */ jsx101(
                           "input",
                           {
                             id: `plugin-toggle-${plugin.id}`,
@@ -27146,11 +27279,11 @@ function AppShellSettingsDialog({
                   },
                   plugin.id
                 )),
-                plugins.plugins.length === 0 && /* @__PURE__ */ jsx100("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: translate("files.noPluginsAreRegistered") })
+                plugins.plugins.length === 0 && /* @__PURE__ */ jsx101("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: translate("files.noPluginsAreRegistered") })
               ] }),
-              /* @__PURE__ */ jsxs86("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
-                /* @__PURE__ */ jsx100("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: translate("files.importPlugin") }),
-                /* @__PURE__ */ jsx100(
+              /* @__PURE__ */ jsxs87("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
+                /* @__PURE__ */ jsx101("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: translate("files.importPlugin") }),
+                /* @__PURE__ */ jsx101(
                   "textarea",
                   {
                     value: pluginImportDraft,
@@ -27165,10 +27298,10 @@ function AppShellSettingsDialog({
                     className: "mt-2 min-h-28 w-full resize-y rounded-[0.9rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2 font-mono text-xs leading-5 text-[var(--theme-fg)] outline-none transition placeholder:text-[var(--theme-fg-muted)] focus:border-[var(--theme-accent-border)]"
                   }
                 ),
-                /* @__PURE__ */ jsxs86("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
-                  /* @__PURE__ */ jsx100("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.importsRegisterManifestDeclaredArtifactTypesRendering") }),
-                  /* @__PURE__ */ jsxs86("span", { className: "flex items-center gap-1", children: [
-                    /* @__PURE__ */ jsx100(
+                /* @__PURE__ */ jsxs87("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
+                  /* @__PURE__ */ jsx101("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: translate("files.importsRegisterManifestDeclaredArtifactTypesRendering") }),
+                  /* @__PURE__ */ jsxs87("span", { className: "flex items-center gap-1", children: [
+                    /* @__PURE__ */ jsx101(
                       "button",
                       {
                         type: "button",
@@ -27178,10 +27311,10 @@ function AppShellSettingsDialog({
                         children: pluginImportState.busy ? translate("files.importing") : translate("files.import")
                       }
                     ),
-                    pluginImportState.error ? /* @__PURE__ */ jsx100(ErrorMark, { message: pluginImportState.error }) : null
+                    pluginImportState.error ? /* @__PURE__ */ jsx101(ErrorMark, { message: pluginImportState.error }) : null
                   ] })
                 ] }),
-                pluginImportState.message && /* @__PURE__ */ jsx100("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
+                pluginImportState.message && /* @__PURE__ */ jsx101("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
               ] })
             ] }),
             extraContent
@@ -27193,7 +27326,7 @@ function AppShellSettingsDialog({
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { useEffect as useEffect53, useLayoutEffect as useLayoutEffect19, useMemo as useMemo23, useRef as useRef54, useState as useState73 } from "react";
+import { useEffect as useEffect54, useLayoutEffect as useLayoutEffect19, useMemo as useMemo23, useRef as useRef54, useState as useState74 } from "react";
 import { ArrowLeft as ArrowLeft4, ArrowUpRight, ChevronRight as ChevronRight7, ChevronUp as ChevronUp4, Folder as Folder3, List, Monitor as Monitor2, Network as Network2, RotateCw as RotateCw2 } from "lucide-react";
 
 // src/components/threadMap/model.ts
@@ -27282,7 +27415,7 @@ function indexMap(root) {
 
 // src/components/threadMap/ThreadTile.tsx
 import { Network } from "lucide-react";
-import { jsx as jsx101, jsxs as jsxs87 } from "react/jsx-runtime";
+import { jsx as jsx102, jsxs as jsxs88 } from "react/jsx-runtime";
 var MINUTE2 = 6e4;
 var HOUR = 60 * MINUTE2;
 var DAY = 24 * HOUR;
@@ -27300,7 +27433,7 @@ var MONOGRAMS = {
 };
 var monogram = (agent) => MONOGRAMS[agent] ?? agent.replace(/[^a-z0-9]/gi, "").slice(0, 2).replace(/^./, (c) => c.toUpperCase());
 function AgentChip({ agent }) {
-  return agent ? /* @__PURE__ */ jsx101("span", { className: "thread-map-agent", "data-agent": agent, "aria-hidden": "true", children: monogram(agent) }) : null;
+  return agent ? /* @__PURE__ */ jsx102("span", { className: "thread-map-agent", "data-agent": agent, "aria-hidden": "true", children: monogram(agent) }) : null;
 }
 function formatRunTime(ms) {
   const minutes = Math.round(ms / MINUTE2);
@@ -27371,13 +27504,13 @@ function AgeGlyph({ tier }) {
   const fraction = (tier + 1) / 5;
   const angle = fraction * 2 * Math.PI;
   const x = 8 + 5 * Math.sin(angle), y = 8 - 5 * Math.cos(angle);
-  return /* @__PURE__ */ jsxs87("svg", { className: "thread-map-age-glyph", "data-age": tier, viewBox: "0 0 16 16", "aria-hidden": "true", children: [
-    /* @__PURE__ */ jsx101("circle", { cx: "8", cy: "8", r: "6.6", fill: "none", stroke: "currentColor", strokeWidth: "1.4" }),
-    fraction >= 1 ? /* @__PURE__ */ jsx101("circle", { cx: "8", cy: "8", r: "5", fill: "currentColor" }) : /* @__PURE__ */ jsx101("path", { d: `M8 8 L8 3 A5 5 0 ${fraction > 0.5 ? 1 : 0} 1 ${x.toFixed(2)} ${y.toFixed(2)} Z`, fill: "currentColor" })
+  return /* @__PURE__ */ jsxs88("svg", { className: "thread-map-age-glyph", "data-age": tier, viewBox: "0 0 16 16", "aria-hidden": "true", children: [
+    /* @__PURE__ */ jsx102("circle", { cx: "8", cy: "8", r: "6.6", fill: "none", stroke: "currentColor", strokeWidth: "1.4" }),
+    fraction >= 1 ? /* @__PURE__ */ jsx102("circle", { cx: "8", cy: "8", r: "5", fill: "currentColor" }) : /* @__PURE__ */ jsx102("path", { d: `M8 8 L8 3 A5 5 0 ${fraction > 0.5 ? 1 : 0} 1 ${x.toFixed(2)} ${y.toFixed(2)} Z`, fill: "currentColor" })
   ] });
 }
 function Spark({ hourly }) {
-  return /* @__PURE__ */ jsx101("span", { className: "thread-map-spark", "aria-hidden": "true", children: hourly.map((ms, hour) => /* @__PURE__ */ jsx101("i", { "data-zero": ms <= 0 || void 0, style: { "--h": Math.min(1, ms / HOUR).toFixed(3) } }, hour)) });
+  return /* @__PURE__ */ jsx102("span", { className: "thread-map-spark", "aria-hidden": "true", children: hourly.map((ms, hour) => /* @__PURE__ */ jsx102("i", { "data-zero": ms <= 0 || void 0, style: { "--h": Math.min(1, ms / HOUR).toFixed(3) } }, hour)) });
 }
 function tileTier(box) {
   const { width: w, height: h } = box;
@@ -27391,8 +27524,8 @@ function tileTier(box) {
 var FIT = { padding: 18, gap: 5, who: 14, grid: 32, column: 56, meta: 14, usage: 22, spark: 14, promptLine: 16 };
 function Usage({ thread }) {
   if (!thread.tokenUsage && !thread.priceEstimate) return null;
-  return /* @__PURE__ */ jsxs87("span", { className: "thread-map-usage", children: [
-    /* @__PURE__ */ jsx101(
+  return /* @__PURE__ */ jsxs88("span", { className: "thread-map-usage", children: [
+    /* @__PURE__ */ jsx102(
       TokenUsageCost,
       {
         usage: thread.tokenUsage,
@@ -27400,8 +27533,8 @@ function Usage({ thread }) {
         ...thread.pricePartial ? { detailsNote: translate("workbench.threadMapPricePartial") } : {}
       }
     ),
-    thread.tokenUsage ? /* @__PURE__ */ jsxs87("span", { className: "thread-map-tokens", title: translate("chat.totalTokens", { value1: thread.tokenUsage.totalTokens.toLocaleString(getLocale()) }), children: [
-      /* @__PURE__ */ jsx101(TokenMetricIcon, {}),
+    thread.tokenUsage ? /* @__PURE__ */ jsxs88("span", { className: "thread-map-tokens", title: translate("chat.totalTokens", { value1: thread.tokenUsage.totalTokens.toLocaleString(getLocale()) }), children: [
+      /* @__PURE__ */ jsx102(TokenMetricIcon, {}),
       formatCompactTokenCount(thread.tokenUsage.totalTokens)
     ] }) : null
   ] });
@@ -27412,7 +27545,7 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
   const tier = tileTier(box);
   const details = threadDetails(node, hours);
   const age = ageTier(thread.createdAt);
-  const chip = /* @__PURE__ */ jsx101(AgentChip, { agent: thread.agent });
+  const chip = /* @__PURE__ */ jsx102(AgentChip, { agent: thread.agent });
   const titled = tier !== "icon" && tier !== "dot";
   const lineHeight = tier === "card" ? 19 : tier === "large" ? 17 : 16;
   const childCount = thread.children?.length ?? 0;
@@ -27442,16 +27575,16 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
   const sparkHeight = FIT.spark + Math.max(0, Math.min(28, Math.floor(left * 0.4)));
   const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model].filter(Boolean).join(" \xB7 ") : "";
   const from = w >= 160 && thread.from ? translate("workbench.threadMapFrom", { title: thread.from }) : "";
-  const status = thread.running ? /* @__PURE__ */ jsxs87("span", { className: "thread-map-tile-live", children: [
-    /* @__PURE__ */ jsx101("i", { className: "thread-map-running-dot" }),
+  const status = thread.running ? /* @__PURE__ */ jsxs88("span", { className: "thread-map-tile-live", children: [
+    /* @__PURE__ */ jsx102("i", { className: "thread-map-running-dot" }),
     translate("workbench.threadMapRunning")
-  ] }) : thread.lastActiveAt ? /* @__PURE__ */ jsx101("span", { children: translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) }) : null;
+  ] }) : thread.lastActiveAt ? /* @__PURE__ */ jsx102("span", { children: translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) }) : null;
   const short = [
     translate("workbench.threadMapTurns", { count: thread.turns ?? 0 }),
     thread.totalMs && w >= 110 ? translate("workbench.threadMapTotalShort", { duration: formatShortDuration(thread.totalMs) }) : null,
     thread.priceEstimate && w >= 170 ? formatCompactUsd(thread.priceEstimate.totalUsd) : null
   ].filter(Boolean).join(" \xB7 ");
-  const childrenButton = (count) => /* @__PURE__ */ jsxs87(
+  const childrenButton = (count) => /* @__PURE__ */ jsxs88(
     "button",
     {
       type: "button",
@@ -27460,12 +27593,12 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
       "aria-label": translate("workbench.threadMapShowChildren", { count: childCount, title: thread.title }),
       title: translate("workbench.threadMapShowChildren", { count: childCount, title: thread.title }),
       children: [
-        /* @__PURE__ */ jsx101(Network, { "aria-hidden": "true" }),
-        count && /* @__PURE__ */ jsx101("span", { children: childCount })
+        /* @__PURE__ */ jsx102(Network, { "aria-hidden": "true" }),
+        count && /* @__PURE__ */ jsx102("span", { children: childCount })
       ]
     }
   );
-  return /* @__PURE__ */ jsxs87(
+  return /* @__PURE__ */ jsxs88(
     "div",
     {
       className: "thread-map-tile",
@@ -27477,7 +27610,7 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
       "data-current": current || void 0,
       style: { left: box.x, top: box.y, width: w, height: h, "--lines": lines, "--prompt-lines": promptLines, "--spark-h": `${sparkHeight}px` },
       children: [
-        /* @__PURE__ */ jsx101(
+        /* @__PURE__ */ jsx102(
           "a",
           {
             href: thread.href,
@@ -27489,45 +27622,45 @@ function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }
             ...hover
           }
         ),
-        tier !== "dot" && /* @__PURE__ */ jsxs87("span", { className: "thread-map-tile-head", children: [
+        tier !== "dot" && /* @__PURE__ */ jsxs88("span", { className: "thread-map-tile-head", children: [
           chip,
-          (thread.failed || thread.interrupted) && !thread.running ? /* @__PURE__ */ jsx101(StatusMark, { status: thread.failed ? "failed" : "interrupted" }) : null,
-          titled && /* @__PURE__ */ jsx101("span", { className: "thread-map-tile-title", children: thread.title }),
+          (thread.failed || thread.interrupted) && !thread.running ? /* @__PURE__ */ jsx102(StatusMark, { status: thread.failed ? "failed" : "interrupted" }) : null,
+          titled && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-title", children: thread.title }),
           showChildren && childrenButton(childrenWidth > 24),
-          showAge && /* @__PURE__ */ jsxs87("span", { className: "thread-map-age", title: thread.createdAt ? translate("workbench.threadMapCreated", { date: formatDate(thread.createdAt, { dateStyle: "medium" }) }) : void 0, children: [
-            /* @__PURE__ */ jsx101(AgeGlyph, { tier: age }),
-            showAgeText && /* @__PURE__ */ jsx101("span", { children: formatAge(thread.createdAt) })
+          showAge && /* @__PURE__ */ jsxs88("span", { className: "thread-map-age", title: thread.createdAt ? translate("workbench.threadMapCreated", { date: formatDate(thread.createdAt, { dateStyle: "medium" }) }) : void 0, children: [
+            /* @__PURE__ */ jsx102(AgeGlyph, { tier: age }),
+            showAgeText && /* @__PURE__ */ jsx102("span", { children: formatAge(thread.createdAt) })
           ] })
         ] }),
-        childrenRow && /* @__PURE__ */ jsx101("span", { className: "thread-map-tile-children-row", children: childrenButton(true) }),
-        showWho && (who || from || status || thread.failed) && /* @__PURE__ */ jsxs87("span", { className: "thread-map-tile-sub", children: [
-          who && /* @__PURE__ */ jsx101("span", { className: "thread-map-tile-who", children: who }),
-          from && /* @__PURE__ */ jsx101("span", { className: "thread-map-tile-from", children: from }),
-          thread.failed && /* @__PURE__ */ jsx101("span", { className: "thread-map-tile-failed", children: translate("workbench.threadMapFailedTurn") }),
+        childrenRow && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-children-row", children: childrenButton(true) }),
+        showWho && (who || from || status || thread.failed) && /* @__PURE__ */ jsxs88("span", { className: "thread-map-tile-sub", children: [
+          who && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-who", children: who }),
+          from && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-from", children: from }),
+          thread.failed && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-failed", children: translate("workbench.threadMapFailedTurn") }),
           status
         ] }),
-        prompt && /* @__PURE__ */ jsx101("span", { className: "thread-map-tile-prompt", children: prompt }),
-        (figures === "grid" || figures === "column") && /* @__PURE__ */ jsxs87("span", { className: "thread-map-stats", "data-layout": figures, children: [
-          /* @__PURE__ */ jsxs87("span", { children: [
-            /* @__PURE__ */ jsx101("b", { children: thread.turns }),
-            /* @__PURE__ */ jsx101("small", { children: translate("workbench.threadMapStatTurns") })
+        prompt && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-prompt", children: prompt }),
+        (figures === "grid" || figures === "column") && /* @__PURE__ */ jsxs88("span", { className: "thread-map-stats", "data-layout": figures, children: [
+          /* @__PURE__ */ jsxs88("span", { children: [
+            /* @__PURE__ */ jsx102("b", { children: thread.turns }),
+            /* @__PURE__ */ jsx102("small", { children: translate("workbench.threadMapStatTurns") })
           ] }),
-          /* @__PURE__ */ jsxs87("span", { children: [
-            /* @__PURE__ */ jsx101("b", { children: thread.totalMs ? formatShortDuration(thread.totalMs) : "\u2014" }),
-            /* @__PURE__ */ jsx101("small", { children: translate("workbench.threadMapStatTotal") })
+          /* @__PURE__ */ jsxs88("span", { children: [
+            /* @__PURE__ */ jsx102("b", { children: thread.totalMs ? formatShortDuration(thread.totalMs) : "\u2014" }),
+            /* @__PURE__ */ jsx102("small", { children: translate("workbench.threadMapStatTotal") })
           ] }),
-          /* @__PURE__ */ jsxs87("span", { children: [
-            /* @__PURE__ */ jsx101("b", { children: thread.activeMs ? formatShortDuration(thread.activeMs) : "\u2014" }),
-            /* @__PURE__ */ jsx101("small", { children: translate("workbench.threadMapStatRecent", { hours }) })
+          /* @__PURE__ */ jsxs88("span", { children: [
+            /* @__PURE__ */ jsx102("b", { children: thread.activeMs ? formatShortDuration(thread.activeMs) : "\u2014" }),
+            /* @__PURE__ */ jsx102("small", { children: translate("workbench.threadMapStatRecent", { hours }) })
           ] }),
-          usage === "cell" && /* @__PURE__ */ jsxs87("span", { className: "thread-map-stat-usage", children: [
-            /* @__PURE__ */ jsx101(Usage, { thread }),
-            /* @__PURE__ */ jsx101("small", { children: translate("workbench.threadMapStatCost") })
+          usage === "cell" && /* @__PURE__ */ jsxs88("span", { className: "thread-map-stat-usage", children: [
+            /* @__PURE__ */ jsx102(Usage, { thread }),
+            /* @__PURE__ */ jsx102("small", { children: translate("workbench.threadMapStatCost") })
           ] })
         ] }),
-        usage === "row" && /* @__PURE__ */ jsx101(Usage, { thread }),
-        figures === "line" && /* @__PURE__ */ jsx101("span", { className: "thread-map-tile-meta", children: short }),
-        showSpark && /* @__PURE__ */ jsx101(Spark, { hourly: thread.hourlyMs })
+        usage === "row" && /* @__PURE__ */ jsx102(Usage, { thread }),
+        figures === "line" && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-meta", children: short }),
+        showSpark && /* @__PURE__ */ jsx102(Spark, { hourly: thread.hourlyMs })
       ]
     }
   );
@@ -27574,7 +27707,7 @@ function squarify(items, weight, bounds) {
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { Fragment as Fragment35, jsx as jsx102, jsxs as jsxs88 } from "react/jsx-runtime";
+import { Fragment as Fragment36, jsx as jsx103, jsxs as jsxs89 } from "react/jsx-runtime";
 var HEADER = 26;
 function describe(node, hours) {
   if (node.thread) return threadDetails(node, hours);
@@ -27600,8 +27733,8 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
   const allLabel = translate("workbench.threadMapAll");
   const root = useMemo23(() => buildThreadMap(devices, allLabel), [devices, allLabel]);
   const nodes = useMemo23(() => indexMap(root), [root]);
-  const [focusId, setFocusId] = useState73(null);
-  const [openGroups, setOpenGroups] = useState73(() => /* @__PURE__ */ new Set());
+  const [focusId, setFocusId] = useState74(null);
+  const [openGroups, setOpenGroups] = useState74(() => /* @__PURE__ */ new Set());
   const toggleGroup = (key) => {
     setTip(null);
     setOpenGroups((current2) => {
@@ -27615,9 +27748,9 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
   const stage = useRef54(null);
   const crumbs = useRef54(null);
   const zoomPlan = useRef54(null);
-  const [size, setSize] = useState73({ width: 0, height: 0 });
-  const [tip, setTip] = useState73(null);
-  useEffect53(() => {
+  const [size, setSize] = useState74({ width: 0, height: 0 });
+  const [tip, setTip] = useState74(null);
+  useEffect54(() => {
     const node = canvas.current;
     if (!node) return;
     const measure = () => setSize({ width: node.clientWidth, height: node.clientHeight });
@@ -27677,7 +27810,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
   }, [current.id]);
   const gesture = useRef54({ navigate, current, root, nodes, onDismiss });
   gesture.current = { navigate, current, root, nodes, onDismiss };
-  useEffect53(() => {
+  useEffect54(() => {
     const node = canvas.current;
     if (!node) return;
     let pinch = null;
@@ -27833,7 +27966,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
       tokens: child.tokenUsage?.totalTokens ?? 0
     })).sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
     const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
-    return /* @__PURE__ */ jsxs88(
+    return /* @__PURE__ */ jsxs89(
       "section",
       {
         className: "thread-map-section thread-map-group",
@@ -27842,8 +27975,8 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
         "aria-label": thread.title,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          /* @__PURE__ */ jsxs88("div", { className: "thread-map-group-head", children: [
-            /* @__PURE__ */ jsxs88(
+          /* @__PURE__ */ jsxs89("div", { className: "thread-map-group-head", children: [
+            /* @__PURE__ */ jsxs89(
               "button",
               {
                 type: "button",
@@ -27852,17 +27985,17 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
                 "aria-label": translate("workbench.threadMapHideChildren", { title: thread.title }),
                 onClick: () => toggleGroup(thread.key),
                 children: [
-                  /* @__PURE__ */ jsx102(AgentChip, { agent: thread.agent }),
-                  /* @__PURE__ */ jsx102("span", { className: "thread-map-section-label", children: thread.title }),
-                  box.width >= 110 && /* @__PURE__ */ jsxs88("span", { className: "thread-map-section-count", children: [
-                    /* @__PURE__ */ jsx102(Network2, { "aria-hidden": "true" }),
+                  /* @__PURE__ */ jsx103(AgentChip, { agent: thread.agent }),
+                  /* @__PURE__ */ jsx103("span", { className: "thread-map-section-label", children: thread.title }),
+                  box.width >= 110 && /* @__PURE__ */ jsxs89("span", { className: "thread-map-section-count", children: [
+                    /* @__PURE__ */ jsx103(Network2, { "aria-hidden": "true" }),
                     children2.length
                   ] }),
-                  /* @__PURE__ */ jsx102(ChevronUp4, { "aria-hidden": "true" })
+                  /* @__PURE__ */ jsx103(ChevronUp4, { "aria-hidden": "true" })
                 ]
               }
             ),
-            box.width >= 80 && /* @__PURE__ */ jsx102(
+            box.width >= 80 && /* @__PURE__ */ jsx103(
               "a",
               {
                 className: "thread-map-group-open",
@@ -27870,7 +28003,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
                 onClick: open(thread),
                 "aria-label": translate("workbench.threadMapOpenThread", { title: thread.title }),
                 title: translate("workbench.threadMapOpenThread", { title: thread.title }),
-                children: /* @__PURE__ */ jsx102(ArrowUpRight, { "aria-hidden": "true" })
+                children: /* @__PURE__ */ jsx103(ArrowUpRight, { "aria-hidden": "true" })
               }
             )
           ] }),
@@ -27888,7 +28021,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     if (item.kind === "thread") {
       const thread = item.thread;
       if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
-      return /* @__PURE__ */ jsx102(
+      return /* @__PURE__ */ jsx103(
         ThreadTile,
         {
           node: item,
@@ -27913,17 +28046,17 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
     const named = box.width >= 72;
     const Icon = item.kind === "device" ? Monitor2 : Folder3;
     const zoomable = !unlisted;
-    const head = /* @__PURE__ */ jsxs88(Fragment35, { children: [
-      named && /* @__PURE__ */ jsx102(Icon, { "aria-hidden": "true" }),
-      /* @__PURE__ */ jsx102("span", { className: "thread-map-section-label", children: item.label }),
-      unlisted ? named && /* @__PURE__ */ jsx102("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx102(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs88("span", { className: "thread-map-section-count", children: [
-        item.running > 0 && /* @__PURE__ */ jsx102("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+    const head = /* @__PURE__ */ jsxs89(Fragment36, { children: [
+      named && /* @__PURE__ */ jsx103(Icon, { "aria-hidden": "true" }),
+      /* @__PURE__ */ jsx103("span", { className: "thread-map-section-label", children: item.label }),
+      unlisted ? named && /* @__PURE__ */ jsx103("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx103(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs89("span", { className: "thread-map-section-count", children: [
+        item.running > 0 && /* @__PURE__ */ jsx103("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
         item.threads,
-        item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx102("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
+        item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx103("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
       ] })
     ] });
     const zoom = (event) => navigate(item, event.currentTarget.closest("section"));
-    return /* @__PURE__ */ jsxs88(
+    return /* @__PURE__ */ jsxs89(
       "section",
       {
         "data-map-id": item.id,
@@ -27939,7 +28072,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
         "aria-label": text,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          (preview || live.length > 0) && zoomable ? /* @__PURE__ */ jsx102(
+          (preview || live.length > 0) && zoomable ? /* @__PURE__ */ jsx103(
             "button",
             {
               type: "button",
@@ -27949,12 +28082,12 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
               ...hover(lines),
               children: head
             }
-          ) : /* @__PURE__ */ jsx102("div", { className: "thread-map-section-head", children: head }),
-          preview && /* @__PURE__ */ jsx102("div", { className: "thread-map-preview", children: render(item.children, inner, depth + 1) }),
-          live.length > 0 && /* @__PURE__ */ jsx102("div", { className: "thread-map-preview", children: render(live, liveInner, depth + 1) }),
-          live.length > 0 && item.threads > live.length && /* @__PURE__ */ jsx102("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapMoreThreads", { count: item.threads - live.length }) }),
-          !preview && !live.length && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx102("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) }),
-          !preview && !live.length && zoomable && /* @__PURE__ */ jsx102(
+          ) : /* @__PURE__ */ jsx103("div", { className: "thread-map-section-head", children: head }),
+          preview && /* @__PURE__ */ jsx103("div", { className: "thread-map-preview", children: render(item.children, inner, depth + 1) }),
+          live.length > 0 && /* @__PURE__ */ jsx103("div", { className: "thread-map-preview", children: render(live, liveInner, depth + 1) }),
+          live.length > 0 && item.threads > live.length && /* @__PURE__ */ jsx103("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapMoreThreads", { count: item.threads - live.length }) }),
+          !preview && !live.length && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx103("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) }),
+          !preview && !live.length && zoomable && /* @__PURE__ */ jsx103(
             "button",
             {
               type: "button",
@@ -27964,7 +28097,7 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
               ...hover(lines)
             }
           ),
-          unlisted && state === "error" && onRetry && /* @__PURE__ */ jsx102(
+          unlisted && state === "error" && onRetry && /* @__PURE__ */ jsx103(
             "button",
             {
               type: "button",
@@ -27981,79 +28114,79 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
   });
   const children = current.children;
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
-  return /* @__PURE__ */ jsxs88("div", { className: "thread-map", children: [
-    /* @__PURE__ */ jsxs88("div", { className: "thread-map-bar", children: [
+  return /* @__PURE__ */ jsxs89("div", { className: "thread-map", children: [
+    /* @__PURE__ */ jsxs89("div", { className: "thread-map-bar", children: [
       heading,
-      /* @__PURE__ */ jsxs88("span", { className: "thread-map-summary", children: [
+      /* @__PURE__ */ jsxs89("span", { className: "thread-map-summary", children: [
         translate("workbench.threadMapThreads", { count: root.threads }),
-        root.running > 0 && /* @__PURE__ */ jsxs88(Fragment35, { children: [
+        root.running > 0 && /* @__PURE__ */ jsxs89(Fragment36, { children: [
           " \xB7 ",
-          /* @__PURE__ */ jsx102("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx103("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
           translate("workbench.threadMapRunningCount", { count: root.running })
         ] }),
-        root.usd > 0 && /* @__PURE__ */ jsxs88(Fragment35, { children: [
+        root.usd > 0 && /* @__PURE__ */ jsxs89(Fragment36, { children: [
           " \xB7 ",
           translate("workbench.threadMapCost", { usd: formatCompactUsd(root.usd) })
         ] })
       ] }),
       actions
     ] }),
-    /* @__PURE__ */ jsxs88("div", { className: "thread-map-bar thread-map-path", children: [
-      /* @__PURE__ */ jsx102("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx102(ArrowLeft4, { "aria-hidden": "true" }) }),
-      /* @__PURE__ */ jsx102("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => {
+    /* @__PURE__ */ jsxs89("div", { className: "thread-map-bar thread-map-path", children: [
+      /* @__PURE__ */ jsx103("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx103(ArrowLeft4, { "aria-hidden": "true" }) }),
+      /* @__PURE__ */ jsx103("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => {
         const href = node.workspace ? node.workspace.href : node.device?.href;
         const label = translate(node.workspace ? "workbench.threadMapOpenWorkspace" : "workbench.threadMapOpenDevice", { name: node.label });
-        return /* @__PURE__ */ jsxs88("span", { className: "thread-map-crumb", children: [
-          index > 0 && /* @__PURE__ */ jsx102(ChevronRight7, { "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx102("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), title: node.label, children: node.label }),
-          href && /* @__PURE__ */ jsx102("a", { className: "thread-map-crumb-open", href, "aria-label": label, title: label, onClick: (event) => {
+        return /* @__PURE__ */ jsxs89("span", { className: "thread-map-crumb", children: [
+          index > 0 && /* @__PURE__ */ jsx103(ChevronRight7, { "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx103("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), title: node.label, children: node.label }),
+          href && /* @__PURE__ */ jsx103("a", { className: "thread-map-crumb-open", href, "aria-label": label, title: label, onClick: (event) => {
             if (!onNavigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
             event.preventDefault();
             onNavigate(href);
-          }, children: /* @__PURE__ */ jsx102(ArrowUpRight, { "data-icon": "open", "aria-hidden": "true" }) })
+          }, children: /* @__PURE__ */ jsx103(ArrowUpRight, { "data-icon": "open", "aria-hidden": "true" }) })
         ] }, node.id);
       }) }),
-      children.length > 0 && /* @__PURE__ */ jsxs88("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
-        /* @__PURE__ */ jsx102(List, { "aria-hidden": "true" }),
-        /* @__PURE__ */ jsxs88("select", { "aria-label": translate("workbench.threadMapGoTo"), value: "", onChange: (event) => {
+      children.length > 0 && /* @__PURE__ */ jsxs89("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
+        /* @__PURE__ */ jsx103(List, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsxs89("select", { "aria-label": translate("workbench.threadMapGoTo"), value: "", onChange: (event) => {
           const node = nodes.get(event.target.value);
           if (node?.thread) onOpen(node.thread);
           else if (node) navigate(node);
         }, children: [
-          /* @__PURE__ */ jsx102("option", { value: "", children: translate("workbench.threadMapGoTo") }),
-          children.map((node) => /* @__PURE__ */ jsx102("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
+          /* @__PURE__ */ jsx103("option", { value: "", children: translate("workbench.threadMapGoTo") }),
+          children.map((node) => /* @__PURE__ */ jsx103("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs88("div", { ref: canvas, className: "thread-map-canvas", role: "group", "aria-label": current.label, children: [
-      children.length ? /* @__PURE__ */ jsx102("div", { ref: stage, className: "thread-map-stage", children: size.width > 0 && render(children, bounds, 0) }) : /* @__PURE__ */ jsx102("p", { className: "thread-map-empty", role: "status", children: devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
-      tip && /* @__PURE__ */ jsx102("div", { className: "thread-map-tip", role: "tooltip", style: { left: tip.x, top: tip.y }, "data-above": tip.above || void 0, children: tip.lines.map((line, index) => index ? /* @__PURE__ */ jsx102("span", { children: line }, index) : /* @__PURE__ */ jsx102("b", { children: line }, index)) })
+    /* @__PURE__ */ jsxs89("div", { ref: canvas, className: "thread-map-canvas", role: "group", "aria-label": current.label, children: [
+      children.length ? /* @__PURE__ */ jsx103("div", { ref: stage, className: "thread-map-stage", children: size.width > 0 && render(children, bounds, 0) }) : /* @__PURE__ */ jsx103("p", { className: "thread-map-empty", role: "status", children: devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
+      tip && /* @__PURE__ */ jsx103("div", { className: "thread-map-tip", role: "tooltip", style: { left: tip.x, top: tip.y }, "data-above": tip.above || void 0, children: tip.lines.map((line, index) => index ? /* @__PURE__ */ jsx103("span", { children: line }, index) : /* @__PURE__ */ jsx103("b", { children: line }, index)) })
     ] }),
-    /* @__PURE__ */ jsxs88("div", { className: "thread-map-legend", children: [
-      /* @__PURE__ */ jsx102("span", { children: translate("workbench.threadMapLegendSize") }),
-      /* @__PURE__ */ jsxs88("span", { className: "thread-map-scale", children: [
+    /* @__PURE__ */ jsxs89("div", { className: "thread-map-legend", children: [
+      /* @__PURE__ */ jsx103("span", { children: translate("workbench.threadMapLegendSize") }),
+      /* @__PURE__ */ jsxs89("span", { className: "thread-map-scale", children: [
         translate("workbench.threadMapLegendColor", { hours }),
-        /* @__PURE__ */ jsx102("small", { children: translate("workbench.threadMapLess") }),
-        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx102("i", { "data-heat": level, "aria-hidden": "true" }, level)),
-        /* @__PURE__ */ jsx102("small", { children: translate("workbench.threadMapMore") })
+        /* @__PURE__ */ jsx103("small", { children: translate("workbench.threadMapLess") }),
+        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx103("i", { "data-heat": level, "aria-hidden": "true" }, level)),
+        /* @__PURE__ */ jsx103("small", { children: translate("workbench.threadMapMore") })
       ] }),
-      /* @__PURE__ */ jsxs88("span", { className: "thread-map-scale thread-map-ages", children: [
+      /* @__PURE__ */ jsxs89("span", { className: "thread-map-scale thread-map-ages", children: [
         translate("workbench.threadMapLegendAge"),
-        /* @__PURE__ */ jsx102("small", { children: translate("workbench.threadMapNewer") }),
-        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx102(AgeGlyph, { tier }, tier)),
-        /* @__PURE__ */ jsx102("small", { children: translate("workbench.threadMapOlder") })
+        /* @__PURE__ */ jsx103("small", { children: translate("workbench.threadMapNewer") }),
+        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx103(AgeGlyph, { tier }, tier)),
+        /* @__PURE__ */ jsx103("small", { children: translate("workbench.threadMapOlder") })
       ] }),
-      /* @__PURE__ */ jsxs88("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsxs88("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
-          /* @__PURE__ */ jsx102("i", {}),
-          /* @__PURE__ */ jsx102("i", {}),
-          /* @__PURE__ */ jsx102("i", {}),
-          /* @__PURE__ */ jsx102("i", {})
+      /* @__PURE__ */ jsxs89("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsxs89("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
+          /* @__PURE__ */ jsx103("i", {}),
+          /* @__PURE__ */ jsx103("i", {}),
+          /* @__PURE__ */ jsx103("i", {}),
+          /* @__PURE__ */ jsx103("i", {})
         ] }),
         translate("workbench.threadMapLegendHourly")
       ] }),
-      /* @__PURE__ */ jsxs88("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsx102("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxs89("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsx103("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
         translate("workbench.threadMapLegendRunning")
       ] })
     ] })
@@ -28062,10 +28195,10 @@ function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, 
 
 // src/components/threadMap/ThreadMapDialog.tsx
 import { X as X12 } from "lucide-react";
-import { jsx as jsx103 } from "react/jsx-runtime";
+import { jsx as jsx104 } from "react/jsx-runtime";
 function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }) {
   useI18n();
-  return /* @__PURE__ */ jsx103(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx103(
+  return /* @__PURE__ */ jsx104(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx104(
     DialogContent,
     {
       showCloseButton: false,
@@ -28074,13 +28207,13 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
       "data-theme-mode": themeMode,
       className: "thread-graph-dialog matter-settings-dialog thread-map-dialog",
       overlayClassName: "matter-settings-overlay",
-      children: /* @__PURE__ */ jsx103(
+      children: /* @__PURE__ */ jsx104(
         ThreadMap,
         {
           ...map,
           onDismiss: () => onOpenChange(false),
-          heading: /* @__PURE__ */ jsx103(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
-          actions: /* @__PURE__ */ jsx103(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx103(X12, { "aria-hidden": "true" }) })
+          heading: /* @__PURE__ */ jsx104(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
+          actions: /* @__PURE__ */ jsx104(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx104(X12, { "aria-hidden": "true" }) })
         }
       )
     }
@@ -28089,7 +28222,7 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
 
 // src/components/PublicTranscript.tsx
 import { ChevronRight as ChevronRight8 } from "lucide-react";
-import { jsx as jsx104, jsxs as jsxs89 } from "react/jsx-runtime";
+import { jsx as jsx105, jsxs as jsxs90 } from "react/jsx-runtime";
 function transcriptSnapshot(title, turns, theme) {
   return {
     title,
@@ -28116,19 +28249,19 @@ function transcriptSnapshot(title, turns, theme) {
 }
 function PublicTranscript({ snapshot }) {
   useI18n();
-  const message = (item, index) => /* @__PURE__ */ jsx104(
+  const message = (item, index) => /* @__PURE__ */ jsx105(
     GraphChatMessageFrame,
     {
       kind: item.role === "user" ? "userMessage" : "agentMessage",
       timeLabel: item.createdAt ? formatMessageTimestamp(item.createdAt) : void 0,
-      children: item.role === "user" ? /* @__PURE__ */ jsx104(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx104("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx104(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
+      children: item.role === "user" ? /* @__PURE__ */ jsx105(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx105("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx105(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
     },
     index
   );
-  return /* @__PURE__ */ jsx104("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs89("div", { className: "public-transcript-content", children: [
-    /* @__PURE__ */ jsxs89("header", { className: "public-transcript-header", children: [
-      /* @__PURE__ */ jsx104("h1", { children: snapshot.title }),
-      /* @__PURE__ */ jsxs89("p", { children: [
+  return /* @__PURE__ */ jsx105("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs90("div", { className: "public-transcript-content", children: [
+    /* @__PURE__ */ jsxs90("header", { className: "public-transcript-header", children: [
+      /* @__PURE__ */ jsx105("h1", { children: snapshot.title }),
+      /* @__PURE__ */ jsxs90("p", { children: [
         snapshot.live ? translate("sharing.liveReadOnlyThread") : translate("sharing.readOnlySnapshot"),
         " \xB7 ",
         snapshot.turnCount,
@@ -28136,17 +28269,17 @@ function PublicTranscript({ snapshot }) {
         translate("sharing.turns_7cb1b2"),
         snapshot.live && snapshot.updatedAt ? translate("sharing.updated", { value1: new Date(snapshot.updatedAt).toLocaleString(getLocale()) }) : ""
       ] }),
-      snapshot.stale && /* @__PURE__ */ jsx104("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
+      snapshot.stale && /* @__PURE__ */ jsx105("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
     ] }),
     snapshot.turns.map((turn, index) => {
       const displayTurn = { id: `snapshot-${index}`, status: "completed", error: null, items: [], startedAt: turn.startedAt ?? null, completedAt: turn.completedAt ?? null, model: turn.model ?? null, reasoningEffort: turn.reasoningEffort ?? null, tokenUsage: turn.tokenUsage ?? null, priceEstimate: turn.priceEstimate ?? null };
-      return /* @__PURE__ */ jsxs89("section", { className: "thread-graph-turn public-transcript-turn", children: [
+      return /* @__PURE__ */ jsxs90("section", { className: "thread-graph-turn public-transcript-turn", children: [
         turn.messages.filter((item) => item.role === "user").map(message),
-        /* @__PURE__ */ jsxs89("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
-          /* @__PURE__ */ jsx104("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
-          /* @__PURE__ */ jsx104(ChevronRight8, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
-          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx104(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
-          /* @__PURE__ */ jsx104("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+        /* @__PURE__ */ jsxs90("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
+          /* @__PURE__ */ jsx105("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
+          /* @__PURE__ */ jsx105(ChevronRight8, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
+          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx105(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
+          /* @__PURE__ */ jsx105("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
         ] }),
         turn.messages.filter((item) => item.role === "assistant").map(message)
       ] }, index);
@@ -28155,11 +28288,11 @@ function PublicTranscript({ snapshot }) {
 }
 
 // src/components/ConversationSearchControls.tsx
-import { useEffect as useEffect54, useRef as useRef55, useState as useState74 } from "react";
+import { useEffect as useEffect55, useRef as useRef55, useState as useState75 } from "react";
 import { Check as Check6, ChevronDown as ChevronDown7 } from "lucide-react";
-import { jsx as jsx105, jsxs as jsxs90 } from "react/jsx-runtime";
+import { jsx as jsx106, jsxs as jsxs91 } from "react/jsx-runtime";
 function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }) {
-  const [open, setOpen] = useState74(false);
+  const [open, setOpen] = useState75(false);
   const root = useRef55(null);
   const trigger = useRef55(null);
   const menu = useRef55(null);
@@ -28169,7 +28302,7 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
     setOpen(false);
     if (restore) trigger.current?.focus();
   });
-  useEffect54(() => {
+  useEffect55(() => {
     if (!open) return;
     const outside = (event) => {
       if (!root.current?.contains(event.target)) setOpen(false);
@@ -28177,9 +28310,9 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
     document.addEventListener("pointerdown", outside, true);
     return () => document.removeEventListener("pointerdown", outside, true);
   }, [open]);
-  if (scopes.length < 2) return /* @__PURE__ */ jsx105("span", { className: "workbench-search-scope is-fixed", children: name(value) });
-  return /* @__PURE__ */ jsxs90("div", { ref: root, className: "workbench-search-scope-picker", children: [
-    /* @__PURE__ */ jsxs90(
+  if (scopes.length < 2) return /* @__PURE__ */ jsx106("span", { className: "workbench-search-scope is-fixed", children: name(value) });
+  return /* @__PURE__ */ jsxs91("div", { ref: root, className: "workbench-search-scope-picker", children: [
+    /* @__PURE__ */ jsxs91(
       "button",
       {
         ref: trigger,
@@ -28190,12 +28323,12 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
         "aria-expanded": open,
         onClick: () => setOpen((current) => !current),
         children: [
-          /* @__PURE__ */ jsx105("span", { children: name(value) }),
-          /* @__PURE__ */ jsx105(ChevronDown7, { "aria-hidden": "true" })
+          /* @__PURE__ */ jsx106("span", { children: name(value) }),
+          /* @__PURE__ */ jsx106(ChevronDown7, { "aria-hidden": "true" })
         ]
       }
     ),
-    open && /* @__PURE__ */ jsx105("div", { ref: menu, role: "menu", "aria-label": labels.scope, className: "workbench-search-scope-menu", children: scopes.map((scope) => /* @__PURE__ */ jsxs90(
+    open && /* @__PURE__ */ jsx106("div", { ref: menu, role: "menu", "aria-label": labels.scope, className: "workbench-search-scope-menu", children: scopes.map((scope) => /* @__PURE__ */ jsxs91(
       "button",
       {
         type: "button",
@@ -28206,8 +28339,8 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
           if (scope !== value) onChange(scope);
         },
         children: [
-          /* @__PURE__ */ jsx105(Check6, { "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx105("span", { children: name(scope) })
+          /* @__PURE__ */ jsx106(Check6, { "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx106("span", { children: name(scope) })
         ]
       },
       scope
@@ -28236,20 +28369,20 @@ function searchHighlightParts(text, query) {
 }
 function ConversationSearchExcerpt({ text, query }) {
   const parts = searchHighlightParts(text, query);
-  return /* @__PURE__ */ jsxs90("p", { children: [
+  return /* @__PURE__ */ jsxs91("p", { children: [
     parts.before,
-    parts.match && /* @__PURE__ */ jsx105("mark", { children: parts.match }),
+    parts.match && /* @__PURE__ */ jsx106("mark", { children: parts.match }),
     parts.after
   ] });
 }
 
 // src/components/timeline/TurnNotificationButton.tsx
 import { Bell as Bell2, Loader2 as Loader26 } from "lucide-react";
-import { jsx as jsx106, jsxs as jsxs91 } from "react/jsx-runtime";
+import { jsx as jsx107, jsxs as jsxs92 } from "react/jsx-runtime";
 function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onRetry }) {
   useI18n();
-  return /* @__PURE__ */ jsxs91("span", { className: "turn-notification-control", children: [
-    /* @__PURE__ */ jsx106(
+  return /* @__PURE__ */ jsxs92("span", { className: "turn-notification-control", children: [
+    /* @__PURE__ */ jsx107(
       "button",
       {
         type: "button",
@@ -28259,11 +28392,11 @@ function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onR
         title: translate(subscribed ? "chat.turnNotificationOn" : "chat.turnNotificationOff"),
         disabled: busy,
         onClick: onToggle,
-        children: busy ? /* @__PURE__ */ jsx106(Loader26, { size: 15, className: "is-spinning", "aria-hidden": "true" }) : /* @__PURE__ */ jsx106(Bell2, { size: 15, fill: subscribed ? "currentColor" : "none", "aria-hidden": "true" })
+        children: busy ? /* @__PURE__ */ jsx107(Loader26, { size: 15, className: "is-spinning", "aria-hidden": "true" }) : /* @__PURE__ */ jsx107(Bell2, { size: 15, fill: subscribed ? "currentColor" : "none", "aria-hidden": "true" })
       }
     ),
-    /* @__PURE__ */ jsx106("span", { className: "turn-notification-feedback", role: "status", children: subscribed ? translate("chat.turnNotificationOn") : "" }),
-    error && /* @__PURE__ */ jsx106(ErrorMark, { message: error, onRetry, retryLabel: translate("settings.retry") })
+    /* @__PURE__ */ jsx107("span", { className: "turn-notification-feedback", role: "status", children: subscribed ? translate("chat.turnNotificationOn") : "" }),
+    error && /* @__PURE__ */ jsx107(ErrorMark, { message: error, onRetry, retryLabel: translate("settings.retry") })
   ] });
 }
 

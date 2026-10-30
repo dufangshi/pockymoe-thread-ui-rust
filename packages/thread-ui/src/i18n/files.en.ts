@@ -88,6 +88,7 @@ export const filesEn = {
   "files.backupRenamed": "Backup renamed.",
   "files.utility": "utility",
   "files.importedManifest": "Imported manifest",
+  "files.installedFromGit": "Installed from git",
   "files.builtInModule": "Built-in module",
   "files.enabled": "{{value1}} enabled",
   "files.noPluginsAreRegistered": "No plugins are registered.",

@@ -11,6 +11,7 @@ import {
 import type {
   ImportPluginInput,
   PluginDto,
+  PluginRunDto,
   UpdatePluginInput,
 } from '@pockymoe/shared';
 import {
@@ -40,6 +41,9 @@ export interface PluginProviderAdapter {
     input: UpdatePluginInput,
   ) => Promise<PluginDto> | PluginDto;
   deletePlugin?: (pluginId: string) => Promise<PluginDto> | PluginDto;
+  /** Installed plugins: run a device-scope action (the settings panel calls `status`). */
+  runPluginAction?: (pluginId: string, action: string, input?: unknown) => Promise<{ output: unknown }>;
+  fetchPluginRuns?: (pluginId: string) => Promise<PluginRunDto[]>;
 }
 
 const DEFAULT_PLUGIN_PROVIDER_ADAPTER: PluginProviderAdapter = {};

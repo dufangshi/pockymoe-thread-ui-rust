@@ -82,6 +82,8 @@ export const zhCN = {
   "desktopShell.actionFailed": "操作没有完成，请重试。",
 
   // Device overview and statistics.
+  "desktopDevices.turnsColumn": "轮次",
+  "desktopDevices.unpricedUnknown": "部分用量尚未定价，显示已知费用下限。",
   "desktopDevices.unknownOrigin": "未知来源",
   "desktopDevices.accountUsage": "账号用量",
   "desktopDevices.share": "占比",
@@ -103,7 +105,7 @@ export const zhCN = {
   "desktopDevices.usagePartial": "部分设备提供的是缓存或不完整数据。旧设备活动接口仅提供累计用量，只计入「全部」。",
   "desktopDevices.usageBreakdown": "输入 {{input}} · 缓存读 {{read}} · 缓存写 {{write}} · 输出 {{output}} · 推理 {{reasoning}}",
   "desktopDevices.noUsage": "此范围内暂无已记录用量",
-  "desktopDevices.turnOrigins": "主人 {{owner}} · 访客 {{guest}} · 智能体 {{agent}} · 自动化 {{automation}}",
+  "desktopDevices.turnOrigins": "主人 {{owner}} · 访客 {{guest}} · 智能体 {{agent}} · 自动化 {{automation}} · 未知 {{unknown}}",
   "desktopDevices.usageDefinition": "轮次包含所有来源；Token 包含缓存用量，推理属于输出的一部分；费用为已知模型价格的合计。",
   "desktopDevices.workspaceUsage": "工作区用量",
   "desktopDevices.total": "合计",

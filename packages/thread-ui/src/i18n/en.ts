@@ -81,6 +81,8 @@ export const en = {
   "desktopShell.actionFailed": "The action could not be completed. Try again.",
 
   // Device overview and statistics.
+  "desktopDevices.turnsColumn": "Turns",
+  "desktopDevices.unpricedUnknown": "Some usage is unpriced; the amount is a known-cost lower bound.",
   "desktopDevices.unknownOrigin": "Unknown origin",
   "desktopDevices.accountUsage": "Account usage",
   "desktopDevices.share": "Share",
@@ -102,7 +104,7 @@ export const en = {
   "desktopDevices.usagePartial": "Some devices provide partial or cached data. Runtime activity has lifetime usage only; it is included only in All time.",
   "desktopDevices.usageBreakdown": "Input {{input}} · cache read {{read}} · cache write {{write}} · output {{output}} · reasoning {{reasoning}}",
   "desktopDevices.noUsage": "No recorded usage in this range",
-  "desktopDevices.turnOrigins": "Owner {{owner}} · guest {{guest}} · agent {{agent}} · automation {{automation}}",
+  "desktopDevices.turnOrigins": "Owner {{owner}} · guest {{guest}} · agent {{agent}} · automation {{automation}} · unknown {{unknown}}",
   "desktopDevices.usageDefinition": "Turns include every origin. Token totals include cache use; reasoning is part of output. Costs sum known model prices.",
   "desktopDevices.workspaceUsage": "Workspace usage",
   "desktopDevices.total": "Total",

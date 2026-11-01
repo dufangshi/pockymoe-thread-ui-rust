@@ -248,7 +248,14 @@ it('includes recent folded-agent activity in active scope without reviving old u
               {
                 ...old,
                 key: 'parent',
-                children: [{ ...thread(10), running: false, unread: false, lastActiveAt: new Date(now).toISOString() }],
+                children: [
+                  {
+                    ...thread(10),
+                    running: false,
+                    unread: false,
+                    lastActiveAt: new Date(now).toISOString(),
+                  },
+                ],
               },
               old,
             ],
@@ -298,4 +305,51 @@ it('reconciles an unchanged-score thread that moves workspaces after freeze lift
       .find((n) => n.node.id === 'workspace:d:two')!
       .children!.some((n) => n.node.id === 'thread:11'),
   ).toBe(true);
+});
+
+it('rebinds fresh content in a cached workspace when a sibling priority changes', () => {
+  const make = (changed: boolean) =>
+    buildThreadMap(
+      [
+        {
+          id: 'd',
+          name: 'D',
+          state: 'ready',
+          workspaces: [
+            {
+              id: 'one',
+              label: 'One',
+              threads: [
+                {
+                  ...thread(10),
+                  needsInput: changed ? { kind: 'input' } : undefined,
+                },
+              ],
+            },
+            {
+              id: 'two',
+              label: 'Two',
+              threads: [
+                {
+                  ...thread(11),
+                  title: changed ? 'Renamed result' : 'Old result',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      'All',
+      { scope: 'all', dense: true, keepDeviceRoot: true, now },
+    );
+  const cache = new DenseLayout(),
+    bounds = { x: 0, y: 0, width: 900, height: 600 };
+  cache.layout(make(false), bounds, false, 'all');
+  const plan = collect(cache.layout(make(true), bounds, false, 'all'));
+  expect(plan.find((b) => b.node.id === 'thread:11')!.node.label).toBe(
+    'Renamed result',
+  );
+  expect(
+    plan.find((b) => b.node.id === 'thread:10')!.node.thread!.needsInput?.kind,
+  ).toBe('input');
 });

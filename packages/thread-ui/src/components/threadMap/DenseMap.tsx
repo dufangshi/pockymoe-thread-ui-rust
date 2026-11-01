@@ -43,53 +43,38 @@ function status(n: MapNode) {
             ? 'unread'
             : 'idle';
 }
-const DenseTile = memo(
-  function DenseTile({
-    box,
+interface DenseTileProps {
+  box: DenseBox['rect'];
+  node: MapNode;
+  current: boolean;
+  dimmed: boolean;
+  onOpen: ReadableMapProps['onOpen'];
+  onQuickLook: ReadableMapProps['onQuickLook'];
+  hover: ReadableMapProps['hover'];
+  hours: number;
+  navigate: ReadableMapProps['navigate'];
+}
+type TileContentProps = Omit<DenseTileProps, 'box' | 'dimmed'> & {
+  contentTier: number;
+};
+/** Position changes never rebuild unchanged status SVGs, agent marks or titles. */
+const DenseTileContent = memo(
+  function DenseTileContent({
     node,
     current,
-    dimmed,
     onOpen,
     onQuickLook,
     hover,
     hours,
     navigate,
-  }: {
-    box: DenseBox['rect'];
-    node: MapNode;
-    current: boolean;
-    dimmed: boolean;
-    onOpen: ReadableMapProps['onOpen'];
-    onQuickLook: ReadableMapProps['onQuickLook'];
-    hover: ReadableMapProps['hover'];
-    hours: number;
-    navigate: ReadableMapProps['navigate'];
-  }) {
+    contentTier,
+  }: TileContentProps) {
     useI18n();
     const t = node.thread!,
       mark = status(node),
-      detailed = box.height >= 72;
+      detailed = contentTier > 0;
     return (
-      <div
-        className="thread-map-tile thread-map-dense-tile"
-        data-map-id={node.id}
-        data-tier={
-          box.height >= 72 ? 'stats' : box.height >= 52 ? 'two' : 'one'
-        }
-        data-heat={heatLevel(t.activeMs)}
-        data-current={current || undefined}
-        data-dimmed={dimmed || undefined}
-        data-running={(isLive(t) && !isWaiting(t)) || undefined}
-        data-waiting={isWaiting(t) || undefined}
-        style={
-          {
-            left: box.x,
-            top: box.y,
-            width: box.width,
-            height: box.height,
-          } as CSSProperties
-        }
-      >
+      <>
         <a
           href={t.href}
           className="thread-map-tile-link"
@@ -120,7 +105,7 @@ const DenseTile = memo(
                 {t.turns}
               </span>
             )}
-            {!!t.totalMs && box.width >= 140 && (
+            {!!t.totalMs && contentTier >= 3 && (
               <span
                 title={translate('workbench.threadMapTotalRan', {
                   duration: formatShortDuration(t.totalMs),
@@ -130,7 +115,7 @@ const DenseTile = memo(
                 {formatShortDuration(t.totalMs)}
               </span>
             )}
-            {t.priceEstimate && box.width >= 200 && (
+            {t.priceEstimate && contentTier >= 5 && (
               <span
                 title={translate('workbench.threadMapCost', {
                   usd: formatCompactUsd(t.priceEstimate.totalUsd),
@@ -140,7 +125,7 @@ const DenseTile = memo(
                 {formatCompactUsd(t.priceEstimate.totalUsd).replace(/^\$/, '')}
               </span>
             )}
-            {!!t.children?.length && box.width >= 110 && (
+            {!!t.children?.length && contentTier >= 2 && (
               <button
                 type="button"
                 onClick={() => navigate(node)}
@@ -155,7 +140,7 @@ const DenseTile = memo(
             )}
           </span>
         )}
-        {detailed && box.width >= 160 && onQuickLook && (
+        {detailed && contentTier >= 4 && onQuickLook && (
           <button
             type="button"
             className="thread-map-quick-look"
@@ -167,11 +152,71 @@ const DenseTile = memo(
             ⓘ
           </button>
         )}
+      </>
+    );
+  },
+  (a, b) =>
+    a.node.thread === b.node.thread &&
+    a.node.parent?.label === b.node.parent?.label &&
+    a.current === b.current &&
+    a.hours === b.hours &&
+    a.contentTier === b.contentTier &&
+    a.onQuickLook === b.onQuickLook,
+);
+
+const DenseTile = memo(
+  function DenseTile(props: DenseTileProps) {
+    const { box, node, current, dimmed, ...content } = props,
+      t = node.thread!,
+      mark = status(node);
+    // The content thresholds are independent of the rectangle's position and of
+    // small width changes, so a priority promotion can move many tiles cheaply.
+    const contentTier =
+      box.height < 72
+        ? 0
+        : box.width < 110
+          ? 1
+          : box.width < 140
+            ? 2
+            : box.width < 160
+              ? 3
+              : box.width < 200
+                ? 4
+                : 5;
+    return (
+      <div
+        className="thread-map-tile thread-map-dense-tile"
+        data-map-id={node.id}
+        data-tier={
+          box.height >= 72 ? 'stats' : box.height >= 52 ? 'two' : 'one'
+        }
+        data-heat={heatLevel(t.activeMs)}
+        data-current={current || undefined}
+        data-dimmed={dimmed || undefined}
+        data-running={mark === 'running' || undefined}
+        data-waiting={mark === 'waiting' || undefined}
+        style={
+          {
+            left: box.x,
+            top: box.y,
+            width: box.width,
+            height: box.height,
+          } as CSSProperties
+        }
+      >
+        <DenseTileContent
+          {...content}
+          node={node}
+          current={current}
+          contentTier={contentTier}
+        />
       </div>
     );
   },
   (a, b) =>
     a.node.thread === b.node.thread &&
+    a.node.parent?.label === b.node.parent?.label &&
+    a.hours === b.hours &&
     a.box.x === b.box.x &&
     a.box.y === b.box.y &&
     a.box.width === b.box.width &&

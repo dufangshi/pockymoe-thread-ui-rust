@@ -1,5 +1,5 @@
 import type { MapNode } from './model';
-import { byPriority, mapPriority, threadLeaves } from './readability';
+import { mapPriority, threadLeaves } from './readability';
 import { squarify, type MapRect } from './squarify';
 
 export const DENSE_MIN = { width: 88, height: 34 };
@@ -24,11 +24,48 @@ const inside = (r: MapRect): MapRect => ({
   width: Math.max(0, r.width - GAP),
   height: Math.max(0, r.height - GAP),
 });
+interface Shape {
+  leaves: number;
+  workspaces: number;
+  devices: number;
+  rank: number;
+  loss: number;
+  fingerprint: string;
+}
+const shapes = new WeakMap<MapNode, Shape>();
+/** Stats are immutable during one plan. Cache each subtree once instead of
+ * walking all 600 leaves again for every allocation candidate and comparator. */
+function shape(node: MapNode): Shape {
+  const cached = shapes.get(node);
+  if (cached) return cached;
+  const rank = node.thread ? mapPriority(node) : 5;
+  const value: Shape = {
+    leaves: node.thread ? 1 : 0,
+    workspaces: node.kind === 'workspace' ? 1 : 0,
+    devices: node.kind === 'device' ? 1 : 0,
+    rank,
+    loss: node.thread ? ([1e12, 1e9, 1e6, 1e3, 0, 0][rank] ?? 0) : 0,
+    fingerprint: `${node.id}:${node.parent?.id}:${node.weight}:${rank}`,
+  };
+  if (!node.thread)
+    for (const child of children(node)) {
+      const nested = shape(child);
+      value.leaves += nested.leaves;
+      value.workspaces += nested.workspaces;
+      value.devices += nested.devices;
+      value.rank = Math.min(value.rank, nested.rank);
+      value.loss += nested.loss;
+      value.fingerprint += `[${nested.fingerprint}]`;
+    }
+  shapes.set(node, value);
+  return value;
+}
+const byPriority = (a: MapNode, b: MapNode) =>
+  shape(a).rank - shape(b).rank ||
+  b.weight - a.weight ||
+  a.id.localeCompare(b.id);
 const priorityLoss = (nodes: readonly MapNode[]) =>
-  threadLeaves(nodes).reduce(
-    (sum, n) => sum + ([1e12, 1e9, 1e6, 1e3, 0, 0][mapPriority(n)] ?? 0),
-    0,
-  );
+  nodes.reduce((sum, n) => sum + shape(n).loss, 0);
 const compactOverflow = (rect: MapRect): MapRect => ({
   ...rect,
   width: Math.min(132, rect.width),
@@ -41,11 +78,9 @@ const children = (n: MapNode) =>
   );
 // Container area reflects the number of minimum readable cells plus header
 // overhead, rather than accumulated turns that can starve sparse workspaces.
-function footprint(n: MapNode): number {
-  return n.thread
-    ? 1
-    : children(n).reduce((sum, c) => sum + footprint(c), 0) +
-        (n.kind === 'device' ? 1 : 0.6);
+function footprint(n: MapNode, overhead = 0.6): number {
+  const value = shape(n);
+  return value.leaves + value.workspaces * overhead + value.devices;
 }
 function grids<T>(items: T[], bounds: MapRect, minimumHeight: number) {
   const result: { item: T; rect: MapRect }[][] = [];
@@ -222,9 +257,22 @@ function strips(items: MapNode[], bounds: MapRect) {
   }
   return plans;
 }
-function layoutLevel(items: MapNode[], bounds: MapRect): Result {
+type LevelPlans = Map<string, Result>;
+function layoutLevel(
+  items: MapNode[],
+  bounds: MapRect,
+  levels: LevelPlans,
+): Result {
+  const key = `${bounds.x}:${bounds.y}:${bounds.width}:${bounds.height}|${items.map((n) => shape(n).fingerprint).join('|')}`;
+  const cached = levels.get(key);
+  if (cached) return cached;
+  const save = (result: Result) => {
+    if (levels.size >= 4096) levels.delete(levels.keys().next().value!);
+    levels.set(key, result);
+    return result;
+  };
   if (!items.length) return { boxes: [], missing: 0, important: 0, invalid: 0 };
-  if (items.every((n) => n.thread)) return threadPlan(items, bounds);
+  if (items.every((n) => n.thread)) return save(threadPlan(items, bounds));
   const ranked = [...items].sort(byPriority);
   let best: Result | undefined;
   for (let count = items.length; count >= 0; count--) {
@@ -240,13 +288,8 @@ function layoutLevel(items: MapNode[], bounds: MapRect): Result {
         }
       : null;
     const cells = [...visible, ...(overflow ? [overflow] : [])];
-    const cost = (n: MapNode, overhead = 0.6): number =>
-      n === overflow
-        ? 1
-        : n.thread
-          ? 1
-          : children(n).reduce((sum, c) => sum + cost(c, overhead), 0) +
-            (n.kind === 'device' ? 1 : overhead);
+    const cost = (n: MapNode, overhead = 0.6) =>
+      n === overflow ? 1 : footprint(n, overhead);
     const candidates = [
       squarify(cells, footprint, bounds),
       squarify(
@@ -295,7 +338,7 @@ function layoutLevel(items: MapNode[], bounds: MapRect): Result {
             width: rect.width + GAP,
             height: Math.max(0, rect.height - h + GAP),
           };
-        const nested = layoutLevel(children(node), area);
+        const nested = layoutLevel(children(node), area, levels);
         boxes.push({ node, rect, children: nested.boxes });
         missing += nested.missing;
         important += nested.important;
@@ -310,18 +353,19 @@ function layoutLevel(items: MapNode[], bounds: MapRect): Result {
             (important === best.important && missing < best.missing)))
       )
         best = result;
-      if (!missing && !invalid) return result;
+      if (!missing && !invalid) return save(result);
     }
     // Keep every workspace whenever its children are readable; only fold whole
     // containers when minimum cells or a higher-priority thread need the room.
-    if (best?.invalid === 0 && best.important === 0) return best;
+    if (best?.invalid === 0 && best.important === 0) return save(best);
   }
-  return best!;
+  return save(best!);
 }
 
 /** One geometry snapshot: tiny score updates and pointer/focus freezes never
  * change membership or positions. Live content is rebound without DOM reads. */
 export class DenseLayout {
+  private levels: LevelPlans = new Map();
   private snapshot?: {
     key: string;
     scores: Map<
@@ -358,24 +402,24 @@ export class DenseLayout {
             0.3
         );
       });
-    if (old && old.key === key && old.boxes.length && (frozen || !changed)) {
-      const latest = new Map<string, MapNode>();
-      const visit = (n: MapNode) => {
-        latest.set(n.id, n);
-        n.children.forEach(visit);
-      };
-      visit(root);
-      const rebind = (boxes: DenseBox[]): DenseBox[] =>
-        boxes.map((b) => ({
-          ...b,
-          node: latest.get(b.node.id) ?? b.node,
-          children: b.children ? rebind(b.children) : undefined,
-          overflow: b.overflow?.map((n) => latest.get(n.id) ?? n),
-        }));
+    const latest = new Map<string, MapNode>();
+    const visit = (n: MapNode) => {
+      latest.set(n.id, n);
+      n.children.forEach(visit);
+    };
+    visit(root);
+    const rebind = (boxes: DenseBox[]): DenseBox[] =>
+      boxes.map((b) => ({
+        ...b,
+        node: latest.get(b.node.id) ?? b.node,
+        children: b.children ? rebind(b.children) : undefined,
+        overflow: b.overflow?.map((n) => latest.get(n.id) ?? n),
+      }));
+    if (old && old.key === key && old.boxes.length && (frozen || !changed))
       return rebind(old.boxes);
-    }
-    const result = layoutLevel(children(root), bounds);
-    this.snapshot = { key, scores, boxes: result.boxes };
-    return result.boxes;
+    const result = layoutLevel(children(root), bounds, this.levels);
+    const boxes = rebind(result.boxes);
+    this.snapshot = { key, scores, boxes };
+    return boxes;
   }
 }

@@ -3,6 +3,7 @@
  * No Supervisor, account data or network polling is involved. */
 import { Profiler, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { DenseLayout } from '../../../packages/thread-ui/src/components/threadMap/density';
 import { ThreadMapDialog } from '../../../packages/thread-ui/src/components/threadMap/ThreadMapDialog';
 import { ThreadMap } from '../../../packages/thread-ui/src/components/threadMap/ThreadMap';
 import type { MapAttention, MapScope } from '../../../packages/thread-ui/src/components/threadMap/types';
@@ -12,6 +13,15 @@ import '../../../packages/thread-ui/src/styles.css';
 import './map-fixture.css';
 
 const params = new URLSearchParams(location.search);
+// The fixture can isolate planning time from React development overhead.
+if (params.get('measureLayout') === '1') {
+  const layout = DenseLayout.prototype.layout;
+  DenseLayout.prototype.layout = function (this: DenseLayout, ...args: Parameters<DenseLayout['layout']>) {
+    const start = performance.now();
+    try { return layout.apply(this, args); }
+    finally { ((window as Window & { mapLayoutTimes?: number[] }).mapLayoutTimes ??= []).push(performance.now() - start); }
+  };
+}
 const realShape = params.get('dataset') === 'real';
 const count = realShape ? 117 : Math.max(12, Math.min(1200, Number(params.get('count')) || 12));
 const theme = params.get('theme') ?? 'classic';
@@ -44,7 +54,10 @@ function Fixture() {
   const [scope, setScope] = useState<MapScope>((params.get('scope') as MapScope) || 'all');
   const [query, setQuery] = useState('');
   const [revealKey, setRevealKey] = useState<string | null>(null);
-  const baseThreads = useMemo(() => Array.from({ length: count }, (_, i) => makeThread(i)), []);
+  const baseThreads = useMemo(() => Array.from({ length: count }, (_, i) => {
+    const thread = makeThread(i);
+    return params.get('unreadHistory') === '1' ? { ...thread, unread: i % 3 !== 0, failed: i % 6 === 1, lastActiveAt: ago(400 + i) } : thread;
+  }), []);
   const devices = useMemo(() => {
     const threads = [...baseThreads];
     if (revision) threads[3] = { ...threads[3]!, lastPrompt: `最近一次刷新 · ${revision}` };
@@ -59,6 +72,10 @@ function Fixture() {
               unread: i % 3 === 2, failed: i % 6 === 2, activeMs: i < 5 ? thread.activeMs : 0, lastActiveAt: ago(i < 5 ? i : 100 + i * 23) };
           }) })),
       })), { id: 'offline', name: 'Travel MacBook', state: 'offline' as const, cachedAt: ago(3), workspaces: [] }];
+    }
+    if (params.get('priorityUpdates') === '1') {
+      const last = threads.length - 1;
+      threads[last] = { ...threads[last]!, needsInput: revision % 2 ? { kind: 'input' } : undefined };
     }
     const split = Math.ceil(count * .68);
     const workspaces = (list: ThreadMapThread[], offset: number) => {

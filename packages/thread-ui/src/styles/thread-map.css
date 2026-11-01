@@ -961,7 +961,8 @@
 .thread-map[data-presentation='page'] .thread-map-offline-strip { display:flex; flex:none; align-items:center; gap:10px; height:24px; min-height:24px; padding:0 5px; border:0; overflow:hidden; }
 .thread-map[data-presentation='page'] .thread-map-offline-strip button { display:flex; flex:0 1 auto; gap:4px; align-items:center; min-width:0; height:24px; padding:0 3px; border:0; background:none; color:var(--theme-fg-muted); font-size:10px; }
 .thread-map[data-presentation='page'] .thread-map-offline-strip b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:400; }
-.thread-map[data-presentation='page'] .thread-map-offline-strip button > :is(span:not(.thread-map-device-state),small) { display:none; }
+.thread-map[data-presentation='page'] .thread-map-offline-strip button > span:not(.thread-map-device-state),
+.thread-map[data-presentation='page'] .thread-map-offline-strip button > small { display:none; }
 .thread-map[data-presentation='page'] .thread-map-attention-wrap { transition:none; }
 .thread-map[data-presentation='page'] .thread-map-attention { height:30px; gap:4px; padding:0 2px 2px; }
 .thread-map[data-presentation='page'] .thread-map-attention-wrap:not([data-visible]) { display:none; }

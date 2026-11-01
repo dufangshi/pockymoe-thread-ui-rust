@@ -136,6 +136,11 @@ export function inScope(thread: ThreadMapThread, scope: MapScope, now: number): 
   const age = now - Date.parse(thread.lastActiveAt ?? '');
   return Number.isFinite(age) && age <= (scope === 'active' ? DAY : 7 * DAY);
 }
+/** A folded agent's recent activity belongs to its conversation in page scope. */
+function inDenseScope(thread: ThreadMapThread, now: number): boolean {
+  return isLive(thread) || isWaiting(thread) || now - Date.parse(thread.lastActiveAt ?? '') <= DAY
+    || Boolean(thread.children?.some(child => inDenseScope(child, now)));
+}
 export function recencyWeight(thread: ThreadMapThread, now: number) {
   const age = now - Date.parse(thread.lastActiveAt ?? '');
   const factor = age <= DAY ? 1 : age <= 7 * DAY ? 0.7 : 0.45;
@@ -165,7 +170,7 @@ export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: s
           weight: options.scope ? recencyWeight(thread, now) : live || isWaiting(thread) ? runningWeight(thread.turns) : threadWeight(thread.turns), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0, threads: 1, running: live ? 1 : 0,
           usd: thread.priceEstimate?.totalUsd ?? 0, tokens: thread.tokenUsage?.totalTokens ?? 0,
         };
-        if (options.scope && !expanded && !(options.dense && options.scope === 'active' ? isLive(thread) || isWaiting(thread) || now - Date.parse(thread.lastActiveAt ?? '') <= DAY : inScope(thread, options.scope, now))) hidden.push(leaf);
+        if (options.scope && !expanded && !(options.dense && options.scope === 'active' ? inDenseScope(thread, now) : inScope(thread, options.scope, now))) hidden.push(leaf);
         else space.children.push(leaf);
         add(space, leaf);
       }

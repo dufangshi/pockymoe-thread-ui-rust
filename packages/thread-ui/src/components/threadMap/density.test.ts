@@ -226,3 +226,76 @@ it.each([900, 390])(
       expect(hidden.some((n) => mapPriority(n) < 4)).toBe(false);
   },
 );
+
+it('includes recent folded-agent activity in active scope without reviving old unread history', () => {
+  const old = {
+    ...thread(9),
+    unread: true,
+    failed: true,
+    lastActiveAt: new Date(now - 40 * 86400000).toISOString(),
+  };
+  const tree = buildThreadMap(
+    [
+      {
+        id: 'd',
+        name: 'D',
+        state: 'ready',
+        workspaces: [
+          {
+            id: 'w',
+            label: 'W',
+            threads: [
+              {
+                ...old,
+                key: 'parent',
+                children: [{ ...thread(10), running: false, unread: false, lastActiveAt: new Date(now).toISOString() }],
+              },
+              old,
+            ],
+          },
+        ],
+      },
+    ],
+    'All',
+    { scope: 'active', dense: true, keepDeviceRoot: true, now },
+  );
+  expect(
+    tree.children[0]!.children[0]!.children.map((n) => n.thread!.key),
+  ).toEqual(['parent']);
+});
+it('reconciles an unchanged-score thread that moves workspaces after freeze lifts', () => {
+  const a = thread(10),
+    b = thread(11),
+    c = thread(12);
+  const make = (moved: boolean) =>
+    buildThreadMap(
+      [
+        {
+          id: 'd',
+          name: 'D',
+          state: 'ready',
+          workspaces: [
+            { id: 'one', label: 'One', threads: moved ? [a] : [a, b] },
+            { id: 'two', label: 'Two', threads: moved ? [b, c] : [c] },
+          ],
+        },
+      ],
+      'All',
+      { scope: 'all', dense: true, keepDeviceRoot: true, now },
+    );
+  const cache = new DenseLayout(),
+    bounds = { x: 0, y: 0, width: 900, height: 600 };
+  cache.layout(make(false), bounds, false, 'all');
+  const frozen = collect(cache.layout(make(true), bounds, true, 'all'));
+  expect(
+    frozen
+      .find((n) => n.node.id === 'workspace:d:one')!
+      .children!.some((n) => n.node.id === 'thread:11'),
+  ).toBe(true);
+  const thawed = collect(cache.layout(make(true), bounds, false, 'all'));
+  expect(
+    thawed
+      .find((n) => n.node.id === 'workspace:d:two')!
+      .children!.some((n) => n.node.id === 'thread:11'),
+  ).toBe(true);
+});

@@ -324,7 +324,10 @@ function layoutLevel(items: MapNode[], bounds: MapRect): Result {
 export class DenseLayout {
   private snapshot?: {
     key: string;
-    scores: Map<string, { weight: number; rank: number }>;
+    scores: Map<
+      string,
+      { weight: number; rank: number; parent: string | undefined }
+    >;
     boxes: DenseBox[];
   };
   layout(
@@ -335,7 +338,10 @@ export class DenseLayout {
   ): DenseBox[] {
     const leaves = threadLeaves(root.children),
       scores = new Map(
-        leaves.map((n) => [n.id, { weight: n.weight, rank: mapPriority(n) }]),
+        leaves.map((n) => [
+          n.id,
+          { weight: n.weight, rank: mapPriority(n), parent: n.parent?.id },
+        ]),
       );
     const key = `${version}:${root.id}:${bounds.width}:${bounds.height}`;
     const old = this.snapshot;
@@ -347,6 +353,7 @@ export class DenseLayout {
         return (
           !before ||
           before.rank !== s.rank ||
+          before.parent !== s.parent ||
           Math.abs(s.weight - before.weight) / Math.max(0.001, before.weight) >
             0.3
         );

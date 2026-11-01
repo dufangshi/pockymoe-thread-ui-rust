@@ -1,6 +1,6 @@
 import {
   editorThemeFor
-} from "./chunk-L6WNPZLP.js";
+} from "./chunk-7NPE2PV7.js";
 import {
   useDocumentThemeRevision
 } from "./chunk-JIPNJR2N.js";
@@ -9,9 +9,9 @@ import {
 } from "./chunk-IUMGSALH.js";
 import {
   editor
-} from "./chunk-JXQIYSAV.js";
+} from "./chunk-EOOJF6TE.js";
 import "./chunk-7O5E2ZHX.js";
-import "./chunk-SSOM5P4O.js";
+import "./chunk-HFUMGIZT.js";
 
 // src/components/graph-workspace/GraphWorkspaceMonacoDiff.tsx
 import { useEffect, useRef } from "react";

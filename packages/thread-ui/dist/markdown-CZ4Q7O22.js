@@ -1,4 +1,4 @@
-// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/markdown/markdown.js
+// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/markdown/markdown.js
 var conf = {
   comments: {
     blockComment: ["<!--", "-->"]

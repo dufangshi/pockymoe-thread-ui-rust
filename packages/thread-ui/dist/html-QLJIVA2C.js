@@ -1,10 +1,10 @@
 import {
   languages
-} from "./chunk-JXQIYSAV.js";
+} from "./chunk-EOOJF6TE.js";
 import "./chunk-7O5E2ZHX.js";
-import "./chunk-SSOM5P4O.js";
+import "./chunk-HFUMGIZT.js";
 
-// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/html/html.js
+// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/html/html.js
 var EMPTY_ELEMENTS = [
   "area",
   "base",

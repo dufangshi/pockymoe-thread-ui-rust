@@ -13,7 +13,7 @@ export class StableMapOrder {
         const weight = old.weights.get(child.id);
         return weight === undefined || Math.abs(child.weight - weight) / Math.max(weight, 0.001) > 0.3;
       }) || old.ids.length !== node.children.length;
-      if (!old || (!frozen && changed)) {
+      if (!old || old.ids.length === 0 && node.children.length > 0 || (!frozen && changed)) {
         this.levels.set(node.id, { ids: node.children.map(child => child.id), weights: new Map(node.children.map(child => [child.id, child.weight])), displayed: new Map(node.children.map(child => [child.id, child.weight])), nodes: new Map(node.children.map(child => [child.id, child])) });
       } else {
         if (frozen) {

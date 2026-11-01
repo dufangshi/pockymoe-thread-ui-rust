@@ -67,6 +67,23 @@ describe('ThreadMap v2 page', () => {
     key(link('b'), 'Backspace'); expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Mac Studio');
   });
 
+  it('populates an initially empty frozen map when async data arrives', () => {
+    show({ devices: [], stableLayout: true });
+    const canvas = host.querySelector('.thread-map-canvas')!;
+    act(() => { canvas.dispatchEvent(new MouseEvent('pointerover', { bubbles: true })); });
+    show({ devices: makeDevices(), stableLayout: true });
+    expect(tile('a')).toBeTruthy(); expect(host.querySelector('.thread-map-empty')).toBeNull();
+  });
+
+  it('reveals data arriving after an empty frozen map, including a new hidden device', () => {
+    show({ devices: [], stableLayout: true, revealKey: 'late' });
+    const canvas = host.querySelector('.thread-map-canvas')!;
+    act(() => { canvas.dispatchEvent(new MouseEvent('pointerover', { bubbles: true })); });
+    const later: ThreadMapDevice = { id: 'late', name: 'Late device', state: 'ready', workspaces: [{ id: 'w', label: 'Late workspace', threads: [thread('late', 30)] }] };
+    show({ devices: [...makeDevices(), later], stableLayout: true, revealKey: 'late' });
+    expect(tile('late')).toBeTruthy(); expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Late workspace');
+  });
+
   it('renders attention in priority order, caps at six, and resolves approvals', () => {
     const decision = vi.fn();
     const attention = ['unread', 'failed', 'input', 'approval', 'unread', 'unread', 'input'].map((kind, i) => ({ key: String(i), kind: kind as 'approval' | 'input' | 'failed' | 'unread', title: `Attention ${i}`, device: 'Mac', workspace: 'Product', since: '', summary: 'Review changes', requestId: 'r' }));

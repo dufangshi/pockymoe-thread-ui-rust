@@ -27871,7 +27871,7 @@ var StableMapOrder = class {
         const weight = old.weights.get(child.id);
         return weight === void 0 || Math.abs(child.weight - weight) / Math.max(weight, 1e-3) > 0.3;
       }) || old.ids.length !== node.children.length;
-      if (!old || !frozen && changed) {
+      if (!old || old.ids.length === 0 && node.children.length > 0 || !frozen && changed) {
         this.levels.set(node.id, { ids: node.children.map((child) => child.id), weights: new Map(node.children.map((child) => [child.id, child.weight])), displayed: new Map(node.children.map((child) => [child.id, child.weight])), nodes: new Map(node.children.map((child) => [child.id, child])) });
       } else {
         if (frozen) {
@@ -28385,6 +28385,7 @@ function ThreadMap({
       const device = devices.find((item) => `device:${item.id}` === revealKey);
       if (!device) return;
       if (device.state === "offline") setCachedDevices((previous) => /* @__PURE__ */ new Set([...previous, device.id]));
+      setLayoutRevision((revision) => revision + 1);
       setFocusId(revealKey);
       lastRevealed.current = revealKey;
       pendingReveal.current = revealKey;
@@ -28403,6 +28404,7 @@ function ThreadMap({
     for (const device of devices) for (const workspace of device.workspaces) for (const thread of workspace.threads) {
       const path = find(thread);
       if (!path) continue;
+      setLayoutRevision((revision) => revision + 1);
       setExpandedWorkspaces((previous) => /* @__PURE__ */ new Set([...previous, `workspace:${device.id}:${workspace.id}`]));
       if (device.state === "offline") setCachedDevices((previous) => /* @__PURE__ */ new Set([...previous, device.id]));
       setOpenGroups((previous) => /* @__PURE__ */ new Set([...previous, ...path.slice(0, -1).map((item) => item.key)]));

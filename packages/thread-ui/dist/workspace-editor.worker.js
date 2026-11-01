@@ -2,9 +2,9 @@ import {
   EditorWorker,
   EditorWorkerHost,
   WebWorkerServer
-} from "./chunk-SSOM5P4O.js";
+} from "./chunk-HFUMGIZT.js";
 
-// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/base/common/worker/webWorkerBootstrap.js
+// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/base/common/worker/webWorkerBootstrap.js
 var initialized = false;
 function initialize(factory) {
   if (initialized) {
@@ -18,7 +18,7 @@ function initialize(factory) {
   return webWorkerServer;
 }
 
-// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/editor/editor.worker.start.js
+// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/editor/editor.worker.start.js
 function start(createClient) {
   let client;
   const webWorkerServer = initialize((workerServer) => {
@@ -48,13 +48,13 @@ function start(createClient) {
   return client;
 }
 
-// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/internal/common/initialize.js
+// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/internal/common/initialize.js
 var initialized2 = false;
 function isWorkerInitialized() {
   return initialized2;
 }
 
-// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/editor/editor.worker.js
+// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/editor/editor.worker.js
 self.onmessage = () => {
   if (!isWorkerInitialized()) {
     start(() => {

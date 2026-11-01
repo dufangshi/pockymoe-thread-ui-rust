@@ -213,6 +213,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       const device = devices.find(item => `device:${item.id}` === revealKey);
       if (!device) return;
       if (device.state === 'offline') setCachedDevices(previous => new Set([...previous, device.id]));
+      setLayoutRevision(revision => revision + 1);
       setFocusId(revealKey);
       lastRevealed.current = revealKey; pendingReveal.current = revealKey; pendingRevealTarget.current = revealKey;
       pendingPulses.current.add(revealKey);
@@ -226,6 +227,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     for (const device of devices) for (const workspace of device.workspaces) for (const thread of workspace.threads) {
       const path = find(thread);
       if (!path) continue;
+      setLayoutRevision(revision => revision + 1);
       setExpandedWorkspaces(previous => new Set([...previous, `workspace:${device.id}:${workspace.id}`]));
       if (device.state === 'offline') setCachedDevices(previous => new Set([...previous, device.id]));
       setOpenGroups(previous => new Set([...previous, ...path.slice(0, -1).map(item => item.key)]));

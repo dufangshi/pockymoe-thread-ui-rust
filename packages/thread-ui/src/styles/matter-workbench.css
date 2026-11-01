@@ -1846,3 +1846,13 @@
 .thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports']) { order: 10; margin-top: 5px; position: relative; }
 .thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports'])::before { content: ''; position: absolute; top: -3px; left: 4px; right: 4px; height: 1px; background: var(--theme-border); }
 .thread-ui-shell .matter-toolbar-toggle[aria-expanded='true'] { background: var(--theme-hover); color: var(--theme-fg); }
+
+/* Waiting is a solid speech bubble with a lower-right tail; never animated. */
+.matter-status-dot[data-status='waiting'] {
+  --status-waiting: #b77915;
+  width: 12px; height: 11px; border: 0; border-radius: 0;
+  background: var(--status-waiting); transform: none; animation: none;
+  clip-path: polygon(22% 0, 78% 0, 100% 20%, 100% 64%, 83% 80%, 94% 100%, 58% 80%, 22% 80%, 0 64%, 0 20%);
+}
+:root[data-theme-effective='dark'] .matter-status-dot[data-status='waiting'] { --status-waiting: #edb75d; }
+.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot[data-status='waiting'] { width: 12px; height: 11px; border: 0; box-shadow: none; }

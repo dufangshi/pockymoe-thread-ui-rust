@@ -1,10 +1,15 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { ArrowLeft, ArrowUpRight, ChevronRight, ChevronUp, Folder, List, Monitor, Network, RotateCw } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
-import { buildThreadMap, heatLevel, indexMap, threadWeight, type MapNode, type ThreadMapDevice, type ThreadMapThread } from './model';
+import { buildThreadMap, heatLevel, indexMap, threadWeight, type MapNode, type ThreadMapThread } from './model';
 import { AgeGlyph, AgentChip, formatRunTime, threadDetails, ThreadTile } from './ThreadTile';
 import { formatCompactUsd } from '../timeline/tokenFormatting';
-import { squarify, type MapRect } from './squarify';
+import { type MapRect } from './squarify';
+
+import { useMapMotion } from './useMapMotion';
+import type { MapScope, ThreadMapProps } from './types';
+import { MapLayoutCache, spatialNeighbor, StableMapOrder, type SpatialTarget } from './stableLayout';
+import { AttentionStrip, DeviceMenu, DeviceReadings, DeviceStateMark, MapLegend, relativeCache } from './MapChrome';
 
 /** Height of a device or workspace title bar. */
 const HEADER = 26;
@@ -45,24 +50,66 @@ const reducedMotion = () => typeof window !== 'undefined' && typeof window.match
  * then), tapping a thread opens it. On touch, pinching in goes up a level,
  * spreading opens the block under the fingers and dragging down dismisses.
  */
-export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, onNavigate, onRetry, onDismiss }: {
-  devices: ThreadMapDevice[];
-  currentKey?: string | undefined;
-  hours?: number;
-  heading?: ReactNode;
-  actions?: ReactNode;
-  onOpen: (thread: ThreadMapThread) => void;
-  /** Open a device or workspace page; modified clicks keep normal link behavior. */
-  onNavigate?: ((href: string) => void) | undefined;
-  onRetry?: ((deviceId: string) => void) | undefined;
-  /** Closes the map; a downward drag on it asks for this. */
-  onDismiss?: (() => void) | undefined;
-}) {
-  useI18n();
-  const allLabel = translate('workbench.threadMapAll');
-  const root = useMemo(() => buildThreadMap(devices, allLabel), [devices, allLabel]);
-  const nodes = useMemo(() => indexMap(root), [root]);
+export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, onNavigate, onRetry, onDismiss,
+  presentation = 'dialog', scope: controlledScope, onScopeChange, attention, stableLayout = false,
+  filterText, onFilterChange, deviceExtras, onQuickLook, onRequestDecision, revealKey, pulseKeys,
+}: ThreadMapProps) {
+  const { locale } = useI18n();
+  const page = presentation === 'page';
+  const enhanced = page || controlledScope !== undefined;
+  const [localScope, setLocalScope] = useState<MapScope>(page ? 'week' : 'all');
+  const scope = controlledScope ?? localScope;
+  const [localFilter, setLocalFilter] = useState('');
+  const query = filterText ?? localFilter;
+  const filter = useRef<HTMLInputElement>(null);
+  const [expandedWorkspaces, setExpandedWorkspaces] = useState<ReadonlySet<string>>(() => new Set());
+  const [expandedDevices, setExpandedDevices] = useState<ReadonlySet<string>>(() => new Set());
+  const [cachedDevices, setCachedDevices] = useState<ReadonlySet<string>>(() => new Set());
   const [focusId, setFocusId] = useState<string | null>(null);
+  const [layoutRevision, setLayoutRevision] = useState(0);
+  const [frozen, setFrozen] = useState(false);
+  const pointerInside = useRef(false), focusInside = useRef(false);
+  const freezeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const freeze = () => { clearTimeout(freezeTimer.current); setFrozen(true); };
+  const thaw = () => {
+    clearTimeout(freezeTimer.current);
+    freezeTimer.current = setTimeout(() => { if (!pointerInside.current && !focusInside.current) setFrozen(false); }, 800);
+  };
+  useEffect(() => () => clearTimeout(freezeTimer.current), []);
+  const orders = useRef(new StableMapOrder()), layouts = useRef(new MapLayoutCache());
+  const priorScope = useRef(scope);
+  const priorLayoutRevision = useRef(layoutRevision);
+  const allLabel = translate('workbench.threadMapAll');
+  const root = useMemo(() => {
+    if (priorLayoutRevision.current !== layoutRevision) { orders.current.clear(); priorLayoutRevision.current = layoutRevision; }
+    if (priorScope.current !== scope) { orders.current.clear(); priorScope.current = scope; }
+    const list = enhanced ? devices.filter(d => d.state !== 'offline' || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`)))
+      .map(d => d.state === 'offline' ? { ...d, state: 'ready' as const } : d) : devices;
+    const tree = buildThreadMap(list, allLabel, enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true } : {});
+    return stableLayout ? orders.current.apply(tree, frozen) : tree;
+  }, [devices, allLabel, enhanced, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId]);
+  const nodes = useMemo(() => indexMap(root), [root]);
+  const latest = useRef({ onOpen, onQuickLook });
+  latest.current = { onOpen, onQuickLook };
+  const quickLook = useCallback((key: string) => latest.current.onQuickLook?.(key), []);
+  const setScope = (next: MapScope) => {
+    orders.current.clear(); setExpandedWorkspaces(new Set()); setExpandedDevices(new Set());
+    setLocalScope(next); onScopeChange?.(next);
+  };
+  const setFilter = (text: string) => { setLocalFilter(text); onFilterChange?.(text); };
+  const matches = useMemo(() => {
+    const needle = query.trim().toLocaleLowerCase(locale);
+    const result = new Set<string>();
+    for (const node of nodes.values()) if (node.thread && (!needle || [node.label, node.thread.lastPrompt, node.thread.model,
+      node.workspace?.label, node.device?.name].filter(Boolean).join(' ').toLocaleLowerCase(locale).includes(needle))) result.add(node.id);
+    return result;
+  }, [nodes, query, locale]);
+  const hasMatch = (node: MapNode): boolean => matches.has(node.id) || node.children.some(hasMatch) || Boolean(node.thread?.children?.some(child => { const indexed = nodes.get(`thread:${child.key}`); return indexed && hasMatch(indexed); }));
+  const openFirstMatch = () => { const first = [...nodes.values()].find(node => node.thread && matches.has(node.id)); if (first?.thread) latest.current.onOpen(first.thread); };
+  const expand = (node: MapNode) => {
+    if (node.compressed === 'threads') setExpandedWorkspaces(previous => new Set([...previous, node.parent!.id]));
+    else setExpandedDevices(previous => new Set([...previous, node.parent!.id]));
+  };
   // Threads opened up into the agent threads they started.
   const [openGroups, setOpenGroups] = useState<ReadonlySet<string>>(() => new Set());
   const toggleGroup = (key: string) => {
@@ -89,11 +136,122 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
-  // Theme art for an agent replaces its monogram.
+  // Read once per agent after structural/theme changes, never per tile on hover.
   useLayoutEffect(() => {
-    for (const chip of canvas.current?.querySelectorAll<HTMLElement>('.thread-map-agent') ?? []) {
-      const art = getComputedStyle(chip).getPropertyValue('--theme-agent-avatar').includes('url(');
-      chip.toggleAttribute('data-art', art);
+    const paint = () => {
+      const chips = [...(canvas.current?.querySelectorAll<HTMLElement>('.thread-map-agent') ?? [])];
+      const art = new Map<string, boolean>();
+      for (const chip of chips) if (!art.has(chip.dataset.agent!)) art.set(chip.dataset.agent!, getComputedStyle(chip).getPropertyValue('--theme-agent-avatar').includes('url('));
+      for (const chip of chips) chip.toggleAttribute('data-art', art.get(chip.dataset.agent!) ?? false);
+    };
+    paint();
+    const observer = new MutationObserver(paint);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme-preset', 'data-theme-effective'] });
+    return () => observer.disconnect();
+  }, [root, focusId, openGroups, size.width, size.height]);
+
+  useEffect(() => {
+    if (stableLayout && focusInside.current && !canvas.current?.contains(document.activeElement)) { focusInside.current = false; thaw(); }
+  }, [root, current.id, stableLayout]);
+
+  const spatial = useRef<SpatialTarget[]>([]);
+  const keyboard = (event: ReactKeyboardEvent) => {
+    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || event.nativeEvent.isComposing) return;
+    const target = event.target as HTMLElement;
+    const editing = target.matches('input, textarea, select, [contenteditable="true"]');
+    if (editing) {
+      if (target === filter.current && event.key === 'Enter') { event.preventDefault(); openFirstMatch(); }
+      if (target === filter.current && event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setFilter(''); canvas.current?.focus(); }
+      return;
+    }
+    if (event.key === '/' && (enhanced || onFilterChange)) { event.preventDefault(); filter.current?.focus(); }
+    else if (enhanced && ['1', '2', '3'].includes(event.key)) { event.preventDefault(); setScope((['active', 'week', 'all'] as const)[Number(event.key) - 1]!); }
+    else if ((event.key === 'Escape' || event.key === 'Backspace') && current !== root) { event.preventDefault(); event.stopPropagation(); navigate(current.parent); }
+    else if (event.key.startsWith('Arrow') && canvas.current?.contains(target)) {
+      const from = target.closest<HTMLElement>('[data-map-id]')?.dataset.mapId ?? '';
+      const next = spatialNeighbor(spatial.current, from, event.key);
+      const block = next ? byMapId(stage.current, next) : null;
+      const control = block?.matches('button') ? block : block?.querySelector<HTMLElement>('.thread-map-tile-link, .thread-map-zoom, button.thread-map-section-head');
+      if (control) { event.preventDefault(); control.focus({ preventScroll: true }); }
+    } else if (event.key === ' ' && onQuickLook) {
+      const id = target.closest<HTMLElement>('[data-map-id]')?.dataset.mapId;
+      const key = id?.startsWith('thread:') ? id.slice(7) : undefined;
+      if (key) { event.preventDefault(); onQuickLook(key); }
+    }
+  };
+
+  const outsideKey = useRef<(event: KeyboardEvent) => void>(() => {});
+  outsideKey.current = event => {
+    if (!page || event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || event.isComposing) return;
+    const target = event.target as HTMLElement;
+    if (target.closest('input, textarea, select, [contenteditable="true"], [role="dialog"], [role="menu"]') || canvas.current?.closest('.thread-map')?.contains(target)) return;
+    if (!canvas.current?.getClientRects().length) return; // Persistent maps can be hidden by the host.
+    if (event.key === '/') { event.preventDefault(); filter.current?.focus(); }
+    else if (['1', '2', '3'].includes(event.key)) { event.preventDefault(); setScope((['active', 'week', 'all'] as const)[Number(event.key) - 1]!); }
+  };
+  useEffect(() => {
+    const key = (event: KeyboardEvent) => outsideKey.current(event);
+    window.addEventListener('keydown', key);
+    return () => window.removeEventListener('keydown', key);
+  }, []);
+
+  useMapMotion(stage, stableLayout, current.id, root, size, openGroups);
+  const pendingReveal = useRef<string | null>(null);
+  const pendingRevealTarget = useRef<string | null>(null);
+  const pendingPulses = useRef(new Set<string>());
+  const previousPulses = useRef(new Set<string>());
+  useEffect(() => {
+    const keys = new Set(pulseKeys ?? []);
+    for (const key of keys) if (!previousPulses.current.has(key)) pendingPulses.current.add(key);
+    previousPulses.current = keys;
+  }, [pulseKeys]);
+  const lastRevealed = useRef<string | null>(null);
+  useEffect(() => {
+    if (!revealKey) { lastRevealed.current = null; return; }
+    if (lastRevealed.current === revealKey) return;
+    if (revealKey.startsWith('device:')) {
+      const device = devices.find(item => `device:${item.id}` === revealKey);
+      if (!device) return;
+      if (device.state === 'offline') setCachedDevices(previous => new Set([...previous, device.id]));
+      setFocusId(revealKey);
+      lastRevealed.current = revealKey; pendingReveal.current = revealKey; pendingRevealTarget.current = revealKey;
+      pendingPulses.current.add(revealKey);
+      return;
+    }
+    const find = (thread: ThreadMapThread): ThreadMapThread[] | null => {
+      if (thread.key === revealKey) return [thread];
+      for (const child of thread.children ?? []) { const path = find(child); if (path) return [thread, ...path]; }
+      return null;
+    };
+    for (const device of devices) for (const workspace of device.workspaces) for (const thread of workspace.threads) {
+      const path = find(thread);
+      if (!path) continue;
+      setExpandedWorkspaces(previous => new Set([...previous, `workspace:${device.id}:${workspace.id}`]));
+      if (device.state === 'offline') setCachedDevices(previous => new Set([...previous, device.id]));
+      setOpenGroups(previous => new Set([...previous, ...path.slice(0, -1).map(item => item.key)]));
+      setFocusId(`workspace:${device.id}:${workspace.id}`);
+      lastRevealed.current = revealKey;
+      pendingReveal.current = revealKey;
+      pendingRevealTarget.current = `workspace:${device.id}:${workspace.id}`;
+      pendingPulses.current.add(revealKey);
+      return;
+    }
+  }, [revealKey, devices]);
+  // Event pulses are consumed once; geometry/content refreshes never replay them.
+  useEffect(() => {
+    if (document.visibilityState === 'hidden') { pendingPulses.current.clear(); return; }
+    if (!canvas.current || !size.width) return;
+    for (const key of pendingPulses.current) {
+      if (pendingReveal.current === key && current.id !== pendingRevealTarget.current) continue;
+      const element = key.startsWith('device:') ? current.id === key ? canvas.current : byMapId(stage.current, key) : byMapId(stage.current, `thread:${key}`);
+      if (!element) { if (pendingReveal.current !== key) pendingPulses.current.delete(key); continue; }
+      const waiting = element.hasAttribute('data-waiting');
+      element.setAttribute('data-pulse', waiting ? 'waiting' : 'done');
+      const clear = () => element.removeAttribute('data-pulse');
+      const timer = setTimeout(clear, 900);
+      element.addEventListener('animationend', () => { clearTimeout(timer); clear(); }, { once: true });
+      pendingPulses.current.delete(key);
+      if (pendingReveal.current === key) pendingReveal.current = null;
     }
   });
 
@@ -145,7 +303,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   // Touch: two fingers pinch in for the level above or spread to open the block
   // under them; one finger dragging down takes the map away.
   const gesture = useRef({ navigate, current, root, nodes, onDismiss });
-  gesture.current = { navigate, current, root, nodes, onDismiss };
+  gesture.current = { navigate, current, root, nodes, onDismiss: page ? undefined : onDismiss };
   useEffect(() => {
     const node = canvas.current;
     if (!node) return;
@@ -244,7 +402,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const open = (thread: ThreadMapThread) => (event: ReactMouseEvent) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
     event.preventDefault();
-    onOpen(thread);
+    latest.current.onOpen(thread);
   };
   const showTip = (lines: string[], target: HTMLElement) => {
     const box = canvas.current?.getBoundingClientRect();
@@ -259,10 +417,10 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       y: below ? Math.min(box.height - 8, anchor.bottom - box.top + 6) : Math.max(8, anchor.top - box.top - 6),
     });
   };
-  const hover = (lines: string[]) => ({
-    onPointerEnter: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse') showTip(lines, event.currentTarget); },
+  const hover = (lines: string[] | (() => string[])) => ({
+    onPointerEnter: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse') showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); },
     onPointerLeave: () => setTip(null),
-    onFocus: (event: { currentTarget: HTMLElement }) => showTip(lines, event.currentTarget),
+    onFocus: (event: { currentTarget: HTMLElement }) => showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget),
     onBlur: () => setTip(null),
   });
 
@@ -274,7 +432,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   };
 
   // A thread opened up: its bar on top (tap to fold back, arrow to open it), its agent threads below.
-  const group = (item: MapNode, box: MapRect, depth: number) => {
+  const group = (item: MapNode, box: MapRect, depth: number, offset: {x: number; y: number}) => {
     const thread = item.thread!;
     const children: MapNode[] = thread.children!.map(child => ({
       id: `thread:${child.key}`, kind: 'thread', label: child.title, parent: item, children: [], thread: child,
@@ -284,7 +442,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     } satisfies MapNode)).sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
     const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
     return (
-      <section key={item.id} className="thread-map-section thread-map-group" data-kind="group" data-depth={depth}
+      <section key={item.id} data-map-id={item.id} className="thread-map-section thread-map-group" data-kind="group" data-depth={depth}
         aria-label={thread.title} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
         <div className="thread-map-group-head">
           <button type="button" className="thread-map-section-head" aria-expanded="true"
@@ -299,35 +457,44 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             <ArrowUpRight aria-hidden="true" />
           </a>}
         </div>
-        {render(children, inner, depth + 1)}
+        {render(children, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y })}
       </section>
     );
   };
 
   let rendered = 0;
+  spatial.current = [];
   const runningLeaves = (node: MapNode): MapNode[] => node.kind === 'thread'
     ? (node.running ? [node] : [])
     : node.children.flatMap(runningLeaves);
   // Every level answers: a thread opens from its tile wherever it shows, and a
   // device or workspace opens from its header row (or anywhere, when it is too
   // small to show what is inside).
-  const render = (items: MapNode[], bounds: MapRect, depth: number): ReactNode[] =>
-    squarify(items, item => item.weight, bounds).map(({ item, rect }) => {
+  const render = (items: MapNode[], bounds: MapRect, depth: number, offset = { x: 0, y: 0 }): ReactNode[] =>
+    layouts.current.layout(items[0]?.parent?.id ?? current.id, items, bounds).map(({ item, rect }) => {
       rendered++;
       const box = inset(rect, depth ? 1.5 : 2.5);
+      if (item.kind === 'compressed') {
+        spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
+        return <button type="button" key={item.id} data-map-id={item.id} className="thread-map-compressed" data-dimmed={Boolean(query.trim()) || undefined}
+          style={{ left: box.x, top: box.y, width: box.width, height: box.height }} onClick={() => expand(item)} aria-label={item.label} {...hover([item.label])}>{item.label}</button>;
+      }
       if (item.kind === 'thread') {
+        spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
         const thread = item.thread!;
-        if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth);
+        if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth, offset);
         return <ThreadTile key={item.id} node={item} box={box} hours={hours} current={thread.key === currentKey}
-          onOpen={open(thread)} hover={hover(describe(item, hours))}
-          onShowChildren={thread.children?.length ? () => toggleGroup(thread.key) : undefined} />;
+          onOpen={open(thread)} hover={hover(() => describe(item, hours))} dimmed={Boolean(query.trim()) && !hasMatch(item)}
+          onQuickLook={onQuickLook ? quickLook : undefined} onShowChildren={thread.children?.length ? () => toggleGroup(thread.key) : undefined} />;
       }
       const lines = describe(item, hours);
       const text = lines.join(' · ');
       const state = item.device?.state;
-      const unlisted = item.kind === 'device' && state !== 'ready';
-      const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
-      const preview = !unlisted && rendered < 600 && fits(item, inner, depth);
+      const unlisted = item.kind === 'device' && state !== 'ready' && !(enhanced && item.children.length > 0);
+      const extra = item.kind === 'device' ? deviceExtras?.[item.device!.id] : undefined;
+      const header = extra ? 36 : HEADER;
+      const inner = { x: 3, y: header, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header - 3) };
+      const preview = !unlisted && rendered < 1600 && fits(item, inner, depth);
       // A block too small for everything inside still shows the agents running
       // there (up to four), with the rest counted under them.
       const live = !preview && !unlisted && item.running > 0 && inner.width >= 44 && inner.height >= 34
@@ -337,8 +504,9 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       const Icon = item.kind === 'device' ? Monitor : Folder;
       const zoomable = !unlisted;
       const head = <>
-        {named && <Icon aria-hidden="true" />}
+        {named && (extra ? <DeviceStateMark /> : <Icon aria-hidden="true" />)}
         <span className="thread-map-section-label">{item.label}</span>
+        {extra && box.width >= 280 && <DeviceReadings extra={extra} />}
         {unlisted
           ? named && <span className="thread-map-section-count">{state === 'error' ? <RotateCw aria-hidden="true" /> : translate(state === 'offline' ? 'workbench.threadMapOffline' : 'workbench.threadMapLoading')}</span>
           : named && <span className="thread-map-section-count">
@@ -346,18 +514,24 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             {item.usd > 0 && box.width >= 150 && <span className="thread-map-section-usd">{formatCompactUsd(item.usd)}</span>}
           </span>}
       </>;
+      if (!preview && !live.length && zoomable) spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
       const zoom = (event: ReactMouseEvent<HTMLElement>) => navigate(item, event.currentTarget.closest('section'));
       return (
         <section key={item.id} data-map-id={item.id} className="thread-map-section" data-kind={item.kind} data-depth={depth} data-state={unlisted ? state : undefined}
+          data-dimmed={Boolean(query.trim()) && !hasMatch(item) || undefined} data-cached={cachedDevices.has(item.device?.id ?? '') || undefined}
           data-collapsed={(!preview && !live.length) || undefined} data-live={item.running > 0 || undefined}
           data-heat={preview || live.length ? undefined : heatLevel(item.activeMs)} data-running={!preview && !live.length && item.running ? true : undefined}
           data-zoomable={zoomable || undefined} aria-label={text} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
+          <div className="thread-map-section-header" style={{ height: header }} title={extra?.metrics}>
           {(preview || live.length > 0) && zoomable
             ? <button type="button" className="thread-map-section-head" aria-label={translate('workbench.threadMapExplore', { name: text })}
               onClick={zoom} {...hover(lines)}>{head}</button>
             : <div className="thread-map-section-head">{head}</div>}
-          {preview && <div className="thread-map-preview">{render(item.children, inner, depth + 1)}</div>}
-          {live.length > 0 && <div className="thread-map-preview">{render(live, liveInner, depth + 1)}</div>}
+          {extra?.menuItems?.length ? <DeviceMenu device={item.device!} items={extra.menuItems} /> : null}
+          {extra?.metrics && <span className="thread-map-metrics">{extra.metrics}</span>}
+          </div>
+          {preview && <div className="thread-map-preview">{render(item.children, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y })}</div>}
+          {live.length > 0 && <div className="thread-map-preview">{render(live, liveInner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y })}</div>}
           {live.length > 0 && item.threads > live.length && (
             <span className="thread-map-section-summary" aria-hidden="true">{translate('workbench.threadMapMoreThreads', { count: item.threads - live.length })}</span>
           )}
@@ -375,7 +549,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const children = current.children;
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
   return (
-    <div className="thread-map">
+    <div className="thread-map" data-presentation={presentation} onKeyDown={keyboard}>
       <div className="thread-map-bar">
         {heading}
         <span className="thread-map-summary">
@@ -383,8 +557,22 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           {root.running > 0 && <> · <i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapRunningCount', { count: root.running })}</>}
           {root.usd > 0 && <> · {translate('workbench.threadMapCost', { usd: formatCompactUsd(root.usd) })}</>}
         </span>
+        {(enhanced || onFilterChange) && <label className="thread-map-filter">
+          <input ref={filter} type="search" value={query} placeholder={translate('workbench.threadMapFilter')} aria-label={translate('workbench.threadMapFilter')}
+            onChange={event => setFilter(event.target.value)} />
+          {query.trim() ? <span role="status">{translate('workbench.threadMapMatches', { count: matches.size })}</span> : <kbd>/</kbd>}
+        </label>}
+        {enhanced && <div className="thread-map-scope" role="group" aria-label={translate('workbench.threadMapScope')}>
+          {(['active', 'week', 'all'] as const).map((value, index) => <button key={value} type="button" aria-pressed={scope === value} aria-keyshortcuts={String(index + 1)} onClick={() => setScope(value)}>
+            {translate(value === 'active' ? 'workbench.threadMapScopeActive' : value === 'week' ? 'workbench.threadMapScopeWeek' : 'workbench.threadMapScopeAll')}
+          </button>)}
+        </div>}
         {actions}
       </div>
+      {attention && <AttentionStrip items={attention} onOpen={key => {
+        const thread = nodes.get(`thread:${key}`)?.thread ?? devices.flatMap(device => device.workspaces.flatMap(workspace => workspace.threads)).find(thread => thread.key === key);
+        if (thread) latest.current.onOpen(thread); else onQuickLook?.(key);
+      }} onRequestDecision={onRequestDecision} />}
       <div className="thread-map-bar thread-map-path">
         <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapBack')} disabled={current === root} onClick={() => navigate(current.parent)}>
           <ArrowLeft aria-hidden="true" />
@@ -406,6 +594,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             );
           })}
         </nav>
+        {stableLayout && <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapRefreshLayout')}
+          onClick={() => setLayoutRevision(revision => revision + 1)}><RotateCw data-icon="refresh" aria-hidden="true" /></button>}
         {children.length > 0 && <label className="thread-map-goto" title={translate('workbench.threadMapGoTo')}>
           <List aria-hidden="true" />
           <select aria-label={translate('workbench.threadMapGoTo')} value="" onChange={event => {
@@ -417,16 +607,30 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             {children.map(node => <option key={node.id} value={node.id} disabled={node.kind === 'device' && node.device?.state !== 'ready'}>{describe(node, hours).join(' · ')}</option>)}
           </select>
         </label>}
+        {current.device && cachedDevices.has(current.device.id) && <span className="thread-map-cached-label">{translate('workbench.threadMapCached')}
+          {current.device.cachedAt && <> · {relativeCache(current.device.cachedAt)}</>}</span>}
       </div>
-      <div ref={canvas} className="thread-map-canvas" role="group" aria-label={current.label}>
+      <div ref={canvas} className="thread-map-canvas" role="group" tabIndex={-1} aria-label={current.label}
+        onPointerEnter={() => { pointerInside.current = true; if (stableLayout) freeze(); }}
+        onPointerLeave={() => { pointerInside.current = false; if (stableLayout) thaw(); }}
+        onFocusCapture={() => { focusInside.current = true; if (stableLayout) freeze(); }}
+        onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) { focusInside.current = false; if (stableLayout) thaw(); } }}>
         {children.length
           ? <div ref={stage} className="thread-map-stage">{size.width > 0 && render(children, bounds, 0)}</div>
-          : <p className="thread-map-empty" role="status">{devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
+          : <p className="thread-map-empty" role="status">{current.device && cachedDevices.has(current.device.id) ? translate('workbench.threadMapNoCache') : devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
         {tip && <div className="thread-map-tip" role="tooltip" style={{ left: tip.x, top: tip.y }} data-above={tip.above || undefined}>
           {tip.lines.map((line, index) => index ? <span key={index}>{line}</span> : <b key={index}>{line}</b>)}
         </div>}
       </div>
-      <div className="thread-map-legend">
+      {enhanced && devices.some(device => device.state === 'offline') && <div className="thread-map-offline-strip">
+        {devices.filter(device => device.state === 'offline').map(device => <button type="button" key={device.id} onClick={() => {
+          setCachedDevices(previous => new Set([...previous, device.id])); setFocusId(`device:${device.id}`);
+        }}><DeviceStateMark offline /><b>{device.name}</b><span>{translate('workbench.threadMapOffline')}</span>
+          {device.cachedAt && <span>{relativeCache(device.cachedAt)}</span>}
+          <small>{translate(device.workspaces.length ? 'workbench.threadMapCached' : 'workbench.threadMapNoCache')}</small>
+        </button>)}
+      </div>}
+      <MapLegend compact={page && size.width > 0 && size.width < 980}>
         <span>{translate('workbench.threadMapLegendSize')}</span>
         <span className="thread-map-scale">
           {translate('workbench.threadMapLegendColor', { hours })}
@@ -442,7 +646,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         </span>
         <span className="thread-map-legend-item"><span className="thread-map-legend-spark" aria-hidden="true"><i /><i /><i /><i /></span>{translate('workbench.threadMapLegendHourly')}</span>
         <span className="thread-map-legend-item"><i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapLegendRunning')}</span>
-      </div>
+      </MapLegend>
     </div>
   );
 }

@@ -1,0 +1,13 @@
+html, body, #root { height: 100%; margin: 0; overflow: hidden; }
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+button, input, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+.map-fixture { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.map-fixture-toolbar { display: flex; align-items: center; gap: 16px; flex: none; min-height: 44px; padding: 0 20px; border-bottom: 1px solid var(--theme-border); color: var(--theme-fg-muted); background: var(--theme-bg); font-size: 11px; }
+.map-fixture-toolbar > b { font-size: 13px; letter-spacing: -.02em; color: var(--theme-fg); }
+.map-fixture-toolbar nav { display: flex; gap: 3px; margin-left: auto; }
+.map-fixture-toolbar a, .map-fixture-toolbar button { padding: 4px 8px; border: 0; border-radius: 4px; background: none; color: inherit; font-size: 10px; text-decoration: none; cursor: pointer; }
+.map-fixture-toolbar a[aria-current] { background: var(--theme-surface); color: var(--theme-fg); }
+.map-fixture-notice { position: fixed; bottom: 40px; left: 50%; translate: -50% 0; z-index: 50; max-width: 80%; padding: 10px 16px; border: 1px solid var(--theme-border); border-radius: 10px; background: var(--theme-panel); color: var(--theme-fg); box-shadow: 0 8px 28px rgb(0 0 0 / .15); font-size: 12px; }
+@media (max-width: 639px) { .map-fixture-toolbar { gap: 8px; padding: 0 12px; } .map-fixture-toolbar > span, .map-fixture-toolbar > button { display: none; } }

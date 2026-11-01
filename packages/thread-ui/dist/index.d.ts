@@ -370,6 +370,9 @@ interface WorkbenchToolPanel {
     onToggle: () => void;
 }
 interface MatterWorkbenchOptions {
+    /** Optional host surface additions; absent in the browser workbench. */
+    sidebarLeading?: ReactNode;
+    railLeading?: ReactNode;
     panels?: WorkbenchPanelsOptions;
     statusActions?: ReactNode;
     /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
@@ -1006,6 +1009,12 @@ interface ThreadMapThread {
     agent?: string | undefined;
     agentName?: string | undefined;
     running: boolean;
+    needsInput?: {
+        kind: 'approval' | 'input';
+        summary?: string;
+        requestId?: string;
+    };
+    unread?: boolean;
     /** Turns ever started, agent threads included; null when the device cannot say. */
     turns: number | null;
     /** Time turns ran inside the activity window; null when the device cannot say. */
@@ -1053,8 +1062,64 @@ interface ThreadMapDevice {
     /** The device's workspace list. */
     href?: string | undefined;
     state: 'ready' | 'loading' | 'offline' | 'error';
+    /** Last successful snapshot, shown when opening an offline device. */
+    cachedAt?: string;
     error?: string | null | undefined;
     workspaces: ThreadMapWorkspace[];
+}
+
+type MapScope = 'active' | 'week' | 'all';
+interface MapAttention {
+    key: string;
+    kind: 'approval' | 'input' | 'failed' | 'unread';
+    title: string;
+    device: string;
+    workspace: string;
+    summary?: string;
+    requestId?: string;
+    since: string;
+}
+interface MapDeviceMenuItem {
+    id: string;
+    label: string;
+    onSelect: () => void;
+    disabled?: boolean;
+}
+interface MapDeviceExtras {
+    latencyMs?: number;
+    runtimeVersion?: string;
+    updateAvailable?: boolean;
+    runningCount?: number;
+    waitingCount?: number;
+    todayCostUsd?: number;
+    /** Host-formatted compact CPU / memory / GPU line, not a polling request. */
+    metrics?: string;
+    syncing?: boolean;
+    menuItems?: readonly MapDeviceMenuItem[];
+}
+interface ThreadMapProps {
+    devices: ThreadMapDevice[];
+    currentKey?: string | undefined;
+    hours?: number;
+    heading?: ReactNode;
+    actions?: ReactNode;
+    onOpen: (thread: ThreadMapThread) => void;
+    onNavigate?: ((href: string) => void) | undefined;
+    onRetry?: ((deviceId: string) => void) | undefined;
+    onDismiss?: (() => void) | undefined;
+    presentation?: 'dialog' | 'page';
+    scope?: MapScope;
+    onScopeChange?: (scope: MapScope) => void;
+    attention?: readonly MapAttention[];
+    stableLayout?: boolean;
+    filterText?: string;
+    onFilterChange?: (text: string) => void;
+    deviceExtras?: Readonly<Record<string, MapDeviceExtras>>;
+    onQuickLook?: (key: string) => void;
+    onRequestDecision?: (key: string, requestId: string, decision: 'approve' | 'deny') => void;
+    /** A thread key, or `device:<id>` to reveal a device from the host's Devices page. */
+    revealKey?: string | null;
+    pulseKeys?: readonly string[];
 }
 
 /**
@@ -1065,19 +1130,7 @@ interface ThreadMapDevice {
  * then), tapping a thread opens it. On touch, pinching in goes up a level,
  * spreading opens the block under the fingers and dragging down dismisses.
  */
-declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onNavigate, onRetry, onDismiss }: {
-    devices: ThreadMapDevice[];
-    currentKey?: string | undefined;
-    hours?: number;
-    heading?: ReactNode;
-    actions?: ReactNode;
-    onOpen: (thread: ThreadMapThread) => void;
-    /** Open a device or workspace page; modified clicks keep normal link behavior. */
-    onNavigate?: ((href: string) => void) | undefined;
-    onRetry?: ((deviceId: string) => void) | undefined;
-    /** Closes the map; a downward drag on it asks for this. */
-    onDismiss?: (() => void) | undefined;
-}): react.JSX.Element;
+declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onNavigate, onRetry, onDismiss, presentation, scope: controlledScope, onScopeChange, attention, stableLayout, filterText, onFilterChange, deviceExtras, onQuickLook, onRequestDecision, revealKey, pulseKeys, }: ThreadMapProps): react.JSX.Element;
 
 /** The thread map in a dialog: full screen on a phone, a large panel elsewhere. */
 declare function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }: Omit<ComponentProps<typeof ThreadMap>, 'heading' | 'actions'> & {
@@ -1228,4 +1281,4 @@ declare function TurnNotificationButton({ subscribed, busy, error, onToggle, onR
     onRetry: () => void;
 }): react.JSX.Element;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, LongTextDialog, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, LongTextDialog, type MapAttention, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };

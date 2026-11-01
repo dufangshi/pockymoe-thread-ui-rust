@@ -1,5 +1,5 @@
-import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-import { formatDate, getLocale, translate } from '../../i18n';
+import { memo, type CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import { formatDate, getLocale, translate, useI18n } from '../../i18n';
 import { StatusMark } from '../StatusMark';
 import { themeAgentName } from '../themeAgent';
 import { Network } from 'lucide-react';
@@ -104,7 +104,7 @@ export function threadDetails(node: MapNode, hours: number) {
       : thread.lastActiveAt ? translate('workbench.threadMapActiveAgo', { ago: ago(thread.lastActiveAt) }) : null,
     thread.failed ? translate('workbench.threadMapFailedTurn') : null,
   ].filter(Boolean).join(' · ');
-  return [node.label, who, figures, spend, dates].filter(Boolean);
+  return [node.label, who, figures, spend, dates, thread.needsInput ? translate('workbench.waitingForYou') : null, thread.unread ? translate('workbench.completedUnread') : null].filter(Boolean) as string[];
 }
 
 /** A pie that fills as the thread ages, colored from fresh to bronze. */
@@ -166,7 +166,9 @@ function Usage({ thread }: { thread: ThreadMapThread }) {
  * colored speck. The tile is one link; the price and the agent-thread button sit
  * above it.
  */
-export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChildren }: {
+function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChildren, dimmed, onQuickLook }: {
+  dimmed?: boolean;
+  onQuickLook?: (key: string) => void;
   node: MapNode;
   box: MapRect;
   hours: number;
@@ -176,6 +178,7 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
   /** Opens the tile up into the agent threads the thread started. */
   onShowChildren?: (() => void) | undefined;
 }) {
+  useI18n();
   const thread = node.thread!;
   const { width: w, height: h } = box;
   const tier = tileTier(box);
@@ -221,7 +224,7 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
   // and says which thread started an agent thread shown on its own.
   const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model].filter(Boolean).join(' · ') : '';
   const from = w >= 160 && thread.from ? translate('workbench.threadMapFrom', { title: thread.from }) : '';
-  const status = thread.running
+  const status = thread.needsInput ? <span className="thread-map-tile-waiting">{translate('workbench.waitingForYou')}</span> : thread.running
     ? <span className="thread-map-tile-live"><i className="thread-map-running-dot" />{translate('workbench.threadMapRunning')}</span>
     : thread.lastActiveAt ? <span>{translate('workbench.threadMapActiveAgo', { ago: ago(thread.lastActiveAt) })}</span> : null;
   const short = [
@@ -238,7 +241,8 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
   );
   return (
     <div className="thread-map-tile" data-map-id={node.id} data-size={tier} data-heat={heatLevel(thread.activeMs)}
-      data-running={thread.running || node.running > 0 || undefined} data-failed={thread.failed || undefined} data-current={current || undefined}
+      data-dimmed={dimmed || undefined} data-waiting={Boolean(thread.needsInput) || undefined} data-unread={thread.unread || undefined}
+      data-running={!thread.needsInput && (thread.running || node.running > 0) || undefined} data-failed={thread.failed || undefined} data-current={current || undefined}
       style={{ left: box.x, top: box.y, width: w, height: h, '--lines': lines, '--prompt-lines': promptLines, '--spark-h': `${sparkHeight}px` } as CSSProperties}>
       <a href={thread.href} className="thread-map-tile-link" aria-label={details.join(' · ')} aria-current={current ? 'page' : undefined}
         tabIndex={tier === 'dot' ? -1 : undefined} onClick={onOpen} {...hover} />
@@ -246,7 +250,8 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
         <span className="thread-map-tile-head">
           {chip}
           {/* The navigation's marks for a failed or interrupted last turn; running has its heartbeat. */}
-          {(thread.failed || thread.interrupted) && !thread.running ? <StatusMark status={thread.failed ? 'failed' : 'interrupted'} /> : null}
+          {thread.needsInput ? <StatusMark status="waiting" /> : (thread.failed || thread.interrupted) && !thread.running ? <StatusMark status={thread.failed ? 'failed' : 'interrupted'} /> : null}
+          {thread.unread && <StatusMark status="unread" />}
           {titled && <span className="thread-map-tile-title">{thread.title}</span>}
           {showChildren && childrenButton(childrenWidth > 24)}
           {showAge && (
@@ -257,6 +262,8 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
           )}
         </span>
       )}
+      {onQuickLook && tier === 'card' && <button type="button" className="thread-map-quick-look"
+        aria-label={translate('workbench.threadMapQuickLook', { title: thread.title })} onClick={() => onQuickLook(thread.key)}>ⓘ</button>}
       {childrenRow && <span className="thread-map-tile-children-row">{childrenButton(true)}</span>}
       {showWho && (who || from || status || thread.failed) && (
         <span className="thread-map-tile-sub">
@@ -281,3 +288,11 @@ export function ThreadTile({ node, box, hours, current, onOpen, hover, onShowChi
     </div>
   );
 }
+
+/** Hosts merge by key, retaining unchanged thread objects. Hover and filtering
+ * therefore update only the affected tiles, even on a 600-thread map. */
+export const ThreadTile = memo(ThreadTileContent, (a, b) =>
+  a.node.thread === b.node.thread && a.node.parent?.label === b.node.parent?.label && a.node.running === b.node.running
+  && a.box.x === b.box.x && a.box.y === b.box.y && a.box.width === b.box.width && a.box.height === b.box.height
+  && a.hours === b.hours && a.current === b.current && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook
+  && Boolean(a.onShowChildren) === Boolean(b.onShowChildren));

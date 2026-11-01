@@ -566,3 +566,15 @@ describe('desktop tabs', () => {
     expect(contexts.at(-1)).toMatchObject({ key: 'local:a', x: 40, y: 200 });
   });
 });
+
+
+it('renders optional host slots before the existing sidebar and rail controls', () => {
+  vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+  options = { ...baseOptions, sidebarLeading: <section data-testid="host-activity">Activity</section>, railLeading: <button aria-label="Host map" /> };
+  render();
+  expect(drawer().querySelector('.matter-sidebar-scroll')?.firstElementChild?.getAttribute('data-testid')).toBe('host-activity');
+  const rail = host.querySelector('.matter-rail')!;
+  expect(rail.querySelector('.matter-brand')?.nextElementSibling?.getAttribute('aria-label')).toBe('Host map');
+  expect(rail.querySelector('button[aria-label="Chat"]')).not.toBeNull();
+  expect(drawer().querySelector('[data-testid="shortcuts"]')).not.toBeNull();
+});

@@ -149,7 +149,7 @@ export function ComposerHooksPanel({
                 value={hookScope}
                 onValueChange={(selectedValue) => onSetHookScope(selectedValue as HookScope)}
                 disabled={hooksPanelMode === 'edit'}
-                className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
+                className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus-visible:border-sky-300/50"
               >
                 <option value="project">{translate("chat.project_f6f4da")}</option>
                 <option value="global">{translate("chat.global_5f1184")}</option>
@@ -162,7 +162,7 @@ export function ComposerHooksPanel({
                 onValueChange={(selectedValue) =>
                   onSetHookEventName(selectedValue as AgentHookEventNameDto)
                 }
-                className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
+                className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus-visible:border-sky-300/50"
               >
                 {HOOK_EVENT_OPTIONS.map((eventOption) => (
                   <option key={eventOption.value} value={eventOption.value}>
@@ -180,7 +180,7 @@ export function ComposerHooksPanel({
               value={hookMatcher}
               onChange={(event) => onSetHookMatcher(event.target.value)}
               placeholder="Bash"
-              className="w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+              className="w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus-visible:border-sky-300/50"
             />
           </div>
           <div>
@@ -191,7 +191,7 @@ export function ComposerHooksPanel({
               value={hookCommand}
               onChange={(event) => onSetHookCommand(event.target.value)}
               rows={3}
-              className="w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+              className="w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs text-stone-100 outline-none placeholder:text-stone-500 focus-visible:border-sky-300/50"
             />
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -201,7 +201,7 @@ export function ComposerHooksPanel({
                 value={hookTimeoutSec}
                 onChange={(event) => onSetHookTimeoutSec(event.target.value)}
                 inputMode="numeric"
-                className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
+                className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus-visible:border-sky-300/50"
               />
             </label>
             <label className="block text-xs text-stone-400">
@@ -209,7 +209,7 @@ export function ComposerHooksPanel({
                 aria-label={translate("chat.hookStatusMessage")}
                 value={hookStatusMessage}
                 onChange={(event) => onSetHookStatusMessage(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
+                className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus-visible:border-sky-300/50"
               />
             </label>
           </div>

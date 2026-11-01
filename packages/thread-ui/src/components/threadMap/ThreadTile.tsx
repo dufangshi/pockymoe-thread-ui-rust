@@ -6,7 +6,7 @@ import { Network } from 'lucide-react';
 import { TokenMetricIcon } from '../timeline/TokenMetricIcon';
 import { TokenUsageCost } from '../timeline/TokenUsageCost';
 import { formatCompactTokenCount, formatCompactUsd } from '../timeline/tokenFormatting';
-import { heatLevel, type MapNode, type ThreadMapThread } from './model';
+import { heatLevel, isWaiting, type MapNode, type ThreadMapThread } from './model';
 import type { MapRect } from './squarify';
 
 const MINUTE = 60_000;
@@ -104,7 +104,7 @@ export function threadDetails(node: MapNode, hours: number) {
       : thread.lastActiveAt ? translate('workbench.threadMapActiveAgo', { ago: ago(thread.lastActiveAt) }) : null,
     thread.failed ? translate('workbench.threadMapFailedTurn') : null,
   ].filter(Boolean).join(' · ');
-  return [node.label, who, figures, spend, dates, thread.needsInput ? translate('workbench.waitingForYou') : null, thread.unread ? translate('workbench.completedUnread') : null].filter(Boolean) as string[];
+  return [node.label, who, figures, spend, dates, isWaiting(thread) ? translate('workbench.waitingForYou') : null, thread.unread ? translate('workbench.completedUnread') : null].filter(Boolean) as string[];
 }
 
 /** A pie that fills as the thread ages, colored from fresh to bronze. */
@@ -181,6 +181,7 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
 }) {
   useI18n();
   const thread = node.thread!;
+  const waiting = isWaiting(thread);
   const { width: w, height: h } = box;
   const tier = tileTier(box);
   const details = threadDetails(node, hours);
@@ -225,7 +226,7 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   // and says which thread started an agent thread shown on its own.
   const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model].filter(Boolean).join(' · ') : '';
   const from = w >= 160 && thread.from ? translate('workbench.threadMapFrom', { title: thread.from }) : '';
-  const status = thread.needsInput ? <span className="thread-map-tile-waiting">{translate('workbench.waitingForYou')}</span> : thread.running
+  const status = waiting ? <span className="thread-map-tile-waiting">{translate('workbench.waitingForYou')}</span> : thread.running
     ? <span className="thread-map-tile-live"><i className="thread-map-running-dot" />{translate('workbench.threadMapRunning')}</span>
     : thread.lastActiveAt ? <span>{translate('workbench.threadMapActiveAgo', { ago: ago(thread.lastActiveAt) })}</span> : null;
   const short = [
@@ -242,8 +243,8 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   );
   return (
     <div className="thread-map-tile" data-map-id={node.id} data-readable={readable || undefined} data-size={tier} data-heat={heatLevel(thread.activeMs)}
-      data-dimmed={dimmed || undefined} data-waiting={Boolean(thread.needsInput) || undefined} data-unread={thread.unread || undefined}
-      data-running={!thread.needsInput && (thread.running || node.running > 0) || undefined} data-failed={thread.failed || undefined} data-current={current || undefined}
+      data-dimmed={dimmed || undefined} data-waiting={waiting || undefined} data-unread={thread.unread || undefined}
+      data-running={!waiting && (thread.running || node.running > 0) || undefined} data-failed={thread.failed || undefined} data-current={current || undefined}
       style={{ left: box.x, top: box.y, width: w, height: h, '--lines': lines, '--prompt-lines': promptLines, '--spark-h': `${sparkHeight}px` } as CSSProperties}>
       <a href={thread.href} className="thread-map-tile-link" aria-label={details.join(' · ')} aria-current={current ? 'page' : undefined}
         tabIndex={tier === 'dot' ? -1 : undefined} onClick={onOpen} {...hover} />
@@ -251,7 +252,7 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
         <span className="thread-map-tile-head">
           {chip}
           {/* The navigation's marks for a failed or interrupted last turn; running has its heartbeat. */}
-          {thread.needsInput ? <StatusMark status="waiting" /> : (thread.failed || thread.interrupted) && !thread.running ? <StatusMark status={thread.failed ? 'failed' : 'interrupted'} /> : null}
+          {waiting ? <StatusMark status="waiting" /> : (thread.failed || thread.interrupted) && !thread.running ? <StatusMark status={thread.failed ? 'failed' : 'interrupted'} /> : null}
           {thread.unread && <StatusMark status="unread" />}
           {titled && <span className="thread-map-tile-title">{thread.title}</span>}
           {showChildren && childrenButton(childrenWidth > 24)}

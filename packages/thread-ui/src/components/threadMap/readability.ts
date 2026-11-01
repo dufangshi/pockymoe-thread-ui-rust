@@ -95,12 +95,12 @@ export class ReadableSelection {
       : [...candidates].sort(byPriority);
     const minimum = kind === 'threads' ? { width: 132 + GAP * 2, height: 64 + GAP * 2 }
       : kind === 'workspaces' ? { width: 154, height: 190 } : { width: 176, height: 236 };
-    const minimumFor = (node: MapNode) => {
+    const minimumFor = (node: MapNode, rect: MapRect) => {
       if (kind !== 'workspaces') return minimum;
-      const important = Math.min(6, threadLeaves([node]).filter(child => mapPriority(child) < 4).length);
+      const important = threadLeaves([node]).filter(child => mapPriority(child) < 4).length;
       if (important < 2) return minimum;
-      const columns = important > 3 ? 2 : 1;
-      return { width: columns === 2 ? 288 : 154, height: Math.max(190, 46 + Math.ceil((important + 1) / columns) * 70) };
+      const columns = Math.max(1, Math.floor((rect.width - 12) / 138));
+      return { width: 154, height: Math.max(116, 46 + Math.ceil((important + 1) / columns) * 70) };
     };
     const median = [...ranked].sort((a, b) => a.weight - b.weight)[Math.floor(ranked.length / 2)]?.weight || 1;
     // Area still expresses weight, within a readable range. The overflow gets a
@@ -115,10 +115,10 @@ export class ReadableSelection {
       const visible = ranked.slice(0, count);
       const hidden = [...ranked.slice(count), ...olderNodes];
       const entries = visible.map(node => ({ node, overflow: false, weight: weight(node) }));
-      if (hidden.length) entries.push({ node: ranked[0] ?? scoped[0]!, overflow: true, weight: visible.length ? Math.max(1.4, weight(visible[0]!) * .6) : 1 });
+      if (hidden.length) entries.push({ node: ranked[0] ?? scoped[0]!, overflow: true, weight: .65 });
       let placed = squarify(entries, entry => entry.weight, bounds);
-      const readable = (layout: typeof placed) => layout.every(({ item, rect }) => {
-        const min = item.overflow ? { width: 138, height: 70 } : minimumFor(item.node);
+      const readable = (layout: typeof placed, reserveAllImportant = true) => layout.every(({ item, rect }) => {
+        const min = item.overflow ? { width: 138, height: 70 } : reserveAllImportant ? minimumFor(item.node, rect) : minimum;
         return rect.width + .01 >= min.width && rect.height + .01 >= min.height;
       });
       // Weight can refine a readable plan, never force a sliver. Relax it before
@@ -141,7 +141,22 @@ export class ReadableSelection {
           if (score < best && readable(grid)) { placed = grid; best = score; }
         }
       }
-      const fits = readable(placed);
+      let partial = false;
+      if (count === 1 && kind === 'workspaces' && !readable(placed)) {
+        // If the important set cannot all fit, still expose its leading
+        // workspace. Never turn a roomy device into just an aggregate because
+        // unread history asks for more area than the whole device can provide.
+        for (const exponent of [1, .5, 0]) {
+          const candidate = squarify(entries, entry => entry.weight ** exponent, bounds);
+          if (readable(candidate, false)) { placed = candidate; partial = true; break; }
+        }
+        if (!partial) for (let columns = 1; columns <= entries.length; columns++) {
+          const rows = Math.ceil(entries.length / columns), width = bounds.width / columns, height = bounds.height / rows;
+          const candidate = entries.map((item, index) => ({ item, rect: { x: bounds.x + index % columns * width, y: bounds.y + Math.floor(index / columns) * height, width, height } }));
+          if (readable(candidate, false)) { placed = candidate; partial = true; break; }
+        }
+      }
+      const fits = readable(placed, !partial);
       if (!fits && count > 0) continue;
       plan = { entries: placed.filter(entry => !entry.item.overflow).map(({ item, rect }) => ({ node: item.node, rect })),
         overflow: hidden.length ? summary(hidden, kind, older, placed.find(entry => entry.item.overflow)?.rect ?? bounds) : null };

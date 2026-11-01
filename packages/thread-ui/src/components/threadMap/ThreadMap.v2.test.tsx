@@ -31,7 +31,7 @@ describe('ThreadMap v2 page', () => {
   const show = (props: Partial<ThreadMapProps> = {}) => act(() => root.render(<ThreadMap devices={makeDevices()} onOpen={vi.fn()} presentation="page" {...props} />));
   const click = (element: Element) => act(() => { element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })); });
   const key = (element: Element, value: string) => act(() => { element.dispatchEvent(new KeyboardEvent('keydown', { key: value, bubbles: true, cancelable: true })); });
-  const tile = (id: string) => host.querySelector<HTMLElement>(`[data-map-id="thread:${id}"]`)!;
+  const tile = (id: string) => host.querySelector<HTMLElement>(`[data-map-id="thread:${id}"]:not(.thread-map-overflow-row)`)!;
   const link = (id: string) => tile(id).querySelector<HTMLAnchorElement>('a')!;
 
   it('defaults page scope to week, compresses locally, and switches scope with 1/2/3', () => {
@@ -79,6 +79,14 @@ describe('ThreadMap v2 page', () => {
     expect(tile('old')).toBeTruthy();
   });
 
+  it('opens an older workspace from a roomy overflow list without losing navigation', () => {
+    show({ stableLayout: true });
+    const folded = host.querySelector('[data-map-id="workspace:d:other"].thread-map-overflow-row')!;
+    expect(folded).toBeTruthy(); click(folded);
+    expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Archive');
+    expect(tile('archive')).toBeTruthy();
+  });
+
   it('groups dense workspace rows in priority order and navigates across headers', () => {
     const onOpen = vi.fn(), onQuickLook = vi.fn();
     const threads = Array.from({ length: 120 }, (_, i) => ({ ...thread(`dense${i}`, 0, i < 2 ? { needsInput: { kind: 'input' } } : i === 2 ? { running: true } : i === 3 ? { unread: true, failed: true } : i === 4 ? { unread: true } : {}), agent: 'codex' }));
@@ -86,7 +94,7 @@ describe('ThreadMap v2 page', () => {
     show({ devices, scope: 'all', revealKey: 'dense0', currentKey: 'dense1', stableLayout: true, onOpen, onQuickLook });
     expect([...host.querySelectorAll('.thread-map-list-status-heading > span')].map(el => el.textContent)).toEqual(['Waiting for you', 'Running', 'Unread', 'Other']);
     const rows = host.querySelectorAll<HTMLElement>('.thread-map-list-row');
-    expect(rows[0]!.querySelector('.thread-map-agent + [data-status="waiting"]')).toBeTruthy();
+    expect(rows[0]!.querySelector('.thread-map-list-status-slot [data-status="waiting"]')).toBeTruthy();
     expect(rows[1]!.dataset.current).toBe('true');
     act(() => link('dense0').focus()); key(link('dense0'), 'ArrowDown'); expect(document.activeElement).toBe(link('dense1'));
     key(link('dense1'), 'ArrowDown'); expect(document.activeElement).toBe(link('dense2'));
@@ -157,6 +165,12 @@ describe('ThreadMap v2 page', () => {
     expect(tile('waiting').hasAttribute('data-running')).toBe(false);
     expect(tile('waiting').querySelector('[data-status="waiting"]')?.getAttribute('aria-label')).toBe('Waiting for you');
     expect(tile('waiting').querySelector('[data-status="unread"]')).toBeTruthy();
+  });
+
+  it('shows folded agent requests as a waiting root tile instead of a running-only root', () => {
+    show({ devices: [{ ...makeDevices()[0]!, workspaces: [{ id: 'w', label: 'Product', threads: [thread('parent', 0, { running: true, children: [thread('agent', 0, { needsInput: { kind: 'input' } })] })] }] }] });
+    expect(tile('parent').querySelector('[data-status="waiting"]')).toBeTruthy();
+    expect(tile('parent').hasAttribute('data-running')).toBe(false);
   });
 
   it('freezes layout under pointer/focus and reorders only 800ms after both leave', () => {

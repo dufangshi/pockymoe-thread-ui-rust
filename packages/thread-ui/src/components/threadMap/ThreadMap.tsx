@@ -6,6 +6,7 @@ import { AgeGlyph, AgentChip, formatRunTime, threadDetails, ThreadTile } from '.
 import { formatCompactUsd } from '../timeline/tokenFormatting';
 import { type MapRect } from './squarify';
 
+import { MapTooltip } from './MapTooltip';
 import { ReadableMap } from './ReadableMap';
 import { useMapMotion } from './useMapMotion';
 import type { MapScope, ThreadMapProps } from './types';
@@ -129,7 +130,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const crumbs = useRef<HTMLElement>(null);
   const zoomPlan = useRef<ZoomPlan | null>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
-  const [tip, setTip] = useState<{ lines: string[]; x: number; y: number; above: boolean } | null>(null);
+  const [tip, setTip] = useState<{ lines: string[]; target: HTMLElement } | null>(null);
   useEffect(() => {
     const node = canvas.current;
     if (!node) return;
@@ -180,7 +181,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       const from = target.closest<HTMLElement>('[data-map-id]')?.dataset.mapId ?? '';
       const next = spatialNeighbor(spatial.current, from, event.key);
       const block = next ? byMapId(stage.current, next) : null;
-      const control = block?.matches('button') ? block : block?.querySelector<HTMLElement>('.thread-map-tile-link, .thread-map-zoom, button.thread-map-section-head');
+      const control = block?.matches('button') ? block : block?.querySelector<HTMLElement>('.thread-map-tile-link, .thread-map-zoom, button.thread-map-section-head, button.thread-map-overflow-open');
       if (control) { event.preventDefault(); control.focus({ preventScroll: !control.closest('.thread-map-list-scroll') }); }
     } else if (event.key === ' ' && onQuickLook) {
       const id = target.closest<HTMLElement>('[data-map-id]')?.dataset.mapId;
@@ -420,17 +421,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     latest.current.onOpen(thread);
   };
   const showTip = (lines: string[], target: HTMLElement) => {
-    const box = canvas.current?.getBoundingClientRect();
-    if (!box) return;
-    const anchor = target.getBoundingClientRect();
-    const width = Math.min(300, box.width - 16);
-    const below = anchor.top - box.top < box.height / 2;
-    setTip({
-      lines,
-      above: !below,
-      x: Math.max(8, Math.min(box.width - width - 8, anchor.left - box.left)),
-      y: below ? Math.min(box.height - 8, anchor.bottom - box.top + 6) : Math.max(8, anchor.top - box.top - 6),
-    });
+    const source = target.closest<HTMLElement>('.thread-map-tile, .thread-map-list-row, .thread-map-overflow-row, .thread-map-section, .thread-map-overflow') ?? target;
+    setTip({ lines, target: source });
   };
   const hover = (lines: string[] | (() => string[])) => ({
     onPointerEnter: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse') showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); },
@@ -636,9 +628,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             navigate={navigate} expand={expand} onOpen={open} onQuickLook={onQuickLook ? quickLook : undefined} hover={hover}
             register={items => { spatial.current = items; }} onRetry={onRetry} /> : size.width > 0 && render(children, bounds, 0)}</div>
           : <p className="thread-map-empty" role="status">{current.device && cachedDevices.has(current.device.id) ? translate('workbench.threadMapNoCache') : devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
-        {tip && <div className="thread-map-tip" role="tooltip" style={{ left: tip.x, top: tip.y }} data-above={tip.above || undefined}>
-          {tip.lines.map((line, index) => index ? <span key={index}>{line}</span> : <b key={index}>{line}</b>)}
-        </div>}
+        {tip && <MapTooltip anchor={tip.target} lines={tip.lines} onClose={() => setTip(null)} />}
       </div>
       {enhanced && devices.some(device => device.state === 'offline') && <div className="thread-map-offline-strip">
         {devices.filter(device => device.state === 'offline').map(device => <button type="button" key={device.id} onClick={() => {

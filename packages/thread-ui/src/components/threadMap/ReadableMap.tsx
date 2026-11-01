@@ -59,8 +59,8 @@ const ThreadRow = memo(function ThreadRow({ node, dimmed, current, onOpen, onQui
   return <div className="thread-map-list-row" data-map-id={node.id} data-waiting={isWaiting(thread) || undefined}
     data-current={current || undefined} data-dimmed={dimmed || undefined}>
     <a className="thread-map-tile-link" href={thread.href} aria-label={[thread.title, navigationStatusLabel(status(node)), metadata].filter(Boolean).join(' · ')} aria-current={current ? 'page' : undefined} title={thread.title} onClick={onOpen(thread)} />
-    <AgentChip agent={thread.agent} />
-    <StatusMark status={status(node)} />
+    <span className="thread-map-list-agent-slot"><AgentChip agent={thread.agent} /></span>
+    <span className="thread-map-list-status-slot"><StatusMark status={status(node)} /></span>
     <b className="thread-map-list-title">{thread.title}</b>
     <span className="thread-map-list-row-meta" title={metadata}>{metadata}</span>
     {onQuickLook && <button type="button" className="thread-map-list-info" onClick={() => onQuickLook(thread.key)} aria-label={translate('workbench.threadMapQuickLook', { title: thread.title })}>ⓘ</button>}
@@ -164,19 +164,53 @@ export function ReadableMap(props: Props) {
       const overflow = plan.overflow, box = inset(overflow.rect), label = overflowLabel(overflow);
       const id = `overflow:${parent.id}`;
       addTarget(id, box, offset);
-      result.push(<button key={id} data-map-id={id} type="button" className="thread-map-overflow" data-dimmed={Boolean(query.trim()) && !overflow.nodes.some(matches) || undefined} data-important={overflow.waiting + overflow.running + overflow.failed + overflow.unread > 0 || undefined}
-        style={{ left: box.x, top: box.y, width: box.width, height: box.height }} onClick={() => {
-          if (parent.id !== current.id) navigate(parent);
-          else {
-            for (const child of parent.children) if (child.kind === 'compressed') expand(child);
-            setListFor(parent.id);
-          }
-        }} aria-label={label} {...hover([label, ...overflow.recent])}>
+      const zoom = () => {
+        if (parent.id !== current.id) navigate(parent);
+        else {
+          for (const child of parent.children) if (child.kind === 'compressed') expand(child);
+          setListFor(parent.id);
+        }
+      };
+      const header = <>
         <span className="thread-map-overflow-title"><Layers aria-hidden="true" /><b>{label}</b><ArrowUpRight aria-hidden="true" /></span>
         {overflow.older > 0 && <small>{translate('workbench.threadMapEarlier', { count: overflow.older })}</small>}
         <OverflowMarks overflow={overflow} />
+      </>;
+      const roomy = box.width >= 160 && box.height >= 180;
+      result.push(roomy ? <section key={id} data-map-id={id} className="thread-map-overflow thread-map-overflow-with-list"
+        data-dimmed={Boolean(query.trim()) && !overflow.nodes.some(matches) || undefined}
+        data-important={overflow.waiting + overflow.running + overflow.failed + overflow.unread > 0 || undefined}
+        style={{ left: box.x, top: box.y, width: box.width, height: box.height }} onClick={event => {
+          if (!(event.target as Element).closest('button, a, .thread-map-scroll-track')) zoom();
+        }}>
+        <button type="button" className="thread-map-overflow-open" onClick={zoom} aria-label={label} {...hover([label])}>{header}</button>
+        <MapScrollList label={label}>
+          <div className="thread-map-overflow-items" onKeyDown={event => {
+            if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+            const controls = [...event.currentTarget.querySelectorAll<HTMLElement>('a, button')];
+            const next = controls[controls.indexOf(document.activeElement as HTMLElement) + (event.key === 'ArrowDown' ? 1 : -1)];
+            if (next) { event.preventDefault(); event.stopPropagation(); next.focus(); }
+          }}>
+            {cache.current.ordered(`${version}:${parent.id}`, overflow.nodes).map(item => item.thread
+              ? <a key={item.id} className="thread-map-overflow-row" data-map-id={item.id} href={item.thread.href} onClick={onOpen(item.thread)} {...hover([item.label])}>
+                <StatusMark status={status(item)} /><span>{item.label}</span>{item.usd > 0 && <small>{formatCompactUsd(item.usd)}</small>}
+              </a>
+              : <button key={item.id} type="button" className="thread-map-overflow-row" data-map-id={item.id} onClick={() => {
+                for (const child of parent.children) if (child.kind === 'compressed' && child.hiddenNodes?.some(hidden => hidden.id === item.id)) expand(child);
+                navigate(item);
+              }} {...hover([item.label])}>
+                {item.kind === 'device' ? <Monitor aria-hidden="true" /> : <Folder aria-hidden="true" />}<span>{item.label}</span><small>{item.threads}</small><ChevronRight aria-hidden="true" />
+              </button>)}
+          </div>
+        </MapScrollList>
+      </section> : <button key={id} data-map-id={id} type="button" className="thread-map-overflow"
+        data-dimmed={Boolean(query.trim()) && !overflow.nodes.some(matches) || undefined}
+        data-important={overflow.waiting + overflow.running + overflow.failed + overflow.unread > 0 || undefined}
+        style={{ left: box.x, top: box.y, width: box.width, height: box.height }} onClick={zoom} aria-label={label} {...hover([label, ...overflow.recent])}>
+        {header}
         {box.height >= 110 && <span className="thread-map-overflow-preview">{overflow.recent.slice(0, Math.min(3, Math.floor((box.height - 70) / 17))).map((title, i) => <span key={i}>{title}</span>)}</span>}
       </button>);
+
     }
     return result;
   };

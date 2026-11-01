@@ -898,3 +898,15 @@
 .thread-map[data-presentation='page'] .thread-map-canvas:has(.thread-map-list-scroll) { touch-action: pan-y; }
 .thread-map-attention[data-responsive] .thread-map-attention-more { align-self: center; height: 32px; border: 1px solid var(--theme-border); border-radius: 999px; background: var(--theme-panel); }
 @media (hover: hover) { .thread-map-attention[data-responsive] .thread-map-attention-more:hover { background: var(--theme-hover); } }
+.thread-map-list-agent-slot, .thread-map-list-status-slot { display: grid; flex: 0 0 16px; place-items: center; width: 16px; height: 16px; }
+.thread-map-tip { z-index: 1100; }
+.thread-map-overflow-with-list { cursor: default; }
+.thread-map-overflow-open { display: flex; flex: none; flex-direction: column; gap: 7px; width: 100%; padding: 0 0 6px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: zoom-in; }
+.thread-map-overflow-open > small { color: var(--theme-fg-muted); font-size: 10px; }
+.thread-map-overflow-with-list .thread-map-list-scroll { padding: 0 5px 0 0; }
+.thread-map-overflow-row { display: flex; position: relative; align-items: center; gap: 7px; box-sizing: border-box; width: 100%; min-height: 40px; padding: 0 5px; border: 0; border-top: 1px solid color-mix(in oklab, var(--theme-border) 45%, transparent); border-radius: 0; background: transparent; color: var(--theme-fg-soft); font: inherit; font-size: 11px; text-align: left; text-decoration: none; cursor: pointer; }
+.thread-map-overflow-row > span:not(.matter-status-dot) { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.thread-map-overflow-row > svg { flex: none; width: 13px; height: 13px; }
+.thread-map-overflow-row > small { flex: none; color: var(--theme-fg-muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+.thread-map-overflow-row:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
+@media (hover: hover) { .thread-map-overflow-row:hover { background: var(--theme-hover); color: var(--theme-fg); } }

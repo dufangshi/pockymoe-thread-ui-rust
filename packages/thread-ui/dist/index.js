@@ -10821,7 +10821,7 @@ ${activity.label}`,
                 "aria-label": translate("workbench.agentThreads", { value1: root.title, value2: children2.length }),
                 "aria-expanded": menu?.key === root.key,
                 "aria-controls": "matter-agent-threads",
-                "data-running": children.some((child) => child.status === "running") || void 0,
+                "data-running": children2.some((child) => child.status === "running") || void 0,
                 onClick: (event) => {
                   const bounds = event.currentTarget.getBoundingClientRect();
                   trigger.current = event.currentTarget;

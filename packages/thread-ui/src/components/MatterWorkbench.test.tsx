@@ -578,3 +578,14 @@ it('renders optional host slots before the existing sidebar and rail controls', 
   expect(rail.querySelector('button[aria-label="Chat"]')).not.toBeNull();
   expect(drawer().querySelector('[data-testid="shortcuts"]')).not.toBeNull();
 });
+
+it('disables workspace tools and closes an existing explorer when the host leaves workspace context', () => {
+  vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+  render();
+  const explorer = () => host.querySelector<HTMLButtonElement>('.matter-rail button[aria-label="Toggle Explorer"]')!;
+  act(() => explorer().click()); expect(host.querySelector('.matter-explorer')).not.toBeNull();
+  options = { ...baseOptions, workspaceControlsEnabled: false }; render();
+  expect(explorer().disabled).toBe(true); expect(host.querySelector('.matter-explorer')).toBeNull();
+  expect(host.querySelector<HTMLButtonElement>('.matter-toolbar-toggle')?.disabled).toBe(true);
+  options = baseOptions; render(); expect(explorer().disabled).toBe(false);
+});

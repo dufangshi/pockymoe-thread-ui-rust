@@ -1,3 +1,4 @@
+import { Select } from '../Select';
 import { translate, useI18n } from '../../i18n';
 import type {
   AgentHookDto,
@@ -143,23 +144,23 @@ export function ComposerHooksPanel({
           ) : null}
           <div className="grid grid-cols-2 gap-2">
             <label className="block text-xs text-stone-400">
-              {translate("chat.scope")}<select
+              {translate("chat.scope")}<Select
                 aria-label={translate("chat.hookScope")}
                 value={hookScope}
-                onChange={(event) => onSetHookScope(event.target.value as HookScope)}
+                onValueChange={(selectedValue) => onSetHookScope(selectedValue as HookScope)}
                 disabled={hooksPanelMode === 'edit'}
                 className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
               >
                 <option value="project">{translate("chat.project_f6f4da")}</option>
                 <option value="global">{translate("chat.global_5f1184")}</option>
-              </select>
+              </Select>
             </label>
             <label className="block text-xs text-stone-400">
-              {translate("chat.event")}<select
+              {translate("chat.event")}<Select
                 aria-label={translate("chat.hookEvent")}
                 value={hookEventName}
-                onChange={(event) =>
-                  onSetHookEventName(event.target.value as AgentHookEventNameDto)
+                onValueChange={(selectedValue) =>
+                  onSetHookEventName(selectedValue as AgentHookEventNameDto)
                 }
                 className="mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
               >
@@ -168,7 +169,7 @@ export function ComposerHooksPanel({
                     {eventOption.label}
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
           </div>
           <div>

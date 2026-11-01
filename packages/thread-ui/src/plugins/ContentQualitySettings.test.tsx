@@ -16,6 +16,7 @@ let root: ReturnType<typeof createRoot>;
 let container: HTMLDivElement;
 
 beforeEach(() => {
+  vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ x: 20, y: 30, left: 20, top: 30, right: 220, bottom: 62, width: 200, height: 32, toJSON() {} });
   setLocale('en', false);
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -34,16 +35,19 @@ function control(label: string) {
   expect(element, label).toBeTruthy();
   return document.getElementById(element!.htmlFor) as
     | HTMLInputElement
-    | HTMLSelectElement
+    | HTMLButtonElement
     | HTMLTextAreaElement;
 }
 async function change(label: string, value: string) {
   const element = control(label);
+  if (element.getAttribute('role') === 'combobox') {
+    await act(async () => element.click());
+    const option = [...document.querySelectorAll<HTMLElement>('[role=option]')].find(option => option.dataset.value === value);
+    expect(option).toBeTruthy(); await act(async () => option!.click()); return;
+  }
   await act(async () => {
     const prototype =
-      element instanceof HTMLSelectElement
-        ? HTMLSelectElement.prototype
-        : element instanceof HTMLTextAreaElement
+      element instanceof HTMLTextAreaElement
           ? HTMLTextAreaElement.prototype
           : HTMLInputElement.prototype;
     Object.getOwnPropertyDescriptor(prototype, 'value')!.set!.call(
@@ -51,11 +55,18 @@ async function change(label: string, value: string) {
       value,
     );
     element.dispatchEvent(
-      new Event(element instanceof HTMLSelectElement ? 'change' : 'input', {
+      new Event('input', {
         bubbles: true,
       }),
     );
   });
+}
+function optionLabels(label: string) {
+  act(() => control(label).click());
+  const labels = [...document.querySelectorAll('[role=option]')].map(option => option.textContent);
+  const first = document.querySelector('[role=option]');
+  act(() => first?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })));
+  return labels;
 }
 async function click(label: string) {
   const button = [...container.querySelectorAll('button')].find(
@@ -116,7 +127,7 @@ describe('Content Quality settings', () => {
       'Saved connections cannot be chosen here.',
     );
     expect(container.textContent).not.toContain('Connection profile file');
-    expect(control('Writing preset').querySelectorAll('option')).toHaveLength(
+    expect(optionLabels('Writing preset')).toHaveLength(
       5,
     );
     expect(control('Level of detail').value).toBe('balanced');
@@ -131,7 +142,7 @@ describe('Content Quality settings', () => {
     await change('Reader background', 'Rust developer');
     await change('Auto-polish trigger length (characters)', '1200');
     await change('Default manual document action', 'rewrite');
-    expect(control('Default manual document action').textContent).toContain(
+    expect(optionLabels('Default manual document action').join(' ')).toContain(
       'write the revised file',
     );
     expect(container.textContent).toContain(
@@ -539,8 +550,8 @@ describe('Content Quality settings', () => {
     );
     expect(container.textContent).not.toContain('最短回复长度');
     expect(container.textContent).not.toContain('连接配置文件');
-    expect(control('写作预设').querySelectorAll('option')).toHaveLength(5);
-    expect(control('默认手动文档操作').textContent).toContain(
+    expect(optionLabels('写作预设')).toHaveLength(5);
+    expect(optionLabels('默认手动文档操作').join(' ')).toContain(
       '直接写入修订后的文件',
     );
     expect(container.textContent).toContain('可自由重组以便阅读');

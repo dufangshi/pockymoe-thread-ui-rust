@@ -1,3 +1,4 @@
+import { Select } from '../Select';
 import type { WorkspaceDocuments } from "./explorer/useWorkspaceDocuments";
 import { isProtected, downloadDraft } from "./explorer/workspaceDocuments";
 import { getLocale, en, type TranslationKey } from '../../i18n';
@@ -881,9 +882,9 @@ export function GraphWorkspacePreviewPane({
                   <button type="button" disabled={document.conflict?.content == null} onClick={() => downloadDraft(document,true)}>{translate('files.safeDownloadDisk')}</button>
                 </div>
                 {document.conflict?.content != null ? <>
-                  <label>{translate('files.safeCompare')} <select value={diffMode} onChange={e => setDiffMode(e.target.value as typeof diffMode)}>
+                  <label>{translate('files.safeCompare')} <Select value={diffMode} onValueChange={selectedValue => setDiffMode(selectedValue as typeof diffMode)}>
                     <option value="draftDisk">{translate('files.safeDraftDisk')}</option><option value="baseDraft">{translate('files.safeBaseDraft')}</option><option value="baseDisk">{translate('files.safeBaseDisk')}</option>
-                  </select></label>
+                  </Select></label>
                   <div className="workspace-document-diff"><Suspense fallback={<span>{translate('files.loadingEditor')}</span>}><WorkspaceDocumentDiff
                     original={diffMode==='draftDisk' ? document.content : document.baseContent}
                     modified={diffMode==='baseDraft' ? document.content : document.conflict.content}

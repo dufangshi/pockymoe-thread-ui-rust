@@ -120,6 +120,8 @@ export interface MatterWorkbenchOptions {
   /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
   subscriptionUsage?: AgentSubscriptionUsageDto | null;
   emptyWorkspace?: boolean;
+  /** False on host pages without a workspace; browser behavior defaults to enabled. */
+  workspaceControlsEnabled?: boolean;
   navigationReady?: boolean;
   harnessSessionId?: string | null;
   harnessSessionUrl?: string | null;
@@ -536,12 +538,21 @@ export function MatterWorkbench({
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const toolbarToggleRef = useRef<HTMLButtonElement>(null);
   const [legacyExplorerOpen, setLegacyExplorerOpen] = useState(false);
-  const explorerOpen = o.panels ? o.panels.presentation.mode === 'files' : legacyExplorerOpen;
+  const workspaceControlsEnabled = o.workspaceControlsEnabled !== false;
+  const explorerOpen = workspaceControlsEnabled && (o.panels ? o.panels.presentation.mode === 'files' : legacyExplorerOpen);
+  const panelOptions = !workspaceControlsEnabled && o.panels ? { ...o.panels, presentation: { ...o.panels.presentation, ...closeFilesPatch(o.panels.presentation) }, toolsOpen: false } : o.panels;
   const setExplorerOpen = (value: boolean | ((open: boolean) => boolean)) => {
     const next = typeof value === 'function' ? value(explorerOpen) : value;
+    if (next && !workspaceControlsEnabled) return;
     if (o.panels) o.panels.onPresentationChange(next ? openFilesPatch(o.panels.presentation) : closeFilesPatch(o.panels.presentation));
     else setLegacyExplorerOpen(next);
   };
+  useEffect(() => {
+    if (workspaceControlsEnabled) return;
+    setLegacyExplorerOpen(false); setToolbarOpen(false);
+    if (o.panels?.presentation.mode === 'files') o.panels.onPresentationChange(closeFilesPatch(o.panels.presentation));
+    if (o.panels?.toolsOpen) o.panels.onCloseTools?.();
+  }, [workspaceControlsEnabled, o.panels]);
   const [explorerWidth, setExplorerWidth] = useState(() => {
     try { return Math.max(260, Math.min(800, Number(localStorage.getItem('remote-codex.explorer-width')) || 360)); } catch { return 360; }
   });
@@ -839,7 +850,7 @@ export function MatterWorkbench({
           <button key={panel.id} aria-label={panel.label} title={panel.label}
             aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>
         ))}
-        <button aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen}
+        <button disabled={!workspaceControlsEnabled} aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen}
           title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
         {openThreadMap && <button aria-label={translate('workbench.threadMap')} title={translate('workbench.threadMap')} onClick={openThreadMap}><LayoutDashboard data-icon="thread-map" /></button>}
         <div className="matter-rail-bottom">{deviceMonitor}{settings}</div>
@@ -902,7 +913,7 @@ export function MatterWorkbench({
               o.onViewChange('shell');
             }}><Terminal data-icon="terminal" /></button>}
             {o.toolPanels?.map(panel => <button key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
-            <button aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
+            <button disabled={!workspaceControlsEnabled} aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
             {settings}
           </>}
           <div className="matter-connection">{connection}</div>
@@ -1055,8 +1066,8 @@ export function MatterWorkbench({
         </div>
         {/* New thread stays in reach however many tabs there are. */}
         <div className="matter-tab-add">{newThread}</div>
-        {!o.emptyWorkspace && <button ref={toolbarToggleRef} className="matter-toolbar-toggle" aria-label={translate("workbench.threadTools")} aria-haspopup="menu" aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal data-icon="thread-tools" /></button>}
-        <ThreadToolsMenu id="matter-thread-tools" open={toolbarOpen && !o.emptyWorkspace} anchorRef={toolbarToggleRef} panels={o.statusActions}
+        {!o.emptyWorkspace && <button ref={toolbarToggleRef} disabled={!workspaceControlsEnabled} className="matter-toolbar-toggle" aria-label={translate("workbench.threadTools")} aria-haspopup="menu" aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal data-icon="thread-tools" /></button>}
+        <ThreadToolsMenu id="matter-thread-tools" open={toolbarOpen && !o.emptyWorkspace && workspaceControlsEnabled} anchorRef={toolbarToggleRef} panels={o.statusActions}
           path={o.workspacePath} title={title} favorite={o.favorite} favoriteBusy={o.favoriteBusy} onToggleFavorite={o.onToggleFavorite}
           onClose={(restore) => { setToolbarOpen(false); if (restore) toolbarToggleRef.current?.focus(); }}>
           {actions}
@@ -1069,7 +1080,7 @@ export function MatterWorkbench({
         </div>}
         </div>}
         <PhoneDockContext.Provider value={dock}>
-        {o.panels ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={dock ? { ...o.panels, onPaneSwitchChange: setPaneSwitch } : o.panels} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (
+        {panelOptions ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={dock ? { ...panelOptions, onPaneSwitchChange: setPaneSwitch } : panelOptions} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (
         <div ref={contentRef} style={{ '--explorer-width': `${explorerWidth}px` } as CSSProperties} className={`matter-content ${explorerOpen ? 'has-explorer' : ''}`}>
           <div className="matter-chat">
             <WorkbenchContext.Provider value={true}>

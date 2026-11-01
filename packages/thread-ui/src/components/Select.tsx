@@ -118,7 +118,7 @@ export function Select({ value, defaultValue, onValueChange, options, children, 
   };
   const popupLabel = buttonProps['aria-label'] ?? ([...(trigger.current?.labels ?? [])].map(label => label.textContent).join(' ').trim() || plainText(current?.label ?? placeholder));
   return <Dialog.Root open={open} onOpenChange={next => { setMenuReady(false); setOpen(next); }} modal={false}>
-    <Dialog.Trigger asChild><button {...buttonProps} ref={trigger} type="button" role="combobox" form={form} disabled={disabled} aria-expanded={open} aria-haspopup="listbox" aria-controls={open ? popupId : undefined}
+    <Dialog.Trigger asChild><button {...buttonProps} ref={trigger} type="button" role="combobox" value={selected} form={form} disabled={disabled} aria-expanded={open} aria-haspopup="listbox" aria-controls={open ? popupId : undefined}
       aria-required={required || undefined} aria-invalid={invalid || buttonProps['aria-invalid']} className={`pm-select ${className}`} onClick={event => { onClick?.(event); if (!rows.some(row => !row.hidden)) event.preventDefault(); }}
       onKeyDown={event => { onKeyDown?.(event); if (event.defaultPrevented) return;
         if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) { event.preventDefault(); setOpen(true); }

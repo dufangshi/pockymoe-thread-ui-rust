@@ -28,8 +28,10 @@ describe('agent thread groups', () => {
       expect(container.querySelector('[role="img"]')?.getAttribute('data-status')).toBe('agents-running');
       expect(container.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('Idle, read · 1 agent thread running');
       expect(container.querySelector('a')?.getAttribute('href')).toBe('/threads/root');
+      expect(container.querySelector('.matter-group-toggle')?.hasAttribute('data-running')).toBe(true);
       flushSync(() => root.render(<GroupedThreadTabs threads={[parent, { ...thread('child', 'root'), status: 'idle' }]} currentKey="root" onNavigate={vi.fn()} />));
       expect(container.querySelector('[role="img"]')?.getAttribute('data-status')).toBe('idle');
+      expect(container.querySelector('.matter-group-toggle')?.hasAttribute('data-running')).toBe(false);
     } finally { flushSync(() => root.unmount()); container.remove(); }
   });
   it('groups children and grandchildren by the device-scoped root while preserving unrelated and missing-root threads', () => {

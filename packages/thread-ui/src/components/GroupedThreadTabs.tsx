@@ -114,7 +114,7 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
           <span>{root.title}{selected ? ` · ${selected.title}` : ''}</span>
         </a>
         {children.length > 0 && <button className="matter-group-toggle is-badge" aria-label={translate("workbench.agentThreads", { value1: root.title, value2: children.length })}
-          aria-expanded={menu?.key === root.key} aria-controls="matter-agent-threads" onClick={event => {
+          aria-expanded={menu?.key === root.key} aria-controls="matter-agent-threads" data-running={children.some(child => child.status === 'running') || undefined} onClick={event => {
             const bounds = event.currentTarget.getBoundingClientRect(); trigger.current = event.currentTarget;
             setMenu(menu?.key === root.key ? null : { key: root.key, left: Math.max(8, Math.min(bounds.left, window.innerWidth - 296)), top: bounds.bottom + 4 });
           }}><Bot aria-hidden="true" />{children.length}</button>}

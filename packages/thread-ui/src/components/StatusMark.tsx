@@ -3,6 +3,7 @@ import { translate, useI18n } from '../i18n';
 /** What each navigation status is called (see docs/ui-principles.md §6). */
 export function navigationStatusLabel(status: string) {
   switch (status) {
+    case 'waiting': return translate('workbench.waitingForYou');
     case 'running': return translate('workbench.running');
     case 'unread': return translate('workbench.completedUnread');
     case 'idle': return translate('workbench.idleRead');

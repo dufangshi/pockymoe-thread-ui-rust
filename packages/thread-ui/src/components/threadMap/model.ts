@@ -1,3 +1,5 @@
+import { translate } from '../../i18n';
+import type { MapScope } from './types';
 import type { ThreadTurnPriceEstimateDto, ThreadTurnTokenBreakdownDto } from '@pockymoe/shared';
 
 export type ThreadMapPrice = Pick<ThreadTurnPriceEstimateDto, 'inputUsd' | 'cachedInputUsd' | 'cacheWriteInputUsd' | 'outputUsd' | 'totalUsd'>;
@@ -11,6 +13,10 @@ export interface ThreadMapThread {
   agent?: string | undefined;
   agentName?: string | undefined;
   running: boolean;
+  needsInput?: { kind: 'approval' | 'input'; summary?: string; requestId?: string };
+  unread?: boolean;
+  pinned?: boolean;
+  shortcut?: boolean;
   /** Turns ever started, agent threads included; null when the device cannot say. */
   turns: number | null;
   /** Time turns ran inside the activity window; null when the device cannot say. */
@@ -52,13 +58,18 @@ export interface ThreadMapDevice {
   /** The device's workspace list. */
   href?: string | undefined;
   state: 'ready' | 'loading' | 'offline' | 'error';
+  /** Last successful snapshot, shown when opening an offline device. */
+  cachedAt?: string;
   error?: string | null | undefined;
   workspaces: ThreadMapWorkspace[];
 }
 
 export interface MapNode {
   id: string;
-  kind: 'root' | 'device' | 'workspace' | 'thread';
+  kind: 'root' | 'device' | 'workspace' | 'thread' | 'compressed';
+  compressed?: 'threads' | 'workspaces';
+  /** Scoped-out nodes retained for merged readability overflow previews. */
+  hiddenNodes?: MapNode[];
   label: string;
   parent?: MapNode | undefined;
   children: MapNode[];
@@ -102,31 +113,77 @@ const byWeight = (a: MapNode, b: MapNode) => b.weight - a.weight || a.label.loca
  * device is the root. A device that cannot list its threads still gets a small
  * block so it is not silently missing.
  */
-export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: string): MapNode {
+export interface MapBuildOptions {
+  scope?: MapScope | undefined;
+  now?: number;
+  expandedWorkspaces?: ReadonlySet<string>;
+  expandedDevices?: ReadonlySet<string>;
+  keepDeviceRoot?: boolean;
+}
+
+const DAY = 86_400_000;
+export function isLive(thread: ThreadMapThread): boolean {
+  return thread.running || Boolean(thread.children?.some(isLive));
+}
+export function isWaiting(thread: ThreadMapThread): boolean {
+  return Boolean(thread.needsInput || thread.children?.some(isWaiting));
+}
+export function inScope(thread: ThreadMapThread, scope: MapScope, now: number): boolean {
+  if (scope === 'all' || isLive(thread) || isWaiting(thread) || thread.unread) return true;
+  if (thread.children?.some(child => inScope(child, scope, now))) return true;
+  const age = now - Date.parse(thread.lastActiveAt ?? '');
+  return Number.isFinite(age) && age <= (scope === 'active' ? DAY : 7 * DAY);
+}
+export function recencyWeight(thread: ThreadMapThread, now: number) {
+  const age = now - Date.parse(thread.lastActiveAt ?? '');
+  const factor = age <= DAY ? 1 : age <= 7 * DAY ? 0.7 : 0.45;
+  const weight = threadWeight(thread.turns) * factor;
+  return isLive(thread) || isWaiting(thread) ? Math.max(weight, runningWeight(thread.turns)) : weight;
+}
+
+export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: string, options: MapBuildOptions = {}): MapNode {
   const blank = { children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0, usd: 0, tokens: 0 };
   const root: MapNode = { ...blank, children: [], id: 'root', kind: 'root', label: rootLabel };
   const add = (into: MapNode, from: MapNode) => {
     into.weight += from.weight; into.turns += from.turns; into.activeMs += from.activeMs;
     into.threads += from.threads; into.running += from.running; into.usd += from.usd; into.tokens += from.tokens;
   };
+  const now = options.now ?? Date.now();
   const deviceNodes = devices.filter(device => device.state !== 'offline').map(device => {
     const node: MapNode = { ...blank, children: [], id: `device:${device.id}`, kind: 'device', label: device.name, device };
+    const hiddenSpaces: MapNode[] = [];
     for (const workspace of device.workspaces) {
       const space: MapNode = { ...blank, children: [], id: `workspace:${device.id}:${workspace.id}`, kind: 'workspace', label: workspace.label, parent: node, workspace, device };
+      const hidden: MapNode[] = [];
+      const expanded = options.expandedWorkspaces?.has(space.id) || options.expandedDevices?.has(node.id);
       for (const thread of workspace.threads) {
-        const live = Boolean(thread.running || thread.children?.some(child => child.running));
+        const live = isLive(thread);
         const leaf: MapNode = {
           id: `thread:${thread.key}`, kind: 'thread', label: thread.title, parent: space, children: [], thread, device, workspace,
-          weight: live ? runningWeight(thread.turns) : threadWeight(thread.turns), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0, threads: 1, running: live ? 1 : 0,
+          weight: options.scope ? recencyWeight(thread, now) : live || isWaiting(thread) ? runningWeight(thread.turns) : threadWeight(thread.turns), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0, threads: 1, running: live ? 1 : 0,
           usd: thread.priceEstimate?.totalUsd ?? 0, tokens: thread.tokenUsage?.totalTokens ?? 0,
         };
-        space.children.push(leaf);
+        if (options.scope && !expanded && !inScope(thread, options.scope, now)) hidden.push(leaf);
+        else space.children.push(leaf);
         add(space, leaf);
       }
+      if (!space.children.length && hidden.length) { space.hiddenNodes = hidden; hiddenSpaces.push(space); continue; }
       if (!space.children.length) continue;
+      if (hidden.length) {
+        const compressed: MapNode = { ...blank, id: `earlier:${space.id}`, kind: 'compressed', compressed: 'threads',
+          label: translate('workbench.threadMapEarlier', { count: hidden.length }), children: [], hiddenNodes: hidden, parent: space, device, workspace, weight: 1.5, threads: hidden.length };
+        space.children.push(compressed);
+        space.weight = space.children.reduce((sum, child) => sum + child.weight, 0);
+      }
       space.children.sort(byWeight);
       node.children.push(space);
       add(node, space);
+    }
+    if (hiddenSpaces.length) {
+      const compressed: MapNode = { ...blank, id: `earlier:${node.id}`, kind: 'compressed', compressed: 'workspaces',
+        label: translate('workbench.threadMapOtherWorkspaces', { count: hiddenSpaces.length }), parent: node, device, children: [], hiddenNodes: hiddenSpaces, weight: 1.5 };
+      for (const hidden of hiddenSpaces) { compressed.turns += hidden.turns; compressed.threads += hidden.threads; compressed.usd += hidden.usd; compressed.tokens += hidden.tokens; }
+      node.children.push(compressed); add(node, compressed);
     }
     node.children.sort(byWeight);
     return node;
@@ -134,7 +191,7 @@ export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: s
   const listed = deviceNodes.reduce((sum, node) => sum + node.weight, 0);
   // Unlisted devices take a sliver of the map, enough for their name.
   for (const node of deviceNodes) if (!node.weight) node.weight = Math.max(1, listed * 0.06);
-  if (deviceNodes.length === 1 && deviceNodes[0]!.device!.state === 'ready') {
+  if (!options.keepDeviceRoot && deviceNodes.length === 1 && deviceNodes[0]!.device!.state === 'ready') {
     const only = deviceNodes[0]!;
     only.kind = 'root';
     return only;
@@ -152,6 +209,12 @@ export function indexMap(root: MapNode) {
     const node = stack.pop()!;
     nodes.set(node.id, node);
     stack.push(...node.children);
+    // Folded agents remain addressable for attention, filtering and external reveal.
+    for (const thread of node.thread?.children ?? []) stack.push({
+      ...node, id: `thread:${thread.key}`, kind: 'thread', label: thread.title, parent: node, children: [], thread,
+      weight: threadWeight(thread.turns), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0,
+      threads: 1, running: isLive(thread) ? 1 : 0, usd: thread.priceEstimate?.totalUsd ?? 0, tokens: thread.tokenUsage?.totalTokens ?? 0,
+    });
   }
   return nodes;
 }

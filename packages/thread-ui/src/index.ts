@@ -153,6 +153,7 @@ export {
 } from './app-shell/AppShellNavigation';
 export type { MatterWorkbenchOptions, ThreadMenuContext, WorkbenchThread, WorkbenchNotification, WorkbenchToolPanel } from './components/MatterWorkbench';
 export { MatterWorkbench } from './components/MatterWorkbench';
+export type { ThreadMapProps, MapScope, MapAttention, MapDeviceExtras, MapDeviceMenuItem } from './components/threadMap/types';
 export { ThreadMap } from './components/threadMap/ThreadMap';
 export { ThreadMapDialog } from './components/threadMap/ThreadMapDialog';
 export type { ThreadMapDevice, ThreadMapPrice, ThreadMapThread, ThreadMapWorkspace } from './components/threadMap/model';

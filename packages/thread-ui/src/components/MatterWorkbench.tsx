@@ -112,6 +112,9 @@ export interface WorkbenchToolPanel {
   onToggle: () => void;
 }
 export interface MatterWorkbenchOptions {
+  /** Optional host surface additions; absent in the browser workbench. */
+  sidebarLeading?: ReactNode;
+  railLeading?: ReactNode;
   panels?: WorkbenchPanelsOptions;
   statusActions?: ReactNode;
   /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
@@ -814,6 +817,7 @@ export function MatterWorkbench({
         >
           p<span>m</span>
         </a>}
+        {o.railLeading}
         <button
           aria-label={translate("workbench.chat")}
           aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'}
@@ -955,6 +959,7 @@ export function MatterWorkbench({
           </button>
         )}
         <div className="matter-sidebar-scroll">
+        {o.sidebarLeading}
         {/* Saving or reading the conversation lists failed: a mark after the
             first heading; the lists keep what they last showed. */}
         {o.error ? (

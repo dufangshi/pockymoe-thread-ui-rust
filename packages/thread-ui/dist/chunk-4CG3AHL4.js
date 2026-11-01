@@ -1,5 +1,345 @@
+import {
+  styleInject
+} from "./chunk-7O5E2ZHX.js";
+
+// src/components/Select.tsx
+import { Children, Fragment, isValidElement, useCallback, useEffect as useEffect2, useId, useLayoutEffect, useMemo, useRef as useRef2, useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { Check, ChevronDown } from "lucide-react";
+
+// src/components/menu/useMenuKeyboard.ts
+import { useEffect, useRef } from "react";
+function useMenuKeyboard(menuRef, open, onClose, itemSelector = '[role^="menuitem"]:not([disabled])') {
+  const close = useRef(onClose);
+  close.current = onClose;
+  useEffect(() => {
+    if (!open) return;
+    const menu = menuRef.current;
+    if (!menu) return;
+    const items = () => [...menu.querySelectorAll(itemSelector)];
+    items()[0]?.focus();
+    const key = (event) => {
+      const list = items();
+      const index = list.indexOf(document.activeElement);
+      const move = (to) => {
+        event.preventDefault();
+        list[(to + list.length) % list.length]?.focus();
+      };
+      if (event.key === "ArrowDown") move(index + 1);
+      else if (event.key === "ArrowUp") move(index < 0 ? -1 : index - 1);
+      else if (event.key === "Home") move(0);
+      else if (event.key === "End") move(list.length - 1);
+      else if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        close.current(true);
+      } else if (event.key === "Tab") close.current(false);
+    };
+    menu.addEventListener("keydown", key);
+    return () => menu.removeEventListener("keydown", key);
+  }, [menuRef, open, itemSelector]);
+}
+
+// src/styles/form-controls.css
+styleInject('.pm-select {\n  display: inline-flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  min-width: 0;\n  min-height: 32px;\n  box-sizing: border-box;\n  padding: 6px 10px;\n  appearance: none;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-panel, var(--theme-bg));\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 13px;\n  line-height: 20px;\n  text-align: start;\n  vertical-align: middle;\n  cursor: pointer;\n  user-select: none;\n  -webkit-app-region: no-drag;\n}\n.pm-select-value-label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.pm-select > svg {\n  flex: none;\n  color: var(--theme-fg-muted);\n}\n.pm-select:disabled {\n  cursor: default;\n  opacity: .5;\n}\n.pm-select:focus-visible,\n.pm-select-menu [role=option]:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 2px;\n}\n.pm-select:active:not(:disabled),\n.pm-select[aria-expanded=true] {\n  background: var(--theme-hover);\n}\n.pm-select[aria-invalid=true] {\n  border-color: var(--status-danger-fg, #d65353);\n}\n.pm-select-a11y-title,\n.pm-select-form-value {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  border: 0;\n  opacity: 0;\n  clip-path: inset(50%);\n  pointer-events: none;\n}\n.pm-select-menu.pm-select-menu.thread-ui-shell {\n  position: fixed;\n  z-index: 1200;\n  display: flex;\n  flex-direction: column;\n  width: max-content;\n  height: auto;\n  min-height: 0;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 4px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel, var(--theme-bg));\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 13px;\n  box-shadow: var(--theme-shadow, 0 8px 30px rgb(0 0 0 / .16));\n  -webkit-app-region: no-drag;\n}\n.pm-select-menu:not([data-ready]) {\n  visibility: hidden;\n}\n.pm-select-options {\n  flex: 1;\n  min-height: 0;\n  overflow: auto;\n  padding-right: 6px;\n  overscroll-behavior: contain;\n  scrollbar-width: none;\n}\n.pm-select-options::-webkit-scrollbar {\n  display: none;\n}\n.pm-select-menu [role=option] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 12px;\n  width: 100%;\n  min-height: 30px;\n  margin: 0;\n  box-sizing: border-box;\n  padding: 5px 8px;\n  border: 0;\n  border-radius: 4px;\n  background: none;\n  color: inherit;\n  font: inherit;\n  font-size: inherit;\n  line-height: 20px;\n  text-align: start;\n  cursor: pointer;\n}\n.pm-select-menu [role=option] > span {\n  min-width: 0;\n  overflow-wrap: anywhere;\n}\n.pm-select-menu [role=option] > svg {\n  flex: none;\n  color: var(--theme-accent-solid);\n  visibility: hidden;\n}\n.pm-select-menu [role=option] > svg[data-selected] {\n  visibility: visible;\n}\n.pm-select-menu [role=option]:disabled {\n  opacity: .4;\n  cursor: default;\n}\n.pm-select-menu [role=option]:active:not(:disabled),\n.pm-select-menu [role=option]:focus-visible {\n  background: var(--theme-hover);\n  outline-offset: -2px;\n}\n.pm-select-group {\n  padding: 8px 8px 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 16px;\n}\n.pm-select-scroll-track {\n  position: absolute;\n  inset-block: 4px;\n  right: 1px;\n  width: var(--scrollbar-size, 8px);\n  pointer-events: none;\n  background: var(--scrollbar-rail-y, transparent);\n}\n.pm-select-scroll-thumb {\n  position: absolute;\n  top: 0;\n  left: 2px;\n  right: 2px;\n  border-radius: var(--scrollbar-radius, 999px);\n  background: var(--scrollbar-thumb-idle, var(--theme-border));\n  pointer-events: auto;\n  touch-action: none;\n}\n.pm-select-scroll-thumb:active {\n  background: var(--scrollbar-thumb-active, var(--theme-accent-solid));\n}\n@media (hover: hover) {\n  .pm-select:hover:not(:disabled),\n  .pm-select-menu [role=option]:hover:not(:disabled) {\n    background: var(--theme-hover);\n  }\n  .pm-select-menu:hover .pm-select-scroll-thumb {\n    background: var(--scrollbar-thumb, var(--theme-fg-muted));\n  }\n}\n[data-theme-preset=terminal] :is(.pm-select, .pm-select-menu, .pm-select-menu [role=option]) {\n  border-radius: 0;\n}\n[data-theme-preset=plum-pocket] .pm-select {\n  border-radius: 10px;\n}\n[data-theme-preset=plum-pocket] .pm-select-menu {\n  border-radius: 12px;\n}\n:where(input[type=checkbox], input[type=radio]) {\n  appearance: none;\n  -webkit-appearance: none;\n  display: inline-grid;\n  place-content: center;\n  width: 15px;\n  height: 15px;\n  min-width: 15px;\n  min-height: 15px;\n  margin: 0;\n  padding: 0;\n  flex-shrink: 0;\n  vertical-align: -2px;\n  border: 1px solid var(--theme-border-strong, var(--theme-border));\n  border-radius: 4px;\n  background: var(--theme-panel);\n  color: var(--theme-accent-solid);\n  cursor: pointer;\n}\n:where(input[type=radio]) {\n  border-radius: 50%;\n}\n:where(input[type=checkbox], input[type=radio]):checked {\n  border-color: var(--theme-accent-solid);\n}\n:where(input[type=checkbox]):checked {\n  background: var(--theme-accent-solid);\n}\n:where(input[type=checkbox]):checked::after {\n  content: "";\n  width: 4px;\n  height: 8px;\n  margin-top: -2px;\n  border: solid var(--theme-accent-solid-fg, white);\n  border-width: 0 1.5px 1.5px 0;\n  transform: rotate(45deg);\n}\n:where(input[type=checkbox]):indeterminate {\n  background: var(--theme-accent-solid);\n  border-color: var(--theme-accent-solid);\n}\n:where(input[type=checkbox]):indeterminate::after {\n  content: "";\n  width: 7px;\n  height: 1.5px;\n  background: var(--theme-accent-solid-fg, white);\n}\n:where(input[type=radio]):checked::after {\n  content: "";\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--theme-accent-solid);\n}\n:where(input[type=checkbox], input[type=radio], input[type=range]):focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 3px;\n}\n:where(input[type=checkbox], input[type=radio], input[type=range]):disabled {\n  opacity: .45;\n  cursor: default;\n}\n:where(input[type=number], input[type=date], input[type=datetime-local]) {\n  appearance: none;\n  -moz-appearance: textfield;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  font: inherit;\n  font-variant-numeric: tabular-nums;\n}\n:where(input[type=number])::-webkit-inner-spin-button,\n:where(input[type=number])::-webkit-outer-spin-button {\n  appearance: none;\n  margin: 0;\n}\n:where(input[type=date], input[type=datetime-local])::-webkit-calendar-picker-indicator {\n  opacity: .6;\n  cursor: pointer;\n}\n[data-theme-effective=dark] :where(input[type=date], input[type=datetime-local]) {\n  color-scheme: dark;\n}\n:where(input[type=range]) {\n  appearance: none;\n  -webkit-appearance: none;\n  min-height: 20px;\n  padding: 0;\n  border: 0;\n  background: transparent;\n  color: var(--theme-accent-solid);\n  cursor: pointer;\n}\n:where(input[type=range])::-webkit-slider-runnable-track {\n  height: 4px;\n  border-radius: 999px;\n  background: var(--theme-border-strong, var(--theme-border));\n}\n:where(input[type=range])::-webkit-slider-thumb {\n  appearance: none;\n  width: 14px;\n  height: 14px;\n  margin-top: -5px;\n  border: 2px solid var(--theme-panel);\n  border-radius: 50%;\n  background: var(--theme-accent-solid);\n  box-shadow: 0 0 0 1px var(--theme-accent-solid);\n}\n:where(input[type=range])::-moz-range-track {\n  height: 4px;\n  border-radius: 999px;\n  background: var(--theme-border);\n}\n:where(input[type=range])::-moz-range-progress {\n  height: 4px;\n  border-radius: 999px;\n  background: var(--theme-accent-solid);\n}\n:where(input[type=range])::-moz-range-thumb {\n  width: 12px;\n  height: 12px;\n  border: 2px solid var(--theme-panel);\n  border-radius: 50%;\n  background: var(--theme-accent-solid);\n}\n[data-theme-preset=terminal] :where(input[type=checkbox], input[type=number], input[type=date], input[type=datetime-local]) {\n  border-radius: 0;\n}\n@media (pointer: coarse) {\n  .pm-select {\n    min-height: 40px;\n  }\n  .pm-select-menu [role=option] {\n    min-height: 44px;\n  }\n}\n');
+
+// src/components/Select.tsx
+import { jsx, jsxs } from "react/jsx-runtime";
+function plainText(node) {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (isValidElement(node)) return plainText(node.props.children);
+  return Children.toArray(node).map((child) => typeof child === "string" || typeof child === "number" ? String(child) : isValidElement(child) ? plainText(child.props.children) : "").join("");
+}
+function optionChildren(children, group, groupDisabled = false) {
+  const rows = [];
+  Children.forEach(children, (child) => {
+    if (!isValidElement(child)) return;
+    if (child.type === Fragment) rows.push(...optionChildren(child.props.children, group, groupDisabled));
+    else if (child.type === "optgroup") rows.push(...optionChildren(child.props.children, child.props.label, groupDisabled || Boolean(child.props.disabled)));
+    else if (child.type === "option") rows.push({
+      value: child.props.value ?? plainText(child.props.children),
+      label: child.props.label ?? child.props.children,
+      disabled: groupDisabled || Boolean(child.props.disabled),
+      hidden: Boolean(child.props.hidden),
+      ...group ? { group } : {}
+    });
+  });
+  return rows;
+}
+function Select({ value, defaultValue, onValueChange, options, children, name, required, placeholder, className = "", disabled, form, onKeyDown, onClick, ...buttonProps }) {
+  const rows = useMemo(() => options ? [...options] : optionChildren(children), [options, children]);
+  const firstValue = String(defaultValue ?? rows.find((row) => !row.disabled && !row.hidden)?.value ?? "");
+  const [internal, setInternal] = useState(firstValue), [open, setOpen] = useState(false), [menuReady, setMenuReady] = useState(false), [invalid, setInvalid] = useState(false);
+  const selected = String(value ?? internal);
+  const current = rows.find((row) => String(row.value) === selected);
+  const trigger = useRef2(null), menu = useRef2(null), viewport = useRef2(null), field = useRef2(null);
+  const popupId = useId(), typeahead = useRef2({ text: "", at: 0 });
+  const [position, setPosition] = useState({ left: 8, top: 8, minWidth: 120, maxWidth: 320, maxHeight: 320 });
+  const [thumb, setThumb] = useState({ size: 0, top: 0 });
+  const close = useCallback((restore) => {
+    setOpen(false);
+    setMenuReady(false);
+    typeahead.current.text = "";
+    if (restore) trigger.current?.focus({ preventScroll: true });
+  }, []);
+  useMenuKeyboard(menu, open && menuReady, close, '[role="option"]:not([disabled])');
+  const measureScroll = useCallback(() => {
+    const el = viewport.current;
+    if (!el) return;
+    const size = el.scrollHeight > el.clientHeight ? Math.max(24, el.clientHeight ** 2 / el.scrollHeight) : 0;
+    const top = size ? el.scrollTop / Math.max(1, el.scrollHeight - el.clientHeight) * (el.clientHeight - size) : 0;
+    setThumb((old) => old.size === size && old.top === top ? old : { size, top });
+  }, []);
+  useEffect2(() => {
+    if (value === void 0 && !rows.some((row) => String(row.value) === internal && !row.hidden)) setInternal(firstValue);
+  }, [rows, internal, value, firstValue]);
+  useEffect2(() => {
+    const reset = () => {
+      if (value === void 0) setInternal(firstValue);
+      setInvalid(false);
+      close(false);
+    };
+    const owner = trigger.current?.form;
+    owner?.addEventListener("reset", reset);
+    return () => owner?.removeEventListener("reset", reset);
+  }, [value, firstValue, form, close]);
+  useEffect2(() => {
+    if (disabled) close(false);
+  }, [disabled, close]);
+  useEffect2(() => {
+    if (!open || !menuReady) return;
+    const typed = typeahead.current.text;
+    const selectedOption = typed ? [...menu.current?.querySelectorAll('[role="option"]:not([disabled])') ?? []].find((option) => option.textContent?.trim().toLocaleLowerCase().startsWith(typed)) : menu.current?.querySelector('[role="option"][aria-selected="true"]:not([disabled])');
+    selectedOption?.focus({ preventScroll: true });
+    selectedOption?.scrollIntoView?.({ block: "nearest" });
+  }, [open, menuReady]);
+  useLayoutEffect(() => {
+    if (!open || !menuReady) return;
+    const place = () => {
+      const rect = trigger.current?.getBoundingClientRect();
+      if (!rect) return;
+      const visual = window.visualViewport, left = visual?.offsetLeft ?? 0, top = visual?.offsetTop ?? 0;
+      const width = visual?.width ?? innerWidth, height = visual?.height ?? innerHeight;
+      if (rect.bottom <= top || rect.top >= top + height || rect.right <= left || rect.left >= left + width) {
+        close(false);
+        return;
+      }
+      const below = top + height - rect.bottom - 12, above = rect.top - top - 12;
+      const upwards = below < Math.min(menu.current?.scrollHeight || 240, 240) && above > below;
+      const maxHeight = Math.max(32, Math.min(320, upwards ? above : below));
+      const popupHeight = Math.min(menu.current?.offsetHeight || maxHeight, maxHeight);
+      const maxWidth = Math.max(0, width - 16), minWidth = Math.min(rect.width, maxWidth);
+      const popupWidth = Math.min(menu.current?.offsetWidth || minWidth, maxWidth);
+      const next = {
+        left: Math.max(left + 8, Math.min(rect.left, left + width - popupWidth - 8)),
+        top: upwards ? Math.max(top + 8, rect.top - popupHeight - 4) : rect.bottom + 4,
+        minWidth,
+        maxWidth,
+        maxHeight
+      };
+      setPosition((old) => Object.keys(next).every((key) => old[key] === next[key]) ? old : next);
+      measureScroll();
+    };
+    const outside = (event) => {
+      if (!menu.current?.contains(event.target) && !trigger.current?.contains(event.target)) close(false);
+    };
+    const scroll = (event) => {
+      if (!(event.target instanceof Node) || !menu.current?.contains(event.target)) place();
+    };
+    place();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(place);
+    if (trigger.current) observer?.observe(trigger.current);
+    if (menu.current) observer?.observe(menu.current);
+    document.addEventListener("pointerdown", outside);
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", scroll, true);
+    window.visualViewport?.addEventListener("resize", place);
+    window.visualViewport?.addEventListener("scroll", place);
+    return () => {
+      observer?.disconnect();
+      document.removeEventListener("pointerdown", outside);
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", scroll, true);
+      window.visualViewport?.removeEventListener("resize", place);
+      window.visualViewport?.removeEventListener("scroll", place);
+    };
+  }, [open, menuReady, close, measureScroll]);
+  const choose = (row) => {
+    if (row.disabled) return;
+    const next = String(row.value);
+    if (value === void 0) setInternal(next);
+    setInvalid(false);
+    close(true);
+    if (next !== selected) onValueChange?.(next);
+  };
+  const search = (key) => {
+    const now = Date.now(), previous = now - typeahead.current.at < 700 ? typeahead.current.text : "";
+    const text = (previous + key).toLocaleLowerCase();
+    typeahead.current = { text, at: now };
+    const query = [...text].every((char) => char === text[0]) ? text[0] : text;
+    const candidates = [...menu.current?.querySelectorAll('[role="option"]:not([disabled])') ?? []];
+    const currentIndex = candidates.indexOf(document.activeElement);
+    for (let step = query.length > 1 ? 0 : 1; step <= candidates.length; step++) {
+      const option = candidates[(Math.max(0, currentIndex) + step) % candidates.length];
+      if (option?.textContent?.trim().toLocaleLowerCase().startsWith(query)) {
+        option.focus();
+        option.scrollIntoView?.({ block: "nearest" });
+        break;
+      }
+    }
+  };
+  const tabAway = (backwards) => {
+    const candidates = [...document.querySelectorAll("button, a[href], input, textarea, [tabindex]")].filter((el) => el.tabIndex >= 0 && !el.matches(":disabled") && !menu.current?.contains(el) && !el.closest('[hidden], [inert], [aria-hidden="true"]') && el.getClientRects().length);
+    const index = candidates.indexOf(trigger.current);
+    close(false);
+    candidates[index + (backwards ? -1 : 1)]?.focus();
+  };
+  const popupLabel = buttonProps["aria-label"] ?? ([...trigger.current?.labels ?? []].map((label) => label.textContent).join(" ").trim() || plainText(current?.label ?? placeholder));
+  return /* @__PURE__ */ jsxs(Dialog.Root, { open, onOpenChange: (next) => {
+    setMenuReady(false);
+    setOpen(next);
+  }, modal: false, children: [
+    /* @__PURE__ */ jsx(Dialog.Trigger, { asChild: true, children: /* @__PURE__ */ jsxs(
+      "button",
+      {
+        ...buttonProps,
+        ref: trigger,
+        type: "button",
+        role: "combobox",
+        value: selected,
+        form,
+        disabled,
+        "aria-expanded": open,
+        "aria-haspopup": "listbox",
+        "aria-controls": open ? popupId : void 0,
+        "aria-required": required || void 0,
+        "aria-invalid": invalid || buttonProps["aria-invalid"],
+        className: `pm-select ${className}`,
+        onClick: (event) => {
+          onClick?.(event);
+          if (!rows.some((row) => !row.hidden)) event.preventDefault();
+        },
+        onKeyDown: (event) => {
+          onKeyDown?.(event);
+          if (event.defaultPrevented) return;
+          if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
+            event.preventDefault();
+            setOpen(true);
+          } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+            setOpen(true);
+            typeahead.current = { text: event.key.toLocaleLowerCase(), at: Date.now() };
+          }
+        },
+        children: [
+          /* @__PURE__ */ jsx("span", { className: "pm-select-value-label", title: plainText(current?.label ?? placeholder), children: current?.label ?? placeholder ?? (selected || "\u2014") }),
+          /* @__PURE__ */ jsx(ChevronDown, { size: 14, "data-icon": "chevron-down", "aria-hidden": "true" })
+        ]
+      }
+    ) }),
+    (name || required) && /* @__PURE__ */ jsx(
+      "input",
+      {
+        ref: field,
+        className: "pm-select-form-value",
+        type: "text",
+        name,
+        form,
+        required,
+        disabled,
+        value: selected,
+        tabIndex: -1,
+        "aria-hidden": "true",
+        onChange: () => void 0,
+        onInvalid: (event) => {
+          event.preventDefault();
+          setInvalid(true);
+          trigger.current?.focus({ preventScroll: true });
+        }
+      }
+    ),
+    /* @__PURE__ */ jsx(Dialog.Portal, { forceMount: true, children: open && /* @__PURE__ */ jsx(
+      Dialog.Content,
+      {
+        asChild: true,
+        "aria-describedby": void 0,
+        onOpenAutoFocus: (event) => {
+          event.preventDefault();
+          setMenuReady(true);
+        },
+        onCloseAutoFocus: (event) => event.preventDefault(),
+        onEscapeKeyDown: (event) => {
+          event.preventDefault();
+          close(true);
+        },
+        children: /* @__PURE__ */ jsxs(
+          "div",
+          {
+            ref: menu,
+            id: popupId,
+            role: "listbox",
+            "aria-label": popupLabel,
+            "aria-labelledby": buttonProps["aria-labelledby"],
+            className: "thread-ui-shell pm-select-menu",
+            "data-ready": menuReady || void 0,
+            "data-theme-effective": document.documentElement.dataset.themeEffective,
+            style: position,
+            onKeyDownCapture: (event) => {
+              if (event.key === "Tab") {
+                event.preventDefault();
+                event.stopPropagation();
+                tabAway(event.shiftKey);
+              }
+            },
+            onKeyDown: (event) => {
+              event.stopPropagation();
+              if ((event.key === "Enter" || event.key === " ") && event.target instanceof HTMLButtonElement) {
+                event.preventDefault();
+                event.target.click();
+              } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+                event.preventDefault();
+                search(event.key);
+              }
+            },
+            children: [
+              /* @__PURE__ */ jsx(Dialog.Title, { className: "pm-select-a11y-title", children: popupLabel }),
+              /* @__PURE__ */ jsx("div", { ref: viewport, className: "pm-select-options", onScroll: measureScroll, onFocusCapture: (event) => {
+                event.target.scrollIntoView?.({ block: "nearest" });
+                measureScroll();
+              }, children: rows.map((row, index) => row.hidden ? null : /* @__PURE__ */ jsxs(Fragment, { children: [
+                row.group && row.group !== rows[index - 1]?.group ? /* @__PURE__ */ jsx("div", { className: "pm-select-group", role: "presentation", children: row.group }) : null,
+                /* @__PURE__ */ jsxs("button", { id: `${popupId}-${index}`, type: "button", role: "option", "data-value": String(row.value), tabIndex: -1, disabled: row.disabled, "aria-selected": String(row.value) === selected, onClick: () => choose(row), children: [
+                  /* @__PURE__ */ jsx("span", { children: row.label }),
+                  /* @__PURE__ */ jsx(Check, { size: 14, "aria-hidden": "true", "data-selected": String(row.value) === selected || void 0 })
+                ] })
+              ] }, `${row.value}:${index}`)) }),
+              thumb.size > 0 && /* @__PURE__ */ jsx("div", { className: "pm-select-scroll-track", "aria-hidden": "true", children: /* @__PURE__ */ jsx("div", { className: "pm-select-scroll-thumb", style: { height: thumb.size, transform: `translateY(${thumb.top}px)` }, onPointerDown: (event) => {
+                event.preventDefault();
+                const el = viewport.current;
+                const start = event.clientY, at = el.scrollTop;
+                const target = event.currentTarget;
+                target.setPointerCapture(event.pointerId);
+                const move = (next) => {
+                  el.scrollTop = at + (next.clientY - start) * (el.scrollHeight - el.clientHeight) / Math.max(1, el.clientHeight - thumb.size);
+                };
+                const end = () => {
+                  target.removeEventListener("pointermove", move);
+                  target.removeEventListener("pointerup", end);
+                  target.removeEventListener("pointercancel", end);
+                };
+                target.addEventListener("pointermove", move);
+                target.addEventListener("pointerup", end);
+                target.addEventListener("pointercancel", end);
+              } }) })
+            ]
+          }
+        )
+      }
+    ) })
+  ] });
+}
+
 // src/i18n/index.tsx
-import { createContext, useContext, useEffect, useMemo, useSyncExternalStore } from "react";
+import { createContext, useContext, useEffect as useEffect3, useMemo as useMemo2, useSyncExternalStore } from "react";
 
 // src/i18n/admin.en.ts
 var adminEn = {
@@ -10088,7 +10428,7 @@ function detectLocale(stored, languages = []) {
 }
 
 // src/i18n/index.tsx
-import { jsx, jsxs } from "react/jsx-runtime";
+import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 var resources = { en, "zh-CN": zhCN };
 var storeKey = /* @__PURE__ */ Symbol.for("remote-codex.i18n");
 var globalStore = globalThis;
@@ -10158,34 +10498,34 @@ function formatNumber(value, options) {
 var I18nContext = createContext(null);
 function I18nProvider({ children }) {
   const locale = useSyncExternalStore(subscribe, getLocale, () => DEFAULT_LOCALE);
-  useEffect(() => {
+  useEffect3(() => {
     const change = (event) => {
       if (event.key === LOCALE_STORAGE_KEY || event.key === null) setLocale(event.newValue ?? detectLocale(null, navigator.languages), false);
     };
     window.addEventListener("storage", change);
     return () => window.removeEventListener("storage", change);
   }, []);
-  return /* @__PURE__ */ jsx(I18nContext.Provider, { value: locale, children });
+  return /* @__PURE__ */ jsx2(I18nContext.Provider, { value: locale, children });
 }
 function useI18n() {
   useContext(I18nContext);
   const locale = useSyncExternalStore(subscribe, getLocale, () => DEFAULT_LOCALE);
-  return useMemo(() => ({ locale, setLocale, t: translate, formatDate, formatNumber }), [locale]);
+  return useMemo2(() => ({ locale, setLocale, t: translate, formatDate, formatNumber }), [locale]);
 }
 function LanguageSwitcher({ className }) {
   const { locale, setLocale: setLocale2, t: t2 } = useI18n();
-  return /* @__PURE__ */ jsxs("label", { className, style: { display: "inline-flex", alignItems: "center", gap: 8 }, children: [
-    /* @__PURE__ */ jsx("span", { children: t2("common.language") }),
-    /* @__PURE__ */ jsxs(
-      "select",
+  return /* @__PURE__ */ jsxs2("label", { className, style: { display: "inline-flex", alignItems: "center", gap: 8 }, children: [
+    /* @__PURE__ */ jsx2("span", { children: t2("common.language") }),
+    /* @__PURE__ */ jsxs2(
+      Select,
       {
         "aria-label": t2("common.language"),
         value: locale,
-        onChange: (event) => setLocale2(event.target.value),
+        onValueChange: (selectedValue) => setLocale2(selectedValue),
         style: { background: "var(--theme-panel)", color: "var(--theme-fg)", border: "1px solid var(--theme-border)", borderRadius: 6, padding: "8px 10px", minHeight: 40 },
         children: [
-          /* @__PURE__ */ jsx("option", { value: "en", children: "English" }),
-          /* @__PURE__ */ jsx("option", { value: "zh-CN", children: "\u7B80\u4F53\u4E2D\u6587" })
+          /* @__PURE__ */ jsx2("option", { value: "en", children: "English" }),
+          /* @__PURE__ */ jsx2("option", { value: "zh-CN", children: "\u7B80\u4F53\u4E2D\u6587" })
         ]
       }
     )
@@ -10193,6 +10533,8 @@ function LanguageSwitcher({ className }) {
 }
 
 export {
+  useMenuKeyboard,
+  Select,
   en,
   zhCN,
   SUPPORTED_LOCALES,

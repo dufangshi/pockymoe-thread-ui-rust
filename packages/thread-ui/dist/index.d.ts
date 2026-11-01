@@ -400,6 +400,8 @@ interface MatterWorkbenchOptions {
     /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
     subscriptionUsage?: AgentSubscriptionUsageDto | null;
     emptyWorkspace?: boolean;
+    /** False on host pages without a workspace; browser behavior defaults to enabled. */
+    workspaceControlsEnabled?: boolean;
     navigationReady?: boolean;
     harnessSessionId?: string | null;
     harnessSessionUrl?: string | null;

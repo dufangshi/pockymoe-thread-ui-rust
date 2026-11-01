@@ -4,8 +4,9 @@ import {
 } from "./chunk-JIPNJR2N.js";
 import {
   translate,
-  useI18n
-} from "./chunk-HTIQYB6H.js";
+  useI18n,
+  useMenuKeyboard
+} from "./chunk-4CG3AHL4.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -264,46 +265,13 @@ function ErrorMark({
   ] });
 }
 
-// src/components/menu/useMenuKeyboard.ts
+// src/components/menu/useModalFocus.ts
 import { useEffect as useEffect3, useRef as useRef3 } from "react";
-function useMenuKeyboard(menuRef, open, onClose, itemSelector = '[role^="menuitem"]:not([disabled])') {
+var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+function useModalFocus(windowRef, open, onClose, initial) {
   const close = useRef3(onClose);
   close.current = onClose;
   useEffect3(() => {
-    if (!open) return;
-    const menu = menuRef.current;
-    if (!menu) return;
-    const items = () => [...menu.querySelectorAll(itemSelector)];
-    items()[0]?.focus();
-    const key = (event) => {
-      const list = items();
-      const index = list.indexOf(document.activeElement);
-      const move = (to) => {
-        event.preventDefault();
-        list[(to + list.length) % list.length]?.focus();
-      };
-      if (event.key === "ArrowDown") move(index + 1);
-      else if (event.key === "ArrowUp") move(index < 0 ? -1 : index - 1);
-      else if (event.key === "Home") move(0);
-      else if (event.key === "End") move(list.length - 1);
-      else if (event.key === "Escape") {
-        event.preventDefault();
-        event.stopPropagation();
-        close.current(true);
-      } else if (event.key === "Tab") close.current(false);
-    };
-    menu.addEventListener("keydown", key);
-    return () => menu.removeEventListener("keydown", key);
-  }, [menuRef, open, itemSelector]);
-}
-
-// src/components/menu/useModalFocus.ts
-import { useEffect as useEffect4, useRef as useRef4 } from "react";
-var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-function useModalFocus(windowRef, open, onClose, initial) {
-  const close = useRef4(onClose);
-  close.current = onClose;
-  useEffect4(() => {
     if (!open) return;
     const root = windowRef.current;
     if (!root) return;
@@ -350,11 +318,11 @@ function useModalFocus(windowRef, open, onClose, initial) {
 }
 
 // src/components/menu/useLongPress.ts
-import { useRef as useRef5 } from "react";
+import { useRef as useRef4 } from "react";
 function useLongPress(onLongPress, delay = 500) {
-  const timer = useRef5(void 0);
-  const start = useRef5(null);
-  const fired = useRef5(false);
+  const timer = useRef4(void 0);
+  const start = useRef4(null);
+  const fired = useRef4(false);
   const cancel = () => {
     window.clearTimeout(timer.current);
     start.current = null;
@@ -388,7 +356,7 @@ function useLongPress(onLongPress, delay = 500) {
 }
 
 // src/components/ConfirmDialog.tsx
-import { useRef as useRef6 } from "react";
+import { useRef as useRef5 } from "react";
 import { createPortal as createPortal2 } from "react-dom";
 import { jsx as jsx5, jsxs as jsxs5 } from "react/jsx-runtime";
 function ConfirmDialog({
@@ -407,7 +375,7 @@ function ConfirmDialog({
   tone = "danger"
 }) {
   useI18n();
-  const windowRef = useRef6(null);
+  const windowRef = useRef5(null);
   useModalFocus(windowRef, open, busy ? void 0 : onCancel, "[data-initial-focus]");
   if (!open) {
     return null;
@@ -895,7 +863,7 @@ function TooltipContent({
 }
 
 // src/components/RenameDialog.tsx
-import { useRef as useRef7 } from "react";
+import { useRef as useRef6 } from "react";
 import { createPortal as createPortal3 } from "react-dom";
 import { jsx as jsx9, jsxs as jsxs8 } from "react/jsx-runtime";
 function RenameDialog({
@@ -912,7 +880,7 @@ function RenameDialog({
   onSubmit
 }) {
   useI18n();
-  const windowRef = useRef7(null);
+  const windowRef = useRef6(null);
   useModalFocus(windowRef, open, busy ? void 0 : onCancel, "input");
   if (!open) {
     return null;
@@ -1420,21 +1388,21 @@ function collectAncestorPaths(path) {
 }
 
 // src/components/ZoomableImage.tsx
-import { createContext, useContext, useEffect as useEffect5, useRef as useRef9, useState as useState6 } from "react";
+import { createContext, useContext, useEffect as useEffect4, useRef as useRef8, useState as useState6 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
 
 // src/components/useImageViewport.ts
-import { useRef as useRef8, useState as useState5 } from "react";
+import { useRef as useRef7, useState as useState5 } from "react";
 var MIN_SCALE = 0.5;
 var MAX_SCALE = 5;
 var clamp = (scale) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
 function useImageViewport() {
-  const viewportRef = useRef8(null);
+  const viewportRef = useRef7(null);
   const [view, setView] = useState5({ x: 0, y: 0, scale: 1 });
-  const current = useRef8(view);
-  const pointers = useRef8(/* @__PURE__ */ new Map());
-  const baseline = useRef8(null);
-  const moved = useRef8(false);
+  const current = useRef7(view);
+  const pointers = useRef7(/* @__PURE__ */ new Map());
+  const baseline = useRef7(null);
+  const moved = useRef7(false);
   const [dragging, setDragging] = useState5(false);
   const commit = (next) => {
     current.current = next;
@@ -1539,11 +1507,11 @@ function GraphWorkspaceImageLightbox({
 }) {
   const { locale: i18nLocale } = useI18n();
   const { viewportRef, scale, dragging, transform, reset: resetView, updateScale, handlers, moved } = useImageViewport();
-  const closeButtonRef = useRef9(null);
-  const backdropPointer = useRef9(true);
-  const windowRef = useRef9(null);
+  const closeButtonRef = useRef8(null);
+  const backdropPointer = useRef8(true);
+  const windowRef = useRef8(null);
   useModalFocus(windowRef, true, onClose, ".thread-graph-image-lightbox-close");
-  useEffect5(() => {
+  useEffect4(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -1673,7 +1641,7 @@ function ZoomableImage({
   height
 }) {
   const { locale: i18nLocale } = useI18n();
-  const triggerRef = useRef9(null);
+  const triggerRef = useRef8(null);
   const [open, setOpen] = useState6(false);
   const insideLink = useContext(MarkdownImageLinkContext);
   const dimension = (value) => typeof value === "number" ? value : value && /^\d+(?:\.\d+)?%?$/.test(value) ? value.endsWith("%") ? value : Number(value) : void 0;
@@ -1763,7 +1731,7 @@ var schema = {
 var markdownHtmlPlugins = [rehypeRaw, [rehypeSanitize, schema]];
 
 // src/components/WorkspaceFileLink.tsx
-import { useEffect as useEffect6, useRef as useRef10, useState as useState7 } from "react";
+import { useEffect as useEffect5, useRef as useRef9, useState as useState7 } from "react";
 import { createPortal as createPortal5 } from "react-dom";
 import { Check as Check2, TriangleAlert as TriangleAlert2 } from "lucide-react";
 import { Fragment as Fragment4, jsx as jsx13, jsxs as jsxs11 } from "react/jsx-runtime";
@@ -1771,8 +1739,8 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
   useI18n();
   const [menu, setMenu] = useState7(null);
   const [copy, setCopy] = useState7(null);
-  const menuRef = useRef10(null);
-  const linkRef = useRef10(null);
+  const menuRef = useRef9(null);
+  const linkRef = useRef9(null);
   const displayPath = path.startsWith("/") || /^[a-z]:/i.test(path) ? path : `./${path.replace(/^\.\//, "")}`;
   const copyValue = path.replace(/^\.\//, "") + (line ? `:${line}` : "");
   const close = (restoreFocus) => {
@@ -1781,7 +1749,7 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
     if (restoreFocus) linkRef.current?.focus();
   };
   useMenuKeyboard(menuRef, Boolean(menu), close);
-  useEffect6(() => {
+  useEffect5(() => {
     if (!menu) return;
     const dismiss = (event) => {
       if (!menuRef.current?.contains(event.target)) close(false);
@@ -2003,7 +1971,6 @@ export {
   PathChip,
   MiddleName,
   ErrorMark,
-  useMenuKeyboard,
   useModalFocus,
   useLongPress,
   ConfirmDialog,

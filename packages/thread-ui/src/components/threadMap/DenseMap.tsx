@@ -436,8 +436,8 @@ export function DenseMap(props: ReadableMapProps) {
               style={{
                 left: 0,
                 top: 0,
-                width: rect.width,
-                height: device ? 22 : 18,
+                width: '100%',
+                height: device ? 21 : 17,
               }}
             >
               <button

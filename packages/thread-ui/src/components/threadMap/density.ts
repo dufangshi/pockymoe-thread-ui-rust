@@ -18,11 +18,17 @@ interface Result {
 }
 const fits = (r: MapRect) =>
   r.width >= DENSE_MIN.width - 0.01 && r.height >= DENSE_MIN.height - 0.01;
-const inside = (r: MapRect): MapRect => ({
+/** Devices and workspaces sit further apart than threads, so blocks read as groups. */
+const gapOf = (n: MapNode) =>
+  n.kind === 'device' ? 4 : n.kind === 'workspace' ? 3 : GAP;
+const paddingOf = (n: MapNode) => (n.kind === 'device' ? 3 : 2);
+// Children subtract their own trailing gap, so a frame gives it back.
+const childGapOf = (n: MapNode) => (n.kind === 'device' ? 3 : GAP);
+const inside = (r: MapRect, gap = GAP): MapRect => ({
   x: r.x,
   y: r.y,
-  width: Math.max(0, r.width - GAP),
-  height: Math.max(0, r.height - GAP),
+  width: Math.max(0, r.width - gap),
+  height: Math.max(0, r.height - gap),
 });
 interface Shape {
   leaves: number;
@@ -72,6 +78,13 @@ const compactOverflow = (rect: MapRect): MapRect => ({
   height: Math.min(52, rect.height),
 });
 const header = (n: MapNode) => (n.kind === 'device' ? 22 : 18);
+/** What a framed node takes from its cell before its children get any. */
+const frameOf = (n: MapNode) => {
+  const gap = gapOf(n),
+    pad = paddingOf(n),
+    child = childGapOf(n);
+  return { x: gap + pad * 2 - child, y: header(n) + gap + pad - child };
+};
 const children = (n: MapNode) =>
   n.children.filter(
     (c) => c.kind !== 'compressed' && (c.thread || c.threads > 0),
@@ -184,9 +197,11 @@ function threadPlan(items: MapNode[], bounds: MapRect): Result {
 // packing at this width. Equal-height grids unnecessarily fold a three-thread
 // workspace next to a two-thread workspace despite having enough total area.
 const minimumHeights = new WeakMap<MapNode, Map<number, number>>();
-function minimumHeight(node: MapNode, width: number): number {
+function minimumHeight(node: MapNode, cell: number): number {
+  if (node.thread) return cell < 90 ? Infinity : 36;
+  const frame = frameOf(node),
+    width = cell - frame.x;
   if (width < 90) return Infinity;
-  if (node.thread) return 36;
   let sizes = minimumHeights.get(node);
   if (!sizes) {
     sizes = new Map();
@@ -197,8 +212,7 @@ function minimumHeight(node: MapNode, width: number): number {
   if (cached !== undefined) return cached;
   const list = children(node);
   if (list.every((n) => n.thread)) {
-    const h =
-      header(node) + Math.ceil(list.length / Math.floor(width / 90)) * 36 + 2;
+    const h = frame.y + Math.ceil(list.length / Math.floor(width / 90)) * 36;
     sizes.set(key, h);
     return h;
   }
@@ -208,11 +222,11 @@ function minimumHeight(node: MapNode, width: number): number {
     cols <= Math.min(list.length, Math.floor(width / 90));
     cols++
   ) {
-    let h = header(node) + 2;
+    let h = frame.y;
     for (let i = 0; i < list.length; i += cols) {
       const row = list.slice(i, i + cols),
         w = width / row.length;
-      h += Math.max(...row.map((n) => minimumHeight(n, w - 2)));
+      h += Math.max(...row.map((n) => minimumHeight(n, w)));
     }
     best = Math.min(best, h);
   }
@@ -234,7 +248,7 @@ function strips(items: MapNode[], bounds: MapRect) {
         return {
           list,
           w,
-          h: Math.max(...list.map((n) => minimumHeight(n, w - 2))),
+          h: Math.max(...list.map((n) => minimumHeight(n, w))),
         };
       },
     );
@@ -318,7 +332,7 @@ function layoutLevel(
         important = 0,
         invalid = 0;
       for (const { item: node, rect: r } of candidate) {
-        const rect = inside(r);
+        const rect = inside(r, gapOf(node));
         if (node === overflow) {
           const leaves = threadLeaves(hidden);
           missing += leaves.length;
@@ -332,11 +346,13 @@ function layoutLevel(
           continue;
         }
         const h = header(node),
+          pad = paddingOf(node),
+          childGap = childGapOf(node),
           area = {
-            x: rect.x,
+            x: rect.x + pad,
             y: rect.y + h,
-            width: rect.width + GAP,
-            height: Math.max(0, rect.height - h + GAP),
+            width: Math.max(0, rect.width - pad * 2 + childGap),
+            height: Math.max(0, rect.height - h - pad + childGap),
           };
         const nested = layoutLevel(children(node), area, levels);
         boxes.push({ node, rect, children: nested.boxes });

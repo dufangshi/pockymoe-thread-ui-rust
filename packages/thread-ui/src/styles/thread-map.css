@@ -993,7 +993,11 @@
   .thread-map[data-presentation='page'] > .thread-map-dense-toolbar:first-child { gap:2px; }
 }
 @media(prefers-reduced-motion:reduce) { .thread-map .thread-map-dense-tile[data-running] { animation:none; } }
-.thread-map-dense-section { position:absolute; display:block; pointer-events:none; background:none; border:0; padding:0; }
+.thread-map-dense-section { position:absolute; display:block; pointer-events:none; padding:0; box-sizing:border-box; }
+/* Grouping is the frame: a device is a raised block, a workspace a quieter one inside it. */
+.thread-map-dense-section[data-kind='device'] { border:1px solid var(--theme-border-strong); border-radius:8px; background:color-mix(in oklab, var(--theme-fg) 4%, var(--theme-panel)); }
+.thread-map-dense-section[data-kind='workspace'] { border:1px solid var(--theme-border); border-radius:5px; background:var(--theme-panel); }
+.thread-map-dense-section .thread-map-dense-header { background:none; }
 .thread-map-dense-header { pointer-events:auto; }
 .thread-map-dense-tile > .thread-map-dense-unread { position:absolute; top:3px; right:3px; line-height:0; }
 .thread-map-dense-unread > .matter-status-dot { width:5px; height:5px; }

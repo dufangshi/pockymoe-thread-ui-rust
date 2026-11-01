@@ -1,0 +1,312 @@
+/* The context entry beside the model chip, and its panel: an anchored window on
+   desktop, a bottom sheet on phones (docs/ui-principles.md §4, §12). Hue follows
+   the category, in a fixed order validated for colour-blind readers on every
+   theme's surface; text always wears text colours, and every hue has a labelled
+   row, so nothing is told by colour alone. Theme packs restyle it with these
+   variables and the theme tokens. */
+.thread-context-palette {
+  --context-cat-1: #2a78d6;
+  --context-cat-2: #eb6834;
+  --context-cat-3: #1baf7a;
+  --context-cat-4: #eda100;
+  --context-cat-5: #e87ba4;
+  --context-cat-6: #008300;
+  --context-cat-7: #6250d6;
+  --context-neutral: color-mix(in srgb, var(--theme-fg-muted, #737373) 62%, transparent);
+  --context-fill: var(--context-cat-1);
+  --context-warning: #b25e00;
+  --context-danger: #c5302f;
+  --context-track: color-mix(in srgb, var(--theme-fg-muted, #737373) 22%, transparent);
+  --context-gap: 1px;
+}
+:root[data-theme-effective='dark'] .thread-context-palette,
+.thread-ui-theme-dark .thread-context-palette {
+  --context-cat-1: #3987e5;
+  --context-cat-2: #d95926;
+  --context-cat-3: #199e70;
+  --context-cat-4: #c98500;
+  --context-cat-5: #d55181;
+  --context-cat-6: #008300;
+  --context-cat-7: #9085e9;
+  --context-warning: #eda100;
+  --context-danger: #f07575;
+}
+
+/* ── The entry: one percent and a small bar, the height of the keys beside it ── */
+.composer-context-control { flex: none; }
+.composer-context-meter {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 3px;
+  width: 40px;
+  min-height: 32px;
+  padding: 0 4px;
+  border-radius: 6px;
+  color: var(--theme-fg-soft, currentColor);
+  cursor: pointer;
+}
+.composer-context-meter::after { content: ''; position: absolute; inset: -4px 0; }
+.composer-context-meter:active,
+.composer-context-meter[aria-expanded='true'] { background: var(--theme-hover); }
+@media (hover: hover) {
+  .composer-context-meter:hover { background: var(--theme-hover); }
+}
+.composer-context-meter:focus-visible { outline: 2px solid var(--theme-accent-solid, currentColor); outline-offset: 1px; }
+.composer-context-meter-value {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: nowrap;
+}
+.composer-context-meter[data-empty='true'] .composer-context-meter-value { color: var(--theme-fg-muted); font-weight: 500; }
+.composer-context-meter[data-tone='warning'] .composer-context-meter-value { color: var(--context-warning); }
+.composer-context-meter[data-tone='danger'] .composer-context-meter-value { color: var(--context-danger); }
+
+/* ── Bars ─────────────────────────────────────────────────────────────────── */
+.thread-context-bar {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 8px;
+  gap: 2px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--context-track);
+}
+.thread-context-bar.is-mini { flex: none; height: 3px; gap: var(--context-gap); border-radius: 2px; }
+.thread-context-segment {
+  display: block;
+  flex: none;
+  min-width: 2px;
+  background: var(--context-neutral);
+  transition: width 0.35s ease;
+}
+.thread-context-bar.is-mini .thread-context-segment { min-width: 1px; }
+.thread-context-segment[data-slot='-1'] { background: var(--context-fill); }
+[data-tone='warning'] .thread-context-segment[data-slot='-1'] { background: var(--context-warning); }
+[data-tone='danger'] .thread-context-segment[data-slot='-1'] { background: var(--context-danger); }
+.thread-context-segment[data-slot='1'], .thread-context-swatch[data-slot='1'] { background: var(--context-cat-1); }
+.thread-context-segment[data-slot='2'], .thread-context-swatch[data-slot='2'] { background: var(--context-cat-2); }
+.thread-context-segment[data-slot='3'], .thread-context-swatch[data-slot='3'] { background: var(--context-cat-3); }
+.thread-context-segment[data-slot='4'], .thread-context-swatch[data-slot='4'] { background: var(--context-cat-4); }
+.thread-context-segment[data-slot='5'], .thread-context-swatch[data-slot='5'] { background: var(--context-cat-5); }
+.thread-context-segment[data-slot='6'], .thread-context-swatch[data-slot='6'] { background: var(--context-cat-6); }
+.thread-context-segment[data-slot='7'], .thread-context-swatch[data-slot='7'] { background: var(--context-cat-7); }
+.thread-context-segment.is-reserved,
+.thread-context-swatch[data-kind='buffer'] {
+  background: repeating-linear-gradient(135deg, var(--context-neutral) 0 2px, transparent 2px 4px);
+}
+.thread-context-segment.is-reserved { margin-left: auto; }
+.thread-context-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--theme-fg, currentColor);
+}
+
+/* ── The window ───────────────────────────────────────────────────────────── */
+.thread-ui-shell .thread-context-surface.thread-composer-menu-surface {
+  width: min(22.5rem, calc(100vw - 2rem));
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--theme-border-strong, var(--theme-border));
+  border-radius: 12px;
+  background: var(--theme-panel);
+  box-shadow: var(--theme-shadow, 0 12px 32px rgb(0 0 0 / 0.25));
+  color: var(--theme-fg);
+}
+.thread-context-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: min(36rem, calc(100dvh - 7rem));
+  font-size: 12px;
+  line-height: 16px;
+  outline: none;
+}
+.thread-context-header {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 14px 0;
+}
+.thread-context-title-block { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; min-width: 0; }
+.thread-context-title { margin: 0; font-size: 13px; font-weight: 600; line-height: 18px; }
+.thread-context-subtitle { overflow: hidden; color: var(--theme-fg-muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.thread-context-close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: -8px -10px -6px 0;
+  border-radius: 8px;
+  color: var(--theme-fg-muted);
+}
+.thread-context-close svg { width: 18px; height: 18px; }
+.thread-context-close:active { background: var(--theme-hover); }
+.thread-context-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px 14px 10px;
+}
+.thread-context-summary { display: grid; gap: 6px; }
+.thread-context-hero { display: flex; align-items: baseline; gap: 8px; }
+.thread-context-percent { font-size: 24px; font-weight: 650; line-height: 30px; font-variant-numeric: tabular-nums; }
+.thread-context-summary[data-tone='warning'] .thread-context-percent { color: var(--context-warning); }
+.thread-context-summary[data-tone='danger'] .thread-context-percent { color: var(--context-danger); }
+.thread-context-amount { font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.thread-context-amount-window { color: var(--theme-fg-muted); }
+.thread-context-remaining { margin-left: auto; color: var(--theme-fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.thread-context-approx { margin-right: 1px; color: var(--theme-fg-muted); }
+.thread-context-makeup { display: grid; gap: 3px; margin-top: 2px; }
+.thread-context-makeup .thread-context-bar { height: 5px; background: transparent; }
+.thread-context-makeup-label,
+.thread-context-meta,
+.thread-context-footnote { margin: 0; color: var(--theme-fg-muted); font-size: 11px; line-height: 15px; }
+.thread-context-meta { display: flex; flex-wrap: wrap; gap: 0 8px; }
+.thread-context-stale { color: var(--context-warning); font-weight: 600; }
+.thread-context-footnote { margin-top: 4px; padding-left: 34px; }
+.thread-context-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin: 10px 0 0;
+  color: var(--theme-fg-soft, var(--theme-fg-muted));
+}
+.thread-context-spinner { width: 13px; height: 13px; }
+.thread-context-link {
+  color: var(--theme-fg);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.thread-context-rows { display: grid; grid-template-columns: minmax(0, 1fr); margin: 8px -6px 0; padding: 0; list-style: none; }
+.thread-context-row {
+  display: grid;
+  grid-template-columns: 12px 10px minmax(0, 1fr) auto minmax(38px, auto);
+  align-items: center;
+  column-gap: 6px;
+  width: 100%;
+  min-height: 26px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-align: left;
+}
+.thread-context-row:not(:has(> .thread-context-share)) { grid-template-columns: 12px 10px minmax(0, 1fr) auto; }
+.thread-context-row.is-expandable { cursor: pointer; }
+.thread-context-row.is-expandable:active { background: var(--theme-hover); }
+@media (hover: hover) {
+  .thread-context-row.is-expandable:hover { background: var(--theme-hover); }
+}
+.thread-context-row.is-expandable:focus-visible { outline: 2px solid var(--theme-accent-solid, currentColor); outline-offset: -2px; }
+.thread-context-chevron { display: block; width: 12px; height: 12px; color: var(--theme-fg-muted); transition: transform 120ms ease; }
+.thread-context-chevron[data-open] { transform: rotate(90deg); }
+.thread-context-swatch { display: block; width: 10px; height: 10px; border-radius: 3px; background: var(--context-neutral); }
+.thread-context-swatch[data-kind='free'] { border: 1px solid var(--theme-border-strong, var(--theme-border)); background: transparent; }
+.thread-context-swatch[data-kind='deferred'] { border: 1px dashed var(--theme-fg-muted); background: transparent; }
+.thread-context-row-label { display: flex; align-items: baseline; gap: 5px; min-width: 0; }
+.thread-context-row-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.thread-context-row-count { flex: none; color: var(--theme-fg-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.thread-context-tokens { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.thread-context-share { color: var(--theme-fg-muted); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.thread-context-items { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1px; margin: 0 0 4px; padding: 0 0 0 30px; list-style: none; font-size: 11px; line-height: 15px; }
+.thread-context-item { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-height: 22px; padding: 3px 6px 3px 0; }
+.thread-context-item-name { display: flex; flex: 1; flex-wrap: wrap; align-items: center; gap: 2px 6px; min-width: 0; }
+.thread-context-item-name > span:first-child { max-width: 100%; min-width: 0; }
+.thread-context-item-source { color: var(--theme-fg-muted); font-size: 10px; }
+.thread-context-outside { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--theme-border); }
+.thread-context-heading { margin: 0; color: var(--theme-fg-muted); font-size: 11px; font-weight: 600; line-height: 15px; }
+.thread-context-outside .thread-context-rows { margin-top: 3px; }
+.thread-context-skeleton { display: grid; gap: 10px; margin-top: 14px; }
+.thread-context-skeleton > span { display: block; height: 10px; border-radius: 4px; background: var(--context-track); }
+.thread-context-skeleton > span:nth-child(2n) { width: 72%; }
+.thread-context-footer {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--theme-border);
+}
+.thread-context-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--theme-border-strong, var(--theme-border));
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.thread-context-action svg { width: 13px; height: 13px; }
+.thread-context-action:active:not(:disabled) { background: var(--theme-hover); }
+@media (hover: hover) {
+  .thread-context-action:hover:not(:disabled) { background: var(--theme-hover); }
+}
+.thread-context-action:focus-visible { outline: 2px solid var(--theme-accent-solid, currentColor); outline-offset: 1px; }
+.thread-context-action:disabled { cursor: not-allowed; opacity: 0.55; }
+
+/* ── Phones: from the bottom, over a blurred page ─────────────────────────── */
+.thread-ui-shell.thread-context-sheet-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  background: transparent;
+}
+.thread-context-scrim { position: absolute; inset: 0; background: var(--overlay-scrim, rgb(0 0 0 / 0.45)); backdrop-filter: blur(4px); }
+.thread-context-surface.is-sheet {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-height: calc(100dvh - 3rem);
+  overflow: hidden;
+  border: 1px solid var(--theme-border-strong, var(--theme-border));
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+.thread-context-surface.is-sheet .thread-context-panel {
+  max-height: min(86dvh, 44rem);
+  font-size: 13px;
+  line-height: 18px;
+}
+.thread-context-surface.is-sheet .thread-context-header { padding: 14px 16px 2px; }
+.thread-context-surface.is-sheet .thread-context-body { padding: 4px 16px 12px; }
+.thread-context-surface.is-sheet .thread-context-row { min-height: 44px; }
+.thread-context-surface.is-sheet .thread-context-item { min-height: 36px; }
+.thread-context-surface.is-sheet .thread-context-link { min-height: 40px; }
+.thread-context-surface.is-sheet .thread-context-footer {
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+}
+.thread-context-surface.is-sheet .thread-context-action { flex: 1; min-height: 44px; font-size: 13px; }
+
+@media (max-width: 639px) {
+  .composer-context-meter { width: 42px; min-height: 34px; }
+  .composer-context-meter::after { inset: -3px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .thread-context-segment, .thread-context-chevron { transition: none; }
+}

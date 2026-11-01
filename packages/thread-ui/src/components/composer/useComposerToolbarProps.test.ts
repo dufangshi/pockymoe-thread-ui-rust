@@ -36,7 +36,6 @@ function input(
     disabled: false,
     model: 'model-a',
     modelOptions: [],
-    modelContextTitle: 'model-a',
     contextUsage: null,
     reasoningEffort: null,
     supportedEfforts: [],

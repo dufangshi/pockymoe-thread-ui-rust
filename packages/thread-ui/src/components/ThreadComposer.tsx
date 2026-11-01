@@ -55,7 +55,6 @@ import {
   derivePromptKeyDownAction,
   derivePromptPasteAction,
   extractFilesFromTransfer,
-  formatModelContextTitle,
   composerAgentKey,
   hasTransferFiles,
   normalizePromptText,
@@ -83,6 +82,7 @@ import { ComposerPendingQueue } from './composer/ComposerPendingQueue';
 import { ComposerPendingWakes } from './composer/ComposerPendingWakes';
 import { useQuoteSink } from './quotes/QuoteScope';
 import { ComposerToolbar } from './composer/ComposerToolbar';
+import type { ThreadContextInspector } from './composer/ComposerContextControl';
 import { useComposerAttachments } from './composer/useComposerAttachments';
 import { useAttachmentPreviewUrls } from './composer/useAttachmentPreviewUrls';
 import { useComposerDraft } from './composer/useComposerDraft';
@@ -122,6 +122,8 @@ export interface ThreadComposerProps {
   hideSandboxModeControl?: boolean;
   modelOptions?: ModelOptionDto[];
   contextUsage?: ThreadContextUsageDto | null | undefined;
+  /** Reads the thread's context analysis for the context panel. Without it the panel shows the total alone. */
+  contextInspector?: ThreadContextInspector | null | undefined;
   capabilities?: AgentProviderCapabilitiesDto | null | undefined;
   toolboxItems?: AgentBackendToolboxItemSchemaDto[] | null | undefined;
   hookCommandTemplates?:
@@ -234,6 +236,7 @@ export function ThreadComposer({
   hideSandboxModeControl = false,
   modelOptions = [],
   contextUsage = null,
+  contextInspector,
   capabilities = null,
   toolboxItems = null,
   hookCommandTemplates = null,
@@ -529,7 +532,6 @@ export function ThreadComposer({
     () => modelOptions.find((entry) => entry.model === model) ?? null,
     [model, modelOptions],
   );
-  const modelContextTitle = formatModelContextTitle(model, contextUsage);
   const agent = composerAgentKey(agentLabel);
   const supportedEfforts = currentModel?.supportedReasoningEfforts ?? [];
   const promptSegments = useMemo(
@@ -1054,8 +1056,9 @@ export function ThreadComposer({
     model,
     agent,
     modelOptions,
-    modelContextTitle,
     contextUsage,
+    contextInspector,
+    onCompact,
     reasoningEffort,
     supportedEfforts,
     displayedCollaborationMode,

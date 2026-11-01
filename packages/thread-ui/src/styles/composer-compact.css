@@ -45,7 +45,7 @@
 [data-composer-layout] .composer-model-label {
   /* Use the space freed by moving model/permission controls into Settings.
      Reserve room for the prompt and action buttons in narrow split panes. */
-  max-width: min(24rem, max(4rem, calc(100cqi - 11rem)));
+  max-width: min(24rem, max(4rem, calc(100cqi - 14rem)));
   cursor: pointer; min-height: 28px; border-radius: 6px;
 }
 [data-composer-layout] .composer-model-label:active { background: var(--theme-hover); }
@@ -206,13 +206,13 @@
    and send beside the text; the tools and the model wait for editing. Open, the
    text takes the whole width and the tools a row along the foot, flush with the
    frame: slash and attach at the left, the model, stop and send at the right. */
-[data-composer-layout='collapsed'] :is(.composer-tools, .composer-model-control),
-.thread-ui-shell .matter-workbench [data-composer-layout='collapsed'] :is(.composer-tools, .composer-model-control) { display: none; }
+[data-composer-layout='collapsed'] :is(.composer-tools, .composer-model-control, .composer-context-control),
+.thread-ui-shell .matter-workbench [data-composer-layout='collapsed'] :is(.composer-tools, .composer-model-control, .composer-context-control) { display: none; }
 /* A control whose menu is open never vanishes under the finger. */
 [data-composer-layout='collapsed'] .composer-tools:has([data-composer-menu-surface]),
 .thread-ui-shell .matter-workbench [data-composer-layout='collapsed'] .composer-tools:has([data-composer-menu-surface]) { display: flex; }
-[data-composer-layout='collapsed'] .composer-model-control:has([data-composer-menu-surface]),
-.thread-ui-shell .matter-workbench [data-composer-layout='collapsed'] .composer-model-control:has([data-composer-menu-surface]) { display: block; }
+[data-composer-layout='collapsed'] :is(.composer-model-control, .composer-context-control):has([data-composer-menu-surface]),
+.thread-ui-shell .matter-workbench [data-composer-layout='collapsed'] :is(.composer-model-control, .composer-context-control):has([data-composer-menu-surface]) { display: block; }
 [data-composer-layout='expanded'] .thread-graph-composer-toolbar,
 .thread-ui-shell .matter-workbench [data-composer-layout='expanded'] .thread-graph-composer-toolbar {
   grid-column: 1 / -1; grid-row: 2; width: auto; justify-self: stretch;

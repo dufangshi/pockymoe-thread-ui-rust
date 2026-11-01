@@ -57,7 +57,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-WEG4XBA3.js";
+} from "./chunk-MORYC25S.js";
 import {
   shellThemeProps,
   surfaceBehind,
@@ -68,7 +68,7 @@ import {
   getLocale,
   translate,
   useI18n
-} from "./chunk-WGAFUEJC.js";
+} from "./chunk-47FMAFSY.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { memo as memo2, useEffect as useEffect13, useMemo as useMemo11, useState as useState13 } from "react";
@@ -4324,7 +4324,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment6, jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-OEPOHFUG.js")
+  () => import("./GraphWorkspaceMonacoEditor-O5AF3AGA.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4426,7 +4426,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-F3U5M2TN.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-SNDW5NDJ.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);

@@ -248,12 +248,64 @@ interface ReasoningEffortOptionDto {
     description: string;
 }
 type ThreadStatusDto = 'recovering' | 'idle' | 'running' | 'interrupted' | 'failed' | 'not_loaded' | 'system_error';
+type ContextInspectionKindDto = 'used' | 'free' | 'buffer' | 'deferred';
+type ContextInspectionPrecisionDto = 'reported' | 'estimated';
+interface ContextInspectionCategoryDto {
+    id: string;
+    label?: string | null;
+    kind: ContextInspectionKindDto;
+    tokens: number;
+    precision?: ContextInspectionPrecisionDto | null;
+}
+interface ContextInspectionGroupItemDto {
+    name: string;
+    tokens: number;
+    path?: string | null;
+    source?: string | null;
+    loaded?: boolean | null;
+}
+interface ContextInspectionGroupDto {
+    id: string;
+    label?: string | null;
+    items: ContextInspectionGroupItemDto[];
+}
+/** What a thread's context window holds, by category. Deferred categories are
+    outside the window and never part of `usedTokens`. */
+interface ContextInspectionSnapshotDto {
+    provider: 'codex' | 'claude';
+    model?: string | null;
+    source: 'claudeSummary' | 'claudeFull' | 'codexTrace';
+    precision: ContextInspectionPrecisionDto;
+    usedTokens: number;
+    windowTokens: number;
+    updatedAt: string;
+    stale?: boolean | null;
+    autoCompactThreshold?: number | null;
+    autoCompactEnabled?: boolean | null;
+    categories: ContextInspectionCategoryDto[];
+    groups?: ContextInspectionGroupDto[] | null;
+    turnId?: string | null;
+    requestId?: string | null;
+}
+type ContextInspectionDetailDto = 'summary' | 'full';
+interface ThreadContextInspectionDto {
+    enabled: boolean;
+    supported: boolean;
+    availability: 'available' | 'disabled' | 'unavailable';
+    snapshot: ContextInspectionSnapshotDto | null;
+    reason?: string | null;
+}
+interface ContextInspectionSettingsDto {
+    enabled: boolean;
+}
 interface ThreadContextUsageDto {
     availability: 'available' | 'unavailable';
     remainingPercent: number | null;
     tokensInContextWindow: number | null;
     modelContextWindow: number | null;
     updatedAt: string | null;
+    /** Present while detailed context analysis is on and a request was analyzed. */
+    details?: ContextInspectionSnapshotDto | null;
 }
 interface ThreadDto {
     id: string;
@@ -1128,4 +1180,4 @@ type SupervisorSocketClientEnvelope = {
 /** Text can arrive as a shorter summary; operation lifecycle must still advance. */
 declare function mergeThreadHistoryItem(current: ThreadHistoryItemDto | undefined, incoming: ThreadHistoryItemDto): ThreadHistoryItemDto;
 
-export { type AgentBackendConfigFileSchemaDto, type AgentBackendDto, type AgentBackendHookCommandTemplateDto, type AgentBackendIdDto, type AgentBackendInstallationDto, type AgentBackendManagementSchemaDto, type AgentBackendMetadata, type AgentBackendToolboxActionDto, type AgentBackendToolboxItemSchemaDto, type AgentHookDto, type AgentHookErrorDto, type AgentHookEventNameDto, type AgentHookHandlerTypeDto, type AgentHookSourceDto, type AgentHookTrustStatusDto, type AgentMcpAuthStatusDto, type AgentMcpServerDto, type AgentMcpToolDto, type AgentProviderCapabilitiesDto, type AgentRuntimeStatusDto, type AgentSkillDto, type AgentSkillErrorDto, type AgentSkillInterfaceDto, type AgentSkillScopeDto, type AgentSubscriptionUsageDto, type AgentSubscriptionUsageWindowDto, type ApiErrorCode, type ApiErrorShape, type ApplyProviderHostConfigArchiveResultDto, type ApprovalMode, type CollaborationModeDto, type CreateProviderHostConfigArchiveInput, type CreateThreadHookInput, type CreateThreadInput, type CreateWorkspaceFromGitInput, type CreateWorkspaceFromPathInput, type CreateWorkspaceInput, type ExportThreadTranscriptInput, type ForkThreadInput, type HealthDto, type ImportPluginInput, type ImportThreadInput, type InterruptTurnInput, type MessageSenderDto, type ModelOptionDto, type PluginArtifactTypeDto, type PluginCapabilitiesDto, type PluginDto, type PluginInstallDto, type PluginManifestDto, type PluginMcpServerDto, type PluginModelHintDto, type PluginRunDto, type PluginStatusDto, type PluginStatusItemDto, type PluginThreadPanelDto, type PolishedReplyDto, type PromptAttachmentKindDto, type PromptAttachmentManifestEntryDto, type ProviderHostConfigArchiveDto, type ProviderHostConfigArchiveFileDto, type ProviderHostFileDto, type ProviderHostFileNameDto, type ReasoningEffortDto, type ReasoningEffortOptionDto, type RenameProviderHostConfigArchiveInput, type RespondThreadActionRequestInput, type ResumeThreadInput, type RuntimeConfigDto, type SandboxModeDto, type SendThreadPromptInput, type ShellAttachInput, type ShellCreateInput, type ShellDetachInput, type ShellEventEnvelope, type ShellEventPayloadMap, type ShellInputInput, type ShellResizeInput, type ShellSessionDto, type ShellStatusDto, type SupervisorConnectedEnvelope, type SupervisorPongEnvelope, type SupervisorSocketClientEnvelope, type SupervisorSocketServerEnvelope, type ThreadActionQuestionDto, type ThreadActionQuestionOptionDto, type ThreadActionRequestAnswerDto, type ThreadActionRequestDto, type ThreadActivityNoteDto, type ThreadAnsweredRequestNoteDto, type ThreadArtifactDto, type ThreadContextUsageDto, type ThreadDetailDto, type ThreadDto, type ThreadEventEnvelope, type ThreadEventPayloadMap, type ThreadExportFormatDto, type ThreadExportPdfModeDto, type ThreadExportPdfProfileDto, type ThreadExportTurnOptionDto, type ThreadExportTurnOptionsDto, type ThreadForkResultDto, type ThreadForkTurnOptionDto, type ThreadGoalDto, type ThreadGoalStatusDto, type ThreadHistoryItemDetailDto, type ThreadHistoryItemDto, type ThreadHookTargetInput, type ThreadHooksDto, type ThreadLiveItemsDto, type ThreadLivePlanDto, type ThreadMcpServersDto, type ThreadPeerWorkDto, type ThreadPendingSteerDto, type ThreadPendingWakeDto, type ThreadShellStateDto, type ThreadSkillsDto, type ThreadSourceDto, type ThreadStatusDto, type ThreadSubagentDto, type ThreadTurnActivityDto, type ThreadTurnActivitySegmentDto, type ThreadTurnChangedFileDto, type ThreadTurnDto, type ThreadTurnPriceEstimateDto, type ThreadTurnPricingTierDto, type ThreadTurnTokenBreakdownDto, type ThreadTurnTokenUsageDto, type TrustThreadHookInput, type UntrustThreadHookInput, type UpdatePluginInput, type UpdateProviderHostFileInput, type UpdateShellInput, type UpdateThreadGoalInput, type UpdateThreadHookInput, type UpdateThreadInput, type UpdateThreadSettingsInput, type UpdateWorkspaceFavoriteInput, type UpdateWorkspaceInput, type UpdateWorkspaceSettingsInput, type VersionDto, type WorkspaceDto, type WorkspaceSettingsDto, type WorkspaceTreeDto, type WorkspaceTreeNodeDto, agentBackendIds, agentBackendMetadata, defaultAgentBackendId, isAgentBackendId, mergeThreadHistoryItem, normalizeAgentBackendId, truncateAutoThreadTitle };
+export { type AgentBackendConfigFileSchemaDto, type AgentBackendDto, type AgentBackendHookCommandTemplateDto, type AgentBackendIdDto, type AgentBackendInstallationDto, type AgentBackendManagementSchemaDto, type AgentBackendMetadata, type AgentBackendToolboxActionDto, type AgentBackendToolboxItemSchemaDto, type AgentHookDto, type AgentHookErrorDto, type AgentHookEventNameDto, type AgentHookHandlerTypeDto, type AgentHookSourceDto, type AgentHookTrustStatusDto, type AgentMcpAuthStatusDto, type AgentMcpServerDto, type AgentMcpToolDto, type AgentProviderCapabilitiesDto, type AgentRuntimeStatusDto, type AgentSkillDto, type AgentSkillErrorDto, type AgentSkillInterfaceDto, type AgentSkillScopeDto, type AgentSubscriptionUsageDto, type AgentSubscriptionUsageWindowDto, type ApiErrorCode, type ApiErrorShape, type ApplyProviderHostConfigArchiveResultDto, type ApprovalMode, type CollaborationModeDto, type ContextInspectionCategoryDto, type ContextInspectionDetailDto, type ContextInspectionGroupDto, type ContextInspectionGroupItemDto, type ContextInspectionKindDto, type ContextInspectionPrecisionDto, type ContextInspectionSettingsDto, type ContextInspectionSnapshotDto, type CreateProviderHostConfigArchiveInput, type CreateThreadHookInput, type CreateThreadInput, type CreateWorkspaceFromGitInput, type CreateWorkspaceFromPathInput, type CreateWorkspaceInput, type ExportThreadTranscriptInput, type ForkThreadInput, type HealthDto, type ImportPluginInput, type ImportThreadInput, type InterruptTurnInput, type MessageSenderDto, type ModelOptionDto, type PluginArtifactTypeDto, type PluginCapabilitiesDto, type PluginDto, type PluginInstallDto, type PluginManifestDto, type PluginMcpServerDto, type PluginModelHintDto, type PluginRunDto, type PluginStatusDto, type PluginStatusItemDto, type PluginThreadPanelDto, type PolishedReplyDto, type PromptAttachmentKindDto, type PromptAttachmentManifestEntryDto, type ProviderHostConfigArchiveDto, type ProviderHostConfigArchiveFileDto, type ProviderHostFileDto, type ProviderHostFileNameDto, type ReasoningEffortDto, type ReasoningEffortOptionDto, type RenameProviderHostConfigArchiveInput, type RespondThreadActionRequestInput, type ResumeThreadInput, type RuntimeConfigDto, type SandboxModeDto, type SendThreadPromptInput, type ShellAttachInput, type ShellCreateInput, type ShellDetachInput, type ShellEventEnvelope, type ShellEventPayloadMap, type ShellInputInput, type ShellResizeInput, type ShellSessionDto, type ShellStatusDto, type SupervisorConnectedEnvelope, type SupervisorPongEnvelope, type SupervisorSocketClientEnvelope, type SupervisorSocketServerEnvelope, type ThreadActionQuestionDto, type ThreadActionQuestionOptionDto, type ThreadActionRequestAnswerDto, type ThreadActionRequestDto, type ThreadActivityNoteDto, type ThreadAnsweredRequestNoteDto, type ThreadArtifactDto, type ThreadContextInspectionDto, type ThreadContextUsageDto, type ThreadDetailDto, type ThreadDto, type ThreadEventEnvelope, type ThreadEventPayloadMap, type ThreadExportFormatDto, type ThreadExportPdfModeDto, type ThreadExportPdfProfileDto, type ThreadExportTurnOptionDto, type ThreadExportTurnOptionsDto, type ThreadForkResultDto, type ThreadForkTurnOptionDto, type ThreadGoalDto, type ThreadGoalStatusDto, type ThreadHistoryItemDetailDto, type ThreadHistoryItemDto, type ThreadHookTargetInput, type ThreadHooksDto, type ThreadLiveItemsDto, type ThreadLivePlanDto, type ThreadMcpServersDto, type ThreadPeerWorkDto, type ThreadPendingSteerDto, type ThreadPendingWakeDto, type ThreadShellStateDto, type ThreadSkillsDto, type ThreadSourceDto, type ThreadStatusDto, type ThreadSubagentDto, type ThreadTurnActivityDto, type ThreadTurnActivitySegmentDto, type ThreadTurnChangedFileDto, type ThreadTurnDto, type ThreadTurnPriceEstimateDto, type ThreadTurnPricingTierDto, type ThreadTurnTokenBreakdownDto, type ThreadTurnTokenUsageDto, type TrustThreadHookInput, type UntrustThreadHookInput, type UpdatePluginInput, type UpdateProviderHostFileInput, type UpdateShellInput, type UpdateThreadGoalInput, type UpdateThreadHookInput, type UpdateThreadInput, type UpdateThreadSettingsInput, type UpdateWorkspaceFavoriteInput, type UpdateWorkspaceInput, type UpdateWorkspaceSettingsInput, type VersionDto, type WorkspaceDto, type WorkspaceSettingsDto, type WorkspaceTreeDto, type WorkspaceTreeNodeDto, agentBackendIds, agentBackendMetadata, defaultAgentBackendId, isAgentBackendId, mergeThreadHistoryItem, normalizeAgentBackendId, truncateAutoThreadTitle };

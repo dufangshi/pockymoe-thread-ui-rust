@@ -14,6 +14,7 @@ import type {
 } from '@pockymoe/shared';
 
 import type { ThreadShellControlState } from '../../types';
+import type { ThreadContextInspector } from './ComposerContextControl';
 import {
   toolboxItemClassName,
   toolboxItemDisabled,
@@ -77,8 +78,9 @@ export interface UseComposerToolbarPropsInput {
   model: string | null | undefined;
   agent?: string | undefined;
   modelOptions: ModelOptionDto[];
-  modelContextTitle: string;
   contextUsage: ThreadContextUsageDto | null | undefined;
+  contextInspector?: ThreadContextInspector | null | undefined;
+  onCompact?: (() => Promise<void> | void) | undefined;
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
   displayedCollaborationMode: CollaborationModeDto;
@@ -192,8 +194,9 @@ export function useComposerToolbarProps({
   model,
   agent,
   modelOptions,
-  modelContextTitle,
   contextUsage,
+  contextInspector,
+  onCompact,
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
@@ -405,8 +408,12 @@ export function useComposerToolbarProps({
         model,
         agent,
         modelOptions,
-        modelContextTitle,
         contextUsage,
+        contextInspector,
+        // The same conditions as the toolbox's own compact item.
+        ...(onCompact && availableToolboxItems.some((item) => item.action === 'compact') ? { onCompact } : {}),
+        compactBusy,
+        compactDisabled: busy,
         reasoningEffort,
         supportedEfforts,
         sandboxMode,

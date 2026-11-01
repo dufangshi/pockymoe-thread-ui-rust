@@ -3,7 +3,6 @@ import type {
   AgentHookDto,
   AgentHookEventNameDto,
   CreateThreadHookInput,
-  ThreadContextUsageDto,
   ThreadGoalStatusDto,
   ThreadHooksDto,
   ThreadMcpServersDto,
@@ -11,7 +10,6 @@ import type {
   UpdateThreadHookInput,
 } from '@pockymoe/shared';
 
-import { clampPercent } from './composerUtils';
 
 export const HOOK_EVENT_OPTIONS: Array<{
   value: AgentHookEventNameDto;
@@ -425,40 +423,6 @@ export function goalStatusLabel(value: ThreadGoalStatusDto) {
     default:
       return value;
   }
-}
-
-export function ContextProgressBar({
-  contextUsage,
-}: {
-  contextUsage: ThreadContextUsageDto | null | undefined;
-}) {
-  const { locale: i18nLocale } = useI18n();
-  const availability = contextUsage?.availability ?? 'unavailable';
-  const percent = clampPercent(contextUsage?.remainingPercent);
-
-  if (availability !== 'available') return null;
-
-  const fillColor =
-    percent <= 20
-      ? 'rgba(251,113,133,0.90)'
-      : percent <= 40
-        ? 'rgba(252,211,77,0.85)'
-        : 'rgba(125,211,252,0.80)';
-
-  return (
-    <span
-      aria-hidden="true"
-      className="thread-context-progress-track pointer-events-none mt-0.5 block"
-    >
-      <span
-        className="thread-context-progress-fill block"
-        style={{
-          width: `${percent}%`,
-          backgroundColor: fillColor,
-        }}
-      />
-    </span>
-  );
 }
 
 export function ToolPill({

@@ -17,7 +17,6 @@ import {
   derivePromptPasteAction,
   draftSignature,
   formatGoalTokenBudgetThousands,
-  formatModelContextTitle,
   normalizeAttachmentLabel,
   normalizePromptText,
   parseGoalTokenBudgetThousands,
@@ -387,23 +386,10 @@ describe('composer utilities', () => {
     expect(upsertMcpServerBlock('', 'docs', block)).toBe(block);
   });
 
-  it('formats model context labels and clamps percentages', () => {
+  it('clamps percentages', () => {
     expect(clampPercent(-5)).toBe(0);
     expect(clampPercent(44.6)).toBe(45);
     expect(clampPercent(120)).toBe(100);
-    expect(formatModelContextTitle(null, null)).toBe('Select model');
-    expect(formatModelContextTitle('gpt-test', null)).toBe(
-      'gpt-test · context unavailable',
-    );
-    expect(
-      formatModelContextTitle('gpt-test', {
-        availability: 'available',
-        tokensInContextWindow: 12_500,
-        modelContextWindow: 100_000,
-        remainingPercent: 87.4,
-        updatedAt: null,
-      }),
-    ).toBe('gpt-test · 12.5k used / 100k · 87.5k left · 87% context left');
   });
 
   it('normalizes attachment labels and detects attachment kind', () => {

@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-WGAFUEJC.js";
+} from "./chunk-47FMAFSY.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -259,7 +259,8 @@ function ErrorMark({
           ]
         }
       ),
-      document.body
+      // Inside a menu on the browser's top layer, the page's body would paint under it.
+      trigger.current?.closest("[popover]") ?? document.body
     ) : null
   ] });
 }

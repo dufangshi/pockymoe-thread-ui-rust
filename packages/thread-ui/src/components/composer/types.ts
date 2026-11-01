@@ -13,6 +13,7 @@ export type SettingsMenu =
   | 'attachments'
   | 'slash'
   | 'model'
+  | 'context'
   | 'effort'
   | 'sandbox'
   | 'shellTools'

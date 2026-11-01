@@ -582,6 +582,11 @@ export const settingsZhCN = {
   'settings.resourcesThreadsRange': '请输入 1–200 个。',
   'settings.resourcesMemoryRange': '请输入至少 0.25 GiB。',
   'settings.resourcesSaved': '已保存。',
+  "settings.contextInspection": "详细上下文分析（预览）",
+  "settings.contextInspectionHint": "为 Codex 和 Claude 线程采集上下文分类，在输入区的上下文面板里查看。关闭时不做额外采集；其他 Harness 和基本占用不受影响。",
+  "settings.contextInspectionHeading": "诊断",
+  "settings.contextInspectionUnavailable": "请更新此设备的 Supervisor 以使用详细上下文分析。",
+  "settings.contextInspectionSaveFailed": "无法保存，请重试。",
   'settings.passcodeTitle': '访问口令',
   'settings.passcodeOffDescription':
     '现在任何能打开这个地址的人都能使用 Pockymoe。设置口令后，其他浏览器需要先输入口令。',

@@ -106,8 +106,9 @@ describe('ThreadMap v2 page', () => {
     const before = tile('a').getAttribute('style');
     const changed = [{ ...devices[0]!, workspaces: [{ ...devices[0]!.workspaces[0]!, threads: [thread('a'), thread('b', 0, { turns: 900 }), thread('old', 30)] }] }];
     show({ devices: changed, scope: 'all', stableLayout: true });
-    // Device membership changed in this fixture, so compare the thread order as well as held weights.
-    expect([...host.querySelectorAll('.thread-map-tile')].map(n => n.getAttribute('data-map-id'))).toEqual(['thread:a', 'thread:b', 'thread:old']);
+    // Removed workspaces also wait for thaw, keeping the tile under the pointer fixed.
+    expect([...host.querySelectorAll('.thread-map-tile')].map(n => n.getAttribute('data-map-id'))).toEqual(['thread:a', 'thread:b', 'thread:old', 'thread:archive']);
+    expect(tile('a').getAttribute('style')).toBe(before);
     act(() => link('a').focus());
     act(() => { canvas.dispatchEvent(new MouseEvent('pointerout', { bubbles: true, relatedTarget: document.body })); vi.advanceTimersByTime(800); });
     expect([...host.querySelectorAll('.thread-map-tile')][0]).toBe(tile('a'));
@@ -115,7 +116,7 @@ describe('ThreadMap v2 page', () => {
     expect([...host.querySelectorAll('.thread-map-tile')][0]).toBe(tile('a'));
     act(() => vi.advanceTimersByTime(1));
     expect([...host.querySelectorAll('.thread-map-tile')][0]).toBe(tile('b'));
-    expect(before).toBeTruthy();
+    expect(tile('archive')).toBeFalsy();
   });
 
   it('reveals compressed threads and pulses once, without replaying on data refresh', () => {
@@ -145,6 +146,13 @@ describe('ThreadMap v2 page', () => {
     act(() => tile('waiting').dispatchEvent(new Event('animationend', { bubbles: true })));
     show({ devices, pulseKeys: ['waiting'] }); expect(tile('waiting').dataset.pulse).toBeUndefined();
     show({ devices, pulseKeys: [] }); show({ devices, pulseKeys: ['waiting'] }); expect(tile('waiting').dataset.pulse).toBe('waiting');
+  });
+
+  it('consumes event pulses while a persistent page is hidden', () => {
+    vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
+    const devices = makeDevices(); host.hidden = true;
+    show({ devices, pulseKeys: ['a'] }); expect(tile('a').dataset.pulse).toBeUndefined();
+    host.hidden = false; show({ devices, pulseKeys: ['a'] }); expect(tile('a').dataset.pulse).toBeUndefined();
   });
 
   it('renders cached threads during a quiet loading refresh', () => {

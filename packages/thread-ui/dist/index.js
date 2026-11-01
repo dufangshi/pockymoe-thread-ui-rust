@@ -27872,12 +27872,22 @@ var StableMapOrder = class {
         return weight === void 0 || Math.abs(child.weight - weight) / Math.max(weight, 1e-3) > 0.3;
       }) || old.ids.length !== node.children.length;
       if (!old || !frozen && changed) {
-        this.levels.set(node.id, { ids: node.children.map((child) => child.id), weights: new Map(node.children.map((child) => [child.id, child.weight])), displayed: new Map(node.children.map((child) => [child.id, child.weight])) });
+        this.levels.set(node.id, { ids: node.children.map((child) => child.id), weights: new Map(node.children.map((child) => [child.id, child.weight])), displayed: new Map(node.children.map((child) => [child.id, child.weight])), nodes: new Map(node.children.map((child) => [child.id, child])) });
       } else {
+        if (frozen) {
+          const incoming = new Map(node.children.map((child) => [child.id, child]));
+          node.children = old.ids.flatMap((id) => {
+            const child = incoming.get(id) ?? old.nodes.get(id);
+            return child ? [{ ...child, parent: node }] : [];
+          });
+        }
         const ranks = new Map(old.ids.map((id, index) => [id, index]));
         node.children.sort((a, b) => (ranks.get(a.id) ?? Infinity) - (ranks.get(b.id) ?? Infinity));
         if (frozen) for (const child of node.children) child.weight = old.displayed.get(child.id) ?? child.weight;
-        else old.displayed = new Map(node.children.map((child) => [child.id, child.weight]));
+        else {
+          old.displayed = new Map(node.children.map((child) => [child.id, child.weight]));
+          old.nodes = new Map(node.children.map((child) => [child.id, child]));
+        }
       }
       for (const child of node.children) visit(child);
     };
@@ -28405,8 +28415,8 @@ function ThreadMap({
     }
   }, [revealKey, devices]);
   useEffect55(() => {
-    if (document.visibilityState === "hidden") {
-      pendingPulses.current.clear();
+    if (document.visibilityState === "hidden" || canvas.current?.closest("[hidden], [inert]")) {
+      for (const key of pendingPulses.current) if (key !== pendingReveal.current) pendingPulses.current.delete(key);
       return;
     }
     if (!canvas.current || !size.width) return;

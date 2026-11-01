@@ -239,7 +239,10 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   }, [revealKey, devices]);
   // Event pulses are consumed once; geometry/content refreshes never replay them.
   useEffect(() => {
-    if (document.visibilityState === 'hidden') { pendingPulses.current.clear(); return; }
+    if (document.visibilityState === 'hidden' || canvas.current?.closest('[hidden], [inert]')) {
+      for (const key of pendingPulses.current) if (key !== pendingReveal.current) pendingPulses.current.delete(key);
+      return;
+    }
     if (!canvas.current || !size.width) return;
     for (const key of pendingPulses.current) {
       if (pendingReveal.current === key && current.id !== pendingRevealTarget.current) continue;

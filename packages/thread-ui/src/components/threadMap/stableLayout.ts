@@ -1,7 +1,7 @@
 import type { MapNode } from './model';
 import { squarify, type MapRect } from './squarify';
 
-interface Order { ids: string[]; weights: Map<string, number>; displayed: Map<string, number> }
+interface Order { ids: string[]; weights: Map<string, number>; displayed: Map<string, number>; nodes: Map<string, MapNode> }
 /** Baselines are retained until a reorder, so several small changes accumulate. */
 export class StableMapOrder {
   private levels = new Map<string, Order>();
@@ -14,13 +14,25 @@ export class StableMapOrder {
         return weight === undefined || Math.abs(child.weight - weight) / Math.max(weight, 0.001) > 0.3;
       }) || old.ids.length !== node.children.length;
       if (!old || (!frozen && changed)) {
-        this.levels.set(node.id, { ids: node.children.map(child => child.id), weights: new Map(node.children.map(child => [child.id, child.weight])), displayed: new Map(node.children.map(child => [child.id, child.weight])) });
+        this.levels.set(node.id, { ids: node.children.map(child => child.id), weights: new Map(node.children.map(child => [child.id, child.weight])), displayed: new Map(node.children.map(child => [child.id, child.weight])), nodes: new Map(node.children.map(child => [child.id, child])) });
       } else {
+        if (frozen) {
+          const incoming = new Map(node.children.map(child => [child.id, child]));
+          // A new/deleted tile must not move the one under the pointer or focus.
+          // Reconcile membership together with ordering after interaction ends.
+          node.children = old.ids.flatMap(id => {
+            const child = incoming.get(id) ?? old.nodes.get(id);
+            return child ? [{ ...child, parent: node }] : [];
+          });
+        }
         const ranks = new Map(old.ids.map((id, index) => [id, index]));
         node.children.sort((a, b) => (ranks.get(a.id) ?? Infinity) - (ranks.get(b.id) ?? Infinity));
         // Interaction freezes geometry too: only the tile's contents change.
         if (frozen) for (const child of node.children) child.weight = old.displayed.get(child.id) ?? child.weight;
-        else old.displayed = new Map(node.children.map(child => [child.id, child.weight]));
+        else {
+          old.displayed = new Map(node.children.map(child => [child.id, child.weight]));
+          old.nodes = new Map(node.children.map(child => [child.id, child]));
+        }
       }
       for (const child of node.children) visit(child);
     };

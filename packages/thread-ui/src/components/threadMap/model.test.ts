@@ -74,6 +74,14 @@ describe('map v2 model', () => {
     expect(leaves(order.apply(changed(), true)).map(n => n.label)).toEqual(['b', 'a']);
   });
 
+  it('defers additions and removals until the interaction freeze lifts', () => {
+    const order = new StableMapOrder();
+    order.apply(buildThreadMap([device([thread('a'), thread('b')])], 'All'), false);
+    const changed = () => buildThreadMap([device([thread('b'), thread('new')])], 'All');
+    expect(leaves(order.apply(changed(), true)).map(n => n.label)).toEqual(['a', 'b']);
+    expect(leaves(order.apply(changed(), false)).map(n => n.label)).toEqual(['b', 'new']);
+  });
+
   it('navigates by spatial direction, with no DOM geometry reads', () => {
     const items = [{ id: 'a', rect: { x: 0, y: 0, width: 100, height: 100 } }, { id: 'b', rect: { x: 120, y: 0, width: 100, height: 100 } }, { id: 'c', rect: { x: 0, y: 120, width: 100, height: 100 } }];
     expect(spatialNeighbor(items, 'a', 'ArrowRight')).toBe('b');

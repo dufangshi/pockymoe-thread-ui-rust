@@ -43,13 +43,15 @@ let host: HTMLDivElement | null = null;
 async function render(props: {
   inspector?: ThreadContextInspector | null;
   contextUsage?: ThreadContextUsageDto | null;
-  onCompact?: () => void;
+  onCompact?: () => Promise<void> | void;
+  compactDisabled?: boolean;
+  agent?: string;
 }) {
   function Harness() {
     const [open, setOpen] = useState(false);
     return (
       <ComposerContextControl open={open} contextUsage={'contextUsage' in props ? props.contextUsage : usage} inspector={props.inspector}
-        onCompact={props.onCompact} onToggle={() => setOpen((value) => !value)} onClose={() => setOpen(false)} />
+        agent={props.agent} onCompact={props.onCompact} compactDisabled={props.compactDisabled} onToggle={() => setOpen((value) => !value)} onClose={() => setOpen(false)} />
     );
   }
   host = document.createElement('div');
@@ -83,10 +85,19 @@ describe('ComposerContextControl', () => {
   it('shows the total on a closed key without asking anything', async () => {
     const load = vi.fn();
     await render({ inspector: { load } });
-    expect(meter().textContent).toContain('25%');
+    expect(meter().textContent).toBe('');
+    expect(meter().getAttribute('aria-label')).toContain('25%');
     expect(meter().getAttribute('aria-expanded')).toBe('false');
     expect(meter().hasAttribute('title')).toBe(false);
     expect(load).not.toHaveBeenCalled();
+  });
+
+  it('uses one proportional fill for a small occupancy even with many categories', async () => {
+    await render({ contextUsage: { ...usage, tokensInContextWindow: 32898, modelContextWindow: 1_000_000, details: { ...claudeSummary, usedTokens: 32898, windowTokens: 1_000_000 } } });
+    const fills = meter().querySelectorAll<HTMLElement>('.thread-context-segment');
+    expect(fills).toHaveLength(1);
+    expect(parseFloat(fills[0]!.style.width)).toBeCloseTo(3.2898, 4);
+    expect(fills[0]!.dataset.slot).toBe('-1');
   });
 
   it('keeps deferred categories outside the window, with no share, and lists their tools there', async () => {
@@ -111,15 +122,15 @@ describe('ComposerContextControl', () => {
     expect(row('messages')?.querySelector('button')).toBeNull();
   });
 
-  it('asks Claude for a full count only when the reader refreshes', async () => {
+  it('loads Claude full details when opening without offering a counting button', async () => {
     const full: ContextInspectionSnapshotDto = { ...claudeSummary, source: 'claudeFull', precision: 'reported' };
-    const load = vi.fn().mockResolvedValueOnce(available(claudeSummary)).mockResolvedValueOnce(available(full));
-    await render({ inspector: { load } });
+    const load = vi.fn().mockResolvedValue(available(full));
+    await render({ inspector: { load }, agent: 'claude' });
     await openPanel();
-    expect(document.querySelector('.thread-context-meta')?.textContent).toContain('Claude summary');
-    await act(async () => { button('Full count')!.click(); });
     expect(load).toHaveBeenLastCalledWith({ detail: 'full', refresh: true });
     expect(document.querySelector('.thread-context-meta')?.textContent).toContain('Claude full count');
+    expect(button('Full count')).toBeUndefined();
+    expect(button('Refresh')).toBeUndefined();
   });
 
   it('keeps the total and invents no categories in each state without an analysis', async () => {
@@ -152,16 +163,15 @@ describe('ComposerContextControl', () => {
     host?.remove();
 
     await render({ inspector: null, contextUsage: null });
-    expect(meter().textContent).toContain('—');
+    expect(meter().getAttribute('data-empty')).toBe('true');
     await openPanel();
     expect(document.querySelector('.thread-context-amount')?.textContent).toBe('No usage reported yet');
   });
 
   it('says a read failed, offers a retry and keeps the last result', async () => {
-    const load = vi.fn().mockResolvedValueOnce(available(claudeSummary)).mockRejectedValueOnce(new Error('harness busy'));
-    await render({ inspector: { load } });
+    const load = vi.fn().mockRejectedValue(new Error('harness busy'));
+    await render({ inspector: { load }, contextUsage: { ...usage, details: claudeSummary } });
     await openPanel();
-    await act(async () => { button('Full count')!.click(); });
     expect(note()?.dataset.contextNote).toBe('failed');
     expect(row('messages')).not.toBeNull();
     expect(note()?.querySelector('.error-mark')).not.toBeNull();
@@ -178,6 +188,23 @@ describe('ComposerContextControl', () => {
     await act(async () => { window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); });
     expect(document.querySelector('[role="dialog"]')).toBeNull();
     expect(document.activeElement).toBe(meter());
+  });
+
+  it('shows compact disabled without a harness action and blocks duplicate requests while pending', async () => {
+    await render({ inspector: null });
+    await openPanel();
+    expect(button('Compact context')?.disabled).toBe(true);
+    act(() => root?.unmount()); host?.remove();
+    let resolve!: () => void;
+    const onCompact = vi.fn(() => new Promise<void>(done => { resolve = done; }));
+    await render({ inspector: null, onCompact });
+    await openPanel();
+    const compact = button('Compact context')!;
+    await act(async () => { compact.click(); compact.click(); });
+    expect(onCompact).toHaveBeenCalledTimes(1);
+    expect(compact.disabled).toBe(true);
+    await act(async () => resolve());
+    expect(compact.disabled).toBe(false);
   });
 });
 

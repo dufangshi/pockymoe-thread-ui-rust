@@ -125,6 +125,17 @@ function input(
 }
 
 describe('useComposerToolbarProps', () => {
+  it('enables compact only for an advertised capability or command and keeps unavailable actions disabled', () => {
+    const onCompact = vi.fn();
+    const base = input({ onCompact });
+    expect(useComposerToolbarProps(base).settingsToolbarProps?.onCompact).toBeUndefined();
+    const native = { ...base, capabilities: { ...base.capabilities, compact: true } };
+    expect(useComposerToolbarProps(native).settingsToolbarProps?.onCompact).toBe(onCompact);
+    const slash: UseComposerToolbarPropsInput = { ...base, availableToolboxItems: [{ action: 'compact', command: '/compact', label: 'Compact' }] };
+    expect(useComposerToolbarProps(slash).settingsToolbarProps?.onCompact).toBe(onCompact);
+    expect(useComposerToolbarProps({ ...native, busy: true }).settingsToolbarProps?.compactDisabled).toBe(true);
+    expect(useComposerToolbarProps({ ...native, disabled: true }).settingsToolbarProps?.compactDisabled).toBe(true);
+  });
   it('builds chat-mode menu prop groups', () => {
     const props = useComposerToolbarProps(input({ openMenu: 'slash' }));
 

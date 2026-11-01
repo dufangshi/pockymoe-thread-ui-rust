@@ -32,40 +32,29 @@
   --context-danger: #f07575;
 }
 
-/* ── The entry: one percent and a small bar, the height of the keys beside it ── */
-.composer-context-control { flex: none; }
+/* Two independently focusable actions share the existing model key height.
+   The strip's hit area stays in its own row so it cannot steal model taps
+   (documented compact-control exception in ui-principles.md §10/§12). */
+.composer-context-control { flex: none; width: 100%; min-width: 0; height: 8px; }
 .composer-context-meter {
   position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
-  gap: 3px;
-  width: 40px;
-  min-height: 32px;
-  padding: 0 4px;
-  border-radius: 6px;
+  display: block;
+  width: 100%;
+  height: 8px;
+  min-height: 0;
+  padding: 2px 2px 3px;
+  border: 0;
+  border-radius: 2px;
   color: var(--theme-fg-soft, currentColor);
   cursor: pointer;
 }
-.composer-context-meter::after { content: ''; position: absolute; inset: -4px 0; }
+.composer-context-meter::after { content: none; }
 .composer-context-meter:active,
 .composer-context-meter[aria-expanded='true'] { background: var(--theme-hover); }
 @media (hover: hover) {
   .composer-context-meter:hover { background: var(--theme-hover); }
 }
 .composer-context-meter:focus-visible { outline: 2px solid var(--theme-accent-solid, currentColor); outline-offset: 1px; }
-.composer-context-meter-value {
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 13px;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-  white-space: nowrap;
-}
-.composer-context-meter[data-empty='true'] .composer-context-meter-value { color: var(--theme-fg-muted); font-weight: 500; }
-.composer-context-meter[data-tone='warning'] .composer-context-meter-value { color: var(--context-warning); }
-.composer-context-meter[data-tone='danger'] .composer-context-meter-value { color: var(--context-danger); }
 
 /* ── Bars ─────────────────────────────────────────────────────────────────── */
 .thread-context-bar {
@@ -73,20 +62,20 @@
   display: flex;
   width: 100%;
   height: 8px;
-  gap: 2px;
+  gap: 0;
   overflow: hidden;
   border-radius: 4px;
   background: var(--context-track);
 }
-.thread-context-bar.is-mini { flex: none; height: 3px; gap: var(--context-gap); border-radius: 2px; }
+.thread-context-bar.is-mini { flex: none; height: 3px; border-radius: 2px; }
 .thread-context-segment {
   display: block;
   flex: none;
-  min-width: 2px;
+  min-width: 0;
   background: var(--context-neutral);
   transition: width 0.35s ease;
 }
-.thread-context-bar.is-mini .thread-context-segment { min-width: 1px; }
+.thread-context-bar.is-mini .thread-context-segment { min-width: 0; transition: none; }
 .thread-context-segment[data-slot='-1'] { background: var(--context-fill); }
 [data-tone='warning'] .thread-context-segment[data-slot='-1'] { background: var(--context-warning); }
 [data-tone='danger'] .thread-context-segment[data-slot='-1'] { background: var(--context-danger); }
@@ -158,6 +147,10 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
+  /* Reserve the custom scrollbar's space before overflow; expanding a group
+     never changes the row width, path wrapping, or the panel's measurements. */
+  scrollbar-gutter: stable;
   overscroll-behavior: contain;
   padding: 6px 14px 10px;
 }
@@ -303,10 +296,6 @@
 }
 .thread-context-surface.is-sheet .thread-context-action { flex: 1; min-height: 44px; font-size: 13px; }
 
-@media (max-width: 639px) {
-  .composer-context-meter { width: 42px; min-height: 34px; }
-  .composer-context-meter::after { inset: -3px 0; }
-}
 @media (prefers-reduced-motion: reduce) {
   .thread-context-segment, .thread-context-chevron { transition: none; }
 }

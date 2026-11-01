@@ -6,7 +6,7 @@ import type {
   ThreadContextInspectionDto,
   ThreadContextUsageDto,
 } from '@pockymoe/shared';
-import { ChevronRight, Loader2, RotateCw, X } from 'lucide-react';
+import { ChevronRight, Loader2, X } from 'lucide-react';
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -299,7 +299,7 @@ function ContextPanelSurface({ phone, label, subtitle, trigger, onClose, footer,
   );
   if (!phone) {
     return (
-      <ComposerMenuSurface role="dialog" aria-label={label} align="end" className="thread-context-surface">
+      <ComposerMenuSurface role="dialog" aria-label={label} align="end" anchorSelector=".composer-model-control" className="thread-context-surface">
         {panel}
       </ComposerMenuSurface>
     );
@@ -355,6 +355,10 @@ export function ComposerContextControl({
   const [lastDetail, setLastDetail] = useState<{ detail: ContextInspectionDetailDto; refresh: boolean }>({ detail: 'summary', refresh: false });
   const [now, setNow] = useState(() => Date.now());
   const sequence = useRef(0);
+  const [compacting, setCompacting] = useState(false);
+  const compactInFlight = useRef(false);
+  const [compactError, setCompactError] = useState<string | null>(null);
+  const inspectionProvider = agent ?? contextUsage?.details?.provider;
 
   const load = useCallback((detail: ContextInspectionDetailDto, refresh: boolean) => {
     if (!inspector) return;
@@ -375,10 +379,13 @@ export function ComposerContextControl({
     setState({ status: 'idle', response: null, error: null });
   }, [inspector]);
 
-  // Every open reads what the Supervisor holds; only the refresh key asks the harness.
+  // Opening Claude's detail panel requests its full reading; the cached summary
+  // remains visible while it arrives. There is no separate counting action.
   useEffect(() => {
-    if (open) load('summary', false);
-  }, [open, load]);
+    if (!open) return;
+    const full = inspectionProvider === 'claude';
+    load(full ? 'full' : 'summary', full);
+  }, [open, load, inspectionProvider]);
 
   useEffect(() => {
     if (!open) return;
@@ -390,9 +397,9 @@ export function ComposerContextControl({
   // A compaction finished: the categories on screen describe what it removed.
   const wasCompacting = useRef(compactBusy);
   useEffect(() => {
-    if (open && wasCompacting.current && !compactBusy) load('summary', true);
+    if (open && wasCompacting.current && !compactBusy) load(inspectionProvider === 'claude' ? 'full' : 'summary', true);
     wasCompacting.current = compactBusy;
-  }, [compactBusy, open, load]);
+  }, [compactBusy, open, load, inspectionProvider]);
 
   const disabled = state.response ? !state.response.enabled || state.response.availability === 'disabled' : false;
   const snapshot = disabled ? null : preferredSnapshot(state.response?.snapshot, contextUsage?.details);
@@ -408,39 +415,39 @@ export function ComposerContextControl({
   const usage = reading
     ? translate('chat.contextMeterLabel', { percent: percentText, used: formatContextTokens(reading.used), total: formatContextTokens(reading.window) })
     : translate('chat.contextMeterEmpty');
-  // The meter keeps the proportions of the last analysis at the current total.
   const miniTotal = usedSegments.reduce((sum, segment) => sum + segment.tokens, 0);
-  const miniSegments = reading && miniTotal > 0
-    ? usedSegments.map((segment) => ({ ...segment, tokens: (segment.tokens / miniTotal) * reading.used }))
-    : reading ? [{ id: 'used', label: '', slot: -1, tokens: reading.used }] : [];
 
   const estimatedTotal = snapshot?.source === 'codexTrace' && !movedOn;
   const age = contextAge(reading?.updatedAt, now);
   const stale = Boolean(snapshot?.stale) || movedOn;
-  const canRefresh = Boolean(inspector && state.response?.enabled && state.response.supported);
-  const fullCount = snapshot?.provider === 'claude' || (!snapshot && agent === 'claude');
   const loading = state.status === 'loading';
-  const refresh = () => load(fullCount ? 'full' : 'summary', true);
   const retry = () => load(lastDetail.detail, lastDetail.refresh);
   const threshold = snapshot?.autoCompactEnabled !== false ? snapshot?.autoCompactThreshold : null;
-
-  const footer = canRefresh || onCompact ? (
+  const compact = async () => {
+    if (!onCompact || compactDisabled || compactBusy || compactInFlight.current) return;
+    compactInFlight.current = true;
+    setCompacting(true);
+    setCompactError(null);
+    try {
+      await onCompact();
+    } catch (cause) {
+      setCompactError(cause instanceof Error ? cause.message : String(cause));
+    } finally {
+      compactInFlight.current = false;
+      setCompacting(false);
+    }
+  };
+  const compactPending = compactBusy || compacting;
+  const footer = (
     <>
-      {canRefresh ? (
-        <button type="button" className="thread-context-action" disabled={loading} aria-busy={loading || undefined} onClick={refresh}>
-          {loading ? <Loader2 aria-hidden="true" className="animate-spin" /> : <RotateCw aria-hidden="true" />}
-          {translate(fullCount ? 'chat.contextRefreshFull' : 'chat.contextRefresh')}
-        </button>
-      ) : null}
-      {onCompact ? (
-        <button type="button" className="thread-context-action" disabled={compactBusy || compactDisabled} aria-busy={compactBusy || undefined}
-          onClick={() => void onCompact()}>
-          {compactBusy ? <Loader2 aria-hidden="true" className="animate-spin" /> : null}
-          {translate(compactBusy ? 'chat.compactingContext' : 'chat.contextCompact')}
-        </button>
-      ) : null}
+      {compactError ? <ErrorMark message={compactError} onRetry={() => void compact()} /> : null}
+      <button type="button" className="thread-context-action" disabled={!onCompact || compactPending || compactDisabled} aria-busy={compactPending || undefined}
+        onClick={() => void compact()}>
+        {compactPending ? <Loader2 aria-hidden="true" className="animate-spin" /> : null}
+        {translate(compactPending ? 'chat.compactingContext' : 'chat.contextCompact')}
+      </button>
     </>
-  ) : null;
+  );
 
   return (
     <div className="composer-context-control thread-context-palette relative">
@@ -457,8 +464,9 @@ export function ComposerContextControl({
         onClick={onToggle}
         className="composer-context-meter"
       >
-        <span className="composer-context-meter-value">{percentText}</span>
-        <ContextBar mini segments={miniSegments} window={reading?.window ?? 1} />
+        <span className="thread-context-bar is-mini" aria-hidden="true">
+          <span className="thread-context-segment" data-slot="-1" style={{ width: `${reading ? contextPercent(reading.used, reading.window) : 0}%` }} />
+        </span>
       </button>
       {open ? (
         <ContextPanelSurface phone={phone} label={translate('chat.context')} subtitle={modelLabel || snapshot?.model} trigger={trigger.current} onClose={onClose} footer={footer}

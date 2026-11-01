@@ -123,21 +123,7 @@ export function ComposerSettingsToolbar({
 
   return (
     <>
-      {model ? (
-        <ComposerContextControl
-          open={openMenu === 'context'}
-          contextUsage={contextUsage}
-          inspector={contextInspector}
-          modelLabel={selectedModelLabel}
-          agent={agent}
-          onCompact={onCompact}
-          compactBusy={compactBusy}
-          compactDisabled={compactDisabled}
-          onToggle={() => onSetOpenMenu((current) => (current === 'context' ? null : 'context'))}
-          onClose={() => onSetOpenMenu(() => null)}
-        />
-      ) : null}
-      <div className="composer-model-control relative min-w-0">
+      <div className="composer-model-control relative min-w-0" data-with-context={model ? 'true' : undefined}>
         <button
           type="button"
           data-composer-menu-trigger="true"
@@ -171,6 +157,20 @@ export function ComposerSettingsToolbar({
           )}
           {modelAvatar ? <ChevronDown aria-hidden="true" className="composer-model-chevron" /> : null}
         </button>
+        {model ? (
+          <ComposerContextControl
+            open={openMenu === 'context'}
+            contextUsage={contextUsage}
+            inspector={contextInspector}
+            modelLabel={selectedModelLabel}
+            agent={agent}
+            onCompact={onCompact}
+            compactBusy={compactBusy}
+            compactDisabled={compactDisabled}
+            onToggle={() => onSetOpenMenu((current) => (current === 'context' ? null : 'context'))}
+            onClose={() => onSetOpenMenu(() => null)}
+          />
+        ) : null}
         {openMenu === 'model' && (
           <ComposerMenuSurface
             align="end"

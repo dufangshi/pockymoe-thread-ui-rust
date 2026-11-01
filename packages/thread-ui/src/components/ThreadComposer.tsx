@@ -1095,6 +1095,7 @@ export function ThreadComposer({
     mcpHttpUrl,
     mcpRawBlock,
     capabilities: {
+      compact: slashCapabilities.compact,
       hostConfigFiles: slashCapabilities.hostConfigFiles,
       hookTrust: slashCapabilities.hookTrust,
       mcpConfigEditing: slashCapabilities.mcpConfigEditing,

@@ -37,6 +37,7 @@ import type {
 } from './types';
 
 export interface ComposerToolbarCapabilities {
+  compact?: boolean;
   hostConfigFiles: boolean;
   hookTrust: boolean;
   mcpConfigEditing: boolean;
@@ -410,10 +411,10 @@ export function useComposerToolbarProps({
         modelOptions,
         contextUsage,
         contextInspector,
-        // The same conditions as the toolbox's own compact item.
-        ...(onCompact && availableToolboxItems.some((item) => item.action === 'compact') ? { onCompact } : {}),
+        // Native capability or the current session's advertised command enables it.
+        ...(onCompact && (capabilities.compact || availableToolboxItems.some((item) => item.action === 'compact')) ? { onCompact } : {}),
         compactBusy,
-        compactDisabled: busy,
+        compactDisabled: busy || settingsBusy || disabled,
         reasoningEffort,
         supportedEfforts,
         sandboxMode,

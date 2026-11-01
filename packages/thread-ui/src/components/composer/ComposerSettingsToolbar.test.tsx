@@ -164,13 +164,14 @@ describe('ComposerSettingsToolbar', () => {
   });
 
 
-  it('opens context and model as two entries, with no context in the model menu or its title', () => {
+  it('opens the strip below the model independently, with no context in the model menu or its title', () => {
     const element = renderToolbar({
       contextUsage: { availability: 'available', remainingPercent: 68, tokensInContextWindow: 64400, modelContextWindow: 200000, updatedAt: null },
     });
     const context = element.querySelector<HTMLButtonElement>('[data-testid="composer-context-meter"]')!;
     const model = element.querySelector<HTMLButtonElement>('[data-testid="composer-model-label"]')!;
-    expect(context.textContent).toContain('32%');
+    expect(model.parentElement).toBe(context.closest('.composer-model-control'));
+    expect(context.textContent).toBe('');
     expect(model.getAttribute('title')).toBe('GPT-5 · medium');
     act(() => model.click());
     expect(model.getAttribute('aria-expanded')).toBe('true');

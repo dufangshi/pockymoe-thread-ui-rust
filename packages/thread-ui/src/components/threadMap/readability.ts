@@ -63,6 +63,9 @@ function summary(nodes: MapNode[], kind: MapOverflow['kind'], older: number, rec
 export class ReadableSelection {
   private levels = new Map<string, Snapshot>();
   clear() { this.levels.clear(); }
+  rank(id: string, node: MapNode) {
+    return this.levels.get(id)?.scores.get(node.id)?.rank ?? mapPriority(node);
+  }
   ordered(id: string, items: readonly MapNode[]) {
     const order = this.levels.get(id)?.order;
     if (!order) return [...items].sort(byPriority);

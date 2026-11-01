@@ -852,13 +852,25 @@
 .thread-map-scroll-list { position: relative; flex: 1; min-height: 0; overflow: hidden; }
 .thread-map-list-scroll { height: 100%; overflow: auto; padding: 4px 12px 8px; scrollbar-width: none; box-sizing: border-box; overscroll-behavior: contain; }
 .thread-map-list-scroll::-webkit-scrollbar { display: none; }
-.thread-map .thread-map-list-row { position: relative; display: flex; flex-direction: row; align-items: center; gap: 10px; width: 100%; min-width: 132px; height: 72px; min-height: 64px; margin: 4px 0; padding: 8px 12px; border: 1px solid var(--theme-border); border-radius: 7px; background: var(--theme-panel); }
-.thread-map-list-row > .thread-map-list-row-copy { display: flex; flex-direction: column; flex: 1; gap: 5px; min-width: 0; }
-.thread-map-list-row .thread-map-tile-title { display: -webkit-box; overflow: hidden; white-space: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 17px; font-size: 12px; }
-.thread-map-list-row-agent { flex: none; align-self: center; }
-.thread-map-list-row-meta { display: flex; align-items: center; gap: 7px; color: var(--theme-fg-muted); font-size: 11px; overflow: hidden; white-space: nowrap; }
-.thread-map-list-row-meta > span { flex: none; }
-.thread-map .thread-map-list-info { display: grid; flex: none; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 6px; background: none; color: var(--theme-fg-muted); cursor: pointer; pointer-events: auto; }
+.thread-map-readable-list .thread-map-list-scroll { padding: 0 8px 8px; scroll-padding-top: 24px; }
+.thread-map-list-status-group { position: relative; }
+.thread-map-list-status-heading { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; gap: 7px; height: 24px; box-sizing: border-box; margin: 0; padding: 0 10px; background: var(--theme-bg); color: var(--theme-fg-muted); font-size: 10.5px; font-weight: 600; line-height: 24px; }
+.thread-map-list-status-heading small { font-size: 10px; font-weight: 400; font-variant-numeric: tabular-nums; opacity: .7; }
+.thread-map .thread-map-list-row { position: relative; display: flex; flex-direction: row; align-items: center; gap: 8px; width: 100%; min-width: 132px; height: 40px; box-sizing: border-box; margin: 0; padding: 0 10px; border: 0; border-bottom: 1px solid color-mix(in oklab, var(--theme-border) 35%, transparent); border-radius: 0; background: transparent; color: var(--theme-fg); }
+.thread-map-list-row > :not(.thread-map-tile-link) { position: relative; pointer-events: none; }
+.thread-map-list-row > :is(.thread-map-agent, .matter-status-dot) { flex: none; }
+.thread-map-list-title { flex: 1; min-width: 0; overflow: hidden; color: var(--theme-fg); font-size: 12.5px; font-weight: 550; line-height: 20px; white-space: nowrap; text-overflow: ellipsis; }
+.thread-map-list-row-meta { flex: 0 1 auto; max-width: 48%; min-width: 0; overflow: hidden; color: var(--theme-fg-muted); font-size: 11px; font-variant-numeric: tabular-nums; line-height: 20px; white-space: nowrap; text-overflow: ellipsis; }
+.thread-map .thread-map-list-info { display: grid; flex: none; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 5px; background: none; color: var(--theme-fg-muted); font-size: 14px; cursor: pointer; pointer-events: auto; }
+.thread-map-list-info::before { position: absolute; inset: -6px; content: ''; }
+.thread-map-list-row:has(:focus-visible), .thread-map-list-row:active { background: var(--theme-hover); }
+.thread-map-list-row[data-current] { background: var(--theme-accent-soft); }
+.thread-map-list-row > .thread-map-tile-link:focus-visible { outline: none; }
+@media (hover: hover) {
+  .thread-map-list-row:hover { background: var(--theme-hover); }
+  .thread-map-list-row .thread-map-list-info { opacity: 0; }
+  .thread-map-list-row:hover .thread-map-list-info, .thread-map-list-row:has(:focus-visible) .thread-map-list-info { opacity: 1; }
+}
 .thread-map-list-group { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 64px; padding: 12px; margin: 4px 0; border: 1px solid var(--theme-border); border-radius: 7px; background: var(--theme-panel); color: var(--theme-fg); font: inherit; font-size: 12px; cursor: pointer; }
 .thread-map-list-group > b { flex: 1; min-width: 0; text-align: left; font-weight: 600; }
 .thread-map-list-group > span { color: var(--theme-fg-muted); font-size: 11px; }

@@ -169,6 +169,8 @@ declare const en: {
     readonly 'search.assistant': "Assistant";
     readonly 'search.title': "Title";
     readonly 'search.localDevice': "Local device";
+    readonly "workbench.threadMapListUnread": "Unread";
+    readonly "workbench.threadMapListOther": "Other";
     readonly "workbench.threadMapRemainingThreads": "{{count}} other threads";
     readonly "workbench.threadMapOtherDevices": "{{count}} other devices";
     readonly "workbench.threadMapAllThreads": "All threads";
@@ -5055,6 +5057,8 @@ declare const zhCN: {
     'search.assistant': "助手";
     'search.title': "标题";
     'search.localDevice': "本地设备";
+    "workbench.threadMapListUnread": "未读";
+    "workbench.threadMapListOther": "其他";
     "workbench.threadMapRemainingThreads": "其余 {{count}} 个线程";
     "workbench.threadMapOtherDevices": "其余 {{count}} 台设备";
     "workbench.threadMapAllThreads": "全部线程";
@@ -9963,6 +9967,8 @@ declare const resources: {
         readonly 'search.assistant': "Assistant";
         readonly 'search.title': "Title";
         readonly 'search.localDevice': "Local device";
+        readonly "workbench.threadMapListUnread": "Unread";
+        readonly "workbench.threadMapListOther": "Other";
         readonly "workbench.threadMapRemainingThreads": "{{count}} other threads";
         readonly "workbench.threadMapOtherDevices": "{{count}} other devices";
         readonly "workbench.threadMapAllThreads": "All threads";
@@ -14848,6 +14854,8 @@ declare const resources: {
         'search.assistant': "助手";
         'search.title': "标题";
         'search.localDevice': "本地设备";
+        "workbench.threadMapListUnread": "未读";
+        "workbench.threadMapListOther": "其他";
         "workbench.threadMapRemainingThreads": "其余 {{count}} 个线程";
         "workbench.threadMapOtherDevices": "其余 {{count}} 台设备";
         "workbench.threadMapAllThreads": "全部线程";

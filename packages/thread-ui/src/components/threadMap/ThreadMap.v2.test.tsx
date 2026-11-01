@@ -79,6 +79,22 @@ describe('ThreadMap v2 page', () => {
     expect(tile('old')).toBeTruthy();
   });
 
+  it('groups dense workspace rows in priority order and navigates across headers', () => {
+    const onOpen = vi.fn(), onQuickLook = vi.fn();
+    const threads = Array.from({ length: 120 }, (_, i) => ({ ...thread(`dense${i}`, 0, i < 2 ? { needsInput: { kind: 'input' } } : i === 2 ? { running: true } : i === 3 ? { unread: true, failed: true } : i === 4 ? { unread: true } : {}), agent: 'codex' }));
+    const devices: ThreadMapDevice[] = [{ id: 'd', name: 'D', state: 'ready', workspaces: [{ id: 'w', label: 'W', threads }] }];
+    show({ devices, scope: 'all', revealKey: 'dense0', currentKey: 'dense1', stableLayout: true, onOpen, onQuickLook });
+    expect([...host.querySelectorAll('.thread-map-list-status-heading > span')].map(el => el.textContent)).toEqual(['Waiting for you', 'Running', 'Unread', 'Other']);
+    const rows = host.querySelectorAll<HTMLElement>('.thread-map-list-row');
+    expect(rows[0]!.querySelector('.thread-map-agent + [data-status="waiting"]')).toBeTruthy();
+    expect(rows[1]!.dataset.current).toBe('true');
+    act(() => link('dense0').focus()); key(link('dense0'), 'ArrowDown'); expect(document.activeElement).toBe(link('dense1'));
+    key(link('dense1'), 'ArrowDown'); expect(document.activeElement).toBe(link('dense2'));
+    key(link('dense2'), 'ArrowUp'); expect(document.activeElement).toBe(link('dense1'));
+    key(link('dense1'), ' '); expect(onQuickLook).toHaveBeenCalledWith('dense1');
+    click(link('dense1')); expect(onOpen).toHaveBeenCalledWith(expect.objectContaining({ key: 'dense1' }));
+  });
+
   it('keeps a focused workspace list and its scroll position through host hiding', () => {
     const devices: ThreadMapDevice[] = [{ id: 'd', name: 'D', state: 'ready', workspaces: [{ id: 'w', label: 'W', threads: Array.from({ length: 120 }, (_, i) => thread(`t${i}`)) }] }];
     show({ devices, scope: 'all', revealKey: 't0' });

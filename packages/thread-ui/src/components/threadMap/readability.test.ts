@@ -79,8 +79,10 @@ describe('page map readability selection', () => {
     const initialOrder = cache.ordered('w', nodes).map(node => node.id);
     const frozen = cache.select('w', waiting, bounds, 'threads', true);
     expect(cache.ordered('w', waiting).map(node => node.id)).toEqual(initialOrder);
+    expect(cache.rank('w', waiting.find(node => node.id === hidden.id)!)).toBe(5);
     expect(ids(frozen)).toEqual(ids(initial)); expect(frozen.overflow!.waiting).toBe(1);
     expect(ids(cache.select('w', waiting, bounds, 'threads', false))[0]).toBe(hidden.id);
+    expect(cache.rank('w', waiting.find(node => node.id === hidden.id)!)).toBe(0);
   });
 
   it('fills a first nonempty level even if interaction was already frozen', () => {

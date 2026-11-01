@@ -1,4 +1,6 @@
 export const workbenchZhCN = {
+  "workbench.threadMapListUnread": "未读",
+  "workbench.threadMapListOther": "其他",
   "workbench.threadMapRemainingThreads": "其余 {{count}} 个线程",
   "workbench.threadMapOtherDevices": "其余 {{count}} 台设备",
   "workbench.threadMapAllThreads": "全部线程",

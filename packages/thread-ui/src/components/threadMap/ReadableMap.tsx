@@ -1,10 +1,10 @@
 import { memo, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import { ArrowUpRight, ChevronRight, Folder, Layers, Monitor } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
-import { StatusMark } from '../StatusMark';
+import { navigationStatusLabel, StatusMark } from '../StatusMark';
 import { formatCompactUsd } from '../timeline/tokenFormatting';
 import { AgentChip, ThreadTile } from './ThreadTile';
-import { DeviceMenu, DeviceReadings, DeviceStateMark } from './MapChrome';
+import { DeviceMenu, DeviceReadings, DeviceStateMark, relativeCache } from './MapChrome';
 import { isLive, isWaiting, type MapNode, type ThreadMapThread } from './model';
 import { ReadableSelection, type MapOverflow } from './readability';
 import { MapScrollList } from './MapScrollList';
@@ -47,23 +47,25 @@ function overflowLabel(overflow: MapOverflow) {
   return translate(overflow.kind === 'threads' ? 'workbench.threadMapRemainingThreads' : overflow.kind === 'workspaces' ? 'workbench.threadMapOtherWorkspaces' : 'workbench.threadMapOtherDevices', { count: overflow.count });
 }
 
-/** List rows have the same 132×64 minimum as tiles, with a two-line title. */
-const ThreadRow = memo(function ThreadRow({ node, dimmed, onOpen, onQuickLook }: {
-  node: MapNode; dimmed: boolean; onOpen: Props['onOpen']; onQuickLook: Props['onQuickLook'];
+/** Dense workspace rows keep one line for the title and align metadata at the end. */
+const ThreadRow = memo(function ThreadRow({ node, dimmed, current, onOpen, onQuickLook }: {
+  node: MapNode; dimmed: boolean; current: boolean; onOpen: Props['onOpen']; onQuickLook: Props['onQuickLook'];
 }) {
   useI18n();
   const thread = node.thread!;
-  return <div className="thread-map-tile thread-map-list-row" data-map-id={node.id} data-waiting={isWaiting(thread) || undefined} data-dimmed={dimmed || undefined}>
-    <a className="thread-map-tile-link" href={thread.href} aria-label={thread.title} onClick={onOpen(thread)} />
-    <span className="thread-map-list-row-agent"><AgentChip agent={thread.agent} /></span>
-    <span className="thread-map-list-row-copy"><b className="thread-map-tile-title">{thread.title}</b><span className="thread-map-list-row-meta">
-      <StatusMark status={status(node)} /><span>{translate(isWaiting(thread) ? 'workbench.waitingForYou' : isLive(thread) ? 'workbench.running' : 'workbench.threadMapTurns', { count: thread.turns ?? 0 })}</span>
-      {thread.model && <span>{thread.model}</span>}
-      {thread.priceEstimate && <span>{formatCompactUsd(thread.priceEstimate.totalUsd)}</span>}
-    </span></span>
+  const at = thread.lastActiveAt ?? thread.createdAt;
+  const metadata = [thread.model, thread.priceEstimate ? formatCompactUsd(thread.priceEstimate.totalUsd) : null,
+    at ? relativeCache(at) : null].filter(Boolean).join(' · ');
+  return <div className="thread-map-list-row" data-map-id={node.id} data-waiting={isWaiting(thread) || undefined}
+    data-current={current || undefined} data-dimmed={dimmed || undefined}>
+    <a className="thread-map-tile-link" href={thread.href} aria-label={[thread.title, navigationStatusLabel(status(node)), metadata].filter(Boolean).join(' · ')} aria-current={current ? 'page' : undefined} title={thread.title} onClick={onOpen(thread)} />
+    <AgentChip agent={thread.agent} />
+    <StatusMark status={status(node)} />
+    <b className="thread-map-list-title">{thread.title}</b>
+    <span className="thread-map-list-row-meta" title={metadata}>{metadata}</span>
     {onQuickLook && <button type="button" className="thread-map-list-info" onClick={() => onQuickLook(thread.key)} aria-label={translate('workbench.threadMapQuickLook', { title: thread.title })}>ⓘ</button>}
   </div>;
-}, (a, b) => a.node.thread === b.node.thread && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook && a.onOpen === b.onOpen);
+}, (a, b) => a.node.thread === b.node.thread && a.dimmed === b.dimmed && a.current === b.current && a.onQuickLook === b.onQuickLook && a.onOpen === b.onOpen);
 
 /** Page-only renderer. Each level budgets readable rectangles before mounting
  * children. Dialogs retain the original all-thread treemap renderer. */
@@ -87,12 +89,33 @@ export function ReadableMap(props: Props) {
     return <section key={`list:${node.id}`} className="thread-map-readable-list" style={{ left: rect.x, top: rect.y, width: rect.width, height: rect.height }} aria-label={translate('workbench.threadMapAllThreads')}>
       <div className="thread-map-list-heading"><Layers aria-hidden="true" /><b>{translate(threads ? 'workbench.threadMapAllThreads' : 'workbench.threadMapGoTo')}</b><span>{items.length}</span></div>
       <MapScrollList label={translate(threads ? 'workbench.threadMapAllThreads' : 'workbench.threadMapGoTo')}>
-        {items.map((item, index) => {
-          addTarget(item.id, { x: rect.x + 10, y: rect.y + 34 + index * 76, width: rect.width - 20, height: 72 }, offset);
-          return item.thread ? <ThreadRow key={item.id} node={item} dimmed={dim(item)} onOpen={rowOpen.current} onQuickLook={onQuickLook} />
-            : <button key={item.id} type="button" className="thread-map-list-group" data-map-id={item.id} onClick={() => navigate(item)}>
-              {item.kind === 'device' ? <Monitor aria-hidden="true" /> : <Folder aria-hidden="true" />}<b>{item.label}</b><span>{translate('workbench.threadMapThreads', { count: item.threads })}</span><ChevronRight aria-hidden="true" />
-            </button>;
+        {threads ? (() => {
+          const groups = [
+            { id: 'waiting', label: translate('workbench.waitingForYou'), items: [] as MapNode[] },
+            { id: 'running', label: translate('workbench.running'), items: [] as MapNode[] },
+            { id: 'unread', label: translate('workbench.threadMapListUnread'), items: [] as MapNode[] },
+            { id: 'other', label: translate('workbench.threadMapListOther'), items: [] as MapNode[] },
+          ];
+          for (const item of items) {
+            const rank = cache.current.rank(`${version}:${node.id}`, item);
+            groups[rank < 2 ? rank : rank < 4 ? 2 : 3]!.items.push(item);
+          }
+          let y = rect.y + 34;
+          return groups.filter(group => group.items.length > 0).map(group => {
+            y += 24;
+            return <div key={group.id} className="thread-map-list-status-group" data-list-group={group.id} role="group" aria-label={group.label}>
+              <h3 className="thread-map-list-status-heading"><span>{group.label}</span><small>{group.items.length}</small></h3>
+              {group.items.map(item => {
+                addTarget(item.id, { x: rect.x + 8, y, width: rect.width - 16, height: 40 }, offset); y += 40;
+                return <ThreadRow key={item.id} node={item} dimmed={dim(item)} current={item.thread!.key === currentKey} onOpen={rowOpen.current} onQuickLook={onQuickLook} />;
+              })}
+            </div>;
+          });
+        })() : items.map((item, index) => {
+          addTarget(item.id, { x: rect.x + 10, y: rect.y + 34 + index * 68, width: rect.width - 20, height: 64 }, offset);
+          return <button key={item.id} type="button" className="thread-map-list-group" data-map-id={item.id} onClick={() => navigate(item)}>
+            {item.kind === 'device' ? <Monitor aria-hidden="true" /> : <Folder aria-hidden="true" />}<b>{item.label}</b><span>{translate('workbench.threadMapThreads', { count: item.threads })}</span><ChevronRight aria-hidden="true" />
+          </button>;
         })}
         {older.map(item => <button key={item.id} type="button" className="thread-map-list-older" onClick={() => expand(item)}>{item.label}<ChevronRight aria-hidden="true" /></button>)}
       </MapScrollList>

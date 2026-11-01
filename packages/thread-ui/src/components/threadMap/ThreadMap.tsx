@@ -478,7 +478,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   };
 
   let rendered = 0;
-  spatial.current = [];
+  if (!page) spatial.current = [];
   const runningLeaves = (node: MapNode): MapNode[] => node.kind === 'thread'
     ? (node.running ? [node] : [])
     : node.children.flatMap(runningLeaves);

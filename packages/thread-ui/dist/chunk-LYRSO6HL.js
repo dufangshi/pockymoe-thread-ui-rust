@@ -5,19 +5,19 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-IUMGSALH.js";
+} from "./chunk-5D7FGFY6.js";
 import {
   KeyCode,
   KeyMod,
   Uri,
   editor,
   languages
-} from "./chunk-EOOJF6TE.js";
+} from "./chunk-JXQIYSAV.js";
 
 // src/components/graph-workspace/GraphWorkspaceMonacoEditor.tsx
 import { useEffect, useRef } from "react";
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/_.contribution.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/_.contribution.js
 var languageDefinitions = {};
 var lazyLanguageLoaders = {};
 var LazyLanguageLoader = class _LazyLanguageLoader {
@@ -63,48 +63,48 @@ function registerLanguage(def) {
   });
 }
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/cpp/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/cpp/register.js
 registerLanguage({
   id: "c",
   extensions: [".c", ".h"],
   aliases: ["C", "c"],
-  loader: () => import("./cpp-BFOWJSTA.js")
+  loader: () => import("./cpp-HURO2CTG.js")
 });
 registerLanguage({
   id: "cpp",
   extensions: [".cpp", ".cc", ".cxx", ".hpp", ".hh", ".hxx"],
   aliases: ["C++", "Cpp", "cpp"],
-  loader: () => import("./cpp-BFOWJSTA.js")
+  loader: () => import("./cpp-HURO2CTG.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/css/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/css/register.js
 registerLanguage({
   id: "css",
   extensions: [".css"],
   aliases: ["CSS", "css"],
   mimetypes: ["text/css"],
-  loader: () => import("./css-BVIX7MYW.js")
+  loader: () => import("./css-6ZLHR632.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/html/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/html/register.js
 registerLanguage({
   id: "html",
   extensions: [".html", ".htm", ".shtml", ".xhtml", ".mdoc", ".jsp", ".asp", ".aspx", ".jshtm"],
   aliases: ["HTML", "htm", "html", "xhtml"],
   mimetypes: ["text/html", "text/x-jshtm", "text/template", "text/ng-template"],
-  loader: () => import("./html-QLJIVA2C.js")
+  loader: () => import("./html-GCVVE7WM.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/java/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/java/register.js
 registerLanguage({
   id: "java",
   extensions: [".java", ".jav"],
   aliases: ["Java", "java"],
   mimetypes: ["text/x-java-source", "text/x-java"],
-  loader: () => import("./java-YHVBSFSQ.js")
+  loader: () => import("./java-56GNWWNK.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/javascript/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/javascript/register.js
 registerLanguage({
   id: "javascript",
   extensions: [".js", ".es6", ".jsx", ".mjs", ".cjs"],
@@ -112,68 +112,68 @@ registerLanguage({
   filenames: ["jakefile"],
   aliases: ["JavaScript", "javascript", "js"],
   mimetypes: ["text/javascript"],
-  loader: () => import("./javascript-IVFU7NAB.js")
+  loader: () => import("./javascript-4GX6Q4JK.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/markdown/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/markdown/register.js
 registerLanguage({
   id: "markdown",
   extensions: [".md", ".markdown", ".mdown", ".mkdn", ".mkd", ".mdwn", ".mdtxt", ".mdtext"],
   aliases: ["Markdown", "markdown"],
-  loader: () => import("./markdown-CZ4Q7O22.js")
+  loader: () => import("./markdown-QNYNAWEM.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/python/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/python/register.js
 registerLanguage({
   id: "python",
   extensions: [".py", ".rpy", ".pyw", ".cpy", ".gyp", ".gypi"],
   aliases: ["Python", "py"],
   firstLine: "^#!/.*\\bpython[0-9.-]*\\b",
-  loader: () => import("./python-AAYTNZSX.js")
+  loader: () => import("./python-UTQEWHVQ.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/rust/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/rust/register.js
 registerLanguage({
   id: "rust",
   extensions: [".rs", ".rlib"],
   aliases: ["Rust", "rust"],
-  loader: () => import("./rust-QVQQEB3W.js")
+  loader: () => import("./rust-PKGBCSLI.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/shell/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/shell/register.js
 registerLanguage({
   id: "shell",
   extensions: [".sh", ".bash"],
   aliases: ["Shell", "sh"],
-  loader: () => import("./shell-BEAIPPVG.js")
+  loader: () => import("./shell-DXLRZRS6.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/sql/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/sql/register.js
 registerLanguage({
   id: "sql",
   extensions: [".sql"],
   aliases: ["SQL"],
-  loader: () => import("./sql-3BRRANCS.js")
+  loader: () => import("./sql-V3HBKSUX.js")
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/typescript/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/typescript/register.js
 registerLanguage({
   id: "typescript",
   extensions: [".ts", ".tsx", ".cts", ".mts"],
   aliases: ["TypeScript", "ts", "typescript"],
   mimetypes: ["text/typescript"],
   loader: () => {
-    return import("./typescript-SRXETFH2.js");
+    return import("./typescript-EYV7USKN.js");
   }
 });
 
-// ../../../../../../Users/mac/dev/remoteCodex.worktrees/desktop/pockymoe-thread-ui/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/yaml/register.js
+// ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/yaml/register.js
 registerLanguage({
   id: "yaml",
   extensions: [".yaml", ".yml"],
   aliases: ["YAML", "yaml", "YML", "yml"],
   mimetypes: ["application/x-yaml", "text/x-yaml"],
-  loader: () => import("./yaml-R3E2R37W.js")
+  loader: () => import("./yaml-ZPES2LA6.js")
 });
 
 // src/components/graph-workspace/GraphWorkspaceMonacoEditor.tsx

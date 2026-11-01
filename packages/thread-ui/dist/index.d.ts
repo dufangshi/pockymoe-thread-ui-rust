@@ -1015,6 +1015,8 @@ interface ThreadMapThread {
         requestId?: string;
     };
     unread?: boolean;
+    pinned?: boolean;
+    shortcut?: boolean;
     /** Turns ever started, agent threads included; null when the device cannot say. */
     turns: number | null;
     /** Time turns ran inside the activity window; null when the device cannot say. */

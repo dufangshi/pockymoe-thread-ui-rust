@@ -17,10 +17,12 @@ const makeDevices = (): ThreadMapDevice[] => [{ id: 'd', name: 'Mac Studio', sta
 describe('ThreadMap v2 page', () => {
   Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
   let host: HTMLDivElement, root: Root;
+  let resizeHandlers: (() => void)[];
   beforeEach(() => {
     setLocale('en', false);
     vi.spyOn(Date, 'now').mockReturnValue(now);
-    vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+    resizeHandlers = [];
+    vi.stubGlobal('ResizeObserver', class { constructor(callback: () => void) { resizeHandlers.push(callback); } observe() {} disconnect() {} });
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1200);
     vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(700);
     host = document.createElement('div'); document.body.append(host); root = createRoot(host);
@@ -36,7 +38,8 @@ describe('ThreadMap v2 page', () => {
     const scopeChanged = vi.fn(); show({ onScopeChange: scopeChanged });
     expect(host.querySelector('button[aria-pressed="true"]')?.textContent).toBe('7 days');
     expect(tile('a')).toBeTruthy(); expect(tile('old')).toBeFalsy();
-    click(host.querySelector('[data-map-id="earlier:workspace:d:w"]')!);
+    click(host.querySelector('[data-map-id="overflow:workspace:d:w"]')!);
+    click(host.querySelector('[data-map-id="overflow:workspace:d:w"]')!);
     expect(tile('old')).toBeTruthy(); expect(tile('archive')).toBeFalsy();
     key(host.querySelector('.thread-map')!, '1');
     expect(scopeChanged).toHaveBeenLastCalledWith('active'); expect(tile('b')).toBeFalsy();
@@ -67,6 +70,27 @@ describe('ThreadMap v2 page', () => {
     key(link('b'), 'Backspace'); expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Mac Studio');
   });
 
+  it('honors an explicit older expansion while pointer geometry is frozen', () => {
+    show({ stableLayout: true });
+    const canvas = host.querySelector('.thread-map-canvas')!;
+    act(() => { canvas.dispatchEvent(new MouseEvent('pointerover', { bubbles: true })); });
+    click(host.querySelector('[data-map-id="overflow:workspace:d:w"]')!);
+    click(host.querySelector('[data-map-id="overflow:workspace:d:w"]')!);
+    expect(tile('old')).toBeTruthy();
+  });
+
+  it('keeps a focused workspace list and its scroll position through host hiding', () => {
+    const devices: ThreadMapDevice[] = [{ id: 'd', name: 'D', state: 'ready', workspaces: [{ id: 'w', label: 'W', threads: Array.from({ length: 120 }, (_, i) => thread(`t${i}`)) }] }];
+    show({ devices, scope: 'all', revealKey: 't0' });
+    const list = host.querySelector<HTMLElement>('.thread-map-list-scroll')!;
+    expect(list).toBeTruthy(); list.scrollTop = 240; host.hidden = true;
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(0);
+    vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(0);
+    act(() => resizeHandlers.forEach(callback => callback()));
+    host.hidden = false;
+    expect(host.querySelector('.thread-map-list-scroll')).toBe(list); expect(list.scrollTop).toBe(240);
+  });
+
   it('populates an initially empty frozen map when async data arrives', () => {
     show({ devices: [], stableLayout: true });
     const canvas = host.querySelector('.thread-map-canvas')!;
@@ -84,15 +108,19 @@ describe('ThreadMap v2 page', () => {
     expect(tile('late')).toBeTruthy(); expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Late workspace');
   });
 
-  it('renders attention in priority order, caps at six, and resolves approvals', () => {
+  it('fits attention cards by width, preserves priority and opens overflow as a keyboard menu', () => {
     const decision = vi.fn();
     const attention = ['unread', 'failed', 'input', 'approval', 'unread', 'unread', 'input'].map((kind, i) => ({ key: String(i), kind: kind as 'approval' | 'input' | 'failed' | 'unread', title: `Attention ${i}`, device: 'Mac', workspace: 'Product', since: '', summary: 'Review changes', requestId: 'r' }));
     show({ attention, onRequestDecision: decision });
-    expect([...host.querySelectorAll('.thread-map-attention-card b')].map(n => n.textContent)).toEqual(['Attention 2', 'Attention 3', 'Attention 6', 'Attention 1', 'Attention 0', 'Attention 4']);
+    expect([...host.querySelectorAll('.thread-map-attention-card b')].map(n => n.textContent)).toEqual(['Attention 2', 'Attention 3', 'Attention 6', 'Attention 1', 'Attention 0']);
     click([...host.querySelectorAll('button')].find(b => b.textContent === 'Approve')!);
     expect(decision).toHaveBeenCalledWith('3', 'r', 'approve');
     click(host.querySelector('.thread-map-attention-more')!);
-    expect(host.querySelectorAll('.thread-map-attention-card')).toHaveLength(7);
+    expect(host.querySelectorAll('.thread-map-attention-card')).toHaveLength(5);
+    expect(document.querySelectorAll('[role="menuitem"]')).toHaveLength(2);
+    expect(document.activeElement?.textContent).toContain('Attention 4');
+    key(document.activeElement!, 'End'); expect(document.activeElement?.textContent).toContain('Attention 5');
+    key(document.activeElement!, 'Escape'); expect(document.querySelector('[role="menu"]')).toBeNull();
     show({ attention: [] }); expect(host.querySelector('.thread-map-attention-wrap')?.hasAttribute('data-visible')).toBe(false);
   });
 

@@ -1,4 +1,8 @@
 export const workbenchEn = {
+  "workbench.threadMapRemainingThreads": "{{count}} other threads",
+  "workbench.threadMapOtherDevices": "{{count}} other devices",
+  "workbench.threadMapAllThreads": "All threads",
+
   "workbench.threadMapRefreshLayout": "Refresh layout",
   "workbench.waitingForYou": "Waiting for you",
   "workbench.threadMapEarlier": "{{count}} earlier",

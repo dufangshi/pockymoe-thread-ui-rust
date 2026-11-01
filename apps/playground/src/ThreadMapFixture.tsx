@@ -48,7 +48,7 @@ function Fixture() {
     if (revision) threads[3] = { ...threads[3]!, lastPrompt: `最近一次刷新 · ${revision}` };
     const split = Math.ceil(count * .68);
     const workspaces = (list: ThreadMapThread[], offset: number) => {
-      const per = count <= 12 ? 4 : 48;
+      const per = Number(params.get('workspaceSize')) || (count <= 12 ? 4 : 48);
       return Array.from({ length: Math.ceil(list.length / per) }, (_, i) => ({ id: `w${offset + i}`, label: ['pockymoe', 'shared-ui', 'desktop-shell', 'design-system', 'notes', 'experiments'][i % 6]!, threads: list.slice(i * per, (i + 1) * per) }));
     };
     return [{ id: 'studio', name: 'Mac Studio', state: 'ready', workspaces: workspaces(threads.slice(0, split), 0) },
@@ -62,6 +62,8 @@ function Fixture() {
     { key: 'mac:2', kind: 'failed', title: titles[2]!, device: 'Mac Studio', workspace: 'pockymoe', summary: '焦点回归未通过', since: ago(.1) },
     { key: 'mac:5', kind: 'unread', title: titles[5]!, device: 'Mac Studio', workspace: 'shared-ui', summary: '已完成，等待查看', since: ago(.1) },
   ];
+  const extraAttention = Math.max(0, (Number(params.get('attentionCount')) || 4) - 4);
+  attention.push(...Array.from({ length: extraAttention }, (_, i): MapAttention => ({ key: `mac:${i + 6}`, kind: 'unread', title: titles[(i + 6) % titles.length]!, device: 'Mac Studio', workspace: 'shared-ui', summary: '已完成，等待查看', since: ago(.1) })));
   const menu = (name: string) => ['设备详情', '检查更新', '重命名', '在浏览器中管理'].map((label, i) => ({ id: String(i), label, onSelect: () => setNotice(`${name} · ${label}`) }));
   return <div className="thread-ui-shell map-fixture" data-theme-effective={mode}>
     <div className="map-fixture-toolbar"><b>Pockymoe</b><span>线程地图 · {count}</span><nav aria-label="Fixture sizes">{[12, 150, 600].map(n => <a key={n} href={`?${new URLSearchParams({ count: String(n), theme, mode, scope })}`} aria-current={n === count ? 'page' : undefined}>{n}</a>)}</nav>

@@ -166,7 +166,8 @@ function Usage({ thread }: { thread: ThreadMapThread }) {
  * colored speck. The tile is one link; the price and the agent-thread button sit
  * above it.
  */
-function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChildren, dimmed, onQuickLook }: {
+function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChildren, dimmed, onQuickLook, readable = false }: {
+  readable?: boolean;
   dimmed?: boolean;
   onQuickLook?: (key: string) => void;
   node: MapNode;
@@ -196,9 +197,9 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   const childrenRow = canShowChildren && !showChildren && h >= 80;
   const childrenWidth = !showChildren ? 0 : headRoom - 36 >= 44 ? 36 : 24;
   // From the top: title, who; from the bottom: strip, figures; the prompt takes what is left.
-  const showAge = age !== null && w >= 110 && h >= 44 && headRoom - childrenWidth - 19 >= 52;
+  const showAge = (!readable || w >= 220 && h >= 110) && age !== null && w >= 110 && h >= 44 && headRoom - childrenWidth - 19 >= 52;
   const showAgeText = showAge && headRoom - childrenWidth - 52 >= 80;
-  const showWho = w >= 100 && h >= 80;
+  const showWho = w >= 100 && h >= (readable ? 110 : 80);
   const known = thread.turns !== null;
   const priced = Boolean(thread.tokenUsage || thread.priceEstimate);
   // Figures side by side on a wide tile, stacked on a tall narrow one, else one line.
@@ -216,7 +217,7 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   const titleWidth = headRoom - (showAge ? (showAgeText ? 52 : 19) : 0) - childrenWidth;
   const longest = Math.max(0, ...thread.title.split(/\s+/).map(word => (/^[\x21-\x7e]+$/.test(word) ? word.length : 0)));
   const wraps = longest * lineHeight * 0.42 <= titleWidth;
-  const lines = !wraps ? 1 : prompt ? Math.min(2, titleLines) : titleLines;
+  const lines = readable && h < 110 ? 2 : !wraps ? 1 : prompt ? Math.min(2, titleLines) : titleLines;
   // Room still left grows the hourly strip, up to three times its height.
   const left = h - fixed - lines * lineHeight - (prompt ? promptLines * FIT.promptLine + FIT.gap : 0);
   const sparkHeight = FIT.spark + Math.max(0, Math.min(28, Math.floor(left * 0.4)));
@@ -240,7 +241,7 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
     </button>
   );
   return (
-    <div className="thread-map-tile" data-map-id={node.id} data-size={tier} data-heat={heatLevel(thread.activeMs)}
+    <div className="thread-map-tile" data-map-id={node.id} data-readable={readable || undefined} data-size={tier} data-heat={heatLevel(thread.activeMs)}
       data-dimmed={dimmed || undefined} data-waiting={Boolean(thread.needsInput) || undefined} data-unread={thread.unread || undefined}
       data-running={!thread.needsInput && (thread.running || node.running > 0) || undefined} data-failed={thread.failed || undefined} data-current={current || undefined}
       style={{ left: box.x, top: box.y, width: w, height: h, '--lines': lines, '--prompt-lines': promptLines, '--spark-h': `${sparkHeight}px` } as CSSProperties}>
@@ -294,5 +295,5 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
 export const ThreadTile = memo(ThreadTileContent, (a, b) =>
   a.node.thread === b.node.thread && a.node.parent?.label === b.node.parent?.label && a.node.running === b.node.running
   && a.box.x === b.box.x && a.box.y === b.box.y && a.box.width === b.box.width && a.box.height === b.box.height
-  && a.hours === b.hours && a.current === b.current && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook
+  && a.readable === b.readable && a.hours === b.hours && a.current === b.current && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook
   && Boolean(a.onShowChildren) === Boolean(b.onShowChildren));

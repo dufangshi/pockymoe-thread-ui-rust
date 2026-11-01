@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { MoreVertical } from 'lucide-react';
 import { getLocale, translate } from '../../i18n';
+import { MapScrollList } from './MapScrollList';
 import { StatusMark } from '../StatusMark';
 import { useModalFocus } from '../menu/useModalFocus';
 import { useMenuKeyboard } from '../menu/useMenuKeyboard';
@@ -23,30 +24,89 @@ export function relativeCache(at: string) {
   return new Intl.RelativeTimeFormat(getLocale(), { numeric: 'auto', style: 'short' }).format(Math.round(ms / (unit === 'day' ? 86_400_000 : unit === 'hour' ? 3_600_000 : 60_000)), unit);
 }
 
-export function AttentionStrip({ items, onOpen, onRequestDecision }: {
+export function AttentionStrip({ items, onOpen, onRequestDecision, responsive = false }: {
+  responsive?: boolean;
   items: readonly MapAttention[];
   onOpen: (key: string) => void;
   onRequestDecision: ThreadMapProps['onRequestDecision'];
 }) {
   const [expanded, setExpanded] = useState(false);
   const ordered = orderAttention(items);
+  if (responsive) return <ResponsiveAttention items={ordered} onOpen={onOpen} onRequestDecision={onRequestDecision} />;
   return <div className="thread-map-attention-wrap" data-visible={items.length > 0 || undefined}>
     <div className="thread-map-attention" role="region" aria-label={translate('workbench.threadMapAttention')}>
-      {ordered.slice(0, expanded ? undefined : 6).map(item => <article className="thread-map-attention-card" key={item.key} data-kind={item.kind}>
-        <button className="thread-map-attention-open" type="button" onClick={() => onOpen(item.key)}>
-          <StatusMark status={item.kind === 'approval' || item.kind === 'input' ? 'waiting' : item.kind === 'failed' ? 'failed' : 'unread'} />
-          <span><b>{item.title}</b><small>{item.device} · {item.workspace}</small>
-            <small>{item.summary ?? translate(item.kind === 'input' || item.kind === 'approval' ? 'workbench.waitingForYou' : item.kind === 'failed' ? 'workbench.failed' : 'workbench.completedUnread')}</small></span>
-        </button>
-        {item.kind === 'approval' && item.requestId && onRequestDecision && <div className="thread-map-decisions">
-          <button type="button" onClick={() => onRequestDecision(item.key, item.requestId!, 'approve')}>{translate('workbench.threadMapApprove')}</button>
-          <button type="button" onClick={() => onRequestDecision(item.key, item.requestId!, 'deny')}>{translate('workbench.threadMapDeny')}</button>
-        </div>}
-      </article>)}
+      {ordered.slice(0, expanded ? undefined : 6).map(item => <AttentionCard key={item.key} item={item} onOpen={onOpen} onRequestDecision={onRequestDecision} />)}
       {!expanded && ordered.length > 6 && <button type="button" className="thread-map-attention-more" onClick={() => setExpanded(true)}>
         {translate('workbench.threadMapMoreAttention', { count: ordered.length - 6 })}
       </button>}
     </div>
+  </div>;
+}
+
+function AttentionCard({ item, onOpen, onRequestDecision }: { item: MapAttention; onOpen: (key: string) => void; onRequestDecision: ThreadMapProps['onRequestDecision'] }) {
+  return <article className="thread-map-attention-card" data-kind={item.kind}>
+    <button className="thread-map-attention-open" type="button" onClick={() => onOpen(item.key)} title={item.title}>
+      <StatusMark status={item.kind === 'approval' || item.kind === 'input' ? 'waiting' : item.kind === 'failed' ? 'failed' : 'unread'} />
+      <span><b>{item.title}</b><small>{item.device} · {item.workspace}</small><small>{item.summary ?? translate(item.kind === 'input' || item.kind === 'approval' ? 'workbench.waitingForYou' : item.kind === 'failed' ? 'workbench.failed' : 'workbench.completedUnread')}</small></span>
+    </button>
+    {item.kind === 'approval' && item.requestId && onRequestDecision && <div className="thread-map-decisions">
+      <button type="button" onClick={() => onRequestDecision(item.key, item.requestId!, 'approve')}>{translate('workbench.threadMapApprove')}</button>
+      <button type="button" onClick={() => onRequestDecision(item.key, item.requestId!, 'deny')}>{translate('workbench.threadMapDeny')}</button>
+    </div>}
+  </article>;
+}
+
+function ResponsiveAttention({ items, onOpen, onRequestDecision }: { items: readonly MapAttention[]; onOpen: (key: string) => void; onRequestDecision: ThreadMapProps['onRequestDecision'] }) {
+  const strip = useRef<HTMLDivElement>(null), trigger = useRef<HTMLButtonElement>(null), menu = useRef<HTMLDivElement>(null);
+  const [capacity, setCapacity] = useState(1);
+  const [anchor, setAnchor] = useState<{ left: number; top: number } | null>(null);
+  const shown = Math.min(capacity, items.length), hidden = items.slice(shown);
+  useEffect(() => { if (!hidden.length) setAnchor(null); }, [hidden.length]);
+  useLayoutEffect(() => {
+    const el = strip.current;
+    if (!el) return;
+    const measure = () => {
+      const width = Math.max(0, el.clientWidth - 32);
+      const all = Math.floor((width + 8) / 208);
+      setCapacity(Math.min(6, items.length <= all ? all : Math.max(0, Math.floor((width - 80) / 208))));
+    };
+    measure(); const resize = new ResizeObserver(measure); resize.observe(el);
+    return () => resize.disconnect();
+  }, [items.length]);
+  const close = (restore = false) => { setAnchor(null); if (restore) trigger.current?.focus(); };
+  useMenuKeyboard(menu, Boolean(anchor), close);
+  useEffect(() => {
+    if (!anchor) return;
+    const outside = (event: PointerEvent) => { if (!menu.current?.contains(event.target as Node) && !trigger.current?.contains(event.target as Node)) setAnchor(null); };
+    const moved = (event: Event) => {
+      if (event.target instanceof Node && menu.current?.contains(event.target)) return;
+      setAnchor(null);
+    };
+    document.addEventListener('pointerdown', outside); window.addEventListener('resize', moved); window.addEventListener('scroll', moved, true);
+    window.visualViewport?.addEventListener('resize', moved); window.visualViewport?.addEventListener('scroll', moved);
+    return () => {
+      document.removeEventListener('pointerdown', outside); window.removeEventListener('resize', moved); window.removeEventListener('scroll', moved, true);
+      window.visualViewport?.removeEventListener('resize', moved); window.visualViewport?.removeEventListener('scroll', moved);
+    };
+  }, [anchor]);
+  return <div className="thread-map-attention-wrap" data-visible={items.length > 0 || undefined}>
+    <div ref={strip} className="thread-map-attention" data-responsive role="region" aria-label={translate('workbench.threadMapAttention')}>
+      {items.slice(0, shown).map(item => <AttentionCard key={item.key} item={item} onOpen={onOpen} onRequestDecision={onRequestDecision} />)}
+      {hidden.length > 0 && <button ref={trigger} type="button" className="thread-map-attention-more" aria-haspopup="menu" aria-expanded={Boolean(anchor)} onClick={() => {
+        if (anchor) { close(); return; }
+        const box = trigger.current!.getBoundingClientRect();
+        setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 344)), top: Math.min(box.bottom + 5, window.innerHeight - 180) });
+      }}>{translate('workbench.threadMapMoreAttention', { count: hidden.length })}</button>}
+    </div>
+    {anchor && hidden.length > 0 && createPortal(<div ref={menu} role="menu" aria-label={translate('workbench.threadMapAttention')}
+      data-theme-effective={document.documentElement.dataset.themeEffective} className="thread-graph-dialog thread-map-attention-menu" style={{ position: 'fixed', ...anchor, height: Math.min(420, hidden.length * 72 + 10, window.innerHeight - anchor.top - 12) }}>
+      <MapScrollList label={translate('workbench.threadMapAttention')}>
+        {hidden.map(item => <button key={item.key} type="button" role="menuitem" onClick={() => { close(true); onOpen(item.key); }}>
+          <StatusMark status={item.kind === 'approval' || item.kind === 'input' ? 'waiting' : item.kind === 'failed' ? 'failed' : 'unread'} />
+          <span><b>{item.title}</b><small>{item.device} · {item.workspace}</small><small>{item.summary}</small></span>
+        </button>)}
+      </MapScrollList>
+    </div>, document.body)}
   </div>;
 }
 

@@ -4154,6 +4154,9 @@ var sharingEn = {
 
 // src/i18n/workbench.en.ts
 var workbenchEn = {
+  "workbench.threadMapRemainingThreads": "{{count}} other threads",
+  "workbench.threadMapOtherDevices": "{{count}} other devices",
+  "workbench.threadMapAllThreads": "All threads",
   "workbench.threadMapRefreshLayout": "Refresh layout",
   "workbench.waitingForYou": "Waiting for you",
   "workbench.threadMapEarlier": "{{count}} earlier",
@@ -8975,6 +8978,9 @@ var sharingZhCN = {
 
 // src/i18n/workbench.zh-CN.ts
 var workbenchZhCN = {
+  "workbench.threadMapRemainingThreads": "\u5176\u4F59 {{count}} \u4E2A\u7EBF\u7A0B",
+  "workbench.threadMapOtherDevices": "\u5176\u4F59 {{count}} \u53F0\u8BBE\u5907",
+  "workbench.threadMapAllThreads": "\u5168\u90E8\u7EBF\u7A0B",
   "workbench.threadMapRefreshLayout": "\u5237\u65B0\u5E03\u5C40",
   "workbench.waitingForYou": "\u7B49\u5F85\u4F60",
   "workbench.threadMapEarlier": "\u8F83\u65E9 {{count}} \u4E2A",

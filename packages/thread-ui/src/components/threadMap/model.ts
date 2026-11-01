@@ -15,6 +15,8 @@ export interface ThreadMapThread {
   running: boolean;
   needsInput?: { kind: 'approval' | 'input'; summary?: string; requestId?: string };
   unread?: boolean;
+  pinned?: boolean;
+  shortcut?: boolean;
   /** Turns ever started, agent threads included; null when the device cannot say. */
   turns: number | null;
   /** Time turns ran inside the activity window; null when the device cannot say. */
@@ -66,6 +68,8 @@ export interface MapNode {
   id: string;
   kind: 'root' | 'device' | 'workspace' | 'thread' | 'compressed';
   compressed?: 'threads' | 'workspaces';
+  /** Scoped-out nodes retained for merged readability overflow previews. */
+  hiddenNodes?: MapNode[];
   label: string;
   parent?: MapNode | undefined;
   children: MapNode[];
@@ -163,11 +167,11 @@ export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: s
         else space.children.push(leaf);
         add(space, leaf);
       }
-      if (!space.children.length && hidden.length) { hiddenSpaces.push(space); continue; }
+      if (!space.children.length && hidden.length) { space.hiddenNodes = hidden; hiddenSpaces.push(space); continue; }
       if (!space.children.length) continue;
       if (hidden.length) {
         const compressed: MapNode = { ...blank, id: `earlier:${space.id}`, kind: 'compressed', compressed: 'threads',
-          label: translate('workbench.threadMapEarlier', { count: hidden.length }), children: [], parent: space, device, workspace, weight: 1.5, threads: hidden.length };
+          label: translate('workbench.threadMapEarlier', { count: hidden.length }), children: [], hiddenNodes: hidden, parent: space, device, workspace, weight: 1.5, threads: hidden.length };
         space.children.push(compressed);
         space.weight = space.children.reduce((sum, child) => sum + child.weight, 0);
       }
@@ -177,7 +181,7 @@ export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: s
     }
     if (hiddenSpaces.length) {
       const compressed: MapNode = { ...blank, id: `earlier:${node.id}`, kind: 'compressed', compressed: 'workspaces',
-        label: translate('workbench.threadMapOtherWorkspaces', { count: hiddenSpaces.length }), parent: node, device, children: [], weight: 1.5 };
+        label: translate('workbench.threadMapOtherWorkspaces', { count: hiddenSpaces.length }), parent: node, device, children: [], hiddenNodes: hiddenSpaces, weight: 1.5 };
       for (const hidden of hiddenSpaces) { compressed.turns += hidden.turns; compressed.threads += hidden.threads; compressed.usd += hidden.usd; compressed.tokens += hidden.tokens; }
       node.children.push(compressed); add(node, compressed);
     }

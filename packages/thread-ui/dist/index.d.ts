@@ -1053,6 +1053,8 @@ interface ThreadMapThread {
     /** When a turn last started or finished. */
     lastActiveAt?: string | undefined;
     model?: string | undefined;
+    /** Catalog display label, preferred over the model identifier in map details. */
+    modelDisplayName?: string | undefined;
     /** The person's latest prompt. */
     lastPrompt?: string | undefined;
     /** The last turn failed. */

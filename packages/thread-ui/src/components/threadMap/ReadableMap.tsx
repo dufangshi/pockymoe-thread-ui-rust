@@ -48,17 +48,17 @@ function overflowLabel(overflow: MapOverflow) {
 }
 
 /** Dense workspace rows keep one line for the title and align metadata at the end. */
-const ThreadRow = memo(function ThreadRow({ node, dimmed, current, onOpen, onQuickLook }: {
-  node: MapNode; dimmed: boolean; current: boolean; onOpen: ReadableMapProps['onOpen']; onQuickLook: ReadableMapProps['onQuickLook'];
+const ThreadRow = memo(function ThreadRow({ node, dimmed, current, onOpen, onQuickLook, hover }: {
+  node: MapNode; dimmed: boolean; current: boolean; onOpen: ReadableMapProps['onOpen']; onQuickLook: ReadableMapProps['onQuickLook']; hover: ReadableMapProps['hover'];
 }) {
   useI18n();
   const thread = node.thread!;
   const at = thread.lastActiveAt ?? thread.createdAt;
-  const metadata = [thread.model, thread.priceEstimate ? formatCompactUsd(thread.priceEstimate.totalUsd) : null,
+  const metadata = [thread.modelDisplayName?.trim() || thread.model, thread.priceEstimate ? formatCompactUsd(thread.priceEstimate.totalUsd) : null,
     at ? relativeCache(at) : null].filter(Boolean).join(' · ');
   return <div className="thread-map-list-row" data-map-id={node.id} data-waiting={isWaiting(thread) || undefined}
     data-current={current || undefined} data-dimmed={dimmed || undefined}>
-    <a className="thread-map-tile-link" href={thread.href} aria-label={[thread.title, navigationStatusLabel(status(node)), metadata].filter(Boolean).join(' · ')} aria-current={current ? 'page' : undefined} title={thread.title} onClick={onOpen(thread)} />
+    <a className="thread-map-tile-link" href={thread.href} aria-label={[thread.title, navigationStatusLabel(status(node)), metadata].filter(Boolean).join(' · ')} aria-current={current ? 'page' : undefined} onClick={onOpen(thread)} {...hover([thread.title])} />
     <span className="thread-map-list-agent-slot"><AgentChip agent={thread.agent} /></span>
     <span className="thread-map-list-status-slot"><StatusMark status={status(node)} /></span>
     <b className="thread-map-list-title">{thread.title}</b>
@@ -107,7 +107,7 @@ export function ReadableMap(props: ReadableMapProps) {
               <h3 className="thread-map-list-status-heading"><span>{group.label}</span><small>{group.items.length}</small></h3>
               {group.items.map(item => {
                 addTarget(item.id, { x: rect.x + 8, y, width: rect.width - 16, height: 40 }, offset); y += 40;
-                return <ThreadRow key={item.id} node={item} dimmed={dim(item)} current={item.thread!.key === currentKey} onOpen={rowOpen.current} onQuickLook={onQuickLook} />;
+                return <ThreadRow key={item.id} node={item} dimmed={dim(item)} current={item.thread!.key === currentKey} onOpen={rowOpen.current} onQuickLook={onQuickLook} hover={hover} />;
               })}
             </div>;
           });
@@ -146,7 +146,7 @@ export function ReadableMap(props: ReadableMapProps) {
       return <section key={node.id} className="thread-map-section thread-map-readable-section" data-map-id={node.id} data-kind={node.kind} data-depth={depth}
         data-cached={cached.has(node.device?.id ?? '') || undefined} data-live={node.running > 0 || undefined} data-dimmed={dim(node) || undefined}
         style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
-        <div className="thread-map-section-header" style={{ height: header }} title={isDevice ? extra?.metrics : undefined}>
+        <div className="thread-map-section-header" style={{ height: header }}>
           <button type="button" className="thread-map-section-head" onClick={event => navigate(node, event.currentTarget.closest('section'))} {...hover([node.label])}>
             {isDevice ? <DeviceStateMark /> : <Folder aria-hidden="true" />}<span className="thread-map-section-label">{node.label}</span>
             {isDevice && extra && box.width > 320 && <DeviceReadings extra={extra} />}

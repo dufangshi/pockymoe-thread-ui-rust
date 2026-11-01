@@ -133,7 +133,13 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const crumbs = useRef<HTMLElement>(null);
   const zoomPlan = useRef<ZoomPlan | null>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
-  const [tip, setTip] = useState<{ lines: string[]; target: HTMLElement } | null>(null);
+  const [tip, setTip] = useState<{ lines: string[]; target: HTMLElement; trigger: HTMLElement; nodeId?: string } | null>(null);
+  const tipDismissed = useRef(false);
+  const tipCloseTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const holdTip = useCallback(() => clearTimeout(tipCloseTimer.current), []);
+  const dismissTip = useCallback(() => { holdTip(); tipDismissed.current = true; setTip(null); }, [holdTip]);
+  const leaveTip = useCallback(() => { clearTimeout(tipCloseTimer.current); tipCloseTimer.current = setTimeout(() => setTip(null), 180); }, []);
+  useEffect(() => () => clearTimeout(tipCloseTimer.current), []);
   useEffect(() => {
     const node = canvas.current;
     if (!node) return;
@@ -179,6 +185,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     }
     if (event.key === '/' && (enhanced || onFilterChange)) { event.preventDefault(); filter.current?.focus(); }
     else if (enhanced && ['1', '2', '3'].includes(event.key)) { event.preventDefault(); setScope((page ? ['all', 'active', 'all'] as const : ['active', 'week', 'all'] as const)[Number(event.key) - 1]!); }
+    else if (event.key === 'Escape' && tip) { event.preventDefault(); event.stopPropagation(); dismissTip(); }
     else if ((event.key === 'Escape' || event.key === 'Backspace') && current !== root) { event.preventDefault(); event.stopPropagation(); navigate(current.parent); }
     else if (event.key.startsWith('Arrow') && canvas.current?.contains(target)) {
       const from = target.closest<HTMLElement>('[data-map-id]')?.dataset.mapId ?? '';
@@ -189,7 +196,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     } else if (event.key === ' ' && onQuickLook) {
       const id = target.closest<HTMLElement>('[data-map-id]')?.dataset.mapId;
       const key = id?.startsWith('thread:') ? id.slice(7) : undefined;
-      if (key) { event.preventDefault(); onQuickLook(key); }
+      if (key) { event.preventDefault(); setTip(null); onQuickLook(key); }
     }
   };
 
@@ -424,15 +431,20 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     event.preventDefault();
     latest.current.onOpen(thread);
   };
-  const showTip = (lines: string[], target: HTMLElement) => {
-    const source = target.closest<HTMLElement>('.thread-map-tile, .thread-map-list-row, .thread-map-overflow-row, .thread-map-section, .thread-map-dense-header, .thread-map-overflow') ?? target;
-    setTip({ lines, target: source });
+  const showTip = (lines: string[], trigger: HTMLElement) => {
+    holdTip();
+    const source = trigger.closest<HTMLElement>('.thread-map-section-header, .thread-map-dense-header, .thread-map-group-head')
+      ?? trigger.closest<HTMLElement>('.thread-map-tile, .thread-map-list-row, .thread-map-overflow-row, .thread-map-section, .thread-map-overflow') ?? trigger;
+    const nodeId = trigger.dataset.mapTipId ?? trigger.closest<HTMLElement>('[data-map-id]')?.dataset.mapId;
+    setTip({ lines, target: source, trigger, nodeId });
   };
   const hover = (lines: string[] | (() => string[])) => ({
-    onPointerEnter: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse') showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); },
-    onPointerLeave: () => setTip(null),
-    onFocus: (event: { currentTarget: HTMLElement }) => showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget),
-    onBlur: () => setTip(null),
+    onPointerEnter: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse' && !tipDismissed.current) showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); },
+    onPointerMove: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse' && tipDismissed.current) { tipDismissed.current = false; showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); } },
+    onPointerLeave: leaveTip,
+    onClickCapture: dismissTip,
+    onFocus: (event: { currentTarget: HTMLElement }) => { tipDismissed.current = false; showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); },
+    onBlur: leaveTip,
   });
 
   // A block shows what is inside it while each thread can be more than a speck
@@ -533,7 +545,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           data-collapsed={(!preview && !live.length) || undefined} data-live={item.running > 0 || undefined}
           data-heat={preview || live.length ? undefined : heatLevel(item.activeMs)} data-running={!preview && !live.length && item.running ? true : undefined}
           data-zoomable={zoomable || undefined} aria-label={text} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
-          <div className="thread-map-section-header" style={{ height: header }} title={extra?.metrics}>
+          <div className="thread-map-section-header" style={{ height: header }}>
           {(preview || live.length > 0) && zoomable
             ? <button type="button" className="thread-map-section-head" aria-label={translate('workbench.threadMapExplore', { name: text })}
               onClick={zoom} {...hover(lines)}>{head}</button>
@@ -570,7 +582,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             return (
               <span key={node.id} className="thread-map-crumb">
                 {index > 0 && <ChevronRight aria-hidden="true" />}
-                <button type="button" aria-current={node === current ? 'location' : undefined} onClick={() => navigate(node)} title={node.label}>{node.label}</button>
+                <button type="button" aria-current={node === current ? 'location' : undefined} onClick={() => navigate(node)} data-map-tip-id={node.id} {...hover(() => describe(node, hours))}>{node.label}</button>
                 {href && <a className="thread-map-crumb-open" href={href} aria-label={label} title={label} onClick={event => {
                   if (!onNavigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
                   event.preventDefault();
@@ -651,7 +663,9 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             navigate={navigate} expand={expand} onOpen={open} onQuickLook={onQuickLook ? quickLook : undefined} hover={hover}
             register={items => { spatial.current = items; }} onRetry={onRetry} /> : size.width > 0 && render(children, bounds, 0)}</div>
           : <p className="thread-map-empty" role="status">{current.device && cachedDevices.has(current.device.id) ? translate('workbench.threadMapNoCache') : devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
-        {tip && <MapTooltip anchor={tip.target} lines={tip.lines} onClose={() => setTip(null)} />}
+        {tip && <MapTooltip anchor={tip.target} trigger={tip.trigger} lines={tip.lines} node={tip.nodeId ? nodes.get(tip.nodeId) : undefined} hours={hours}
+          extra={tip.nodeId && nodes.get(tip.nodeId)?.device ? deviceExtras?.[nodes.get(tip.nodeId)!.device!.id] : undefined}
+          onHold={holdTip} onLeave={leaveTip} onClose={dismissTip} />}
       </div>
       {enhanced && devices.some(device => device.state === 'offline' || page && !device.workspaces.some(w=>w.threads.length)) && <div className="thread-map-offline-strip">
         {devices.filter(device => device.state === 'offline' || page && !device.workspaces.some(w=>w.threads.length)).map(device => <button type="button" key={device.id} onClick={() => {

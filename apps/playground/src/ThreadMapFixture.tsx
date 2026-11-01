@@ -37,14 +37,23 @@ const titles = ['整理桌面通知的投递逻辑', '为新工作区添加索�
 const prompts = ['请检查这次改动的边界情况，并补充一个最小回归。', '保持已有行为，把这一处的交互做得更清晰。', '恢复时优先使用缓存，然后静默刷新最新结果。', 'Run the focused regressions and review the resulting diff.'];
 const now = Date.now();
 const ago = (hours: number) => new Date(now - hours * 3_600_000).toISOString();
+// Keep the demo's hourly series consistent with its window total.
+const fixtureHourly = (i: number, total: number) => {
+  const weights = Array.from({ length: 24 }, (_, hour) => (hour + i) % 7 < 2 ? 1 + (hour + i) % 5 : 0);
+  const sum = weights.reduce((a, b) => a + b, 0);
+  const values = weights.map(weight => Math.floor(total * weight / sum));
+  const last = weights.findLastIndex(weight => weight > 0);
+  if (last >= 0) values[last]! += total - values.reduce((a, b) => a + b, 0);
+  return values;
+};
 const makeThread = (i: number): ThreadMapThread => ({
   key: `mac:${i}`, title: `${titles[i % titles.length]}${i >= 12 ? ` · ${Math.floor(i / 12) + 1}` : ''}`, href: `#thread-${i}`,
-  agent: ['codex', 'claude', 'deepseek', 'gemini'][i % 4], model: ['gpt-6.1-sol', 'Opus', 'DeepSeek V4', 'Gemini'][i % 4],
+  agent: ['codex', 'claude', 'deepseek', 'gemini'][i % 4], modelDisplayName: ['GPT 6.1', 'Claude Opus', 'DeepSeek V4', 'Gemini'][i % 4], model: ['gpt-6.1-sol', 'Opus', 'DeepSeek V4', 'Gemini'][i % 4],
   running: i === 3 || i === 4 || i % 47 === 11, turns: 4 + i * 7 % 180, activeMs: (i * 13 % 260) * 60_000, totalMs: (i + 2) * 73 * 60_000,
   createdAt: ago(24 + i * 19), lastActiveAt: ago(i % 9 === 7 ? 400 : i % 7 === 6 ? 60 : i % 20),
   needsInput: i === 0 ? { kind: 'approval', requestId: 'request-0', summary: '需要允许执行定向回归测试' } : i === 1 ? { kind: 'input', summary: '这里应该采用哪种缓存策略？' } : undefined,
   unread: i === 2 || i === 5, failed: i === 2, lastPrompt: prompts[i % prompts.length],
-  hourlyMs: Array.from({ length: 24 }, (_, hour) => (hour + i) % 7 < 2 ? Math.min(3_600_000, 120_000 + i % 20 * 160_000) : 0),
+  hourlyMs: fixtureHourly(i, (i * 13 % 260) * 60_000),
   tokenUsage: { inputTokens: (i + 1) * 24000, cachedInputTokens: i * 10000, outputTokens: (i + 1) * 1200, totalTokens: (i + 1) * 25200, reasoningOutputTokens: 0 },
   priceEstimate: { inputUsd: .012 * (i + 1), cachedInputUsd: .004, outputUsd: .02 * (i + 1), totalUsd: .032 * (i + 1) + .004 },
 });
@@ -69,7 +78,7 @@ function Fixture() {
           threads: Array.from({ length: Math.floor(total / spaces) + (w < total % spaces ? 1 : 0) }, () => {
             const i = serial++, thread = makeThread(i);
             return { ...thread, key: `real-${d}:${i}`, running: i === 3 || i === 65, needsInput: i === 0 ? thread.needsInput : undefined,
-              unread: i % 3 === 2, failed: i % 6 === 2, activeMs: i < 5 ? thread.activeMs : 0, lastActiveAt: ago(i < 5 ? i : 100 + i * 23) };
+              unread: i % 3 === 2, failed: i % 6 === 2, activeMs: i < 5 ? thread.activeMs : 0, hourlyMs: i < 5 ? thread.hourlyMs : Array(24).fill(0), lastActiveAt: ago(i < 5 ? i : 100 + i * 23) };
           }) })),
       })), { id: 'offline', name: 'Travel MacBook', state: 'offline' as const, cachedAt: ago(3), workspaces: [] }];
     }

@@ -37,6 +37,7 @@ export const zhCN = {
   "desktopShell.mapWaiting": "地图，{{count}} 个需要你",
   "desktopShell.mapShortcut": "地图 (⌘0)",
   "desktopShell.mapWindowTitle": "地图 · Pockymoe",
+  "desktopShell.onlineCount": "{{count}} 台在线",
   "desktopShell.devices": "设备",
   "desktopShell.device": "设备",
   "desktopShell.deviceDetails": "设备详情",

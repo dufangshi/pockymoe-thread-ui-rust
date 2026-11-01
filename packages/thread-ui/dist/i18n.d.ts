@@ -12,6 +12,7 @@ declare const en: {
     readonly "desktopShell.mapWaiting": "Map, {{count}} need you";
     readonly "desktopShell.mapShortcut": "Map (⌘0)";
     readonly "desktopShell.mapWindowTitle": "Map · Pockymoe";
+    readonly "desktopShell.onlineCount": "{{count}} online";
     readonly "desktopShell.devices": "Devices";
     readonly "desktopShell.device": "Device";
     readonly "desktopShell.deviceDetails": "Device details";
@@ -5098,6 +5099,7 @@ declare const zhCN: {
     "desktopShell.mapWaiting": string;
     "desktopShell.mapShortcut": string;
     "desktopShell.mapWindowTitle": string;
+    "desktopShell.onlineCount": string;
     "desktopShell.devices": string;
     "desktopShell.device": string;
     "desktopShell.deviceDetails": string;
@@ -10206,6 +10208,7 @@ declare const resources: {
         readonly "desktopShell.mapWaiting": "Map, {{count}} need you";
         readonly "desktopShell.mapShortcut": "Map (⌘0)";
         readonly "desktopShell.mapWindowTitle": "Map · Pockymoe";
+        readonly "desktopShell.onlineCount": "{{count}} online";
         readonly "desktopShell.devices": "Devices";
         readonly "desktopShell.device": "Device";
         readonly "desktopShell.deviceDetails": "Device details";
@@ -15291,6 +15294,7 @@ declare const resources: {
         "desktopShell.mapWaiting": string;
         "desktopShell.mapShortcut": string;
         "desktopShell.mapWindowTitle": string;
+        "desktopShell.onlineCount": string;
         "desktopShell.devices": string;
         "desktopShell.device": string;
         "desktopShell.deviceDetails": string;

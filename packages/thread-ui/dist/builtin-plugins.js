@@ -6,7 +6,7 @@ import {
   formatNumber,
   translate,
   useI18n
-} from "./chunk-RANAMRDJ.js";
+} from "./chunk-WGAFUEJC.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";

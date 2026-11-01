@@ -1887,7 +1887,7 @@ declare const en: {
     readonly 'settings.resourcesMemoryRange': "Enter at least 0.25 GiB.";
     readonly 'settings.resourcesSaved': "Saved.";
     readonly "settings.contextInspection": "Detailed context analysis (preview)";
-    readonly "settings.contextInspectionHint": "Collects context categories for Codex and Claude threads, shown in the composer's context panel. Off means nothing extra is collected; other harnesses and the basic total are unaffected.";
+    readonly "settings.contextInspectionHint": "Collects context categories for Codex and Claude threads, shown in the composer's context panel. When off, no details are served and nothing new is counted; a session that is already loaded fully follows the setting the next time it loads, so a running turn is not interrupted. Other harnesses and the basic total are unaffected.";
     readonly "settings.contextInspectionHeading": "Diagnostics";
     readonly "settings.contextInspectionUnavailable": "Update this device's Supervisor to use detailed context analysis.";
     readonly "settings.contextInspectionSaveFailed": "Couldn't save. Try again.";
@@ -7024,7 +7024,7 @@ declare const zhCN: {
     'settings.resourcesMemoryRange': "请输入至少 0.25 GiB。";
     'settings.resourcesSaved': "已保存。";
     "settings.contextInspection": "详细上下文分析（预览）";
-    "settings.contextInspectionHint": "为 Codex 和 Claude 线程采集上下文分类，在输入区的上下文面板里查看。关闭时不做额外采集；其他 Harness 和基本占用不受影响。";
+    "settings.contextInspectionHint": "为 Codex 和 Claude 线程采集上下文分类，在输入区的上下文面板里查看。关闭后不再提供详情，也不新增计数；已加载的会话要到下次加载时才完全生效，不会打断正在运行的轮次。其他 Harness 和基本占用不受影响。";
     "settings.contextInspectionHeading": "诊断";
     "settings.contextInspectionUnavailable": "请更新此设备的 Supervisor 以使用详细上下文分析。";
     "settings.contextInspectionSaveFailed": "无法保存，请重试。";
@@ -12183,7 +12183,7 @@ declare const resources: {
         readonly 'settings.resourcesMemoryRange': "Enter at least 0.25 GiB.";
         readonly 'settings.resourcesSaved': "Saved.";
         readonly "settings.contextInspection": "Detailed context analysis (preview)";
-        readonly "settings.contextInspectionHint": "Collects context categories for Codex and Claude threads, shown in the composer's context panel. Off means nothing extra is collected; other harnesses and the basic total are unaffected.";
+        readonly "settings.contextInspectionHint": "Collects context categories for Codex and Claude threads, shown in the composer's context panel. When off, no details are served and nothing new is counted; a session that is already loaded fully follows the setting the next time it loads, so a running turn is not interrupted. Other harnesses and the basic total are unaffected.";
         readonly "settings.contextInspectionHeading": "Diagnostics";
         readonly "settings.contextInspectionUnavailable": "Update this device's Supervisor to use detailed context analysis.";
         readonly "settings.contextInspectionSaveFailed": "Couldn't save. Try again.";
@@ -17319,7 +17319,7 @@ declare const resources: {
         'settings.resourcesMemoryRange': "请输入至少 0.25 GiB。";
         'settings.resourcesSaved': "已保存。";
         "settings.contextInspection": "详细上下文分析（预览）";
-        "settings.contextInspectionHint": "为 Codex 和 Claude 线程采集上下文分类，在输入区的上下文面板里查看。关闭时不做额外采集；其他 Harness 和基本占用不受影响。";
+        "settings.contextInspectionHint": "为 Codex 和 Claude 线程采集上下文分类，在输入区的上下文面板里查看。关闭后不再提供详情，也不新增计数；已加载的会话要到下次加载时才完全生效，不会打断正在运行的轮次。其他 Harness 和基本占用不受影响。";
         "settings.contextInspectionHeading": "诊断";
         "settings.contextInspectionUnavailable": "请更新此设备的 Supervisor 以使用详细上下文分析。";
         "settings.contextInspectionSaveFailed": "无法保存，请重试。";

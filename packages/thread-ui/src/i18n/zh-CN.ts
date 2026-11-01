@@ -82,6 +82,7 @@ export const zhCN = {
   "desktopShell.actionFailed": "操作没有完成，请重试。",
 
   // Device overview and statistics.
+  "desktopDevices.unknownOrigin": "未知来源",
   "desktopDevices.accountUsage": "账号用量",
   "desktopDevices.share": "占比",
   "desktopDevices.byTokens": "按 Token",

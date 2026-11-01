@@ -81,6 +81,7 @@ export const en = {
   "desktopShell.actionFailed": "The action could not be completed. Try again.",
 
   // Device overview and statistics.
+  "desktopDevices.unknownOrigin": "Unknown origin",
   "desktopDevices.accountUsage": "Account usage",
   "desktopDevices.share": "Share",
   "desktopDevices.byTokens": "By Token",

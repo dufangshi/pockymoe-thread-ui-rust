@@ -76,10 +76,10 @@ declare const en: {
     readonly "desktopDevices.automationOrigin": "Automation";
     readonly "desktopDevices.originUnavailable": "This runtime does not break usage down by origin.";
     readonly "desktopDevices.usagePartial": "Some devices provide partial or cached data. Runtime activity has lifetime usage only; it is included only in All time.";
-    readonly "desktopDevices.usageBreakdown": "Input {{input}} · cache read {{read}} · cache write {{write}} · output {{output}} · reasoning {{reasoning}}";
+    readonly "desktopDevices.usageBreakdown": "Input (including cache) {{input}} · cache read {{read}} · cache write {{write}} · output {{output}} · reasoning {{reasoning}}";
     readonly "desktopDevices.noUsage": "No recorded usage in this range";
     readonly "desktopDevices.turnOrigins": "Owner {{owner}} · guest {{guest}} · agent {{agent}} · automation {{automation}} · unknown {{unknown}}";
-    readonly "desktopDevices.usageDefinition": "Turns include every origin. Token totals include cache use; reasoning is part of output. Costs sum known model prices.";
+    readonly "desktopDevices.usageDefinition": "Default turns include every origin. A turn can touch several models; model row counts can overlap. Token totals include cache use; reasoning is part of output. Costs sum known model prices. Undated turns are included in All time totals, without a daily bucket.";
     readonly "desktopDevices.workspaceUsage": "Workspace usage";
     readonly "desktopDevices.total": "Total";
     readonly "desktopDevices.devices": "Devices";
@@ -10326,10 +10326,10 @@ declare const resources: {
         readonly "desktopDevices.automationOrigin": "Automation";
         readonly "desktopDevices.originUnavailable": "This runtime does not break usage down by origin.";
         readonly "desktopDevices.usagePartial": "Some devices provide partial or cached data. Runtime activity has lifetime usage only; it is included only in All time.";
-        readonly "desktopDevices.usageBreakdown": "Input {{input}} · cache read {{read}} · cache write {{write}} · output {{output}} · reasoning {{reasoning}}";
+        readonly "desktopDevices.usageBreakdown": "Input (including cache) {{input}} · cache read {{read}} · cache write {{write}} · output {{output}} · reasoning {{reasoning}}";
         readonly "desktopDevices.noUsage": "No recorded usage in this range";
         readonly "desktopDevices.turnOrigins": "Owner {{owner}} · guest {{guest}} · agent {{agent}} · automation {{automation}} · unknown {{unknown}}";
-        readonly "desktopDevices.usageDefinition": "Turns include every origin. Token totals include cache use; reasoning is part of output. Costs sum known model prices.";
+        readonly "desktopDevices.usageDefinition": "Default turns include every origin. A turn can touch several models; model row counts can overlap. Token totals include cache use; reasoning is part of output. Costs sum known model prices. Undated turns are included in All time totals, without a daily bucket.";
         readonly "desktopDevices.workspaceUsage": "Workspace usage";
         readonly "desktopDevices.total": "Total";
         readonly "desktopDevices.devices": "Devices";

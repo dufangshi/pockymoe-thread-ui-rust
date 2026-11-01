@@ -3,6 +3,7 @@ import { act, useState, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { Select } from './Select';
+import * as Dialog from '@radix-ui/react-dialog';
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 let host: HTMLDivElement, root: Root;
 beforeEach(() => {
@@ -84,4 +85,15 @@ it('closes when disabled and excludes disabled fields from FormData', () => {
   render(<form><Select name="device" value="a" options={[{ value: 'a', label: 'Alpha' }]} /></form>); click(trigger());
   render(<form><Select name="device" value="a" disabled options={[{ value: 'a', label: 'Alpha' }]} /></form>);
   expect(document.querySelector('[role=listbox]')).toBeNull(); expect(trigger().disabled).toBe(true); expect(new FormData(host.querySelector('form')!).has('device')).toBe(false);
+});
+
+
+it('keeps option focus inside a parent Radix modal and returns without dismissing or scrolling it', async () => {
+  await act(async () => root.render(<Dialog.Root open><Dialog.Portal><Dialog.Content aria-describedby={undefined}><Dialog.Title>Parent form</Dialog.Title><Select value="b" options={[{ value: 'a', label: 'Alpha' }, { value: 'b', label: 'Beta' }]} /></Dialog.Content></Dialog.Portal></Dialog.Root>));
+  const control = document.querySelector<HTMLButtonElement>('[role=combobox]')!;
+  const dialog = document.querySelector<HTMLElement>('[role=dialog]')!;
+  await act(async () => control.click()); expect(document.activeElement).toBe(choices()[1]);
+  key(choices()[1]!, 'ArrowUp'); expect(document.activeElement).toBe(choices()[0]);
+  key(choices()[0]!, 'Escape'); expect(document.activeElement).toBe(control);
+  expect(document.querySelector('[role=dialog]')).toBe(dialog); expect(dialog.scrollLeft).toBe(0);
 });

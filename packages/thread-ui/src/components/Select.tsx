@@ -1,5 +1,5 @@
 import { Children, Fragment, isValidElement, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
-import { createPortal } from 'react-dom';
+import * as Dialog from '@radix-ui/react-dialog';
 import { Check, ChevronDown } from 'lucide-react';
 import { useMenuKeyboard } from './menu/useMenuKeyboard';
 import '../styles/form-controls.css';
@@ -38,15 +38,15 @@ function optionChildren(children: ReactNode, group?: string, groupDisabled = fal
 export function Select({ value, defaultValue, onValueChange, options, children, name, required, placeholder, className = '', disabled, form, onKeyDown, onClick, ...buttonProps }: SelectProps) {
   const rows = useMemo(() => options ? [...options] : optionChildren(children), [options, children]);
   const firstValue = String(defaultValue ?? rows.find(row => !row.disabled && !row.hidden)?.value ?? '');
-  const [internal, setInternal] = useState(firstValue), [open, setOpen] = useState(false), [invalid, setInvalid] = useState(false);
+  const [internal, setInternal] = useState(firstValue), [open, setOpen] = useState(false), [menuReady, setMenuReady] = useState(false), [invalid, setInvalid] = useState(false);
   const selected = String(value ?? internal);
   const current = rows.find(row => String(row.value) === selected);
   const trigger = useRef<HTMLButtonElement>(null), menu = useRef<HTMLDivElement>(null), viewport = useRef<HTMLDivElement>(null), field = useRef<HTMLInputElement>(null);
   const popupId = useId(), typeahead = useRef({ text: '', at: 0 });
   const [position, setPosition] = useState({ left: 8, top: 8, minWidth: 120, maxWidth: 320, maxHeight: 320 });
   const [thumb, setThumb] = useState({ size: 0, top: 0 });
-  const close = useCallback((restore: boolean) => { setOpen(false); typeahead.current.text = ''; if (restore) trigger.current?.focus({ preventScroll: true }); }, []);
-  useMenuKeyboard(menu, open, close, '[role="option"]:not([disabled])');
+  const close = useCallback((restore: boolean) => { setOpen(false); setMenuReady(false); typeahead.current.text = ''; if (restore) trigger.current?.focus({ preventScroll: true }); }, []);
+  useMenuKeyboard(menu, open && menuReady, close, '[role="option"]:not([disabled])');
   const measureScroll = useCallback(() => {
     const el = viewport.current; if (!el) return;
     const size = el.scrollHeight > el.clientHeight ? Math.max(24, el.clientHeight ** 2 / el.scrollHeight) : 0;
@@ -58,18 +58,18 @@ export function Select({ value, defaultValue, onValueChange, options, children, 
   }, [rows, internal, value, firstValue]);
   useEffect(() => {
     const reset = () => { if (value === undefined) setInternal(firstValue); setInvalid(false); close(false); };
-    const owner = field.current?.form; owner?.addEventListener('reset', reset);
+    const owner = trigger.current?.form; owner?.addEventListener('reset', reset);
     return () => owner?.removeEventListener('reset', reset);
   }, [value, firstValue, form, close]);
   useEffect(() => { if (disabled) close(false); }, [disabled, close]);
   useEffect(() => {
-    if (!open) return;
+    if (!open || !menuReady) return;
     const typed = typeahead.current.text;
     const selectedOption = typed ? [...(menu.current?.querySelectorAll<HTMLElement>('[role="option"]:not([disabled])') ?? [])].find(option => option.textContent?.trim().toLocaleLowerCase().startsWith(typed)) : menu.current?.querySelector<HTMLElement>('[role="option"][aria-selected="true"]:not([disabled])');
     selectedOption?.focus({ preventScroll: true }); selectedOption?.scrollIntoView?.({ block: 'nearest' });
-  }, [open]);
+  }, [open, menuReady]);
   useLayoutEffect(() => {
-    if (!open) return;
+    if (!open || !menuReady) return;
     const place = () => {
       const rect = trigger.current?.getBoundingClientRect(); if (!rect) return;
       const visual = window.visualViewport, left = visual?.offsetLeft ?? 0, top = visual?.offsetTop ?? 0;
@@ -88,13 +88,13 @@ export function Select({ value, defaultValue, onValueChange, options, children, 
     };
     const outside = (event: PointerEvent) => { if (!menu.current?.contains(event.target as Node) && !trigger.current?.contains(event.target as Node)) close(false); };
     const scroll = (event: Event) => { if (!(event.target instanceof Node) || !menu.current?.contains(event.target)) place(); };
-    place(); const observer = new ResizeObserver(place);
-    if (trigger.current) observer.observe(trigger.current); if (menu.current) observer.observe(menu.current);
+    place(); const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(place);
+    if (trigger.current) observer?.observe(trigger.current); if (menu.current) observer?.observe(menu.current);
     document.addEventListener('pointerdown', outside); window.addEventListener('resize', place); window.addEventListener('scroll', scroll, true);
     window.visualViewport?.addEventListener('resize', place); window.visualViewport?.addEventListener('scroll', place);
-    return () => { observer.disconnect(); document.removeEventListener('pointerdown', outside); window.removeEventListener('resize', place); window.removeEventListener('scroll', scroll, true);
+    return () => { observer?.disconnect(); document.removeEventListener('pointerdown', outside); window.removeEventListener('resize', place); window.removeEventListener('scroll', scroll, true);
       window.visualViewport?.removeEventListener('resize', place); window.visualViewport?.removeEventListener('scroll', place); };
-  }, [open, close, measureScroll]);
+  }, [open, menuReady, close, measureScroll]);
   const choose = (row: SelectOption) => {
     if (row.disabled) return; const next = String(row.value);
     if (value === undefined) setInternal(next); setInvalid(false); close(true);
@@ -116,29 +116,33 @@ export function Select({ value, defaultValue, onValueChange, options, children, 
     const index = candidates.indexOf(trigger.current!); close(false);
     candidates[index + (backwards ? -1 : 1)]?.focus();
   };
-  return <>
-    <button {...buttonProps} ref={trigger} type="button" role="combobox" form={form} disabled={disabled} aria-expanded={open} aria-haspopup="listbox" aria-controls={open ? popupId : undefined}
-      aria-required={required || undefined} aria-invalid={invalid || buttonProps['aria-invalid']} className={`pm-select ${className}`} onClick={event => { onClick?.(event); if (!event.defaultPrevented) setOpen(!open); }}
+  const popupLabel = buttonProps['aria-label'] ?? ([...(trigger.current?.labels ?? [])].map(label => label.textContent).join(' ').trim() || plainText(current?.label ?? placeholder));
+  return <Dialog.Root open={open} onOpenChange={next => { setMenuReady(false); setOpen(next); }} modal={false}>
+    <Dialog.Trigger asChild><button {...buttonProps} ref={trigger} type="button" role="combobox" form={form} disabled={disabled} aria-expanded={open} aria-haspopup="listbox" aria-controls={open ? popupId : undefined}
+      aria-required={required || undefined} aria-invalid={invalid || buttonProps['aria-invalid']} className={`pm-select ${className}`} onClick={event => { onClick?.(event); if (!rows.some(row => !row.hidden)) event.preventDefault(); }}
       onKeyDown={event => { onKeyDown?.(event); if (event.defaultPrevented) return;
         if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) { event.preventDefault(); setOpen(true); }
         else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) { setOpen(true); typeahead.current = { text: event.key.toLocaleLowerCase(), at: Date.now() }; }
       }}>
       <span className="pm-select-value-label" title={plainText(current?.label ?? placeholder)}>{current?.label ?? placeholder ?? (selected || '—')}</span><ChevronDown size={14} data-icon="chevron-down" aria-hidden="true" />
-    </button>
-    <input ref={field} className="pm-select-form-value" type="text" name={name} form={form} required={required} disabled={disabled} value={selected} tabIndex={-1} aria-hidden="true" onChange={() => undefined}
-      onInvalid={event => { event.preventDefault(); setInvalid(true); trigger.current?.focus(); }} />
-    {open && createPortal(<div ref={menu} id={popupId} role="listbox" aria-label={buttonProps['aria-label']} aria-labelledby={buttonProps['aria-labelledby']} className="thread-ui-shell pm-select-menu"
-      data-theme-effective={document.documentElement.dataset.themeEffective} style={position}
+    </button></Dialog.Trigger>
+    {(name || required) && <input ref={field} className="pm-select-form-value" type="text" name={name} form={form} required={required} disabled={disabled} value={selected} tabIndex={-1} aria-hidden="true" onChange={() => undefined}
+      onInvalid={event => { event.preventDefault(); setInvalid(true); trigger.current?.focus({ preventScroll: true }); }} />}
+    <Dialog.Portal forceMount>{open && <Dialog.Content asChild aria-describedby={undefined}
+      onOpenAutoFocus={event => { event.preventDefault(); setMenuReady(true); }} onCloseAutoFocus={event => event.preventDefault()}
+      onEscapeKeyDown={event => { event.preventDefault(); close(true); }}><div ref={menu} id={popupId} role="listbox" aria-label={popupLabel} aria-labelledby={buttonProps['aria-labelledby']} className="thread-ui-shell pm-select-menu"
+      data-ready={menuReady || undefined} data-theme-effective={document.documentElement.dataset.themeEffective} style={position}
       onKeyDownCapture={event => { if (event.key === 'Tab') { event.preventDefault(); event.stopPropagation(); tabAway(event.shiftKey); } }}
       onKeyDown={event => {
         event.stopPropagation();
         if ((event.key === 'Enter' || event.key === ' ') && event.target instanceof HTMLButtonElement) { event.preventDefault(); event.target.click(); }
         else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) { event.preventDefault(); search(event.key); }
       }}>
+      <Dialog.Title className="pm-select-a11y-title">{popupLabel}</Dialog.Title>
       <div ref={viewport} className="pm-select-options" onScroll={measureScroll} onFocusCapture={event => { (event.target as HTMLElement).scrollIntoView?.({ block: 'nearest' }); measureScroll(); }}>
         {rows.map((row, index) => row.hidden ? null : <Fragment key={`${row.value}:${index}`}>
           {row.group && row.group !== rows[index - 1]?.group ? <div className="pm-select-group" role="presentation">{row.group}</div> : null}
-          <button id={`${popupId}-${index}`} type="button" role="option" tabIndex={-1} disabled={row.disabled} aria-selected={String(row.value) === selected} onClick={() => choose(row)}>
+          <button id={`${popupId}-${index}`} type="button" role="option" data-value={String(row.value)} tabIndex={-1} disabled={row.disabled} aria-selected={String(row.value) === selected} onClick={() => choose(row)}>
             <span>{row.label}</span><Check size={14} aria-hidden="true" data-selected={String(row.value) === selected || undefined} />
           </button>
         </Fragment>)}
@@ -150,6 +154,6 @@ export function Select({ value, defaultValue, onValueChange, options, children, 
         const end = () => { target.removeEventListener('pointermove', move); target.removeEventListener('pointerup', end); target.removeEventListener('pointercancel', end); };
         target.addEventListener('pointermove', move); target.addEventListener('pointerup', end); target.addEventListener('pointercancel', end);
       }} /></div>}
-    </div>, document.body)}
-  </>;
+    </div></Dialog.Content>}</Dialog.Portal>
+  </Dialog.Root>;
 }

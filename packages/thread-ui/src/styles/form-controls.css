@@ -12,13 +12,14 @@
 .pm-select:focus-visible, .pm-select-menu [role=option]:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 2px; }
 .pm-select:active:not(:disabled), .pm-select[aria-expanded=true] { background: var(--theme-hover); }
 .pm-select[aria-invalid=true] { border-color: var(--status-danger-fg, #d65353); }
-.pm-select-form-value { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; clip-path: inset(50%); pointer-events: none; }
+.pm-select-a11y-title, .pm-select-form-value { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; clip-path: inset(50%); pointer-events: none; }
 .pm-select-menu.thread-ui-shell {
   position: fixed; z-index: 1200; display: flex; flex-direction: column; width: max-content; height: auto; min-height: 0;
   box-sizing: border-box; margin: 0; padding: 4px; overflow: hidden; border: 1px solid var(--theme-border); border-radius: 8px;
   background: var(--theme-panel, var(--theme-bg)); color: var(--theme-fg); font: inherit; font-size: 13px;
   box-shadow: var(--theme-shadow, 0 8px 30px rgb(0 0 0 / .16)); -webkit-app-region: no-drag;
 }
+.pm-select-menu:not([data-ready]) { visibility: hidden; }
 .pm-select-options { flex: 1; min-height: 0; overflow: auto; padding-right: 6px; overscroll-behavior: contain; scrollbar-width: none; }
 .pm-select-options::-webkit-scrollbar { display: none; }
 .pm-select-menu [role=option] {

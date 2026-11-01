@@ -5,6 +5,7 @@ import {
   type ThreadMapThread,
   type MapNode,
 } from './model';
+import { threadLeaves, mapPriority } from './readability';
 import { DenseLayout, type DenseBox } from './density';
 const now = Date.now();
 const thread = (i: number): ThreadMapThread => ({
@@ -92,3 +93,136 @@ describe('desktop density from real account shape', () => {
     expect(visit(tree).some((n) => n.kind === 'compressed')).toBe(false);
   });
 });
+
+const collect = (items: DenseBox[]): DenseBox[] =>
+  items.flatMap((b) => [b, ...collect(b.children ?? [])]);
+it('never draws undersized thread or overflow cells on a narrow account map', () => {
+  const boxes = collect(
+    new DenseLayout().layout(
+      root(),
+      { x: 0, y: 0, width: 390, height: 750 },
+      false,
+      'all',
+    ),
+  );
+  for (const box of boxes.filter((b) => b.node.thread || b.overflow)) {
+    expect(box.rect.width).toBeGreaterThanOrEqual(87.99);
+    expect(box.rect.height).toBeGreaterThanOrEqual(33.99);
+  }
+  expect(
+    boxes.some((b) => b.overflow && b.overflow[0]?.kind === 'workspace'),
+  ).toBe(true);
+});
+it('prioritizes waiting, running, unread failure, unread, pinned, then score in normal-sized overflow', () => {
+  const list: ThreadMapThread[] = Array.from({ length: 60 }, (_, i) => ({
+    ...thread(i),
+    needsInput: undefined,
+    running: false,
+    failed: false,
+    unread: false,
+    turns: 4,
+  }));
+  list[59] = { ...list[59]!, needsInput: { kind: 'input' } };
+  list[58] = { ...list[58]!, running: true };
+  list[57] = { ...list[57]!, unread: true, failed: true };
+  list[56] = { ...list[56]!, unread: true };
+  list[55] = { ...list[55]!, pinned: true };
+  const workspace = root([
+    {
+      id: 'a',
+      name: 'A',
+      state: 'ready',
+      workspaces: [{ id: 'w', label: 'W', threads: list }],
+    },
+  ]).children[0]!.children[0]!;
+  const boxes = new DenseLayout().layout(
+    workspace,
+    { x: 0, y: 0, width: 450, height: 216 },
+    false,
+    'all',
+  );
+  expect(
+    boxes
+      .filter((b) => !b.overflow)
+      .slice(0, 5)
+      .map((b) => b.node.thread!.key),
+  ).toEqual(['59', '58', '57', '56', '55']);
+  const overflow = boxes.find((b) => b.overflow)!;
+  expect(
+    overflow.overflow!.every(
+      (n) => !['59', '58', '57', '56', '55'].includes(n.thread!.key),
+    ),
+  ).toBe(true);
+  expect(overflow.rect.width * overflow.rect.height).toBeLessThanOrEqual(
+    Math.max(
+      ...boxes
+        .filter((b) => !b.overflow)
+        .map((b) => b.rect.width * b.rect.height),
+    ) * 1.8,
+  );
+});
+it('holds membership below 30% and through pointer freeze, then reconciles priority after thaw', () => {
+  const device: ThreadMapDevice = {
+    id: 'a',
+    name: 'A',
+    state: 'ready',
+    workspaces: [
+      {
+        id: 'w',
+        label: 'W',
+        threads: Array.from({ length: 60 }, (_, i) => ({
+          ...thread(i),
+          needsInput: undefined,
+          running: false,
+          failed: false,
+          unread: false,
+          turns: 4,
+        })),
+      },
+    ],
+  };
+  const make = () => root([device]).children[0]!.children[0]!;
+  const first = make(),
+    model = new DenseLayout(),
+    bounds = { x: 0, y: 0, width: 360, height: 180 };
+  const before = model.layout(first, bounds, false, 'all');
+  const hidden = before.find((b) => b.overflow)!.overflow![0]!.id;
+  const tiny = make();
+  tiny.children.find((n) => n.id === hidden)!.weight *= 1.2;
+  const shape = (boxes: DenseBox[]) =>
+    boxes.map((b) => ({
+      id: b.node.id,
+      rect: b.rect,
+      hidden: b.overflow?.map((n) => n.id),
+    }));
+  expect(shape(model.layout(tiny, bounds, false, 'all'))).toEqual(
+    shape(before),
+  );
+  const waiting = make(),
+    target = waiting.children.find((n) => n.id === hidden)!;
+  target.thread = { ...target.thread!, needsInput: { kind: 'input' } };
+  expect(shape(model.layout(waiting, bounds, true, 'all'))).toEqual(
+    shape(before),
+  );
+  expect(model.layout(waiting, bounds, false, 'all')[0]!.node.id).toBe(hidden);
+});
+
+it.each([900, 390])(
+  'never hides waiting or running threads behind history at %ipx',
+  (width) => {
+    const boxes = collect(
+      new DenseLayout().layout(
+        root(),
+        { x: 0, y: 0, width, height: 706 },
+        false,
+        'all',
+      ),
+    );
+    const hidden = boxes.flatMap((b) =>
+      b.overflow ? threadLeaves(b.overflow) : [],
+    );
+    expect(hidden.some((n) => mapPriority(n) < 2)).toBe(false);
+    if (width === 900)
+      expect(hidden.some((n) => mapPriority(n) < 4)).toBe(false);
+  },
+);

@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowUpRight, ChevronRight, ChevronUp, Folder, List, Monitor
 import { translate, useI18n } from '../../i18n';
 import { buildThreadMap, heatLevel, indexMap, threadWeight, type MapNode, type ThreadMapThread } from './model';
 import { AgeGlyph, AgentChip, formatRunTime, threadDetails, ThreadTile } from './ThreadTile';
+import { Select } from '../Select';
 import { StatusMark } from '../StatusMark';
 import { formatCompactUsd } from '../timeline/tokenFormatting';
 import { type MapRect } from './squarify';
@@ -86,10 +87,10 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const root = useMemo(() => {
     if (priorLayoutRevision.current !== layoutRevision) { orders.current.clear(); priorLayoutRevision.current = layoutRevision; }
     if (priorScope.current !== scope) { orders.current.clear(); priorScope.current = scope; }
-    const list = enhanced ? devices.filter(d => (!page || d.workspaces.some(w => w.threads.length > 0)) && ( d.state !== 'offline' || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`))))
+    const list = enhanced ? devices.filter(d => (!page || d.workspaces.some(w => w.threads.length > 0) || focusId === `device:${d.id}`) && ( d.state !== 'offline' || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`))))
       .map(d => d.state === 'offline' ? { ...d, state: 'ready' as const } : d) : devices;
     const tree = buildThreadMap(list, allLabel, enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true, dense: page } : {});
-    if (page) tree.children = tree.children.filter(node => node.threads > 0);
+    if (page) tree.children = tree.children.filter(node => node.threads > 0 || node.id === focusId);
     return stableLayout ? orders.current.apply(tree, frozen) : tree;
   }, [devices, allLabel, enhanced, page, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId]);
   const nodes = useMemo(() => indexMap(root), [root]);
@@ -292,6 +293,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       while (child && child.parent !== target) child = child.parent;
       zoomPlan.current = child ? { kind: 'out', childId: child.id } : { kind: 'fade' };
     }
+    if (page) setLayoutRevision(revision => revision + 1);
     setFocusId(target === root ? null : target.id);
     setTip(null);
     crumbs.current?.focus({ preventScroll: true });
@@ -626,14 +628,14 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           onClick={() => setLayoutRevision(revision => revision + 1)}><RotateCw data-icon="refresh" aria-hidden="true" /></button>}
         {children.length > 0 && <label className="thread-map-goto" title={translate('workbench.threadMapGoTo')}>
           <List aria-hidden="true" />
-          <select aria-label={translate('workbench.threadMapGoTo')} value="" onChange={event => {
-            const node = nodes.get(event.target.value);
+          <Select aria-label={translate('workbench.threadMapGoTo')} value="" onValueChange={value => {
+            const node = nodes.get(value);
             if (node?.thread) onOpen(node.thread);
             else if (node) navigate(node);
           }}>
             <option value="">{translate('workbench.threadMapGoTo')}</option>
             {children.map(node => <option key={node.id} value={node.id} disabled={node.kind === 'device' && node.device?.state !== 'ready'}>{describe(node, hours).join(' · ')}</option>)}
-          </select>
+          </Select>
         </label>}
         {current.device && cachedDevices.has(current.device.id) && <span className="thread-map-cached-label">{translate('workbench.threadMapCached')}
           {current.device.cachedAt && <> · {relativeCache(current.device.cachedAt)}</>}</span>}
@@ -653,7 +655,9 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       </div>
       {enhanced && devices.some(device => device.state === 'offline' || page && !device.workspaces.some(w=>w.threads.length)) && <div className="thread-map-offline-strip">
         {devices.filter(device => device.state === 'offline' || page && !device.workspaces.some(w=>w.threads.length)).map(device => <button type="button" key={device.id} onClick={() => {
-          setCachedDevices(previous => new Set([...previous, device.id])); setFocusId(`device:${device.id}`);
+          setLayoutRevision(revision => revision + 1);
+          if (device.state === 'offline') setCachedDevices(previous => new Set([...previous, device.id]));
+          setFocusId(`device:${device.id}`);
         }} title={[device.name,device.state==='offline'?translate('workbench.threadMapOffline'):translate('workbench.threadMapEmpty'),device.cachedAt?relativeCache(device.cachedAt):''].filter(Boolean).join(' · ')}><DeviceStateMark offline={device.state==='offline'} /><b>{device.name}</b><span>{translate('workbench.threadMapOffline')}</span>
           {device.cachedAt && <span>{relativeCache(device.cachedAt)}</span>}
           <small>{translate(device.workspaces.length ? 'workbench.threadMapCached' : 'workbench.threadMapNoCache')}</small>

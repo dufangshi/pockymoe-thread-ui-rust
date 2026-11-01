@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { ThreadMapDevice, ThreadMapThread } from './model';
 
+/** Page mode exposes all/active; week is retained for legacy dialog callers. */
 export type MapScope = 'active' | 'week' | 'all';
 export interface MapAttention {
   key: string;
@@ -29,6 +30,7 @@ export interface ThreadMapProps {
   devices: ThreadMapDevice[];
   currentKey?: string | undefined;
   hours?: number;
+  /** Dialog heading. Page mode uses its breadcrumb in the single chrome row. */
   heading?: ReactNode;
   actions?: ReactNode;
   onOpen: (thread: ThreadMapThread) => void;

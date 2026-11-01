@@ -990,3 +990,18 @@
 .thread-map-dense-tile > .thread-map-dense-unread { position:absolute; top:3px; right:3px; line-height:0; }
 .thread-map-dense-unread > .matter-status-dot { width:5px; height:5px; }
 .thread-map-dense-tile:has(.thread-map-dense-unread) .thread-map-dense-head { padding-right:4px; }
+.thread-map-group-menu { display:flex; flex-direction:column; width:min(260px,calc(100vw - 16px)); }
+.thread-map-group-menu [role='menuitem'] { display:flex; align-items:center; gap:7px; min-height:36px; }
+.thread-map-group-menu [role='menuitem'] svg { flex:none; width:13px; height:13px; }
+.thread-map-goto > .pm-select { min-width:100px; height:28px; font-size:11px; }
+.thread-map .thread-map-dense-tile[data-pulse] { animation:thread-map-event 800ms ease-out 1; }
+@media(max-width:639px) {
+  .thread-map-dense-toolbar .thread-map-dense-summary { display:none; }
+  .thread-map-dense-toolbar .thread-map-scope { width:auto; flex:none; }
+  .thread-map-dense-toolbar .thread-map-scope button { flex:none; }
+  .thread-map-dense-toolbar .thread-map-filter { flex:1 1 90px; }
+  .thread-map[data-presentation='page'] .thread-map-offline-strip button { min-height:24px; }
+}
+@media(prefers-reduced-motion:reduce) { .thread-map .thread-map-dense-tile[data-pulse] { animation:none; } }
+.thread-map-dense-update { display:flex; flex:none; align-items:center; padding:0 2px; color:var(--theme-accent-solid); }
+.thread-map-dense-update svg { width:12px; height:12px; }

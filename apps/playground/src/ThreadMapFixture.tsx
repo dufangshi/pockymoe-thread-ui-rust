@@ -3,6 +3,7 @@
  * No Supervisor, account data or network polling is involved. */
 import { Profiler, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { ThreadMapDialog } from '../../../packages/thread-ui/src/components/threadMap/ThreadMapDialog';
 import { ThreadMap } from '../../../packages/thread-ui/src/components/threadMap/ThreadMap';
 import type { MapAttention, MapScope } from '../../../packages/thread-ui/src/components/threadMap/types';
 import type { ThreadMapDevice, ThreadMapThread } from '../../../packages/thread-ui/src/components/threadMap/model';
@@ -86,11 +87,11 @@ function Fixture() {
       const readings = (window as Window & { mapRenderTimes?: number[] }).mapRenderTimes ??= [];
       if (phase !== 'mount') readings.push(duration);
     }}>
-      <ThreadMap presentation="page" devices={devices} stableLayout scope={scope} onScopeChange={setScope} attention={attention}
+      {params.get('presentation') === 'dialog' ? <ThreadMapDialog open onOpenChange={() => undefined} effectiveTheme={mode === 'dark' ? 'dark' : 'light'} devices={devices} onOpen={thread => setNotice(`打开 · ${thread.title}`)} /> : <ThreadMap presentation="page" devices={devices} stableLayout scope={scope} onScopeChange={setScope} attention={attention}
         heading={<h1 className="thread-map-title">线程地图</h1>} filterText={query} onFilterChange={setQuery}
         deviceExtras={{ studio: { latencyMs: 8, runtimeVersion: '0.13.41', updateAvailable: true, runningCount: 3, waitingCount: 2, todayCostUsd: 4.27, metrics: 'CPU 12% · 内存 18.2 / 64 GB · GPU 4%', menuItems: menu('Mac Studio') }, server: { latencyMs: 31, runtimeVersion: '0.13.41', runningCount: 1, waitingCount: 0, todayCostUsd: 1.36, metrics: 'CPU 8% · 内存 5.1 / 16 GB', menuItems: menu('Build Server') } }}
         onOpen={thread => setNotice(`打开 · ${thread.title}`)} onQuickLook={key => setNotice(`快速查看 · ${key}`)} revealKey={revealKey}
-        onRequestDecision={(key, _id, decision) => setNotice(`${key} · ${decision === 'approve' ? '已批准' : '已拒绝'}`)} />
+        onRequestDecision={(key, _id, decision) => setNotice(`${key} · ${decision === 'approve' ? '已批准' : '已拒绝'}`)} />}
     </Profiler>
     {notice && <button type="button" className="map-fixture-notice" onClick={() => setNotice('')}>{notice} ×</button>}
   </div>;

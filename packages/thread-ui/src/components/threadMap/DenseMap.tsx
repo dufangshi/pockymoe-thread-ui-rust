@@ -1,11 +1,17 @@
+import { createPortal } from 'react-dom';
+import { useMenuKeyboard } from '../menu/useMenuKeyboard';
+import { MapScrollList } from './MapScrollList';
 import {
   Fragment,
   memo,
   useRef,
+  useState,
+  useEffect,
   type CSSProperties,
   type ReactNode,
 } from 'react';
 import {
+  ArrowUpCircle,
   Bot,
   Clock3,
   DollarSign,
@@ -114,7 +120,7 @@ const DenseTile = memo(
                 {t.turns}
               </span>
             )}
-            {!!t.totalMs && (
+            {!!t.totalMs && box.width >= 140 && (
               <span
                 title={translate('workbench.threadMapTotalRan', {
                   duration: formatShortDuration(t.totalMs),
@@ -124,7 +130,7 @@ const DenseTile = memo(
                 {formatShortDuration(t.totalMs)}
               </span>
             )}
-            {t.priceEstimate && (
+            {t.priceEstimate && box.width >= 200 && (
               <span
                 title={translate('workbench.threadMapCost', {
                   usd: formatCompactUsd(t.priceEstimate.totalUsd),
@@ -134,7 +140,7 @@ const DenseTile = memo(
                 {formatCompactUsd(t.priceEstimate.totalUsd).replace(/^\$/, '')}
               </span>
             )}
-            {!!t.children?.length && (
+            {!!t.children?.length && box.width >= 110 && (
               <button
                 type="button"
                 onClick={() => navigate(node)}
@@ -175,6 +181,140 @@ const DenseTile = memo(
     a.onQuickLook === b.onQuickLook,
 );
 
+function OverflowCell({
+  box,
+  current,
+  navigate,
+  hover,
+}: {
+  box: DenseBox;
+  current: MapNode;
+  navigate: ReadableMapProps['navigate'];
+  hover: ReadableMapProps['hover'];
+}) {
+  const trigger = useRef<HTMLButtonElement>(null),
+    menu = useRef<HTMLDivElement>(null);
+  const [anchor, setAnchor] = useState<{ left: number; top: number } | null>(
+    null,
+  );
+  const close = (restore = false) => {
+    setAnchor(null);
+    if (restore) trigger.current?.focus();
+  };
+  useMenuKeyboard(menu, Boolean(anchor), close);
+  useEffect(() => {
+    if (!anchor) return;
+    const outside = (e: PointerEvent) => {
+      if (
+        !menu.current?.contains(e.target as Node) &&
+        !trigger.current?.contains(e.target as Node)
+      )
+        setAnchor(null);
+    };
+    const moved = (e: Event) => {
+      if (!(e.target instanceof Node && menu.current?.contains(e.target)))
+        setAnchor(null);
+    };
+    document.addEventListener('pointerdown', outside);
+    window.addEventListener('resize', moved);
+    window.addEventListener('scroll', moved, true);
+    return () => {
+      document.removeEventListener('pointerdown', outside);
+      window.removeEventListener('resize', moved);
+      window.removeEventListener('scroll', moved, true);
+    };
+  }, [anchor]);
+  const { rect, node, overflow: items = [] } = box,
+    groups = !node.thread;
+  const label = translate(
+    groups
+      ? node.kind === 'device'
+        ? 'workbench.threadMapOtherDevices'
+        : 'workbench.threadMapOtherWorkspaces'
+      : 'workbench.threadMapRemainingThreads',
+    { count: items.length },
+  );
+  return (
+    <>
+      <button
+        ref={trigger}
+        type="button"
+        className="thread-map-overflow thread-map-dense-overflow"
+        data-map-id={`overflow:${node.parent?.id ?? current.id}`}
+        style={{
+          left: rect.x,
+          top: rect.y,
+          width: rect.width,
+          height: rect.height,
+        }}
+        aria-label={label}
+        aria-haspopup={groups ? 'menu' : undefined}
+        aria-expanded={groups ? Boolean(anchor) : undefined}
+        onClick={() => {
+          if (!groups) {
+            navigate(node.parent ?? current);
+            return;
+          }
+          if (anchor) {
+            close();
+            return;
+          }
+          const r = trigger.current!.getBoundingClientRect();
+          setAnchor({
+            left: Math.max(8, Math.min(r.left, innerWidth - 268)),
+            top: Math.max(
+              8,
+              Math.min(
+                r.bottom + 4,
+                innerHeight - Math.min(360, items.length * 36 + 8) - 8,
+              ),
+            ),
+          });
+        }}
+        {...hover([label, ...items.slice(0, 5).map((n) => n.label)])}
+      >
+        <Layers aria-hidden="true" />
+        <span>+{items.length}</span>
+      </button>
+      {anchor &&
+        createPortal(
+          <div
+            ref={menu}
+            role="menu"
+            aria-label={label}
+            data-theme-effective={
+              document.documentElement.dataset.themeEffective
+            }
+            className="thread-graph-dialog thread-map-device-menu thread-map-group-menu"
+            style={{
+              position: 'fixed',
+              ...anchor,
+              height: Math.min(360, items.length * 36 + 8),
+            }}
+          >
+            <MapScrollList label={label}>
+              {items.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    close();
+                    navigate(item);
+                  }}
+                >
+                  <Folder aria-hidden="true" />
+                  {item.label}
+                </button>
+              ))}
+            </MapScrollList>
+          </div>,
+          document.body,
+        )}
+    </>
+  );
+}
+
 /** Flat rectangles share the same coordinate space: headers consume exactly one
  * line, without nested card borders, padding or a second layer of gutters. */
 export function DenseMap(props: ReadableMapProps) {
@@ -204,28 +344,14 @@ export function DenseMap(props: ReadableMapProps) {
       if (overflow) {
         const id = `overflow:${node.parent?.id ?? current.id}`;
         targets.push({ id, rect });
-        const label = translate('workbench.threadMapRemainingThreads', {
-          count: overflow.length,
-        });
         return (
-          <button
+          <OverflowCell
             key={id}
-            type="button"
-            className="thread-map-overflow thread-map-dense-overflow"
-            data-map-id={id}
-            style={{
-              left: rect.x,
-              top: rect.y,
-              width: rect.width,
-              height: rect.height,
-            }}
-            aria-label={label}
-            onClick={() => navigate(node.parent ?? current)}
-            {...hover([label, ...overflow.slice(0, 5).map((n) => n.label)])}
-          >
-            <Layers aria-hidden="true" />
-            <span>+{overflow.length}</span>
-          </button>
+            box={box}
+            current={current}
+            navigate={navigate}
+            hover={hover}
+          />
         );
       }
       if (node.thread) {
@@ -278,6 +404,9 @@ export function DenseMap(props: ReadableMapProps) {
                   translate('workbench.threadMapThreads', {
                     count: node.threads,
                   }),
+                  ...(extra?.runtimeVersion
+                    ? [`v${extra.runtimeVersion.replace(/^v/, '')}`]
+                    : []),
                   ...(extra?.metrics ? [extra.metrics] : []),
                 ])}
               >
@@ -287,6 +416,16 @@ export function DenseMap(props: ReadableMapProps) {
                   <small>{Math.round(extra.latencyMs)} ms</small>
                 )}
               </button>
+              {device && extra?.updateAvailable && (
+                <span
+                  className="thread-map-dense-update"
+                  role="img"
+                  aria-label={translate('workbench.threadMapUpdate')}
+                  title={translate('workbench.threadMapUpdate')}
+                >
+                  <ArrowUpCircle aria-hidden="true" />
+                </span>
+              )}
               {device && extra?.menuItems?.length ? (
                 <DeviceMenu device={node.device!} items={extra.menuItems} />
               ) : null}

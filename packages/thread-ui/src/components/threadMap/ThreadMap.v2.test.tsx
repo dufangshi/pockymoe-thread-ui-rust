@@ -146,9 +146,19 @@ describe('ThreadMap page', () => {
     show({ attention: [] }); expect(host.querySelector('.thread-map-attention-wrap')?.hasAttribute('data-visible')).toBe(false);
   });
 
+  it('puts zero-thread devices in the same bottom strip without a canvas rectangle', () => {
+    show({ devices: [...makeDevices(), { id: 'empty', name: 'LuisMini2', state: 'ready', workspaces: [] }] });
+    expect(host.querySelector('[data-map-id="device:empty"]')).toBeNull();
+    expect(host.querySelector('.thread-map-offline-strip button')?.textContent).toContain('LuisMini2');
+    click(host.querySelector('.thread-map-offline-strip button')!);
+    expect(host.querySelector('.thread-map-empty')?.textContent).toBe('No threads yet');
+    expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('LuisMini2');
+  });
+
   it('shows offline devices at the end and opens their cached view', () => {
     const offline: ThreadMapDevice = { id: 'offline', name: 'Travel Mac', state: 'offline', cachedAt: new Date(now - 3 * 3_600_000).toISOString(), workspaces: [{ id: 'cached', label: 'Cached work', threads: [thread('cached')] }] };
-    show({ devices: [...makeDevices(), offline] });
+    show({ devices: [...makeDevices(), offline], stableLayout: true });
+    act(() => host.querySelector('.thread-map-canvas')!.dispatchEvent(new MouseEvent('pointerover', { bubbles: true })));
     expect(tile('cached')).toBeFalsy();
     const row = host.querySelector('.thread-map-offline-strip button')!;
     expect(row.textContent).toContain('Travel MacOffline3 hr. agoCached');

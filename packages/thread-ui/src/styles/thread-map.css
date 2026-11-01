@@ -1005,3 +1005,8 @@
 @media(prefers-reduced-motion:reduce) { .thread-map .thread-map-dense-tile[data-pulse] { animation:none; } }
 .thread-map-dense-update { display:flex; flex:none; align-items:center; padding:0 2px; color:var(--theme-accent-solid); }
 .thread-map-dense-update svg { width:12px; height:12px; }
+/* The custom picker occupies layout space; the old native picker was an
+   invisible overlay inside a 32px icon. Keep its full trigger inside the row. */
+.thread-map-goto:has(> .pm-select) { width:132px; height:28px; padding:0; }
+.thread-map-goto:has(> .pm-select) > svg { display:none; }
+.thread-map-goto > .pm-select { width:100%; }

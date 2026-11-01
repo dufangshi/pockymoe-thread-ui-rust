@@ -4514,8 +4514,9 @@ function currentReading(snapshot, base) {
 function contextPercent(used, window2) {
   return window2 > 0 ? Math.max(0, Math.min(100, used / window2 * 100)) : 0;
 }
-function formatContextPercent(used, window2) {
+function formatContextPercent(used, window2, detailed = false) {
   const percent = contextPercent(used, window2);
+  if (detailed) return percent > 0 && percent < 0.1 ? "<0.1%" : `${Number(percent.toFixed(1))}%`;
   if (percent > 0 && percent < 1) return "<1%";
   return `${Math.round(percent)}%`;
 }
@@ -4936,7 +4937,7 @@ function ComposerContextControl({
         children: [
           /* @__PURE__ */ jsxs19("div", { className: "thread-context-summary", "data-tone": tone, children: [
             /* @__PURE__ */ jsxs19("div", { className: "thread-context-hero", children: [
-              /* @__PURE__ */ jsx24("strong", { className: "thread-context-percent", children: percentText }),
+              /* @__PURE__ */ jsx24("strong", { className: "thread-context-percent", children: reading ? formatContextPercent(reading.used, reading.window, true) : "\u2014" }),
               reading ? /* @__PURE__ */ jsxs19("span", { className: "thread-context-amount", children: [
                 approximate(estimatedTotal),
                 formatContextTokens(reading.used),

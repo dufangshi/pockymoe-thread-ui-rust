@@ -466,7 +466,7 @@ export function ComposerContextControl({
           layoutKey={[state.status, state.response?.availability, snapshot?.source, snapshot?.categories.length].join('|')}>
           <div className="thread-context-summary" data-tone={tone}>
             <div className="thread-context-hero">
-              <strong className="thread-context-percent">{percentText}</strong>
+              <strong className="thread-context-percent">{reading ? formatContextPercent(reading.used, reading.window, true) : '—'}</strong>
               {reading ? (
                 <span className="thread-context-amount">
                   {approximate(estimatedTotal)}{formatContextTokens(reading.used)}

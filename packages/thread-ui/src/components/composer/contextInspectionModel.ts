@@ -105,8 +105,9 @@ export function contextPercent(used: number, window: number) {
 }
 
 /** Whole percents; anything above nothing never reads as 0%. */
-export function formatContextPercent(used: number, window: number) {
+export function formatContextPercent(used: number, window: number, detailed = false) {
   const percent = contextPercent(used, window);
+  if (detailed) return percent > 0 && percent < 0.1 ? '<0.1%' : `${Number(percent.toFixed(1))}%`;
   if (percent > 0 && percent < 1) return '<1%';
   return `${Math.round(percent)}%`;
 }

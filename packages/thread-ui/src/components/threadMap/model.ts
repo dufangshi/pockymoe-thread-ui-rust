@@ -115,6 +115,8 @@ const byWeight = (a: MapNode, b: MapNode) => b.weight - a.weight || a.label.loca
  */
 export interface MapBuildOptions {
   scope?: MapScope | undefined;
+  /** Page v3 scope filters old unread history too; dialog keeps its old policy. */
+  dense?: boolean;
   now?: number;
   expandedWorkspaces?: ReadonlySet<string>;
   expandedDevices?: ReadonlySet<string>;
@@ -163,10 +165,11 @@ export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: s
           weight: options.scope ? recencyWeight(thread, now) : live || isWaiting(thread) ? runningWeight(thread.turns) : threadWeight(thread.turns), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0, threads: 1, running: live ? 1 : 0,
           usd: thread.priceEstimate?.totalUsd ?? 0, tokens: thread.tokenUsage?.totalTokens ?? 0,
         };
-        if (options.scope && !expanded && !inScope(thread, options.scope, now)) hidden.push(leaf);
+        if (options.scope && !expanded && !(options.dense && options.scope === 'active' ? isLive(thread) || isWaiting(thread) || now - Date.parse(thread.lastActiveAt ?? '') <= DAY : inScope(thread, options.scope, now))) hidden.push(leaf);
         else space.children.push(leaf);
         add(space, leaf);
       }
+      if (options.dense) hidden.length = 0;
       if (!space.children.length && hidden.length) { space.hiddenNodes = hidden; hiddenSpaces.push(space); continue; }
       if (!space.children.length) continue;
       if (hidden.length) {

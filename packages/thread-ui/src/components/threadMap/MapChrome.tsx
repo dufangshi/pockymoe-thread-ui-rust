@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { MoreVertical } from 'lucide-react';
+import { MoreVertical, Check, X, Info } from 'lucide-react';
 import { getLocale, translate } from '../../i18n';
 import { MapScrollList } from './MapScrollList';
 import { StatusMark } from '../StatusMark';
@@ -32,7 +32,7 @@ export function AttentionStrip({ items, onOpen, onRequestDecision, responsive = 
 }) {
   const [expanded, setExpanded] = useState(false);
   const ordered = orderAttention(items);
-  if (responsive) return <ResponsiveAttention items={ordered} onOpen={onOpen} onRequestDecision={onRequestDecision} />;
+  if (responsive) return <ResponsiveAttention items={ordered} onOpen={onOpen} onRequestDecision={onRequestDecision} compact />;
   return <div className="thread-map-attention-wrap" data-visible={items.length > 0 || undefined}>
     <div className="thread-map-attention" role="region" aria-label={translate('workbench.threadMapAttention')}>
       {ordered.slice(0, expanded ? undefined : 6).map(item => <AttentionCard key={item.key} item={item} onOpen={onOpen} onRequestDecision={onRequestDecision} />)}
@@ -43,20 +43,20 @@ export function AttentionStrip({ items, onOpen, onRequestDecision, responsive = 
   </div>;
 }
 
-function AttentionCard({ item, onOpen, onRequestDecision }: { item: MapAttention; onOpen: (key: string) => void; onRequestDecision: ThreadMapProps['onRequestDecision'] }) {
+function AttentionCard({ item, onOpen, onRequestDecision, compact = false }: { compact?: boolean; item: MapAttention; onOpen: (key: string) => void; onRequestDecision: ThreadMapProps['onRequestDecision'] }) {
   return <article className="thread-map-attention-card" data-kind={item.kind}>
     <button className="thread-map-attention-open" type="button" onClick={() => onOpen(item.key)} title={item.title}>
       <StatusMark status={item.kind === 'approval' || item.kind === 'input' ? 'waiting' : item.kind === 'failed' ? 'failed' : 'unread'} />
       <span><b>{item.title}</b><small>{item.device} · {item.workspace}</small><small>{item.summary ?? translate(item.kind === 'input' || item.kind === 'approval' ? 'workbench.waitingForYou' : item.kind === 'failed' ? 'workbench.failed' : 'workbench.completedUnread')}</small></span>
     </button>
     {item.kind === 'approval' && item.requestId && onRequestDecision && <div className="thread-map-decisions">
-      <button type="button" onClick={() => onRequestDecision(item.key, item.requestId!, 'approve')}>{translate('workbench.threadMapApprove')}</button>
-      <button type="button" onClick={() => onRequestDecision(item.key, item.requestId!, 'deny')}>{translate('workbench.threadMapDeny')}</button>
+      <button type="button" aria-label={translate('workbench.threadMapApprove')} title={translate('workbench.threadMapApprove')} onClick={() => onRequestDecision(item.key, item.requestId!, 'approve')}>{compact ? <Check aria-hidden="true"/> : translate('workbench.threadMapApprove')}</button>
+      <button type="button" aria-label={translate('workbench.threadMapDeny')} title={translate('workbench.threadMapDeny')} onClick={() => onRequestDecision(item.key, item.requestId!, 'deny')}>{compact ? <X aria-hidden="true"/> : translate('workbench.threadMapDeny')}</button>
     </div>}
   </article>;
 }
 
-function ResponsiveAttention({ items, onOpen, onRequestDecision }: { items: readonly MapAttention[]; onOpen: (key: string) => void; onRequestDecision: ThreadMapProps['onRequestDecision'] }) {
+function ResponsiveAttention({ items, onOpen, onRequestDecision, compact = false }: { compact?: boolean; items: readonly MapAttention[]; onOpen: (key: string) => void; onRequestDecision: ThreadMapProps['onRequestDecision'] }) {
   const strip = useRef<HTMLDivElement>(null), trigger = useRef<HTMLButtonElement>(null), menu = useRef<HTMLDivElement>(null);
   const [capacity, setCapacity] = useState(1);
   const [anchor, setAnchor] = useState<{ left: number; top: number } | null>(null);
@@ -66,13 +66,13 @@ function ResponsiveAttention({ items, onOpen, onRequestDecision }: { items: read
     const el = strip.current;
     if (!el) return;
     const measure = () => {
-      const width = Math.max(0, el.clientWidth - 32);
-      const all = Math.floor((width + 8) / 208);
-      setCapacity(Math.min(6, items.length <= all ? all : Math.max(0, Math.floor((width - 80) / 208))));
+      const width = Math.max(0, el.clientWidth - (compact ? 4 : 32));
+      const all = Math.floor((width + 4) / (compact ? 184 : 208));
+      setCapacity(Math.min(6, items.length <= all ? all : Math.max(0, Math.floor((width - (compact ? 48 : 80)) / (compact ? 184 : 208)))));
     };
     measure(); const resize = new ResizeObserver(measure); resize.observe(el);
     return () => resize.disconnect();
-  }, [items.length]);
+  }, [items.length, compact]);
   const close = (restore = false) => { setAnchor(null); if (restore) trigger.current?.focus(); };
   useMenuKeyboard(menu, Boolean(anchor), close);
   useEffect(() => {
@@ -91,12 +91,12 @@ function ResponsiveAttention({ items, onOpen, onRequestDecision }: { items: read
   }, [anchor]);
   return <div className="thread-map-attention-wrap" data-visible={items.length > 0 || undefined}>
     <div ref={strip} className="thread-map-attention" data-responsive role="region" aria-label={translate('workbench.threadMapAttention')}>
-      {items.slice(0, shown).map(item => <AttentionCard key={item.key} item={item} onOpen={onOpen} onRequestDecision={onRequestDecision} />)}
-      {hidden.length > 0 && <button ref={trigger} type="button" className="thread-map-attention-more" aria-haspopup="menu" aria-expanded={Boolean(anchor)} onClick={() => {
+      {items.slice(0, shown).map(item => <AttentionCard key={item.key} item={item} onOpen={onOpen} onRequestDecision={onRequestDecision} compact={compact} />)}
+      {hidden.length > 0 && <button ref={trigger} type="button" className="thread-map-attention-more" aria-label={translate('workbench.threadMapMoreAttention', { count: hidden.length })} aria-haspopup="menu" aria-expanded={Boolean(anchor)} onClick={() => {
         if (anchor) { close(); return; }
         const box = trigger.current!.getBoundingClientRect();
         setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 344)), top: Math.min(box.bottom + 5, window.innerHeight - 180) });
-      }}>{translate('workbench.threadMapMoreAttention', { count: hidden.length })}</button>}
+      }}>{compact ? `+${hidden.length}` : translate('workbench.threadMapMoreAttention', { count: hidden.length })}</button>}
     </div>
     {anchor && hidden.length > 0 && createPortal(<div ref={menu} role="menu" aria-label={translate('workbench.threadMapAttention')}
       data-theme-effective={document.documentElement.dataset.themeEffective} className="thread-graph-dialog thread-map-attention-menu" style={{ position: 'fixed', ...anchor, height: Math.min(420, hidden.length * 72 + 10, window.innerHeight - anchor.top - 12) }}>
@@ -161,7 +161,7 @@ export function DeviceReadings({ extra }: { extra: MapDeviceExtras }) {
 }
 
 /** Narrow page maps retain the legend in an anchored, keyboard-accessible window. */
-export function MapLegend({ compact, children }: { compact: boolean; children: ReactNode }) {
+export function MapLegend({ compact, inline = false, children }: { compact: boolean; inline?: boolean; children: ReactNode }) {
   const trigger = useRef<HTMLButtonElement>(null), dialog = useRef<HTMLDivElement>(null);
   const [anchor, setAnchor] = useState<{ left: number; bottom: number } | null>(null);
   const close = () => setAnchor(null);
@@ -183,8 +183,8 @@ export function MapLegend({ compact, children }: { compact: boolean; children: R
   return <div className="thread-map-legend-footer"><button type="button" ref={trigger} aria-haspopup="dialog" aria-expanded={Boolean(anchor)} onClick={() => {
     if (anchor) { close(); return; }
     const box = trigger.current!.getBoundingClientRect();
-    setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 368)), bottom: window.innerHeight - box.top + 6 });
-  }}>{translate('workbench.threadMapLegend')}</button>
+    setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 368)), bottom: inline ? Math.max(8, window.innerHeight - box.bottom - 210) : window.innerHeight - box.top + 6 });
+  }} aria-label={translate('workbench.threadMapLegend')} title={translate('workbench.threadMapLegend')}>{inline ? <Info aria-hidden="true"/> : translate('workbench.threadMapLegend')}</button>
     {anchor && createPortal(<div ref={dialog} role="dialog" aria-label={translate('workbench.threadMapLegend')} tabIndex={-1}
       data-theme-effective={document.documentElement.dataset.themeEffective} className="thread-graph-dialog thread-map thread-map-legend-popover" style={{ position: 'fixed', ...anchor }}>
       <div className="thread-map-legend">{children}</div>

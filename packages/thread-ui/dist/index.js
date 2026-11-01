@@ -48,7 +48,7 @@ import {
   useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-WEG4XBA3.js";
+} from "./chunk-T2WOS7GP.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -75,7 +75,7 @@ import {
   t,
   translate,
   useI18n
-} from "./chunk-WGAFUEJC.js";
+} from "./chunk-RDZPXN3E.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -123,7 +123,7 @@ styleInject('.terminal-panel {\n  --terminal-bg: #0f1317;\n  --terminal-header-h
 styleInject('.thread-ui-shell {\n  --tlog-font-mono:\n    ui-monospace,\n    "SF Mono",\n    "Cascadia Mono",\n    "JetBrains Mono",\n    Menlo,\n    Consolas,\n    "Liberation Mono",\n    monospace;\n  --tlog-add: light-dark(oklch(45% 0.13 150), oklch(78% 0.14 150));\n  --tlog-remove: light-dark(oklch(50% 0.17 25), oklch(76% 0.13 25));\n  --tlog-failed: light-dark(#b3302c, #f0847f);\n  --tlog-rule: color-mix(in srgb, var(--theme-fg-muted) 45%, transparent);\n  --tlog-row-height: 26px;\n}\n.thread-ui-shell .thread-graph-worked-summary {\n  min-width: 0;\n}\n.thread-ui-shell .thread-worked-toggle {\n  flex: 0 1 auto;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-worked-toggle:active,\n.thread-ui-shell .thread-worked-toggle:focus-visible {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-worked-toggle:hover {\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .thread-worked-chevron {\n  width: 14px;\n  height: 14px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-worked-summary .thread-graph-worked-rule,\n.thread-ui-shell .matter-workbench .thread-graph-worked-summary .thread-graph-worked-rule {\n  display: block;\n  height: 0;\n  background: none;\n  border-top: 1px dashed var(--tlog-rule);\n  min-width: 16px;\n}\n.tlog-summary {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-variant-numeric: tabular-nums;\n}\n.tlog-part.is-add {\n  color: var(--tlog-add);\n}\n.tlog-part.is-remove {\n  color: var(--tlog-remove);\n}\n.tlog-part.is-failed {\n  color: inherit;\n  font-weight: inherit;\n}\n.tlog-sep {\n  margin: 0 0.4em;\n  color: var(--theme-fg-muted);\n}\n.tlog-sep.is-lead {\n  margin-left: 0;\n}\n.thread-ui-shell .thread-turn-head {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  min-width: 0;\n  margin: 4px 0 2px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 20px;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-ui-shell .thread-turn-head::before,\n.thread-ui-shell .thread-turn-head::after {\n  content: "";\n  flex: 1 1 0;\n  min-width: 12px;\n  height: 1px;\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-turn-head-main {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  padding: 0 3px;\n  border-radius: 5px;\n  color: inherit;\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-turn-head:active .thread-turn-head-main,\n.thread-ui-shell .thread-turn-head-main[aria-expanded=true],\n.thread-ui-shell .thread-turn-head[data-active] .thread-turn-head-main {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-turn-head:hover .thread-turn-head-main {\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .thread-turn-head-main:focus-visible {\n  outline: 2px solid var(--theme-accent-border);\n  outline-offset: 1px;\n}\n.thread-ui-shell .thread-turn-head-dot {\n  flex: none;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--turn-head-dot, #2fb37a);\n  opacity: 0.55;\n}\n.thread-ui-shell .thread-turn-head[data-active] .thread-turn-head-dot {\n  opacity: 1;\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--turn-head-dot, #2fb37a) 20%, transparent);\n  animation: thread-live-dot 1.6s ease-in-out infinite;\n}\n.thread-ui-shell .thread-turn-head[data-status=failed]:not([data-active]) .thread-turn-head-dot {\n  background: var(--theme-danger, #e5484d);\n  opacity: 0.85;\n}\n.thread-ui-shell .thread-turn-head[data-status=interrupted]:not([data-active]) .thread-turn-head-dot {\n  background: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-turn-head .thread-usage-cost {\n  flex: none;\n}\n.thread-ui-shell .thread-turn-head .thread-turn-usage-price {\n  font-size: 11px;\n  line-height: 16px;\n}\n.thread-ui-shell .thread-turn-head .thread-turn-usage-unavailable {\n  font-size: 0;\n}\n.thread-ui-shell .thread-turn-head .thread-turn-usage-unavailable::before {\n  content: "$ \\2014";\n  font-size: 11px;\n}\n.thread-ui-shell .thread-turn-head-more {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 2px 12px;\n  min-width: 0;\n  margin: 0 0 6px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 20px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > * {\n  flex: none;\n  white-space: nowrap;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > .thread-turn-head-model {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > .thread-turn-head-models {\n  display: inline-flex;\n  overflow: visible;\n}\n.thread-ui-shell .thread-turn-head-models > span {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models) {\n  padding: 0 2px;\n  border-radius: 4px;\n  color: inherit;\n  text-decoration: underline dotted;\n  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);\n  text-underline-offset: 3px;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):is(:active, [aria-expanded=true], [aria-pressed=true]) {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):is(:hover, [aria-expanded=true], [aria-pressed=true]) {\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):focus-visible {\n  outline: 2px solid var(--theme-accent-border);\n  outline-offset: 1px;\n}\n.thread-ui-shell .thread-turn-head.is-wide {\n  gap: 12px;\n  cursor: default;\n}\n.thread-ui-shell .thread-turn-head.is-wide .thread-turn-head-main {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-turn-head-added {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n.thread-ui-shell .thread-added-prompt-icon {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-ui-shell :is(.thread-wait-mark, .thread-background-agent-status) {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-ui-shell :is(.thread-wait-mark, .thread-background-agent-status) svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-ui-shell .thread-wait-mark svg {\n  animation: thread-hourglass 2.4s ease-in-out infinite;\n}\n.thread-ui-shell .thread-background-agent-status svg {\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n  animation: thread-agent-breathe 1.8s ease-in-out infinite;\n}\n.thread-ui-shell .thread-background-agent-status b {\n  font-weight: 600;\n}\n@keyframes thread-live-dot {\n  0%, 100% {\n    opacity: 0.35;\n  }\n  50% {\n    opacity: 1;\n  }\n}\n@keyframes thread-hourglass {\n  0%, 40% {\n    transform: rotate(0);\n  }\n  50%, 90% {\n    transform: rotate(180deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n@keyframes thread-agent-breathe {\n  0%, 100% {\n    opacity: 0.55;\n    transform: translateY(0);\n  }\n  50% {\n    opacity: 1;\n    transform: translateY(-1px);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-ui-shell :is(.thread-turn-head-dot, .thread-wait-mark svg, .thread-background-agent-status svg) {\n    animation: none;\n  }\n}\n.thread-ui-shell .thread-graph-message-kicker {\n  margin: 0 4px 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 14px;\n}\n.thread-ui-shell .thread-graph-message-kicker .thread-added-prompt {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-ui-shell .thread-execution-timeline {\n  margin: 0 0 4px;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.thread-ui-shell .thread-execution-timeline > * {\n  margin: 0;\n}\n.tlog-run {\n  min-width: 0;\n}\n.tlog-run-head {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  width: 100%;\n  min-width: 0;\n  min-height: var(--tlog-row-height);\n  padding: 0;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  text-align: left;\n}\n.tlog-run-head:active .tlog-summary,\n.tlog-run-head:focus-visible .tlog-summary {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .tlog-run-head:hover .tlog-summary {\n    color: var(--theme-fg);\n  }\n}\n.tlog-run-head .tlog-summary {\n  flex: 0 1 auto;\n  color: var(--theme-fg-soft);\n}\n.tlog-chev {\n  width: 13px;\n  height: 13px;\n  flex: none;\n  color: var(--theme-fg-muted);\n  transition: transform 120ms;\n}\n.tlog-run[data-open] > .tlog-run-head .tlog-chev {\n  transform: rotate(90deg);\n}\n.tlog-rule {\n  flex: 1;\n  min-width: 16px;\n  border-top: 1px dashed var(--tlog-rule);\n}\n.tlog-run-body {\n  display: flex;\n  flex-direction: column;\n  margin: 2px 0 6px 6px;\n  padding-left: 13px;\n  border-left: 1px solid var(--theme-border);\n}\n.tlog-row {\n  min-width: 0;\n}\n.tlog-row-line {\n  position: relative;\n  display: flex;\n  align-items: center;\n  min-width: 0;\n  margin-left: -6px;\n  border-radius: 5px;\n}\n.tlog-row-line:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .tlog-row-line:hover {\n    background: var(--theme-hover);\n  }\n}\n.tlog-row-head {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  min-height: var(--tlog-row-height);\n  padding: 0 6px;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  text-align: left;\n}\n.tlog-row-line:active .tlog-row-head {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .tlog-row-line:hover .tlog-row-head {\n    color: var(--theme-fg);\n  }\n}\n.tlog-copy {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 24px;\n  height: 22px;\n  margin-right: 2px;\n  border-radius: 4px;\n  color: var(--theme-fg-muted);\n  opacity: 0;\n  pointer-events: none;\n  transition: opacity 120ms;\n}\n.tlog-copy svg {\n  width: 13px;\n  height: 13px;\n}\n.tlog-row[data-open] .tlog-copy,\n.tlog-copy:focus-visible {\n  opacity: 0.55;\n  pointer-events: auto;\n}\n@media (hover: hover) {\n  .tlog-row-line:hover .tlog-copy {\n    opacity: 0.55;\n    pointer-events: auto;\n  }\n}\n.tlog-copy:active {\n  opacity: 1;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .tlog-copy:hover {\n    opacity: 1;\n    background: var(--theme-surface);\n    color: var(--theme-fg);\n  }\n}\n.tlog-glyph {\n  flex: none;\n  width: 1.6ch;\n  font: 700 12px/1 var(--tlog-font-mono);\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n  text-align: center;\n}\n.tlog-row[data-kind=reasoning] .tlog-glyph,\n.tlog-row[data-kind=fileRead] .tlog-glyph,\n.tlog-row[data-kind=webSearch] .tlog-glyph {\n  color: var(--theme-fg-muted);\n}\n.tlog-row[data-status=failed] .tlog-glyph {\n  color: var(--tlog-failed);\n}\n.tlog-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.tlog-title.is-mono {\n  font-family: var(--tlog-font-mono);\n  font-size: 11.5px;\n}\n.tlog-row[data-kind=reasoning] .tlog-title {\n  font-style: italic;\n  color: var(--theme-fg-muted);\n}\n.tlog-row[data-kind=fileRead][data-batch] .tlog-title {\n  flex: none;\n}\n.tlog-batch-names {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font: 11px var(--tlog-font-mono);\n  color: var(--theme-fg-muted);\n}\n.tlog-delta {\n  display: inline-flex;\n  flex: none;\n  gap: 6px;\n  font: 600 11px var(--tlog-font-mono);\n}\n.tlog-delta .is-add {\n  color: var(--tlog-add);\n}\n.tlog-delta .is-remove {\n  color: var(--tlog-remove);\n}\n.tlog-tag {\n  flex: none;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.tlog-tag.is-failed {\n  color: var(--tlog-failed);\n  font-weight: 600;\n}\n.tlog-spinner {\n  flex: none;\n  width: 11px;\n  height: 11px;\n  border: 1.5px solid var(--theme-border-strong);\n  border-top-color: var(--theme-accent-solid);\n  border-radius: 50%;\n  animation: tlog-spin 0.9s linear infinite;\n}\n@keyframes tlog-spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .tlog-spinner {\n    animation: none;\n  }\n}\n.tlog-batch {\n  padding-left: 14px;\n}\n.tlog-more {\n  align-self: flex-start;\n  margin: 2px 0;\n  font-size: 11.5px;\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.tlog-more:active {\n  text-decoration: underline;\n}\n@media (hover: hover) {\n  .tlog-more:hover {\n    text-decoration: underline;\n  }\n}\n.tlog-single {\n  min-width: 0;\n}\n.tlog-other {\n  min-width: 0;\n  margin: 2px 0;\n}\n.tlog-detail {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  margin: 2px 0 8px 1.6ch;\n  min-width: 0;\n}\n.tlog-detail.is-loading,\n.tlog-empty {\n  margin: 0;\n  font-size: 11.5px;\n  color: var(--theme-fg-muted);\n}\n.tlog-detail.is-loading {\n  margin: 2px 0 6px calc(1.6ch + 8px);\n}\n.tlog-detail.is-prose {\n  margin-left: calc(1.6ch + 8px);\n  font-size: 12.5px;\n  line-height: 1.6;\n  color: var(--theme-fg-soft);\n  white-space: pre-wrap;\n}\n.tlog-command,\n.tlog-output pre,\n.tlog-output {\n  margin: 0;\n  max-height: calc(16 * 1.55em);\n  overflow: auto;\n  padding: 6px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-surface);\n  font: 11.5px/1.55 var(--tlog-font-mono);\n  color: var(--theme-fg-soft);\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n}\n.tlog-command {\n  max-height: calc(6 * 1.55em);\n  color: var(--theme-fg);\n}\n.tlog-output.is-error {\n  color: var(--tlog-failed);\n}\n.tlog-diff {\n  max-height: calc(12 * 1.6em * 11.5 / 12 + 6px);\n  overflow: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-panel);\n}\n.tlog-diff .thread-diff {\n  font-size: 11.5px;\n  padding: 2px 0;\n}\n.tlog-diff .thread-diff-line {\n  min-height: 1.6em;\n}\n.thread-diff-line.is-file {\n  position: sticky;\n  left: 0;\n  padding: 2px 10px;\n  border-block: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n  font-weight: 600;\n}\n.thread-diff-line.is-file:first-child {\n  border-top: 0;\n}\n.thread-diff-line.is-file .thread-diff-number,\n.thread-diff-line.is-file .thread-diff-sign {\n  display: none;\n}\n.tlog-detail-foot {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.tlog-open {\n  font-size: 11px;\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.tlog-open:active {\n  text-decoration: underline;\n}\n@media (hover: hover) {\n  .tlog-open:hover {\n    text-decoration: underline;\n  }\n}\n.thread-ui-shell .thread-execution-timeline .thread-graph-message[data-role=assistant] .thread-graph-message-content {\n  color: var(--theme-fg-soft);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell {\n    --tlog-row-height: 32px;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) {\n    row-gap: 0;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-worked-toggle {\n    flex: 1 1 0;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle)::after {\n    content: "";\n    order: 1;\n    flex-basis: 100%;\n    height: 0;\n  }\n  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle {\n    order: 2;\n    margin-left: 22px;\n  }\n  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle > .tlog-sep {\n    display: none;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-graph-worked-rule {\n    order: 3;\n  }\n  .tlog-run-body {\n    margin-left: 4px;\n    padding-left: 10px;\n  }\n  .tlog-detail {\n    margin-left: 0;\n  }\n}\n.tlog-current {\n  min-width: 0;\n  margin-top: -4px;\n}\n.thread-ui-shell .tlog-plan {\n  padding: 8px 12px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n}\n.tlog-plan-head {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n  margin-bottom: 4px;\n  font-size: 11px;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--theme-fg-muted);\n}\n.tlog-plan-title {\n  font-weight: 600;\n}\n.tlog-plan-count {\n  font-variant-numeric: tabular-nums;\n  letter-spacing: 0;\n}\n.tlog-plan-note {\n  margin: 0 0 4px;\n  font-size: 12.5px;\n  color: var(--theme-fg-soft);\n}\n.tlog-plan-list {\n  display: grid;\n  gap: 2px;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n.thread-ui-shell .tlog-plan .tlog-plan-step {\n  padding: 0;\n  border: 0;\n  border-radius: 0;\n  background: none;\n}\n.tlog-plan-step {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n  font-size: 13px;\n  line-height: 1.6;\n  color: var(--theme-fg);\n}\n.tlog-plan-mark {\n  flex: none;\n  width: 1.6ch;\n  font: 700 12px/1 var(--tlog-font-mono);\n  text-align: center;\n}\n.tlog-plan-mark::before {\n  content: "\\25cb";\n  color: var(--theme-fg-muted);\n}\n.tlog-plan-step[data-status=completed] {\n  color: var(--theme-fg-muted);\n}\n.tlog-plan-step[data-status=completed] .tlog-plan-mark::before {\n  content: "\\2713";\n  color: var(--tlog-add);\n}\n.tlog-plan-step[data-status=in_progress] {\n  font-weight: 600;\n}\n.tlog-plan-step[data-status=in_progress] .tlog-plan-mark::before {\n  content: "\\25b8";\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.tlog-plan-step[data-status=failed] .tlog-plan-mark::before {\n  content: "\\2715";\n  color: var(--tlog-failed);\n}\n@media (max-width: 639px) {\n  .tlog-output {\n    max-height: calc(10 * 1.55em);\n  }\n  .tlog-diff .thread-diff-line > .thread-diff-number:first-child {\n    display: none;\n  }\n}\n.thread-ui-shell .tlog-files-toggle {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  font-variant-numeric: tabular-nums;\n  text-decoration: underline dotted var(--tlog-rule);\n  text-underline-offset: 3px;\n}\n.thread-ui-shell .tlog-files-toggle:active,\n.thread-ui-shell .tlog-files-toggle[aria-expanded=true] {\n  color: var(--theme-fg);\n  text-decoration-style: solid;\n}\n@media (hover: hover) {\n  .thread-ui-shell .tlog-files-toggle:hover {\n    color: var(--theme-fg);\n    text-decoration-style: solid;\n  }\n}\n.tlog-files {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n  margin: -4px 0 4px 6px;\n  padding-left: 13px;\n  border-left: 1px solid var(--theme-border);\n}\n.tlog-files-more {\n  margin: 2px 0;\n  font-size: 11.5px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message:is([data-variant=envelope], [data-variant=notice]) {\n  justify-content: flex-start;\n}\n.thread-ui-shell .thread-graph-message:is([data-variant=envelope], [data-variant=notice]) :is(.thread-graph-message-stack, .thread-graph-message-bubble, .thread-graph-message-content) {\n  max-width: 100%;\n  width: 100%;\n  margin-left: 0;\n  align-items: stretch;\n}\n.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant=envelope] .thread-graph-message-bubble {\n  padding: 8px 12px;\n  border: 1px solid var(--theme-border);\n  border-left: 3px solid var(--theme-accent-solid);\n  border-radius: 6px;\n  background: var(--theme-panel);\n  box-shadow: none;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message[data-variant=envelope] .thread-graph-message-prose {\n  font-size: 13.5px;\n  line-height: 1.6;\n}\n.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant=notice] .thread-graph-message-bubble {\n  padding: 0;\n  border: 0;\n  background: none;\n  box-shadow: none;\n}\n.prompt-envelope-head,\n.prompt-notice-head {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n  min-width: 0;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n}\n.prompt-envelope-head {\n  margin-bottom: 4px;\n}\n.prompt-envelope-glyph {\n  flex: none;\n  width: 1.6ch;\n  text-align: center;\n  font: 700 12px var(--tlog-font-mono);\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.prompt-envelope-icon {\n  width: 12px;\n  height: 12px;\n  vertical-align: -1px;\n}\n.prompt-envelope-kind {\n  flex: none;\n  font-weight: 600;\n  color: var(--theme-fg-soft);\n}\n.prompt-envelope-from {\n  flex: none;\n  font-family: var(--tlog-font-mono);\n  font-size: 11.5px;\n}\n.prompt-envelope-from[data-titled] {\n  flex: 0 1 auto;\n  min-width: 0;\n  max-width: min(45%, 20em);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-family: inherit;\n  font-size: 12px;\n}\n.prompt-envelope-link {\n  color: inherit;\n  text-decoration: underline dotted var(--tlog-rule);\n  text-underline-offset: 3px;\n  border-radius: 3px;\n}\n.prompt-envelope-link:active {\n  color: var(--theme-accent-strong, var(--theme-fg));\n  text-decoration-style: solid;\n}\n@media (hover: hover) {\n  .prompt-envelope-link:hover {\n    color: var(--theme-accent-strong, var(--theme-fg));\n    text-decoration-style: solid;\n  }\n}\n.prompt-envelope-link:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.prompt-envelope-subject {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.prompt-envelope-head[data-kind=result] .prompt-envelope-glyph {\n  color: var(--tlog-add);\n}\n.prompt-envelope-head[data-kind=question] .prompt-envelope-glyph {\n  color: var(--tlog-failed);\n}\n.prompt-envelope-urgent {\n  margin: 0 0 4px;\n  font-size: 12px;\n  color: var(--tlog-failed);\n}\n.prompt-notice-head {\n  width: 100%;\n  min-height: var(--tlog-row-height);\n  text-align: left;\n}\n.prompt-notice-head:active .prompt-notice-preview {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .prompt-notice-head:hover .prompt-notice-preview {\n    color: var(--theme-fg);\n  }\n}\n.prompt-notice-preview {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.prompt-notice-chev {\n  flex: none;\n  width: 12px;\n  height: 12px;\n  align-self: center;\n  transition: transform 120ms;\n}\n.prompt-notice[data-open] .prompt-notice-chev {\n  transform: rotate(90deg);\n}\n.prompt-notice-body {\n  margin: 2px 0 6px calc(1.6ch + 8px);\n  padding: 6px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-surface);\n  font-size: 12px;\n  line-height: 1.6;\n  color: var(--theme-fg-soft);\n  white-space: pre-wrap;\n}\n.tlog-notice {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  min-height: var(--tlog-row-height);\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n}\n.tlog-notice .tlog-glyph {\n  color: var(--theme-fg-muted);\n}\n.tlog-notice .tlog-title {\n  flex: 0 1 auto;\n}\n.tlog-notice-detail {\n  min-width: 0;\n  flex: 1;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  opacity: 0.8;\n  padding: 0;\n  border: 0;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: pointer;\n}\n.tlog-notice:has(> .tlog-notice-detail.is-open) {\n  flex-wrap: wrap;\n}\n.tlog-notice-detail.is-open {\n  flex-basis: 100%;\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n  overflow: visible;\n}\n.thread-ui-shell .thread-graph-message-hover-time {\n  align-self: center;\n  margin-right: 6px;\n  padding: 0 4px;\n  border-radius: 4px;\n  background: none;\n  font-size: 10.5px;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-variant-numeric: tabular-nums;\n}\n.tlog-output:has(> pre) {\n  padding: 0;\n  overflow: hidden;\n  max-height: none;\n}\n.tlog-output > pre {\n  border: 0;\n  border-radius: 0;\n  background: none;\n}\n.tlog-viewable {\n  position: relative;\n}\n.tlog-viewable:active {\n  border-color: var(--theme-border-strong);\n}\n@media (hover: hover) {\n  .tlog-viewable:hover {\n    border-color: var(--theme-border-strong);\n  }\n}\n.tlog-viewable:focus-visible {\n  outline: 2px solid var(--theme-accent-border);\n  outline-offset: 1px;\n}\n.tlog-more-lines {\n  position: sticky;\n  bottom: 0;\n  display: block;\n  padding: 2px 10px;\n  border-top: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n  text-align: right;\n}\n.tlog-collapse {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr);\n  grid-template-rows: 1fr;\n  opacity: 1;\n  transition:\n    grid-template-rows 260ms cubic-bezier(0.2, 0, 0, 1),\n    margin 260ms cubic-bezier(0.2, 0, 0, 1),\n    opacity 200ms ease;\n}\n.tlog-collapse[data-state=closed] {\n  grid-template-rows: 0fr;\n  opacity: 0;\n  margin-block: 0 !important;\n}\n.tlog-collapse-inner {\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.tlog-collapse[data-settled] > .tlog-collapse-inner {\n  overflow: visible;\n}\n@media (prefers-reduced-motion: reduce) {\n  .tlog-collapse {\n    transition: none;\n  }\n  .tlog-collapse[data-state=open] > .tlog-collapse-inner {\n    overflow: visible;\n  }\n}\n.thread-ui-shell .thread-graph-show-more[aria-expanded=true] {\n  position: sticky;\n  bottom: calc(var(--sticky-inset, var(--timeline-bottom-inset, 0px)) + 6px);\n  z-index: 6;\n  min-height: 22px;\n  padding: 0 7px 0 4px;\n  border-radius: 6px;\n  background: color-mix(in srgb, var(--theme-panel) 82%, transparent);\n  -webkit-backdrop-filter: blur(8px);\n  backdrop-filter: blur(8px);\n  box-shadow: none;\n  opacity: 1;\n}\n.thread-ui-shell .thread-graph-show-more[aria-expanded=true]:active,\n.thread-ui-shell .thread-graph-show-more[aria-expanded=true]:focus-visible {\n  background: color-mix(in srgb, var(--theme-panel) 96%, transparent);\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-graph-show-more[aria-expanded=true]:hover {\n    background: color-mix(in srgb, var(--theme-panel) 96%, transparent);\n  }\n}\n.tlog-part.is-count {\n  display: inline-flex;\n  align-items: baseline;\n}\n.tlog-part.is-count + .tlog-part.is-count {\n  margin-left: 0.7em;\n}\n.tlog-count {\n  display: inline-flex;\n  align-items: baseline;\n  gap: 3px;\n  font-variant-numeric: tabular-nums;\n  cursor: default;\n}\n.tlog-count-icon {\n  width: 12px;\n  height: 12px;\n  flex: none;\n  align-self: center;\n  opacity: 0.75;\n}\n.tlog-count-icon.is-kind {\n  margin-right: 2px;\n  opacity: 0.6;\n}\n.tlog-part.is-count + .tlog-part.is-count:has(> .tlog-count[data-kind=failed]) {\n  margin-left: 0.45em;\n}\n.tlog-count[data-kind=failed] .tlog-count-icon {\n  stroke-width: 2.5;\n}\n.tlog-hint {\n  position: fixed;\n  z-index: 1000;\n  display: grid;\n  gap: 3px;\n  width: max-content;\n  max-width: 240px;\n  padding: 8px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);\n  font-size: 12px;\n  line-height: 1.45;\n  white-space: normal;\n  text-align: left;\n  pointer-events: none;\n  transform: translate(-50%, -100%);\n  animation: tlog-hint-in 140ms ease-out;\n}\n.tlog-hint[data-below] {\n  transform: translate(-50%, 0);\n}\n.tlog-hint-title {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  font-weight: 600;\n}\n.tlog-hint-body {\n  color: var(--theme-fg-soft);\n}\n.tlog-hint-example {\n  color: var(--theme-fg-muted);\n  font-family: var(--tlog-font-mono);\n  font-size: 11px;\n}\n@keyframes tlog-hint-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .tlog-hint {\n    animation: none;\n  }\n}\n.thread-ui-shell .thread-graph-worked-summary:has(> .thread-worked-toggle[aria-expanded=true]) {\n  position: sticky;\n  top: 0;\n  z-index: 5;\n  background: color-mix(in srgb, var(--theme-bg) 94%, transparent);\n  -webkit-backdrop-filter: blur(10px);\n  backdrop-filter: blur(10px);\n}\n.thread-worked-spinner {\n  width: 12px;\n  height: 12px;\n  flex: none;\n  margin: 2px;\n}\n.thread-ui-shell .workspace-missing-file {\n  display: flex;\n  flex: 1;\n  min-height: 0;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  padding: 24px 20px;\n  text-align: center;\n  color: var(--theme-fg-soft);\n}\n.workspace-missing-file-icon {\n  width: 28px;\n  height: 28px;\n  color: var(--theme-fg-muted);\n  opacity: 0.8;\n}\n.workspace-missing-file-title {\n  margin: 4px 0 0;\n  color: var(--theme-fg);\n  font-size: 14px;\n  font-weight: 600;\n  overflow-wrap: anywhere;\n}\n.workspace-missing-file-hint {\n  margin: 0;\n  max-width: 34ch;\n  font-size: 13px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .workspace-missing-file-path {\n  max-width: min(100%, 56ch);\n  padding: 6px 10px;\n  border-radius: 6px;\n  background: var(--theme-surface);\n  font-family: var(--tlog-font-mono);\n  font-size: 11.5px;\n  line-height: 1.5;\n  overflow-wrap: anywhere;\n  user-select: all;\n}\n.thread-ui-shell .workspace-missing-file-copy {\n  margin-top: 2px;\n  padding: 4px 12px;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.thread-ui-shell .workspace-missing-file-copy:active {\n  color: var(--theme-fg);\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-ui-shell .workspace-missing-file-copy:hover {\n    color: var(--theme-fg);\n    background: var(--theme-hover);\n  }\n}\n.thread-ui-shell .workspace-file-alert-download {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 5px;\n  min-height: 30px;\n  padding: 3px 12px;\n  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);\n  border-radius: 999px;\n  background: transparent;\n  color: var(--theme-fg);\n  font-size: 12.5px;\n}\n.thread-ui-shell .workspace-file-alert-download:active:not(:disabled) {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-ui-shell .workspace-file-alert-download:hover:not(:disabled) {\n    background: var(--theme-hover);\n  }\n}\n.workspace-loading-skeleton {\n  animation: workspace-skeleton-in 160ms ease-out 120ms both;\n}\n.workspace-loading-skeleton-bar {\n  height: 41px;\n  flex: none;\n  border-bottom: 1px solid var(--theme-border);\n}\n@keyframes workspace-skeleton-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .workspace-loading-skeleton {\n    animation: none;\n  }\n}\n.tlog-row-chev {\n  width: 11px;\n  height: 11px;\n  margin-right: -4px;\n  opacity: .7;\n}\n.tlog-row[data-open] > .tlog-row-line .tlog-row-chev {\n  transform: rotate(90deg);\n}\n.tlog-viewable {\n  position: relative;\n}\n.tlog-open-full {\n  position: absolute;\n  top: 4px;\n  right: 4px;\n  z-index: 1;\n  display: grid;\n  place-items: center;\n  width: 26px;\n  height: 26px;\n  border-radius: 6px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n  opacity: .75;\n  box-shadow: 0 0 0 1px var(--theme-border);\n}\n.tlog-open-full:active,\n.tlog-open-full:focus-visible {\n  opacity: 1;\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .tlog-open-full:hover {\n    opacity: 1;\n    color: var(--theme-fg);\n  }\n}\n.tlog-open-full > svg {\n  width: 13px;\n  height: 13px;\n}\n.tlog-open-full::after {\n  content: "";\n  position: absolute;\n  inset: -6px;\n}\n.tlog-detail-error {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px 8px;\n  padding: 6px 8px;\n  border: 1px solid color-mix(in srgb, var(--tlog-failed) 40%, transparent);\n  border-radius: 6px;\n  background: color-mix(in srgb, var(--tlog-failed) 8%, transparent);\n  color: var(--tlog-failed);\n  font-size: 12px;\n}\n.tlog-detail-error > svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n}\n.tlog-detail-error > span {\n  min-width: 0;\n  flex: 1;\n  overflow-wrap: anywhere;\n}\n.tlog-detail-retry {\n  flex: none;\n  min-height: 28px;\n  padding: 0 10px;\n  border: 1px solid currentColor;\n  border-radius: 6px;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n}\n.tlog-detail-retry:active {\n  background: color-mix(in srgb, var(--tlog-failed) 14%, transparent);\n}\n@media (hover: hover) {\n  .tlog-detail-retry:hover {\n    background: color-mix(in srgb, var(--tlog-failed) 14%, transparent);\n  }\n}\n.thread-ui-shell .tlog-row .tlog-wake-icon {\n  width: 12px;\n  height: 12px;\n  flex: none;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .tlog-wake-label {\n  flex: none;\n  margin-right: 6px;\n  color: var(--theme-fg-muted);\n  font-weight: 600;\n}\n.thread-ui-shell .tlog-wake-label.is-failed {\n  color: var(--tlog-failed);\n}\n.thread-ui-shell .tlog-wake-detail {\n  display: grid;\n  gap: 6px;\n  padding: 6px 0 8px 28px;\n  color: var(--theme-fg-muted);\n  font-size: 12.5px;\n  line-height: 1.5;\n}\n.thread-ui-shell .thread-earlier-answers {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  width: 100%;\n  min-height: 28px;\n  margin: 2px 0 6px;\n  padding: 0;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted);\n  font-size: 12.5px;\n  text-align: left;\n}\n.thread-ui-shell .thread-earlier-answers .tlog-chev {\n  width: 14px;\n  height: 14px;\n  flex: none;\n  transition: transform 160ms ease;\n}\n.thread-ui-shell .thread-earlier-answers[aria-expanded=true] .tlog-chev {\n  transform: rotate(90deg);\n}\n.thread-ui-shell .thread-earlier-answers .tlog-rule {\n  flex: 1;\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-earlier-answers:hover {\n    color: var(--theme-fg);\n  }\n}\n');
 
 // src/styles/thread-map.css
-styleInject('.thread-graph-dialog.thread-map-dialog {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  width: min(1180px, calc(100vw - 48px));\n  max-width: none;\n  height: min(820px, calc(100dvh - 48px));\n  max-height: none;\n  padding: 0;\n  overflow: hidden;\n  border-radius: 16px;\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-live: #ec7a08;\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-graph-dialog.thread-map-dialog[data-theme-effective=dark] {\n  --thread-map-live: #ffa64d;\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n@media (max-width: 639px) {\n  .thread-graph-dialog.thread-map-dialog {\n    inset: 0;\n    translate: none;\n    width: auto;\n    height: auto;\n    border: 0;\n    border-radius: 0;\n    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);\n  }\n}\n.thread-map {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n}\n.thread-map-bar {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  padding: 10px 10px 4px 16px;\n}\n.thread-map-title {\n  flex: none;\n  margin: 0;\n  font-size: 15px;\n  font-weight: 650;\n  letter-spacing: -0.01em;\n}\n.thread-map-summary {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-summary .thread-map-running-dot {\n  margin-right: 4px;\n}\n.thread-map-icon-button,\n.thread-map-goto {\n  position: relative;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 32px;\n  height: 32px;\n  padding: 0;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-map-icon-button:active:not(:disabled),\n.thread-map-goto:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-icon-button:hover:not(:disabled),\n  .thread-map-goto:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-icon-button:disabled {\n  opacity: 0.35;\n}\n.thread-map-dialog [data-slot=dialog-close].thread-map-close {\n  top: auto;\n  right: auto;\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  opacity: 1;\n}\n.thread-map-icon-button:focus-visible,\n.thread-map-goto:has(select:focus) {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-icon-button svg,\n.thread-map-goto svg {\n  width: 17px;\n  height: 17px;\n  pointer-events: none;\n}\n.thread-map-goto select {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 0;\n  font-size: 16px;\n  cursor: pointer;\n}\n.thread-map-path {\n  gap: 2px;\n  padding: 0 10px 6px 8px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.thread-map-crumbs {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  min-width: 0;\n  overflow: hidden;\n  border-radius: 6px;\n  outline: none;\n}\n.thread-map-crumbs:focus-visible {\n  box-shadow: 0 0 0 2px var(--theme-accent-solid);\n}\n.thread-map-crumb {\n  display: flex;\n  flex: 0 1 auto;\n  align-items: center;\n  min-width: 0;\n}\n.thread-map-crumb svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-crumb button {\n  min-width: 0;\n  max-width: 18em;\n  height: 30px;\n  padding: 0 6px;\n  overflow: hidden;\n  border: 0;\n  border-radius: 6px;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 12.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-crumb button:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-crumb button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-crumb button[aria-current] {\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-crumb-open {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 6px;\n  color: var(--theme-fg-muted);\n}\n@media (hover: hover) {\n  .thread-map-crumb-open:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-crumb-open:active {\n  background: var(--theme-hover);\n  color: var(--theme-accent-solid);\n}\n.thread-map-crumb-open:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n@media (max-width: 639px) {\n  .thread-map-crumb-open {\n    width: 40px;\n    height: 40px;\n  }\n  .thread-map-crumb button {\n    height: 40px;\n  }\n}\n.thread-map-canvas {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  margin: 8px 10px 0;\n  overflow: hidden;\n  touch-action: none;\n}\n.thread-map-stage {\n  position: absolute;\n  inset: 0;\n  transform-origin: 0 0;\n}\n.thread-map-preview {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n}\n.thread-map-preview > * {\n  pointer-events: auto;\n}\n.thread-map-zoom {\n  position: absolute;\n  inset: 0;\n  z-index: 3;\n  padding: 0;\n  border: 0;\n  border-radius: inherit;\n  background: transparent;\n  cursor: zoom-in;\n}\n.thread-map-zoom:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section[data-zoomable]:has(> :is(.thread-map-zoom, button.thread-map-section-head):active) {\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border));\n}\n@media (hover: hover) {\n  .thread-map-section[data-zoomable]:has(> :is(.thread-map-zoom, button.thread-map-section-head):hover) {\n    border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border));\n  }\n}\n.thread-map-section > button.thread-map-section-head {\n  cursor: zoom-in;\n}\n.thread-map-section[data-zoomable] > .thread-map-section-head {\n  color: var(--theme-fg);\n}\n.thread-map-dialog[data-swiped] {\n  animation: none !important;\n}\n.thread-map-empty {\n  display: grid;\n  place-items: center;\n  height: 100%;\n  margin: 0;\n  color: var(--theme-fg-muted);\n  font-size: 13px;\n}\n.thread-map-section,\n.thread-map-tile {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  isolation: isolate;\n}\n.thread-map-section {\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n}\n.thread-map-section[data-kind=device] {\n  background: var(--theme-bg);\n  border-color: var(--theme-border-strong);\n}\n.thread-map-section-head {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  width: 100%;\n  height: 26px;\n  padding: 0 7px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  font-weight: 600;\n  text-align: left;\n}\n.thread-map-section-head:is(button) {\n  cursor: pointer;\n}\n.thread-map-section[data-kind=device] > .thread-map-section-head {\n  color: var(--theme-fg);\n  font-size: 12px;\n}\n.thread-map-section-head:is(button):active:not(:disabled) {\n  color: var(--theme-fg);\n  background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n}\n@media (hover: hover) {\n  .thread-map-section-head:is(button):hover:not(:disabled) {\n    color: var(--theme-fg);\n    background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n  }\n}\n.thread-map-section-head:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section-head:disabled {\n  cursor: default;\n}\n.thread-map-section-head svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-section-label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-section-count {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-section[data-collapsed] > .thread-map-section-head {\n  position: absolute;\n  inset: 0;\n  height: auto;\n  align-items: flex-start;\n  padding-top: 6px;\n}\n.thread-map-section-summary {\n  position: absolute;\n  right: 9px;\n  bottom: 6px;\n  left: 9px;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section[data-state] {\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 7px,\n      color-mix(in oklab, var(--theme-border) 55%, transparent) 7px 8px),\n    var(--theme-surface);\n}\n.thread-map-section[data-state] > .thread-map-section-head {\n  color: var(--theme-fg-muted);\n}\n.thread-map-section-usd {\n  margin-left: 4px;\n  color: var(--theme-fg-soft);\n  font-weight: 600;\n}\n.thread-map-group {\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 45%, var(--theme-border));\n  background: var(--theme-panel);\n}\n.thread-map-group-head {\n  display: flex;\n  align-items: center;\n  height: 26px;\n}\n.thread-map-group-head > .thread-map-section-head {\n  flex: 1;\n  min-width: 0;\n  color: var(--theme-fg);\n}\n.thread-map-group-head .thread-map-agent {\n  width: 15px;\n  height: 15px;\n  border-radius: 4px;\n  font-size: 8px;\n}\n.thread-map-section-count svg {\n  width: 11px;\n  height: 11px;\n}\n.thread-map-group-open {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 26px;\n  height: 26px;\n  border-radius: 7px;\n  color: var(--theme-fg-soft);\n}\n.thread-map-group-open:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-group-open:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-group-open:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-group-open svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-tile {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  padding: 6px 7px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 7px;\n  color: var(--theme-fg);\n  text-decoration: none;\n  transition: filter 120ms ease;\n}\n.thread-map-tile[data-size=card] {\n  gap: 6px;\n  padding: 10px 11px 9px;\n  border-radius: 10px;\n}\n.thread-map-tile[data-size=large] {\n  gap: 5px;\n  padding: 8px 9px;\n  border-radius: 9px;\n}\n.thread-map-tile[data-size=named] {\n  justify-content: center;\n  padding: 3px 5px;\n}\n.thread-map-tile[data-size=icon] {\n  align-items: center;\n  justify-content: center;\n  padding: 1px;\n}\n.thread-map-tile[data-size=dot] {\n  padding: 0;\n  border: 0;\n  border-radius: 2px;\n}\n.thread-map-tile:active {\n  filter: brightness(0.96);\n}\n@media (hover: hover) {\n  .thread-map-tile:hover {\n    filter: brightness(0.96);\n  }\n}\n.thread-map-dialog[data-theme-effective=dark] .thread-map-tile:active {\n  filter: brightness(1.18);\n}\n@media (hover: hover) {\n  .thread-map-dialog[data-theme-effective=dark] .thread-map-tile:hover {\n    filter: brightness(1.18);\n  }\n}\n.thread-map-tile-link {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  border-radius: inherit;\n}\n.thread-map-tile-link:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-tile > :not(.thread-map-tile-link) {\n  position: relative;\n  pointer-events: none;\n}\n.thread-map-tile :is(.thread-map-children, .thread-map-usage) {\n  pointer-events: auto;\n}\n.thread-map-tile:has(> .thread-map-tile-link:focus-visible) {\n  z-index: 2;\n}\n.thread-map-tile[data-current] {\n  border-color: var(--theme-fg);\n  box-shadow: inset 0 0 0 1px var(--theme-fg);\n}\n.thread-map-tile-head {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-head {\n  align-items: flex-start;\n}\n.thread-map-tile-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 600;\n  line-height: 16px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-title {\n  display: -webkit-box;\n  white-space: normal;\n  overflow-wrap: anywhere;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--lines, 1);\n}\n.thread-map-tile[data-size=card] .thread-map-tile-title {\n  font-size: 14px;\n  line-height: 19px;\n  letter-spacing: -0.01em;\n}\n.thread-map-tile[data-size=large] .thread-map-tile-title {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-tile[data-size=card] .thread-map-agent {\n  width: 19px;\n  height: 19px;\n  border-radius: 5px;\n  font-size: 9.5px;\n}\n.thread-map-tile:is([data-size=card], [data-size=large]) .thread-map-agent {\n  margin-top: 0;\n}\n.thread-map-age {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  margin-left: auto;\n  padding: 2px;\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 72%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 13px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-age > span {\n  padding-right: 5px;\n}\n.thread-map-children {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  height: 19px;\n  margin-left: auto;\n  padding: 0 6px 0 5px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 85%, transparent);\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 78%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 650;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-children:active {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-children:hover {\n    border-color: var(--theme-border-strong);\n    background: var(--theme-panel);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-children:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.thread-map-children svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-children + .thread-map-age {\n  margin-left: 4px;\n}\n.thread-map-tile-children-row {\n  display: flex;\n}\n.thread-map-tile-children-row .thread-map-children {\n  margin-left: 0;\n}\n.thread-map-age-glyph {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-tile[data-size=card] .thread-map-age-glyph {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-age-glyph[data-age="0"] {\n  color: var(--thread-map-age-0);\n}\n.thread-map-age-glyph[data-age="1"] {\n  color: var(--thread-map-age-1);\n}\n.thread-map-age-glyph[data-age="2"] {\n  color: var(--thread-map-age-2);\n}\n.thread-map-age-glyph[data-age="3"] {\n  color: var(--thread-map-age-3);\n}\n.thread-map-age-glyph[data-age="4"] {\n  color: var(--thread-map-age-4);\n}\n.thread-map-tile-sub {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 14px;\n  white-space: nowrap;\n}\n.thread-map-tile-sub > * {\n  flex: none;\n}\n.thread-map-tile-sub > * + *::before {\n  margin-right: 6px;\n  opacity: 0.55;\n  content: "\\b7";\n}\n.thread-map-tile-who {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.thread-map-tile-from {\n  flex: 0 2 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-map-tile-live {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-tile-live .thread-map-running-dot {\n  margin-right: 0;\n}\n.thread-map-tile-failed {\n  color: var(--theme-danger, #c2410c);\n  font-weight: 600;\n}\n.thread-map-tile-prompt {\n  flex: none;\n  margin-top: 1px;\n  padding-left: 8px;\n  overflow: hidden;\n  border-left: 2px solid color-mix(in oklab, var(--theme-fg) 16%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  line-height: 16px;\n  overflow-wrap: anywhere;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--prompt-lines, 3);\n}\n.thread-map-stats {\n  display: flex;\n  gap: 14px;\n  min-width: 0;\n  margin-top: auto;\n  padding-top: 2px;\n}\n.thread-map-stats > span {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n}\n.thread-map-stats[data-layout=column] {\n  flex-direction: column;\n  gap: 2px;\n}\n.thread-map-stats[data-layout=column] > span {\n  flex-direction: row;\n  align-items: baseline;\n  gap: 5px;\n}\n.thread-map-stats[data-layout=column] b {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-stats b {\n  font-size: 14px;\n  font-weight: 650;\n  line-height: 18px;\n  letter-spacing: -0.01em;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-stats small {\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 9.5px;\n  line-height: 12px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-usage {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  align-self: flex-start;\n  gap: 8px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 18px;\n}\n.thread-map-usage .thread-turn-usage-price {\n  padding: 0 6px;\n  background: color-mix(in oklab, var(--theme-panel) 85%, transparent);\n  color: var(--theme-accent-strong, var(--theme-fg));\n  font-size: 12px;\n  font-weight: 650;\n  line-height: 18px;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-usage .thread-turn-usage-price:active {\n  border-color: var(--theme-border-strong);\n}\n@media (hover: hover) {\n  .thread-map-usage .thread-turn-usage-price:hover {\n    border-color: var(--theme-border-strong);\n  }\n}\n.thread-map-tokens {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-tokens svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-stat-usage .thread-map-usage {\n  gap: 6px;\n}\n.thread-map-tile-meta {\n  margin-top: auto;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  line-height: 14px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-spark {\n  display: flex;\n  flex: none;\n  align-items: flex-end;\n  gap: 1px;\n  height: var(--spark-h, 14px);\n}\n.thread-map-spark i {\n  flex: 1 1 0;\n  min-width: 0;\n  height: max(2px, calc(var(--h) * 100%));\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-spark i[data-zero] {\n  height: 1px;\n  background: color-mix(in oklab, var(--theme-fg) 16%, transparent);\n}\n.thread-map [data-heat] {\n  --thread-map-fill: var(--thread-map-tile);\n}\n.thread-map [data-heat="1"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 14%, var(--thread-map-tile));\n}\n.thread-map [data-heat="2"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 26%, var(--thread-map-tile));\n}\n.thread-map [data-heat="3"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 39%, var(--thread-map-tile));\n}\n.thread-map [data-heat="4"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 52%, var(--thread-map-tile));\n}\n.thread-map :is(.thread-map-tile, .thread-map-section[data-heat], .thread-map-scale i) {\n  background-color: var(--thread-map-fill);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n  border-color: var(--thread-map-live);\n  animation: thread-map-halo 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;\n}\n.thread-map .thread-map-section[data-live]:not([data-running]) {\n  border-color: color-mix(in oklab, var(--thread-map-live) 55%, var(--theme-border));\n}\n.thread-map .thread-map-section[data-live] > .thread-map-section-head .thread-map-section-count {\n  color: var(--theme-fg-soft);\n}\n.thread-map .thread-map-tile-live {\n  color: var(--thread-map-live);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  border-radius: inherit;\n  box-shadow: inset 0 0 0 2px var(--thread-map-live), inset 0 0 26px color-mix(in oklab, var(--thread-map-live) 70%, transparent);\n  content: "";\n  pointer-events: none;\n  animation: thread-map-glow 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;\n}\n.thread-map-running-dot {\n  display: inline-block;\n  flex: none;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--thread-map-live);\n  vertical-align: 0.05em;\n  animation: thread-map-breathe-dot 1.8s ease-out infinite;\n}\n@keyframes thread-map-halo {\n  0%, 100% {\n    box-shadow: 0 0 0 1px var(--thread-map-live), 0 0 0 0 transparent;\n  }\n  22% {\n    box-shadow: 0 0 0 1.5px var(--thread-map-live), 0 0 12px 3px color-mix(in oklab, var(--thread-map-live) 65%, transparent);\n  }\n}\n@keyframes thread-map-glow {\n  0%, 100% {\n    opacity: 0.12;\n  }\n  22% {\n    opacity: 1;\n  }\n}\n@keyframes thread-map-breathe-dot {\n  0% {\n    box-shadow: 0 0 0 0 color-mix(in oklab, var(--thread-map-live) 75%, transparent);\n  }\n  70%, 100% {\n    box-shadow: 0 0 0 6px transparent;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n    animation: none;\n    box-shadow: 0 0 0 1.5px var(--thread-map-live);\n  }\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n    animation: none;\n    opacity: 0.7;\n  }\n  .thread-map-running-dot {\n    animation: none;\n  }\n}\n.thread-map-agent {\n  display: inline-grid;\n  flex: none;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n  border-radius: 4px;\n  background: var(--thread-map-agent, #64748b);\n  color: #fff;\n  font-size: 8.5px;\n  font-weight: 700;\n  letter-spacing: -0.03em;\n  line-height: 1;\n}\n.thread-map-agent[data-agent=claude] {\n  --thread-map-agent: #c96442;\n}\n.thread-map-agent[data-agent=codex] {\n  --thread-map-agent: #0f8a69;\n}\n.thread-map-agent[data-agent=gemini] {\n  --thread-map-agent: #3b78e7;\n}\n.thread-map-agent[data-agent=deepseek] {\n  --thread-map-agent: #4d6bfe;\n}\n.thread-map-agent[data-agent=copilot] {\n  --thread-map-agent: #8250df;\n}\n.thread-map-agent[data-agent=opencode] {\n  --thread-map-agent: #475569;\n}\n.thread-map-agent[data-agent=grok] {\n  --thread-map-agent: #3f3f46;\n}\n.thread-map-agent[data-agent=cursor] {\n  --thread-map-agent: #27272a;\n}\n.thread-map-agent[data-agent=qwen] {\n  --thread-map-agent: #615ced;\n}\n.thread-map-agent[data-agent=kimi] {\n  --thread-map-agent: #0b84c6;\n}\n.thread-map-agent[data-art] {\n  color: transparent;\n  background: var(--theme-panel) var(--theme-agent-avatar) center / cover no-repeat;\n  box-shadow: 0 0 0 1px color-mix(in oklab, var(--theme-border) 80%, transparent);\n}\n.thread-map-tip {\n  position: absolute;\n  z-index: 10;\n  max-width: min(300px, calc(100% - 16px));\n  padding: 7px 10px;\n  border-radius: 8px;\n  background: var(--theme-fg);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);\n  color: var(--theme-bg);\n  font-size: 11.5px;\n  line-height: 1.45;\n  pointer-events: none;\n}\n.thread-map-tip[data-above] {\n  transform: translateY(-100%);\n}\n.thread-map-tip > * {\n  display: block;\n}\n.thread-map-tip > b {\n  margin-bottom: 2px;\n  font-weight: 650;\n}\n.thread-map-tip > span {\n  opacity: 0.82;\n}\n.thread-map-legend {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 14px;\n  padding: 8px 14px 10px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-scale {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n.thread-map-scale small {\n  margin: 0 2px 0 6px;\n  font-size: 10.5px;\n}\n.thread-map-scale i + small {\n  margin: 0 0 0 2px;\n}\n.thread-map-scale i {\n  width: 11px;\n  height: 11px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 3px;\n}\n.thread-map-legend-item {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-ages .thread-map-age-glyph {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-legend-spark {\n  display: inline-flex;\n  align-items: flex-end;\n  gap: 1px;\n  height: 11px;\n}\n.thread-map-legend-spark i {\n  width: 3px;\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-legend-spark i:nth-child(1) {\n  height: 30%;\n}\n.thread-map-legend-spark i:nth-child(2) {\n  height: 100%;\n}\n.thread-map-legend-spark i:nth-child(3) {\n  height: 60%;\n}\n.thread-map-legend-spark i:nth-child(4) {\n  height: 15%;\n}\n@media (max-width: 639px) {\n  .thread-map-canvas {\n    margin: 6px 6px 0;\n  }\n  .thread-map-legend {\n    gap: 2px 10px;\n    padding: 6px 10px calc(16px + env(safe-area-inset-bottom));\n  }\n}\n.thread-map-tile-head > .matter-status-dot {\n  flex: none;\n  position: relative;\n  z-index: 1;\n}\n.thread-map[data-presentation=page] {\n  width: 100%;\n  height: 100%;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-live: #dc7a16;\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n:root[data-theme-effective=dark] .thread-map[data-presentation=page] {\n  --thread-map-live: #ffa64d;\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n.thread-map[data-presentation=page] > .thread-map-bar:first-child {\n  padding: 18px 18px 12px;\n  gap: 12px;\n}\n.thread-map[data-presentation=page] > .thread-map-bar:first-child .thread-map-title {\n  font-size: 18px;\n  letter-spacing: -.025em;\n}\n.thread-map[data-presentation=page] .thread-map-canvas {\n  margin: 8px 14px 0;\n}\n.thread-map-filter {\n  position: relative;\n  display: flex;\n  align-items: center;\n  flex: 0 1 260px;\n  min-width: 120px;\n  height: 30px;\n  border: 1px solid var(--theme-border);\n  border-radius: 7px;\n  background: var(--theme-bg);\n}\n.thread-map-filter:has(input:focus-visible) {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.thread-map-filter input {\n  width: 100%;\n  min-width: 0;\n  height: 100%;\n  padding: 0 28px 0 10px;\n  border: 0;\n  outline: none;\n  background: transparent;\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 12px;\n}\n.thread-map-filter input::-webkit-search-cancel-button {\n  display: none;\n}\n.thread-map-filter input::placeholder {\n  color: var(--theme-fg-muted);\n}\n.thread-map-filter kbd {\n  position: absolute;\n  right: 8px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-filter > span {\n  flex: none;\n  padding-right: 8px;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-filter:has(> span) input {\n  padding-right: 5px;\n}\n.thread-map-scope {\n  display: flex;\n  flex: none;\n  gap: 2px;\n  padding: 3px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-bg);\n}\n.thread-map-scope button {\n  height: 25px;\n  padding: 0 12px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n  white-space: nowrap;\n}\n.thread-map-scope button[aria-pressed=true] {\n  background: var(--theme-panel);\n  box-shadow: 0 1px 3px rgb(0 0 0 / .08);\n  color: var(--theme-fg);\n  font-weight: 650;\n}\n.thread-map-scope button:active {\n  background: var(--theme-hover);\n}\n.thread-map :is(button, a):focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-attention-wrap {\n  display: grid;\n  flex: none;\n  grid-template-rows: 0fr;\n  transition: grid-template-rows 160ms ease;\n}\n.thread-map-attention-wrap[data-visible] {\n  grid-template-rows: 1fr;\n}\n.thread-map-attention {\n  display: flex;\n  gap: 8px;\n  min-height: 0;\n  overflow-x: auto;\n  overflow-y: hidden;\n  padding: 0 16px;\n  scrollbar-width: none;\n}\n.thread-map-attention::-webkit-scrollbar {\n  display: none;\n}\n.thread-map-attention-wrap[data-visible] .thread-map-attention {\n  padding-bottom: 12px;\n}\n.thread-map-attention-card {\n  position: relative;\n  flex: 0 0 220px;\n  height: 64px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-bg);\n  box-sizing: border-box;\n}\n.thread-map-attention-card:is([data-kind=approval], [data-kind=input]) {\n  border-color: color-mix(in oklab, #b77915 42%, var(--theme-border));\n}\n.thread-map-attention-open {\n  display: flex;\n  align-items: flex-start;\n  gap: 8px;\n  width: 100%;\n  height: 100%;\n  padding: 8px 10px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg);\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-attention-open > .matter-status-dot {\n  flex: none;\n  margin-top: 3px;\n}\n.thread-map-attention-open > span:last-child {\n  display: grid;\n  gap: 3px;\n  min-width: 0;\n}\n.thread-map-attention-open b {\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 650;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  line-height: 14px;\n}\n.thread-map-attention-open small {\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 11px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-card:has(.thread-map-decisions) .thread-map-attention-open {\n  padding-right: 86px;\n}\n.thread-map-decisions {\n  position: absolute;\n  right: 7px;\n  top: 18px;\n  display: flex;\n  gap: 8px;\n}\n.thread-map-decisions button {\n  padding: 4px 3px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n  font-size: 10px;\n  cursor: pointer;\n}\n.thread-map-decisions button:first-child {\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n}\n.thread-map-attention-more {\n  flex: none;\n  align-self: center;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  padding: 12px;\n  cursor: pointer;\n}\n.thread-map-compressed {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  padding: 10px;\n  border: 1px dashed var(--theme-border-strong);\n  border-radius: 7px;\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 6px,\n      color-mix(in oklab, var(--theme-border) 28%, transparent) 6px 7px),\n    var(--theme-panel);\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  text-align: center;\n  cursor: pointer;\n}\n.thread-map [data-dimmed] {\n  opacity: .3;\n}\n.thread-map [data-dimmed] [data-dimmed] {\n  opacity: 1;\n}\n.thread-map-tile[data-waiting] {\n  border-color: color-mix(in oklab, var(--status-waiting, #b77915) 65%, var(--theme-border));\n}\n.thread-map-tile-waiting,\n.thread-map-waiting-count {\n  color: var(--status-waiting, #b77915);\n}\n.thread-map .thread-map-quick-look {\n  position: absolute;\n  right: 6px;\n  bottom: 5px;\n  z-index: 2;\n  width: 24px;\n  height: 24px;\n  border: 0;\n  border-radius: 6px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font-size: 15px;\n  pointer-events: auto;\n  cursor: pointer;\n}\n@media (hover: hover) {\n  .thread-map .thread-map-quick-look {\n    opacity: 0;\n  }\n  .thread-map-tile:hover .thread-map-quick-look,\n  .thread-map-tile:has(:focus-visible) .thread-map-quick-look {\n    opacity: 1;\n  }\n  .thread-map-scope button:hover,\n  .thread-map-attention-open:hover,\n  .thread-map-decisions button:hover,\n  .thread-map-attention-more:hover,\n  .thread-map-compressed:hover,\n  .thread-map-quick-look:hover {\n    background-color: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-section-header {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  min-width: 0;\n}\n.thread-map-section-header > .thread-map-section-head {\n  flex: 1;\n  min-width: 0;\n  height: 100%;\n}\n.thread-map-section[data-zoomable] > .thread-map-section-header .thread-map-section-head {\n  color: var(--theme-fg);\n}\n.thread-map-section[data-collapsed] > .thread-map-section-header {\n  position: absolute;\n  inset: 0 0 auto;\n}\n.thread-map-section-header:has(.thread-map-device-readings) > .thread-map-section-head {\n  font-size: 12px;\n}\n.thread-map-section-header:has(.thread-map-device-menu-button) {\n  padding-right: 2px;\n}\n.thread-map-device-state {\n  display: inline-block;\n  flex: none;\n  box-sizing: border-box;\n  width: 7px;\n  height: 7px;\n  border: 1.5px solid currentColor;\n  border-radius: 50%;\n  background: currentColor;\n  color: var(--theme-fg-muted);\n}\n.thread-map-device-state[data-offline] {\n  background: transparent;\n}\n.thread-map-device-readings {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n  flex: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-weight: 400;\n  white-space: nowrap;\n}\n.thread-map-device-readings > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n}\n.thread-map-device-readings .thread-map-update {\n  padding: 2px 4px;\n  border-radius: 3px;\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n  font-size: 9px;\n}\n.thread-map-sync {\n  width: 4px;\n  height: 4px;\n  border-radius: 50%;\n  background: var(--theme-fg-muted);\n  opacity: .4;\n}\n.thread-map-device-menu-button {\n  position: relative;\n  z-index: 5;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  cursor: pointer;\n}\n.thread-map-device-menu-button svg {\n  width: 15px;\n  height: 15px;\n}\n.thread-map-metrics {\n  display: none;\n  position: absolute;\n  z-index: 8;\n  top: 35px;\n  left: 6px;\n  max-width: calc(100% - 12px);\n  box-sizing: border-box;\n  padding: 6px 8px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 5px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font-size: 10px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section-header:has(:focus-visible) .thread-map-metrics {\n  display: block;\n}\n@media (hover: hover) {\n  .thread-map-section-header:hover .thread-map-metrics {\n    display: block;\n  }\n  .thread-map-device-menu-button:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-graph-dialog.thread-map-device-menu {\n  z-index: 1000;\n  display: grid;\n  width: 220px;\n  padding: 5px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .15);\n}\n.thread-map-device-menu button {\n  min-height: 34px;\n  border: 0;\n  border-radius: 4px;\n  padding: 6px 10px;\n  background: none;\n  color: inherit;\n  text-align: left;\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-device-menu button:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n  background: var(--theme-hover);\n}\n.thread-map-device-menu button:disabled {\n  opacity: .4;\n}\n@media (hover: hover) {\n  .thread-map-device-menu button:hover:not(:disabled) {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-offline-strip {\n  display: flex;\n  flex-wrap: wrap;\n  flex: none;\n  gap: 4px;\n  margin: 8px 16px 0;\n  border-top: 1px solid var(--theme-border);\n  padding-top: 5px;\n}\n.thread-map-offline-strip button {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  height: 30px;\n  max-width: 100%;\n  padding: 0 8px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n}\n.thread-map-offline-strip b {\n  font-weight: 550;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-offline-strip small {\n  font-size: 10px;\n  padding: 2px 4px;\n  border: 1px solid var(--theme-border);\n  border-radius: 3px;\n}\n@media (hover: hover) {\n  .thread-map-offline-strip button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map [data-cached] {\n  filter: saturate(.35);\n}\n.thread-map-cached-label {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  padding: 0 8px;\n  white-space: nowrap;\n}\n.thread-map [data-pulse] {\n  --map-pulse: var(--theme-accent-solid);\n  animation: thread-map-event 800ms ease-out 1;\n}\n.thread-map [data-pulse=waiting] {\n  --map-pulse: var(--status-waiting, #d69b37);\n}\n@keyframes thread-map-event {\n  0%, 15% {\n    box-shadow: inset 0 0 0 3px var(--map-pulse), 0 0 18px color-mix(in oklab, var(--map-pulse) 60%, transparent);\n  }\n  100% {\n    box-shadow: inset 0 0 0 0 transparent, 0 0 0 transparent;\n  }\n}\n@media (max-width: 1050px) {\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child {\n    padding: 12px 14px 10px;\n    gap: 8px;\n  }\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child .thread-map-summary {\n    display: none;\n  }\n  .thread-map[data-presentation=page] .thread-map-filter {\n    margin-left: auto;\n  }\n  .thread-map-device-readings {\n    gap: 5px;\n  }\n}\n@media (max-width: 639px) {\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child {\n    flex-wrap: wrap;\n  }\n  .thread-map[data-presentation=page] .thread-map-filter {\n    flex: 1;\n  }\n  .thread-map-scope {\n    width: 100%;\n    justify-content: stretch;\n  }\n  .thread-map-scope button {\n    flex: 1;\n    height: 36px;\n  }\n  .thread-map-decisions button {\n    min-height: 40px;\n  }\n  .thread-map-decisions {\n    top: 11px;\n  }\n  .thread-map-device-menu-button,\n  .thread-map-quick-look {\n    min-width: 40px;\n    min-height: 40px;\n  }\n  .thread-map-offline-strip button {\n    min-height: 40px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map-attention-wrap {\n    transition: none;\n  }\n  .thread-map [data-pulse] {\n    animation: none;\n    outline: 2px solid var(--map-pulse);\n    outline-offset: -2px;\n  }\n}\n.thread-map-legend-footer {\n  display: flex;\n  flex: none;\n  padding: 5px 16px 8px;\n}\n.thread-map-legend-footer > button {\n  border: 0;\n  border-radius: 4px;\n  padding: 5px 8px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n}\n.thread-map-legend-popover {\n  z-index: 1000;\n  width: min(360px, calc(100vw - 16px));\n  max-height: 70dvh;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .16);\n}\n.thread-map-legend-popover > button {\n  align-self: flex-end;\n  margin: 0 10px 8px;\n  padding: 5px 10px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  font-size: 11px;\n  cursor: pointer;\n}\n@media (hover: hover) {\n  .thread-map-legend-footer > button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n@media (max-width: 639px) {\n  .thread-map-legend-footer > button,\n  .thread-map-legend-popover > button {\n    min-height: 40px;\n  }\n}\n.thread-map-device-readings {\n  flex: 0 1 auto;\n  min-width: 0;\n  max-width: calc(100% - 130px);\n  overflow: hidden;\n}\n.thread-map-device-readings > span {\n  flex: none;\n}\n.thread-map-section-header:has(.thread-map-device-readings) .thread-map-section-label {\n  flex: 1 0 64px;\n  min-width: 64px;\n}\n.thread-map-compressed {\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-legend-popover {\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-live: #ec7a08;\n  --thread-map-spark: var(--theme-accent-solid);\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-map-tile[data-readable] {\n  min-width: 132px;\n  min-height: 64px;\n}\n.thread-map-tile[data-readable][data-size=medium] {\n  gap: 3px;\n  padding: 4px 6px;\n}\n.thread-map-tile[data-readable][data-size=medium] .thread-map-tile-title {\n  line-height: 16px;\n  -webkit-line-clamp: 2;\n}\n.thread-map-tile[data-readable][data-size=medium] .thread-map-tile-meta {\n  line-height: 13px;\n}\n.thread-map-readable-section > .thread-map-section-header {\n  position: relative;\n  z-index: 4;\n}\n.thread-map-readable-section .thread-map-section-usd {\n  flex: none;\n  margin-left: 0;\n  padding-right: 5px;\n  font-size: 10px;\n}\n.thread-map-overflow {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  gap: 7px;\n  box-sizing: border-box;\n  overflow: hidden;\n  padding: 12px;\n  border: 1px dashed var(--theme-border-strong);\n  border-radius: 8px;\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 8px,\n      color-mix(in oklab, var(--theme-border) 12%, transparent) 8px 9px),\n    var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font: inherit;\n  text-align: left;\n  cursor: zoom-in;\n}\n.thread-map-overflow-title {\n  display: flex;\n  align-items: flex-start;\n  gap: 6px;\n  width: 100%;\n  min-width: 0;\n  font-size: 12px;\n  line-height: 17px;\n}\n.thread-map-overflow-title > b {\n  flex: 1;\n  min-width: 0;\n  font-weight: 600;\n}\n.thread-map-overflow-title svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n  margin-top: 1px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-overflow > small {\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map-overflow-marks {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 5px 10px;\n  font-size: 11px;\n}\n.thread-map-overflow-marks:empty {\n  display: none;\n}\n.thread-map-overflow-marks > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-overflow[data-important] {\n  border-style: solid;\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 45%, var(--theme-border));\n}\n.thread-map-overflow-preview {\n  display: grid;\n  gap: 3px;\n  min-width: 0;\n  width: 100%;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 14px;\n}\n.thread-map-overflow-preview > span {\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n@media (hover: hover) {\n  .thread-map-overflow:hover {\n    border-color: var(--theme-accent-solid);\n    background-color: var(--theme-hover);\n  }\n}\n.thread-map-readable-list {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-bg);\n}\n.thread-map-list-heading {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 7px;\n  height: 34px;\n  padding: 0 12px;\n  border-bottom: 1px solid var(--theme-border);\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.thread-map-list-heading svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-list-heading b {\n  flex: 1;\n  font-weight: 600;\n}\n.thread-map-list-heading > span {\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-scroll-list {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n}\n.thread-map-list-scroll {\n  height: 100%;\n  overflow: auto;\n  padding: 4px 12px 8px;\n  scrollbar-width: none;\n  box-sizing: border-box;\n  overscroll-behavior: contain;\n}\n.thread-map-list-scroll::-webkit-scrollbar {\n  display: none;\n}\n.thread-map-readable-list .thread-map-list-scroll {\n  padding: 0 8px 8px;\n  scroll-padding-top: 24px;\n}\n.thread-map-list-status-group {\n  position: relative;\n}\n.thread-map-list-status-heading {\n  position: sticky;\n  top: 0;\n  z-index: 4;\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  height: 24px;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0 10px;\n  background: var(--theme-bg);\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 24px;\n}\n.thread-map-list-status-heading small {\n  font-size: 10px;\n  font-weight: 400;\n  font-variant-numeric: tabular-nums;\n  opacity: .7;\n}\n.thread-map .thread-map-list-row {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 8px;\n  width: 100%;\n  min-width: 132px;\n  height: 40px;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0 10px;\n  border: 0;\n  border-bottom: 1px solid color-mix(in oklab, var(--theme-border) 35%, transparent);\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg);\n}\n.thread-map-list-row > :not(.thread-map-tile-link) {\n  position: relative;\n  pointer-events: none;\n}\n.thread-map-list-row > :is(.thread-map-agent, .matter-status-dot) {\n  flex: none;\n}\n.thread-map-list-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg);\n  font-size: 12.5px;\n  font-weight: 550;\n  line-height: 20px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-list-row-meta {\n  flex: 0 1 auto;\n  max-width: 48%;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n  line-height: 20px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map .thread-map-list-info {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font-size: 14px;\n  cursor: pointer;\n  pointer-events: auto;\n}\n.thread-map-list-info::before {\n  position: absolute;\n  inset: -6px;\n  content: "";\n}\n.thread-map-list-row:has(:focus-visible),\n.thread-map-list-row:active {\n  background: var(--theme-hover);\n}\n.thread-map-list-row[data-current] {\n  background: var(--theme-accent-soft);\n}\n.thread-map-list-row > .thread-map-tile-link:focus-visible {\n  outline: none;\n}\n@media (hover: hover) {\n  .thread-map-list-row:hover {\n    background: var(--theme-hover);\n  }\n  .thread-map-list-row .thread-map-list-info {\n    opacity: 0;\n  }\n  .thread-map-list-row:hover .thread-map-list-info,\n  .thread-map-list-row:has(:focus-visible) .thread-map-list-info {\n    opacity: 1;\n  }\n}\n.thread-map-list-group {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  width: 100%;\n  min-height: 64px;\n  padding: 12px;\n  margin: 4px 0;\n  border: 1px solid var(--theme-border);\n  border-radius: 7px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-list-group > b {\n  flex: 1;\n  min-width: 0;\n  text-align: left;\n  font-weight: 600;\n}\n.thread-map-list-group > span {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-list-group svg {\n  flex: none;\n  width: 15px;\n  height: 15px;\n}\n.thread-map-list-older {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  width: 100%;\n  min-height: 48px;\n  border: 1px dashed var(--theme-border);\n  border-radius: 7px;\n  margin-top: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-list-older svg {\n  width: 14px;\n  height: 14px;\n}\n@media (hover: hover) {\n  .thread-map-list-group:hover,\n  .thread-map-list-older:hover,\n  .thread-map-list-info:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-scroll-track {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  width: var(--scrollbar-size, 8px);\n  pointer-events: none;\n  background: var(--scrollbar-rail-y, transparent);\n}\n.thread-map-scroll-thumb {\n  position: absolute;\n  top: 0;\n  left: 2px;\n  right: 2px;\n  border-radius: var(--scrollbar-radius, 999px);\n  background: var(--scrollbar-thumb-idle, color-mix(in oklab, var(--theme-fg) 16%, transparent));\n  pointer-events: auto;\n  touch-action: none;\n}\n@media (hover: hover) {\n  .thread-map-scroll-list:hover .thread-map-scroll-thumb {\n    background: var(--scrollbar-thumb, color-mix(in oklab, var(--theme-fg) 32%, transparent));\n  }\n}\n.thread-map-scroll-thumb:active {\n  background: var(--scrollbar-thumb-active, var(--theme-accent-solid));\n}\n.thread-map-unlisted {\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  padding: 12px;\n}\n.thread-map-attention[data-responsive] {\n  width: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-card {\n  flex: 0 1 220px;\n  min-width: 200px;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-more {\n  flex: 0 0 80px;\n  padding: 8px 4px;\n  white-space: nowrap;\n}\n.thread-map-attention-menu {\n  z-index: 1000;\n  display: flex;\n  flex-direction: column;\n  width: min(336px, calc(100vw - 16px));\n  padding: 4px;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .16);\n}\n.thread-map-attention-menu .thread-map-list-scroll {\n  padding: 0 7px 0 0;\n}\n.thread-map-attention-menu [role=menuitem] {\n  display: flex;\n  align-items: flex-start;\n  gap: 9px;\n  width: 100%;\n  min-height: 68px;\n  padding: 9px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-attention-menu [role=menuitem] > .matter-status-dot {\n  margin-top: 3px;\n}\n.thread-map-attention-menu [role=menuitem] > span:last-child {\n  display: grid;\n  flex: 1;\n  gap: 4px;\n  min-width: 0;\n}\n.thread-map-attention-menu b {\n  font-size: 12px;\n  line-height: 16px;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-menu small {\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 13px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-menu [role=menuitem]:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-map-attention-menu [role=menuitem]:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map[data-presentation=page] .thread-map-canvas:has(.thread-map-list-scroll) {\n  touch-action: pan-y;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-more {\n  align-self: center;\n  height: 32px;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-panel);\n}\n@media (hover: hover) {\n  .thread-map-attention[data-responsive] .thread-map-attention-more:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-list-agent-slot,\n.thread-map-list-status-slot {\n  display: grid;\n  flex: 0 0 16px;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n}\n.thread-map-tip {\n  z-index: 1100;\n}\n.thread-map-overflow-with-list {\n  cursor: default;\n}\n.thread-map-overflow-open {\n  display: flex;\n  flex: none;\n  flex-direction: column;\n  gap: 7px;\n  width: 100%;\n  padding: 0 0 6px;\n  border: 0;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: zoom-in;\n}\n.thread-map-overflow-open > small {\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map-overflow-with-list .thread-map-list-scroll {\n  padding: 0 5px 0 0;\n}\n.thread-map-overflow-row {\n  display: flex;\n  position: relative;\n  align-items: center;\n  gap: 7px;\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 40px;\n  padding: 0 5px;\n  border: 0;\n  border-top: 1px solid color-mix(in oklab, var(--theme-border) 45%, transparent);\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  font: inherit;\n  font-size: 11px;\n  text-align: left;\n  text-decoration: none;\n  cursor: pointer;\n}\n.thread-map-overflow-row > span:not(.matter-status-dot) {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-overflow-row > svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-overflow-row > small {\n  flex: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-overflow-row:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n@media (hover: hover) {\n  .thread-map-overflow-row:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n');
+styleInject('.thread-graph-dialog.thread-map-dialog {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  width: min(1180px, calc(100vw - 48px));\n  max-width: none;\n  height: min(820px, calc(100dvh - 48px));\n  max-height: none;\n  padding: 0;\n  overflow: hidden;\n  border-radius: 16px;\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-live: #ec7a08;\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-graph-dialog.thread-map-dialog[data-theme-effective=dark] {\n  --thread-map-live: #ffa64d;\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n@media (max-width: 639px) {\n  .thread-graph-dialog.thread-map-dialog {\n    inset: 0;\n    translate: none;\n    width: auto;\n    height: auto;\n    border: 0;\n    border-radius: 0;\n    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);\n  }\n}\n.thread-map {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n}\n.thread-map-bar {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  padding: 10px 10px 4px 16px;\n}\n.thread-map-title {\n  flex: none;\n  margin: 0;\n  font-size: 15px;\n  font-weight: 650;\n  letter-spacing: -0.01em;\n}\n.thread-map-summary {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-summary .thread-map-running-dot {\n  margin-right: 4px;\n}\n.thread-map-icon-button,\n.thread-map-goto {\n  position: relative;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 32px;\n  height: 32px;\n  padding: 0;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-map-icon-button:active:not(:disabled),\n.thread-map-goto:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-icon-button:hover:not(:disabled),\n  .thread-map-goto:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-icon-button:disabled {\n  opacity: 0.35;\n}\n.thread-map-dialog [data-slot=dialog-close].thread-map-close {\n  top: auto;\n  right: auto;\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  opacity: 1;\n}\n.thread-map-icon-button:focus-visible,\n.thread-map-goto:has(select:focus) {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-icon-button svg,\n.thread-map-goto svg {\n  width: 17px;\n  height: 17px;\n  pointer-events: none;\n}\n.thread-map-goto select {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 0;\n  font-size: 16px;\n  cursor: pointer;\n}\n.thread-map-path {\n  gap: 2px;\n  padding: 0 10px 6px 8px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.thread-map-crumbs {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  min-width: 0;\n  overflow: hidden;\n  border-radius: 6px;\n  outline: none;\n}\n.thread-map-crumbs:focus-visible {\n  box-shadow: 0 0 0 2px var(--theme-accent-solid);\n}\n.thread-map-crumb {\n  display: flex;\n  flex: 0 1 auto;\n  align-items: center;\n  min-width: 0;\n}\n.thread-map-crumb svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-crumb button {\n  min-width: 0;\n  max-width: 18em;\n  height: 30px;\n  padding: 0 6px;\n  overflow: hidden;\n  border: 0;\n  border-radius: 6px;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 12.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-crumb button:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-crumb button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-crumb button[aria-current] {\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-crumb-open {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 6px;\n  color: var(--theme-fg-muted);\n}\n@media (hover: hover) {\n  .thread-map-crumb-open:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-crumb-open:active {\n  background: var(--theme-hover);\n  color: var(--theme-accent-solid);\n}\n.thread-map-crumb-open:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n@media (max-width: 639px) {\n  .thread-map-crumb-open {\n    width: 40px;\n    height: 40px;\n  }\n  .thread-map-crumb button {\n    height: 40px;\n  }\n}\n.thread-map-canvas {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  margin: 8px 10px 0;\n  overflow: hidden;\n  touch-action: none;\n}\n.thread-map-stage {\n  position: absolute;\n  inset: 0;\n  transform-origin: 0 0;\n}\n.thread-map-preview {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n}\n.thread-map-preview > * {\n  pointer-events: auto;\n}\n.thread-map-zoom {\n  position: absolute;\n  inset: 0;\n  z-index: 3;\n  padding: 0;\n  border: 0;\n  border-radius: inherit;\n  background: transparent;\n  cursor: zoom-in;\n}\n.thread-map-zoom:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section[data-zoomable]:has(> :is(.thread-map-zoom, button.thread-map-section-head):active) {\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border));\n}\n@media (hover: hover) {\n  .thread-map-section[data-zoomable]:has(> :is(.thread-map-zoom, button.thread-map-section-head):hover) {\n    border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border));\n  }\n}\n.thread-map-section > button.thread-map-section-head {\n  cursor: zoom-in;\n}\n.thread-map-section[data-zoomable] > .thread-map-section-head {\n  color: var(--theme-fg);\n}\n.thread-map-dialog[data-swiped] {\n  animation: none !important;\n}\n.thread-map-empty {\n  display: grid;\n  place-items: center;\n  height: 100%;\n  margin: 0;\n  color: var(--theme-fg-muted);\n  font-size: 13px;\n}\n.thread-map-section,\n.thread-map-tile {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  isolation: isolate;\n}\n.thread-map-section {\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n}\n.thread-map-section[data-kind=device] {\n  background: var(--theme-bg);\n  border-color: var(--theme-border-strong);\n}\n.thread-map-section-head {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  width: 100%;\n  height: 26px;\n  padding: 0 7px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  font-weight: 600;\n  text-align: left;\n}\n.thread-map-section-head:is(button) {\n  cursor: pointer;\n}\n.thread-map-section[data-kind=device] > .thread-map-section-head {\n  color: var(--theme-fg);\n  font-size: 12px;\n}\n.thread-map-section-head:is(button):active:not(:disabled) {\n  color: var(--theme-fg);\n  background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n}\n@media (hover: hover) {\n  .thread-map-section-head:is(button):hover:not(:disabled) {\n    color: var(--theme-fg);\n    background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n  }\n}\n.thread-map-section-head:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section-head:disabled {\n  cursor: default;\n}\n.thread-map-section-head svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-section-label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-section-count {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-section[data-collapsed] > .thread-map-section-head {\n  position: absolute;\n  inset: 0;\n  height: auto;\n  align-items: flex-start;\n  padding-top: 6px;\n}\n.thread-map-section-summary {\n  position: absolute;\n  right: 9px;\n  bottom: 6px;\n  left: 9px;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section[data-state] {\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 7px,\n      color-mix(in oklab, var(--theme-border) 55%, transparent) 7px 8px),\n    var(--theme-surface);\n}\n.thread-map-section[data-state] > .thread-map-section-head {\n  color: var(--theme-fg-muted);\n}\n.thread-map-section-usd {\n  margin-left: 4px;\n  color: var(--theme-fg-soft);\n  font-weight: 600;\n}\n.thread-map-group {\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 45%, var(--theme-border));\n  background: var(--theme-panel);\n}\n.thread-map-group-head {\n  display: flex;\n  align-items: center;\n  height: 26px;\n}\n.thread-map-group-head > .thread-map-section-head {\n  flex: 1;\n  min-width: 0;\n  color: var(--theme-fg);\n}\n.thread-map-group-head .thread-map-agent {\n  width: 15px;\n  height: 15px;\n  border-radius: 4px;\n  font-size: 8px;\n}\n.thread-map-section-count svg {\n  width: 11px;\n  height: 11px;\n}\n.thread-map-group-open {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 26px;\n  height: 26px;\n  border-radius: 7px;\n  color: var(--theme-fg-soft);\n}\n.thread-map-group-open:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-group-open:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-group-open:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-group-open svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-tile {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  padding: 6px 7px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 7px;\n  color: var(--theme-fg);\n  text-decoration: none;\n  transition: filter 120ms ease;\n}\n.thread-map-tile[data-size=card] {\n  gap: 6px;\n  padding: 10px 11px 9px;\n  border-radius: 10px;\n}\n.thread-map-tile[data-size=large] {\n  gap: 5px;\n  padding: 8px 9px;\n  border-radius: 9px;\n}\n.thread-map-tile[data-size=named] {\n  justify-content: center;\n  padding: 3px 5px;\n}\n.thread-map-tile[data-size=icon] {\n  align-items: center;\n  justify-content: center;\n  padding: 1px;\n}\n.thread-map-tile[data-size=dot] {\n  padding: 0;\n  border: 0;\n  border-radius: 2px;\n}\n.thread-map-tile:active {\n  filter: brightness(0.96);\n}\n@media (hover: hover) {\n  .thread-map-tile:hover {\n    filter: brightness(0.96);\n  }\n}\n.thread-map-dialog[data-theme-effective=dark] .thread-map-tile:active {\n  filter: brightness(1.18);\n}\n@media (hover: hover) {\n  .thread-map-dialog[data-theme-effective=dark] .thread-map-tile:hover {\n    filter: brightness(1.18);\n  }\n}\n.thread-map-tile-link {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  border-radius: inherit;\n}\n.thread-map-tile-link:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-tile > :not(.thread-map-tile-link) {\n  position: relative;\n  pointer-events: none;\n}\n.thread-map-tile :is(.thread-map-children, .thread-map-usage) {\n  pointer-events: auto;\n}\n.thread-map-tile:has(> .thread-map-tile-link:focus-visible) {\n  z-index: 2;\n}\n.thread-map-tile[data-current] {\n  border-color: var(--theme-fg);\n  box-shadow: inset 0 0 0 1px var(--theme-fg);\n}\n.thread-map-tile-head {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-head {\n  align-items: flex-start;\n}\n.thread-map-tile-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 600;\n  line-height: 16px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-title {\n  display: -webkit-box;\n  white-space: normal;\n  overflow-wrap: anywhere;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--lines, 1);\n}\n.thread-map-tile[data-size=card] .thread-map-tile-title {\n  font-size: 14px;\n  line-height: 19px;\n  letter-spacing: -0.01em;\n}\n.thread-map-tile[data-size=large] .thread-map-tile-title {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-tile[data-size=card] .thread-map-agent {\n  width: 19px;\n  height: 19px;\n  border-radius: 5px;\n  font-size: 9.5px;\n}\n.thread-map-tile:is([data-size=card], [data-size=large]) .thread-map-agent {\n  margin-top: 0;\n}\n.thread-map-age {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  margin-left: auto;\n  padding: 2px;\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 72%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 13px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-age > span {\n  padding-right: 5px;\n}\n.thread-map-children {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  height: 19px;\n  margin-left: auto;\n  padding: 0 6px 0 5px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 85%, transparent);\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 78%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 650;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-children:active {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-children:hover {\n    border-color: var(--theme-border-strong);\n    background: var(--theme-panel);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-children:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.thread-map-children svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-children + .thread-map-age {\n  margin-left: 4px;\n}\n.thread-map-tile-children-row {\n  display: flex;\n}\n.thread-map-tile-children-row .thread-map-children {\n  margin-left: 0;\n}\n.thread-map-age-glyph {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-tile[data-size=card] .thread-map-age-glyph {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-age-glyph[data-age="0"] {\n  color: var(--thread-map-age-0);\n}\n.thread-map-age-glyph[data-age="1"] {\n  color: var(--thread-map-age-1);\n}\n.thread-map-age-glyph[data-age="2"] {\n  color: var(--thread-map-age-2);\n}\n.thread-map-age-glyph[data-age="3"] {\n  color: var(--thread-map-age-3);\n}\n.thread-map-age-glyph[data-age="4"] {\n  color: var(--thread-map-age-4);\n}\n.thread-map-tile-sub {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 14px;\n  white-space: nowrap;\n}\n.thread-map-tile-sub > * {\n  flex: none;\n}\n.thread-map-tile-sub > * + *::before {\n  margin-right: 6px;\n  opacity: 0.55;\n  content: "\\b7";\n}\n.thread-map-tile-who {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.thread-map-tile-from {\n  flex: 0 2 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-map-tile-live {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-tile-live .thread-map-running-dot {\n  margin-right: 0;\n}\n.thread-map-tile-failed {\n  color: var(--theme-danger, #c2410c);\n  font-weight: 600;\n}\n.thread-map-tile-prompt {\n  flex: none;\n  margin-top: 1px;\n  padding-left: 8px;\n  overflow: hidden;\n  border-left: 2px solid color-mix(in oklab, var(--theme-fg) 16%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  line-height: 16px;\n  overflow-wrap: anywhere;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--prompt-lines, 3);\n}\n.thread-map-stats {\n  display: flex;\n  gap: 14px;\n  min-width: 0;\n  margin-top: auto;\n  padding-top: 2px;\n}\n.thread-map-stats > span {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n}\n.thread-map-stats[data-layout=column] {\n  flex-direction: column;\n  gap: 2px;\n}\n.thread-map-stats[data-layout=column] > span {\n  flex-direction: row;\n  align-items: baseline;\n  gap: 5px;\n}\n.thread-map-stats[data-layout=column] b {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-stats b {\n  font-size: 14px;\n  font-weight: 650;\n  line-height: 18px;\n  letter-spacing: -0.01em;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-stats small {\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 9.5px;\n  line-height: 12px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-usage {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  align-self: flex-start;\n  gap: 8px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 18px;\n}\n.thread-map-usage .thread-turn-usage-price {\n  padding: 0 6px;\n  background: color-mix(in oklab, var(--theme-panel) 85%, transparent);\n  color: var(--theme-accent-strong, var(--theme-fg));\n  font-size: 12px;\n  font-weight: 650;\n  line-height: 18px;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-usage .thread-turn-usage-price:active {\n  border-color: var(--theme-border-strong);\n}\n@media (hover: hover) {\n  .thread-map-usage .thread-turn-usage-price:hover {\n    border-color: var(--theme-border-strong);\n  }\n}\n.thread-map-tokens {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-tokens svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-stat-usage .thread-map-usage {\n  gap: 6px;\n}\n.thread-map-tile-meta {\n  margin-top: auto;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  line-height: 14px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-spark {\n  display: flex;\n  flex: none;\n  align-items: flex-end;\n  gap: 1px;\n  height: var(--spark-h, 14px);\n}\n.thread-map-spark i {\n  flex: 1 1 0;\n  min-width: 0;\n  height: max(2px, calc(var(--h) * 100%));\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-spark i[data-zero] {\n  height: 1px;\n  background: color-mix(in oklab, var(--theme-fg) 16%, transparent);\n}\n.thread-map [data-heat] {\n  --thread-map-fill: var(--thread-map-tile);\n}\n.thread-map [data-heat="1"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 14%, var(--thread-map-tile));\n}\n.thread-map [data-heat="2"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 26%, var(--thread-map-tile));\n}\n.thread-map [data-heat="3"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 39%, var(--thread-map-tile));\n}\n.thread-map [data-heat="4"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 52%, var(--thread-map-tile));\n}\n.thread-map :is(.thread-map-tile, .thread-map-section[data-heat], .thread-map-scale i) {\n  background-color: var(--thread-map-fill);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n  border-color: var(--thread-map-live);\n  animation: thread-map-halo 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;\n}\n.thread-map .thread-map-section[data-live]:not([data-running]) {\n  border-color: color-mix(in oklab, var(--thread-map-live) 55%, var(--theme-border));\n}\n.thread-map .thread-map-section[data-live] > .thread-map-section-head .thread-map-section-count {\n  color: var(--theme-fg-soft);\n}\n.thread-map .thread-map-tile-live {\n  color: var(--thread-map-live);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  border-radius: inherit;\n  box-shadow: inset 0 0 0 2px var(--thread-map-live), inset 0 0 26px color-mix(in oklab, var(--thread-map-live) 70%, transparent);\n  content: "";\n  pointer-events: none;\n  animation: thread-map-glow 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;\n}\n.thread-map-running-dot {\n  display: inline-block;\n  flex: none;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--thread-map-live);\n  vertical-align: 0.05em;\n  animation: thread-map-breathe-dot 1.8s ease-out infinite;\n}\n@keyframes thread-map-halo {\n  0%, 100% {\n    box-shadow: 0 0 0 1px var(--thread-map-live), 0 0 0 0 transparent;\n  }\n  22% {\n    box-shadow: 0 0 0 1.5px var(--thread-map-live), 0 0 12px 3px color-mix(in oklab, var(--thread-map-live) 65%, transparent);\n  }\n}\n@keyframes thread-map-glow {\n  0%, 100% {\n    opacity: 0.12;\n  }\n  22% {\n    opacity: 1;\n  }\n}\n@keyframes thread-map-breathe-dot {\n  0% {\n    box-shadow: 0 0 0 0 color-mix(in oklab, var(--thread-map-live) 75%, transparent);\n  }\n  70%, 100% {\n    box-shadow: 0 0 0 6px transparent;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n    animation: none;\n    box-shadow: 0 0 0 1.5px var(--thread-map-live);\n  }\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n    animation: none;\n    opacity: 0.7;\n  }\n  .thread-map-running-dot {\n    animation: none;\n  }\n}\n.thread-map-agent {\n  display: inline-grid;\n  flex: none;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n  border-radius: 4px;\n  background: var(--thread-map-agent, #64748b);\n  color: #fff;\n  font-size: 8.5px;\n  font-weight: 700;\n  letter-spacing: -0.03em;\n  line-height: 1;\n}\n.thread-map-agent[data-agent=claude] {\n  --thread-map-agent: #c96442;\n}\n.thread-map-agent[data-agent=codex] {\n  --thread-map-agent: #0f8a69;\n}\n.thread-map-agent[data-agent=gemini] {\n  --thread-map-agent: #3b78e7;\n}\n.thread-map-agent[data-agent=deepseek] {\n  --thread-map-agent: #4d6bfe;\n}\n.thread-map-agent[data-agent=copilot] {\n  --thread-map-agent: #8250df;\n}\n.thread-map-agent[data-agent=opencode] {\n  --thread-map-agent: #475569;\n}\n.thread-map-agent[data-agent=grok] {\n  --thread-map-agent: #3f3f46;\n}\n.thread-map-agent[data-agent=cursor] {\n  --thread-map-agent: #27272a;\n}\n.thread-map-agent[data-agent=qwen] {\n  --thread-map-agent: #615ced;\n}\n.thread-map-agent[data-agent=kimi] {\n  --thread-map-agent: #0b84c6;\n}\n.thread-map-agent[data-art] {\n  color: transparent;\n  background: var(--theme-panel) var(--theme-agent-avatar) center / cover no-repeat;\n  box-shadow: 0 0 0 1px color-mix(in oklab, var(--theme-border) 80%, transparent);\n}\n.thread-map-tip {\n  position: absolute;\n  z-index: 10;\n  max-width: min(300px, calc(100% - 16px));\n  padding: 7px 10px;\n  border-radius: 8px;\n  background: var(--theme-fg);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);\n  color: var(--theme-bg);\n  font-size: 11.5px;\n  line-height: 1.45;\n  pointer-events: none;\n}\n.thread-map-tip[data-above] {\n  transform: translateY(-100%);\n}\n.thread-map-tip > * {\n  display: block;\n}\n.thread-map-tip > b {\n  margin-bottom: 2px;\n  font-weight: 650;\n}\n.thread-map-tip > span {\n  opacity: 0.82;\n}\n.thread-map-legend {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 14px;\n  padding: 8px 14px 10px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-scale {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n.thread-map-scale small {\n  margin: 0 2px 0 6px;\n  font-size: 10.5px;\n}\n.thread-map-scale i + small {\n  margin: 0 0 0 2px;\n}\n.thread-map-scale i {\n  width: 11px;\n  height: 11px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 3px;\n}\n.thread-map-legend-item {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-ages .thread-map-age-glyph {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-legend-spark {\n  display: inline-flex;\n  align-items: flex-end;\n  gap: 1px;\n  height: 11px;\n}\n.thread-map-legend-spark i {\n  width: 3px;\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-legend-spark i:nth-child(1) {\n  height: 30%;\n}\n.thread-map-legend-spark i:nth-child(2) {\n  height: 100%;\n}\n.thread-map-legend-spark i:nth-child(3) {\n  height: 60%;\n}\n.thread-map-legend-spark i:nth-child(4) {\n  height: 15%;\n}\n@media (max-width: 639px) {\n  .thread-map-canvas {\n    margin: 6px 6px 0;\n  }\n  .thread-map-legend {\n    gap: 2px 10px;\n    padding: 6px 10px calc(16px + env(safe-area-inset-bottom));\n  }\n}\n.thread-map-tile-head > .matter-status-dot {\n  flex: none;\n  position: relative;\n  z-index: 1;\n}\n.thread-map[data-presentation=page] {\n  width: 100%;\n  height: 100%;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-live: #dc7a16;\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n:root[data-theme-effective=dark] .thread-map[data-presentation=page] {\n  --thread-map-live: #ffa64d;\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n.thread-map[data-presentation=page] > .thread-map-bar:first-child {\n  padding: 18px 18px 12px;\n  gap: 12px;\n}\n.thread-map[data-presentation=page] > .thread-map-bar:first-child .thread-map-title {\n  font-size: 18px;\n  letter-spacing: -.025em;\n}\n.thread-map[data-presentation=page] .thread-map-canvas {\n  margin: 8px 14px 0;\n}\n.thread-map-filter {\n  position: relative;\n  display: flex;\n  align-items: center;\n  flex: 0 1 260px;\n  min-width: 120px;\n  height: 30px;\n  border: 1px solid var(--theme-border);\n  border-radius: 7px;\n  background: var(--theme-bg);\n}\n.thread-map-filter:has(input:focus-visible) {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.thread-map-filter input {\n  width: 100%;\n  min-width: 0;\n  height: 100%;\n  padding: 0 28px 0 10px;\n  border: 0;\n  outline: none;\n  background: transparent;\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 12px;\n}\n.thread-map-filter input::-webkit-search-cancel-button {\n  display: none;\n}\n.thread-map-filter input::placeholder {\n  color: var(--theme-fg-muted);\n}\n.thread-map-filter kbd {\n  position: absolute;\n  right: 8px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-filter > span {\n  flex: none;\n  padding-right: 8px;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-filter:has(> span) input {\n  padding-right: 5px;\n}\n.thread-map-scope {\n  display: flex;\n  flex: none;\n  gap: 2px;\n  padding: 3px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-bg);\n}\n.thread-map-scope button {\n  height: 25px;\n  padding: 0 12px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n  white-space: nowrap;\n}\n.thread-map-scope button[aria-pressed=true] {\n  background: var(--theme-panel);\n  box-shadow: 0 1px 3px rgb(0 0 0 / .08);\n  color: var(--theme-fg);\n  font-weight: 650;\n}\n.thread-map-scope button:active {\n  background: var(--theme-hover);\n}\n.thread-map :is(button, a):focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-attention-wrap {\n  display: grid;\n  flex: none;\n  grid-template-rows: 0fr;\n  transition: grid-template-rows 160ms ease;\n}\n.thread-map-attention-wrap[data-visible] {\n  grid-template-rows: 1fr;\n}\n.thread-map-attention {\n  display: flex;\n  gap: 8px;\n  min-height: 0;\n  overflow-x: auto;\n  overflow-y: hidden;\n  padding: 0 16px;\n  scrollbar-width: none;\n}\n.thread-map-attention::-webkit-scrollbar {\n  display: none;\n}\n.thread-map-attention-wrap[data-visible] .thread-map-attention {\n  padding-bottom: 12px;\n}\n.thread-map-attention-card {\n  position: relative;\n  flex: 0 0 220px;\n  height: 64px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-bg);\n  box-sizing: border-box;\n}\n.thread-map-attention-card:is([data-kind=approval], [data-kind=input]) {\n  border-color: color-mix(in oklab, #b77915 42%, var(--theme-border));\n}\n.thread-map-attention-open {\n  display: flex;\n  align-items: flex-start;\n  gap: 8px;\n  width: 100%;\n  height: 100%;\n  padding: 8px 10px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg);\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-attention-open > .matter-status-dot {\n  flex: none;\n  margin-top: 3px;\n}\n.thread-map-attention-open > span:last-child {\n  display: grid;\n  gap: 3px;\n  min-width: 0;\n}\n.thread-map-attention-open b {\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 650;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  line-height: 14px;\n}\n.thread-map-attention-open small {\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 11px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-card:has(.thread-map-decisions) .thread-map-attention-open {\n  padding-right: 86px;\n}\n.thread-map-decisions {\n  position: absolute;\n  right: 7px;\n  top: 18px;\n  display: flex;\n  gap: 8px;\n}\n.thread-map-decisions button {\n  padding: 4px 3px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n  font-size: 10px;\n  cursor: pointer;\n}\n.thread-map-decisions button:first-child {\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n}\n.thread-map-attention-more {\n  flex: none;\n  align-self: center;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  padding: 12px;\n  cursor: pointer;\n}\n.thread-map-compressed {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  padding: 10px;\n  border: 1px dashed var(--theme-border-strong);\n  border-radius: 7px;\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 6px,\n      color-mix(in oklab, var(--theme-border) 28%, transparent) 6px 7px),\n    var(--theme-panel);\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  text-align: center;\n  cursor: pointer;\n}\n.thread-map [data-dimmed] {\n  opacity: .3;\n}\n.thread-map [data-dimmed] [data-dimmed] {\n  opacity: 1;\n}\n.thread-map-tile[data-waiting] {\n  border-color: color-mix(in oklab, var(--status-waiting, #b77915) 65%, var(--theme-border));\n}\n.thread-map-tile-waiting,\n.thread-map-waiting-count {\n  color: var(--status-waiting, #b77915);\n}\n.thread-map .thread-map-quick-look {\n  position: absolute;\n  right: 6px;\n  bottom: 5px;\n  z-index: 2;\n  width: 24px;\n  height: 24px;\n  border: 0;\n  border-radius: 6px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font-size: 15px;\n  pointer-events: auto;\n  cursor: pointer;\n}\n@media (hover: hover) {\n  .thread-map .thread-map-quick-look {\n    opacity: 0;\n  }\n  .thread-map-tile:hover .thread-map-quick-look,\n  .thread-map-tile:has(:focus-visible) .thread-map-quick-look {\n    opacity: 1;\n  }\n  .thread-map-scope button:hover,\n  .thread-map-attention-open:hover,\n  .thread-map-decisions button:hover,\n  .thread-map-attention-more:hover,\n  .thread-map-compressed:hover,\n  .thread-map-quick-look:hover {\n    background-color: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-section-header {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  min-width: 0;\n}\n.thread-map-section-header > .thread-map-section-head {\n  flex: 1;\n  min-width: 0;\n  height: 100%;\n}\n.thread-map-section[data-zoomable] > .thread-map-section-header .thread-map-section-head {\n  color: var(--theme-fg);\n}\n.thread-map-section[data-collapsed] > .thread-map-section-header {\n  position: absolute;\n  inset: 0 0 auto;\n}\n.thread-map-section-header:has(.thread-map-device-readings) > .thread-map-section-head {\n  font-size: 12px;\n}\n.thread-map-section-header:has(.thread-map-device-menu-button) {\n  padding-right: 2px;\n}\n.thread-map-device-state {\n  display: inline-block;\n  flex: none;\n  box-sizing: border-box;\n  width: 7px;\n  height: 7px;\n  border: 1.5px solid currentColor;\n  border-radius: 50%;\n  background: currentColor;\n  color: var(--theme-fg-muted);\n}\n.thread-map-device-state[data-offline] {\n  background: transparent;\n}\n.thread-map-device-readings {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n  flex: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-weight: 400;\n  white-space: nowrap;\n}\n.thread-map-device-readings > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n}\n.thread-map-device-readings .thread-map-update {\n  padding: 2px 4px;\n  border-radius: 3px;\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n  font-size: 9px;\n}\n.thread-map-sync {\n  width: 4px;\n  height: 4px;\n  border-radius: 50%;\n  background: var(--theme-fg-muted);\n  opacity: .4;\n}\n.thread-map-device-menu-button {\n  position: relative;\n  z-index: 5;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  cursor: pointer;\n}\n.thread-map-device-menu-button svg {\n  width: 15px;\n  height: 15px;\n}\n.thread-map-metrics {\n  display: none;\n  position: absolute;\n  z-index: 8;\n  top: 35px;\n  left: 6px;\n  max-width: calc(100% - 12px);\n  box-sizing: border-box;\n  padding: 6px 8px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 5px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font-size: 10px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section-header:has(:focus-visible) .thread-map-metrics {\n  display: block;\n}\n@media (hover: hover) {\n  .thread-map-section-header:hover .thread-map-metrics {\n    display: block;\n  }\n  .thread-map-device-menu-button:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-graph-dialog.thread-map-device-menu {\n  z-index: 1000;\n  display: grid;\n  width: 220px;\n  padding: 5px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .15);\n}\n.thread-map-device-menu button {\n  min-height: 34px;\n  border: 0;\n  border-radius: 4px;\n  padding: 6px 10px;\n  background: none;\n  color: inherit;\n  text-align: left;\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-device-menu button:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n  background: var(--theme-hover);\n}\n.thread-map-device-menu button:disabled {\n  opacity: .4;\n}\n@media (hover: hover) {\n  .thread-map-device-menu button:hover:not(:disabled) {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-offline-strip {\n  display: flex;\n  flex-wrap: wrap;\n  flex: none;\n  gap: 4px;\n  margin: 8px 16px 0;\n  border-top: 1px solid var(--theme-border);\n  padding-top: 5px;\n}\n.thread-map-offline-strip button {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  height: 30px;\n  max-width: 100%;\n  padding: 0 8px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n}\n.thread-map-offline-strip b {\n  font-weight: 550;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-offline-strip small {\n  font-size: 10px;\n  padding: 2px 4px;\n  border: 1px solid var(--theme-border);\n  border-radius: 3px;\n}\n@media (hover: hover) {\n  .thread-map-offline-strip button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map [data-cached] {\n  filter: saturate(.35);\n}\n.thread-map-cached-label {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  padding: 0 8px;\n  white-space: nowrap;\n}\n.thread-map [data-pulse] {\n  --map-pulse: var(--theme-accent-solid);\n  animation: thread-map-event 800ms ease-out 1;\n}\n.thread-map [data-pulse=waiting] {\n  --map-pulse: var(--status-waiting, #d69b37);\n}\n@keyframes thread-map-event {\n  0%, 15% {\n    box-shadow: inset 0 0 0 3px var(--map-pulse), 0 0 18px color-mix(in oklab, var(--map-pulse) 60%, transparent);\n  }\n  100% {\n    box-shadow: inset 0 0 0 0 transparent, 0 0 0 transparent;\n  }\n}\n@media (max-width: 1050px) {\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child {\n    padding: 12px 14px 10px;\n    gap: 8px;\n  }\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child .thread-map-summary {\n    display: none;\n  }\n  .thread-map[data-presentation=page] .thread-map-filter {\n    margin-left: auto;\n  }\n  .thread-map-device-readings {\n    gap: 5px;\n  }\n}\n@media (max-width: 639px) {\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child {\n    flex-wrap: wrap;\n  }\n  .thread-map[data-presentation=page] .thread-map-filter {\n    flex: 1;\n  }\n  .thread-map-scope {\n    width: 100%;\n    justify-content: stretch;\n  }\n  .thread-map-scope button {\n    flex: 1;\n    height: 36px;\n  }\n  .thread-map-decisions button {\n    min-height: 40px;\n  }\n  .thread-map-decisions {\n    top: 11px;\n  }\n  .thread-map-device-menu-button,\n  .thread-map-quick-look {\n    min-width: 40px;\n    min-height: 40px;\n  }\n  .thread-map-offline-strip button {\n    min-height: 40px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map-attention-wrap {\n    transition: none;\n  }\n  .thread-map [data-pulse] {\n    animation: none;\n    outline: 2px solid var(--map-pulse);\n    outline-offset: -2px;\n  }\n}\n.thread-map-legend-footer {\n  display: flex;\n  flex: none;\n  padding: 5px 16px 8px;\n}\n.thread-map-legend-footer > button {\n  border: 0;\n  border-radius: 4px;\n  padding: 5px 8px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n}\n.thread-map-legend-popover {\n  z-index: 1000;\n  width: min(360px, calc(100vw - 16px));\n  max-height: 70dvh;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .16);\n}\n.thread-map-legend-popover > button {\n  align-self: flex-end;\n  margin: 0 10px 8px;\n  padding: 5px 10px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  font-size: 11px;\n  cursor: pointer;\n}\n@media (hover: hover) {\n  .thread-map-legend-footer > button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n@media (max-width: 639px) {\n  .thread-map-legend-footer > button,\n  .thread-map-legend-popover > button {\n    min-height: 40px;\n  }\n}\n.thread-map-device-readings {\n  flex: 0 1 auto;\n  min-width: 0;\n  max-width: calc(100% - 130px);\n  overflow: hidden;\n}\n.thread-map-device-readings > span {\n  flex: none;\n}\n.thread-map-section-header:has(.thread-map-device-readings) .thread-map-section-label {\n  flex: 1 0 64px;\n  min-width: 64px;\n}\n.thread-map-compressed {\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-legend-popover {\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-live: #ec7a08;\n  --thread-map-spark: var(--theme-accent-solid);\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-map-tile[data-readable] {\n  min-width: 132px;\n  min-height: 64px;\n}\n.thread-map-tile[data-readable][data-size=medium] {\n  gap: 3px;\n  padding: 4px 6px;\n}\n.thread-map-tile[data-readable][data-size=medium] .thread-map-tile-title {\n  line-height: 16px;\n  -webkit-line-clamp: 2;\n}\n.thread-map-tile[data-readable][data-size=medium] .thread-map-tile-meta {\n  line-height: 13px;\n}\n.thread-map-readable-section > .thread-map-section-header {\n  position: relative;\n  z-index: 4;\n}\n.thread-map-readable-section .thread-map-section-usd {\n  flex: none;\n  margin-left: 0;\n  padding-right: 5px;\n  font-size: 10px;\n}\n.thread-map-overflow {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  gap: 7px;\n  box-sizing: border-box;\n  overflow: hidden;\n  padding: 12px;\n  border: 1px dashed var(--theme-border-strong);\n  border-radius: 8px;\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 8px,\n      color-mix(in oklab, var(--theme-border) 12%, transparent) 8px 9px),\n    var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font: inherit;\n  text-align: left;\n  cursor: zoom-in;\n}\n.thread-map-overflow-title {\n  display: flex;\n  align-items: flex-start;\n  gap: 6px;\n  width: 100%;\n  min-width: 0;\n  font-size: 12px;\n  line-height: 17px;\n}\n.thread-map-overflow-title > b {\n  flex: 1;\n  min-width: 0;\n  font-weight: 600;\n}\n.thread-map-overflow-title svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n  margin-top: 1px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-overflow > small {\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map-overflow-marks {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 5px 10px;\n  font-size: 11px;\n}\n.thread-map-overflow-marks:empty {\n  display: none;\n}\n.thread-map-overflow-marks > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-overflow[data-important] {\n  border-style: solid;\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 45%, var(--theme-border));\n}\n.thread-map-overflow-preview {\n  display: grid;\n  gap: 3px;\n  min-width: 0;\n  width: 100%;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 14px;\n}\n.thread-map-overflow-preview > span {\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n@media (hover: hover) {\n  .thread-map-overflow:hover {\n    border-color: var(--theme-accent-solid);\n    background-color: var(--theme-hover);\n  }\n}\n.thread-map-readable-list {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-bg);\n}\n.thread-map-list-heading {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 7px;\n  height: 34px;\n  padding: 0 12px;\n  border-bottom: 1px solid var(--theme-border);\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.thread-map-list-heading svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-list-heading b {\n  flex: 1;\n  font-weight: 600;\n}\n.thread-map-list-heading > span {\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-scroll-list {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n}\n.thread-map-list-scroll {\n  height: 100%;\n  overflow: auto;\n  padding: 4px 12px 8px;\n  scrollbar-width: none;\n  box-sizing: border-box;\n  overscroll-behavior: contain;\n}\n.thread-map-list-scroll::-webkit-scrollbar {\n  display: none;\n}\n.thread-map-readable-list .thread-map-list-scroll {\n  padding: 0 8px 8px;\n  scroll-padding-top: 24px;\n}\n.thread-map-list-status-group {\n  position: relative;\n}\n.thread-map-list-status-heading {\n  position: sticky;\n  top: 0;\n  z-index: 4;\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  height: 24px;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0 10px;\n  background: var(--theme-bg);\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 24px;\n}\n.thread-map-list-status-heading small {\n  font-size: 10px;\n  font-weight: 400;\n  font-variant-numeric: tabular-nums;\n  opacity: .7;\n}\n.thread-map .thread-map-list-row {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 8px;\n  width: 100%;\n  min-width: 132px;\n  height: 40px;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0 10px;\n  border: 0;\n  border-bottom: 1px solid color-mix(in oklab, var(--theme-border) 35%, transparent);\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg);\n}\n.thread-map-list-row > :not(.thread-map-tile-link) {\n  position: relative;\n  pointer-events: none;\n}\n.thread-map-list-row > :is(.thread-map-agent, .matter-status-dot) {\n  flex: none;\n}\n.thread-map-list-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg);\n  font-size: 12.5px;\n  font-weight: 550;\n  line-height: 20px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-list-row-meta {\n  flex: 0 1 auto;\n  max-width: 48%;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n  line-height: 20px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map .thread-map-list-info {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font-size: 14px;\n  cursor: pointer;\n  pointer-events: auto;\n}\n.thread-map-list-info::before {\n  position: absolute;\n  inset: -6px;\n  content: "";\n}\n.thread-map-list-row:has(:focus-visible),\n.thread-map-list-row:active {\n  background: var(--theme-hover);\n}\n.thread-map-list-row[data-current] {\n  background: var(--theme-accent-soft);\n}\n.thread-map-list-row > .thread-map-tile-link:focus-visible {\n  outline: none;\n}\n@media (hover: hover) {\n  .thread-map-list-row:hover {\n    background: var(--theme-hover);\n  }\n  .thread-map-list-row .thread-map-list-info {\n    opacity: 0;\n  }\n  .thread-map-list-row:hover .thread-map-list-info,\n  .thread-map-list-row:has(:focus-visible) .thread-map-list-info {\n    opacity: 1;\n  }\n}\n.thread-map-list-group {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  width: 100%;\n  min-height: 64px;\n  padding: 12px;\n  margin: 4px 0;\n  border: 1px solid var(--theme-border);\n  border-radius: 7px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-list-group > b {\n  flex: 1;\n  min-width: 0;\n  text-align: left;\n  font-weight: 600;\n}\n.thread-map-list-group > span {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-list-group svg {\n  flex: none;\n  width: 15px;\n  height: 15px;\n}\n.thread-map-list-older {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  width: 100%;\n  min-height: 48px;\n  border: 1px dashed var(--theme-border);\n  border-radius: 7px;\n  margin-top: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-list-older svg {\n  width: 14px;\n  height: 14px;\n}\n@media (hover: hover) {\n  .thread-map-list-group:hover,\n  .thread-map-list-older:hover,\n  .thread-map-list-info:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-scroll-track {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  width: var(--scrollbar-size, 8px);\n  pointer-events: none;\n  background: var(--scrollbar-rail-y, transparent);\n}\n.thread-map-scroll-thumb {\n  position: absolute;\n  top: 0;\n  left: 2px;\n  right: 2px;\n  border-radius: var(--scrollbar-radius, 999px);\n  background: var(--scrollbar-thumb-idle, color-mix(in oklab, var(--theme-fg) 16%, transparent));\n  pointer-events: auto;\n  touch-action: none;\n}\n@media (hover: hover) {\n  .thread-map-scroll-list:hover .thread-map-scroll-thumb {\n    background: var(--scrollbar-thumb, color-mix(in oklab, var(--theme-fg) 32%, transparent));\n  }\n}\n.thread-map-scroll-thumb:active {\n  background: var(--scrollbar-thumb-active, var(--theme-accent-solid));\n}\n.thread-map-unlisted {\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  padding: 12px;\n}\n.thread-map-attention[data-responsive] {\n  width: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-card {\n  flex: 0 1 220px;\n  min-width: 200px;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-more {\n  flex: 0 0 80px;\n  padding: 8px 4px;\n  white-space: nowrap;\n}\n.thread-map-attention-menu {\n  z-index: 1000;\n  display: flex;\n  flex-direction: column;\n  width: min(336px, calc(100vw - 16px));\n  padding: 4px;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .16);\n}\n.thread-map-attention-menu .thread-map-list-scroll {\n  padding: 0 7px 0 0;\n}\n.thread-map-attention-menu [role=menuitem] {\n  display: flex;\n  align-items: flex-start;\n  gap: 9px;\n  width: 100%;\n  min-height: 68px;\n  padding: 9px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-attention-menu [role=menuitem] > .matter-status-dot {\n  margin-top: 3px;\n}\n.thread-map-attention-menu [role=menuitem] > span:last-child {\n  display: grid;\n  flex: 1;\n  gap: 4px;\n  min-width: 0;\n}\n.thread-map-attention-menu b {\n  font-size: 12px;\n  line-height: 16px;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-menu small {\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 13px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-menu [role=menuitem]:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-map-attention-menu [role=menuitem]:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map[data-presentation=page] .thread-map-canvas:has(.thread-map-list-scroll) {\n  touch-action: pan-y;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-more {\n  align-self: center;\n  height: 32px;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-panel);\n}\n@media (hover: hover) {\n  .thread-map-attention[data-responsive] .thread-map-attention-more:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-list-agent-slot,\n.thread-map-list-status-slot {\n  display: grid;\n  flex: 0 0 16px;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n}\n.thread-map-tip {\n  z-index: 1100;\n}\n.thread-map-overflow-with-list {\n  cursor: default;\n}\n.thread-map-overflow-open {\n  display: flex;\n  flex: none;\n  flex-direction: column;\n  gap: 7px;\n  width: 100%;\n  padding: 0 0 6px;\n  border: 0;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: zoom-in;\n}\n.thread-map-overflow-open > small {\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map-overflow-with-list .thread-map-list-scroll {\n  padding: 0 5px 0 0;\n}\n.thread-map-overflow-row {\n  display: flex;\n  position: relative;\n  align-items: center;\n  gap: 7px;\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 40px;\n  padding: 0 5px;\n  border: 0;\n  border-top: 1px solid color-mix(in oklab, var(--theme-border) 45%, transparent);\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  font: inherit;\n  font-size: 11px;\n  text-align: left;\n  text-decoration: none;\n  cursor: pointer;\n}\n.thread-map-overflow-row > span:not(.matter-status-dot) {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-overflow-row > svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-overflow-row > small {\n  flex: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-overflow-row:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n@media (hover: hover) {\n  .thread-map-overflow-row:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map[data-presentation=page] > .thread-map-dense-toolbar:first-child {\n  height: 40px;\n  min-height: 40px;\n  flex: none;\n  flex-wrap: nowrap;\n  gap: 6px;\n  padding: 0 6px;\n  user-select: none;\n}\n.thread-map-dense-toolbar .thread-map-crumbs {\n  flex: 1 1 auto;\n  min-width: 40px;\n  font-size: 11px;\n}\n.thread-map-dense-toolbar .thread-map-crumbs button {\n  padding: 3px 4px;\n}\n.thread-map-dense-toolbar .thread-map-icon-button {\n  flex: none;\n  width: 28px;\n  height: 28px;\n}\n.thread-map-dense-toolbar .thread-map-filter {\n  flex: 0 1 200px;\n  min-width: 80px;\n  height: 26px;\n  border-radius: 4px;\n}\n.thread-map-dense-toolbar .thread-map-filter input {\n  font-size: 11px;\n}\n.thread-map-dense-toolbar .thread-map-scope {\n  padding: 0;\n  border: 0;\n  background: none;\n  gap: 1px;\n}\n.thread-map-dense-toolbar .thread-map-scope button {\n  width: 28px;\n  height: 28px;\n  padding: 5px;\n  border-radius: 4px;\n}\n.thread-map-dense-toolbar .thread-map-scope button[aria-pressed=true] {\n  background: var(--theme-hover);\n  box-shadow: none;\n}\n.thread-map-dense-toolbar svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-dense-summary {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 10px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-dense-summary > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n  white-space: nowrap;\n}\n.thread-map-dense-toolbar .thread-map-legend-footer {\n  padding: 0;\n  border: 0;\n}\n.thread-map-dense-toolbar .thread-map-legend-footer > button {\n  display: grid;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: 0;\n  background: none;\n  border-radius: 4px;\n}\n.thread-map[data-presentation=page] .thread-map-canvas {\n  margin: 0;\n  border-radius: 0;\n  background: var(--theme-panel);\n}\n.thread-map[data-presentation=page] .thread-map-stage {\n  overflow: hidden;\n}\n.thread-map-dense-section {\n  display: contents;\n}\n.thread-map-dense-header {\n  position: absolute;\n  display: flex;\n  align-items: center;\n  gap: 2px;\n  color: var(--theme-fg-muted);\n  background: var(--theme-panel);\n}\n.thread-map-dense-header .thread-map-section-head {\n  height: 100%;\n  min-width: 0;\n  padding: 0 3px;\n  gap: 4px;\n  font-size: 11px;\n  line-height: 1;\n}\n.thread-map-dense-header .thread-map-section-head svg {\n  flex: none;\n  width: 11px;\n  height: 11px;\n}\n.thread-map-dense-section[data-kind=device] > .thread-map-dense-header {\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-dense-header small {\n  flex: none;\n  margin-left: auto;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-weight: 400;\n}\n.thread-map-dense-header .thread-map-device-menu-button {\n  width: 22px;\n  height: 22px;\n}\n.thread-map-dense-header .thread-map-device-menu-button svg {\n  width: 13px;\n  height: 13px;\n}\n.thread-map .thread-map-dense-tile {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 5px;\n  padding: 4px 5px;\n  min-width: 0;\n  min-height: 0;\n  border: 0;\n  border-radius: 4px;\n  box-shadow: none;\n}\n.thread-map .thread-map-dense-tile[data-heat="1"] {\n  --thread-map-fill:color-mix(in oklab,var(--thread-map-heat) 5%,var(--thread-map-tile));\n}\n.thread-map .thread-map-dense-tile[data-heat="2"] {\n  --thread-map-fill:color-mix(in oklab,var(--thread-map-heat) 9%,var(--thread-map-tile));\n}\n.thread-map .thread-map-dense-tile[data-heat="3"] {\n  --thread-map-fill:color-mix(in oklab,var(--thread-map-heat) 13%,var(--thread-map-tile));\n}\n.thread-map .thread-map-dense-tile[data-heat="4"] {\n  --thread-map-fill:color-mix(in oklab,var(--thread-map-heat) 17%,var(--thread-map-tile));\n}\n.thread-map-dense-head {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  min-width: 0;\n}\n.thread-map-dense-head > .matter-status-dot {\n  flex: none;\n  width: 9px;\n  height: 9px;\n  margin: 0;\n}\n.thread-map-dense-head > .thread-map-agent {\n  flex: none;\n  width: 14px;\n  height: 14px;\n  margin: 0;\n  border-radius: 3px;\n  font-size: 8px;\n}\n.thread-map-dense-tile .thread-map-tile-title {\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 1;\n  overflow: hidden;\n  min-width: 0;\n  font-size: 11px;\n  font-weight: 500;\n  line-height: 15px;\n  overflow-wrap: anywhere;\n}\n.thread-map-dense-tile:is([data-tier=two], [data-tier=stats]) .thread-map-tile-title {\n  -webkit-line-clamp: 2;\n}\n.thread-map-dense-stats {\n  display: flex;\n  gap: 7px;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 13px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-dense-stats > :is(span, button) {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 2px;\n  white-space: nowrap;\n}\n.thread-map-dense-stats svg {\n  width: 11px;\n  height: 11px;\n}\n.thread-map-dense-stats > button {\n  z-index: 1;\n  pointer-events: auto;\n  border: 0;\n  padding: 0;\n  background: none;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n}\n.thread-map .thread-map-dense-tile[data-running] {\n  animation: thread-map-dense-breathe 2.4s ease-in-out infinite;\n  box-shadow: inset 0 0 0 1.5px var(--thread-map-live);\n}\n.thread-map .thread-map-dense-tile[data-running]::before {\n  display: none;\n}\n.thread-map .thread-map-dense-tile[data-current] {\n  box-shadow: inset 0 0 0 1.5px var(--theme-accent-solid);\n}\n.thread-map-dense-tile .thread-map-quick-look {\n  right: 3px;\n  bottom: 2px;\n  top: auto;\n  width: 22px;\n  height: 20px;\n}\n.thread-map-dense-tile:has(.thread-map-quick-look) .thread-map-dense-stats {\n  padding-right: 20px;\n}\n@keyframes thread-map-dense-breathe {\n  50% {\n    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--thread-map-live) 45%, transparent);\n  }\n}\n.thread-map .thread-map-dense-overflow {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 4px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--thread-map-tile);\n  color: var(--theme-fg-muted);\n  font-size: 13px;\n  font-weight: 500;\n}\n.thread-map-dense-overflow svg {\n  width: 16px;\n  height: 16px;\n}\n.thread-map[data-presentation=page] .thread-map-offline-strip {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 10px;\n  height: 24px;\n  min-height: 24px;\n  padding: 0 5px;\n  border: 0;\n  overflow: hidden;\n}\n.thread-map[data-presentation=page] .thread-map-offline-strip button {\n  display: flex;\n  flex: 0 1 auto;\n  gap: 4px;\n  align-items: center;\n  min-width: 0;\n  height: 24px;\n  padding: 0 3px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map[data-presentation=page] .thread-map-offline-strip b {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-weight: 400;\n}\n.thread-map[data-presentation=page] .thread-map-offline-strip button > :is(span:not(.thread-map-device-state), small) {\n  display: none;\n}\n.thread-map[data-presentation=page] .thread-map-attention-wrap {\n  transition: none;\n}\n.thread-map[data-presentation=page] .thread-map-attention {\n  height: 30px;\n  gap: 4px;\n  padding: 0 2px 2px;\n}\n.thread-map[data-presentation=page] .thread-map-attention-wrap:not([data-visible]) {\n  display: none;\n}\n.thread-map[data-presentation=page] .thread-map-attention-card {\n  flex: 1 1 220px;\n  min-width: 180px;\n  max-width: 280px;\n  height: 28px;\n  border-radius: 5px;\n  border: 0;\n  background: var(--theme-surface);\n}\n.thread-map[data-presentation=page] .thread-map-attention-open {\n  align-items: center;\n  gap: 5px;\n  padding: 0 7px;\n}\n.thread-map[data-presentation=page] .thread-map-attention-open > .matter-status-dot {\n  margin: 0;\n}\n.thread-map[data-presentation=page] .thread-map-attention-open > span:last-child {\n  display: block;\n}\n.thread-map[data-presentation=page] .thread-map-attention-open b {\n  display: block;\n  font-size: 11px;\n  font-weight: 500;\n}\n.thread-map[data-presentation=page] .thread-map-attention-open small {\n  display: none;\n}\n.thread-map[data-presentation=page] .thread-map-attention-card:has(.thread-map-decisions) .thread-map-attention-open {\n  padding-right: 57px;\n}\n.thread-map[data-presentation=page] .thread-map-decisions {\n  top: 0;\n  bottom: 0;\n  right: 1px;\n  align-items: center;\n  gap: 1px;\n}\n.thread-map[data-presentation=page] .thread-map-decisions button {\n  display: grid;\n  place-items: center;\n  width: 26px;\n  height: 26px;\n  padding: 0;\n  border: 0;\n  background: none;\n}\n.thread-map[data-presentation=page] .thread-map-decisions svg {\n  width: 13px;\n  height: 13px;\n}\n.thread-map[data-presentation=page] .thread-map-attention-more {\n  flex: 0 0 40px;\n  align-self: start;\n  height: 28px;\n  padding: 0 5px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n}\n.thread-map[data-presentation=page] .thread-map-readable-list {\n  border: 0;\n  border-radius: 0;\n}\n@media (max-width: 639px) {\n  .thread-map-dense-summary {\n    gap: 5px;\n  }\n  .thread-map-dense-summary > span:last-child:not(:first-child) {\n    display: none;\n  }\n  .thread-map-dense-toolbar .thread-map-filter {\n    flex-basis: 90px;\n  }\n  .thread-map-dense-toolbar .thread-map-crumbs {\n    max-width: 80px;\n  }\n  .thread-map[data-presentation=page] > .thread-map-dense-toolbar:first-child {\n    gap: 2px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map .thread-map-dense-tile[data-running] {\n    animation: none;\n  }\n}\n.thread-map-dense-section {\n  position: absolute;\n  display: block;\n  pointer-events: none;\n  background: none;\n  border: 0;\n  padding: 0;\n}\n.thread-map-dense-header {\n  pointer-events: auto;\n}\n.thread-map-dense-tile > .thread-map-dense-unread {\n  position: absolute;\n  top: 3px;\n  right: 3px;\n  line-height: 0;\n}\n.thread-map-dense-unread > .matter-status-dot {\n  width: 5px;\n  height: 5px;\n}\n.thread-map-dense-tile:has(.thread-map-dense-unread) .thread-map-dense-head {\n  padding-right: 4px;\n}\n');
 
 // src/styles/attachments.css
 styleInject(".attachment-tile {\n  --file-color: var(--theme-fg-muted);\n  position: relative;\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 3px;\n  box-sizing: border-box;\n  width: 78px;\n  height: 66px;\n  margin: 2px 3px;\n  padding: 5px 5px 4px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 10.5px;\n  font-weight: 500;\n  line-height: 13px;\n  text-align: center;\n  vertical-align: middle;\n  white-space: nowrap;\n  cursor: pointer;\n  user-select: none;\n  -webkit-user-select: none;\n  transition: border-color 120ms ease, background 120ms ease;\n}\n.attachment-tile:active,\n.attachment-tile[aria-expanded=true] {\n  border-color: color-mix(in srgb, var(--file-color) 55%, var(--theme-border));\n  background: color-mix(in srgb, var(--file-color) 7%, var(--theme-surface));\n}\n@media (hover: hover) {\n  .attachment-tile:hover {\n    border-color: color-mix(in srgb, var(--file-color) 55%, var(--theme-border));\n    background: color-mix(in srgb, var(--file-color) 7%, var(--theme-surface));\n  }\n}\n.attachment-tile:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.attachment-tile-icon {\n  position: relative;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 100%;\n  height: 40px;\n}\n.attachment-tile-icon > img {\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n  background: var(--theme-bg);\n  object-fit: cover;\n}\n.attachment-tile-glyph {\n  display: block;\n  width: 28px;\n  height: 34px;\n}\n.attachment-glyph {\n  display: block;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n}\n.attachment-glyph-sheet {\n  fill: color-mix(in srgb, var(--file-color) 13%, var(--theme-panel));\n  stroke: var(--file-color);\n  stroke-width: 1.4;\n}\n.attachment-glyph-fold {\n  fill: none;\n  stroke: var(--file-color);\n  stroke-width: 1.4;\n  stroke-linejoin: round;\n}\n.attachment-tile-icon > b {\n  position: absolute;\n  bottom: 4px;\n  left: 50%;\n  transform: translateX(-50%);\n  padding: 0 3px;\n  border-radius: 3px;\n  background: var(--file-color);\n  color: #fff;\n  font-size: 7.5px;\n  font-weight: 700;\n  letter-spacing: 0.02em;\n  line-height: 11px;\n}\n.attachment-tile-name {\n  display: block;\n  max-width: 100%;\n  overflow: hidden;\n  color: var(--theme-fg-soft, var(--theme-fg));\n  font-size: 10px;\n  letter-spacing: -0.01em;\n  text-overflow: ellipsis;\n}\n:is(.attachment-tile, .attachment-card)[data-family=pdf] {\n  --file-color: #e5484d;\n}\n:is(.attachment-tile, .attachment-card)[data-family=image] {\n  --file-color: #3b8fe0;\n}\n:is(.attachment-tile, .attachment-card)[data-family=archive] {\n  --file-color: #d0921d;\n}\n:is(.attachment-tile, .attachment-card)[data-family=code] {\n  --file-color: #2b9e6a;\n}\n:is(.attachment-tile, .attachment-card)[data-family=text] {\n  --file-color: #6b7c8c;\n}\n:is(.attachment-tile, .attachment-card)[data-family=sheet] {\n  --file-color: #1f9254;\n}\n:is(.attachment-tile, .attachment-card)[data-family=doc] {\n  --file-color: #3e63dd;\n}\n:is(.attachment-tile, .attachment-card)[data-family=audio] {\n  --file-color: #9b55d0;\n}\n:is(.attachment-tile, .attachment-card)[data-family=video] {\n  --file-color: #d0457a;\n}\n.thread-ui-shell.thread-ui-shell.attachment-float {\n  position: fixed;\n  z-index: 1200;\n  box-sizing: border-box;\n  width: min(300px, calc(100vw - 16px));\n  border: 1px solid var(--theme-border);\n  border-radius: 14px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 16px 40px rgb(0 0 0 / 22%), 0 2px 8px rgb(0 0 0 / 10%);\n  font-size: 12.5px;\n}\n.attachment-card {\n  --file-color: var(--theme-fg-muted);\n  padding: 10px;\n}\n.attachment-card-preview {\n  display: grid;\n  place-items: center;\n  box-sizing: border-box;\n  width: 100%;\n  max-height: 200px;\n  padding: 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-surface);\n}\nbutton.attachment-card-preview {\n  cursor: zoom-in;\n}\nbutton.attachment-card-preview:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.attachment-card-preview > img {\n  display: block;\n  max-width: 100%;\n  max-height: 198px;\n  object-fit: contain;\n}\n.attachment-card-head {\n  display: flex;\n  align-items: flex-start;\n  gap: 10px;\n}\n.attachment-card-head > .attachment-tile-icon {\n  width: 40px;\n  height: 48px;\n}\n.attachment-card-head .attachment-tile-glyph {\n  width: 34px;\n  height: 42px;\n}\n.attachment-card-head .attachment-tile-icon > b {\n  bottom: 6px;\n  font-size: 8px;\n  line-height: 12px;\n}\n.attachment-card-info {\n  display: flex;\n  flex-direction: column;\n  gap: 2px;\n  min-width: 0;\n  padding: 0 2px;\n}\n.attachment-card-preview + .attachment-card-info {\n  margin-top: 9px;\n}\n.attachment-card-head > .attachment-card-info {\n  flex: 1;\n  padding-top: 2px;\n}\n.attachment-card-info > strong {\n  display: -webkit-box;\n  overflow: hidden;\n  color: var(--theme-fg);\n  font-size: 13px;\n  font-weight: 600;\n  line-height: 1.35;\n  overflow-wrap: anywhere;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n}\n.attachment-card-info > span {\n  color: var(--theme-fg-muted);\n  font-size: 11.5px;\n}\n.attachment-card-info > .attachment-card-path {\n  margin-top: 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.attachment-card-actions {\n  display: flex;\n  gap: 6px;\n  margin-top: 10px;\n}\n.attachment-card-actions > button {\n  display: inline-flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  min-width: 0;\n  height: 30px;\n  padding: 0 8px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg);\n  font-size: 12px;\n  font-weight: 500;\n  white-space: nowrap;\n}\n.attachment-card-actions > button > svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n}\n.attachment-card-actions > button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .attachment-card-actions > button:hover {\n    background: var(--theme-hover);\n  }\n}\n.attachment-card-actions > button:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.attachment-card-actions > button.is-primary {\n  border-color: color-mix(in srgb, var(--theme-accent-solid) 40%, var(--theme-border));\n  background: color-mix(in srgb, var(--theme-accent-solid) 13%, transparent);\n}\n.attachment-card-actions > button.is-primary:active {\n  background: color-mix(in srgb, var(--theme-accent-solid) 20%, transparent);\n}\n@media (hover: hover) {\n  .attachment-card-actions > button.is-primary:hover {\n    background: color-mix(in srgb, var(--theme-accent-solid) 20%, transparent);\n  }\n}\n.attachment-card-actions > button.is-danger {\n  color: var(--theme-danger, #e5484d);\n}\n");
@@ -201,8 +201,8 @@ var FILE_GLYPH_SVG = '<svg class="attachment-glyph" viewBox="0 0 28 34" aria-hid
 
 // src/components/StatusMark.tsx
 import { jsx } from "react/jsx-runtime";
-function navigationStatusLabel(status2) {
-  switch (status2) {
+function navigationStatusLabel(status3) {
+  switch (status3) {
     case "waiting":
       return translate("workbench.waitingForYou");
     case "running":
@@ -221,9 +221,9 @@ function navigationStatusLabel(status2) {
       return translate("workbench.statusUnavailable");
   }
 }
-function StatusMark({ status: status2, label }) {
+function StatusMark({ status: status3, label }) {
   useI18n();
-  return /* @__PURE__ */ jsx("span", { className: "matter-status-dot", "data-status": status2, role: "img", "aria-label": label ?? navigationStatusLabel(status2) });
+  return /* @__PURE__ */ jsx("span", { className: "matter-status-dot", "data-status": status3, role: "img", "aria-label": label ?? navigationStatusLabel(status3) });
 }
 
 // src/components/ThreadComposer.tsx
@@ -629,11 +629,11 @@ function parseMcpServerName(value) {
 }
 function parseMcpServerNameFromBlock(value) {
   const lines = normalizeTomlContent(value).split("\n").map((line) => line.trim()).filter(Boolean);
-  const header = lines.find((line) => /^\[mcp_servers\.[^\]]+\]$/.test(line));
-  if (!header) {
+  const header2 = lines.find((line) => /^\[mcp_servers\.[^\]]+\]$/.test(line));
+  if (!header2) {
     return null;
   }
-  const match = header.match(/^\[mcp_servers\.([A-Za-z0-9_-]+)\]$/);
+  const match = header2.match(/^\[mcp_servers\.([A-Za-z0-9_-]+)\]$/);
   return match?.[1] ?? null;
 }
 function renderHttpMcpBlock(name, url) {
@@ -1301,8 +1301,8 @@ function resolveOffsetToDomPosition(root, targetOffset) {
   const target = Math.max(0, targetOffset);
   let text = "";
   function visit(parent) {
-    const children = Array.from(parent.childNodes);
-    for (const [index, child] of children.entries()) {
+    const children2 = Array.from(parent.childNodes);
+    for (const [index, child] of children2.entries()) {
       if (child.nodeType === Node.TEXT_NODE) {
         const end = text.length + (child.textContent?.length ?? 0);
         if (target <= end) return { node: child, offset: target - text.length };
@@ -1312,7 +1312,7 @@ function resolveOffsetToDomPosition(root, targetOffset) {
           if (target === text.length) return { node: parent, offset: index };
           text += child.dataset.placeholder;
           if (target <= text.length) {
-            const next = children[index + 1];
+            const next = children2[index + 1];
             return target === text.length && next?.nodeType === Node.TEXT_NODE ? { node: next, offset: 0 } : { node: parent, offset: index + 1 };
           }
         } else if (child.tagName === "BR") {
@@ -1883,7 +1883,7 @@ import { jsx as jsx7 } from "react/jsx-runtime";
 function ComposerMenuSurface({
   align = "start",
   anchorSelector,
-  children,
+  children: children2,
   className = "",
   ...props
 }) {
@@ -1961,7 +1961,7 @@ function ComposerMenuSurface({
       popover: "manual",
       "data-composer-menu-surface": "true",
       className: `thread-composer-menu-surface ${className}`,
-      children
+      children: children2
     }
   );
 }
@@ -2299,9 +2299,9 @@ import {
 import { createContext as createContext4, useContext as useContext4, useEffect as useEffect3, useState as useState3 } from "react";
 import { jsx as jsx10 } from "react/jsx-runtime";
 var ExpansionContext = createContext4(null);
-function MessageExpansionScope({ children }) {
+function MessageExpansionScope({ children: children2 }) {
   const [cache] = useState3(() => ({ messages: /* @__PURE__ */ new Map(), live: null }));
-  return /* @__PURE__ */ jsx10(ExpansionContext.Provider, { value: cache, children });
+  return /* @__PURE__ */ jsx10(ExpansionContext.Provider, { value: cache, children: children2 });
 }
 function useMessageExpansion(messageId, text, streaming) {
   const cache = useContext4(ExpansionContext);
@@ -2367,7 +2367,7 @@ var ViewAction = ({ onClick }) => /* @__PURE__ */ jsxs7("button", { type: "butto
   /* @__PURE__ */ jsx11(Maximize2, { "aria-hidden": "true" }),
   translate("chat.attachmentView")
 ] });
-function FloatingCard({ anchor, onClose, children }) {
+function FloatingCard({ anchor, onClose, children: children2 }) {
   const card = useRef4(null);
   const [place, setPlace] = useState4(null);
   const close = useRef4(onClose);
@@ -2440,7 +2440,7 @@ function FloatingCard({ anchor, onClose, children }) {
         className: `thread-ui-shell attachment-float ${themeClass}`,
         ...theme,
         style: { left: place?.left ?? -9999, top: place?.top ?? -9999 },
-        children
+        children: children2
       }
     ),
     document.body
@@ -2666,7 +2666,7 @@ import "katex/dist/katex.min.css";
 // src/components/VerifiedWorkspacePath.tsx
 import { useEffect as useEffect5, useState as useState5 } from "react";
 import { Fragment as Fragment4, jsx as jsx12 } from "react/jsx-runtime";
-function VerifiedWorkspacePath({ target, resolve, onOpen, children }) {
+function VerifiedWorkspacePath({ target, resolve, onOpen, children: children2 }) {
   const [verified, setVerified] = useState5(null);
   useEffect5(() => {
     let current = true;
@@ -2679,7 +2679,7 @@ function VerifiedWorkspacePath({ target, resolve, onOpen, children }) {
       current = false;
     };
   }, [target.path, resolve]);
-  return verified?.path === target.path && verified.resolve === resolve ? /* @__PURE__ */ jsx12(WorkspaceFileLink, { ...target, onOpen, children }) : /* @__PURE__ */ jsx12(Fragment4, { children });
+  return verified?.path === target.path && verified.resolve === resolve ? /* @__PURE__ */ jsx12(WorkspaceFileLink, { ...target, onOpen, children: children2 }) : /* @__PURE__ */ jsx12(Fragment4, { children: children2 });
 }
 
 // src/plugins/usePlugins.ts
@@ -2805,7 +2805,7 @@ function AccordionItem({
 }
 function AccordionTrigger({
   className,
-  children,
+  children: children2,
   ...props
 }) {
   return /* @__PURE__ */ jsx13(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs8(
@@ -2818,7 +2818,7 @@ function AccordionTrigger({
       ),
       ...props,
       children: [
-        children,
+        children2,
         /* @__PURE__ */ jsx13(ChevronDownIcon, { className: "pointer-events-none size-4 shrink-0 translate-y-0.5 text-[var(--theme-fg-muted)] transition-transform duration-200" })
       ]
     }
@@ -2826,7 +2826,7 @@ function AccordionTrigger({
 }
 function AccordionContent({
   className,
-  children,
+  children: children2,
   ...props
 }) {
   return /* @__PURE__ */ jsx13(
@@ -2835,7 +2835,7 @@ function AccordionContent({
       "data-slot": "accordion-content",
       className: "overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
       ...props,
-      children: /* @__PURE__ */ jsx13("div", { className: classNames("pb-4 pt-0", className), children })
+      children: /* @__PURE__ */ jsx13("div", { className: classNames("pb-4 pt-0", className), children: children2 })
     }
   );
 }
@@ -2888,13 +2888,13 @@ function renderResultValue(key, value) {
 function GraphChatToolCall({
   callId,
   toolName,
-  status: status2,
+  status: status3,
   parameters,
   result
 }) {
   const { locale: i18nLocale } = useI18n();
   const statusConfig = useMemo(() => {
-    switch (status2) {
+    switch (status3) {
       case "completed":
         return {
           className: "is-completed",
@@ -2914,13 +2914,13 @@ function GraphChatToolCall({
           label: translate("chat.running")
         };
     }
-  }, [status2, i18nLocale]);
+  }, [status3, i18nLocale]);
   const resultEntries = useMemo(() => normalizeObjectEntries(result), [result]);
   const parameterEntries = useMemo(
     () => normalizeObjectEntries(parameters),
     [parameters]
   );
-  const shouldAutoOpen = status2 === "pending";
+  const shouldAutoOpen = status3 === "pending";
   const actionLabel = /(?:exec|command|shell|terminal)/i.test(toolName) ? translate("chat.ran") : translate("chat.used");
   const [openItem, setOpenItem] = useState6(
     shouldAutoOpen ? "item-1" : void 0
@@ -3202,11 +3202,11 @@ function getGraphChatToolUiStatus(result) {
   if (!isRecord2(result)) {
     return "completed";
   }
-  const status2 = result.status;
-  if (status2 === "stream" || status2 === "pending" || status2 === "running") {
+  const status3 = result.status;
+  if (status3 === "stream" || status3 === "pending" || status3 === "running") {
     return "pending";
   }
-  if (status2 === "failed" || status2 === "error" || status2 === "timed_out") {
+  if (status3 === "failed" || status3 === "error" || status3 === "timed_out") {
     return "failed";
   }
   if (typeof result.exit_code === "number" && result.exit_code !== 0) {
@@ -3293,11 +3293,11 @@ function StableCodeRenderer(props) {
 function ensureTransparentShikiBg(html) {
   return html.replace(/background-color:[^;"]+;?/g, "background-color: transparent;").replace(/background:[^;"]+;?/g, "background: transparent;");
 }
-function textFromReactNode(children) {
-  if (Array.isArray(children)) {
-    return children.map((child) => String(child)).join("");
+function textFromReactNode(children2) {
+  if (Array.isArray(children2)) {
+    return children2.map((child) => String(child)).join("");
   }
-  return String(children ?? "");
+  return String(children2 ?? "");
 }
 function readMarkdownNodeLineRange(node) {
   if (!node || typeof node !== "object" || !("position" in node)) {
@@ -3334,14 +3334,14 @@ function parseWorkspaceFileHref(href, workspaceRootPath) {
     ...Number.isFinite(line) ? { line } : {}
   };
 }
-function PreRenderer({ children, ...props }) {
+function PreRenderer({ children: children2, ...props }) {
   const { locale: i18nLocale } = useI18n();
-  const code = isValidElement(children) ? children.props : void 0;
+  const code = isValidElement(children2) ? children2.props : void 0;
   const language = /language-([\w-]+)/.exec(code?.className ?? "")?.[1] ?? "";
-  if (isToolCodeElement(children) || code && isMermaidCode(language, textFromReactNode(code.children))) {
-    return /* @__PURE__ */ jsx16(Fragment5, { children });
+  if (isToolCodeElement(children2) || code && isMermaidCode(language, textFromReactNode(code.children))) {
+    return /* @__PURE__ */ jsx16(Fragment5, { children: children2 });
   }
-  return /* @__PURE__ */ jsx16("pre", { ...props, children });
+  return /* @__PURE__ */ jsx16("pre", { ...props, children: children2 });
 }
 function isToolCodeElement(value) {
   if (!value || typeof value !== "object" || !("props" in value)) {
@@ -3406,7 +3406,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
     return () => observer.disconnect();
   }, []);
   const CodeBlockRenderer = ({
-    children,
+    children: children2,
     className: codeClassName,
     inline,
     node,
@@ -3416,7 +3416,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
     const { locale: i18nLocale2 } = useI18n();
     const match = /language-(\w+(?:-\w+)*)/.exec(codeClassName || "");
     const language = match ? match[1] ?? "" : "";
-    const textContent = textFromReactNode(children).replace(/\n$/, "");
+    const textContent = textFromReactNode(children2).replace(/\n$/, "");
     const { startLine, endLine } = readMarkdownNodeLineRange(node);
     const isFencedOrBlockCode = inline === false || Boolean(codeClassName) || textContent.includes("\n") || startLine !== endLine;
     if (isFencedOrBlockCode && isMermaidCode(language, textContent)) {
@@ -3536,7 +3536,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
         )
       );
     }
-    const inlineDisplayText = textFromReactNode(children).replace(/`+/g, "");
+    const inlineDisplayText = textFromReactNode(children2).replace(/`+/g, "");
     const inlineCode = /* @__PURE__ */ jsx16(
       "code",
       {
@@ -3556,7 +3556,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
       rehypePlugins: [...markdownHtmlPlugins, rehypeKatex],
       components: {
         a({ href, children: originalChildren, node: _node, ...props }) {
-          const children = /* @__PURE__ */ jsx16(MarkdownLinkContext.Provider, { value: true, children: /* @__PURE__ */ jsx16(MarkdownImageLinkContext.Provider, { value: true, children: originalChildren }) });
+          const children2 = /* @__PURE__ */ jsx16(MarkdownLinkContext.Provider, { value: true, children: /* @__PURE__ */ jsx16(MarkdownImageLinkContext.Provider, { value: true, children: originalChildren }) });
           if (href?.startsWith("workspace-auto:")) {
             let value = "";
             try {
@@ -3564,12 +3564,12 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
             } catch {
             }
             const target = parseWorkspacePathText(value, workspaceRootPath);
-            return !readOnly && target && resolveWorkspacePath && onOpenWorkspaceFile ? /* @__PURE__ */ jsx16(VerifiedWorkspacePath, { target, resolve: resolveWorkspacePath, onOpen: onOpenWorkspaceFile, children }) : /* @__PURE__ */ jsx16(Fragment5, { children });
+            return !readOnly && target && resolveWorkspacePath && onOpenWorkspaceFile ? /* @__PURE__ */ jsx16(VerifiedWorkspacePath, { target, resolve: resolveWorkspacePath, onOpen: onOpenWorkspaceFile, children: children2 }) : /* @__PURE__ */ jsx16(Fragment5, { children: children2 });
           }
-          if (readOnly && (!href || !/^https?:\/\//i.test(href))) return /* @__PURE__ */ jsx16("span", { children });
+          if (readOnly && (!href || !/^https?:\/\//i.test(href))) return /* @__PURE__ */ jsx16("span", { children: children2 });
           const workspaceTarget = parseWorkspaceFileHref(href, workspaceRootPath);
           if (workspaceTarget && onOpenWorkspaceFile) {
-            return /* @__PURE__ */ jsx16(WorkspaceFileLink, { ...workspaceTarget, onOpen: onOpenWorkspaceFile, children });
+            return /* @__PURE__ */ jsx16(WorkspaceFileLink, { ...workspaceTarget, onOpen: onOpenWorkspaceFile, children: children2 });
           }
           const resolvedHref = href ? resolveHref?.(href) ?? href : href;
           return /* @__PURE__ */ jsx16(
@@ -3579,7 +3579,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
               ...externalLinkProps(resolvedHref),
               href: resolvedHref,
               className: "thread-inline-link",
-              children
+              children: children2
             }
           );
         },
@@ -4071,10 +4071,10 @@ function wakeState(state) {
 function delegateWakeMessages(turn, context) {
   const text = turn.items.find((item) => item.kind === "userMessage" && item.peerWork)?.text ?? "";
   const reports = /* @__PURE__ */ new Map();
-  const header = WAKE_HEADER.exec(text);
-  if (header) {
+  const header2 = WAKE_HEADER.exec(text);
+  if (header2) {
     const footer = text.lastIndexOf(WAKE_FOOTER);
-    const body = text.slice(header[0].length, footer < 0 ? void 0 : footer);
+    const body = text.slice(header2[0].length, footer < 0 ? void 0 : footer);
     const entries = wakeEntries(body);
     for (const [index, entry] of entries.entries()) {
       const block = body.slice(entry.index + entry[0].length, entries[index + 1]?.index);
@@ -4108,10 +4108,10 @@ function shortIds(text) {
 function parsePromptEnvelope(text) {
   if (text.startsWith(RESUME_PREFIX)) return { type: "notice", notice: "resume", preview: "", body: text };
   const newline = text.indexOf("\n");
-  const header = (newline < 0 ? text : text.slice(0, newline)).trim();
+  const header2 = (newline < 0 ? text : text.slice(0, newline)).trim();
   const rest = newline < 0 ? "" : text.slice(newline + 1);
-  if (!header.startsWith("[Pockymoe ") || !header.endsWith("]")) return null;
-  const inner = header.slice("[Pockymoe ".length, -1);
+  if (!header2.startsWith("[Pockymoe ") || !header2.endsWith("]")) return null;
+  const inner = header2.slice("[Pockymoe ".length, -1);
   if (inner.startsWith("inbox reminder")) {
     const lines = rest.split("\n").map((line) => line.trim()).filter(Boolean);
     const first = lines.find((line) => line.startsWith("- "))?.slice(2) ?? lines[0] ?? "";
@@ -4353,15 +4353,15 @@ function ComposerPendingQueue({
 import { BellRing as BellRing2 } from "lucide-react";
 import { useEffect as useEffect11, useId as useId3, useRef as useRef9, useState as useState13 } from "react";
 import { jsx as jsx22, jsxs as jsxs17 } from "react/jsx-runtime";
-function markStatus(status2) {
-  switch (status2) {
+function markStatus(status3) {
+  switch (status3) {
     case "running":
     case "recovering":
       return "running";
     case "idle":
     case "failed":
     case "interrupted":
-      return status2;
+      return status3;
     default:
       return "unknown";
   }
@@ -5315,8 +5315,8 @@ function elapsedLabel(seconds2) {
   }
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 }
-function statusLabel(status2) {
-  switch (status2) {
+function statusLabel(status3) {
+  switch (status3) {
     case "budgetLimited":
       return translate("chat.budgetLimited");
     case "complete":
@@ -9685,8 +9685,8 @@ function formatMessageTimestamp(value) {
 function formatPreciseMessageTimestamp(value) {
   return formatMessageTime(value, true);
 }
-function threadStatusLabel(status2) {
-  switch (status2) {
+function threadStatusLabel(status3) {
+  switch (status3) {
     case "recovering":
       return translate("chat.confirmingStatus");
     case "idle":
@@ -9703,8 +9703,8 @@ function threadStatusLabel(status2) {
       return translate("chat.systemError");
   }
 }
-function threadStatusClassName(status2) {
-  switch (status2) {
+function threadStatusClassName(status3) {
+  switch (status3) {
     case "idle":
       return "ui-status-neutral";
     case "running":
@@ -9719,8 +9719,8 @@ function threadStatusClassName(status2) {
       return "ui-status-neutral";
   }
 }
-function turnStatusLabel(status2) {
-  switch (status2) {
+function turnStatusLabel(status3) {
+  switch (status3) {
     case "recovering":
       return translate("chat.confirmingStatus");
     case "sending":
@@ -10031,7 +10031,7 @@ function useWorkbenchToolPanel() {
 import { jsx as jsx44, jsxs as jsxs37 } from "react/jsx-runtime";
 function WorkbenchPanels({
   options: o,
-  children,
+  children: children2,
   explorer,
   revealExplorer,
   toolPanel: sharedToolPanel
@@ -10359,7 +10359,7 @@ function WorkbenchPanels({
                       },
                       hidden: compact && showReference && mobileView !== "primary",
                       children: [
-                        /* @__PURE__ */ jsx44(WorkbenchPaneSwitchContext.Provider, { value: paneSwitches?.primary ?? null, children: /* @__PURE__ */ jsx44("div", { className: "workbench-pane-body", children }) }),
+                        /* @__PURE__ */ jsx44(WorkbenchPaneSwitchContext.Provider, { value: paneSwitches?.primary ?? null, children: /* @__PURE__ */ jsx44("div", { className: "workbench-pane-body", children: children2 }) }),
                         paneSwitchFallback("primary")
                       ]
                     }
@@ -10589,7 +10589,7 @@ import { useLayoutEffect as useLayoutEffect10, useRef as useRef21, useState as u
 import { createPortal as createPortal2 } from "react-dom";
 import { Folder, Star } from "lucide-react";
 import { jsx as jsx46, jsxs as jsxs39 } from "react/jsx-runtime";
-function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteBusy, onToggleFavorite, onClose, children, panels }) {
+function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteBusy, onToggleFavorite, onClose, children: children2, panels }) {
   useI18n();
   const menuRef = useRef21(null);
   const [place, setPlace] = useState33(null);
@@ -10665,7 +10665,7 @@ function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteB
             ),
             /* @__PURE__ */ jsx46("div", { className: "matter-thread-tools-title", title, children: title })
           ] }),
-          /* @__PURE__ */ jsx46("div", { className: "matter-thread-tools-items", children }),
+          /* @__PURE__ */ jsx46("div", { className: "matter-thread-tools-items", children: children2 }),
           panels ? /* @__PURE__ */ jsx46("div", { className: "matter-thread-tools-panels", children: panels }) : null
         ]
       }
@@ -10679,9 +10679,9 @@ import { useEffect as useEffect24, useLayoutEffect as useLayoutEffect11, useRef 
 import { createPortal as createPortal3 } from "react-dom";
 import { Bot, X as X5 } from "lucide-react";
 import { Fragment as Fragment14, jsx as jsx47, jsxs as jsxs40 } from "react/jsx-runtime";
-var statusLabels = new Proxy({}, { get: (_, status2) => navigationStatusLabel(String(status2)) });
-function threadGroupActivity(root, children = []) {
-  const running = children.filter((child) => child.status === "running").length;
+var statusLabels = new Proxy({}, { get: (_, status3) => navigationStatusLabel(String(status3)) });
+function threadGroupActivity(root, children2 = []) {
+  const running = children2.filter((child) => child.status === "running").length;
   const label = statusLabels[root.status] ?? root.status;
   if (running && (root.status === "idle" || root.status === "unread")) {
     return {
@@ -10756,10 +10756,10 @@ function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, onThreadM
     return () => observer?.disconnect();
   });
   return /* @__PURE__ */ jsxs40(Fragment14, { children: [
-    groups.map(({ root, children }) => {
-      const selected = children.find((child) => child.key === currentKey);
+    groups.map(({ root, children: children2 }) => {
+      const selected = children2.find((child) => child.key === currentKey);
       const active = root.key === currentKey || !!selected;
-      const activity = threadGroupActivity(root, children);
+      const activity = threadGroupActivity(root, children2);
       return /* @__PURE__ */ jsxs40(
         "div",
         {
@@ -10805,7 +10805,7 @@ ${activity.label}`,
                 children: [
                   root.agent && /* @__PURE__ */ jsx47("span", { className: "matter-thread-avatar", "data-agent": root.agent, "aria-hidden": "true" }),
                   /* @__PURE__ */ jsx47("span", { className: "matter-status-dot", role: "img", "aria-label": activity.label, "data-status": activity.status }),
-                  children.length > 0 && /* @__PURE__ */ jsx47("span", { className: "matter-tab-agents-slot", "aria-hidden": "true" }),
+                  children2.length > 0 && /* @__PURE__ */ jsx47("span", { className: "matter-tab-agents-slot", "aria-hidden": "true" }),
                   /* @__PURE__ */ jsxs40("span", { children: [
                     root.title,
                     selected ? ` \xB7 ${selected.title}` : ""
@@ -10813,11 +10813,11 @@ ${activity.label}`,
                 ]
               }
             ),
-            children.length > 0 && /* @__PURE__ */ jsxs40(
+            children2.length > 0 && /* @__PURE__ */ jsxs40(
               "button",
               {
                 className: "matter-group-toggle is-badge",
-                "aria-label": translate("workbench.agentThreads", { value1: root.title, value2: children.length }),
+                "aria-label": translate("workbench.agentThreads", { value1: root.title, value2: children2.length }),
                 "aria-expanded": menu?.key === root.key,
                 "aria-controls": "matter-agent-threads",
                 onClick: (event) => {
@@ -10827,7 +10827,7 @@ ${activity.label}`,
                 },
                 children: [
                   /* @__PURE__ */ jsx47(Bot, { "aria-hidden": "true" }),
-                  children.length
+                  children2.length
                 ]
               }
             ),
@@ -10960,7 +10960,7 @@ function PinnedThreads({ value, threadsOpen, onOpenThreads }) {
     );
   }) });
 }
-function PhoneSheet({ open, label, onClose, children, footer }) {
+function PhoneSheet({ open, label, onClose, children: children2, footer }) {
   useI18n();
   const sheet = useRef23(null);
   const close = useRef23(onClose);
@@ -11051,7 +11051,7 @@ function PhoneSheet({ open, label, onClose, children, footer }) {
         },
         children: [
           /* @__PURE__ */ jsx48("div", { className: "matter-phone-sheet-grabber", "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx48("div", { className: "matter-phone-sheet-body", children }),
+          /* @__PURE__ */ jsx48("div", { className: "matter-phone-sheet-body", children: children2 }),
           footer && /* @__PURE__ */ jsx48("div", { className: "matter-phone-sheet-footer", children: footer })
         ]
       }
@@ -11382,7 +11382,7 @@ function MatterWorkbench({
   deviceMonitor,
   explorer,
   revealExplorer,
-  children
+  children: children2
 }) {
   useI18n();
   const listedTabs = o.workspaceThreads ?? o.threads.filter((thread) => thread.key === o.currentKey);
@@ -12001,11 +12001,11 @@ ${thread.subtitle} \xB7 ${activity.label}`,
     ),
     o.renderThreadMenu?.(thread)
   ] }, thread.key);
-  const renderThreadGroups = (threads, reorder = false) => groupThreads(threads).map(({ root, children: children2 }) => {
-    const open = agentsOpen[root.key] ?? children2.some((child) => child.key === o.currentKey);
+  const renderThreadGroups = (threads, reorder = false) => groupThreads(threads).map(({ root, children: children3 }) => {
+    const open = agentsOpen[root.key] ?? children3.some((child) => child.key === o.currentKey);
     return /* @__PURE__ */ jsxs43("div", { className: "matter-thread-group-entry", "data-reorder-key": reorder ? root.key : void 0, children: [
-      renderThread(root, threadGroupActivity(root, children2), children2.length > 0 ? { count: children2.length, running: children2.filter((child) => child.status === "running").length, open } : void 0),
-      children2.length > 0 && open && /* @__PURE__ */ jsx50("div", { className: "matter-agent-children", role: "group", "aria-label": translate("workbench.agentThreads_187f89", { value1: root.title }), children: children2.map((child) => renderThread(child)) })
+      renderThread(root, threadGroupActivity(root, children3), children3.length > 0 ? { count: children3.length, running: children3.filter((child) => child.status === "running").length, open } : void 0),
+      children3.length > 0 && open && /* @__PURE__ */ jsx50("div", { className: "matter-agent-children", role: "group", "aria-label": translate("workbench.agentThreads_187f89", { value1: root.title }), children: children3.map((child) => renderThread(child)) })
     ] }, root.key);
   });
   return /* @__PURE__ */ jsxs43(
@@ -12395,11 +12395,11 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               bell
             ] })
           ] }),
-          /* @__PURE__ */ jsx50(PhoneDockContext.Provider, { value: dock, children: o.panels ? /* @__PURE__ */ jsx50(WorkbenchContext.Provider, { value: true, children: /* @__PURE__ */ jsx50(WorkbenchPanels, { options: dock ? { ...o.panels, onPaneSwitchChange: setPaneSwitch } : o.panels, explorer, revealExplorer, toolPanel, children }) }) : /* @__PURE__ */ jsxs43("div", { ref: contentRef, style: { "--explorer-width": `${explorerWidth}px` }, className: `matter-content ${explorerOpen ? "has-explorer" : ""}`, children: [
+          /* @__PURE__ */ jsx50(PhoneDockContext.Provider, { value: dock, children: o.panels ? /* @__PURE__ */ jsx50(WorkbenchContext.Provider, { value: true, children: /* @__PURE__ */ jsx50(WorkbenchPanels, { options: dock ? { ...o.panels, onPaneSwitchChange: setPaneSwitch } : o.panels, explorer, revealExplorer, toolPanel, children: children2 }) }) : /* @__PURE__ */ jsxs43("div", { ref: contentRef, style: { "--explorer-width": `${explorerWidth}px` }, className: `matter-content ${explorerOpen ? "has-explorer" : ""}`, children: [
             /* @__PURE__ */ jsx50("div", { className: "matter-chat", children: /* @__PURE__ */ jsx50(WorkbenchContext.Provider, { value: true, children: o.emptyWorkspace && mobile && workspaceThreads.length > 0 ? /* @__PURE__ */ jsxs43("div", { className: "matter-workspace-home", children: [
-              children,
+              children2,
               /* @__PURE__ */ jsx50("section", { className: "matter-workspace-home-list matter-thread-section", "aria-label": translate("workbench.thisWorkspace"), "data-testid": "workspace-home-threads", children: renderThreadGroups(workspaceThreads, reorderable) })
-            ] }) : children }) }),
+            ] }) : children2 }) }),
             explorerOpen && /* @__PURE__ */ jsxs43("aside", { className: "matter-explorer", "aria-label": translate("workbench.explorer"), children: [
               !mobile && /* @__PURE__ */ jsx50(
                 "div",
@@ -12666,7 +12666,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
 // src/components/graph-chat/GraphChatShellLayout.tsx
 import { jsx as jsx51 } from "react/jsx-runtime";
 function GraphChatShellRoot({
-  children,
+  children: children2,
   effectiveTheme,
   layoutMode,
   themeMode,
@@ -12679,12 +12679,12 @@ function GraphChatShellRoot({
       "data-theme-effective": effectiveTheme,
       "data-theme-mode": themeMode ?? effectiveTheme,
       "data-thread-layout": layoutMode,
-      children
+      children: children2
     }
   );
 }
 function GraphChatShellFrame({
-  children,
+  children: children2,
   roomsRailCollapsed,
   hideRoomsRail = false
 }) {
@@ -12692,7 +12692,7 @@ function GraphChatShellFrame({
     "div",
     {
       className: `thread-shell-frame relative h-full min-h-0 ${hideRoomsRail ? "is-rail-hidden sm:grid-cols-[minmax(0,1fr)]" : roomsRailCollapsed ? "is-rail-collapsed sm:grid-cols-[56px_minmax(0,1fr)]" : "sm:grid-cols-[264px_minmax(0,1fr)]"}`,
-      children
+      children: children2
     }
   );
 }
@@ -12715,7 +12715,7 @@ function GraphChatMobileScrim({
   );
 }
 function GraphChatRoomsRailShell({
-  children,
+  children: children2,
   collapsed,
   mobileOpen
 }) {
@@ -12724,18 +12724,18 @@ function GraphChatRoomsRailShell({
     {
       className: `thread-graph-rooms-surface thread-rooms-rail fixed inset-y-0 left-0 z-50 flex min-h-0 min-w-0 w-[min(20rem,calc(100vw-2rem))] flex-col overflow-x-hidden border-r border-slate-200/80 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.18)] transition-transform duration-200 ease-out sm:static sm:z-auto sm:w-auto sm:translate-x-0 sm:rounded-[12px] sm:border sm:shadow-[0_10px_30px_rgba(15,23,42,0.04)] ${mobileOpen ? "translate-x-0" : "pointer-events-none -translate-x-full sm:pointer-events-auto"} ${collapsed ? "thread-ui-rail-collapsed sm:items-center" : ""}`,
       style: { paddingTop: "var(--android-safe-area-top, 0px)" },
-      children
+      children: children2
     }
   );
 }
-function GraphChatMainShell({ children }) {
-  return /* @__PURE__ */ jsx51("main", { className: "thread-shell-main h-full min-h-0 min-w-0 overflow-hidden", children: /* @__PURE__ */ jsx51("div", { className: "thread-main-panel thread-shell-card flex h-full min-h-0 flex-col overflow-hidden bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] sm:rounded-[12px] sm:border sm:border-slate-200/80", children }) });
+function GraphChatMainShell({ children: children2 }) {
+  return /* @__PURE__ */ jsx51("main", { className: "thread-shell-main h-full min-h-0 min-w-0 overflow-hidden", children: /* @__PURE__ */ jsx51("div", { className: "thread-main-panel thread-shell-card flex h-full min-h-0 flex-col overflow-hidden bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] sm:rounded-[12px] sm:border sm:border-slate-200/80", children: children2 }) });
 }
-function GraphChatTopbarShell({ children }) {
-  return /* @__PURE__ */ jsx51("div", { className: "thread-topbar-surface flex shrink-0 flex-col border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] sm:pt-0", children });
+function GraphChatTopbarShell({ children: children2 }) {
+  return /* @__PURE__ */ jsx51("div", { className: "thread-topbar-surface flex shrink-0 flex-col border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] sm:pt-0", children: children2 });
 }
-function GraphChatSplitRegion({ children }) {
-  return /* @__PURE__ */ jsx51("div", { className: "thread-split-region min-h-0 flex-1 overflow-hidden p-0 sm:p-2", children });
+function GraphChatSplitRegion({ children: children2 }) {
+  return /* @__PURE__ */ jsx51("div", { className: "thread-split-region min-h-0 flex-1 overflow-hidden p-0 sm:p-2", children: children2 });
 }
 
 // src/components/ThreadWorkspaceLayout.tsx
@@ -12969,7 +12969,7 @@ function ThreadCards({
 function ThreadWorkspaceLayout({
   workbench,
   threads,
-  status: status2,
+  status: status3,
   loading = false,
   error,
   viewportConstrained = false,
@@ -13017,7 +13017,7 @@ function ThreadWorkspaceLayout({
   workspaceTitle = translate("files.workspace"),
   workspaceActions,
   workspaceRevealRequestKey,
-  children
+  children: children2
 }) {
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
@@ -13136,7 +13136,7 @@ function ThreadWorkspaceLayout({
   const topbarWorkspaceLabel = currentWorkspaceLabel ?? currentWorkspaceId ?? translate("files.allWorkspaces");
   const topbarHarnessLabel = harnessLabel ?? translate("files.agent");
   const topbarSessionLabel = sessionLabel ?? currentThreadLabel ?? currentThreadId ?? "default_session";
-  const topbarUsageLabel = usageLabel ?? (status2?.state ? `runtime ${status2.state}` : translate("files.waitingForAgentUsage"));
+  const topbarUsageLabel = usageLabel ?? (status3?.state ? `runtime ${status3.state}` : translate("files.waitingForAgentUsage"));
   const setThemeMode = onThemeModeChange ?? shellNav?.setThemeMode;
   const canUpdateThemeMode = Boolean(setThemeMode);
   const closeNavigationSurfaces = () => {
@@ -13451,7 +13451,7 @@ function ThreadWorkspaceLayout({
       /* @__PURE__ */ jsx52("div", { className: "min-h-0 flex-1 overflow-hidden", children: workspaceContent ?? /* @__PURE__ */ jsxs44("div", { className: "grid h-full min-h-0 gap-3 overflow-y-auto p-3 text-sm text-[var(--theme-fg-soft)]", children: [
         /* @__PURE__ */ jsxs44("div", { className: "thread-workspace-card rounded-lg border p-3", children: [
           /* @__PURE__ */ jsx52("p", { className: "text-xs font-medium uppercase tracking-[0.14em] text-[var(--theme-fg-muted)]", children: translate("files.runtime") }),
-          /* @__PURE__ */ jsx52("p", { className: "mt-2 text-[var(--theme-fg)]", children: status2?.state ?? translate("files.unknown") })
+          /* @__PURE__ */ jsx52("p", { className: "mt-2 text-[var(--theme-fg)]", children: status3?.state ?? translate("files.unknown") })
         ] }),
         /* @__PURE__ */ jsxs44("div", { className: "thread-workspace-card rounded-lg border p-3", children: [
           /* @__PURE__ */ jsx52("p", { className: "text-xs font-medium uppercase tracking-[0.14em] text-[var(--theme-fg-muted)]", children: translate("files.workspace") }),
@@ -13499,7 +13499,7 @@ function ThreadWorkspaceLayout({
           threadMenu: null,
           explorer: workspaceContent,
           revealExplorer: workspaceRevealRequestKey ?? 0,
-          children
+          children: children2
         }
       ),
       /* @__PURE__ */ jsx52(RenameDialog, { open: editingThreadId !== null, title: translate("files.renameThread_c51d25"), label: translate("files.threadTitle"), value: draftTitle, busy: renamingThreadId !== null, onChange: setDraftTitle, onCancel: cancelRenameThread, onSubmit: () => editingThreadId ? handleRenameThread(editingThreadId) : void 0 })
@@ -13718,7 +13718,7 @@ function ThreadWorkspaceLayout({
                     "div",
                     {
                       className: `h-full min-h-0 overflow-hidden ${mobileWorkspace === "chat" ? "block" : renderMobileWorkspaceSplit ? "thread-mobile-chat-hidden" : "hidden"}`,
-                      children
+                      children: children2
                     }
                   ),
                   /* @__PURE__ */ jsx52(
@@ -13741,7 +13741,7 @@ function ThreadWorkspaceLayout({
                           minSize: 30,
                           maxSize: 75,
                           className: "thread-split-chat-pane min-w-0 overflow-hidden",
-                          children
+                          children: children2
                         }
                       ),
                       /* @__PURE__ */ jsx52(ResizableHandle, { className: "thread-resize-handle w-2 bg-transparent after:w-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" }),
@@ -13769,7 +13769,7 @@ function ThreadWorkspaceLayout({
                       children: /* @__PURE__ */ jsx52(ChevronsLeft, { className: "h-4 w-4" })
                     }
                   ) : null,
-                  children
+                  children2
                 ] }) }) })
               ]
             }
@@ -13820,13 +13820,13 @@ function DiffDetail({ text, compact = false, formatPath }) {
   const rows = useMemo9(() => {
     let oldLine = 0, newLine = 0, path = "", inHunk = false;
     const lines = text.split("\n");
-    const header = (index) => {
+    const header2 = (index) => {
       const line = lines[index];
       return line.startsWith("diff ") || line.startsWith("index ") || line.startsWith("--- ") && lines[index + 1]?.startsWith("+++ ") || line.startsWith("+++ ") && lines[index - 1]?.startsWith("--- ");
     };
-    const files = new Set(lines.filter((line, index) => line.startsWith("+++ ") && header(index)));
+    const files = new Set(lines.filter((line, index) => line.startsWith("+++ ") && header2(index)));
     return lines.flatMap((line, index) => {
-      if (header(index)) {
+      if (header2(index)) {
         inHunk = false;
         if (line.startsWith("+++ ")) path = line.slice(4).replace(/^b\//, "");
         if (compact) {
@@ -13899,7 +13899,7 @@ function LongTextDialog({
 // src/components/timeline/PeerWorkGroup.tsx
 import { BellRing as BellRing3, ChevronRight as ChevronRight3, MessageCircle, LoaderCircle as LoaderCircle2 } from "lucide-react";
 import { jsx as jsx55, jsxs as jsxs47 } from "react/jsx-runtime";
-function PeerWorkGroup({ turn, context, expanded, loading, error, onToggle, children, scrollRootRef }) {
+function PeerWorkGroup({ turn, context, expanded, loading, error, onToggle, children: children2, scrollRootRef }) {
   useI18n();
   const messages = delegateWakeMessages(turn, context);
   const first = messages[0];
@@ -13929,7 +13929,7 @@ function PeerWorkGroup({ turn, context, expanded, loading, error, onToggle, chil
         message.text || message.kind === "question" ? /* @__PURE__ */ jsx55(GraphChatAgentMessageBody, { messageId: message.id, text: message.text ?? message.subject ?? "", scrollRootRef }) : /* @__PURE__ */ jsx55("p", { className: "thread-peer-report-empty", children: translate("chat.peerNoReport") })
       ] }, message.id)),
       /* @__PURE__ */ jsx55("div", { className: "thread-peer-processing-label", children: translate(wake ? "chat.peerAfterWake" : "chat.peerQuestionHandling") }),
-      /* @__PURE__ */ jsx55("div", { className: "thread-peer-work-operations", children })
+      /* @__PURE__ */ jsx55("div", { className: "thread-peer-work-operations", children: children2 })
     ] }) : null
   ] });
 }
@@ -14254,14 +14254,14 @@ function GraphChatRunningDots() {
   )) });
 }
 function GraphChatMessageStatusBadge({
-  status: status2
+  status: status3
 }) {
   const { locale: i18nLocale } = useI18n();
-  if (!status2) {
+  if (!status3) {
     return null;
   }
-  const label = status2 === "Accepted" ? translate("chat.acceptedStatus") : status2 === "Steering" ? translate("chat.steeringStatus") : status2 === "Awaiting response" ? translate("chat.awaitingResponseStatus") : status2 === "Completed" ? translate("chat.completed") : status2;
-  const normalized = status2.toLowerCase();
+  const label = status3 === "Accepted" ? translate("chat.acceptedStatus") : status3 === "Steering" ? translate("chat.steeringStatus") : status3 === "Awaiting response" ? translate("chat.awaitingResponseStatus") : status3 === "Completed" ? translate("chat.completed") : status3;
+  const normalized = status3.toLowerCase();
   const isRunning = normalized.includes("running") || normalized.includes("generating") || normalized.includes("steering");
   const isFailed = normalized.includes("failed") || normalized.includes("error");
   const isCompleted = normalized.includes("accepted") || normalized.includes("complete");
@@ -14281,12 +14281,12 @@ function GraphChatMessageStatusBadge({
   );
 }
 function GraphChatMessageFrame({
-  children,
+  children: children2,
   copyButton,
   kind,
   metaControl,
   reasoning,
-  status: status2,
+  status: status3,
   timeLabel,
   timeTitle,
   actionsTime,
@@ -14307,9 +14307,9 @@ function GraphChatMessageFrame({
     setActionsBeside(Boolean(row && box.left - row.left >= SIDE_ACTIONS_WIDTH));
   };
   const failureText = failure ? failureMessage(failure) : null;
-  const normalizedStatus = status2?.trim().toLowerCase() ?? "";
+  const normalizedStatus = status3?.trim().toLowerCase() ?? "";
   const showStatus = Boolean(
-    isUser && status2 && normalizedStatus !== "complete" && normalizedStatus !== "completed"
+    isUser && status3 && normalizedStatus !== "complete" && normalizedStatus !== "completed"
   );
   const timeNode = timeLabel ? /* @__PURE__ */ jsx58(
     "span",
@@ -14367,7 +14367,7 @@ function GraphChatMessageFrame({
                     "div",
                     {
                       className: `thread-graph-message-content min-w-0 ${isUser ? "is-user" : "is-assistant"}`,
-                      children
+                      children: children2
                     }
                   ),
                   isUser && failure && failureText ? /* @__PURE__ */ jsx58(
@@ -14392,7 +14392,7 @@ ${failureText}`,
               "div",
               {
                 className: `thread-graph-message-user-meta flex items-center justify-end gap-2 ${showStatus || timeNode ? "has-persistent-meta" : ""}`,
-                children: showStatus ? /* @__PURE__ */ jsx58(GraphChatMessageStatusBadge, { status: status2 }) : null
+                children: showStatus ? /* @__PURE__ */ jsx58(GraphChatMessageStatusBadge, { status: status3 }) : null
               }
             ) : null
           ]
@@ -14427,11 +14427,11 @@ function AddedPromptIcon({ className = "" }) {
 
 // src/components/graph-chat/GraphChatCompactMessageItem.tsx
 import { Fragment as Fragment20, jsx as jsx60, jsxs as jsxs52 } from "react/jsx-runtime";
-function isGraphChatRunningStatus(status2) {
-  if (!status2) {
+function isGraphChatRunningStatus(status3) {
+  if (!status3) {
     return false;
   }
-  const normalized = status2.toLowerCase();
+  const normalized = status3.toLowerCase();
   return normalized.includes("running") || normalized.includes("inprogress") || normalized.includes("in_progress");
 }
 function GraphChatRunningDots2({ tone = "amber" }) {
@@ -14829,15 +14829,15 @@ function getLiveOutputTailForTurn(liveOutput, items) {
   const remainingOutput = liveOutput.slice(consumedLength);
   return remainingOutput.trim() ? remainingOutput : "";
 }
-function isRunningHistoryStatus(status2) {
-  if (!status2) {
+function isRunningHistoryStatus(status3) {
+  if (!status3) {
     return false;
   }
-  const normalized = status2.toLowerCase();
+  const normalized = status3.toLowerCase();
   return normalized.includes("running") || normalized.includes("inprogress") || normalized.includes("in_progress");
 }
-function isActiveTurnStatus(status2) {
-  return status2 === "inProgress" || status2 === "sending";
+function isActiveTurnStatus(status3) {
+  return status3 === "inProgress" || status3 === "sending";
 }
 function groupTimelineHistoryItems(items) {
   return groupAgentActivitySequences(
@@ -15581,9 +15581,9 @@ function Badge({
 
 // src/components/graph-chat/GraphChatHistoryItems.tsx
 import { Fragment as Fragment22, jsx as jsx63, jsxs as jsxs54 } from "react/jsx-runtime";
-function isRunningHistoryStatus2(status2) {
-  if (!status2) return false;
-  const normalized = status2.trim().toLowerCase();
+function isRunningHistoryStatus2(status3) {
+  if (!status3) return false;
+  const normalized = status3.trim().toLowerCase();
   return normalized === "running" || normalized === "in_progress" || normalized === "in progress" || normalized === "pending";
 }
 function projectRelativePathLabel(label) {
@@ -15708,8 +15708,8 @@ function summarizeInlinePreviewText(text) {
     isTruncated: true
   };
 }
-function graphHistoryStatusConfig(status2) {
-  const normalized = status2?.trim().toLowerCase() ?? "";
+function graphHistoryStatusConfig(status3) {
+  const normalized = status3?.trim().toLowerCase() ?? "";
   if (normalized === "completed" || normalized === "complete" || normalized === "success" || normalized === "succeeded") {
     return {
       className: "is-completed",
@@ -15724,17 +15724,17 @@ function graphHistoryStatusConfig(status2) {
       label: translate("chat.failed")
     };
   }
-  if (isRunningHistoryStatus2(status2)) {
+  if (isRunningHistoryStatus2(status3)) {
     return {
       className: "is-pending",
       icon: /* @__PURE__ */ jsx63(Loader25, { className: "h-3.5 w-3.5 animate-spin" }),
-      label: status2?.trim() || translate("chat.running")
+      label: status3?.trim() || translate("chat.running")
     };
   }
   return {
     className: "is-neutral",
     icon: null,
-    label: status2?.trim() || translate("chat.event")
+    label: status3?.trim() || translate("chat.event")
   };
 }
 function graphHistoryToneClassName(tone) {
@@ -15773,7 +15773,7 @@ function graphHistoryEventToneClassName(tone) {
 }
 function GraphChatHistoryEventFrame({
   actions,
-  children,
+  children: children2,
   className,
   headerMeta,
   icon,
@@ -15831,7 +15831,7 @@ function GraphChatHistoryEventFrame({
               timeMeta
             ] }) : null
           ] }),
-          children ? /* @__PURE__ */ jsx63("div", { className: "thread-graph-history-event-body", children }) : null
+          children2 ? /* @__PURE__ */ jsx63("div", { className: "thread-graph-history-event-body", children: children2 }) : null
         ] })
       ]
     }
@@ -15849,7 +15849,7 @@ function GraphChatHistoryToolFrame({
   tone
 }) {
   const { locale: i18nLocale } = useI18n();
-  const status2 = graphHistoryStatusConfig(item.status);
+  const status3 = graphHistoryStatusConfig(item.status);
   const [pathExpanded, setPathExpanded] = useState47(false);
   const isRead = tone === "fileRead";
   return /* @__PURE__ */ jsx63("div", { className: `thread-graph-event thread-graph-history-tool ${graphHistoryToneClassName(tone)} ${className ?? ""}`, children: /* @__PURE__ */ jsxs54("div", { className: "thread-history-direct-row", children: [
@@ -15865,7 +15865,7 @@ function GraphChatHistoryToolFrame({
           /* @__PURE__ */ jsx63("span", { className: "thread-graph-history-tool-icon", children: icon }),
           /* @__PURE__ */ jsx63("span", { className: "thread-graph-history-tool-label", children: title }),
           /* @__PURE__ */ jsx63("span", { title: preview.firstLine, className: `thread-history-direct-preview ${isRead ? "is-path" : ""} ${pathExpanded ? "is-expanded" : ""}`, children: isRead ? /* @__PURE__ */ jsx63("bdi", { children: preview.firstLine }) : preview.firstLine }),
-          /* @__PURE__ */ jsx63("span", { className: `matter-step-status ${status2.className}`, "aria-label": status2.label, children: status2.icon })
+          /* @__PURE__ */ jsx63("span", { className: `matter-step-status ${status3.className}`, "aria-label": status3.label, children: status3.icon })
         ]
       }
     ),
@@ -15940,13 +15940,13 @@ function GraphChatNativeTaskNotification({
 }) {
   const { locale } = useI18n();
   const [open, setOpen] = useState47(false);
-  const status2 = (item.taskStatus ?? item.status ?? "").trim().toLowerCase();
-  const failed = ["failed", "failure", "error", "errored"].includes(status2);
-  const stopped = ["stopped", "killed", "cancelled", "canceled", "interrupted"].includes(status2);
-  const completed = ["completed", "complete", "success", "succeeded"].includes(status2);
-  const waiting = item.origin === "nativeBackgroundWait" && status2 === "waiting";
+  const status3 = (item.taskStatus ?? item.status ?? "").trim().toLowerCase();
+  const failed = ["failed", "failure", "error", "errored"].includes(status3);
+  const stopped = ["stopped", "killed", "cancelled", "canceled", "interrupted"].includes(status3);
+  const completed = ["completed", "complete", "success", "succeeded"].includes(status3);
+  const waiting = item.origin === "nativeBackgroundWait" && status3 === "waiting";
   const label = translate(
-    waiting ? "chat.waitingForWake" : item.origin === "nativeTaskNotification" && !failed && !stopped ? "chat.backgroundAwakened" : item.origin === "nativeBackgroundWait" && status2 === "running" ? "chat.backgroundResumed" : item.origin === "nativeBackgroundWait" ? "chat.backgroundWaitEnded" : failed ? "chat.backgroundTaskFailed" : stopped ? "chat.backgroundTaskStopped" : completed ? "chat.backgroundTaskCompleted" : "chat.backgroundTaskUpdated"
+    waiting ? "chat.waitingForWake" : item.origin === "nativeTaskNotification" && !failed && !stopped ? "chat.backgroundAwakened" : item.origin === "nativeBackgroundWait" && status3 === "running" ? "chat.backgroundResumed" : item.origin === "nativeBackgroundWait" ? "chat.backgroundWaitEnded" : failed ? "chat.backgroundTaskFailed" : stopped ? "chat.backgroundTaskStopped" : completed ? "chat.backgroundTaskCompleted" : "chat.backgroundTaskUpdated"
   );
   const notificationAt = typeof item.awakenedAt === "string" ? item.awakenedAt : item.createdAt;
   const timestamp = notificationAt ? new Date(notificationAt) : null;
@@ -16391,8 +16391,8 @@ var GraphChatHookItem = memo5(function GraphChatHookItem2({
 
 // src/components/graph-chat/GraphChatTurnBody.tsx
 import { Fragment as Fragment23, jsx as jsx64, jsxs as jsxs55 } from "react/jsx-runtime";
-function normalizeGraphChatPlanStepStatus(status2) {
-  const normalized = status2.trim().toLowerCase();
+function normalizeGraphChatPlanStepStatus(status3) {
+  const normalized = status3.trim().toLowerCase();
   if (normalized === "completed" || normalized === "done" || normalized === "complete") {
     return "completed";
   }
@@ -16428,9 +16428,9 @@ function GraphChatLivePlanCard({ livePlan }) {
     ] }, `${livePlan.turnId}-${index}`)) })
   ] });
 }
-function GraphChatPlanStepStatusLabel({ status: status2 }) {
-  const normalized = normalizeGraphChatPlanStepStatus(status2);
-  return /* @__PURE__ */ jsx64(Fragment23, { children: normalized === "completed" ? translate("chat.planStepStatusCompleted") : normalized === "in_progress" ? translate("chat.planStepStatusInProgress") : normalized === "pending" ? translate("chat.planStepStatusPending") : normalized === "failed" ? translate("chat.planStepStatusFailed") : translate("chat.planStepStatus", { value1: status2 }) });
+function GraphChatPlanStepStatusLabel({ status: status3 }) {
+  const normalized = normalizeGraphChatPlanStepStatus(status3);
+  return /* @__PURE__ */ jsx64(Fragment23, { children: normalized === "completed" ? translate("chat.planStepStatusCompleted") : normalized === "in_progress" ? translate("chat.planStepStatusInProgress") : normalized === "pending" ? translate("chat.planStepStatusPending") : normalized === "failed" ? translate("chat.planStepStatusFailed") : translate("chat.planStepStatus", { value1: status3 }) });
 }
 function GraphChatTurnBody({
   footer,
@@ -16462,7 +16462,7 @@ function GraphChatTurnFrame({
   isActive = false,
   refCallback,
   startedAt,
-  status: status2,
+  status: status3,
   timeLabel,
   timeTitle,
   tokenSummary
@@ -16474,7 +16474,7 @@ function GraphChatTurnFrame({
       ref: refCallback,
       "data-testid": "chat-turn",
       "data-turn-active": isActive ? "true" : "false",
-      "data-turn-status": status2 ?? void 0,
+      "data-turn-status": status3 ?? void 0,
       className: "thread-graph-turn px-3 py-2 sm:px-5 sm:py-3",
       children: [
         /* @__PURE__ */ jsx65("div", { className: "thread-graph-turn-header flex items-start justify-between gap-2", children: /* @__PURE__ */ jsxs56("div", { className: "min-w-0 flex flex-1 items-start gap-1.5", children: [
@@ -16520,11 +16520,11 @@ var DURATION = 260;
 function animates() {
   return typeof window !== "undefined" && typeof window.matchMedia === "function" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
-function Collapse({ open, children }) {
+function Collapse({ open, children: children2 }) {
   const [phase, setPhase] = useState48(open ? "open" : "closed");
   const previous = useRef30(open);
-  const last = useRef30(children);
-  if (open) last.current = children;
+  const last = useRef30(children2);
+  if (open) last.current = children2;
   useEffect33(() => {
     if (previous.current === open) return;
     previous.current = open;
@@ -16557,7 +16557,7 @@ function Collapse({ open, children }) {
       className: "tlog-collapse",
       "data-state": shown === "growing" || shown === "open" ? "open" : "closed",
       "data-settled": shown === "open" || void 0,
-      children: /* @__PURE__ */ jsx66("div", { className: "tlog-collapse-inner", children: open ? children : last.current })
+      children: /* @__PURE__ */ jsx66("div", { className: "tlog-collapse-inner", children: open ? children2 : last.current })
     }
   );
 }
@@ -16759,8 +16759,8 @@ function transcriptAgentFor(thread) {
   if (!agent) return null;
   return { agent, name: themeAgentName(thread.agentId || thread.provider || "", agent) };
 }
-function TranscriptAgentProvider({ agent, children }) {
-  return /* @__PURE__ */ jsx70(TranscriptAgentContext.Provider, { value: agent, children });
+function TranscriptAgentProvider({ agent, children: children2 }) {
+  return /* @__PURE__ */ jsx70(TranscriptAgentContext.Provider, { value: agent, children: children2 });
 }
 function useTranscriptAgentIdentity() {
   return useThemeFeature("transcript.agentByline");
@@ -16866,11 +16866,11 @@ function formatElapsedDuration(startedAt, now) {
   return `${seconds2}s`;
 }
 function TurnStatusIndicator({
-  status: status2
+  status: status3
 }) {
   const { locale: i18nLocale } = useI18n();
-  const label = turnStatusLabel(status2);
-  if (status2 === "completed") {
+  const label = turnStatusLabel(status3);
+  if (status3 === "completed") {
     return /* @__PURE__ */ jsx71(
       "span",
       {
@@ -16892,7 +16892,7 @@ function TurnStatusIndicator({
       }
     );
   }
-  if (status2 === "failed") {
+  if (status3 === "failed") {
     return /* @__PURE__ */ jsx71(
       "span",
       {
@@ -16914,7 +16914,7 @@ function TurnStatusIndicator({
       }
     );
   }
-  if (status2 === "interrupted") {
+  if (status3 === "interrupted") {
     return /* @__PURE__ */ jsx71(
       "span",
       {
@@ -17241,8 +17241,8 @@ var KEY_BY_KIND = {
   agentToolCall: "agents",
   reasoning: "reasoning"
 };
-function logStatus(status2) {
-  const value = (status2 ?? "").trim().toLowerCase();
+function logStatus(status3) {
+  const value = (status3 ?? "").trim().toLowerCase();
   if (/fail|error|declin|denied|reject/.test(value)) return "failed";
   if (/interrupt|cancel|abort|stopp/.test(value)) return "interrupted";
   if (/running|progress|pending|started/.test(value)) return "running";
@@ -17681,17 +17681,17 @@ function unwrapShellCommand(command) {
   const body = match[2];
   return match[1] === "'" ? body.replace(/'\\''/g, "'") : body.replace(/\\(["\\$`])/g, "$1");
 }
-function statusTag(status2) {
-  if (status2 === "failed") return /* @__PURE__ */ jsx75("span", { className: "tlog-tag is-failed", children: translate("chat.logFailedTag") });
-  if (status2 === "interrupted") return /* @__PURE__ */ jsx75("span", { className: "tlog-tag is-interrupted", children: translate("chat.logInterrupted") });
-  if (status2 === "running") return /* @__PURE__ */ jsx75("span", { className: "tlog-spinner", role: "img", "aria-label": translate("chat.logRunning") });
+function statusTag(status3) {
+  if (status3 === "failed") return /* @__PURE__ */ jsx75("span", { className: "tlog-tag is-failed", children: translate("chat.logFailedTag") });
+  if (status3 === "interrupted") return /* @__PURE__ */ jsx75("span", { className: "tlog-tag is-interrupted", children: translate("chat.logInterrupted") });
+  if (status3 === "running") return /* @__PURE__ */ jsx75("span", { className: "tlog-spinner", role: "img", "aria-label": translate("chat.logRunning") });
   return null;
 }
-function Viewable({ className, label, onOpen, more, children }) {
-  if (!onOpen) return /* @__PURE__ */ jsx75("div", { className, children });
+function Viewable({ className, label, onOpen, more, children: children2 }) {
+  if (!onOpen) return /* @__PURE__ */ jsx75("div", { className, children: children2 });
   return /* @__PURE__ */ jsxs65("div", { className: `${className} tlog-viewable`, children: [
     /* @__PURE__ */ jsx75("button", { type: "button", className: "tlog-open-full", "aria-label": label, title: label, onClick: onOpen, children: /* @__PURE__ */ jsx75(Maximize23, { "aria-hidden": "true" }) }),
-    children,
+    children2,
     more ? /* @__PURE__ */ jsx75("button", { type: "button", className: "tlog-more-lines", onClick: onOpen, children: more }) : null
   ] });
 }
@@ -17775,9 +17775,9 @@ function OperationRow({ item, defaultOpen = false, path }) {
   const actions = useContext13(TranscriptLogContext);
   const [chosen, setChosen] = useState54(null);
   const open = chosen ?? defaultOpen;
-  const status2 = logStatus(item.status);
+  const status3 = logStatus(item.status);
   const title = rowTitle(item, actions?.workspaceRoot);
-  return /* @__PURE__ */ jsxs65("div", { className: "tlog-row", "data-kind": item.kind, "data-status": status2, "data-open": open || void 0, children: [
+  return /* @__PURE__ */ jsxs65("div", { className: "tlog-row", "data-kind": item.kind, "data-status": status3, "data-open": open || void 0, children: [
     /* @__PURE__ */ jsxs65("div", { className: "tlog-row-line", children: [
       /* @__PURE__ */ jsxs65("button", { type: "button", className: "tlog-row-head", "aria-expanded": open, onClick: (event) => {
         actions?.anchor?.(event.currentTarget);
@@ -17787,7 +17787,7 @@ function OperationRow({ item, defaultOpen = false, path }) {
         /* @__PURE__ */ jsx75("span", { className: "tlog-glyph", "aria-hidden": "true", children: GLYPH[item.kind] ?? "\xB7" }),
         /* @__PURE__ */ jsx75("span", { className: `tlog-title${title.mono ? " is-mono" : ""}`, children: title.text }),
         item.kind === "fileChange" ? /* @__PURE__ */ jsx75(DeltaBadges, { added: item.addedLines, removed: item.removedLines }) : null,
-        statusTag(status2)
+        statusTag(status3)
       ] }),
       item.kind === "commandExecution" && title.full ? /* @__PURE__ */ jsx75(CopyCommand, { text: title.full }) : null
     ] }),
@@ -18248,8 +18248,8 @@ var HistoryItemRow = memo7(function HistoryItemRow2({
   }
   return /* @__PURE__ */ jsx77(GraphChatGenericHistoryItem, { item, timeMeta });
 });
-function isTerminalTurnStatus(status2) {
-  return status2 === "completed" || status2 === "failed" || status2 === "interrupted";
+function isTerminalTurnStatus(status3) {
+  return status3 === "completed" || status3 === "failed" || status3 === "interrupted";
 }
 function itemCreatedAtMillis(item) {
   const millis = Date.parse(item.createdAt ?? "");
@@ -19678,8 +19678,8 @@ function useTimelineScroll({
 
 // src/components/ThreadTimeline.tsx
 import { Fragment as Fragment29, jsx as jsx78, jsxs as jsxs67 } from "react/jsx-runtime";
-function isTerminalTurnStatus2(status2) {
-  return status2 === "completed" || status2 === "failed" || status2 === "interrupted";
+function isTerminalTurnStatus2(status3) {
+  return status3 === "completed" || status3 === "failed" || status3 === "interrupted";
 }
 function latestTimestamp(...timestamps) {
   let latest = null;
@@ -20855,8 +20855,8 @@ function terminalThemeFor(effectiveTheme, container) {
     ]))
   };
 }
-function statusLabel2(status2) {
-  switch (status2) {
+function statusLabel2(status3) {
+  switch (status3) {
     case "not_created":
       return translate("chat.notCreated");
     case "creating":
@@ -21475,10 +21475,10 @@ function buildConnectionButtonState({
   activeShell,
   busy,
   loading,
-  status: status2,
+  status: status3,
   workspacePathMissing
 }) {
-  const disabled = busy || loading || status2 === "creating" || workspacePathMissing;
+  const disabled = busy || loading || status3 === "creating" || workspacePathMissing;
   const label = activeRuntime.shellInputEnabled ? translate("workbench.disconnectShell") : activeShell && !isLiveShell(activeShell) ? translate("workbench.restartShell") : activeShell ? translate("workbench.connectShell") : translate("workbench.createShell");
   const className = activeRuntime.shellInputEnabled ? "border-emerald-300/45 bg-emerald-300/18 text-emerald-50 ring-1 ring-emerald-300/20 hover:bg-emerald-300/24" : activeShell && !isLiveShell(activeShell) ? "border-stone-600 bg-stone-800/90 text-stone-100 hover:border-stone-500 hover:bg-stone-800" : workspacePathMissing ? "border-rose-300/35 bg-rose-300/12 text-rose-100" : "border-stone-600 bg-stone-800/90 text-stone-100 hover:border-stone-500 hover:bg-stone-800";
   return { disabled, label, className };
@@ -22083,7 +22083,7 @@ function TerminalMenu({
   anchor,
   label,
   onClose,
-  children
+  children: children2
 }) {
   const ref = useRef39(null);
   const [position, setPosition] = useState60(null);
@@ -22136,7 +22136,7 @@ function TerminalMenu({
         const index = items.indexOf(document.activeElement);
         items[(index + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length]?.focus();
       },
-      children
+      children: children2
     }
   );
 }
@@ -22186,8 +22186,8 @@ function TerminalSelection({ terminal, host, point, onCopy, onClose }) {
   useEffect43(() => {
     const update = () => {
       const selection = window.getSelection();
-      const inside = selection && selection.rangeCount > 0 && body.current?.contains(selection.anchorNode);
-      setSelected(inside ? selection.toString() : "");
+      const inside2 = selection && selection.rangeCount > 0 && body.current?.contains(selection.anchorNode);
+      setSelected(inside2 ? selection.toString() : "");
     };
     document.addEventListener("selectionchange", update);
     return () => document.removeEventListener("selectionchange", update);
@@ -23145,9 +23145,9 @@ function splitPrefix(index, count) {
   if (count < 2) return "";
   return index === 0 ? "\u250C" : index === count - 1 ? "\u2514" : "\u251C";
 }
-function TerminalStatusDot({ status: status2 }) {
-  const label = status2 === "connected" ? translate("workbench.terminalStatusConnected") : status2 === "connecting" ? translate("workbench.terminalConnecting") : status2 === "running" ? statusLabel2("running") : translate("workbench.terminalDisconnected");
-  return /* @__PURE__ */ jsx83("span", { className: "terminal-status-dot", "data-status": status2, role: "img", "aria-label": label, title: label });
+function TerminalStatusDot({ status: status3 }) {
+  const label = status3 === "connected" ? translate("workbench.terminalStatusConnected") : status3 === "connecting" ? translate("workbench.terminalConnecting") : status3 === "running" ? statusLabel2("running") : translate("workbench.terminalDisconnected");
+  return /* @__PURE__ */ jsx83("span", { className: "terminal-status-dot", "data-status": status3, role: "img", "aria-label": label, title: label });
 }
 function TerminalTabs({
   layout,
@@ -23404,7 +23404,7 @@ function readTabsWidth() {
     return TERMINAL_TABS_DEFAULT;
   }
 }
-function IconButton({ label, onClick, disabled, pressed, expanded, children, testId, keepFocus, danger }) {
+function IconButton({ label, onClick, disabled, pressed, expanded, children: children2, testId, keepFocus, danger }) {
   return /* @__PURE__ */ jsx84(
     "button",
     {
@@ -23420,7 +23420,7 @@ function IconButton({ label, onClick, disabled, pressed, expanded, children, tes
         if (document.activeElement?.closest(".xterm")) event.preventDefault();
       } } : {},
       onClick,
-      children
+      children: children2
     }
   );
 }
@@ -23492,7 +23492,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
   const workspacePathMissing = shellState?.workspacePathStatus === "missing";
   const vertical = compact || groupsSize.width > 0 && groupsSize.width < 520;
   const showTabs = !compact && liveShells.length >= 2;
-  const status2 = shellState?.state ?? "not_created";
+  const status3 = shellState?.state ?? "not_created";
   const labels = useMemo16(() => new Map(liveShells.map((shell, index) => [
     shell.id,
     shell.label?.trim() || translate("workbench.terminalDefaultName", { value1: layout.numbers?.[shell.id] ?? index + 1 })
@@ -23666,10 +23666,10 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     setFocusArmed(true);
   }, [openRequest]);
   useEffect45(() => {
-    if (!pendingAutoCreate.current || !panelVisible || !shellState || loading || busy || workspacePathMissing || status2 === "creating") return;
+    if (!pendingAutoCreate.current || !panelVisible || !shellState || loading || busy || workspacePathMissing || status3 === "creating") return;
     pendingAutoCreate.current = false;
     if (liveShells.length === 0) void createTerminal("group");
-  }, [busy, createTerminal, liveShells.length, loading, openRequest, panelVisible, shellState, status2, workspacePathMissing]);
+  }, [busy, createTerminal, liveShells.length, loading, openRequest, panelVisible, shellState, status3, workspacePathMissing]);
   useEffect45(() => {
     if (!shellState || loading) return;
     if (hadLiveShells.current && liveShells.length === 0) onLastTerminalClosed?.();
@@ -23717,7 +23717,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     activeShell,
     busy,
     loading,
-    status: status2,
+    status: status3,
     workspacePathMissing
   });
   const handleConnectionToggle = async () => {
@@ -23936,7 +23936,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     void loadShellState();
   } }) : null;
   const missingMark = workspacePathMissing ? /* @__PURE__ */ jsx84(ErrorMark, { kind: "unavailable", message: translate("files.workspacePathIsMissingOnThisMachine") }) : null;
-  const header = showHeader && /* @__PURE__ */ jsxs72("div", { className: "terminal-header", onDoubleClick: (event) => {
+  const header2 = showHeader && /* @__PURE__ */ jsxs72("div", { className: "terminal-header", onDoubleClick: (event) => {
     if (panelControls && event.target === event.currentTarget) panelControls.toggleMaximized();
   }, children: [
     compact ? /* @__PURE__ */ jsxs72(
@@ -23990,8 +23990,8 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       "data-terminal-theme": effectiveTheme,
       "data-testid": "terminal-panel",
       children: [
-        header,
-        !header && (errorMark || missingMark) && !collapsed && /* @__PURE__ */ jsxs72("div", { className: "terminal-marks flex shrink-0 items-center justify-end gap-1 px-2 py-1", children: [
+        header2,
+        !header2 && (errorMark || missingMark) && !collapsed && /* @__PURE__ */ jsxs72("div", { className: "terminal-marks flex shrink-0 items-center justify-end gap-1 px-2 py-1", children: [
           errorMark,
           missingMark
         ] }),
@@ -24248,8 +24248,8 @@ function formatTurnTime(value) {
     minute: "2-digit"
   });
 }
-function statusLabel3(status2) {
-  switch (status2) {
+function statusLabel3(status3) {
+  switch (status3) {
     case "inProgress":
       return "running";
     case "completed":
@@ -25545,7 +25545,7 @@ function ThreadDetailSurface({
   detail: rawDetail,
   loading,
   error,
-  status: status2 = null,
+  status: status3 = null,
   plugins: providedPlugins,
   adapter,
   metaContent,
@@ -25677,7 +25677,7 @@ function ThreadDetailSurface({
     ThreadGraphWorkspacePanel,
     {
       detail,
-      status: status2,
+      status: status3,
       plugins,
       workspaceAdapter: adapter.workspace ?? null,
       metaContent,
@@ -25769,7 +25769,7 @@ ${pageMark}` : pageMark } : composerProps,
       deviceMonitor,
       ...workbench ? { workbench } : {},
       threads,
-      status: status2,
+      status: status3,
       loading,
       error: loading ? null : error,
       viewportConstrained: true,
@@ -25856,7 +25856,7 @@ function PluginProvider({
   adapter = DEFAULT_PLUGIN_PROVIDER_ADAPTER,
   builtinPlugins = DEFAULT_BUILTIN_PLUGINS,
   scope = null,
-  children
+  children: children2
 }) {
   useI18n();
   const [plugins, setPlugins] = useState68(
@@ -26037,7 +26037,7 @@ function PluginProvider({
       uninstallPlugin
     ]
   );
-  return /* @__PURE__ */ jsx94(PluginContext.Provider, { value, children });
+  return /* @__PURE__ */ jsx94(PluginContext.Provider, { value, children: children2 });
 }
 
 // src/plugins/PluginActionOutput.tsx
@@ -26099,7 +26099,7 @@ function useDevicePlugins() {
 function ThreadPluginScope({
   threadId,
   adapter,
-  children
+  children: children2
 }) {
   const parent = useContext14(PluginContext);
   const device = parent.device ?? parent;
@@ -26141,10 +26141,10 @@ function ThreadPluginScope({
       });
     } catch (error) {
       if (id !== request.current) return;
-      const status2 = errorStatus(error);
+      const status3 = errorStatus(error);
       setLoaded({
         threadId,
-        status: status2 === 404 || status2 === 405 ? "unsupported" : status2 === 401 || status2 === 403 ? "forbidden" : "error",
+        status: status3 === 404 || status3 === 405 ? "unsupported" : status3 === 401 || status3 === 403 ? "forbidden" : "error",
         plugins: [],
         error: error instanceof Error && error.message ? error.message : translate("settings.threadPluginsLoadFailed")
       });
@@ -26299,7 +26299,7 @@ function ThreadPluginScope({
     }),
     [device, plugins, thread]
   );
-  return /* @__PURE__ */ jsx96(PluginContext.Provider, { value, children });
+  return /* @__PURE__ */ jsx96(PluginContext.Provider, { value, children: children2 });
 }
 
 // src/plugins/InstalledPluginPanel.tsx
@@ -26336,7 +26336,7 @@ function InstalledPluginPanel({ plugin }) {
   const adapter = useDevicePlugins().adapter;
   const actions = plugin.capabilities.actions ?? [];
   const canStatus = plugin.enabled && actions.includes("status") && !!adapter?.runPluginAction;
-  const [status2, setStatus] = useState70(null);
+  const [status3, setStatus] = useState70(null);
   const [error, setError] = useState70(null);
   const [loading, setLoading] = useState70(false);
   const [runs, setRuns] = useState70(null);
@@ -26381,8 +26381,8 @@ function InstalledPluginPanel({ plugin }) {
         )
       ] }),
       error && /* @__PURE__ */ jsx97(ErrorMark, { message: t2("settings.installedStatusFailed"), detail: error, onRetry: () => void refresh() }),
-      status2?.summary && /* @__PURE__ */ jsx97("p", { className: "installed-plugin-summary", children: status2.summary }),
-      status2?.sections?.map((section) => /* @__PURE__ */ jsxs83("div", { className: "installed-plugin-group", children: [
+      status3?.summary && /* @__PURE__ */ jsx97("p", { className: "installed-plugin-summary", children: status3.summary }),
+      status3?.sections?.map((section) => /* @__PURE__ */ jsxs83("div", { className: "installed-plugin-group", children: [
         /* @__PURE__ */ jsx97("h4", { children: section.title }),
         /* @__PURE__ */ jsx97("ul", { children: section.items.map((item) => /* @__PURE__ */ jsxs83("li", { children: [
           /* @__PURE__ */ jsx97("span", { className: "installed-plugin-label", children: item.label }),
@@ -27330,8 +27330,8 @@ function AppShellSettingsDialog({
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { useCallback as useCallback26, useEffect as useEffect56, useLayoutEffect as useLayoutEffect22, useMemo as useMemo23, useRef as useRef59, useState as useState78 } from "react";
-import { ArrowLeft as ArrowLeft4, ArrowUpRight as ArrowUpRight2, ChevronRight as ChevronRight8, ChevronUp as ChevronUp4, Folder as Folder4, List, Monitor as Monitor3, Network as Network2, RotateCw as RotateCw2 } from "lucide-react";
+import { useCallback as useCallback26, useEffect as useEffect56, useLayoutEffect as useLayoutEffect22, useMemo as useMemo23, useRef as useRef60, useState as useState78 } from "react";
+import { ArrowLeft as ArrowLeft4, ArrowUpRight as ArrowUpRight2, ChevronRight as ChevronRight8, ChevronUp as ChevronUp4, Folder as Folder5, List, Monitor as Monitor3, Network as Network2, RotateCw as RotateCw2, Layers as Layers3, Activity, DollarSign as DollarSign3 } from "lucide-react";
 
 // src/components/threadMap/model.ts
 var threadWeight = (turns) => 1 + Math.sqrt(Math.max(0, turns ?? 0));
@@ -27404,10 +27404,11 @@ function buildThreadMap(devices, rootLabel, options = {}) {
           usd: thread.priceEstimate?.totalUsd ?? 0,
           tokens: thread.tokenUsage?.totalTokens ?? 0
         };
-        if (options.scope && !expanded && !inScope(thread, options.scope, now)) hidden.push(leaf);
+        if (options.scope && !expanded && !(options.dense && options.scope === "active" ? isLive(thread) || isWaiting(thread) || now - Date.parse(thread.lastActiveAt ?? "") <= DAY : inScope(thread, options.scope, now))) hidden.push(leaf);
         else space.children.push(leaf);
         add(space, leaf);
       }
+      if (options.dense) hidden.length = 0;
       if (!space.children.length && hidden.length) {
         space.hiddenNodes = hidden;
         hiddenSpaces.push(space);
@@ -27667,7 +27668,7 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   const sparkHeight = FIT.spark + Math.max(0, Math.min(28, Math.floor(left * 0.4)));
   const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model].filter(Boolean).join(" \xB7 ") : "";
   const from = w >= 160 && thread.from ? translate("workbench.threadMapFrom", { title: thread.from }) : "";
-  const status2 = waiting ? /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-waiting", children: translate("workbench.waitingForYou") }) : thread.running ? /* @__PURE__ */ jsxs88("span", { className: "thread-map-tile-live", children: [
+  const status3 = waiting ? /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-waiting", children: translate("workbench.waitingForYou") }) : thread.running ? /* @__PURE__ */ jsxs88("span", { className: "thread-map-tile-live", children: [
     /* @__PURE__ */ jsx102("i", { className: "thread-map-running-dot" }),
     translate("workbench.threadMapRunning")
   ] }) : thread.lastActiveAt ? /* @__PURE__ */ jsx102("span", { children: translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) }) : null;
@@ -27740,11 +27741,11 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
           }
         ),
         childrenRow && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-children-row", children: childrenButton(true) }),
-        showWho && (who || from || status2 || thread.failed) && /* @__PURE__ */ jsxs88("span", { className: "thread-map-tile-sub", children: [
+        showWho && (who || from || status3 || thread.failed) && /* @__PURE__ */ jsxs88("span", { className: "thread-map-tile-sub", children: [
           who && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-who", children: who }),
           from && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-from", children: from }),
           thread.failed && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-failed", children: translate("workbench.threadMapFailedTurn") }),
-          status2
+          status3
         ] }),
         prompt && /* @__PURE__ */ jsx102("span", { className: "thread-map-tile-prompt", children: prompt }),
         (figures === "grid" || figures === "column") && /* @__PURE__ */ jsxs88("span", { className: "thread-map-stats", "data-layout": figures, children: [
@@ -27838,19 +27839,30 @@ function MapTooltip({ anchor, lines, onClose }) {
   ), document.body);
 }
 
-// src/components/threadMap/ReadableMap.tsx
-import { memo as memo11, useRef as useRef57, useState as useState77 } from "react";
-import { ArrowUpRight, ChevronRight as ChevronRight7, Folder as Folder3, Layers, Monitor as Monitor2 } from "lucide-react";
+// src/components/threadMap/DenseMap.tsx
+import {
+  Fragment as Fragment38,
+  memo as memo12,
+  useRef as useRef58
+} from "react";
+import {
+  Bot as Bot6,
+  Clock3,
+  DollarSign as DollarSign2,
+  Folder as Folder4,
+  Layers as Layers2,
+  ListRestart
+} from "lucide-react";
 
 // src/components/threadMap/MapChrome.tsx
 import { useEffect as useEffect55, useLayoutEffect as useLayoutEffect20, useRef as useRef56, useState as useState76 } from "react";
 import { createPortal as createPortal10 } from "react-dom";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Check as Check6, X as X12, Info as Info2 } from "lucide-react";
 
 // src/components/threadMap/MapScrollList.tsx
 import { useEffect as useEffect54, useRef as useRef55, useState as useState75 } from "react";
 import { jsx as jsx104, jsxs as jsxs89 } from "react/jsx-runtime";
-function MapScrollList({ children, label }) {
+function MapScrollList({ children: children2, label }) {
   const viewport = useRef55(null), track = useRef55(null);
   const [thumb, setThumb] = useState75({ height: 0, top: 0 });
   const frame = useRef55(null);
@@ -27882,7 +27894,7 @@ function MapScrollList({ children, label }) {
   return /* @__PURE__ */ jsxs89("div", { className: "thread-map-scroll-list", children: [
     /* @__PURE__ */ jsx104("div", { ref: viewport, className: "thread-map-list-scroll", role: "region", "aria-label": label, onScroll: measure, onFocusCapture: (event) => {
       event.target.closest(".thread-map-list-row")?.scrollIntoView?.({ block: "nearest" });
-    }, children }),
+    }, children: children2 }),
     thumb.height > 0 && /* @__PURE__ */ jsx104("div", { ref: track, className: "thread-map-scroll-track", "aria-hidden": "true", children: /* @__PURE__ */ jsx104("div", { className: "thread-map-scroll-thumb", style: { height: thumb.height, transform: `translateY(${thumb.top}px)` }, onPointerDown: (event) => {
       event.preventDefault();
       const el = viewport.current;
@@ -27933,13 +27945,13 @@ function relativeCache(at) {
 function AttentionStrip({ items, onOpen, onRequestDecision, responsive = false }) {
   const [expanded, setExpanded] = useState76(false);
   const ordered = orderAttention(items);
-  if (responsive) return /* @__PURE__ */ jsx105(ResponsiveAttention, { items: ordered, onOpen, onRequestDecision });
+  if (responsive) return /* @__PURE__ */ jsx105(ResponsiveAttention, { items: ordered, onOpen, onRequestDecision, compact: true });
   return /* @__PURE__ */ jsx105("div", { className: "thread-map-attention-wrap", "data-visible": items.length > 0 || void 0, children: /* @__PURE__ */ jsxs90("div", { className: "thread-map-attention", role: "region", "aria-label": translate("workbench.threadMapAttention"), children: [
     ordered.slice(0, expanded ? void 0 : 6).map((item) => /* @__PURE__ */ jsx105(AttentionCard, { item, onOpen, onRequestDecision }, item.key)),
     !expanded && ordered.length > 6 && /* @__PURE__ */ jsx105("button", { type: "button", className: "thread-map-attention-more", onClick: () => setExpanded(true), children: translate("workbench.threadMapMoreAttention", { count: ordered.length - 6 }) })
   ] }) });
 }
-function AttentionCard({ item, onOpen, onRequestDecision }) {
+function AttentionCard({ item, onOpen, onRequestDecision, compact = false }) {
   return /* @__PURE__ */ jsxs90("article", { className: "thread-map-attention-card", "data-kind": item.kind, children: [
     /* @__PURE__ */ jsxs90("button", { className: "thread-map-attention-open", type: "button", onClick: () => onOpen(item.key), title: item.title, children: [
       /* @__PURE__ */ jsx105(StatusMark, { status: item.kind === "approval" || item.kind === "input" ? "waiting" : item.kind === "failed" ? "failed" : "unread" }),
@@ -27954,12 +27966,12 @@ function AttentionCard({ item, onOpen, onRequestDecision }) {
       ] })
     ] }),
     item.kind === "approval" && item.requestId && onRequestDecision && /* @__PURE__ */ jsxs90("div", { className: "thread-map-decisions", children: [
-      /* @__PURE__ */ jsx105("button", { type: "button", onClick: () => onRequestDecision(item.key, item.requestId, "approve"), children: translate("workbench.threadMapApprove") }),
-      /* @__PURE__ */ jsx105("button", { type: "button", onClick: () => onRequestDecision(item.key, item.requestId, "deny"), children: translate("workbench.threadMapDeny") })
+      /* @__PURE__ */ jsx105("button", { type: "button", "aria-label": translate("workbench.threadMapApprove"), title: translate("workbench.threadMapApprove"), onClick: () => onRequestDecision(item.key, item.requestId, "approve"), children: compact ? /* @__PURE__ */ jsx105(Check6, { "aria-hidden": "true" }) : translate("workbench.threadMapApprove") }),
+      /* @__PURE__ */ jsx105("button", { type: "button", "aria-label": translate("workbench.threadMapDeny"), title: translate("workbench.threadMapDeny"), onClick: () => onRequestDecision(item.key, item.requestId, "deny"), children: compact ? /* @__PURE__ */ jsx105(X12, { "aria-hidden": "true" }) : translate("workbench.threadMapDeny") })
     ] })
   ] });
 }
-function ResponsiveAttention({ items, onOpen, onRequestDecision }) {
+function ResponsiveAttention({ items, onOpen, onRequestDecision, compact = false }) {
   const strip = useRef56(null), trigger = useRef56(null), menu = useRef56(null);
   const [capacity, setCapacity] = useState76(1);
   const [anchor, setAnchor] = useState76(null);
@@ -27971,15 +27983,15 @@ function ResponsiveAttention({ items, onOpen, onRequestDecision }) {
     const el = strip.current;
     if (!el) return;
     const measure = () => {
-      const width = Math.max(0, el.clientWidth - 32);
-      const all = Math.floor((width + 8) / 208);
-      setCapacity(Math.min(6, items.length <= all ? all : Math.max(0, Math.floor((width - 80) / 208))));
+      const width = Math.max(0, el.clientWidth - (compact ? 4 : 32));
+      const all = Math.floor((width + 4) / (compact ? 184 : 208));
+      setCapacity(Math.min(6, items.length <= all ? all : Math.max(0, Math.floor((width - (compact ? 48 : 80)) / (compact ? 184 : 208)))));
     };
     measure();
     const resize = new ResizeObserver(measure);
     resize.observe(el);
     return () => resize.disconnect();
-  }, [items.length]);
+  }, [items.length, compact]);
   const close = (restore = false) => {
     setAnchor(null);
     if (restore) trigger.current?.focus();
@@ -28009,15 +28021,15 @@ function ResponsiveAttention({ items, onOpen, onRequestDecision }) {
   }, [anchor]);
   return /* @__PURE__ */ jsxs90("div", { className: "thread-map-attention-wrap", "data-visible": items.length > 0 || void 0, children: [
     /* @__PURE__ */ jsxs90("div", { ref: strip, className: "thread-map-attention", "data-responsive": true, role: "region", "aria-label": translate("workbench.threadMapAttention"), children: [
-      items.slice(0, shown).map((item) => /* @__PURE__ */ jsx105(AttentionCard, { item, onOpen, onRequestDecision }, item.key)),
-      hidden.length > 0 && /* @__PURE__ */ jsx105("button", { ref: trigger, type: "button", className: "thread-map-attention-more", "aria-haspopup": "menu", "aria-expanded": Boolean(anchor), onClick: () => {
+      items.slice(0, shown).map((item) => /* @__PURE__ */ jsx105(AttentionCard, { item, onOpen, onRequestDecision, compact }, item.key)),
+      hidden.length > 0 && /* @__PURE__ */ jsx105("button", { ref: trigger, type: "button", className: "thread-map-attention-more", "aria-label": translate("workbench.threadMapMoreAttention", { count: hidden.length }), "aria-haspopup": "menu", "aria-expanded": Boolean(anchor), onClick: () => {
         if (anchor) {
           close();
           return;
         }
         const box = trigger.current.getBoundingClientRect();
         setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 344)), top: Math.min(box.bottom + 5, window.innerHeight - 180) });
-      }, children: translate("workbench.threadMapMoreAttention", { count: hidden.length }) })
+      }, children: compact ? `+${hidden.length}` : translate("workbench.threadMapMoreAttention", { count: hidden.length }) })
     ] }),
     anchor && hidden.length > 0 && createPortal10(/* @__PURE__ */ jsx105(
       "div",
@@ -28142,7 +28154,7 @@ function DeviceReadings({ extra }) {
     extra.todayCostUsd != null && /* @__PURE__ */ jsx105("span", { children: translate("workbench.threadMapTodayCost", { usd: formatCompactUsd(extra.todayCostUsd) }) })
   ] });
 }
-function MapLegend({ compact, children }) {
+function MapLegend({ compact, inline = false, children: children2 }) {
   const trigger = useRef56(null), dialog = useRef56(null);
   const [anchor, setAnchor] = useState76(null);
   const close = () => setAnchor(null);
@@ -28161,7 +28173,7 @@ function MapLegend({ compact, children }) {
       document.removeEventListener("pointerdown", outside);
     };
   }, [anchor]);
-  if (!compact) return /* @__PURE__ */ jsx105("div", { className: "thread-map-legend", children });
+  if (!compact) return /* @__PURE__ */ jsx105("div", { className: "thread-map-legend", children: children2 });
   return /* @__PURE__ */ jsxs90("div", { className: "thread-map-legend-footer", children: [
     /* @__PURE__ */ jsx105("button", { type: "button", ref: trigger, "aria-haspopup": "dialog", "aria-expanded": Boolean(anchor), onClick: () => {
       if (anchor) {
@@ -28169,8 +28181,8 @@ function MapLegend({ compact, children }) {
         return;
       }
       const box = trigger.current.getBoundingClientRect();
-      setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 368)), bottom: window.innerHeight - box.top + 6 });
-    }, children: translate("workbench.threadMapLegend") }),
+      setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 368)), bottom: inline ? Math.max(8, window.innerHeight - box.bottom - 210) : window.innerHeight - box.top + 6 });
+    }, "aria-label": translate("workbench.threadMapLegend"), title: translate("workbench.threadMapLegend"), children: inline ? /* @__PURE__ */ jsx105(Info2, { "aria-hidden": "true" }) : translate("workbench.threadMapLegend") }),
     anchor && createPortal10(/* @__PURE__ */ jsxs90(
       "div",
       {
@@ -28182,7 +28194,7 @@ function MapLegend({ compact, children }) {
         className: "thread-graph-dialog thread-map thread-map-legend-popover",
         style: { position: "fixed", ...anchor },
         children: [
-          /* @__PURE__ */ jsx105("div", { className: "thread-map-legend", children }),
+          /* @__PURE__ */ jsx105("div", { className: "thread-map-legend", children: children2 }),
           /* @__PURE__ */ jsx105("button", { type: "button", onClick: close, children: translate("workbench.close") })
         ]
       }
@@ -28360,8 +28372,8 @@ var ReadableSelection = class {
           }
         }
       }
-      const fits = readable(placed, !partial);
-      if (!fits && count > 0) continue;
+      const fits2 = readable(placed, !partial);
+      if (!fits2 && count > 0) continue;
       plan = {
         entries: placed.filter((entry) => !entry.item.overflow).map(({ item, rect }) => ({ node: item.node, rect })),
         overflow: hidden.length ? summary(hidden, kind, older, placed.find((entry) => entry.item.overflow)?.rect ?? bounds) : null
@@ -28374,7 +28386,161 @@ var ReadableSelection = class {
   }
 };
 
+// src/components/threadMap/density.ts
+var DENSE_MIN = { width: 88, height: 34 };
+var GAP2 = 2;
+var fits = (r) => r.width >= DENSE_MIN.width - 0.01 && r.height >= DENSE_MIN.height - 0.01;
+var inside = (r) => ({
+  x: r.x,
+  y: r.y,
+  width: Math.max(0, r.width - GAP2),
+  height: Math.max(0, r.height - GAP2)
+});
+var header = (n) => n.kind === "device" ? 22 : 18;
+var children = (n) => n.children.filter(
+  (c) => c.kind !== "compressed" && (c.thread || c.threads > 0)
+);
+function footprint(n) {
+  return n.thread ? 1 : children(n).reduce((sum, c) => sum + footprint(c), 0) + (n.kind === "device" ? 1 : 0.6);
+}
+function grids(items, bounds, minimumHeight) {
+  const result = [];
+  const max = Math.min(
+    items.length,
+    Math.floor(bounds.width / (DENSE_MIN.width + GAP2))
+  );
+  for (let cols = 1; cols <= max; cols++) {
+    const rows = Math.ceil(items.length / cols), w = bounds.width / cols, h = bounds.height / rows;
+    if (h < minimumHeight) continue;
+    result.push(
+      items.map((item, i) => ({
+        item,
+        rect: {
+          x: bounds.x + i % cols * w,
+          y: bounds.y + Math.floor(i / cols) * h,
+          width: i >= (rows - 1) * cols ? bounds.width / (items.length - (rows - 1) * cols) : w,
+          height: h
+        }
+      })).map(
+        (entry, i) => i >= (rows - 1) * cols ? {
+          ...entry,
+          rect: {
+            ...entry.rect,
+            x: bounds.x + i % cols * entry.rect.width
+          }
+        } : entry
+      )
+    );
+  }
+  return result.sort(
+    (a, b) => Math.abs(Math.log(a[0].rect.width / a[0].rect.height / 2.5)) - Math.abs(Math.log(b[0].rect.width / b[0].rect.height / 2.5))
+  );
+}
+function threadPlan(items, bounds) {
+  const ordered = [...items].sort(byPriority);
+  const maximum = Math.floor(bounds.width / 90) * Math.floor(bounds.height / 36);
+  for (let count = Math.min(ordered.length, Math.max(0, maximum)); count >= 0; count--) {
+    const hidden = ordered.slice(count), visible = ordered.slice(0, count);
+    const cells = [
+      ...visible.map((node) => ({
+        node,
+        overflow: void 0
+      })),
+      ...hidden.length ? [{ node: hidden[0], overflow: hidden }] : []
+    ];
+    if (!cells.length) return { boxes: [], missing: 0, important: 0 };
+    const median = [...visible].sort((a, b) => a.weight - b.weight)[Math.floor(visible.length / 2)]?.weight || 1;
+    const candidates = [
+      squarify(
+        cells,
+        (c) => c.overflow ? 1 : Math.max(1, Math.min(1.8, c.node.weight / median)),
+        bounds
+      ),
+      squarify(cells, () => 1, bounds),
+      ...grids(cells, bounds, 36)
+    ];
+    const layout = candidates.find((c) => c.every((e) => fits(inside(e.rect))));
+    if (!layout && count > 0) continue;
+    const boxes = (layout ?? [{ item: cells[0], rect: bounds }]).map(
+      ({ item, rect }) => ({ ...item, rect: inside(rect) })
+    );
+    return {
+      boxes,
+      missing: hidden.length,
+      important: hidden.filter((n) => mapPriority(n) < 4).length
+    };
+  }
+  return { boxes: [], missing: items.length, important: 0 };
+}
+function layoutLevel(items, bounds) {
+  if (!items.length) return { boxes: [], missing: 0, important: 0 };
+  if (items.every((n) => n.thread)) return threadPlan(items, bounds);
+  const candidates = [
+    squarify(items, footprint, bounds),
+    squarify(items, (n) => footprint(n) + 0.75, bounds),
+    squarify(items, (n) => footprint(n) ** 0.85, bounds),
+    squarify(items, (n) => Math.sqrt(footprint(n)), bounds),
+    ...grids(items, bounds, 56)
+  ];
+  let best;
+  for (const candidate of candidates) {
+    const boxes = [];
+    let missing = 0, important = 0;
+    for (const { item: node, rect: r } of candidate) {
+      const rect = inside(r), h = header(node), area = {
+        x: rect.x,
+        y: rect.y + h,
+        width: rect.width + GAP2,
+        height: Math.max(0, rect.height - h + GAP2)
+      };
+      const nested = layoutLevel(children(node), area);
+      boxes.push({ node, rect, children: nested.boxes });
+      missing += nested.missing;
+      important += nested.important;
+    }
+    const result = { boxes, missing, important };
+    if (!best || important < best.important || important === best.important && missing < best.missing)
+      best = result;
+    if (!missing) return result;
+  }
+  return best;
+}
+var DenseLayout = class {
+  snapshot;
+  layout(root, bounds, frozen, version) {
+    const leaves = threadLeaves(root.children), scores = new Map(
+      leaves.map((n) => [n.id, { weight: n.weight, rank: mapPriority(n) }])
+    );
+    const key = `${version}:${root.id}:${bounds.width}:${bounds.height}`;
+    const old = this.snapshot;
+    const changed = !old || old.scores.size !== scores.size || [...scores].some(([id, s]) => {
+      const before = old.scores.get(id);
+      return !before || before.rank !== s.rank || Math.abs(s.weight - before.weight) / Math.max(1e-3, before.weight) > 0.3;
+    });
+    if (old && old.key === key && old.boxes.length && (frozen || !changed)) {
+      const latest = /* @__PURE__ */ new Map();
+      const visit = (n) => {
+        latest.set(n.id, n);
+        n.children.forEach(visit);
+      };
+      visit(root);
+      const rebind = (boxes) => boxes.map((b) => ({
+        ...b,
+        node: latest.get(b.node.id) ?? b.node,
+        children: b.children ? rebind(b.children) : void 0,
+        overflow: b.overflow?.map((n) => latest.get(n.id) ?? n)
+      }));
+      return rebind(old.boxes);
+    }
+    const result = layoutLevel(children(root), bounds);
+    this.snapshot = { key, scores, boxes: result.boxes };
+    return result.boxes;
+  }
+};
+
 // src/components/threadMap/ReadableMap.tsx
+import { memo as memo11, useRef as useRef57, useState as useState77 } from "react";
+import { ArrowUpRight, ChevronRight as ChevronRight7, Folder as Folder3, Layers, Monitor as Monitor2 } from "lucide-react";
 import { Fragment as Fragment37, jsx as jsx106, jsxs as jsxs91 } from "react/jsx-runtime";
 var inset = (r) => ({ x: r.x + 3, y: r.y + 3, width: Math.max(0, r.width - 6), height: Math.max(0, r.height - 6) });
 var kindFor = (node) => node.kind === "workspace" || node.kind === "thread" ? "threads" : node.kind === "device" ? "workspaces" : "devices";
@@ -28528,8 +28694,8 @@ function ReadableMap(props) {
       }
       const extra = node.device ? extras?.[node.device.id] : void 0;
       const isDevice = node.kind === "device";
-      const header = isDevice ? 36 : 28;
-      const inner = { x: 3, y: header, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header - 3) };
+      const header2 = isDevice ? 36 : 28;
+      const inner = { x: 3, y: header2, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header2 - 3) };
       const unlisted = isDevice && node.device.state !== "ready" && !node.children.length;
       return /* @__PURE__ */ jsxs91(
         "section",
@@ -28543,7 +28709,7 @@ function ReadableMap(props) {
           "data-dimmed": dim(node) || void 0,
           style: { left: box.x, top: box.y, width: box.width, height: box.height },
           children: [
-            /* @__PURE__ */ jsxs91("div", { className: "thread-map-section-header", style: { height: header }, title: isDevice ? extra?.metrics : void 0, children: [
+            /* @__PURE__ */ jsxs91("div", { className: "thread-map-section-header", style: { height: header2 }, title: isDevice ? extra?.metrics : void 0, children: [
               /* @__PURE__ */ jsxs91("button", { type: "button", className: "thread-map-section-head", onClick: (event) => navigate(node, event.currentTarget.closest("section")), ...hover([node.label]), children: [
                 isDevice ? /* @__PURE__ */ jsx106(DeviceStateMark, {}) : /* @__PURE__ */ jsx106(Folder3, { "aria-hidden": "true" }),
                 /* @__PURE__ */ jsx106("span", { className: "thread-map-section-label", children: node.label }),
@@ -28574,7 +28740,7 @@ function ReadableMap(props) {
           setListFor(parent.id);
         }
       };
-      const header = /* @__PURE__ */ jsxs91(Fragment37, { children: [
+      const header2 = /* @__PURE__ */ jsxs91(Fragment37, { children: [
         /* @__PURE__ */ jsxs91("span", { className: "thread-map-overflow-title", children: [
           /* @__PURE__ */ jsx106(Layers, { "aria-hidden": "true" }),
           /* @__PURE__ */ jsx106("b", { children: label }),
@@ -28596,7 +28762,7 @@ function ReadableMap(props) {
             if (!event.target.closest("button, a, .thread-map-scroll-track")) zoom();
           },
           children: [
-            /* @__PURE__ */ jsx106("button", { type: "button", className: "thread-map-overflow-open", onClick: zoom, "aria-label": label, ...hover([label]), children: header }),
+            /* @__PURE__ */ jsx106("button", { type: "button", className: "thread-map-overflow-open", onClick: zoom, "aria-label": label, ...hover([label]), children: header2 }),
             /* @__PURE__ */ jsx106(MapScrollList, { label, children: /* @__PURE__ */ jsx106("div", { className: "thread-map-overflow-items", onKeyDown: (event) => {
               if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
               const controls = [...event.currentTarget.querySelectorAll("a, button")];
@@ -28635,7 +28801,7 @@ function ReadableMap(props) {
           "aria-label": label,
           ...hover([label, ...overflow.recent]),
           children: [
-            header,
+            header2,
             box.height >= 110 && /* @__PURE__ */ jsx106("span", { className: "thread-map-overflow-preview", children: overflow.recent.slice(0, Math.min(3, Math.floor((box.height - 70) / 17))).map((title, i) => /* @__PURE__ */ jsx106("span", { children: title }, i)) })
           ]
         },
@@ -28649,12 +28815,270 @@ function ReadableMap(props) {
   return /* @__PURE__ */ jsx106(Fragment37, { children: content });
 }
 
+// src/components/threadMap/DenseMap.tsx
+import { Fragment as Fragment39, jsx as jsx107, jsxs as jsxs92 } from "react/jsx-runtime";
+function status2(n) {
+  const t2 = n.thread;
+  return isWaiting(t2) ? "waiting" : isLive(t2) ? "running" : t2.failed ? "failed" : t2.interrupted ? "interrupted" : t2.unread ? "unread" : "idle";
+}
+var DenseTile = memo12(
+  function DenseTile2({
+    box,
+    node,
+    current,
+    dimmed,
+    onOpen,
+    onQuickLook,
+    hover,
+    hours,
+    navigate
+  }) {
+    useI18n();
+    const t2 = node.thread, mark = status2(node), detailed = box.height >= 72;
+    return /* @__PURE__ */ jsxs92(
+      "div",
+      {
+        className: "thread-map-tile thread-map-dense-tile",
+        "data-map-id": node.id,
+        "data-tier": box.height >= 72 ? "stats" : box.height >= 52 ? "two" : "one",
+        "data-heat": heatLevel(t2.activeMs),
+        "data-current": current || void 0,
+        "data-dimmed": dimmed || void 0,
+        "data-running": isLive(t2) && !isWaiting(t2) || void 0,
+        "data-waiting": isWaiting(t2) || void 0,
+        style: {
+          left: box.x,
+          top: box.y,
+          width: box.width,
+          height: box.height
+        },
+        children: [
+          /* @__PURE__ */ jsx107(
+            "a",
+            {
+              href: t2.href,
+              className: "thread-map-tile-link",
+              "aria-current": current ? "page" : void 0,
+              "aria-label": [t2.title, navigationStatusLabel(mark)].join(" \xB7 "),
+              onClick: onOpen(t2),
+              ...hover(() => threadDetails(node, hours))
+            }
+          ),
+          /* @__PURE__ */ jsxs92("span", { className: "thread-map-dense-head", children: [
+            /* @__PURE__ */ jsx107(StatusMark, { status: mark }),
+            /* @__PURE__ */ jsx107(AgentChip, { agent: t2.agent }),
+            /* @__PURE__ */ jsx107("span", { className: "thread-map-tile-title", children: t2.title })
+          ] }),
+          t2.unread && mark !== "unread" && /* @__PURE__ */ jsx107("span", { className: "thread-map-dense-unread", children: /* @__PURE__ */ jsx107(StatusMark, { status: "unread" }) }),
+          detailed && /* @__PURE__ */ jsxs92("span", { className: "thread-map-dense-stats", children: [
+            t2.turns != null && /* @__PURE__ */ jsxs92(
+              "span",
+              {
+                title: translate("workbench.threadMapTurns", {
+                  count: t2.turns
+                }),
+                children: [
+                  /* @__PURE__ */ jsx107(ListRestart, { "aria-hidden": "true" }),
+                  t2.turns
+                ]
+              }
+            ),
+            !!t2.totalMs && /* @__PURE__ */ jsxs92(
+              "span",
+              {
+                title: translate("workbench.threadMapTotalRan", {
+                  duration: formatShortDuration(t2.totalMs)
+                }),
+                children: [
+                  /* @__PURE__ */ jsx107(Clock3, { "aria-hidden": "true" }),
+                  formatShortDuration(t2.totalMs)
+                ]
+              }
+            ),
+            t2.priceEstimate && /* @__PURE__ */ jsxs92(
+              "span",
+              {
+                title: translate("workbench.threadMapCost", {
+                  usd: formatCompactUsd(t2.priceEstimate.totalUsd)
+                }),
+                children: [
+                  /* @__PURE__ */ jsx107(DollarSign2, { "aria-hidden": "true" }),
+                  formatCompactUsd(t2.priceEstimate.totalUsd).replace(/^\$/, "")
+                ]
+              }
+            ),
+            !!t2.children?.length && /* @__PURE__ */ jsxs92(
+              "button",
+              {
+                type: "button",
+                onClick: () => navigate(node),
+                "aria-label": translate("workbench.threadMapShowChildren", {
+                  count: t2.children.length,
+                  title: t2.title
+                }),
+                children: [
+                  /* @__PURE__ */ jsx107(Bot6, { "aria-hidden": "true" }),
+                  t2.children.length
+                ]
+              }
+            )
+          ] }),
+          detailed && box.width >= 160 && onQuickLook && /* @__PURE__ */ jsx107(
+            "button",
+            {
+              type: "button",
+              className: "thread-map-quick-look",
+              "aria-label": translate("workbench.threadMapQuickLook", {
+                title: t2.title
+              }),
+              onClick: () => onQuickLook(t2.key),
+              children: "\u24D8"
+            }
+          )
+        ]
+      }
+    );
+  },
+  (a, b) => a.node.thread === b.node.thread && a.box.x === b.box.x && a.box.y === b.box.y && a.box.width === b.box.width && a.box.height === b.box.height && a.current === b.current && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook
+);
+function DenseMap(props) {
+  useI18n();
+  const cache = useRef58(new DenseLayout());
+  const {
+    current,
+    bounds,
+    frozen,
+    version,
+    navigate,
+    hover,
+    query,
+    matches,
+    extras
+  } = props;
+  const boxes = cache.current.layout(current, bounds, frozen, version);
+  if ((current.kind === "workspace" || current.kind === "thread") && boxes.some((b) => b.overflow))
+    return /* @__PURE__ */ jsx107(ReadableMap, { ...props });
+  const targets = [];
+  const render = (items) => items.map((box) => {
+    const { node, rect, overflow } = box;
+    if (overflow) {
+      const id = `overflow:${node.parent?.id ?? current.id}`;
+      targets.push({ id, rect });
+      const label = translate("workbench.threadMapRemainingThreads", {
+        count: overflow.length
+      });
+      return /* @__PURE__ */ jsxs92(
+        "button",
+        {
+          type: "button",
+          className: "thread-map-overflow thread-map-dense-overflow",
+          "data-map-id": id,
+          style: {
+            left: rect.x,
+            top: rect.y,
+            width: rect.width,
+            height: rect.height
+          },
+          "aria-label": label,
+          onClick: () => navigate(node.parent ?? current),
+          ...hover([label, ...overflow.slice(0, 5).map((n) => n.label)]),
+          children: [
+            /* @__PURE__ */ jsx107(Layers2, { "aria-hidden": "true" }),
+            /* @__PURE__ */ jsxs92("span", { children: [
+              "+",
+              overflow.length
+            ] })
+          ]
+        },
+        id
+      );
+    }
+    if (node.thread) {
+      targets.push({ id: node.id, rect });
+      return /* @__PURE__ */ jsx107(
+        DenseTile,
+        {
+          box: rect,
+          node,
+          current: node.thread.key === props.currentKey,
+          dimmed: Boolean(query.trim()) && !matches(node),
+          onOpen: props.onOpen,
+          onQuickLook: props.onQuickLook,
+          hover,
+          hours: props.hours,
+          navigate
+        },
+        node.id
+      );
+    }
+    const device = node.kind === "device", extra = device ? extras?.[node.device.id] : void 0;
+    return /* @__PURE__ */ jsxs92(Fragment38, { children: [
+      /* @__PURE__ */ jsx107(
+        "section",
+        {
+          className: "thread-map-dense-section",
+          "data-map-id": node.id,
+          "data-kind": node.kind,
+          style: {
+            left: rect.x,
+            top: rect.y,
+            width: rect.width,
+            height: rect.height
+          },
+          children: /* @__PURE__ */ jsxs92(
+            "div",
+            {
+              className: "thread-map-dense-header",
+              style: {
+                left: 0,
+                top: 0,
+                width: rect.width,
+                height: device ? 22 : 18
+              },
+              children: [
+                /* @__PURE__ */ jsxs92(
+                  "button",
+                  {
+                    type: "button",
+                    className: "thread-map-section-head",
+                    onClick: () => navigate(node),
+                    ...hover([
+                      node.label,
+                      translate("workbench.threadMapThreads", {
+                        count: node.threads
+                      }),
+                      ...extra?.metrics ? [extra.metrics] : []
+                    ]),
+                    children: [
+                      device ? /* @__PURE__ */ jsx107(DeviceStateMark, {}) : /* @__PURE__ */ jsx107(Folder4, { "aria-hidden": "true" }),
+                      /* @__PURE__ */ jsx107("span", { className: "thread-map-section-label", children: node.label }),
+                      device && extra?.latencyMs != null && rect.width > 180 && /* @__PURE__ */ jsxs92("small", { children: [
+                        Math.round(extra.latencyMs),
+                        " ms"
+                      ] })
+                    ]
+                  }
+                ),
+                device && extra?.menuItems?.length ? /* @__PURE__ */ jsx107(DeviceMenu, { device: node.device, items: extra.menuItems }) : null
+              ]
+            }
+          )
+        }
+      ),
+      render(box.children ?? [])
+    ] }, node.id);
+  });
+  const content = render(boxes);
+  props.register(targets);
+  return /* @__PURE__ */ jsx107(Fragment39, { children: content });
+}
+
 // src/components/threadMap/useMapMotion.ts
-import { useLayoutEffect as useLayoutEffect21, useRef as useRef58 } from "react";
+import { useLayoutEffect as useLayoutEffect21, useRef as useRef59 } from "react";
 var reduced = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 function useMapMotion(stage, enabled, revision, tree, size, groups) {
-  const previous = useRef58(/* @__PURE__ */ new Map());
-  const level = useRef58(revision);
+  const previous = useRef59(/* @__PURE__ */ new Map());
+  const level = useRef59(revision);
   useLayoutEffect21(() => {
     if (!enabled || !stage.current) return;
     const next = /* @__PURE__ */ new Map();
@@ -28770,7 +29194,7 @@ function spatialNeighbor(items, from, direction) {
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { Fragment as Fragment38, jsx as jsx107, jsxs as jsxs92 } from "react/jsx-runtime";
+import { Fragment as Fragment40, jsx as jsx108, jsxs as jsxs93 } from "react/jsx-runtime";
 var HEADER = 26;
 function describe(node, hours) {
   if (node.thread) return threadDetails(node, hours);
@@ -28817,19 +29241,19 @@ function ThreadMap({
   const { locale } = useI18n();
   const page = presentation === "page";
   const enhanced = page || controlledScope !== void 0;
-  const [localScope, setLocalScope] = useState78(page ? "week" : "all");
-  const scope = controlledScope ?? localScope;
+  const [localScope, setLocalScope] = useState78("all");
+  const scope = page && controlledScope === "week" ? "all" : controlledScope ?? localScope;
   const [localFilter, setLocalFilter] = useState78("");
   const query = filterText ?? localFilter;
-  const filter = useRef59(null);
+  const filter = useRef60(null);
   const [expandedWorkspaces, setExpandedWorkspaces] = useState78(() => /* @__PURE__ */ new Set());
   const [expandedDevices, setExpandedDevices] = useState78(() => /* @__PURE__ */ new Set());
   const [cachedDevices, setCachedDevices] = useState78(() => /* @__PURE__ */ new Set());
   const [focusId, setFocusId] = useState78(null);
   const [layoutRevision, setLayoutRevision] = useState78(0);
   const [frozen, setFrozen] = useState78(false);
-  const pointerInside = useRef59(false), focusInside = useRef59(false);
-  const freezeTimer = useRef59(void 0);
+  const pointerInside = useRef60(false), focusInside = useRef60(false);
+  const freezeTimer = useRef60(void 0);
   const freeze = () => {
     clearTimeout(freezeTimer.current);
     setFrozen(true);
@@ -28841,9 +29265,9 @@ function ThreadMap({
     }, 800);
   };
   useEffect56(() => () => clearTimeout(freezeTimer.current), []);
-  const orders = useRef59(new StableMapOrder()), layouts = useRef59(new MapLayoutCache());
-  const priorScope = useRef59(scope);
-  const priorLayoutRevision = useRef59(layoutRevision);
+  const orders = useRef60(new StableMapOrder()), layouts = useRef60(new MapLayoutCache());
+  const priorScope = useRef60(scope);
+  const priorLayoutRevision = useRef60(layoutRevision);
   const allLabel = translate("workbench.threadMapAll");
   const root = useMemo23(() => {
     if (priorLayoutRevision.current !== layoutRevision) {
@@ -28854,12 +29278,13 @@ function ThreadMap({
       orders.current.clear();
       priorScope.current = scope;
     }
-    const list = enhanced ? devices.filter((d) => d.state !== "offline" || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`))).map((d) => d.state === "offline" ? { ...d, state: "ready" } : d) : devices;
-    const tree = buildThreadMap(list, allLabel, enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true } : {});
+    const list = enhanced ? devices.filter((d) => (!page || d.workspaces.some((w) => w.threads.length > 0)) && (d.state !== "offline" || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`)))).map((d) => d.state === "offline" ? { ...d, state: "ready" } : d) : devices;
+    const tree = buildThreadMap(list, allLabel, enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true, dense: page } : {});
+    if (page) tree.children = tree.children.filter((node) => node.threads > 0);
     return stableLayout ? orders.current.apply(tree, frozen) : tree;
-  }, [devices, allLabel, enhanced, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId]);
+  }, [devices, allLabel, enhanced, page, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId]);
   const nodes = useMemo23(() => indexMap(root), [root]);
-  const latest = useRef59({ onOpen, onQuickLook });
+  const latest = useRef60({ onOpen, onQuickLook });
   latest.current = { onOpen, onQuickLook };
   const quickLook = useCallback26((key) => latest.current.onQuickLook?.(key), []);
   const setScope = (next) => {
@@ -28912,10 +29337,10 @@ function ThreadMap({
     const node = nodes.get(`thread:${child.key}`);
     return node ? [node] : [];
   }) } : focused;
-  const canvas = useRef59(null);
-  const stage = useRef59(null);
-  const crumbs = useRef59(null);
-  const zoomPlan = useRef59(null);
+  const canvas = useRef60(null);
+  const stage = useRef60(null);
+  const crumbs = useRef60(null);
+  const zoomPlan = useRef60(null);
   const [size, setSize] = useState78({ width: 0, height: 0 });
   const [tip, setTip] = useState78(null);
   useEffect56(() => {
@@ -28949,7 +29374,7 @@ function ThreadMap({
       thaw();
     }
   }, [root, current.id, stableLayout]);
-  const spatial = useRef59([]);
+  const spatial = useRef60([]);
   const keyboard = (event) => {
     if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || event.nativeEvent.isComposing) return;
     const target = event.target;
@@ -28972,7 +29397,7 @@ function ThreadMap({
       filter.current?.focus();
     } else if (enhanced && ["1", "2", "3"].includes(event.key)) {
       event.preventDefault();
-      setScope(["active", "week", "all"][Number(event.key) - 1]);
+      setScope((page ? ["all", "active", "all"] : ["active", "week", "all"])[Number(event.key) - 1]);
     } else if ((event.key === "Escape" || event.key === "Backspace") && current !== root) {
       event.preventDefault();
       event.stopPropagation();
@@ -28995,7 +29420,7 @@ function ThreadMap({
       }
     }
   };
-  const outsideKey = useRef59(() => {
+  const outsideKey = useRef60(() => {
   });
   outsideKey.current = (event) => {
     if (!page || event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || event.isComposing) return;
@@ -29007,7 +29432,7 @@ function ThreadMap({
       filter.current?.focus();
     } else if (["1", "2", "3"].includes(event.key)) {
       event.preventDefault();
-      setScope(["active", "week", "all"][Number(event.key) - 1]);
+      setScope((page ? ["all", "active", "all"] : ["active", "week", "all"])[Number(event.key) - 1]);
     }
   };
   useEffect56(() => {
@@ -29016,16 +29441,16 @@ function ThreadMap({
     return () => window.removeEventListener("keydown", key);
   }, []);
   useMapMotion(stage, stableLayout, current.id, root, size, openGroups);
-  const pendingReveal = useRef59(null);
-  const pendingRevealTarget = useRef59(null);
-  const pendingPulses = useRef59(/* @__PURE__ */ new Set());
-  const previousPulses = useRef59(/* @__PURE__ */ new Set());
+  const pendingReveal = useRef60(null);
+  const pendingRevealTarget = useRef60(null);
+  const pendingPulses = useRef60(/* @__PURE__ */ new Set());
+  const previousPulses = useRef60(/* @__PURE__ */ new Set());
   useEffect56(() => {
     const keys = new Set(pulseKeys ?? []);
     for (const key of keys) if (!previousPulses.current.has(key)) pendingPulses.current.add(key);
     previousPulses.current = keys;
   }, [pulseKeys]);
-  const lastRevealed = useRef59(null);
+  const lastRevealed = useRef60(null);
   useEffect56(() => {
     if (!revealKey) {
       lastRevealed.current = null;
@@ -29136,7 +29561,7 @@ function ThreadMap({
       { duration: 280, easing: "cubic-bezier(0.2, 0.75, 0.25, 1)" }
     );
   }, [current.id]);
-  const gesture = useRef59({ navigate, current, root, nodes, onDismiss });
+  const gesture = useRef60({ navigate, current, root, nodes, onDismiss });
   gesture.current = { navigate, current, root, nodes, onDismiss: page ? void 0 : onDismiss };
   useEffect56(() => {
     const node = canvas.current;
@@ -29250,7 +29675,7 @@ function ThreadMap({
     latest.current.onOpen(thread);
   };
   const showTip = (lines, target) => {
-    const source = target.closest(".thread-map-tile, .thread-map-list-row, .thread-map-overflow-row, .thread-map-section, .thread-map-overflow") ?? target;
+    const source = target.closest(".thread-map-tile, .thread-map-list-row, .thread-map-overflow-row, .thread-map-section, .thread-map-dense-header, .thread-map-overflow") ?? target;
     setTip({ lines, target: source });
   };
   const hover = (lines) => ({
@@ -29261,13 +29686,13 @@ function ThreadMap({
     onFocus: (event) => showTip(typeof lines === "function" ? lines() : lines, event.currentTarget),
     onBlur: () => setTip(null)
   });
-  const fits = (node, inner, depth) => {
+  const fits2 = (node, inner, depth) => {
     if (depth > 2 || inner.width < 64 || inner.height < 40 || !node.children.length) return false;
     return node.children.length <= inner.width * inner.height / (node.children[0].kind === "thread" ? 90 : 900);
   };
   const group = (item, box, depth, offset) => {
     const thread = item.thread;
-    const children2 = thread.children.map((child) => ({
+    const children3 = thread.children.map((child) => ({
       id: `thread:${child.key}`,
       kind: "thread",
       label: child.title,
@@ -29285,7 +29710,7 @@ function ThreadMap({
       tokens: child.tokenUsage?.totalTokens ?? 0
     })).sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
     const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
-    return /* @__PURE__ */ jsxs92(
+    return /* @__PURE__ */ jsxs93(
       "section",
       {
         "data-map-id": item.id,
@@ -29295,8 +29720,8 @@ function ThreadMap({
         "aria-label": thread.title,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          /* @__PURE__ */ jsxs92("div", { className: "thread-map-group-head", children: [
-            /* @__PURE__ */ jsxs92(
+          /* @__PURE__ */ jsxs93("div", { className: "thread-map-group-head", children: [
+            /* @__PURE__ */ jsxs93(
               "button",
               {
                 type: "button",
@@ -29305,17 +29730,17 @@ function ThreadMap({
                 "aria-label": translate("workbench.threadMapHideChildren", { title: thread.title }),
                 onClick: () => toggleGroup(thread.key),
                 children: [
-                  /* @__PURE__ */ jsx107(AgentChip, { agent: thread.agent }),
-                  /* @__PURE__ */ jsx107("span", { className: "thread-map-section-label", children: thread.title }),
-                  box.width >= 110 && /* @__PURE__ */ jsxs92("span", { className: "thread-map-section-count", children: [
-                    /* @__PURE__ */ jsx107(Network2, { "aria-hidden": "true" }),
-                    children2.length
+                  /* @__PURE__ */ jsx108(AgentChip, { agent: thread.agent }),
+                  /* @__PURE__ */ jsx108("span", { className: "thread-map-section-label", children: thread.title }),
+                  box.width >= 110 && /* @__PURE__ */ jsxs93("span", { className: "thread-map-section-count", children: [
+                    /* @__PURE__ */ jsx108(Network2, { "aria-hidden": "true" }),
+                    children3.length
                   ] }),
-                  /* @__PURE__ */ jsx107(ChevronUp4, { "aria-hidden": "true" })
+                  /* @__PURE__ */ jsx108(ChevronUp4, { "aria-hidden": "true" })
                 ]
               }
             ),
-            box.width >= 80 && /* @__PURE__ */ jsx107(
+            box.width >= 80 && /* @__PURE__ */ jsx108(
               "a",
               {
                 className: "thread-map-group-open",
@@ -29323,11 +29748,11 @@ function ThreadMap({
                 onClick: open(thread),
                 "aria-label": translate("workbench.threadMapOpenThread", { title: thread.title }),
                 title: translate("workbench.threadMapOpenThread", { title: thread.title }),
-                children: /* @__PURE__ */ jsx107(ArrowUpRight2, { "aria-hidden": "true" })
+                children: /* @__PURE__ */ jsx108(ArrowUpRight2, { "aria-hidden": "true" })
               }
             )
           ] }),
-          render(children2, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y })
+          render(children3, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y })
         ]
       },
       item.id
@@ -29341,7 +29766,7 @@ function ThreadMap({
     const box = inset2(rect, depth ? 1.5 : 2.5);
     if (item.kind === "compressed") {
       spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
-      return /* @__PURE__ */ jsx107(
+      return /* @__PURE__ */ jsx108(
         "button",
         {
           type: "button",
@@ -29361,7 +29786,7 @@ function ThreadMap({
       spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
       const thread = item.thread;
       if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth, offset);
-      return /* @__PURE__ */ jsx107(
+      return /* @__PURE__ */ jsx108(
         ThreadTile,
         {
           node: item,
@@ -29382,27 +29807,27 @@ function ThreadMap({
     const state = item.device?.state;
     const unlisted = item.kind === "device" && state !== "ready" && !(enhanced && item.children.length > 0);
     const extra = item.kind === "device" ? deviceExtras?.[item.device.id] : void 0;
-    const header = extra ? 36 : HEADER;
-    const inner = { x: 3, y: header, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header - 3) };
-    const preview = !unlisted && rendered < 1600 && fits(item, inner, depth);
+    const header2 = extra ? 36 : HEADER;
+    const inner = { x: 3, y: header2, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header2 - 3) };
+    const preview = !unlisted && rendered < 1600 && fits2(item, inner, depth);
     const live = !preview && !unlisted && item.running > 0 && inner.width >= 44 && inner.height >= 34 ? runningLeaves(item).slice(0, 4) : [];
     const liveInner = { ...inner, height: Math.max(0, inner.height - (item.threads > live.length ? 15 : 0)) };
     const named = box.width >= 72;
-    const Icon = item.kind === "device" ? Monitor3 : Folder4;
+    const Icon = item.kind === "device" ? Monitor3 : Folder5;
     const zoomable = !unlisted;
-    const head = /* @__PURE__ */ jsxs92(Fragment38, { children: [
-      named && (extra ? /* @__PURE__ */ jsx107(DeviceStateMark, {}) : /* @__PURE__ */ jsx107(Icon, { "aria-hidden": "true" })),
-      /* @__PURE__ */ jsx107("span", { className: "thread-map-section-label", children: item.label }),
-      extra && box.width >= 280 && /* @__PURE__ */ jsx107(DeviceReadings, { extra }),
-      unlisted ? named && /* @__PURE__ */ jsx107("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx107(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs92("span", { className: "thread-map-section-count", children: [
-        item.running > 0 && /* @__PURE__ */ jsx107("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+    const head = /* @__PURE__ */ jsxs93(Fragment40, { children: [
+      named && (extra ? /* @__PURE__ */ jsx108(DeviceStateMark, {}) : /* @__PURE__ */ jsx108(Icon, { "aria-hidden": "true" })),
+      /* @__PURE__ */ jsx108("span", { className: "thread-map-section-label", children: item.label }),
+      extra && box.width >= 280 && /* @__PURE__ */ jsx108(DeviceReadings, { extra }),
+      unlisted ? named && /* @__PURE__ */ jsx108("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx108(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs93("span", { className: "thread-map-section-count", children: [
+        item.running > 0 && /* @__PURE__ */ jsx108("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
         item.threads,
-        item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx107("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
+        item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx108("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
       ] })
     ] });
     if (!preview && !live.length && zoomable) spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
     const zoom = (event) => navigate(item, event.currentTarget.closest("section"));
-    return /* @__PURE__ */ jsxs92(
+    return /* @__PURE__ */ jsxs93(
       "section",
       {
         "data-map-id": item.id,
@@ -29420,8 +29845,8 @@ function ThreadMap({
         "aria-label": text,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          /* @__PURE__ */ jsxs92("div", { className: "thread-map-section-header", style: { height: header }, title: extra?.metrics, children: [
-            (preview || live.length > 0) && zoomable ? /* @__PURE__ */ jsx107(
+          /* @__PURE__ */ jsxs93("div", { className: "thread-map-section-header", style: { height: header2 }, title: extra?.metrics, children: [
+            (preview || live.length > 0) && zoomable ? /* @__PURE__ */ jsx108(
               "button",
               {
                 type: "button",
@@ -29431,15 +29856,15 @@ function ThreadMap({
                 ...hover(lines),
                 children: head
               }
-            ) : /* @__PURE__ */ jsx107("div", { className: "thread-map-section-head", children: head }),
-            extra?.menuItems?.length ? /* @__PURE__ */ jsx107(DeviceMenu, { device: item.device, items: extra.menuItems }) : null,
-            extra?.metrics && /* @__PURE__ */ jsx107("span", { className: "thread-map-metrics", children: extra.metrics })
+            ) : /* @__PURE__ */ jsx108("div", { className: "thread-map-section-head", children: head }),
+            extra?.menuItems?.length ? /* @__PURE__ */ jsx108(DeviceMenu, { device: item.device, items: extra.menuItems }) : null,
+            extra?.metrics && /* @__PURE__ */ jsx108("span", { className: "thread-map-metrics", children: extra.metrics })
           ] }),
-          preview && /* @__PURE__ */ jsx107("div", { className: "thread-map-preview", children: render(item.children, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y }) }),
-          live.length > 0 && /* @__PURE__ */ jsx107("div", { className: "thread-map-preview", children: render(live, liveInner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y }) }),
-          live.length > 0 && item.threads > live.length && /* @__PURE__ */ jsx107("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapMoreThreads", { count: item.threads - live.length }) }),
-          !preview && !live.length && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx107("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) }),
-          !preview && !live.length && zoomable && /* @__PURE__ */ jsx107(
+          preview && /* @__PURE__ */ jsx108("div", { className: "thread-map-preview", children: render(item.children, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y }) }),
+          live.length > 0 && /* @__PURE__ */ jsx108("div", { className: "thread-map-preview", children: render(live, liveInner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y }) }),
+          live.length > 0 && item.threads > live.length && /* @__PURE__ */ jsx108("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapMoreThreads", { count: item.threads - live.length }) }),
+          !preview && !live.length && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx108("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) }),
+          !preview && !live.length && zoomable && /* @__PURE__ */ jsx108(
             "button",
             {
               type: "button",
@@ -29449,7 +29874,7 @@ function ThreadMap({
               ...hover(lines)
             }
           ),
-          unlisted && state === "error" && onRetry && /* @__PURE__ */ jsx107(
+          unlisted && state === "error" && onRetry && /* @__PURE__ */ jsx108(
             "button",
             {
               type: "button",
@@ -29464,25 +29889,78 @@ function ThreadMap({
       item.id
     );
   });
-  const children = current.children;
+  const children2 = current.children;
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
-  return /* @__PURE__ */ jsxs92("div", { className: "thread-map", "data-presentation": presentation, onKeyDown: keyboard, children: [
-    /* @__PURE__ */ jsxs92("div", { className: "thread-map-bar", children: [
+  const breadcrumb = /* @__PURE__ */ jsxs93(Fragment40, { children: [
+    /* @__PURE__ */ jsx108("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx108(ArrowLeft4, { "aria-hidden": "true" }) }),
+    /* @__PURE__ */ jsx108("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => {
+      const href = page && node.kind === "thread" ? void 0 : node.workspace ? node.workspace.href : node.device?.href;
+      const label = translate(node.workspace ? "workbench.threadMapOpenWorkspace" : "workbench.threadMapOpenDevice", { name: node.label });
+      return /* @__PURE__ */ jsxs93("span", { className: "thread-map-crumb", children: [
+        index > 0 && /* @__PURE__ */ jsx108(ChevronRight8, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsx108("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), title: node.label, children: node.label }),
+        href && /* @__PURE__ */ jsx108("a", { className: "thread-map-crumb-open", href, "aria-label": label, title: label, onClick: (event) => {
+          if (!onNavigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+          event.preventDefault();
+          onNavigate(href);
+        }, children: /* @__PURE__ */ jsx108(ArrowUpRight2, { "data-icon": "open", "aria-hidden": "true" }) })
+      ] }, node.id);
+    }) })
+  ] });
+  return /* @__PURE__ */ jsxs93("div", { className: "thread-map", "data-presentation": presentation, onKeyDown: keyboard, children: [
+    page && /* @__PURE__ */ jsxs93("div", { className: "thread-map-bar thread-map-dense-toolbar", children: [
+      breadcrumb,
+      /* @__PURE__ */ jsxs93("span", { className: "thread-map-dense-summary", children: [
+        /* @__PURE__ */ jsxs93("span", { title: translate("workbench.threadMapThreads", { count: root.threads }), children: [
+          /* @__PURE__ */ jsx108(Layers3, { "aria-hidden": "true" }),
+          root.threads
+        ] }),
+        root.running > 0 && /* @__PURE__ */ jsxs93("span", { title: translate("workbench.threadMapRunningCount", { count: root.running }), children: [
+          /* @__PURE__ */ jsx108(Activity, { "aria-hidden": "true" }),
+          root.running
+        ] }),
+        root.usd > 0 && /* @__PURE__ */ jsxs93("span", { title: translate("workbench.threadMapCost", { usd: formatCompactUsd(root.usd) }), children: [
+          /* @__PURE__ */ jsx108(DollarSign3, { "aria-hidden": "true" }),
+          formatCompactUsd(root.usd).replace(/^\$/, "")
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs93("label", { className: "thread-map-filter", children: [
+        /* @__PURE__ */ jsx108("input", { ref: filter, type: "search", value: query, placeholder: translate("workbench.threadMapFilter"), "aria-label": translate("workbench.threadMapFilter"), onChange: (event) => setFilter(event.target.value) }),
+        query.trim() ? /* @__PURE__ */ jsx108("span", { role: "status", children: translate("workbench.threadMapMatches", { count: matches.size }) }) : /* @__PURE__ */ jsx108("kbd", { children: "/" })
+      ] }),
+      /* @__PURE__ */ jsx108("div", { className: "thread-map-scope", role: "group", "aria-label": translate("workbench.threadMapScope"), children: ["all", "active"].map((value, index) => /* @__PURE__ */ jsx108("button", { type: "button", "aria-pressed": scope === value, "aria-keyshortcuts": String(index + 1), "aria-label": translate(value === "all" ? "workbench.threadMapScopeAll" : "workbench.threadMapScopeActive"), title: translate(value === "all" ? "workbench.threadMapScopeAll" : "workbench.threadMapScopeActive"), onClick: () => setScope(value), children: value === "all" ? /* @__PURE__ */ jsx108(Layers3, { "aria-hidden": "true" }) : /* @__PURE__ */ jsx108(Activity, { "aria-hidden": "true" }) }, value)) }),
+      /* @__PURE__ */ jsx108("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapRefreshLayout"), title: translate("workbench.threadMapRefreshLayout"), onClick: () => setLayoutRevision((n) => n + 1), children: /* @__PURE__ */ jsx108(RotateCw2, { "aria-hidden": "true" }) }),
+      current.device && cachedDevices.has(current.device.id) && /* @__PURE__ */ jsx108("span", { className: "thread-map-cached-label", children: translate("workbench.threadMapCached") }),
+      /* @__PURE__ */ jsxs93(MapLegend, { compact: true, inline: true, children: [
+        /* @__PURE__ */ jsx108("span", { children: translate("workbench.threadMapLegendSize") }),
+        /* @__PURE__ */ jsx108("span", { children: translate("workbench.threadMapLegendColor", { hours }) }),
+        /* @__PURE__ */ jsxs93("span", { children: [
+          /* @__PURE__ */ jsx108(StatusMark, { status: "waiting" }),
+          translate("workbench.waitingForYou")
+        ] }),
+        /* @__PURE__ */ jsxs93("span", { children: [
+          /* @__PURE__ */ jsx108(StatusMark, { status: "running" }),
+          translate("workbench.threadMapRunning")
+        ] })
+      ] }),
+      actions
+    ] }),
+    !page && /* @__PURE__ */ jsxs93("div", { className: "thread-map-bar", children: [
       heading,
-      /* @__PURE__ */ jsxs92("span", { className: "thread-map-summary", children: [
+      /* @__PURE__ */ jsxs93("span", { className: "thread-map-summary", children: [
         translate("workbench.threadMapThreads", { count: root.threads }),
-        root.running > 0 && /* @__PURE__ */ jsxs92(Fragment38, { children: [
+        root.running > 0 && /* @__PURE__ */ jsxs93(Fragment40, { children: [
           " \xB7 ",
-          /* @__PURE__ */ jsx107("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx108("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
           translate("workbench.threadMapRunningCount", { count: root.running })
         ] }),
-        root.usd > 0 && /* @__PURE__ */ jsxs92(Fragment38, { children: [
+        root.usd > 0 && /* @__PURE__ */ jsxs93(Fragment40, { children: [
           " \xB7 ",
           translate("workbench.threadMapCost", { usd: formatCompactUsd(root.usd) })
         ] })
       ] }),
-      (enhanced || onFilterChange) && /* @__PURE__ */ jsxs92("label", { className: "thread-map-filter", children: [
-        /* @__PURE__ */ jsx107(
+      (enhanced || onFilterChange) && /* @__PURE__ */ jsxs93("label", { className: "thread-map-filter", children: [
+        /* @__PURE__ */ jsx108(
           "input",
           {
             ref: filter,
@@ -29493,61 +29971,48 @@ function ThreadMap({
             onChange: (event) => setFilter(event.target.value)
           }
         ),
-        query.trim() ? /* @__PURE__ */ jsx107("span", { role: "status", children: translate("workbench.threadMapMatches", { count: matches.size }) }) : /* @__PURE__ */ jsx107("kbd", { children: "/" })
+        query.trim() ? /* @__PURE__ */ jsx108("span", { role: "status", children: translate("workbench.threadMapMatches", { count: matches.size }) }) : /* @__PURE__ */ jsx108("kbd", { children: "/" })
       ] }),
-      enhanced && /* @__PURE__ */ jsx107("div", { className: "thread-map-scope", role: "group", "aria-label": translate("workbench.threadMapScope"), children: ["active", "week", "all"].map((value, index) => /* @__PURE__ */ jsx107("button", { type: "button", "aria-pressed": scope === value, "aria-keyshortcuts": String(index + 1), onClick: () => setScope(value), children: translate(value === "active" ? "workbench.threadMapScopeActive" : value === "week" ? "workbench.threadMapScopeWeek" : "workbench.threadMapScopeAll") }, value)) }),
+      enhanced && /* @__PURE__ */ jsx108("div", { className: "thread-map-scope", role: "group", "aria-label": translate("workbench.threadMapScope"), children: ["active", "week", "all"].map((value, index) => /* @__PURE__ */ jsx108("button", { type: "button", "aria-pressed": scope === value, "aria-keyshortcuts": String(index + 1), onClick: () => setScope(value), children: translate(value === "active" ? "workbench.threadMapScopeActive" : value === "week" ? "workbench.threadMapScopeWeek" : "workbench.threadMapScopeAll") }, value)) }),
       actions
     ] }),
-    attention && /* @__PURE__ */ jsx107(AttentionStrip, { responsive: page, items: attention, onOpen: (key) => {
+    attention && /* @__PURE__ */ jsx108(AttentionStrip, { responsive: page, items: attention, onOpen: (key) => {
       const thread = nodes.get(`thread:${key}`)?.thread ?? devices.flatMap((device) => device.workspaces.flatMap((workspace) => workspace.threads)).find((thread2) => thread2.key === key);
       if (thread) latest.current.onOpen(thread);
       else onQuickLook?.(key);
     }, onRequestDecision }),
-    /* @__PURE__ */ jsxs92("div", { className: "thread-map-bar thread-map-path", children: [
-      /* @__PURE__ */ jsx107("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx107(ArrowLeft4, { "aria-hidden": "true" }) }),
-      /* @__PURE__ */ jsx107("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => {
-        const href = page && node.kind === "thread" ? void 0 : node.workspace ? node.workspace.href : node.device?.href;
-        const label = translate(node.workspace ? "workbench.threadMapOpenWorkspace" : "workbench.threadMapOpenDevice", { name: node.label });
-        return /* @__PURE__ */ jsxs92("span", { className: "thread-map-crumb", children: [
-          index > 0 && /* @__PURE__ */ jsx107(ChevronRight8, { "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx107("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), title: node.label, children: node.label }),
-          href && /* @__PURE__ */ jsx107("a", { className: "thread-map-crumb-open", href, "aria-label": label, title: label, onClick: (event) => {
-            if (!onNavigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-            event.preventDefault();
-            onNavigate(href);
-          }, children: /* @__PURE__ */ jsx107(ArrowUpRight2, { "data-icon": "open", "aria-hidden": "true" }) })
-        ] }, node.id);
-      }) }),
-      stableLayout && /* @__PURE__ */ jsx107(
+    !page && /* @__PURE__ */ jsxs93("div", { className: "thread-map-bar thread-map-path", children: [
+      breadcrumb,
+      stableLayout && /* @__PURE__ */ jsx108(
         "button",
         {
           type: "button",
           className: "thread-map-icon-button",
           "aria-label": translate("workbench.threadMapRefreshLayout"),
           onClick: () => setLayoutRevision((revision) => revision + 1),
-          children: /* @__PURE__ */ jsx107(RotateCw2, { "data-icon": "refresh", "aria-hidden": "true" })
+          children: /* @__PURE__ */ jsx108(RotateCw2, { "data-icon": "refresh", "aria-hidden": "true" })
         }
       ),
-      children.length > 0 && /* @__PURE__ */ jsxs92("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
-        /* @__PURE__ */ jsx107(List, { "aria-hidden": "true" }),
-        /* @__PURE__ */ jsxs92("select", { "aria-label": translate("workbench.threadMapGoTo"), value: "", onChange: (event) => {
+      children2.length > 0 && /* @__PURE__ */ jsxs93("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
+        /* @__PURE__ */ jsx108(List, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsxs93("select", { "aria-label": translate("workbench.threadMapGoTo"), value: "", onChange: (event) => {
           const node = nodes.get(event.target.value);
           if (node?.thread) onOpen(node.thread);
           else if (node) navigate(node);
         }, children: [
-          /* @__PURE__ */ jsx107("option", { value: "", children: translate("workbench.threadMapGoTo") }),
-          children.map((node) => /* @__PURE__ */ jsx107("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
+          /* @__PURE__ */ jsx108("option", { value: "", children: translate("workbench.threadMapGoTo") }),
+          children2.map((node) => /* @__PURE__ */ jsx108("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
         ] })
       ] }),
-      current.device && cachedDevices.has(current.device.id) && /* @__PURE__ */ jsxs92("span", { className: "thread-map-cached-label", children: [
+      current.device && cachedDevices.has(current.device.id) && /* @__PURE__ */ jsxs93("span", { className: "thread-map-cached-label", children: [
         translate("workbench.threadMapCached"),
-        current.device.cachedAt && /* @__PURE__ */ jsxs92(Fragment38, { children: [
+        current.device.cachedAt && /* @__PURE__ */ jsxs93(Fragment40, { children: [
           " \xB7 ",
           relativeCache(current.device.cachedAt)
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs92(
+    /* @__PURE__ */ jsxs93(
       "div",
       {
         ref: canvas,
@@ -29574,8 +30039,8 @@ function ThreadMap({
           }
         },
         children: [
-          children.length ? /* @__PURE__ */ jsx107("div", { ref: stage, className: "thread-map-stage", children: page ? /* @__PURE__ */ jsx107(
-            ReadableMap,
+          children2.length ? /* @__PURE__ */ jsx108("div", { ref: stage, className: "thread-map-stage", children: page ? /* @__PURE__ */ jsx108(
+            DenseMap,
             {
               current,
               bounds,
@@ -29597,46 +30062,46 @@ function ThreadMap({
               },
               onRetry
             }
-          ) : size.width > 0 && render(children, bounds, 0) }) : /* @__PURE__ */ jsx107("p", { className: "thread-map-empty", role: "status", children: current.device && cachedDevices.has(current.device.id) ? translate("workbench.threadMapNoCache") : devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
-          tip && /* @__PURE__ */ jsx107(MapTooltip, { anchor: tip.target, lines: tip.lines, onClose: () => setTip(null) })
+          ) : size.width > 0 && render(children2, bounds, 0) }) : /* @__PURE__ */ jsx108("p", { className: "thread-map-empty", role: "status", children: current.device && cachedDevices.has(current.device.id) ? translate("workbench.threadMapNoCache") : devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
+          tip && /* @__PURE__ */ jsx108(MapTooltip, { anchor: tip.target, lines: tip.lines, onClose: () => setTip(null) })
         ]
       }
     ),
-    enhanced && devices.some((device) => device.state === "offline") && /* @__PURE__ */ jsx107("div", { className: "thread-map-offline-strip", children: devices.filter((device) => device.state === "offline").map((device) => /* @__PURE__ */ jsxs92("button", { type: "button", onClick: () => {
+    enhanced && devices.some((device) => device.state === "offline" || page && !device.workspaces.some((w) => w.threads.length)) && /* @__PURE__ */ jsx108("div", { className: "thread-map-offline-strip", children: devices.filter((device) => device.state === "offline" || page && !device.workspaces.some((w) => w.threads.length)).map((device) => /* @__PURE__ */ jsxs93("button", { type: "button", onClick: () => {
       setCachedDevices((previous) => /* @__PURE__ */ new Set([...previous, device.id]));
       setFocusId(`device:${device.id}`);
-    }, children: [
-      /* @__PURE__ */ jsx107(DeviceStateMark, { offline: true }),
-      /* @__PURE__ */ jsx107("b", { children: device.name }),
-      /* @__PURE__ */ jsx107("span", { children: translate("workbench.threadMapOffline") }),
-      device.cachedAt && /* @__PURE__ */ jsx107("span", { children: relativeCache(device.cachedAt) }),
-      /* @__PURE__ */ jsx107("small", { children: translate(device.workspaces.length ? "workbench.threadMapCached" : "workbench.threadMapNoCache") })
+    }, title: [device.name, device.state === "offline" ? translate("workbench.threadMapOffline") : translate("workbench.threadMapEmpty"), device.cachedAt ? relativeCache(device.cachedAt) : ""].filter(Boolean).join(" \xB7 "), children: [
+      /* @__PURE__ */ jsx108(DeviceStateMark, { offline: device.state === "offline" }),
+      /* @__PURE__ */ jsx108("b", { children: device.name }),
+      /* @__PURE__ */ jsx108("span", { children: translate("workbench.threadMapOffline") }),
+      device.cachedAt && /* @__PURE__ */ jsx108("span", { children: relativeCache(device.cachedAt) }),
+      /* @__PURE__ */ jsx108("small", { children: translate(device.workspaces.length ? "workbench.threadMapCached" : "workbench.threadMapNoCache") })
     ] }, device.id)) }),
-    /* @__PURE__ */ jsxs92(MapLegend, { compact: page && size.width > 0 && size.width < 980, children: [
-      /* @__PURE__ */ jsx107("span", { children: translate("workbench.threadMapLegendSize") }),
-      /* @__PURE__ */ jsxs92("span", { className: "thread-map-scale", children: [
+    !page && /* @__PURE__ */ jsxs93(MapLegend, { compact: false, children: [
+      /* @__PURE__ */ jsx108("span", { children: translate("workbench.threadMapLegendSize") }),
+      /* @__PURE__ */ jsxs93("span", { className: "thread-map-scale", children: [
         translate("workbench.threadMapLegendColor", { hours }),
-        /* @__PURE__ */ jsx107("small", { children: translate("workbench.threadMapLess") }),
-        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx107("i", { "data-heat": level, "aria-hidden": "true" }, level)),
-        /* @__PURE__ */ jsx107("small", { children: translate("workbench.threadMapMore") })
+        /* @__PURE__ */ jsx108("small", { children: translate("workbench.threadMapLess") }),
+        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx108("i", { "data-heat": level, "aria-hidden": "true" }, level)),
+        /* @__PURE__ */ jsx108("small", { children: translate("workbench.threadMapMore") })
       ] }),
-      /* @__PURE__ */ jsxs92("span", { className: "thread-map-scale thread-map-ages", children: [
+      /* @__PURE__ */ jsxs93("span", { className: "thread-map-scale thread-map-ages", children: [
         translate("workbench.threadMapLegendAge"),
-        /* @__PURE__ */ jsx107("small", { children: translate("workbench.threadMapNewer") }),
-        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx107(AgeGlyph, { tier }, tier)),
-        /* @__PURE__ */ jsx107("small", { children: translate("workbench.threadMapOlder") })
+        /* @__PURE__ */ jsx108("small", { children: translate("workbench.threadMapNewer") }),
+        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx108(AgeGlyph, { tier }, tier)),
+        /* @__PURE__ */ jsx108("small", { children: translate("workbench.threadMapOlder") })
       ] }),
-      /* @__PURE__ */ jsxs92("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsxs92("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
-          /* @__PURE__ */ jsx107("i", {}),
-          /* @__PURE__ */ jsx107("i", {}),
-          /* @__PURE__ */ jsx107("i", {}),
-          /* @__PURE__ */ jsx107("i", {})
+      /* @__PURE__ */ jsxs93("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsxs93("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
+          /* @__PURE__ */ jsx108("i", {}),
+          /* @__PURE__ */ jsx108("i", {}),
+          /* @__PURE__ */ jsx108("i", {}),
+          /* @__PURE__ */ jsx108("i", {})
         ] }),
         translate("workbench.threadMapLegendHourly")
       ] }),
-      /* @__PURE__ */ jsxs92("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsx107("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxs93("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsx108("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
         translate("workbench.threadMapLegendRunning")
       ] })
     ] })
@@ -29644,11 +30109,11 @@ function ThreadMap({
 }
 
 // src/components/threadMap/ThreadMapDialog.tsx
-import { X as X12 } from "lucide-react";
-import { jsx as jsx108 } from "react/jsx-runtime";
+import { X as X13 } from "lucide-react";
+import { jsx as jsx109 } from "react/jsx-runtime";
 function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }) {
   useI18n();
-  return /* @__PURE__ */ jsx108(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx108(
+  return /* @__PURE__ */ jsx109(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx109(
     DialogContent,
     {
       showCloseButton: false,
@@ -29657,13 +30122,13 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
       "data-theme-mode": themeMode,
       className: "thread-graph-dialog matter-settings-dialog thread-map-dialog",
       overlayClassName: "matter-settings-overlay",
-      children: /* @__PURE__ */ jsx108(
+      children: /* @__PURE__ */ jsx109(
         ThreadMap,
         {
           ...map,
           onDismiss: () => onOpenChange(false),
-          heading: /* @__PURE__ */ jsx108(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
-          actions: /* @__PURE__ */ jsx108(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx108(X12, { "aria-hidden": "true" }) })
+          heading: /* @__PURE__ */ jsx109(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
+          actions: /* @__PURE__ */ jsx109(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx109(X13, { "aria-hidden": "true" }) })
         }
       )
     }
@@ -29672,7 +30137,7 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
 
 // src/components/PublicTranscript.tsx
 import { ChevronRight as ChevronRight9 } from "lucide-react";
-import { jsx as jsx109, jsxs as jsxs93 } from "react/jsx-runtime";
+import { jsx as jsx110, jsxs as jsxs94 } from "react/jsx-runtime";
 function transcriptSnapshot(title, turns, theme) {
   return {
     title,
@@ -29699,19 +30164,19 @@ function transcriptSnapshot(title, turns, theme) {
 }
 function PublicTranscript({ snapshot }) {
   useI18n();
-  const message = (item, index) => /* @__PURE__ */ jsx109(
+  const message = (item, index) => /* @__PURE__ */ jsx110(
     GraphChatMessageFrame,
     {
       kind: item.role === "user" ? "userMessage" : "agentMessage",
       timeLabel: item.createdAt ? formatMessageTimestamp(item.createdAt) : void 0,
-      children: item.role === "user" ? /* @__PURE__ */ jsx109(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx109("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx109(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
+      children: item.role === "user" ? /* @__PURE__ */ jsx110(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx110("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx110(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
     },
     index
   );
-  return /* @__PURE__ */ jsx109("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs93("div", { className: "public-transcript-content", children: [
-    /* @__PURE__ */ jsxs93("header", { className: "public-transcript-header", children: [
-      /* @__PURE__ */ jsx109("h1", { children: snapshot.title }),
-      /* @__PURE__ */ jsxs93("p", { children: [
+  return /* @__PURE__ */ jsx110("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs94("div", { className: "public-transcript-content", children: [
+    /* @__PURE__ */ jsxs94("header", { className: "public-transcript-header", children: [
+      /* @__PURE__ */ jsx110("h1", { children: snapshot.title }),
+      /* @__PURE__ */ jsxs94("p", { children: [
         snapshot.live ? translate("sharing.liveReadOnlyThread") : translate("sharing.readOnlySnapshot"),
         " \xB7 ",
         snapshot.turnCount,
@@ -29719,17 +30184,17 @@ function PublicTranscript({ snapshot }) {
         translate("sharing.turns_7cb1b2"),
         snapshot.live && snapshot.updatedAt ? translate("sharing.updated", { value1: new Date(snapshot.updatedAt).toLocaleString(getLocale()) }) : ""
       ] }),
-      snapshot.stale && /* @__PURE__ */ jsx109("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
+      snapshot.stale && /* @__PURE__ */ jsx110("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
     ] }),
     snapshot.turns.map((turn, index) => {
       const displayTurn = { id: `snapshot-${index}`, status: "completed", error: null, items: [], startedAt: turn.startedAt ?? null, completedAt: turn.completedAt ?? null, model: turn.model ?? null, reasoningEffort: turn.reasoningEffort ?? null, tokenUsage: turn.tokenUsage ?? null, priceEstimate: turn.priceEstimate ?? null };
-      return /* @__PURE__ */ jsxs93("section", { className: "thread-graph-turn public-transcript-turn", children: [
+      return /* @__PURE__ */ jsxs94("section", { className: "thread-graph-turn public-transcript-turn", children: [
         turn.messages.filter((item) => item.role === "user").map(message),
-        /* @__PURE__ */ jsxs93("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
-          /* @__PURE__ */ jsx109("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
-          /* @__PURE__ */ jsx109(ChevronRight9, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
-          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx109(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
-          /* @__PURE__ */ jsx109("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+        /* @__PURE__ */ jsxs94("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
+          /* @__PURE__ */ jsx110("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
+          /* @__PURE__ */ jsx110(ChevronRight9, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
+          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx110(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
+          /* @__PURE__ */ jsx110("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
         ] }),
         turn.messages.filter((item) => item.role === "assistant").map(message)
       ] }, index);
@@ -29738,14 +30203,14 @@ function PublicTranscript({ snapshot }) {
 }
 
 // src/components/ConversationSearchControls.tsx
-import { useEffect as useEffect57, useRef as useRef60, useState as useState79 } from "react";
-import { Check as Check6, ChevronDown as ChevronDown7 } from "lucide-react";
-import { jsx as jsx110, jsxs as jsxs94 } from "react/jsx-runtime";
+import { useEffect as useEffect57, useRef as useRef61, useState as useState79 } from "react";
+import { Check as Check7, ChevronDown as ChevronDown7 } from "lucide-react";
+import { jsx as jsx111, jsxs as jsxs95 } from "react/jsx-runtime";
 function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }) {
   const [open, setOpen] = useState79(false);
-  const root = useRef60(null);
-  const trigger = useRef60(null);
-  const menu = useRef60(null);
+  const root = useRef61(null);
+  const trigger = useRef61(null);
+  const menu = useRef61(null);
   const scopes = allowGlobal ? ["thread", "workspace", "device"] : ["thread"];
   const name = (scope) => labels[scope];
   useMenuKeyboard(menu, open, (restore) => {
@@ -29760,9 +30225,9 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
     document.addEventListener("pointerdown", outside, true);
     return () => document.removeEventListener("pointerdown", outside, true);
   }, [open]);
-  if (scopes.length < 2) return /* @__PURE__ */ jsx110("span", { className: "workbench-search-scope is-fixed", children: name(value) });
-  return /* @__PURE__ */ jsxs94("div", { ref: root, className: "workbench-search-scope-picker", children: [
-    /* @__PURE__ */ jsxs94(
+  if (scopes.length < 2) return /* @__PURE__ */ jsx111("span", { className: "workbench-search-scope is-fixed", children: name(value) });
+  return /* @__PURE__ */ jsxs95("div", { ref: root, className: "workbench-search-scope-picker", children: [
+    /* @__PURE__ */ jsxs95(
       "button",
       {
         ref: trigger,
@@ -29773,12 +30238,12 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
         "aria-expanded": open,
         onClick: () => setOpen((current) => !current),
         children: [
-          /* @__PURE__ */ jsx110("span", { children: name(value) }),
-          /* @__PURE__ */ jsx110(ChevronDown7, { "aria-hidden": "true" })
+          /* @__PURE__ */ jsx111("span", { children: name(value) }),
+          /* @__PURE__ */ jsx111(ChevronDown7, { "aria-hidden": "true" })
         ]
       }
     ),
-    open && /* @__PURE__ */ jsx110("div", { ref: menu, role: "menu", "aria-label": labels.scope, className: "workbench-search-scope-menu", children: scopes.map((scope) => /* @__PURE__ */ jsxs94(
+    open && /* @__PURE__ */ jsx111("div", { ref: menu, role: "menu", "aria-label": labels.scope, className: "workbench-search-scope-menu", children: scopes.map((scope) => /* @__PURE__ */ jsxs95(
       "button",
       {
         type: "button",
@@ -29789,8 +30254,8 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
           if (scope !== value) onChange(scope);
         },
         children: [
-          /* @__PURE__ */ jsx110(Check6, { "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx110("span", { children: name(scope) })
+          /* @__PURE__ */ jsx111(Check7, { "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx111("span", { children: name(scope) })
         ]
       },
       scope
@@ -29819,20 +30284,20 @@ function searchHighlightParts(text, query) {
 }
 function ConversationSearchExcerpt({ text, query }) {
   const parts = searchHighlightParts(text, query);
-  return /* @__PURE__ */ jsxs94("p", { children: [
+  return /* @__PURE__ */ jsxs95("p", { children: [
     parts.before,
-    parts.match && /* @__PURE__ */ jsx110("mark", { children: parts.match }),
+    parts.match && /* @__PURE__ */ jsx111("mark", { children: parts.match }),
     parts.after
   ] });
 }
 
 // src/components/timeline/TurnNotificationButton.tsx
 import { Bell as Bell2, Loader2 as Loader26 } from "lucide-react";
-import { jsx as jsx111, jsxs as jsxs95 } from "react/jsx-runtime";
+import { jsx as jsx112, jsxs as jsxs96 } from "react/jsx-runtime";
 function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onRetry }) {
   useI18n();
-  return /* @__PURE__ */ jsxs95("span", { className: "turn-notification-control", children: [
-    /* @__PURE__ */ jsx111(
+  return /* @__PURE__ */ jsxs96("span", { className: "turn-notification-control", children: [
+    /* @__PURE__ */ jsx112(
       "button",
       {
         type: "button",
@@ -29842,11 +30307,11 @@ function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onR
         title: translate(subscribed ? "chat.turnNotificationOn" : "chat.turnNotificationOff"),
         disabled: busy,
         onClick: onToggle,
-        children: busy ? /* @__PURE__ */ jsx111(Loader26, { size: 15, className: "is-spinning", "aria-hidden": "true" }) : /* @__PURE__ */ jsx111(Bell2, { size: 15, fill: subscribed ? "currentColor" : "none", "aria-hidden": "true" })
+        children: busy ? /* @__PURE__ */ jsx112(Loader26, { size: 15, className: "is-spinning", "aria-hidden": "true" }) : /* @__PURE__ */ jsx112(Bell2, { size: 15, fill: subscribed ? "currentColor" : "none", "aria-hidden": "true" })
       }
     ),
-    /* @__PURE__ */ jsx111("span", { className: "turn-notification-feedback", role: "status", children: subscribed ? translate("chat.turnNotificationOn") : "" }),
-    error && /* @__PURE__ */ jsx111(ErrorMark, { message: error, onRetry, retryLabel: translate("settings.retry") })
+    /* @__PURE__ */ jsx112("span", { className: "turn-notification-feedback", role: "status", children: subscribed ? translate("chat.turnNotificationOn") : "" }),
+    error && /* @__PURE__ */ jsx112(ErrorMark, { message: error, onRetry, retryLabel: translate("settings.retry") })
   ] });
 }
 

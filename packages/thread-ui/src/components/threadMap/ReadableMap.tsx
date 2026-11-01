@@ -12,7 +12,7 @@ import type { MapRect } from './squarify';
 import type { SpatialTarget } from './stableLayout';
 import type { MapDeviceExtras } from './types';
 
-interface Props {
+export interface ReadableMapProps {
   current: MapNode;
   bounds: MapRect;
   hours: number;
@@ -49,7 +49,7 @@ function overflowLabel(overflow: MapOverflow) {
 
 /** Dense workspace rows keep one line for the title and align metadata at the end. */
 const ThreadRow = memo(function ThreadRow({ node, dimmed, current, onOpen, onQuickLook }: {
-  node: MapNode; dimmed: boolean; current: boolean; onOpen: Props['onOpen']; onQuickLook: Props['onQuickLook'];
+  node: MapNode; dimmed: boolean; current: boolean; onOpen: ReadableMapProps['onOpen']; onQuickLook: ReadableMapProps['onQuickLook'];
 }) {
   useI18n();
   const thread = node.thread!;
@@ -69,7 +69,7 @@ const ThreadRow = memo(function ThreadRow({ node, dimmed, current, onOpen, onQui
 
 /** Page-only renderer. Each level budgets readable rectangles before mounting
  * children. Dialogs retain the original all-thread treemap renderer. */
-export function ReadableMap(props: Props) {
+export function ReadableMap(props: ReadableMapProps) {
   useI18n();
   const { current, bounds, hours, currentKey, frozen, version, query, matches, extras, cached, navigate, expand, onOpen, onQuickLook, hover } = props;
   const cache = useRef(new ReadableSelection());
@@ -79,7 +79,7 @@ export function ReadableMap(props: Props) {
   const targets: SpatialTarget[] = [];
   const addTarget = (id: string, rect: MapRect, offset: { x: number; y: number }) => targets.push({ id, rect: { ...rect, x: rect.x + offset.x, y: rect.y + offset.y } });
   const currentRef = useRef(props); currentRef.current = props;
-  const rowOpen = useRef<Props['onOpen']>(thread => event => currentRef.current.onOpen(thread)(event));
+  const rowOpen = useRef<ReadableMapProps['onOpen']>(thread => event => currentRef.current.onOpen(thread)(event));
   const dim = (node: MapNode) => Boolean(query.trim()) && !matches(node);
 
   const list = (node: MapNode, rect: MapRect, offset: { x: number; y: number }) => {

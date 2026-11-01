@@ -8,6 +8,9 @@ export class StableMapOrder {
   clear() { this.levels.clear(); }
   apply(root: MapNode, frozen: boolean) {
     const visit = (node: MapNode) => {
+      // Thread leaves have no membership to reconcile. Tracking their empty
+      // levels allocated several maps per leaf on every live index refresh.
+      if (node.kind === 'thread' && node.children.length === 0) return;
       const old = this.levels.get(node.id);
       const changed = !old || node.children.some(child => {
         const weight = old.weights.get(child.id);

@@ -82,7 +82,7 @@ export function promptLine(prompt: string) {
 /** The lines a thread's tooltip and label read: title, who and where, figures, dates. */
 export function threadDetails(node: MapNode, hours: number) {
   const thread = node.thread!;
-  const who = [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model,
+  const who = [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.modelDisplayName?.trim() || thread.model,
     node.parent && node.parent.kind !== 'root' ? node.parent.label : null,
     thread.from ? translate('workbench.threadMapFrom', { title: thread.from }) : null].filter(Boolean).join(' · ');
   const figures = [
@@ -224,7 +224,7 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   const sparkHeight = FIT.spark + Math.max(0, Math.min(28, Math.floor(left * 0.4)));
   // The chip already names the agent; a wide tile spells it out with the model,
   // and says which thread started an agent thread shown on its own.
-  const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model].filter(Boolean).join(' · ') : '';
+  const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.modelDisplayName?.trim() || thread.model].filter(Boolean).join(' · ') : '';
   const from = w >= 160 && thread.from ? translate('workbench.threadMapFrom', { title: thread.from }) : '';
   const status = waiting ? <span className="thread-map-tile-waiting">{translate('workbench.waitingForYou')}</span> : thread.running
     ? <span className="thread-map-tile-live"><i className="thread-map-running-dot" />{translate('workbench.threadMapRunning')}</span>

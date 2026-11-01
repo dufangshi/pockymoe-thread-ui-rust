@@ -14,7 +14,7 @@ const makeDevices = (): ThreadMapDevice[] => [{ id: 'd', name: 'Mac Studio', sta
   { id: 'other', label: 'Archive', threads: [thread('archive', 60)] },
 ] }];
 
-describe('ThreadMap v2 page', () => {
+describe('ThreadMap page', () => {
   Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
   let host: HTMLDivElement, root: Root;
   let resizeHandlers: (() => void)[];
@@ -34,16 +34,15 @@ describe('ThreadMap v2 page', () => {
   const tile = (id: string) => host.querySelector<HTMLElement>(`[data-map-id="thread:${id}"]:not(.thread-map-overflow-row)`)!;
   const link = (id: string) => tile(id).querySelector<HTMLAnchorElement>('a')!;
 
-  it('defaults page scope to week, compresses locally, and switches scope with 1/2/3', () => {
+  it('defaults to all with icon-only two-state scope and filters historical threads with 2', () => {
     const scopeChanged = vi.fn(); show({ onScopeChange: scopeChanged });
-    expect(host.querySelector('button[aria-pressed="true"]')?.textContent).toBe('7 days');
-    expect(tile('a')).toBeTruthy(); expect(tile('old')).toBeFalsy();
-    click(host.querySelector('[data-map-id="overflow:workspace:d:w"]')!);
-    click(host.querySelector('[data-map-id="overflow:workspace:d:w"]')!);
-    expect(tile('old')).toBeTruthy(); expect(tile('archive')).toBeFalsy();
+    expect(host.querySelector('button[aria-pressed="true"]')?.getAttribute('aria-label')).toBe('All');
+    expect(tile('a')).toBeTruthy(); expect(tile('old')).toBeTruthy(); expect(tile('archive')).toBeTruthy();
+    expect(host.querySelectorAll('.thread-map-scope button')).toHaveLength(2);
+    expect(host.querySelector('select')).toBeNull(); expect(host.querySelector('.thread-map-path')).toBeNull();
+    key(host.querySelector('.thread-map')!, '2');
+    expect(scopeChanged).toHaveBeenLastCalledWith('active'); expect(tile('b')).toBeFalsy(); expect(tile('old')).toBeFalsy();
     key(host.querySelector('.thread-map')!, '1');
-    expect(scopeChanged).toHaveBeenLastCalledWith('active'); expect(tile('b')).toBeFalsy();
-    key(host.querySelector('.thread-map')!, '3');
     expect(scopeChanged).toHaveBeenLastCalledWith('all'); expect(tile('old')).toBeTruthy();
     expect(host.querySelector('[data-map-id="earlier:device:d"]')).toBeNull();
   });
@@ -70,26 +69,25 @@ describe('ThreadMap v2 page', () => {
     key(link('b'), 'Backspace'); expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Mac Studio');
   });
 
-  it('honors an explicit older expansion while pointer geometry is frozen', () => {
+  it('explicit scope changes reveal older members while pointer geometry is frozen', () => {
     show({ stableLayout: true });
     const canvas = host.querySelector('.thread-map-canvas')!;
     act(() => { canvas.dispatchEvent(new MouseEvent('pointerover', { bubbles: true })); });
-    click(host.querySelector('[data-map-id="overflow:workspace:d:w"]')!);
-    click(host.querySelector('[data-map-id="overflow:workspace:d:w"]')!);
-    expect(tile('old')).toBeTruthy();
+    key(host.querySelector('.thread-map')!, '2'); expect(tile('old')).toBeFalsy();
+    key(host.querySelector('.thread-map')!, '1'); expect(tile('old')).toBeTruthy();
   });
 
-  it('opens an older workspace from a roomy overflow list without losing navigation', () => {
+  it('keeps a sparse historical workspace visible and navigates from its header', () => {
     show({ stableLayout: true });
-    const folded = host.querySelector('[data-map-id="workspace:d:other"].thread-map-overflow-row')!;
-    expect(folded).toBeTruthy(); click(folded);
+    const space = host.querySelector('[data-map-id="workspace:d:other"] .thread-map-section-head')!;
+    expect(space).toBeTruthy(); click(space);
     expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Archive');
     expect(tile('archive')).toBeTruthy();
   });
 
   it('groups dense workspace rows in priority order and navigates across headers', () => {
     const onOpen = vi.fn(), onQuickLook = vi.fn();
-    const threads = Array.from({ length: 120 }, (_, i) => ({ ...thread(`dense${i}`, 0, i < 2 ? { needsInput: { kind: 'input' } } : i === 2 ? { running: true } : i === 3 ? { unread: true, failed: true } : i === 4 ? { unread: true } : {}), agent: 'codex' }));
+    const threads = Array.from({ length: 600 }, (_, i) => ({ ...thread(`dense${i}`, 0, i < 2 ? { needsInput: { kind: 'input' } } : i === 2 ? { running: true } : i === 3 ? { unread: true, failed: true } : i === 4 ? { unread: true } : {}), agent: 'codex' }));
     const devices: ThreadMapDevice[] = [{ id: 'd', name: 'D', state: 'ready', workspaces: [{ id: 'w', label: 'W', threads }] }];
     show({ devices, scope: 'all', revealKey: 'dense0', currentKey: 'dense1', stableLayout: true, onOpen, onQuickLook });
     expect([...host.querySelectorAll('.thread-map-list-status-heading > span')].map(el => el.textContent)).toEqual(['Waiting for you', 'Running', 'Unread', 'Other']);
@@ -104,7 +102,7 @@ describe('ThreadMap v2 page', () => {
   });
 
   it('keeps a focused workspace list and its scroll position through host hiding', () => {
-    const devices: ThreadMapDevice[] = [{ id: 'd', name: 'D', state: 'ready', workspaces: [{ id: 'w', label: 'W', threads: Array.from({ length: 120 }, (_, i) => thread(`t${i}`)) }] }];
+    const devices: ThreadMapDevice[] = [{ id: 'd', name: 'D', state: 'ready', workspaces: [{ id: 'w', label: 'W', threads: Array.from({ length: 600 }, (_, i) => thread(`t${i}`)) }] }];
     show({ devices, scope: 'all', revealKey: 't0' });
     const list = host.querySelector<HTMLElement>('.thread-map-list-scroll')!;
     expect(list).toBeTruthy(); list.scrollTop = 240; host.hidden = true;
@@ -136,27 +134,37 @@ describe('ThreadMap v2 page', () => {
     const decision = vi.fn();
     const attention = ['unread', 'failed', 'input', 'approval', 'unread', 'unread', 'input'].map((kind, i) => ({ key: String(i), kind: kind as 'approval' | 'input' | 'failed' | 'unread', title: `Attention ${i}`, device: 'Mac', workspace: 'Product', since: '', summary: 'Review changes', requestId: 'r' }));
     show({ attention, onRequestDecision: decision });
-    expect([...host.querySelectorAll('.thread-map-attention-card b')].map(n => n.textContent)).toEqual(['Attention 2', 'Attention 3', 'Attention 6', 'Attention 1', 'Attention 0']);
-    click([...host.querySelectorAll('button')].find(b => b.textContent === 'Approve')!);
+    expect([...host.querySelectorAll('.thread-map-attention-card b')].map(n => n.textContent)).toEqual(['Attention 2', 'Attention 3', 'Attention 6', 'Attention 1', 'Attention 0', 'Attention 4']);
+    click(host.querySelector('[aria-label="Approve"]')!);
     expect(decision).toHaveBeenCalledWith('3', 'r', 'approve');
     click(host.querySelector('.thread-map-attention-more')!);
-    expect(host.querySelectorAll('.thread-map-attention-card')).toHaveLength(5);
-    expect(document.querySelectorAll('[role="menuitem"]')).toHaveLength(2);
-    expect(document.activeElement?.textContent).toContain('Attention 4');
+    expect(host.querySelectorAll('.thread-map-attention-card')).toHaveLength(6);
+    expect(document.querySelectorAll('[role="menuitem"]')).toHaveLength(1);
+    expect(document.activeElement?.textContent).toContain('Attention 5');
     key(document.activeElement!, 'End'); expect(document.activeElement?.textContent).toContain('Attention 5');
     key(document.activeElement!, 'Escape'); expect(document.querySelector('[role="menu"]')).toBeNull();
     show({ attention: [] }); expect(host.querySelector('.thread-map-attention-wrap')?.hasAttribute('data-visible')).toBe(false);
   });
 
+  it('puts zero-thread devices in the same bottom strip without a canvas rectangle', () => {
+    show({ devices: [...makeDevices(), { id: 'empty', name: 'LuisMini2', state: 'ready', workspaces: [] }] });
+    expect(host.querySelector('[data-map-id="device:empty"]')).toBeNull();
+    expect(host.querySelector('.thread-map-offline-strip button')?.textContent).toContain('LuisMini2');
+    click(host.querySelector('.thread-map-offline-strip button')!);
+    expect(host.querySelector('.thread-map-empty')?.textContent).toBe('No threads yet');
+    expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('LuisMini2');
+  });
+
   it('shows offline devices at the end and opens their cached view', () => {
     const offline: ThreadMapDevice = { id: 'offline', name: 'Travel Mac', state: 'offline', cachedAt: new Date(now - 3 * 3_600_000).toISOString(), workspaces: [{ id: 'cached', label: 'Cached work', threads: [thread('cached')] }] };
-    show({ devices: [...makeDevices(), offline] });
+    show({ devices: [...makeDevices(), offline], stableLayout: true });
+    act(() => host.querySelector('.thread-map-canvas')!.dispatchEvent(new MouseEvent('pointerover', { bubbles: true })));
     expect(tile('cached')).toBeFalsy();
     const row = host.querySelector('.thread-map-offline-strip button')!;
     expect(row.textContent).toContain('Travel MacOffline3 hr. agoCached');
     expect(row.querySelector('.thread-map-device-state')?.hasAttribute('data-offline')).toBe(true);
     click(row); expect(tile('cached')).toBeTruthy(); expect(host.querySelector('.thread-map-cached-label')?.textContent).toContain('Cached');
-    click(host.querySelector('.thread-map-path > button')!);
+    click(host.querySelector('.thread-map-dense-toolbar > button')!);
     expect(tile('cached')).toBeFalsy(); expect(host.querySelector('.thread-map-offline-strip')?.textContent).toContain('Travel Mac');
   });
 

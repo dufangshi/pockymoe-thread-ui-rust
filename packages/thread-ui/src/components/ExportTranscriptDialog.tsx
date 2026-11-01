@@ -1,3 +1,4 @@
+import { Select } from './Select';
 import { getLocale } from '../i18n';
 import { translate, useI18n } from '../i18n';
 import { Users, Link2, FileCode, Pencil } from 'lucide-react';
@@ -553,17 +554,17 @@ export function ThreadActionsDialog({
           ) : (
             <>
               <label className="thread-export-dialog-body-text mt-4 block text-sm">
-                {translate("sharing.turns_3037e1")}<select
+                {translate("sharing.turns_3037e1")}<Select
                   className="thread-export-dialog-box mt-2 w-full rounded-xl border bg-transparent px-3 py-2 outline-none"
                   value={turnSelection}
-                  onChange={(event) => setTurnSelection(event.target.value as TurnSelectionMode)}
+                  onValueChange={(selectedValue) => setTurnSelection(selectedValue as TurnSelectionMode)}
                 >
                   {(['latest-3', 'latest-10', 'latest-20', 'all-loaded', 'custom'] as TurnSelectionMode[]).map((entry) => (
                     <option key={entry} value={entry}>
                       {turnSelectionLabel(entry)}
                     </option>
                   ))}
-                </select>
+                </Select>
               </label>
 
               {turnSelection === 'custom' ? (

@@ -5,14 +5,14 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-WGAFUEJC.js";
+} from "./chunk-4CG3AHL4.js";
 import {
   KeyCode,
   KeyMod,
   Uri,
   editor,
   languages
-} from "./chunk-JXQIYSAV.js";
+} from "./chunk-PEHPFHY2.js";
 
 // src/components/graph-workspace/GraphWorkspaceMonacoEditor.tsx
 import { useEffect, useRef } from "react";
@@ -92,7 +92,7 @@ registerLanguage({
   extensions: [".html", ".htm", ".shtml", ".xhtml", ".mdoc", ".jsp", ".asp", ".aspx", ".jshtm"],
   aliases: ["HTML", "htm", "html", "xhtml"],
   mimetypes: ["text/html", "text/x-jshtm", "text/template", "text/ng-template"],
-  loader: () => import("./html-GCVVE7WM.js")
+  loader: () => import("./html-4ZKHBUI2.js")
 });
 
 // ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/java/register.js
@@ -112,7 +112,7 @@ registerLanguage({
   filenames: ["jakefile"],
   aliases: ["JavaScript", "javascript", "js"],
   mimetypes: ["text/javascript"],
-  loader: () => import("./javascript-4GX6Q4JK.js")
+  loader: () => import("./javascript-RAKPCVCW.js")
 });
 
 // ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/markdown/register.js
@@ -129,7 +129,7 @@ registerLanguage({
   extensions: [".py", ".rpy", ".pyw", ".cpy", ".gyp", ".gypi"],
   aliases: ["Python", "py"],
   firstLine: "^#!/.*\\bpython[0-9.-]*\\b",
-  loader: () => import("./python-UTQEWHVQ.js")
+  loader: () => import("./python-DXDRK36X.js")
 });
 
 // ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/rust/register.js
@@ -163,7 +163,7 @@ registerLanguage({
   aliases: ["TypeScript", "ts", "typescript"],
   mimetypes: ["text/typescript"],
   loader: () => {
-    return import("./typescript-EYV7USKN.js");
+    return import("./typescript-TEKIMRI6.js");
   }
 });
 
@@ -173,7 +173,7 @@ registerLanguage({
   extensions: [".yaml", ".yml"],
   aliases: ["YAML", "yaml", "YML", "yml"],
   mimetypes: ["application/x-yaml", "text/x-yaml"],
-  loader: () => import("./yaml-ZPES2LA6.js")
+  loader: () => import("./yaml-63U2H4AD.js")
 });
 
 // src/components/graph-workspace/GraphWorkspaceMonacoEditor.tsx

@@ -1,3 +1,4 @@
+import { Select } from '../components/Select';
 import { createContext, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from 'react';
 import { en } from './en';
 import { zhCN } from './zh-CN';
@@ -82,9 +83,9 @@ export function LanguageSwitcher({ className }: { className?: string }) {
   const { locale, setLocale, t } = useI18n();
   return <label className={className} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
     <span>{t('common.language')}</span>
-    <select aria-label={t('common.language')} value={locale} onChange={event => setLocale(event.target.value)}
+    <Select aria-label={t('common.language')} value={locale} onValueChange={selectedValue => setLocale(selectedValue)}
       style={{ background: 'var(--theme-panel)', color: 'var(--theme-fg)', border: '1px solid var(--theme-border)', borderRadius: 6, padding: '8px 10px', minHeight: 40 }}>
       <option value="en">English</option><option value="zh-CN">简体中文</option>
-    </select>
+    </Select>
   </label>;
 }

@@ -81,10 +81,11 @@ export function TerminalSelection({ terminal, host, point, onCopy, onClose }: {
   return (
     <div className="terminal-selection" role="dialog" aria-label={translate('files.terminalSelectText')}
       onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); onClose(); } }}>
+      {/* Cancelling touch pointerdown suppresses the click in WebKit. Only keep mouse focus. */}
       <div className="terminal-selection-bar">
         <span>{translate('files.terminalSelectHint')}</span>
-        <button type="button" onPointerDown={event => event.preventDefault()} onClick={selectAll}>{translate('files.terminalSelectAll')}</button>
-        <button type="button" disabled={!selected} onPointerDown={event => event.preventDefault()}
+        <button type="button" onMouseDown={event => event.preventDefault()} onClick={selectAll}>{translate('files.terminalSelectAll')}</button>
+        <button type="button" disabled={!selected} onMouseDown={event => event.preventDefault()}
           onClick={() => { onCopy(selected); window.getSelection()?.removeAllRanges(); onClose(); }}>{translate('files.terminalCopy')}</button>
         <button type="button" className="is-primary" onClick={onClose}>{translate('files.terminalSelectDone')}</button>
       </div>

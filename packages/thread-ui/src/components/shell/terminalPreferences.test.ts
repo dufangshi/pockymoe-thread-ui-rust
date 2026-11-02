@@ -9,12 +9,12 @@ beforeEach(() => {
 });
 
 it('defaults to smart Ctrl+V, copy on select, a right-click menu and paste confirmation', () => {
-  expect(terminalPreferences()).toEqual({ copyOnSelect: true, ctrlV: 'smart', rightClick: 'menu', pasteWarning: true });
+  expect(terminalPreferences()).toEqual({ copyOnSelect: true, allowProgramClipboard: true, ctrlV: 'smart', rightClick: 'menu', pasteWarning: true });
 });
 
 it('stores changes in this browser', () => {
-  setTerminalPreferences({ copyOnSelect: false, ctrlV: 'paste' });
-  expect(JSON.parse(localStorage.getItem('pockymoe.terminal')!)).toMatchObject({ copyOnSelect: false, ctrlV: 'paste', rightClick: 'menu' });
+  setTerminalPreferences({ copyOnSelect: false, ctrlV: 'paste', allowProgramClipboard: false });
+  expect(JSON.parse(localStorage.getItem('pockymoe.terminal')!)).toMatchObject({ copyOnSelect: false, ctrlV: 'paste', rightClick: 'menu', allowProgramClipboard: false });
   expect(terminalPreferences().ctrlV).toBe('paste');
 });
 

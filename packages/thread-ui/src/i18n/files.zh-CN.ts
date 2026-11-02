@@ -681,4 +681,8 @@ export const filesZhCN = {
   "files.propertiesLinkYes": "是，显示为它指向的内容",
   "files.propertiesClose": "关闭",
   "files.propertiesOlderDevice": "这台设备的 Supervisor 还不提供文件时间，更新后可见。",
+  "files.terminalOpenLinkTitle": "打开终端链接？",
+  "files.terminalOpenLink": "打开链接",
+  "files.terminalProgramClipboard": "允许终端程序写入剪贴板",
+  "files.terminalProgramClipboardHint": "运行中的程序可以替换剪贴板内容；始终忽略读取请求与历史回放。",
 } as const;

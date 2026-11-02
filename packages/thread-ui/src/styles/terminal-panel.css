@@ -38,7 +38,9 @@
 .terminal-header-active { display: inline-flex; flex-shrink: 1; align-items: center; gap: 6px; min-width: 0; font-size: 12px; color: var(--theme-fg); }
 .terminal-header-active > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .terminal-target { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: var(--theme-fg-muted); }
-.terminal-feedback { flex: 1; min-width: 0; overflow: hidden; text-align: right; white-space: nowrap; font-size: 11px; color: var(--theme-fg-muted); }
+.terminal-feedback[data-tone='failed'] { color: var(--theme-danger, #e5484d); }
+.terminal-feedback > svg { flex: none; }
+.terminal-feedback { display: flex; align-items: center; justify-content: flex-end; gap: 4px; flex: 1; min-width: 0; overflow: hidden; text-align: right; white-space: nowrap; font-size: 11px; color: var(--theme-fg-muted); }
 .terminal-actions { display: flex; flex-shrink: 0; align-items: center; gap: 1px; margin-left: auto; }
 .terminal-actions-separator { width: 1px; height: 16px; margin: 0 4px; background: var(--theme-border-strong); }
 .terminal-icon-button {

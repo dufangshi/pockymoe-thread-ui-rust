@@ -2,6 +2,7 @@
 import { useSyncExternalStore } from "react";
 var DEFAULT_TERMINAL_PREFERENCES = {
   copyOnSelect: true,
+  allowProgramClipboard: true,
   ctrlV: "smart",
   rightClick: "menu",
   pasteWarning: true
@@ -17,6 +18,7 @@ function read() {
   } catch {
   }
   const value = { ...DEFAULT_TERMINAL_PREFERENCES };
+  if (typeof stored.allowProgramClipboard === "boolean") value.allowProgramClipboard = stored.allowProgramClipboard;
   if (typeof stored.copyOnSelect === "boolean") value.copyOnSelect = stored.copyOnSelect;
   if (stored.ctrlV === "smart" || stored.ctrlV === "paste") value.ctrlV = stored.ctrlV;
   if (stored.rightClick === "menu" || stored.rightClick === "copyPaste") value.rightClick = stored.rightClick;

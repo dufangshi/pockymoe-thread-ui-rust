@@ -1,13 +1,13 @@
 import {
   setTerminalPreferences,
   useTerminalPreferences
-} from "./chunk-5NGPD4NR.js";
+} from "./chunk-BXVFLUI2.js";
 import {
   Select,
   formatNumber,
   translate,
   useI18n
-} from "./chunk-NE433MNP.js";
+} from "./chunk-ICHX52X2.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/plugins/builtin-plugin-modules.tsx
@@ -753,6 +753,7 @@ function TerminalSettings() {
   ] });
   return /* @__PURE__ */ jsxs3("div", { className: "terminal-settings", children: [
     toggle("copyOnSelect", translate("files.terminalCopyOnSelect"), translate("files.terminalCopyOnSelectHint")),
+    toggle("allowProgramClipboard", translate("files.terminalProgramClipboard"), translate("files.terminalProgramClipboardHint")),
     choice("ctrlV", "Ctrl+V", [
       ["smart", translate("files.terminalCtrlVSmart")],
       ["paste", translate("files.terminalCtrlVPaste")]

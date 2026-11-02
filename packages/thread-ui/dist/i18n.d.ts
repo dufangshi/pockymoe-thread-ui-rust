@@ -97,6 +97,7 @@ declare const en: {
     readonly "desktopDevices.shareAction": "Share…";
     readonly "desktopDevices.isolate": "Isolate…";
     readonly "desktopDevices.remove": "Remove device…";
+    readonly "desktopDevices.openDeviceWorkspaces": "Open workspaces on {{device}}";
     readonly "desktopDevices.devices": "Devices";
     readonly "desktopDevices.device": "Device";
     readonly "desktopDevices.allDevices": "All devices";
@@ -5285,6 +5286,7 @@ declare const zhCN: {
     "desktopDevices.shareAction": string;
     "desktopDevices.isolate": string;
     "desktopDevices.remove": string;
+    "desktopDevices.openDeviceWorkspaces": string;
     "desktopDevices.devices": string;
     "desktopDevices.device": string;
     "desktopDevices.allDevices": string;
@@ -10495,6 +10497,7 @@ declare const resources: {
         readonly "desktopDevices.shareAction": "Share…";
         readonly "desktopDevices.isolate": "Isolate…";
         readonly "desktopDevices.remove": "Remove device…";
+        readonly "desktopDevices.openDeviceWorkspaces": "Open workspaces on {{device}}";
         readonly "desktopDevices.devices": "Devices";
         readonly "desktopDevices.device": "Device";
         readonly "desktopDevices.allDevices": "All devices";
@@ -15682,6 +15685,7 @@ declare const resources: {
         "desktopDevices.shareAction": string;
         "desktopDevices.isolate": string;
         "desktopDevices.remove": string;
+        "desktopDevices.openDeviceWorkspaces": string;
         "desktopDevices.devices": string;
         "desktopDevices.device": string;
         "desktopDevices.allDevices": string;

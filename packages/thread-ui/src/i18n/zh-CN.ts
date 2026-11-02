@@ -121,6 +121,7 @@ export const zhCN = {
   "desktopDevices.shareAction": "共享…",
   "desktopDevices.isolate": "隔离…",
   "desktopDevices.remove": "移除设备…",
+  "desktopDevices.openDeviceWorkspaces": "打开 {{device}} 的工作区",
   "desktopDevices.devices": "设备",
   "desktopDevices.device": "设备",
   "desktopDevices.allDevices": "全部设备",

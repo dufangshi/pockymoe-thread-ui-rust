@@ -120,6 +120,7 @@ export const en = {
   "desktopDevices.shareAction": "Share…",
   "desktopDevices.isolate": "Isolate…",
   "desktopDevices.remove": "Remove device…",
+  "desktopDevices.openDeviceWorkspaces": "Open workspaces on {{device}}",
   "desktopDevices.devices": "Devices",
   "desktopDevices.device": "Device",
   "desktopDevices.allDevices": "All devices",

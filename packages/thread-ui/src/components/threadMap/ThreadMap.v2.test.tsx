@@ -34,6 +34,12 @@ describe('ThreadMap page', () => {
   const tile = (id: string) => host.querySelector<HTMLElement>(`[data-map-id="thread:${id}"]:not(.thread-map-overflow-row)`)!;
   const link = (id: string) => tile(id).querySelector<HTMLAnchorElement>('a')!;
 
+  it('does not list a device in the bottom strip while it is still being read', () => {
+    show({ presentation: 'page', devices: [...makeDevices(), { id: 'slow', name: 'Slow', state: 'loading', workspaces: [] }, { id: 'empty', name: 'Empty', state: 'ready', workspaces: [] }] });
+    const strip = host.querySelector('.thread-map-offline-strip')!;
+    expect(strip.textContent).toContain('Empty');
+    expect(strip.textContent).not.toContain('Slow');
+  });
   it('defaults to all with icon-only two-state scope and filters historical threads with 2', () => {
     const scopeChanged = vi.fn(); show({ onScopeChange: scopeChanged });
     expect(host.querySelector('button[aria-pressed="true"]')?.getAttribute('aria-label')).toBe('All');

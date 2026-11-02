@@ -60,6 +60,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
 }: ThreadMapProps) {
   const { locale } = useI18n();
   const page = presentation === 'page';
+  // A device still being read has no threads yet, but saying so would flash it here and take it away.
+  const stripped = (device: ThreadMapProps['devices'][number]) => device.state === 'offline' || page && device.state !== 'loading' && !device.workspaces.some(w => w.threads.length);
   const enhanced = page || controlledScope !== undefined;
   const [localScope, setLocalScope] = useState<MapScope>('all');
   const scope = page && controlledScope === 'week' ? 'all' : controlledScope ?? localScope;
@@ -667,8 +669,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           extra={tip.nodeId && nodes.get(tip.nodeId)?.device ? deviceExtras?.[nodes.get(tip.nodeId)!.device!.id] : undefined}
           onHold={holdTip} onLeave={leaveTip} onClose={dismissTip} />}
       </div>
-      {enhanced && devices.some(device => device.state === 'offline' || page && !device.workspaces.some(w=>w.threads.length)) && <div className="thread-map-offline-strip">
-        {devices.filter(device => device.state === 'offline' || page && !device.workspaces.some(w=>w.threads.length)).map(device => <button type="button" key={device.id} onClick={() => {
+      {enhanced && devices.some(stripped) && <div className="thread-map-offline-strip">
+        {devices.filter(stripped).map(device => <button type="button" key={device.id} onClick={() => {
           setLayoutRevision(revision => revision + 1);
           if (device.state === 'offline') setCachedDevices(previous => new Set([...previous, device.id]));
           setFocusId(`device:${device.id}`);

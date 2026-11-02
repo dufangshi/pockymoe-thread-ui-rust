@@ -11213,7 +11213,7 @@ import { Bot, X as X6 } from "lucide-react";
 import { Fragment as Fragment15, jsx as jsx48, jsxs as jsxs41 } from "react/jsx-runtime";
 var statusLabels = new Proxy({}, { get: (_, status3) => navigationStatusLabel(String(status3)) });
 function threadGroupActivity(root, children2 = []) {
-  const running = children2.filter((child) => child.status === "running").length;
+  const running = children2.filter((child) => !child.closedAt && child.status === "running").length;
   const label = statusLabels[root.status] ?? root.status;
   if (running && (root.status === "idle" || root.status === "unread")) {
     return {
@@ -11225,7 +11225,7 @@ function threadGroupActivity(root, children2 = []) {
 }
 function groupThreads(threads) {
   const keys = new Set(threads.map((t2) => t2.key));
-  const groups = threads.filter((t2) => !t2.rootKey || t2.rootKey === t2.key || !keys.has(t2.rootKey)).map((root) => ({ root, children: threads.filter((t2) => t2.key !== root.key && t2.rootKey === root.key) }));
+  const groups = threads.filter((t2) => !t2.rootKey || t2.rootKey === t2.key || !keys.has(t2.rootKey)).map((root) => ({ root, children: threads.filter((t2) => t2.key !== root.key && t2.rootKey === root.key).sort((a, b) => Number(!!a.closedAt) - Number(!!b.closedAt)) }));
   return groups;
 }
 function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, onThreadMenu, onPrefetch }) {
@@ -11289,6 +11289,7 @@ function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, onThreadM
   });
   return /* @__PURE__ */ jsxs41(Fragment15, { children: [
     groups.map(({ root, children: children2 }) => {
+      const openChildren = children2.filter((child) => !child.closedAt);
       const selected = children2.find((child) => child.key === currentKey);
       const active = root.key === currentKey || !!selected;
       const activity = threadGroupActivity(root, children2);
@@ -11348,11 +11349,11 @@ ${activity.label}`,
             children2.length > 0 && /* @__PURE__ */ jsxs41(
               "button",
               {
-                className: "matter-group-toggle is-badge",
-                "aria-label": translate("workbench.agentThreads", { value1: root.title, value2: children2.length }),
+                className: `matter-group-toggle${openChildren.length ? " is-badge" : ""}`,
+                "aria-label": translate("workbench.agentThreads", { value1: root.title, value2: openChildren.length }),
                 "aria-expanded": menu?.key === root.key,
                 "aria-controls": "matter-agent-threads",
-                "data-running": children2.some((child) => child.status === "running") || void 0,
+                "data-running": openChildren.some((child) => child.status === "running") || void 0,
                 onClick: (event) => {
                   const bounds = event.currentTarget.getBoundingClientRect();
                   trigger.current = event.currentTarget;
@@ -11360,7 +11361,7 @@ ${activity.label}`,
                 },
                 children: [
                   /* @__PURE__ */ jsx48(Bot, { "aria-hidden": "true" }),
-                  children2.length
+                  openChildren.length || null
                 ]
               }
             ),
@@ -11397,7 +11398,7 @@ ${activity.label}`,
               href: thread.href,
               className: "matter-agent-threads-item",
               "aria-current": thread.key === currentKey ? "page" : void 0,
-              style: { display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 4, background: thread.key === currentKey ? "var(--theme-hover)" : void 0, color: "inherit" },
+              style: { display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 4, background: thread.key === currentKey ? "var(--theme-hover)" : void 0, color: thread.closedAt ? "var(--theme-fg-muted)" : "inherit" },
               onClick: (event) => {
                 event.preventDefault();
                 setMenu(null);
@@ -12498,6 +12499,7 @@ function MatterWorkbench({
         onContextMenu: (event) => openThreadMenuFrom(event, thread),
         onKeyDown: (event) => openThreadMenuFromKey(event, thread),
         className: "matter-thread-row",
+        style: thread.closedAt ? { color: "var(--theme-fg-muted)" } : void 0,
         "aria-current": thread.key === o.currentKey ? "page" : void 0,
         title: `${thread.title}
 ${thread.subtitle} \xB7 ${activity.label}`,
@@ -12537,7 +12539,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
         },
         children: [
           /* @__PURE__ */ jsx51(Bot2, { "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx51("span", { children: agents.count }),
+          agents.count > 0 && /* @__PURE__ */ jsx51("span", { children: agents.count }),
           /* @__PURE__ */ jsx51(ChevronRight3, { className: "matter-agent-toggle-chevron", "aria-hidden": "true" })
         ]
       }
@@ -12547,7 +12549,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
   const renderThreadGroups = (threads, reorder = false) => groupThreads(threads).map(({ root, children: children3 }) => {
     const open = agentsOpen[root.key] ?? children3.some((child) => child.key === o.currentKey);
     return /* @__PURE__ */ jsxs44("div", { className: "matter-thread-group-entry", "data-reorder-key": reorder ? root.key : void 0, children: [
-      renderThread(root, threadGroupActivity(root, children3), children3.length > 0 ? { count: children3.length, running: children3.filter((child) => child.status === "running").length, open } : void 0),
+      renderThread(root, threadGroupActivity(root, children3), children3.length > 0 ? { count: children3.filter((child) => !child.closedAt).length, running: children3.filter((child) => !child.closedAt && child.status === "running").length, open } : void 0),
       children3.length > 0 && open && /* @__PURE__ */ jsx51("div", { className: "matter-agent-children", role: "group", "aria-label": translate("workbench.agentThreads_187f89", { value1: root.title }), children: children3.map((child) => renderThread(child)) })
     ] }, root.key);
   });

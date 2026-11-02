@@ -6,7 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-XYZ4RDJC.js";
+} from "./chunk-DV2AMYIX.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {

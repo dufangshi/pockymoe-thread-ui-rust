@@ -29862,6 +29862,7 @@ function ThreadMap({
 }) {
   const { locale } = useI18n();
   const page = presentation === "page";
+  const stripped = (device) => device.state === "offline" || page && device.state !== "loading" && !device.workspaces.some((w) => w.threads.length);
   const enhanced = page || controlledScope !== void 0;
   const [localScope, setLocalScope] = useState79("all");
   const scope = page && controlledScope === "week" ? "all" : controlledScope ?? localScope;
@@ -30733,7 +30734,7 @@ function ThreadMap({
         ]
       }
     ),
-    enhanced && devices.some((device) => device.state === "offline" || page && !device.workspaces.some((w) => w.threads.length)) && /* @__PURE__ */ jsx108("div", { className: "thread-map-offline-strip", children: devices.filter((device) => device.state === "offline" || page && !device.workspaces.some((w) => w.threads.length)).map((device) => /* @__PURE__ */ jsxs94("button", { type: "button", onClick: () => {
+    enhanced && devices.some(stripped) && /* @__PURE__ */ jsx108("div", { className: "thread-map-offline-strip", children: devices.filter(stripped).map((device) => /* @__PURE__ */ jsxs94("button", { type: "button", onClick: () => {
       setLayoutRevision((revision) => revision + 1);
       if (device.state === "offline") setCachedDevices((previous) => /* @__PURE__ */ new Set([...previous, device.id]));
       setFocusId(`device:${device.id}`);

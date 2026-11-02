@@ -56,6 +56,7 @@ import { useDocumentThemeRevision } from '../themeHooks';
 import { TerminalMenu } from './TerminalMenu';
 import { TerminalSelection } from './TerminalSelection';
 import { terminalPreferences } from './terminalPreferences';
+import { activateTerminalLink } from './terminalLinks';
 import { copyText, isRiskyPaste, pastedLineCount, readClipboardText } from './terminalClipboard';
 
 /** Mac keeps ⌘C / ⌘V for the clipboard and Ctrl for the terminal. */
@@ -490,6 +491,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
         const FitConstructor = fitModule.FitAddon ??
           (fitModule as unknown as {default: typeof fitModule}).default.FitAddon;
         const terminal = new TerminalConstructor({
+          linkHandler: { activate: (event, uri) => { void activateTerminalLink(event, uri); } },
           cursorBlink: true,
           disableStdin: false,
           fontFamily: 'IBM Plex Mono, SFMono-Regular, Menlo, monospace',

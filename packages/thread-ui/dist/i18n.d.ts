@@ -2655,6 +2655,8 @@ declare const en: {
     readonly "files.propertiesLinkYes": "Yes, listed as what it points to";
     readonly "files.propertiesClose": "Close";
     readonly "files.propertiesOlderDevice": "This device's Supervisor does not report file times yet; they show after it updates.";
+    readonly "files.terminalOpenLinkTitle": "Open terminal link?";
+    readonly "files.terminalOpenLink": "Open link";
     readonly "devices.reasonUnmanaged": "This is a source or unmanaged executable. Run the GitHub setup command to install a managed native runtime.";
     readonly "devices.reasonHostManaged": "Host-managed updates require a native installation and a stable native launch command. Run the GitHub setup command first.";
     readonly "devices.reasonRetiredNpmWindows": "This Windows Device Manager device runs the retired npm package. Run the Windows setup command from the Devices page to move it to the native GitHub runtime.";
@@ -7836,6 +7838,8 @@ declare const zhCN: {
     "files.propertiesLinkYes": "是，显示为它指向的内容";
     "files.propertiesClose": "关闭";
     "files.propertiesOlderDevice": "这台设备的 Supervisor 还不提供文件时间，更新后可见。";
+    "files.terminalOpenLinkTitle": "打开终端链接？";
+    "files.terminalOpenLink": "打开链接";
     "devices.reasonUnmanaged": "这是源码运行或非托管的可执行文件。运行 GitHub 安装命令，安装托管的原生运行时。";
     "devices.reasonHostManaged": "由主机管理的更新需要原生安装和稳定的原生启动命令。请先运行 GitHub 安装命令。";
     "devices.reasonRetiredNpmWindows": "这台 Windows 设备管理器设备运行的是已停用的 npm 包。请在“设备”页运行 Windows 安装命令，迁移到原生 GitHub 运行时。";
@@ -13039,6 +13043,8 @@ declare const resources: {
         readonly "files.propertiesLinkYes": "Yes, listed as what it points to";
         readonly "files.propertiesClose": "Close";
         readonly "files.propertiesOlderDevice": "This device's Supervisor does not report file times yet; they show after it updates.";
+        readonly "files.terminalOpenLinkTitle": "Open terminal link?";
+        readonly "files.terminalOpenLink": "Open link";
         readonly "devices.reasonUnmanaged": "This is a source or unmanaged executable. Run the GitHub setup command to install a managed native runtime.";
         readonly "devices.reasonHostManaged": "Host-managed updates require a native installation and a stable native launch command. Run the GitHub setup command first.";
         readonly "devices.reasonRetiredNpmWindows": "This Windows Device Manager device runs the retired npm package. Run the Windows setup command from the Devices page to move it to the native GitHub runtime.";
@@ -18219,6 +18225,8 @@ declare const resources: {
         "files.propertiesLinkYes": "是，显示为它指向的内容";
         "files.propertiesClose": "关闭";
         "files.propertiesOlderDevice": "这台设备的 Supervisor 还不提供文件时间，更新后可见。";
+        "files.terminalOpenLinkTitle": "打开终端链接？";
+        "files.terminalOpenLink": "打开链接";
         "devices.reasonUnmanaged": "这是源码运行或非托管的可执行文件。运行 GitHub 安装命令，安装托管的原生运行时。";
         "devices.reasonHostManaged": "由主机管理的更新需要原生安装和稳定的原生启动命令。请先运行 GitHub 安装命令。";
         "devices.reasonRetiredNpmWindows": "这台 Windows 设备管理器设备运行的是已停用的 npm 包。请在“设备”页运行 Windows 安装命令，迁移到原生 GitHub 运行时。";

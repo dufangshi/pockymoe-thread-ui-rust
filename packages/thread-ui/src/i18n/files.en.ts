@@ -681,4 +681,6 @@ export const filesEn = {
   "files.propertiesLinkYes": "Yes, listed as what it points to",
   "files.propertiesClose": "Close",
   "files.propertiesOlderDevice": "This device's Supervisor does not report file times yet; they show after it updates.",
+  "files.terminalOpenLinkTitle": "Open terminal link?",
+  "files.terminalOpenLink": "Open link",
 } as const;

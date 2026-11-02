@@ -21,6 +21,7 @@ export function ShellTouchControls({ enabled, ctrl, onCtrl, onInput, onFocus, on
       return <button key={label} type="button" aria-label={translate("files.terminal", { value1: label })} disabled={!enabled} onPointerDown={e => e.preventDefault()} onClick={() => { onInput(data); onFocus(); }}>{Icon ? <Icon size={17} /> : label}</button>;
     })}
     {onPaste && <button type="button" className="shell-touch-clipboard" aria-label={translate('files.terminalPaste')} title={translate('files.terminalPaste')} disabled={!enabled} onClick={onPaste}><ClipboardPaste size={17} /></button>}
-    {onSelect && <button type="button" aria-label={translate('files.terminalSelectText')} title={translate('files.terminalSelectText')} onPointerDown={e => e.preventDefault()} onClick={onSelect}><TextSelect size={17} /></button>}
+    {/* Keep mouse focus without cancelling WebKit's synthetic click after a tap. */}
+    {onSelect && <button type="button" aria-label={translate('files.terminalSelectText')} title={translate('files.terminalSelectText')} onMouseDown={e => e.preventDefault()} onClick={onSelect}><TextSelect size={17} /></button>}
   </div>;
 }

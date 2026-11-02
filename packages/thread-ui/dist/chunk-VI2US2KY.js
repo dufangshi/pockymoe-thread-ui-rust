@@ -3649,7 +3649,9 @@ var filesEn = {
   "files.propertiesLink": "Symbolic link",
   "files.propertiesLinkYes": "Yes, listed as what it points to",
   "files.propertiesClose": "Close",
-  "files.propertiesOlderDevice": "This device's Supervisor does not report file times yet; they show after it updates."
+  "files.propertiesOlderDevice": "This device's Supervisor does not report file times yet; they show after it updates.",
+  "files.terminalOpenLinkTitle": "Open terminal link?",
+  "files.terminalOpenLink": "Open link"
 };
 
 // src/i18n/settings.en.ts
@@ -8745,7 +8747,9 @@ var filesZhCN = {
   "files.propertiesLink": "\u7B26\u53F7\u94FE\u63A5",
   "files.propertiesLinkYes": "\u662F\uFF0C\u663E\u793A\u4E3A\u5B83\u6307\u5411\u7684\u5185\u5BB9",
   "files.propertiesClose": "\u5173\u95ED",
-  "files.propertiesOlderDevice": "\u8FD9\u53F0\u8BBE\u5907\u7684 Supervisor \u8FD8\u4E0D\u63D0\u4F9B\u6587\u4EF6\u65F6\u95F4\uFF0C\u66F4\u65B0\u540E\u53EF\u89C1\u3002"
+  "files.propertiesOlderDevice": "\u8FD9\u53F0\u8BBE\u5907\u7684 Supervisor \u8FD8\u4E0D\u63D0\u4F9B\u6587\u4EF6\u65F6\u95F4\uFF0C\u66F4\u65B0\u540E\u53EF\u89C1\u3002",
+  "files.terminalOpenLinkTitle": "\u6253\u5F00\u7EC8\u7AEF\u94FE\u63A5\uFF1F",
+  "files.terminalOpenLink": "\u6253\u5F00\u94FE\u63A5"
 };
 
 // src/i18n/settings.zh-CN.ts

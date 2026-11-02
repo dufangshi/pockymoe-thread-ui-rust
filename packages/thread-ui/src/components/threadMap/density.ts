@@ -72,10 +72,17 @@ const byPriority = (a: MapNode, b: MapNode) =>
   a.id.localeCompare(b.id);
 const priorityLoss = (nodes: readonly MapNode[]) =>
   nodes.reduce((sum, n) => sum + shape(n).loss, 0);
-const compactOverflow = (rect: MapRect): MapRect => ({
-  ...rect,
-  width: Math.min(132, rect.width),
-  height: Math.min(52, rect.height),
+/** Folded items take one low strip along the bottom, so tiles keep the height. */
+const OVERFLOW_STRIP = 22;
+const overflowStrip = (bounds: MapRect): MapRect => ({
+  x: bounds.x,
+  y: bounds.y + Math.max(0, bounds.height - OVERFLOW_STRIP - GAP),
+  width: Math.max(0, bounds.width - GAP),
+  height: Math.min(OVERFLOW_STRIP, Math.max(0, bounds.height - GAP)),
+});
+const aboveStrip = (bounds: MapRect): MapRect => ({
+  ...bounds,
+  height: Math.max(0, bounds.height - OVERFLOW_STRIP - GAP),
 });
 const header = (n: MapNode) => (n.kind === 'device' ? 22 : 18);
 /** What a framed node takes from its cell before its children get any. */
@@ -150,15 +157,10 @@ function threadPlan(items: MapNode[], bounds: MapRect): Result {
   ) {
     const hidden = ordered.slice(count),
       visible = ordered.slice(0, count);
-    const cells = [
-      ...visible.map((node) => ({
-        node,
-        overflow: undefined as MapNode[] | undefined,
-      })),
-      ...(hidden.length ? [{ node: hidden[0]!, overflow: hidden }] : []),
-    ];
-    if (!cells.length)
+    const cells = visible.map((node) => ({ node }));
+    if (!cells.length && !hidden.length)
       return { boxes: [], missing: 0, important: 0, invalid: 0 };
+    const area = hidden.length ? aboveStrip(bounds) : bounds;
     const median =
       [...visible].sort((a, b) => a.weight - b.weight)[
         Math.floor(visible.length / 2)
@@ -167,28 +169,31 @@ function threadPlan(items: MapNode[], bounds: MapRect): Result {
       squarify(
         cells,
         (c) =>
-          c.overflow ? 1 : Math.max(1, Math.min(1.8, c.node.weight / median)),
-        bounds,
+          Math.max(1, Math.min(1.8, c.node.weight / median)),
+        area,
       ),
-      squarify(cells, () => 1, bounds),
-      ...grids(cells, bounds, 36),
+      squarify(cells, () => 1, area),
+      ...grids(cells, area, 36),
     ];
-    const layout = candidates.find((c) => c.every((e) => fits(inside(e.rect))));
-    if (!layout && count > 0) continue;
-    const boxes = (layout ?? [{ item: cells[0]!, rect: bounds }]).map(
-      ({ item, rect }) => ({
-        ...item,
-        rect:
-          item.overflow && count === 0
-            ? compactOverflow(inside(rect))
-            : inside(rect),
-      }),
+    const layout = candidates.find(
+      (c) => c.length === cells.length && c.every((e) => fits(inside(e.rect))),
     );
+    if (!layout && count > 0) continue;
+    const boxes: DenseBox[] = (layout ?? []).map(({ item, rect }) => ({
+      ...item,
+      rect: inside(rect),
+    }));
+    if (hidden.length)
+      boxes.push({
+        node: hidden[0]!,
+        rect: overflowStrip(bounds),
+        overflow: hidden,
+      });
     return {
       boxes,
       missing: hidden.length,
       important: priorityLoss(hidden),
-      invalid: boxes.filter((b) => !fits(b.rect)).length,
+      invalid: fits(inside(bounds)) ? 0 : 1,
     };
   }
   return { boxes: [], missing: items.length, important: 0, invalid: 1 };
@@ -301,31 +306,23 @@ function layoutLevel(
           threads: 0,
         }
       : null;
-    const cells = [...visible, ...(overflow ? [overflow] : [])];
-    const cost = (n: MapNode, overhead = 0.6) =>
-      n === overflow ? 1 : footprint(n, overhead);
-    const candidates = [
-      squarify(cells, footprint, bounds),
-      squarify(
-        cells,
-        (n) =>
-          n === overflow ? 1 : Math.max(n.kind === 'device' ? 5 : 1, cost(n)),
-        bounds,
-      ),
-      squarify(
-        cells,
-        (n) =>
-          n === overflow ? 1 : Math.max(n.kind === 'device' ? 8 : 1, cost(n)),
-        bounds,
-      ),
-      squarify(cells, (n) => cost(n, 1.2), bounds),
-      squarify(cells, (n) => cost(n, 2), bounds),
-      squarify(cells, (n) => cost(n) + 0.75, bounds),
-      squarify(cells, (n) => cost(n) ** 0.85, bounds),
-      squarify(cells, (n) => Math.sqrt(cost(n)), bounds),
-      ...strips(cells, bounds),
-      ...grids(cells, bounds, 56),
+    const cells = visible;
+    const area = overflow ? aboveStrip(bounds) : bounds;
+    const cost = (n: MapNode, overhead = 0.6) => footprint(n, overhead);
+    const planned = [
+      squarify(cells, footprint, area),
+      squarify(cells, (n) => Math.max(n.kind === 'device' ? 5 : 1, cost(n)), area),
+      squarify(cells, (n) => Math.max(n.kind === 'device' ? 8 : 1, cost(n)), area),
+      squarify(cells, (n) => cost(n, 1.2), area),
+      squarify(cells, (n) => cost(n, 2), area),
+      squarify(cells, (n) => cost(n) + 0.75, area),
+      squarify(cells, (n) => cost(n) ** 0.85, area),
+      squarify(cells, (n) => Math.sqrt(cost(n)), area),
+      ...strips(cells, area),
+      ...grids(cells, area, 56),
     ];
+    // Nothing fits but the strip itself: one empty plan still places it.
+    const candidates = cells.length ? planned : [[]];
     for (const candidate of candidates) {
       const boxes: DenseBox[] = [];
       let missing = 0,
@@ -333,18 +330,6 @@ function layoutLevel(
         invalid = 0;
       for (const { item: node, rect: r } of candidate) {
         const rect = inside(r, gapOf(node));
-        if (node === overflow) {
-          const leaves = threadLeaves(hidden);
-          missing += leaves.length;
-          important += priorityLoss(leaves);
-          if (!fits(rect)) invalid++;
-          boxes.push({
-            node: hidden[0]!,
-            rect: compactOverflow(rect),
-            overflow: hidden,
-          });
-          continue;
-        }
         const h = header(node),
           pad = paddingOf(node),
           childGap = childGapOf(node),
@@ -359,6 +344,13 @@ function layoutLevel(
         missing += nested.missing;
         important += nested.important;
         invalid += nested.invalid;
+      }
+      if (overflow) {
+        const leaves = threadLeaves(hidden);
+        missing += leaves.length;
+        important += priorityLoss(leaves);
+        if (!fits(inside(bounds))) invalid++;
+        boxes.push({ node: hidden[0]!, rect: overflowStrip(bounds), overflow: hidden });
       }
       const result = { boxes, missing, important, invalid };
       if (

@@ -105,9 +105,15 @@ it('never draws undersized thread or overflow cells on a narrow account map', ()
       'all',
     ),
   );
-  for (const box of boxes.filter((b) => b.node.thread || b.overflow)) {
+  for (const box of boxes.filter((b) => b.node.thread && !b.overflow)) {
     expect(box.rect.width).toBeGreaterThanOrEqual(87.99);
     expect(box.rect.height).toBeGreaterThanOrEqual(33.99);
+  }
+  // Folded items sit in a low strip so the tiles keep the height.
+  for (const box of boxes.filter((b) => b.overflow)) {
+    expect(box.rect.width).toBeGreaterThanOrEqual(87.99);
+    expect(box.rect.height).toBeLessThanOrEqual(22);
+    expect(box.rect.height).toBeGreaterThanOrEqual(18);
   }
   expect(
     boxes.some((b) => b.overflow && b.overflow[0]?.kind === 'workspace'),
@@ -153,13 +159,10 @@ it('prioritizes waiting, running, unread failure, unread, pinned, then score in 
       (n) => !['59', '58', '57', '56', '55'].includes(n.thread!.key),
     ),
   ).toBe(true);
-  expect(overflow.rect.width * overflow.rect.height).toBeLessThanOrEqual(
-    Math.max(
-      ...boxes
-        .filter((b) => !b.overflow)
-        .map((b) => b.rect.width * b.rect.height),
-    ) * 1.8,
-  );
+  // Low enough to leave the height to tiles, and it never covers one.
+  expect(overflow.rect.height).toBeLessThanOrEqual(22);
+  for (const box of boxes.filter((b) => !b.overflow))
+    expect(box.rect.y + box.rect.height).toBeLessThanOrEqual(overflow.rect.y + 0.01);
 });
 it('holds membership below 30% and through pointer freeze, then reconciles priority after thaw', () => {
   const device: ThreadMapDevice = {

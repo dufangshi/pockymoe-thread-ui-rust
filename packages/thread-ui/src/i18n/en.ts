@@ -34,7 +34,7 @@ export const en = {
   "desktopShell.input": "Input",
   "desktopShell.map": "Map",
   "desktopShell.mapWaiting": "Map, {{count}} need you",
-  "desktopShell.mapShortcut": "Map (⌘0)",
+  "desktopShell.mapShortcut": "Map ({{shortcut}})",
   "desktopShell.mapWindowTitle": "Map · Pockymoe",
   "desktopShell.onlineCount": "{{count}} online",
   "desktopShell.devices": "Devices",

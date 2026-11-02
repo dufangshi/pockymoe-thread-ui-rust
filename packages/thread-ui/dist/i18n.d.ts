@@ -10,7 +10,7 @@ declare const en: {
     readonly "desktopShell.input": "Input";
     readonly "desktopShell.map": "Map";
     readonly "desktopShell.mapWaiting": "Map, {{count}} need you";
-    readonly "desktopShell.mapShortcut": "Map (⌘0)";
+    readonly "desktopShell.mapShortcut": "Map ({{shortcut}})";
     readonly "desktopShell.mapWindowTitle": "Map · Pockymoe";
     readonly "desktopShell.onlineCount": "{{count}} online";
     readonly "desktopShell.devices": "Devices";
@@ -5248,7 +5248,10 @@ declare const zhCN: {
     "desktopDevices.priceCoverage": string;
     "desktopDevices.priceUnknown": string;
     "desktopDevices.model": string;
-    "desktopDevices.usageMissingDevices": string;
+    "desktopDevices.usageMissingDevices": {
+        one: string;
+        other: string;
+    };
     "desktopDevices.usageMissingHint": string;
     "desktopDevices.usageNeedsUpdate": string;
     "desktopDevices.usageShowAll": string;
@@ -10391,7 +10394,7 @@ declare const resources: {
         readonly "desktopShell.input": "Input";
         readonly "desktopShell.map": "Map";
         readonly "desktopShell.mapWaiting": "Map, {{count}} need you";
-        readonly "desktopShell.mapShortcut": "Map (⌘0)";
+        readonly "desktopShell.mapShortcut": "Map ({{shortcut}})";
         readonly "desktopShell.mapWindowTitle": "Map · Pockymoe";
         readonly "desktopShell.onlineCount": "{{count}} online";
         readonly "desktopShell.devices": "Devices";
@@ -15628,7 +15631,10 @@ declare const resources: {
         "desktopDevices.priceCoverage": string;
         "desktopDevices.priceUnknown": string;
         "desktopDevices.model": string;
-        "desktopDevices.usageMissingDevices": string;
+        "desktopDevices.usageMissingDevices": {
+            one: string;
+            other: string;
+        };
         "desktopDevices.usageMissingHint": string;
         "desktopDevices.usageNeedsUpdate": string;
         "desktopDevices.usageShowAll": string;

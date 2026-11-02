@@ -43,14 +43,16 @@ describe('map v2 model', () => {
   });
 
   it('weights recency and keeps waiting and running threads above the live floor', () => {
-    expect([0, 4, 30].map(days => recencyWeight(thread('t', days), now))).toEqual([4, 2.8, 1.8]);
+    // Half every two days, down to a floor, so a month-old thread barely asks for room.
+    expect([0, 4, 30].map(days => recencyWeight(thread('t', days), now))).toEqual([4, 1, 0.12]);
+    expect(recencyWeight(thread('t', 0, { activeMs: 2 * 3_600_000 }), now)).toBe(10);
     expect(recencyWeight(thread('t', 30, { running: true }), now)).toBe(runningWeight(9));
     expect(recencyWeight(thread('t', 30, { needsInput: { kind: 'approval' } }), now)).toBe(runningWeight(9));
   });
 
   it('keeps order below 30% cumulative change and reorders after crossing it', () => {
     const order = new StableMapOrder();
-    const build = (turns: number) => buildThreadMap([device([thread('a', 0, { turns: 100 }), thread('b', 0, { turns })])], 'All');
+    const build = (turns: number) => buildThreadMap([device([thread('a', 0, { turns: 100 }), thread('b', 0, { turns })])], 'All', { now });
     expect(leaves(order.apply(build(81), false)).map(n => n.label)).toEqual(['a', 'b']);
     expect(leaves(order.apply(build(121), false)).map(n => n.label)).toEqual(['a', 'b']); // b: 10 → 12
     expect(leaves(order.apply(build(196), false)).map(n => n.label)).toEqual(['b', 'a']); // b: 10 → 15
@@ -58,7 +60,7 @@ describe('map v2 model', () => {
 
   it('freezes the last displayed geometry, rather than snapping to a hysteresis baseline', () => {
     const order = new StableMapOrder();
-    const build = (turns: number) => buildThreadMap([device([thread('a', 0, { turns: 100 }), thread('b', 0, { turns })])], 'All');
+    const build = (turns: number) => buildThreadMap([device([thread('a', 0, { turns: 100 }), thread('b', 0, { turns })])], 'All', { now });
     order.apply(build(81), false);
     order.apply(build(121), false);
     expect(leaves(order.apply(build(121), true)).map(n => [n.label, n.weight])).toEqual([['a', 11], ['b', 12]]);
@@ -66,8 +68,8 @@ describe('map v2 model', () => {
 
   it('freezes positions and weights during interaction, then applies pending order', () => {
     const order = new StableMapOrder();
-    order.apply(buildThreadMap([device([thread('a', 0, { turns: 100 }), thread('b')])], 'All'), false);
-    const changed = () => buildThreadMap([device([thread('a', 0, { turns: 100 }), thread('b', 0, { turns: 900 })])], 'All');
+    order.apply(buildThreadMap([device([thread('a', 0, { turns: 100 }), thread('b')])], 'All', { now }), false);
+    const changed = () => buildThreadMap([device([thread('a', 0, { turns: 100 }), thread('b', 0, { turns: 900 })])], 'All', { now });
     expect(leaves(order.apply(changed(), true)).map(n => [n.label, n.weight])).toEqual([['a', 11], ['b', 4]]);
     expect(leaves(order.apply(changed(), false)).map(n => n.label)).toEqual(['b', 'a']);
     order.clear();
@@ -76,8 +78,8 @@ describe('map v2 model', () => {
 
   it('defers additions and removals until the interaction freeze lifts', () => {
     const order = new StableMapOrder();
-    order.apply(buildThreadMap([device([thread('a'), thread('b')])], 'All'), false);
-    const changed = () => buildThreadMap([device([thread('b'), thread('new')])], 'All');
+    order.apply(buildThreadMap([device([thread('a'), thread('b')])], 'All', { now }), false);
+    const changed = () => buildThreadMap([device([thread('b'), thread('new')])], 'All', { now });
     expect(leaves(order.apply(changed(), true)).map(n => n.label)).toEqual(['a', 'b']);
     expect(leaves(order.apply(changed(), false)).map(n => n.label)).toEqual(['b', 'new']);
   });

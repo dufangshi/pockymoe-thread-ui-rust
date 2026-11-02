@@ -45,10 +45,9 @@ import {
   syntaxThemeFor,
   useCopy,
   useLongPress,
-  useMenuKeyboard,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-2LAVC2XA.js";
+} from "./chunk-5IYEVTBJ.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -65,6 +64,7 @@ import {
   LOCALE_STORAGE_KEY,
   LanguageSwitcher,
   SUPPORTED_LOCALES,
+  Select,
   detectLocale,
   formatDate,
   formatNumber,
@@ -74,8 +74,9 @@ import {
   setLocale,
   t,
   translate,
-  useI18n
-} from "./chunk-EGGLYRNF.js";
+  useI18n,
+  useMenuKeyboard
+} from "./chunk-LH2CMXIT.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -99,7 +100,7 @@ styleInject('.thread-ui-shell .timeline-soft-text,\n.thread-ui-shell .thread-mes
 styleInject('.thread-export-dialog-root {\n  --export-bg: rgb(248 250 252);\n  --export-panel: rgb(255 255 255);\n  --export-surface: rgb(241 245 249);\n  --export-surface-strong: rgb(226 232 240);\n  --export-border: rgb(203 213 225);\n  --export-fg: rgb(15 23 42);\n  --export-fg-soft: rgb(51 65 85);\n  --export-fg-muted: rgb(100 116 139);\n  --export-accent: rgb(217 119 6);\n  --export-accent-bg: rgb(254 243 199);\n  --export-accent-border: rgb(251 191 36);\n  --export-shadow: rgb(15 23 42 / 0.16);\n  color: var(--export-fg);\n  position: fixed;\n  inset: 0;\n  z-index: 96;\n  display: flex;\n  align-items: flex-end;\n  justify-content: center;\n  overflow: hidden;\n  padding: 0;\n}\n.thread-export-dialog-root.thread-ui-theme-dark,\n.thread-export-dialog-root[data-theme-effective=dark] {\n  --export-bg: #12151c;\n  --export-panel: #181d25;\n  --export-surface: #1d222c;\n  --export-surface-strong: #262c38;\n  --export-border: #343b48;\n  --export-fg: rgb(241 245 249);\n  --export-fg-soft: rgb(203 213 225);\n  --export-fg-muted: rgb(148 163 184);\n  --export-accent: rgb(245 158 11);\n  --export-accent-bg: rgb(245 158 11 / 0.16);\n  --export-accent-border: rgb(245 158 11 / 0.34);\n  --export-shadow: rgb(0 0 0 / 0.36);\n}\n.thread-export-dialog-backdrop {\n  background: color-mix(in oklch, var(--export-bg) 68%, transparent);\n}\n.thread-export-dialog-root.thread-ui-theme-dark .thread-export-dialog-backdrop,\n.thread-export-dialog-root[data-theme-effective=dark] .thread-export-dialog-backdrop {\n  background: rgb(2 6 23 / 0.74);\n}\n.thread-export-dialog-panel {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  width: 100%;\n  max-width: 42rem;\n  flex-direction: column;\n  border-color: var(--export-border);\n  background: var(--export-panel);\n  box-shadow: 0 26px 80px var(--export-shadow);\n  max-height: calc(100% - max(env(safe-area-inset-top), var(--android-safe-area-top, 0px)) - max(0.75rem, env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px)));\n}\n.thread-export-dialog-header,\n.thread-export-dialog-footer,\n.thread-export-dialog-box-header {\n  border-color: var(--export-border);\n}\n.thread-export-dialog-title,\n.thread-export-dialog-strong,\n.thread-export-dialog-body-text {\n  color: var(--export-fg);\n}\n.thread-export-dialog-subtitle,\n.thread-export-dialog-status-pill {\n  color: var(--export-fg-muted);\n}\n.thread-export-dialog-icon-button,\n.thread-export-dialog-secondary-button,\n.thread-export-dialog-segment,\n.thread-export-dialog-box,\n.thread-export-dialog-status-pill {\n  border-color: var(--export-border);\n  background: var(--export-surface);\n}\n.thread-export-dialog-segment,\n.thread-export-dialog-box {\n  background: color-mix(in oklch, var(--export-surface) 72%, var(--export-panel));\n}\n.thread-export-dialog-icon-button,\n.thread-export-dialog-secondary-button {\n  color: var(--export-fg-soft);\n}\n.thread-export-dialog-icon-button:active:not(:disabled),\n.thread-export-dialog-secondary-button:active:not(:disabled),\n.thread-export-dialog-turn-row:active {\n  background: var(--export-surface-strong);\n  color: var(--export-fg);\n}\n@media (hover: hover) {\n  .thread-export-dialog-icon-button:hover:not(:disabled),\n  .thread-export-dialog-secondary-button:hover:not(:disabled),\n  .thread-export-dialog-turn-row:hover {\n    background: var(--export-surface-strong);\n    color: var(--export-fg);\n  }\n}\n.thread-export-dialog-muted-action {\n  color: var(--export-fg-muted);\n}\n.thread-export-dialog-muted-action:active {\n  color: var(--export-fg);\n}\n@media (hover: hover) {\n  .thread-export-dialog-muted-action:hover {\n    color: var(--export-fg);\n  }\n}\n.thread-export-dialog-root .ui-status-warning {\n  border: 1px solid var(--export-accent-border);\n  background: var(--export-accent-bg);\n  color: color-mix(in oklch, var(--export-accent) 72%, var(--export-fg));\n}\n.thread-export-dialog-checkbox {\n  accent-color: var(--export-accent);\n}\n.thread-export-dialog-turn-row {\n  color: var(--export-fg-soft);\n}\n@media (max-width: 639px) {\n  .thread-export-dialog-panel {\n    position: fixed;\n    right: 0;\n    bottom: 0;\n    left: 0;\n    width: 100%;\n    max-width: none;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 0;\n    transform: translateZ(0);\n  }\n}\n@media (min-width: 640px) {\n  .thread-export-dialog-root {\n    align-items: center;\n    padding: 1.5rem;\n  }\n}\n.thread-export-dialog-root.thread-ui-theme-dark,\n.thread-export-dialog-root[data-theme-effective=dark] {\n  --export-bg: #12110c;\n  --export-panel: #1e1d17;\n  --export-surface: #25241e;\n  --export-surface-strong: #302f27;\n  --export-border: #3c3a30;\n  --export-fg: #e9e7df;\n  --export-fg-soft: #ccc9bc;\n  --export-fg-muted: #999587;\n}\n.thread-export-dialog-segment {\n  display: flex;\n  flex-wrap: wrap;\n  border: 0;\n  gap: 4px;\n  border-radius: 8px;\n}\n.thread-export-dialog-panel {\n  border-radius: 16px;\n}\n.thread-export-dialog-box,\n.thread-export-dialog-box-header {\n  border-radius: 8px;\n}\n.public-transcript {\n  min-height: 100vh;\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n  font-family: var(--font-sans,ui-sans-serif,system-ui,sans-serif);\n}\n.public-transcript-content {\n  max-width: 56rem;\n  margin: 0 auto;\n  padding: 24px 20px 48px;\n}\n.public-transcript-header {\n  padding-bottom: 20px;\n  margin-bottom: 20px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.public-transcript-header h1 {\n  font-size: 20px;\n  font-weight: 600;\n  line-height: 1.4;\n  overflow-wrap: anywhere;\n}\n.public-transcript-header p {\n  margin-top: 6px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.public-transcript-turn {\n  padding: 8px 0 20px;\n}\n.public-transcript-turn > .thread-graph-message + .thread-graph-message {\n  margin-top: 12px;\n}\n.public-transcript .thread-graph-message-stack.is-assistant {\n  width: 100%;\n}\n.public-transcript img {\n  max-width: 100%;\n  object-fit: contain;\n}\n.public-transcript .thread-graph-code-block {\n  overflow-wrap: anywhere;\n}\n.public-transcript .thread-graph-code-block pre {\n  white-space: pre-wrap;\n}\n@media (max-width: 639px) {\n  .public-transcript-content {\n    padding: 16px 12px 32px;\n  }\n}\n@media print {\n  @page {\n    size: A4;\n    margin: 12mm 10mm;\n  }\n  html,\n  body {\n    height: auto !important;\n    overflow: visible !important;\n  }\n  .public-transcript {\n    min-height: 0;\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n  .public-transcript-content {\n    max-width: none;\n    padding: 0;\n  }\n  .public-transcript-turn,\n  .public-transcript .thread-graph-message,\n  .public-transcript .thread-graph-message-bubble {\n    break-inside: auto;\n  }\n  .public-transcript .thread-graph-worked-summary,\n  .public-transcript .thread-graph-message-time-row,\n  .public-transcript h1,\n  .public-transcript h2,\n  .public-transcript h3 {\n    break-after: avoid;\n  }\n  .public-transcript p,\n  .public-transcript li {\n    orphans: 3;\n    widows: 3;\n  }\n  .public-transcript img,\n  .public-transcript tr {\n    break-inside: avoid;\n  }\n  .public-transcript .thread-graph-code-block {\n    box-decoration-break: clone;\n  }\n}\n.thread-export-dialog-root.matter-actions-dialog {\n  --export-bg: oklch(0.915 0.007 145);\n  --export-panel: oklch(0.946 0.006 145);\n  --export-surface: oklch(0.929 0.006 145);\n  --export-surface-strong: oklch(0.875 0.008 145);\n  --export-border: oklch(0.83 0.008 145);\n  --export-fg: #121416;\n  --export-fg-soft: #5b6269;\n  --export-fg-muted: #5d6972;\n  --export-accent: #007a49;\n  --export-accent-bg: #e5f8f0;\n  --export-accent-border: #bee9d8;\n  --theme-bg: var(--export-panel);\n  --theme-border: var(--export-border);\n  font-family:\n    "DM Sans",\n    ui-sans-serif,\n    system-ui,\n    sans-serif;\n}\n.thread-export-dialog-root.matter-actions-dialog[data-theme-effective=dark] {\n  --export-bg: #0c0f11;\n  --export-panel: #0f1317;\n  --export-surface: #141a1f;\n  --export-surface-strong: #202a30;\n  --export-border: #263038;\n  --export-fg: #f4f7f6;\n  --export-fg-soft: #a7b0b7;\n  --export-fg-muted: #a7b3bc;\n  --export-accent: #00cc76;\n  --export-accent-bg: #102b23;\n  --export-accent-border: #215240;\n  color-scheme: dark;\n}\n.matter-actions-dialog .thread-export-dialog-panel {\n  max-width: 540px;\n  border-radius: 14px;\n  overflow: hidden;\n}\n.thread-export-dialog-root.matter-actions-dialog .thread-export-dialog-panel {\n  background: var(--export-panel);\n  color: var(--export-fg);\n}\n.thread-export-dialog-root.matter-actions-dialog :is(.thread-export-dialog-box, .thread-export-dialog-box-header, .thread-export-dialog-secondary-button) {\n  background: var(--export-surface);\n  border-color: var(--export-border);\n  color: var(--export-fg);\n}\n.matter-share-scope {\n  display: flex;\n  align-items: flex-start;\n  gap: 10px;\n  padding: 12px 0;\n  border-bottom: 1px solid var(--export-border);\n  font-size: 13px;\n}\n.matter-share-scope input {\n  margin-top: 3px;\n  width: 16px;\n  height: 16px;\n}\n.matter-share-scope small {\n  display: block;\n  margin-top: 4px;\n  color: var(--export-fg-soft);\n  line-height: 1.5;\n}\n.matter-share-scopes {\n  min-width: 0;\n  margin: 0;\n  padding: 0;\n  border: 0;\n}\n.matter-share-scopes legend {\n  padding: 0;\n  font-size: 12px;\n  color: var(--export-fg-soft);\n}\n.matter-share-scopes .matter-share-scope {\n  min-height: 44px;\n  cursor: pointer;\n}\n.matter-share-scopes .matter-share-scope:has(input:disabled) {\n  cursor: default;\n}\n.matter-share-scopes .matter-share-new-threads {\n  padding-left: 26px;\n}\n.matter-actions-dialog .thread-export-dialog-backdrop {\n  background: rgb(12 18 22 / 32%);\n  backdrop-filter: blur(3px);\n}\n.matter-actions-dialog .thread-export-dialog-header {\n  padding: 20px 22px 16px;\n}\n.matter-actions-dialog .thread-export-dialog-title {\n  font-size: 16px;\n  font-weight: 600;\n  letter-spacing: -.02em;\n}\n.matter-actions-dialog .thread-export-dialog-subtitle {\n  font-size: 12px;\n  line-height: 1.6;\n}\n.matter-actions-dialog .thread-export-dialog-icon-button {\n  width: 28px;\n  height: 28px;\n  border: 0;\n  border-radius: 7px;\n  background: transparent;\n}\n.matter-actions-dialog .thread-export-dialog-footer {\n  padding: 14px 22px;\n  background: var(--export-surface);\n}\n.matter-actions-dialog :is(.thread-export-dialog-secondary-button, .matter-dialog-primary) {\n  border-radius: 7px;\n  font-size: 12px;\n  padding: 8px 12px;\n}\n.matter-actions-dialog .thread-export-dialog-footer :is(.thread-export-dialog-secondary-button, .matter-dialog-primary) {\n  white-space: nowrap;\n}\n.matter-actions-dialog .matter-dialog-primary {\n  border: 1px solid var(--export-accent);\n  background: var(--export-accent);\n  color: #fdfdfd;\n}\n.matter-actions-dialog[data-theme-effective=dark] .matter-dialog-primary {\n  color: #082016;\n}\n.matter-actions-dialog :is(input:not([type=checkbox]):not([type=radio]), select) {\n  background: var(--export-panel);\n  border: 1px solid var(--export-border);\n  border-radius: 7px;\n  color: var(--export-fg);\n  min-height: 36px;\n  font-size: 13px;\n}\n.matter-actions-dialog :is(input[type=radio], input[type=checkbox]) {\n  accent-color: var(--export-accent);\n}\n.matter-actions-dialog :is(button, input, select):focus-visible {\n  outline: 2px solid var(--export-accent);\n  outline-offset: 2px;\n}\n.matter-actions-dialog button:disabled {\n  opacity: .5;\n}\n.matter-export-options {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  font-size: 13px;\n}\n.matter-export-options > p {\n  border: 0;\n  background: transparent;\n  padding: 0 2px;\n}\n.matter-sharing-unavailable {\n  display: flex;\n  align-items: flex-start;\n  gap: 12px;\n  padding: 18px 0;\n  font-size: 13px;\n  line-height: 1.7;\n  color: var(--export-fg-soft);\n}\n.matter-sharing-unavailable svg {\n  flex-shrink: 0;\n  margin-top: 2px;\n  color: var(--export-fg-muted);\n}\n.matter-actions-dialog .thread-public-links {\n  font-size: 13px;\n}\n.matter-actions-dialog .thread-public-link-create {\n  background: var(--export-accent);\n  border-color: var(--export-accent);\n  color: #fdfdfd;\n}\n.matter-actions-dialog[data-theme-effective=dark] .thread-public-link-create {\n  color: #082016;\n}\n.matter-actions-dialog .thread-public-link-create:active:not(:disabled) {\n  background: var(--export-accent);\n  filter: brightness(.95);\n  color: #fdfdfd;\n}\n@media (hover: hover) {\n  .matter-actions-dialog .thread-public-link-create:hover:not(:disabled) {\n    background: var(--export-accent);\n    filter: brightness(.95);\n    color: #fdfdfd;\n  }\n}\n.matter-actions-dialog[data-theme-effective=dark] .thread-public-link-create:active:not(:disabled) {\n  color: #082016;\n}\n@media (hover: hover) {\n  .matter-actions-dialog[data-theme-effective=dark] .thread-public-link-create:hover:not(:disabled) {\n    color: #082016;\n  }\n}\n.matter-actions-dialog .thread-public-link-create:disabled {\n  background: var(--export-surface-strong);\n  color: var(--export-fg-soft);\n  border-color: var(--export-border);\n  opacity: 1;\n}\n.thread-public-link-options {\n  min-width: 0;\n  border: 0;\n  padding: 0;\n  margin: 0;\n  color: var(--export-fg);\n}\n.thread-public-link-options legend {\n  font-size: 13px;\n  font-weight: 600;\n  margin-bottom: 10px;\n}\n.thread-public-link-scope {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 10px 20px;\n  font-size: 13px;\n}\n.thread-public-link-scope label,\n.thread-public-link-turns > label,\n.thread-public-link-live {\n  display: flex;\n  align-items: flex-start;\n  gap: 10px;\n  cursor: pointer;\n}\n.thread-public-link-options input {\n  accent-color: var(--export-accent);\n  margin: 3px 0 0;\n  flex-shrink: 0;\n}\n.thread-public-link-turns {\n  margin-top: 12px;\n  max-height: 230px;\n  overflow: auto;\n  border-block: 1px solid var(--export-border);\n}\n.thread-public-link-selection {\n  display: flex;\n  justify-content: space-between;\n  padding: 9px 0;\n  font-size: 12px;\n  color: var(--export-fg-soft);\n}\n.thread-public-link-selection button {\n  color: var(--export-accent);\n}\n.thread-public-link-turns > label {\n  padding: 9px 4px;\n  border-radius: 6px;\n  font-size: 12px;\n}\n.thread-public-link-turns > label:active {\n  background: var(--export-surface-strong);\n}\n@media (hover: hover) {\n  .thread-public-link-turns > label:hover {\n    background: var(--export-surface-strong);\n  }\n}\n.thread-public-link-turns > label > span {\n  min-width: 0;\n}\n.thread-public-link-turns strong {\n  font-weight: 500;\n}\n.thread-public-link-turns label span span {\n  display: block;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  color: var(--export-fg-soft);\n  margin-top: 3px;\n}\n.thread-public-link-live {\n  margin-top: 18px;\n  padding-top: 14px;\n  border-top: 1px solid var(--export-border);\n  font-size: 13px;\n}\n.thread-public-link-live strong {\n  display: block;\n  font-weight: 500;\n}\n.thread-public-link-live span span {\n  display: block;\n  margin-top: 5px;\n  font-size: 12px;\n  line-height: 1.6;\n  color: var(--export-fg-soft);\n}\n@media (max-width: 639px) {\n  .matter-actions-dialog .thread-export-dialog-panel {\n    max-width: none;\n    border-radius: 14px 14px 0 0;\n  }\n  .matter-actions-dialog .thread-export-dialog-footer {\n    padding-bottom: max(16px, env(safe-area-inset-bottom));\n  }\n}\n');
 
 // src/styles/matter-workbench.css
-styleInject('.matter-thread-menu {\n  position: relative;\n}\n.matter-thread-menu > summary {\n  list-style: none;\n  display: grid;\n  place-items: center;\n  width: 30px;\n  height: 30px;\n  border-radius: 8px;\n  cursor: pointer;\n}\n.matter-thread-menu > summary::-webkit-details-marker {\n  display: none;\n}\n.matter-thread-menu > summary:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-thread-menu > summary:hover {\n    background: var(--theme-hover);\n  }\n}\n.matter-thread-menu > div {\n  position: absolute;\n  top: 34px;\n  right: 0;\n  width: min(270px, calc(100vw - 24px));\n  z-index: 80;\n  padding: 6px;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 10px;\n  background: var(--theme-panel);\n  box-shadow: var(--matter-composer-shadow);\n}\n.thread-ui-shell .matter-workbench .matter-thread-menu > div > button {\n  display: flex;\n  width: 100%;\n  height: 36px;\n  gap: 10px;\n  justify-content: flex-start;\n  padding: 0 9px;\n  font-size: 12px;\n}\n.thread-execution-step-count {\n  display: none;\n}\n.matter-workbench .thread-execution-step-count {\n  display: inline;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-ui-shell.thread-ui-shell,\n.thread-graph-dialog.matter-settings-dialog {\n  padding: 0;\n  background: var(--matter-chrome);\n  --thread-gc-bg: oklch(0.915 0.007 145);\n  --thread-gc-panel: oklch(0.946 0.006 145);\n  --thread-gc-workspace: oklch(0.895 0.008 145);\n  --thread-gc-surface: oklch(0.929 0.006 145);\n  --thread-gc-muted: oklch(0.875 0.008 145);\n  --thread-gc-hover: oklch(0.865 0.009 145);\n  --thread-gc-border: oklch(0.83 0.008 145);\n  --thread-gc-border-strong: oklch(0.76 0.009 145);\n  --thread-gc-border-contrast: #828a92;\n  --thread-gc-fg: #121416;\n  --thread-gc-fg-soft: #5b6269;\n  --thread-gc-fg-muted: oklch(0.47 0.013 155);\n  --thread-gc-primary: #00a764;\n  --thread-gc-primary-hover: #00975a;\n  --thread-gc-primary-fg: #fff;\n  --thread-gc-accent-soft: #e5f8f0;\n  --thread-gc-accent-strong: #008b53;\n  --thread-gc-accent-border: #bee9d8;\n  --matter-chrome: oklch(0.885 0.008 145);\n  --matter-composer-shadow: 0 18px 44px rgb(25 40 33 / 19%), 0 4px 12px rgb(25 40 33 / 10%);\n  --matter-glass-highlight: oklch(0.98 0.005 145 / 75%);\n  font-family:\n    "DM Sans",\n    Inter,\n    ui-sans-serif,\n    system-ui,\n    sans-serif;\n}\n.thread-ui-shell.thread-ui-shell[data-theme-effective=dark],\n.thread-graph-dialog.matter-settings-dialog[data-theme-effective=dark] {\n  --thread-gc-bg: #0c0f11;\n  --thread-gc-panel: #0f1317;\n  --thread-gc-workspace: #141b20;\n  --thread-gc-surface: #1c242a;\n  --thread-gc-muted: #1c242a;\n  --thread-gc-hover: #202a30;\n  --thread-gc-border: #263038;\n  --thread-gc-border-strong: #36434d;\n  --thread-gc-border-contrast: #737f87;\n  --thread-gc-fg: #f4f7f6;\n  --thread-gc-fg-soft: #c1cad1;\n  --thread-gc-fg-muted: #a2afb9;\n  --thread-gc-primary: #00cc76;\n  --thread-gc-primary-hover: #16de89;\n  --thread-gc-primary-fg: #082016;\n  --thread-gc-accent-soft: #102b23;\n  --thread-gc-accent-strong: #00cc76;\n  --thread-gc-accent-border: #215240;\n  --matter-chrome: #141a1f;\n  --matter-composer-shadow: 0 22px 52px rgb(3 8 6 / 48%), 0 4px 14px rgb(3 8 6 / 30%);\n  --matter-glass-highlight: oklch(0.8 0.014 155 / 15%);\n}\n.thread-ui-shell .matter-workbench {\n  display: grid;\n  height: 100%;\n  min-height: 0;\n  grid-template-columns: 49px var(--matter-sidebar-width, 236px) minmax(0, 1fr);\n  grid-template-rows: minmax(0, 1fr);\n  background: var(--matter-chrome);\n  font-size: 13px;\n}\n.thread-ui-shell .matter-workbench svg {\n  stroke-width: 1.65;\n}\n.thread-ui-shell .matter-workbench :where(button, a):focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 2px;\n}\n.thread-ui-shell .matter-workbench :where(button, a) {\n  -webkit-tap-highlight-color: transparent;\n}\n.thread-ui-shell .matter-workbench :is(.matter-rail, .matter-topbar, .matter-breadcrumb, .matter-sidebar-heading, .matter-explorer-heading, .matter-notifications-heading) :where(button, a),\n.matter-new-thread {\n  display: inline-flex;\n  flex-shrink: 0;\n  align-items: center;\n  justify-content: center;\n  width: 30px;\n  height: 30px;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  box-shadow: none;\n  transition: background 120ms, color 120ms;\n}\n.thread-ui-shell .matter-workbench :is(.matter-rail, .matter-topbar, .matter-breadcrumb, .matter-sidebar-heading, .matter-explorer-heading, .matter-notifications-heading) :where(button, a):active,\n.matter-new-thread:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench :is(.matter-rail, .matter-topbar, .matter-breadcrumb, .matter-sidebar-heading, .matter-explorer-heading, .matter-notifications-heading) :where(button, a):hover,\n  .matter-new-thread:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .matter-workbench :is(.matter-rail, .matter-topbar, .matter-breadcrumb, .matter-sidebar-heading, .matter-explorer-heading, .matter-notifications-heading) svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-rail {\n  grid-row: 1 / -1;\n  border-right: 1px solid var(--theme-border);\n  display: flex;\n  align-items: center;\n  flex-direction: column;\n  gap: 8px;\n  padding: 4px 0 10px;\n}\n.thread-ui-shell .matter-workbench .matter-rail > .matter-brand {\n  height: 32px;\n  margin-bottom: 4px;\n  font-size: 22px;\n  font-weight: 700;\n  letter-spacing: -3px;\n  color: var(--theme-fg);\n}\n.matter-brand span {\n  color: var(--theme-accent-strong);\n}\n.thread-ui-shell .matter-workbench .matter-rail > button {\n  width: 35px;\n  height: 35px;\n}\n.thread-ui-shell .matter-workbench .matter-rail > button[aria-pressed=true] {\n  color: var(--theme-accent-strong);\n  background: var(--theme-accent-soft);\n}\n.matter-rail-bottom {\n  margin-top: auto;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 8px;\n}\n.matter-watches-toggle {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 4px;\n  padding: 0 8px;\n  flex-shrink: 0;\n  height: 34px;\n  color: var(--theme-fg-muted);\n  border-left: 1px solid var(--theme-border);\n}\n.matter-watches-toggle:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .matter-watches-toggle:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n@media (min-width: 640px) {\n  .matter-explorer .thread-graph-workspace-resizable > [data-panel]:has(> .thread-graph-workspace-explorer-pane) {\n    min-width: 144px !important;\n  }\n}\n.matter-topbar {\n  grid-column: 2 / -1;\n  display: flex;\n  align-items: center;\n  gap: 3px;\n  padding: 0 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-topbar-brand {\n  font-weight: 600;\n  font-size: 12px;\n  margin: 0 10px;\n}\n.matter-topbar-separator {\n  height: 15px;\n  width: 1px;\n  background: var(--theme-border-strong);\n  margin-right: 7px;\n}\n.thread-ui-shell .matter-workbench .matter-topbar .matter-search-trigger {\n  width: auto;\n  gap: 8px;\n  padding: 0 10px;\n  margin-left: 8px;\n  font-size: 12px;\n  white-space: nowrap;\n}\n.matter-topbar-end {\n  margin-left: auto;\n  display: flex;\n  align-items: center;\n  gap: 7px;\n}\n.matter-topbar-end > button {\n  position: relative;\n}\n.matter-connection > * {\n  display: flex;\n  align-items: center;\n}\n.matter-connection .device-connection-button {\n  width: 28px;\n  height: 28px;\n}\n.matter-connection .device-connection-button > svg {\n  width: 17px;\n  height: 17px;\n}\n.matter-unread {\n  position: absolute;\n  width: 5px;\n  height: 5px;\n  right: 5px;\n  top: 5px;\n  border-radius: 50%;\n  background: var(--theme-accent-solid);\n}\n.matter-sidebar {\n  display: flex;\n  flex-direction: column;\n  min-height: 0;\n  overflow-y: auto;\n  padding: 14px 12px 10px;\n  border-right: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n}\n.matter-sidebar-heading {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  height: 30px;\n  margin-bottom: 17px;\n  padding: 0 8px;\n  font-weight: 600;\n}\n.matter-sidebar-upper {\n  display: flex;\n  flex: 0 0 50%;\n  flex-direction: column;\n  min-height: 0;\n  padding-bottom: 18px;\n}\n.matter-sidebar-upper.is-alone {\n  flex: 1 1 auto;\n}\n.matter-sidebar-upper:not(.is-alone) > .matter-sidebar-scroll {\n  -webkit-mask-image:\n    linear-gradient(\n      to bottom,\n      #000 calc(100% - 18px),\n      transparent);\n  mask-image:\n    linear-gradient(\n      to bottom,\n      #000 calc(100% - 18px),\n      transparent);\n}\n.matter-sidebar-recents {\n  display: flex;\n  flex: 1 1 0;\n  flex-direction: column;\n  min-height: 0;\n}\n.matter-sidebar-recents.is-folded {\n  flex: none;\n}\n.matter-sidebar-resize {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: -4px;\n  z-index: 30;\n  width: 7px;\n  cursor: col-resize;\n  touch-action: none;\n}\n.matter-sidebar-resize::after {\n  content: "";\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: 3px;\n  width: 1px;\n  background: transparent;\n  transition: background 120ms;\n}\n.matter-sidebar-resize:is(:active, :focus-visible, :active)::after {\n  background: var(--theme-accent-solid);\n}\n@media (hover: hover) {\n  .matter-sidebar-resize:is(:hover, :focus-visible, :active)::after {\n    background: var(--theme-accent-solid);\n  }\n}\n.matter-sidebar-resize:focus-visible {\n  outline: none;\n}\n@media (min-width: 640px) {\n  .thread-ui-shell .matter-workbench .matter-sidebar {\n    padding: 0 0 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar > .matter-nav-strip {\n    margin-bottom: 10px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar-heading {\n    margin-bottom: 8px;\n    padding: 0 16px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-sidebar-scroll {\n    padding: 0 4px 0 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar-recents > .matter-section-heading {\n    width: auto;\n    margin: 0 4px 0 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar :is(.matter-drawer-tools, .matter-drawer-home, .matter-sidebar-error) {\n    margin-inline: 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar-footer {\n    padding: 14px 16px 0;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-section {\n    margin-bottom: 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-row {\n    gap: 8px;\n    margin: 1px 0;\n    padding: 4px 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-copy {\n    gap: 0;\n    line-height: 16px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-copy small {\n    line-height: 14px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .matter-thread-row {\n    padding-right: 24px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row {\n    padding-right: 58px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-agent-toggle {\n    right: 24px;\n    height: 22px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions {\n    right: 2px;\n    width: 22px;\n    height: 26px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .recent-thread-actions svg {\n    transform: rotate(90deg);\n  }\n}\n@media (min-width: 640px) and (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions {\n    opacity: 0;\n    transition: opacity 120ms;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry:is(:hover, :has(:focus-visible)) > .recent-thread-actions,\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions[aria-expanded=true] {\n    opacity: 1;\n  }\n}\n.matter-sidebar-scroll {\n  flex: 1 1 auto;\n  min-height: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.matter-section-heading {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  height: 34px;\n  flex-shrink: 0;\n  width: 100%;\n  padding: 0 8px;\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n  text-align: left;\n}\n.matter-section-heading-row {\n  display: flex;\n  align-items: center;\n  min-width: 0;\n}\n.matter-section-heading-row > .matter-section-heading {\n  flex: 1;\n  min-width: 0;\n}\n.matter-section-add {\n  display: flex;\n  flex: none;\n  align-items: center;\n  margin-left: 2px;\n}\n.thread-ui-shell .matter-workbench .matter-section-add :is(button, a) {\n  width: 26px;\n  height: 26px;\n  border-radius: 7px;\n}\n.thread-ui-shell .matter-workbench .matter-section-add svg {\n  width: 15px;\n  height: 15px;\n}\n.matter-section-heading svg {\n  width: 13px;\n  height: 13px;\n}\n.matter-section-heading svg:last-child,\n.matter-section-count {\n  margin-left: auto;\n  color: var(--theme-fg-muted);\n}\n.matter-thread-section {\n  margin-bottom: 14px;\n}\n.matter-sidebar-hint,\n.matter-sidebar-error {\n  padding: 8px 12px;\n  font-size: 12px;\n  line-height: 1.6;\n  color: var(--theme-fg-muted);\n}\n.matter-sidebar-error {\n  color: #c0544b;\n}\n.matter-thread-row {\n  display: flex;\n  align-items: center;\n  gap: 9px;\n  padding: 7px 10px;\n  margin: 2px 0;\n  border: 1px solid transparent;\n  border-radius: 7px;\n  color: var(--theme-fg-soft);\n  transition: background-color 150ms, border-color 150ms;\n}\n.matter-thread-row:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-thread-row:hover {\n    background: var(--theme-hover);\n  }\n}\n.matter-thread-row[aria-current=page] {\n  background: var(--theme-panel);\n  border-color: var(--theme-border);\n  box-shadow: 0 1px 2px rgb(18 24 32 / 3%);\n  color: var(--theme-fg);\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-row {\n  color: #c1cad1;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-row:active {\n  background: #202a32;\n}\n@media (hover: hover) {\n  .thread-ui-shell[data-theme-effective=dark] .matter-thread-row:hover {\n    background: #202a32;\n  }\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-row[aria-current=page] {\n  background: #2a3943;\n  border-color: #536977;\n  color: #f4f7f6;\n  box-shadow: none;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-row[aria-current=page] small {\n  color: #c1ced6;\n}\n.matter-copy-notice {\n  padding: 7px 9px;\n  font-size: 11px;\n  line-height: 1.5;\n  color: var(--theme-fg-muted);\n}\n.thread-graph-dialog.matter-settings-dialog {\n  width: min(640px, calc(100vw - 32px));\n  max-width: min(640px, calc(100vw - 32px));\n  max-height: calc(100dvh - 32px);\n  padding: 22px;\n  border-radius: 14px;\n  background: var(--theme-panel);\n  border-color: var(--theme-border-strong);\n  box-shadow: 0 24px 72px rgb(0 0 0 / 24%);\n  --action-primary-bg: var(--theme-accent-solid);\n  --action-primary-bg-hover: var(--theme-accent-solid-hover);\n  --action-primary-fg: var(--theme-accent-solid-fg);\n  --theme-accent: var(--theme-accent-solid);\n  --theme-accent-fg: var(--theme-accent-solid-fg);\n}\n.matter-settings-overlay {\n  background: rgb(12 18 22 / 40%);\n  backdrop-filter: blur(3px);\n}\n.matter-settings-dialog [data-slot=dialog-header] {\n  gap: 7px;\n  text-align: left;\n  padding-bottom: 4px;\n}\n.matter-settings-dialog [data-slot=dialog-title] {\n  font-size: 16px;\n  font-weight: 600;\n  letter-spacing: -.02em;\n}\n.matter-settings-dialog [data-slot=dialog-description] {\n  font-size: 12px;\n  line-height: 1.6;\n}\n.matter-settings-dialog [data-slot=dialog-close] {\n  display: grid;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  right: 16px;\n  top: 16px;\n  border-radius: 7px;\n}\n.matter-settings-dialog [data-slot=dialog-close]:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-settings-dialog [data-slot=dialog-close]:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-card {\n  padding: 12px 14px;\n  background: var(--theme-panel);\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(.thread-graph-theme-mode-group, .thread-graph-settings-tabs) {\n  background: var(--theme-surface);\n  border: 1px solid var(--theme-border);\n  padding: 3px;\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(.thread-graph-theme-mode-button, .thread-graph-settings-tab-button) {\n  font-size: 12px;\n  min-height: 32px;\n  padding: 6px 12px;\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(.thread-graph-theme-mode-button.is-selected, .thread-graph-settings-tab-button.is-active) {\n  background: var(--theme-panel);\n  color: var(--theme-accent-strong);\n  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);\n}\n.thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-body dl > div {\n  display: grid;\n  grid-template-columns: 110px minmax(0, 1fr);\n  column-gap: 12px;\n  padding-block: 9px;\n  margin: 0;\n  border-bottom: 1px solid var(--theme-border);\n  font-size: 12px;\n  line-height: 1.6;\n}\n.thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-body dl > div:last-child {\n  border-bottom: 0;\n}\n.thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-body dd {\n  margin-top: 0;\n  min-width: 0;\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(input, select, textarea) {\n  accent-color: var(--theme-accent-solid);\n  border-color: var(--theme-border-strong);\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(button, input, select, textarea):focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 2px;\n}\n@media (max-width: 639px) {\n  .thread-graph-dialog.matter-settings-dialog {\n    padding: 18px;\n  }\n  .thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-body dl > div {\n    grid-template-columns: 80px minmax(0, 1fr);\n  }\n}\n.matter-thread-copy {\n  display: flex;\n  flex-direction: column;\n  gap: 1px;\n  min-width: 0;\n  line-height: 18px;\n  font-size: 12px;\n}\n.matter-thread-copy > * {\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n}\n.matter-thread-copy small {\n  font-size: 10.5px;\n  color: var(--theme-fg-muted);\n}\n.matter-status-dot {\n  flex-shrink: 0;\n  display: inline-block;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  border: 1.5px solid var(--theme-border-contrast);\n  background: transparent;\n}\n.matter-status-dot[data-status=running] {\n  width: 12px;\n  height: 12px;\n  border-width: 2.5px;\n  border-color: oklch(0.48 0.19 255);\n  border-top-color: transparent;\n  animation: matter-running 1s linear infinite;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-status-dot[data-status=running] {\n  border-color: oklch(0.8 0.12 245);\n  border-top-color: transparent;\n}\n.matter-status-dot[data-status=agents-running] {\n  width: 10px;\n  height: 10px;\n  border-color: #8066cd;\n  background:\n    radial-gradient(\n      circle,\n      #8066cd 0 2px,\n      transparent 2.5px);\n  animation: matter-agents-running 1.8s ease-in-out infinite;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-status-dot[data-status=agents-running] {\n  border-color: #b39af2;\n  background:\n    radial-gradient(\n      circle,\n      #b39af2 0 2px,\n      transparent 2.5px);\n}\n.matter-status-dot[data-status=unread] {\n  background: var(--theme-accent-solid);\n  border-color: var(--theme-accent-solid);\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-solid) 12%, transparent);\n}\n.matter-status-dot:is([data-status=failed], [data-status=error]) {\n  background: #d56b62;\n  border-color: #d56b62;\n  border-radius: 2px;\n  transform: rotate(45deg);\n}\n.matter-status-dot[data-status=unknown] {\n  border-style: dotted;\n  opacity: .6;\n}\n.matter-status-dot[data-status=interrupted] {\n  border-color: #c08a3e;\n  background: #c08a3e;\n  border-radius: 1.5px;\n}\n@keyframes matter-running {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes matter-agents-running {\n  50% {\n    opacity: .45;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-status-dot:is([data-status=running], [data-status=agents-running]) {\n    animation: none;\n  }\n}\n.matter-thread-avatar {\n  display: none;\n}\n.matter-sidebar-footer {\n  margin-top: auto;\n  padding: 20px 8px 0;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.matter-main {\n  position: relative;\n  min-width: 0;\n  min-height: 0;\n  display: flex;\n  flex-direction: column;\n  background: var(--theme-bg);\n}\n.matter-tabs-row {\n  position: relative;\n  display: flex;\n  flex-wrap: wrap;\n  min-width: 0;\n  flex-shrink: 0;\n  background: var(--theme-surface);\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-tabs-main {\n  position: relative;\n  display: flex;\n  flex: 1;\n  min-width: 0;\n}\n.matter-tabs-search {\n  display: flex;\n  flex: none;\n  align-items: stretch;\n  width: 38px;\n  border-right: 1px solid var(--theme-border);\n}\n.thread-ui-shell .matter-workbench .matter-tabs-search .matter-search-trigger {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .matter-workbench .matter-tabs-search .matter-search-trigger:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-tabs-search .matter-search-trigger:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.matter-tabs-search .matter-search-trigger > span {\n  display: none;\n}\n.matter-tabs-search .matter-search-trigger svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-tabs-search .workbench-search.is-open {\n  position: absolute;\n  inset: 0;\n  z-index: 8;\n  display: flex;\n  align-items: center;\n  padding: 0 8px;\n  background: var(--theme-surface);\n  animation: matter-tabs-search-in 120ms ease-out;\n}\n.matter-tabs-search .workbench-search.is-open .workbench-search-field {\n  flex: 1;\n  max-width: 640px;\n  height: 28px;\n}\n@keyframes matter-tabs-search-in {\n  from {\n    opacity: 0;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-tabs-search .workbench-search.is-open {\n    animation: none;\n  }\n}\n.matter-tabs-end {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 2px;\n  padding: 0 6px;\n  border-left: 1px solid var(--theme-border);\n}\n.matter-tabs-end .matter-connection:empty {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .matter-tabs-end > button {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 30px;\n  height: 30px;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .matter-workbench .matter-tabs-end > button:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-tabs-end > button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.matter-tabs-end > button svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-nav-strip {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 2px;\n  height: 35px;\n  padding: 0 8px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-tabs-row > .matter-nav-strip {\n  height: auto;\n  border-bottom: 0;\n  border-right: 1px solid var(--theme-border);\n}\n.thread-ui-shell .matter-workbench .matter-nav-strip > :is(button, a) {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 30px;\n  height: 30px;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .matter-workbench .matter-nav-strip > :is(button, a):active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-nav-strip > :is(button, a):hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.matter-nav-strip > :is(button, a) svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-toolbar-toggle {\n  flex-shrink: 0;\n  width: 36px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  color: var(--theme-fg-soft);\n  border-left: 1px solid var(--theme-border);\n}\n.matter-toolbar-toggle svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-toolbar-toggle:active {\n  background: var(--theme-hover);\n}\n.matter-thread-tabs {\n  flex: 1;\n  min-width: 0;\n  height: 34px;\n  flex-shrink: 0;\n  display: flex;\n  align-items: stretch;\n  overflow-x: auto;\n  overflow-y: hidden;\n  background: var(--theme-surface);\n}\n.matter-thread-tabs > a,\n.matter-group-tab {\n  display: flex;\n  align-items: center;\n  flex-shrink: 0;\n  gap: 9px;\n  min-width: 76px;\n  max-width: 180px;\n  padding: 0 10px;\n  border-right: 1px solid var(--theme-border);\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n}\n.matter-thread-tabs > a > span:last-child,\n.matter-group-tab > span:last-child {\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.matter-thread-tabs > a[aria-current=page],\n.matter-group-tab[aria-current=page] {\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n  box-shadow: inset 0 -2px var(--theme-accent-solid);\n}\n.matter-group-toggle {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  flex-shrink: 0;\n  padding: 0 8px;\n  border-right: 1px solid var(--theme-border);\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.matter-group-toggle:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-group-toggle:hover {\n    background: var(--theme-hover);\n  }\n}\n.matter-thread-group {\n  position: relative;\n}\n.matter-group-tab {\n  position: relative;\n}\n.matter-tab-agents-slot {\n  flex: none;\n  align-self: stretch;\n}\n.matter-thread-group > .matter-group-tab > .matter-tab-agents-slot {\n  margin-inline: -5px;\n}\n.thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge {\n  position: absolute;\n  top: 50%;\n  left: var(--tab-agents-x, 0);\n  z-index: 1;\n  transform: translateY(-50%);\n  display: inline-flex;\n  align-items: center;\n  gap: 1px;\n  height: 17px;\n  padding: 0 1px;\n  border: 0;\n  border-radius: 4px;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-variant-numeric: tabular-nums;\n  line-height: 1;\n}\n.thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:active, [aria-expanded=true]) {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:hover, [aria-expanded=true]) {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.matter-thread-group > .matter-group-toggle.is-badge > svg {\n  width: 11px;\n  height: 11px;\n}\n.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot {\n  position: absolute;\n  left: var(--tab-icon-right);\n  top: var(--tab-icon-bottom);\n  translate: -70% -70%;\n  width: 8px;\n  height: 8px;\n  margin: 0;\n  box-shadow: 0 0 0 2px var(--theme-surface);\n}\n.matter-thread-group[data-avatar] > .matter-group-tab[aria-current=page] > .matter-thread-avatar + .matter-status-dot {\n  box-shadow: 0 0 0 2px var(--theme-bg);\n}\n.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot:is([data-status=idle], [data-status=running], [data-status=agents-running]) {\n  visibility: hidden;\n}\n.matter-thread-group[data-avatar] > .matter-group-tab {\n  --tab-agents-ring: #b65bd3;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-group[data-avatar] > .matter-group-tab {\n  --tab-agents-ring: #d99cf3;\n}\n.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status=running]) > .matter-thread-avatar {\n  --tab-ring: var(--theme-accent-solid);\n  animation: matter-tab-running 1.8s ease-in-out infinite;\n}\n.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status=agents-running]) > .matter-thread-avatar {\n  --tab-ring: var(--tab-agents-ring);\n  animation: matter-tab-running 1.8s ease-in-out infinite;\n}\n@keyframes matter-tab-running {\n  0%, 100% {\n    box-shadow: 0 0 0 2px var(--tab-ring);\n  }\n  50% {\n    box-shadow: 0 0 0 2px var(--tab-ring), 0 0 0 4.5px color-mix(in srgb, var(--tab-ring) 28%, transparent);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot:is([data-status=running], [data-status=agents-running])) > .matter-thread-avatar {\n    animation: none;\n    box-shadow: 0 0 0 2px var(--tab-ring);\n  }\n}\n.matter-thread-group:has(> .matter-tab-close) {\n  border-right: 1px solid var(--theme-border);\n}\n.matter-thread-group:has(> .matter-tab-close) > :is(.matter-group-tab, .matter-group-toggle) {\n  border-right: 0;\n}\n.matter-thread-group:has(> .matter-tab-close):has(> .matter-group-tab[aria-current=page]) {\n  background: var(--theme-bg);\n}\n.matter-thread-group:has(> .matter-tab-close):has(> .matter-group-tab[aria-current=page]) > .matter-group-tab {\n  padding-right: 4px;\n}\n.thread-ui-shell .matter-workbench .matter-thread-group:not(:has(> .matter-group-tab[aria-current=page])) > .matter-tab-close {\n  position: absolute;\n  top: 50%;\n  right: 4px;\n  z-index: 2;\n  margin: 0;\n  transform: translateY(-50%);\n  background: color-mix(in srgb, var(--theme-surface) 92%, transparent);\n  box-shadow: 0 0 0 1px var(--theme-border), -6px 0 8px var(--theme-surface);\n}\n.matter-thread-group {\n  max-width: 200px;\n}\n.matter-thread-group > .matter-group-tab {\n  flex: 0 1 auto;\n  min-width: 0;\n  max-width: none;\n}\n.matter-thread-group > .matter-group-tab > span:last-child {\n  min-width: 0;\n}\n.matter-thread-group > :is(.matter-group-toggle, .matter-tab-close) {\n  flex: none;\n}\n.thread-ui-shell .matter-workbench .matter-tab-close {\n  display: flex;\n  flex: none;\n  align-items: center;\n  justify-content: center;\n  align-self: center;\n  width: 22px;\n  height: 22px;\n  margin: 0 6px 0 2px;\n  padding: 0;\n  border: 0;\n  border-radius: 5px;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  opacity: 0;\n}\n.matter-tab-close svg {\n  width: 13px;\n  height: 13px;\n}\n.matter-thread-group:is(:has(:focus-visible), :has(> .matter-group-tab[aria-current=page])) > .matter-tab-close {\n  opacity: 1;\n}\n@media (hover: hover) {\n  .matter-thread-group:is(:hover, :has(:focus-visible), :has(> .matter-group-tab[aria-current=page])) > .matter-tab-close {\n    opacity: 1;\n  }\n}\n.thread-ui-shell .matter-workbench .matter-tab-close:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-tab-close:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n@media (hover: none) {\n  .thread-ui-shell .matter-workbench .matter-tab-close {\n    opacity: 1;\n  }\n}\n.matter-new-thread {\n  align-self: center;\n  margin: 0 6px;\n}\n.matter-tab-add {\n  display: flex;\n  flex: none;\n  align-items: center;\n  height: 34px;\n}\n.matter-new-thread svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-breadcrumb {\n  order: 10;\n  flex: 0 0 100%;\n  min-width: 0;\n  background: var(--theme-surface);\n  border-top: 1px solid var(--theme-border);\n  display: flex;\n  align-items: center;\n  height: 40px;\n  flex-shrink: 0;\n  gap: 8px;\n  padding: 0 16px;\n  font-size: 11.5px;\n  color: var(--theme-fg-soft);\n}\n.matter-workspace-path {\n  flex: 0 1 45%;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-family: ui-monospace, monospace;\n}\n.matter-current-title {\n  flex: 0 1 auto;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.matter-breadcrumb > svg {\n  flex-shrink: 0;\n  width: 12px !important;\n}\n.matter-breadcrumb button[aria-pressed=true] {\n  color: var(--theme-accent-strong);\n}\n@media (hover: none) {\n  .thread-ui-shell .matter-workbench .matter-breadcrumb :is(button, a):not(:active) {\n    background: transparent;\n    box-shadow: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-breadcrumb :is(button, a):active {\n    background: var(--theme-hover);\n  }\n}\n.matter-thread-actions {\n  display: flex;\n  align-items: center;\n  gap: 3px;\n  margin-left: auto;\n  flex-shrink: 0;\n}\n.matter-thread-actions > div {\n  display: flex;\n  align-items: center;\n  gap: 3px;\n}\n.matter-content {\n  display: flex;\n  flex: 1;\n  min-height: 0;\n  position: relative;\n}\n.matter-chat {\n  --matter-reading-width: max(880px, 78%);\n  flex: 1;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.matter-content.has-explorer .matter-chat {\n  --matter-reading-width: 100%;\n}\n.matter-workspace-home {\n  display: flex;\n  flex-direction: column;\n  min-height: 0;\n}\n.matter-workspace-home > .matter-workspace-intro {\n  flex: none;\n  height: auto;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  padding: 14px 16px 8px;\n  text-align: left;\n}\n.matter-workspace-home > .matter-workspace-intro > :is(svg, p) {\n  display: none;\n}\n.matter-workspace-home > .matter-workspace-intro > h1 {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 17px;\n}\n.matter-workspace-home > .matter-workspace-intro > a {\n  flex: none;\n  padding: 8px 12px;\n}\n.matter-workspace-home-list {\n  flex: 1;\n  min-height: 0;\n  overflow-y: auto;\n  padding: 0 6px 12px;\n}\n.matter-chat > div {\n  height: 100%;\n}\n.matter-explorer {\n  position: relative;\n  flex-shrink: 0;\n  display: flex;\n  flex-direction: column;\n  width: min(var(--explorer-width, 360px), max(260px, calc(100% - 320px)));\n  min-height: 0;\n  border-left: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n}\n.matter-explorer-resize {\n  position: absolute;\n  z-index: 5;\n  left: -4px;\n  top: 0;\n  bottom: 0;\n  width: 8px;\n  cursor: col-resize;\n  touch-action: none;\n}\n.matter-explorer-resize:active,\n.matter-explorer-resize:focus-visible {\n  background: color-mix(in srgb, var(--theme-accent-solid) 30%, transparent);\n  outline: none;\n}\n@media (hover: hover) {\n  .matter-explorer-resize:hover {\n    background: color-mix(in srgb, var(--theme-accent-solid) 30%, transparent);\n    outline: none;\n  }\n}\n.matter-notification-summary {\n  margin: 5px 0;\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n  line-height: 1.5;\n  display: -webkit-box;\n  -webkit-line-clamp: 3;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n}\n.thread-ui-shell .matter-workbench .thread-graph-message-time-row .thread-graph-message-time {\n  opacity: 1;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-workbench .animate-pulse.rounded-full {\n  background: var(--theme-accent-strong);\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-stop-button {\n  right: 0 !important;\n  top: 0 !important;\n  width: 32px !important;\n  height: 32px !important;\n  border-radius: 50%;\n  background: color-mix(in srgb, #c83b42 12%, var(--theme-panel));\n  color: #b62f38;\n  border: 1px solid color-mix(in srgb, #c83b42 30%, var(--theme-border)) !important;\n  box-shadow: none;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-workbench .thread-graph-composer-stop-button {\n  color: #ff9b9f;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-stop-button:active {\n  background: color-mix(in srgb, #c83b42 22%, var(--theme-panel));\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .thread-graph-composer-stop-button:hover {\n    background: color-mix(in srgb, #c83b42 22%, var(--theme-panel));\n  }\n}\n.thread-ui-shell .matter-workbench :is(.thread-graph-composer-stop-button, .thread-graph-composer-send-button) {\n  min-width: 32px !important;\n  min-height: 32px !important;\n}\n.matter-explorer > :last-child {\n  flex: 1;\n  min-height: 0;\n}\n.matter-explorer-heading {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 5px 12px;\n  border-bottom: 1px solid var(--theme-border);\n  font-size: 12px;\n}\n.matter-workbench.is-sidebar-hidden {\n  grid-template-columns: 49px 0 minmax(0, 1fr);\n}\n.matter-workbench.is-sidebar-hidden .matter-sidebar {\n  visibility: hidden;\n  padding: 0;\n}\n.thread-ui-shell .matter-workbench .matter-mobile-close,\n.matter-sidebar-scrim {\n  display: none;\n}\n.matter-popover-scrim {\n  position: fixed;\n  inset: 0;\n  z-index: 69;\n  cursor: default;\n}\n.matter-notifications {\n  position: absolute;\n  top: 44px;\n  right: 12px;\n  z-index: 70;\n  width: min(360px, calc(100vw - 24px));\n  max-height: 70vh;\n  overflow: auto;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 12px;\n  background: var(--theme-panel);\n  box-shadow: var(--matter-composer-shadow);\n}\n.matter-notifications-heading {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--theme-border);\n  font-weight: 600;\n}\n.matter-notifications > p {\n  padding: 24px 18px;\n  font-size: 13px;\n  color: var(--theme-fg-muted);\n  line-height: 1.6;\n}\n.matter-notifications > a {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  padding: 14px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-notification-group {\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-notification-root {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 10px 14px 4px;\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n  font-weight: 600;\n}\n.matter-notification-root > svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n}\n.matter-notification-root > span {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.matter-notification-group > a:not(.matter-notification-root) {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-left: 21px;\n  padding: 10px 14px 10px 12px;\n  border-left: 1px solid var(--theme-border);\n}\n.matter-notifications small {\n  display: block;\n  margin-top: 5px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-host {\n  position: absolute;\n  inset: auto 0 32px;\n  z-index: 30;\n  pointer-events: none;\n  background: transparent;\n  border: 0;\n  padding: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-layer {\n  width: 100%;\n  max-width: var(--matter-reading-width);\n  margin: 0 auto;\n  padding: 0 28px;\n  background: transparent;\n  border: 0;\n  pointer-events: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-layer > .thread-composer-pending-queue,\n.thread-ui-shell .matter-workbench .thread-graph-composer-form > * {\n  pointer-events: auto;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-form {\n  pointer-events: none;\n  padding: 0;\n  border: 0;\n  background: transparent;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-shell {\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 22px;\n  background: color-mix(in srgb, var(--theme-panel) 86%, transparent);\n  backdrop-filter: blur(24px) saturate(135%);\n  -webkit-backdrop-filter: blur(24px) saturate(135%);\n  box-shadow: inset 0 1px 0 var(--matter-glass-highlight), var(--matter-composer-shadow);\n  padding: 12px 14px 10px;\n}\n.thread-pane-switch {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  flex: 0 1 auto;\n  min-width: 0;\n  height: 28px;\n  max-width: min(9rem, calc((100vw - 9.75rem) / 2));\n  padding: 0 11px;\n  border: 0;\n  border-radius: 999px;\n  background: color-mix(in srgb, var(--theme-panel) 52%, transparent);\n  color: var(--theme-fg-muted);\n  font-size: 11.5px;\n  font-weight: 500;\n  line-height: 1;\n  pointer-events: auto;\n  backdrop-filter: blur(18px) saturate(130%);\n  -webkit-backdrop-filter: blur(18px) saturate(130%);\n  box-shadow:\n    inset 0 1px 0 var(--matter-glass-highlight),\n    0 0 0 1px color-mix(in srgb, var(--theme-border) 70%, transparent),\n    0 3px 10px rgb(18 32 25 / 14%);\n  transition:\n    color 150ms ease,\n    background-color 150ms ease,\n    box-shadow 150ms ease;\n}\n.thread-pane-switch::after {\n  content: "";\n  position: absolute;\n  inset: -8px -3px;\n}\n.thread-pane-switch > span {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-pane-switch-glyph {\n  width: 13px;\n  height: 13px;\n  flex: none;\n  opacity: 0.8;\n}\n.thread-pane-switch:active {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-pane-switch:hover {\n    color: var(--theme-fg);\n  }\n}\n.thread-pane-switch[aria-pressed=true] {\n  color: var(--theme-accent-strong);\n  background: var(--theme-accent-soft);\n  box-shadow:\n    inset 0 1px 0 var(--matter-glass-highlight),\n    0 0 0 1px color-mix(in srgb, var(--theme-accent-strong) 38%, transparent),\n    0 3px 10px rgb(18 32 25 / 14%);\n}\n.thread-pane-switch[aria-pressed=true] .thread-pane-switch-glyph {\n  opacity: 1;\n}\n.thread-pane-switch:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 2px;\n}\n.workbench-pane-switch-fallback {\n  display: flex;\n  justify-content: center;\n  gap: 8px;\n  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));\n  border-top: 1px solid var(--theme-border);\n}\n@media (prefers-reduced-transparency: reduce) {\n  .thread-pane-switch {\n    background: var(--theme-panel);\n    backdrop-filter: none;\n    -webkit-backdrop-filter: none;\n  }\n}\n.matter-thread-entry {\n  display: flex;\n  align-items: center;\n  min-width: 0;\n  position: relative;\n}\n.matter-thread-entry > .matter-thread-row {\n  flex: 1;\n  min-width: 0;\n  padding-right: 32px;\n}\n.matter-thread-entry > .recent-thread-actions {\n  position: absolute;\n  right: 3px;\n}\n.matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row {\n  padding-right: 70px;\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle {\n  position: absolute;\n  right: 34px;\n  display: inline-flex;\n  align-items: center;\n  gap: 1px;\n  height: 22px;\n  padding: 0 2px;\n  border: 0;\n  border-radius: 4px;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n  line-height: 1;\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-agent-toggle:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded=true] {\n  color: var(--theme-fg-soft, var(--theme-fg));\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle > svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle > .matter-agent-toggle-chevron {\n  width: 10px;\n  height: 10px;\n  transition: transform 140ms ease;\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded=true] > .matter-agent-toggle-chevron {\n  transform: rotate(90deg);\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle[data-running] > svg:first-child {\n  color: #20bc87;\n}\n.matter-agent-children {\n  position: relative;\n  margin: 0 0 4px 22px;\n  padding-left: 6px;\n}\n.matter-agent-children::before {\n  content: "";\n  position: absolute;\n  top: 2px;\n  bottom: 6px;\n  left: 0;\n  width: 1px;\n  background: var(--theme-border);\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-ui-shell .matter-workbench .matter-agent-toggle > .matter-agent-toggle-chevron {\n    transition: none;\n  }\n}\n@media (prefers-reduced-transparency: reduce) {\n  .thread-ui-shell .matter-workbench .thread-graph-composer-shell {\n    background: var(--theme-panel);\n    backdrop-filter: none;\n  }\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-shell:has(:focus-visible, input:focus, textarea:focus, select:focus, [contenteditable=true]:focus) {\n  border-color: var(--theme-accent-solid);\n  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent-solid) 10%, transparent), var(--matter-composer-shadow);\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-input-group {\n  border: 0;\n  padding: 0;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-input {\n  min-height: 64px;\n  max-height: 200px;\n  padding: 3px 42px 8px 2px;\n  font-size: 15px;\n  line-height: 1.5;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-prompt-region {\n  padding: 0;\n  border: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-toolbar {\n  padding: 5px 0 0;\n  margin: 0;\n  border: 0;\n  gap: 5px;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-icon-button {\n  background: var(--theme-surface-strong);\n  border: 0;\n  width: 32px;\n  height: 32px;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-chip-button {\n  background: transparent;\n  border: 0;\n  font-size: 12px;\n  font-weight: 500;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-send-button {\n  width: 32px;\n  height: 32px;\n  border: 0;\n  border-radius: 50%;\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-send-button:disabled {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-toolbar [data-action=switch-to-shell] {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .thread-chat-usage-footer {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .thread-timeline-surface {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group {\n  padding: 6px 0;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-card {\n  border: 0;\n  background: transparent;\n  box-shadow: none;\n  padding: 2px 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-icon > span {\n  width: 18px;\n  height: 24px;\n  background: transparent;\n  border: 0;\n  color: var(--theme-fg-muted);\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-icon > span > span {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-summary > span {\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n  letter-spacing: 0;\n  text-transform: none;\n  border: 0;\n  background: transparent;\n  padding: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-list {\n  margin-top: 2px;\n  padding: 0;\n  margin-left: -28px;\n  border-top: 0;\n  border-left: 0;\n  border-radius: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-detail-row {\n  position: relative;\n  border: 0;\n  border-radius: 6px;\n  background: transparent;\n  padding: 6px 8px;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-detail-row::before {\n  content: none;\n  position: absolute;\n  top: 17px;\n  left: -18px;\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  background: var(--theme-accent-solid);\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-detail-row:active {\n  background: var(--theme-surface);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .thread-graph-history-detail-row:hover {\n    background: var(--theme-surface);\n  }\n}\n.thread-ui-shell .matter-workbench .thread-graph-chat-panel,\n.thread-ui-shell .matter-workbench .thread-graph-scroll-container {\n  background: var(--theme-bg);\n}\n.thread-ui-shell[data-theme-effective=light] .matter-workbench .thread-graph-code-block {\n  background: var(--theme-panel);\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .matter-workbench .thread-graph-message-list {\n  width: 100%;\n  max-width: var(--matter-reading-width);\n  padding-inline: 28px;\n  margin: 0 auto;\n}\n.thread-ui-shell .matter-workbench .thread-graph-turn {\n  padding-inline: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-worked-summary {\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.thread-ui-shell .matter-workbench .thread-graph-worked-rule {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-worked-label {\n  font-size: 12px;\n  font-weight: 500;\n}\n.thread-ui-shell .matter-workbench .thread-execution-timeline .thread-graph-message-bubble {\n  font-size: 13px;\n  line-height: 1.6;\n  padding-block: 2px;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-toggle {\n  padding-block: 5px;\n  min-height: 28px;\n}\n.thread-ui-shell .matter-workbench .matter-command-step {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  width: 100%;\n  min-width: 0;\n  min-height: 32px;\n  padding: 5px 7px;\n  border-radius: 5px;\n  text-align: left;\n  line-height: 20px;\n  font-size: 11px;\n  color: var(--theme-fg-soft);\n  transition: background-color 150ms;\n}\n.matter-command-step:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-command-step:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-list > .matter-command-step {\n  margin-block: 0;\n}\n.matter-step-number {\n  font-size: 10px;\n  font-variant-numeric: tabular-nums;\n  color: var(--theme-fg-muted);\n}\n.matter-step-title {\n  min-width: 0;\n  flex: 1;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg);\n}\n.matter-step-status {\n  display: flex;\n  flex-shrink: 0;\n}\n.matter-step-status.is-completed {\n  color: var(--theme-accent-strong);\n}\n.matter-step-status.is-failed {\n  color: #d56b62;\n}\n.matter-step-status.is-pending {\n  color: #418ad4;\n}\n.matter-step-time {\n  flex-shrink: 0;\n  font-size: 10px;\n  font-variant-numeric: tabular-nums;\n  color: var(--theme-fg-muted);\n}\n.matter-step-chevron {\n  flex-shrink: 0;\n  color: var(--theme-fg-muted);\n  opacity: 0;\n}\n.thread-diff {\n  font: 12px/1.7 ui-monospace, monospace;\n  min-width: max-content;\n}\n.thread-diff-line {\n  display: flex;\n  min-height: 1.7em;\n  padding-right: 12px;\n}\n.thread-diff-number {\n  width: 4ch;\n  text-align: right;\n  margin-right: 1ch;\n  color: var(--theme-fg-muted);\n  user-select: none;\n}\n.thread-diff-sign {\n  width: 2ch;\n  flex-shrink: 0;\n}\n.thread-diff-line.is-add {\n  background: light-dark(oklch(91% .045 150), oklch(29% .05 150));\n}\n.thread-diff-line.is-remove {\n  background: light-dark(oklch(91% .04 25), oklch(29% .05 25));\n}\n.thread-diff-line.is-add .thread-diff-sign {\n  color: light-dark(oklch(40% .12 150), oklch(77% .14 150));\n}\n.thread-diff-line.is-remove .thread-diff-sign {\n  color: light-dark(oklch(43% .16 25), oklch(77% .12 25));\n}\n.thread-diff-line.is-meta {\n  color: var(--theme-fg-muted);\n}\n.thread-history-direct-row {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  padding: 3px 0;\n  font-size: 11px;\n  color: var(--theme-fg-soft);\n}\n.thread-history-direct-action {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex: 1;\n  min-width: 0;\n  text-align: left;\n  border-radius: 6px;\n  padding: 4px 2px;\n}\n.thread-history-direct-action:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-history-direct-action:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-history-direct-action:focus-visible {\n  outline: 2px solid var(--theme-accent-border);\n}\n.thread-history-direct-action .thread-graph-history-tool-icon {\n  display: flex;\n  flex-shrink: 0;\n  width: 18px;\n}\n.thread-history-direct-preview {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-history-direct-preview.is-path {\n  direction: rtl;\n  text-align: left;\n}\n.thread-history-direct-preview.is-expanded {\n  direction: ltr;\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-icon {\n  margin-top: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-verb {\n  font-weight: 500;\n}\n.matter-command-step:is(:active, :focus-visible) .matter-step-chevron {\n  opacity: 1;\n}\n@media (hover: hover) {\n  .matter-command-step:is(:hover, :focus-visible) .matter-step-chevron {\n    opacity: 1;\n  }\n}\n@media (max-width: 1000px) and (min-width: 640px) {\n  .thread-ui-shell .matter-workbench {\n    grid-template-columns: 43px var(--matter-sidebar-width, 200px) minmax(0, 1fr);\n  }\n  .thread-ui-shell .matter-workbench.is-sidebar-hidden {\n    grid-template-columns: 43px 0 minmax(0, 1fr);\n  }\n  .matter-topbar-brand {\n    display: none;\n  }\n  .matter-workspace-path {\n    max-width: 25%;\n  }\n  .matter-current-title {\n    display: none;\n  }\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .matter-workbench,\n  .thread-ui-shell .matter-workbench.is-sidebar-hidden {\n    grid-template-columns: minmax(0, 1fr);\n    grid-template-rows: calc(44px + env(safe-area-inset-top)) minmax(0, 1fr);\n  }\n  .matter-topbar {\n    grid-column: 1;\n    padding: env(safe-area-inset-top) 4px 0;\n    gap: 0;\n  }\n  .matter-topbar-brand,\n  .matter-topbar-separator,\n  .matter-search-trigger span,\n  .matter-topbar [data-action=go-forward] {\n    display: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar [data-action=go-forward] {\n    display: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar .matter-search-trigger {\n    width: 36px;\n    padding: 0;\n    margin: 0;\n  }\n  .matter-rail {\n    padding-top: env(safe-area-inset-top);\n  }\n  .matter-main {\n    grid-column: 1;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar {\n    position: fixed;\n    top: 44px;\n    bottom: 0;\n    left: 0;\n    width: min(270px, calc(100vw - 56px));\n    z-index: 65;\n    visibility: hidden;\n    transform: translateX(-120%);\n    transition: transform 160ms;\n    padding: 12px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar.is-open {\n    visibility: visible;\n    transform: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-mobile-close {\n    display: inline-flex;\n  }\n  .matter-sidebar-scrim {\n    display: block;\n    position: fixed;\n    inset: 44px 0 0 0;\n    background: rgb(0 0 0 / 25%);\n    z-index: 64;\n    opacity: 0;\n    pointer-events: none;\n    transition: opacity 160ms;\n  }\n  .matter-sidebar-scrim[data-open] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n  .matter-workbench .matter-sidebar[data-dragging]:not(#_) {\n    visibility: visible;\n    transition: none;\n  }\n  .matter-sidebar-scrim[data-dragging]:not(#_) {\n    transition: none;\n  }\n  .matter-thread-tabs {\n    scrollbar-width: none;\n    height: 36px;\n  }\n  .matter-thread-tabs > a,\n  .matter-group-tab {\n    min-width: 64px;\n    max-width: 140px;\n    padding: 0 8px;\n  }\n  .matter-thread-tabs::-webkit-scrollbar {\n    display: none;\n  }\n  .matter-breadcrumb {\n    height: 42px;\n    padding: 0 5px;\n    gap: 1px;\n  }\n  .matter-current-title,\n  .matter-breadcrumb > svg {\n    display: none;\n  }\n  .matter-workspace-path {\n    flex: 1;\n    max-width: none;\n    font-size: 10px;\n  }\n  .thread-ui-shell .matter-workbench .matter-breadcrumb button {\n    width: 32px;\n    height: 36px;\n  }\n  .matter-thread-actions,\n  .matter-thread-actions > div {\n    gap: 0;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-host {\n    bottom: max(22px, calc(env(safe-area-inset-bottom) + 14px), calc(var(--thread-composer-keyboard-inset, 0px) + 14px));\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-layer {\n    padding: 0 9px;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-form {\n    padding-top: 0 !important;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-message-list {\n    padding-inline: 9px;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-shell {\n    padding: 10px;\n    border-radius: 18px;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-input {\n    font-size: 16px;\n    min-height: 54px;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-toolbar {\n    flex-wrap: wrap;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-toolbar > div:last-child {\n    gap: 1px;\n  }\n  .matter-explorer {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    z-index: 40;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-workbench *,\n  .matter-workbench *::before {\n    transition: none !important;\n    animation: none !important;\n  }\n}\n.workbench-panels {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.workbench-panels :is(.workbench-pane-heading, .workbench-mobile-views, .workbench-collaboration, .workbench-reference-status) button {\n  display: inline-flex;\n  justify-content: center;\n  align-items: center;\n  gap: 6px;\n  min-height: 32px;\n  padding: 5px 9px;\n  border-radius: 7px;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n}\n.workbench-panels :is(.workbench-pane-heading, .workbench-mobile-views, .workbench-collaboration, .workbench-reference-status) button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-panels :is(.workbench-pane-heading, .workbench-mobile-views, .workbench-collaboration, .workbench-reference-status) button:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-content {\n  position: relative;\n  display: flex;\n  flex: 1;\n  min-width: 0;\n  min-height: 0;\n}\n.workbench-main-column {\n  position: relative;\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n}\n.workbench-pane-grid {\n  display: flex;\n  flex: 1;\n  min-width: 0;\n  min-height: 0;\n}\n.workbench-primary,\n.workbench-reference {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n  flex: 1;\n}\n.workbench-pane-grid.has-reference > .workbench-primary {\n  flex: 0 0 clamp(360px, var(--primary-ratio), calc(100% - 365px));\n  --matter-reading-width: 100%;\n}\n.workbench-reference {\n  background: var(--theme-bg);\n  --matter-reading-width: 100%;\n}\n.workbench-pane-heading {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-height: 40px;\n  padding: 4px 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.workbench-pane-heading > div {\n  flex: 1;\n  min-width: 0;\n}\n.workbench-pane-heading strong {\n  display: block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--theme-fg);\n}\n.workbench-pane-eyebrow {\n  display: block;\n  margin-bottom: 4px;\n  font-size: 10px;\n  color: var(--theme-accent-strong);\n}\n.workbench-pane-meta {\n  max-width: 35%;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n  text-align: right;\n}\n.workbench-pane-body {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.workbench-pane-body > .thread-detail-surface {\n  height: 100%;\n}\n.workbench-pane-resize {\n  width: 5px;\n  flex-shrink: 0;\n  cursor: col-resize;\n  touch-action: none;\n  background: var(--theme-border);\n}\n.workbench-pane-resize:active,\n.workbench-pane-resize:focus-visible {\n  background: var(--theme-accent-solid);\n}\n@media (hover: hover) {\n  .workbench-pane-resize:hover {\n    background: var(--theme-accent-solid);\n  }\n}\n.workbench-panels [hidden] {\n  display: none !important;\n}\n.workbench-mobile-views {\n  display: flex;\n  gap: 4px;\n  padding: 4px 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.workbench-mobile-views button {\n  flex: 1;\n}\n.workbench-mobile-views button[aria-pressed=true] {\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n}\n.workbench-panels.is-compact .workbench-primary {\n  flex: 1;\n}\n.workbench-panels.is-compact .workbench-pane-resize {\n  display: none;\n}\n.workbench-panels.is-compact .workbench-pane-heading {\n  padding-inline: 12px;\n}\n.workbench-collaboration {\n  overflow-y: auto;\n  padding: 18px;\n  gap: 18px;\n}\n.workbench-collaboration h3 {\n  font-size: 12px;\n  font-weight: 600;\n  margin-bottom: 10px;\n}\n.workbench-collaboration p {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 1.7;\n}\n.workbench-collaboration article {\n  padding: 12px;\n  margin-bottom: 8px;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-panel);\n}\n.workbench-collaboration article header {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  justify-content: space-between;\n  font-size: 12px;\n}\n.workbench-collaboration article strong {\n  overflow-wrap: anywhere;\n}\n.workbench-collaboration article footer {\n  display: flex;\n  gap: 5px;\n  margin-top: 8px;\n}\n.workbench-collaboration [data-status=failed] {\n  color: #d1555f;\n}\n.workbench-collaboration [data-status=running] {\n  color: var(--theme-accent-strong);\n}\n.workbench-reference-status,\n.workbench-persistence-notice {\n  padding: 10px 16px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.workbench-reference .thread-graph-message-list {\n  padding-bottom: 32px;\n}\n.workbench-files .thread-graph-explorer-header h2 {\n  display: none;\n}\n@media (max-width: 639px) {\n  .workbench-panels :is(.workbench-pane-heading, .workbench-mobile-views, .workbench-collaboration, .workbench-reference-status) button {\n    min-height: 44px;\n  }\n  .workbench-pane-heading {\n    min-height: 48px;\n  }\n}\n.workbench-composer-target {\n  display: flex;\n  gap: 8px;\n  justify-content: space-between;\n  padding: 3px 12px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.workbench-composer-target span {\n  font-size: 10px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.workbench-mobile-views button {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n@media (max-width: 639px) {\n  .workbench-composer-target span {\n    display: none;\n  }\n}\n.workbench-thread-picker-actions {\n  display: inline-flex;\n  align-items: center;\n  gap: 2px;\n}\n.workbench-thread-picker-trigger {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 auto;\n  width: 30px;\n  height: 30px;\n  border: 1px solid transparent;\n  border-radius: 7px;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  cursor: pointer;\n}\n.workbench-thread-picker-trigger:active,\n.workbench-thread-picker-trigger[aria-expanded=true] {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .workbench-thread-picker-trigger:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.workbench-thread-picker-trigger.is-active {\n  color: var(--theme-accent-strong);\n  background: var(--theme-accent-soft);\n}\n.workbench-thread-picker-trigger:disabled {\n  opacity: .45;\n  cursor: default;\n}\n.workbench-thread-picker-popover {\n  position: fixed;\n  z-index: 250;\n  display: flex;\n  flex-direction: column;\n  width: min(372px, calc(100vw - 24px));\n  min-height: 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 14px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 18px 56px rgb(0 0 0 / .2), 0 3px 10px rgb(0 0 0 / .08);\n  font-family: inherit;\n  animation: workbench-picker-enter .12s ease-out;\n}\n.workbench-thread-picker-popover button {\n  border: 0;\n  background: transparent;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n}\n.workbench-thread-picker-popover button:focus-visible,\n.workbench-thread-picker-trigger:focus-visible {\n  outline: 2px solid var(--theme-accent-strong);\n  outline-offset: -2px;\n}\n.workbench-thread-picker-heading {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  flex-shrink: 0;\n  padding: 14px 14px 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.workbench-thread-picker-heading > svg {\n  color: var(--theme-accent-strong);\n}\n.workbench-thread-picker-heading > div {\n  flex: 1;\n  min-width: 0;\n}\n.workbench-thread-picker-heading strong {\n  display: block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 13px;\n  font-weight: 600;\n}\n.workbench-thread-picker-heading small {\n  display: block;\n  margin-top: 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.workbench-thread-picker-heading button {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 6px;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-heading button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-thread-picker-heading button:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-thread-picker-scroll {\n  min-height: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  padding: 5px 6px 10px;\n}\n.workbench-thread-picker-section-label {\n  padding: 13px 9px 6px;\n  font-size: 10px;\n  line-height: 1.4;\n  font-weight: 600;\n  letter-spacing: .045em;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-popover .workbench-thread-picker-row {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  width: 100%;\n  min-height: 49px;\n  padding: 8px 9px;\n  border-radius: 8px;\n  text-align: left;\n}\n.workbench-thread-picker-row:active,\n.workbench-thread-picker-row:focus-visible {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-thread-picker-row:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-thread-picker-row[aria-current=true] {\n  background: var(--theme-accent-soft);\n}\n.workbench-thread-picker-row > svg {\n  flex-shrink: 0;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-row-icon {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 30px;\n  height: 30px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  color: var(--theme-fg-muted);\n  background: var(--theme-surface);\n}\n.workbench-thread-picker-row-icon.is-favorite,\n.workbench-thread-picker-row > .workbench-thread-picker-favorite {\n  color: var(--theme-accent-strong);\n}\n.workbench-thread-picker-row-label {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  gap: 4px;\n  min-width: 0;\n}\n.workbench-thread-picker-row-label strong {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n  font-weight: 500;\n}\n.workbench-thread-picker-row-label small {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.workbench-thread-picker-row > .workbench-thread-picker-check {\n  color: var(--theme-accent-strong);\n}\n.workbench-split-status {\n  width: 5px;\n  height: 5px;\n  flex-shrink: 0;\n  border-radius: 50%;\n  background: var(--theme-fg-muted);\n  opacity: .55;\n}\n.workbench-split-status:is(.is-running, .is-recovering, .is-connected) {\n  background: var(--theme-accent-strong);\n  opacity: 1;\n}\n.workbench-split-status:is(.is-failed, .is-error) {\n  background: #d1555f;\n  opacity: 1;\n}\n.workbench-thread-picker-state {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  padding: 11px 10px;\n  margin: 0;\n  font-size: 11px;\n  line-height: 1.5;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-error {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px;\n  padding: 10px;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n}\n.workbench-thread-picker-error span {\n  flex: 1;\n  min-width: 100px;\n  overflow-wrap: anywhere;\n}\n.workbench-thread-picker-error button {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  padding: 6px 8px;\n  border-radius: 6px;\n  background: var(--theme-hover);\n}\n.workbench-thread-picker-popover footer {\n  flex-shrink: 0;\n  padding: 6px;\n  border-top: 1px solid var(--theme-border);\n}\n.workbench-thread-picker-popover footer button {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  width: 100%;\n  padding: 9px;\n  border-radius: 7px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-popover footer button svg:last-child {\n  margin-left: auto;\n}\n.workbench-thread-picker-popover footer button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-thread-picker-popover footer button:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-thread-picker-popover .is-spinning {\n  animation: workbench-picker-spin .9s linear infinite;\n}\n@keyframes workbench-picker-enter {\n  from {\n    opacity: 0;\n    transform: translateY(-3px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n@keyframes workbench-picker-spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n.workbench-panels {\n  position: relative;\n}\n.workbench-tool-drawer {\n  position: relative;\n  display: flex;\n  flex: 0 0 min(var(--workbench-tool-width, 560px), calc(100% - 280px));\n  flex-direction: column;\n  width: min(var(--workbench-tool-width, 560px), calc(100% - 280px));\n  min-width: 0;\n  min-height: 0;\n  border-left: 1px solid var(--theme-border-strong);\n  background: var(--theme-panel);\n}\n.workbench-tool-drawer > header {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  min-height: 42px;\n  padding: 5px 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.workbench-tool-drawer > header strong {\n  flex: 1;\n  font-size: 12px;\n  font-weight: 600;\n}\n.workbench-tool-drawer > header button {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 32px;\n  height: 32px;\n  border-radius: 7px;\n  color: var(--theme-fg-muted);\n}\n.workbench-tool-drawer > header button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-tool-drawer > header button:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-primary[data-focused=true],\n.workbench-reference[data-focused=true] {\n  box-shadow: inset 0 2px 0 var(--theme-accent-soft);\n}\n@media (max-width: 639px) {\n  .workbench-thread-picker-trigger {\n    width: 34px;\n    min-height: 36px;\n  }\n  .workbench-thread-picker-popover .workbench-thread-picker-row {\n    min-height: 54px;\n  }\n  .workbench-thread-picker-heading button {\n    width: 34px;\n    height: 34px;\n  }\n  .workbench-tool-drawer > header {\n    min-height: 48px;\n  }\n  .workbench-tool-drawer > header button {\n    width: 40px;\n    height: 40px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .workbench-thread-picker-popover,\n  .workbench-thread-picker-popover .is-spinning {\n    animation: none;\n  }\n}\n.workbench-tool-drawer > header > div {\n  flex: 1;\n  min-width: 0;\n}\n.workbench-tool-drawer > header small {\n  display: block;\n  margin-top: 3px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 10px;\n  color: var(--theme-fg-muted);\n}\n@media (max-width: 639px) {\n  .matter-topbar-end {\n    gap: 0;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar-end > button,\n  .thread-ui-shell .matter-workbench .matter-topbar-end > [data-slot=dialog-trigger] {\n    width: 34px;\n    min-width: 34px;\n    margin: 0;\n    padding: 0;\n  }\n  .matter-topbar-end .matter-connection:empty {\n    display: none;\n  }\n  .matter-topbar-end .matter-connection:has(.device-connection-slot:empty):not(:has(button, a, svg)) {\n    display: none;\n  }\n}\n.workbench-tool-resize {\n  position: absolute;\n  inset: 0 auto 0 -4px;\n  width: 8px;\n  z-index: 2;\n  cursor: col-resize;\n  touch-action: none;\n  user-select: none;\n}\n.workbench-tool-drawer[data-minimized] {\n  flex: 0 0 236px;\n  width: 236px;\n}\n.workbench-tool-drawer[data-minimized] > .workbench-tool-resize {\n  display: none;\n}\n.workbench-files-restore {\n  position: absolute;\n  top: 50%;\n  right: 100%;\n  z-index: 6;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 18px;\n  height: 56px;\n  transform: translateY(-50%);\n  border: 1px solid var(--theme-border-strong);\n  border-right: 0;\n  border-radius: 8px 0 0 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n  box-shadow: -2px 0 10px rgb(0 0 0 / 10%);\n  transition: width 120ms ease, color 120ms ease;\n}\n.workbench-files-restore:active {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .workbench-files-restore:hover {\n    width: 22px;\n    color: var(--theme-fg);\n  }\n}\n.workbench-files-restore:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.workbench-tool-resize::after {\n  content: "";\n  position: absolute;\n  inset: 0 auto 0 3px;\n  width: 2px;\n  background: transparent;\n  transition: background 120ms;\n}\n.workbench-tool-resize:active::after,\n.workbench-tool-resize:focus-visible::after {\n  background: var(--theme-accent-solid);\n}\n@media (hover: hover) {\n  .workbench-tool-resize:hover::after {\n    background: var(--theme-accent-solid);\n  }\n}\n.workbench-tool-resize:focus-visible {\n  outline: none;\n}\n.workbench-panels.is-compact .workbench-tool-drawer {\n  position: absolute;\n  inset: 0;\n  z-index: 90;\n  width: 100%;\n}\n.workbench-bottom-panel {\n  position: relative;\n  display: flex;\n  flex: 0 0 var(--workbench-panel-height, 320px);\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n  border-top: 1px solid var(--theme-border-strong);\n  background: var(--theme-panel);\n}\n.workbench-bottom-panel.is-collapsed {\n  flex-basis: auto;\n}\n.workbench-bottom-panel.is-maximized {\n  position: absolute;\n  inset: 0;\n  z-index: 6;\n  border-top: 0;\n}\n.workbench-main-column.has-maximized-panel > .workbench-pane-grid {\n  visibility: hidden;\n}\n.workbench-panel-sash {\n  position: absolute;\n  inset: -4px 0 auto;\n  z-index: 4;\n  height: 8px;\n  cursor: row-resize;\n  touch-action: none;\n  user-select: none;\n}\n.workbench-panel-sash::after {\n  content: "";\n  position: absolute;\n  inset: 3px 0 auto;\n  height: 2px;\n  background: transparent;\n  transition: background 120ms;\n}\n.workbench-panel-sash:active::after,\n.workbench-panel-sash:focus-visible::after,\n.workbench-panel-sash:active::after {\n  background: var(--theme-accent-solid);\n}\n@media (hover: hover) {\n  .workbench-panel-sash:hover::after {\n    background: var(--theme-accent-solid);\n  }\n}\n.workbench-panel-sash:focus-visible {\n  outline: none;\n}\n.workbench-panels.is-compact .workbench-panel-sash {\n  position: relative;\n  inset: auto;\n  display: flex;\n  flex: 0 0 18px;\n  align-items: center;\n  justify-content: center;\n  height: 18px;\n  margin-top: -1px;\n}\n.workbench-panels.is-compact .workbench-panel-sash::after {\n  position: static;\n  width: 36px;\n  height: 4px;\n  border-radius: 2px;\n  background: var(--theme-border-strong);\n}\n.workbench-panels.is-compact .workbench-panel-sash:active::after {\n  background: var(--theme-accent-solid);\n}\n@media (pointer: coarse) {\n  .workbench-panel-sash {\n    inset: -10px 0 auto;\n    height: 20px;\n  }\n  .workbench-panel-sash::after {\n    inset: 9px 0 auto;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .workbench-panel-sash::after {\n    transition: none;\n  }\n}\n.matter-shortcut-list {\n  position: relative;\n}\n.matter-shortcut {\n  position: relative;\n  -webkit-touch-callout: none;\n  user-select: none;\n}\n.matter-shortcut-list[data-reordering] .matter-shortcut {\n  transition: transform 160ms ease;\n}\n.matter-shortcut-list[data-reordering] .matter-shortcut[data-dragging] {\n  z-index: 2;\n  transition: none;\n}\n.thread-ui-shell .matter-workbench .matter-shortcut[data-dragging] .matter-thread-row {\n  background: var(--theme-panel);\n  box-shadow: 0 10px 28px rgb(0 0 0 / 24%), 0 0 0 1px var(--theme-border);\n}\n.matter-shortcut-list[data-reordering] {\n  cursor: grabbing;\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-shortcut-list[data-reordering] .matter-shortcut {\n    transition: none;\n  }\n}\n.matter-thread-group,\n.matter-thread-group-entry[data-reorder-key] {\n  -webkit-touch-callout: none;\n  -webkit-user-select: none;\n  user-select: none;\n  -webkit-user-drag: none;\n}\n.thread-ui-shell .matter-workbench :is(.matter-topbar, .matter-tabs-row) {\n  -webkit-user-select: none;\n  user-select: none;\n  -webkit-touch-callout: none;\n}\n.thread-ui-shell .matter-workbench :is(.matter-topbar, .matter-tabs-row) :is(input, textarea, [contenteditable]) {\n  -webkit-user-select: text;\n  user-select: text;\n}\n.matter-thread-group a {\n  -webkit-user-drag: none;\n}\n.matter-thread-group-entry[data-reorder-key] {\n  position: relative;\n}\n:is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry) {\n  transition: transform 160ms ease;\n}\n:is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry)[data-dragging] {\n  z-index: 3;\n  transition: none;\n}\n:is(.matter-thread-tabs, .matter-thread-section)[data-reordering] {\n  cursor: grabbing;\n}\n.thread-ui-shell .matter-workbench .matter-thread-group[data-dragging] {\n  border-radius: 10px 10px 0 0;\n  background: var(--theme-panel);\n  box-shadow: 0 8px 22px rgb(0 0 0 / 28%), 0 0 0 1px var(--theme-border);\n}\n.thread-ui-shell .matter-workbench .matter-thread-group-entry[data-dragging] > .matter-thread-entry > .matter-thread-row {\n  background: var(--theme-panel);\n  box-shadow: 0 10px 28px rgb(0 0 0 / 24%), 0 0 0 1px var(--theme-border);\n}\n:is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing] {\n  position: relative;\n  animation: matter-reorder-sink 700ms ease-out forwards;\n}\n:is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing]::after {\n  content: "";\n  position: absolute;\n  inset: 0;\n  border-radius: 10px;\n  pointer-events: none;\n  background: var(--theme-accent-solid);\n  opacity: 0;\n  animation: matter-reorder-tint 700ms ease-in forwards;\n}\n@keyframes matter-reorder-sink {\n  to {\n    transform: scale(.975);\n  }\n}\n@keyframes matter-reorder-tint {\n  to {\n    opacity: .16;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  :is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry) {\n    transition: none;\n  }\n  :is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing] {\n    animation: none;\n  }\n  :is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing]::after {\n    animation: none;\n    opacity: .12;\n  }\n}\n.matter-split-drop {\n  position: fixed;\n  z-index: 60;\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n  padding: 10px;\n  pointer-events: none;\n  animation: matter-split-drop-in 180ms ease-out;\n}\n.matter-split-drop-zone {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 12px;\n  border: 1.5px dashed color-mix(in srgb, var(--theme-accent-solid) 40%, transparent);\n  background: color-mix(in srgb, var(--theme-accent-solid) 6%, transparent);\n  color: var(--theme-fg-muted);\n  transition:\n    background 140ms ease,\n    border-color 140ms ease,\n    color 140ms ease;\n}\n.matter-split-drop-zone[data-active] {\n  border-style: solid;\n  border-color: color-mix(in srgb, var(--theme-accent-solid) 70%, transparent);\n  background: color-mix(in srgb, var(--theme-accent-solid) 16%, transparent);\n  color: var(--theme-fg);\n}\n.matter-split-drop-zone > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 14px;\n  border-radius: 999px;\n  background: var(--theme-panel);\n  box-shadow: 0 6px 18px rgb(0 0 0 / 18%);\n  font-size: 13px;\n  transition: transform 140ms ease;\n}\n.matter-split-drop-zone[data-active] > span {\n  transform: scale(1.06);\n}\n.matter-split-drop-zone svg {\n  width: 16px;\n  height: 16px;\n}\n@keyframes matter-split-drop-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-split-drop {\n    animation: none;\n  }\n  .matter-split-drop-zone,\n  .matter-split-drop-zone > span {\n    transition: none;\n  }\n  .matter-split-drop-zone[data-active] > span {\n    transform: none;\n  }\n}\n.workbench-thread-picker-scrim {\n  position: fixed;\n  inset: 0;\n  z-index: 249;\n  background: var(--overlay-scrim, rgb(0 0 0 / 45%));\n  backdrop-filter: blur(6px);\n}\n.workbench-thread-picker-popover.is-sheet {\n  border-bottom: 0;\n  border-radius: 18px 18px 0 0;\n  padding-bottom: env(safe-area-inset-bottom);\n  animation: workbench-picker-rise .18s ease-out;\n}\n@keyframes workbench-picker-rise {\n  from {\n    transform: translateY(24px);\n    opacity: 0;\n  }\n}\n.matter-workspace-path-chip {\n  display: inline-flex;\n  flex: 0 1 45%;\n  align-items: center;\n  gap: 2px;\n  min-width: 0;\n}\n.matter-workspace-path-chip > .matter-workspace-path {\n  flex: 1 1 auto;\n}\n.thread-ui-shell .matter-thread-tools-menu {\n  position: fixed;\n  z-index: 120;\n  width: 304px;\n  max-width: calc(100vw - 16px);\n  padding: 6px;\n  border: 1px solid var(--theme-border-strong, var(--theme-border));\n  border-radius: 12px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  font-size: 13px;\n  box-shadow: 0 12px 32px -8px rgb(0 0 0 / 28%), 0 2px 6px rgb(0 0 0 / 10%);\n}\n.thread-ui-shell .matter-thread-tools-menu:not([data-open]) {\n  visibility: hidden;\n  pointer-events: none;\n}\n.thread-ui-shell .matter-thread-tools-menu[data-open] {\n  animation: matter-thread-tools-in 140ms ease-out;\n}\n@keyframes matter-thread-tools-in {\n  from {\n    opacity: 0;\n    transform: translateY(-4px) scale(.98);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-ui-shell .matter-thread-tools-menu[data-open] {\n    animation: none;\n  }\n}\n.thread-ui-shell .matter-thread-tools-head {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) auto;\n  gap: 2px 6px;\n  align-items: center;\n  margin-bottom: 4px;\n  padding: 6px 4px 10px 10px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.thread-ui-shell .matter-thread-tools-path {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  min-width: 0;\n  font: 12.5px/1.3 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);\n}\n.thread-ui-shell .matter-thread-tools-path > svg {\n  flex: none;\n  width: 16px;\n  height: 16px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-thread-tools-path {\n  gap: 0;\n}\n.thread-ui-shell .matter-thread-tools-path > svg:first-child {\n  margin-right: 7px;\n}\n.thread-ui-shell .matter-thread-tools-path-head {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell .matter-thread-tools-path-tail {\n  flex: none;\n  max-width: 70%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell .matter-thread-tools-copy {\n  margin-left: 6px;\n}\n.thread-ui-shell .matter-thread-tools-copy {\n  flex: none;\n  width: 24px;\n  height: 24px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-thread-tools-title {\n  min-width: 0;\n  padding-left: 23px;\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 12px;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell .matter-thread-tools-star {\n  grid-column: 2;\n  grid-row: 1 / span 2;\n  display: grid;\n  place-items: center;\n  width: 34px;\n  height: 34px;\n  border-radius: 8px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-thread-tools-star:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-thread-tools-star:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .matter-thread-tools-star[aria-pressed=true] {\n  color: #e3a33b;\n}\n.thread-ui-shell .matter-thread-tools-star svg {\n  width: 17px;\n  height: 17px;\n}\n.thread-ui-shell .matter-thread-tools-panels {\n  position: relative;\n  margin-top: 5px;\n  padding-top: 5px;\n}\n.thread-ui-shell .matter-thread-tools-panels::before {\n  content: "";\n  position: absolute;\n  top: 0;\n  left: 4px;\n  right: 4px;\n  height: 1px;\n  background: var(--theme-border);\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) {\n  display: flex;\n  flex-direction: column;\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(div, span):has(> :is(button, a)) {\n  display: contents;\n}\n.thread-ui-shell .matter-thread-tools-menu :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label] {\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  gap: 10px;\n  width: 100%;\n  height: auto;\n  min-height: 36px;\n  padding: 0 10px;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg);\n  font-size: 13px;\n  text-align: left;\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]::after {\n  content: attr(aria-label);\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label] > svg {\n  flex: none;\n  width: 16px;\n  height: 16px;\n  color: var(--theme-fg-soft, var(--theme-fg-muted));\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:is(:active, :focus-visible):not(:disabled) {\n  background: var(--theme-hover);\n  outline: none;\n}\n@media (hover: hover) {\n  .thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:is(:hover, :focus-visible):not(:disabled) {\n    background: var(--theme-hover);\n    outline: none;\n  }\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:disabled {\n  opacity: .45;\n}\n.thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon=ports]) {\n  order: 10;\n  margin-top: 5px;\n  position: relative;\n}\n.thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon=ports])::before {\n  content: "";\n  position: absolute;\n  top: -3px;\n  left: 4px;\n  right: 4px;\n  height: 1px;\n  background: var(--theme-border);\n}\n.thread-ui-shell .matter-toolbar-toggle[aria-expanded=true] {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.matter-status-dot[data-status=waiting] {\n  --status-waiting: #b77915;\n  width: 12px;\n  height: 11px;\n  border: 0;\n  border-radius: 0;\n  background: var(--status-waiting);\n  transform: none;\n  animation: none;\n  clip-path: polygon(22% 0, 78% 0, 100% 20%, 100% 64%, 83% 80%, 94% 100%, 58% 80%, 22% 80%, 0 64%, 0 20%);\n}\n:root[data-theme-effective=dark] .matter-status-dot[data-status=waiting] {\n  --status-waiting: #edb75d;\n}\n.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot[data-status=waiting] {\n  width: 12px;\n  height: 11px;\n  border: 0;\n  box-shadow: none;\n}\n');
+styleInject('.matter-thread-menu {\n  position: relative;\n}\n.matter-thread-menu > summary {\n  list-style: none;\n  display: grid;\n  place-items: center;\n  width: 30px;\n  height: 30px;\n  border-radius: 8px;\n  cursor: pointer;\n}\n.matter-thread-menu > summary::-webkit-details-marker {\n  display: none;\n}\n.matter-thread-menu > summary:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-thread-menu > summary:hover {\n    background: var(--theme-hover);\n  }\n}\n.matter-thread-menu > div {\n  position: absolute;\n  top: 34px;\n  right: 0;\n  width: min(270px, calc(100vw - 24px));\n  z-index: 80;\n  padding: 6px;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 10px;\n  background: var(--theme-panel);\n  box-shadow: var(--matter-composer-shadow);\n}\n.thread-ui-shell .matter-workbench .matter-thread-menu > div > button {\n  display: flex;\n  width: 100%;\n  height: 36px;\n  gap: 10px;\n  justify-content: flex-start;\n  padding: 0 9px;\n  font-size: 12px;\n}\n.thread-execution-step-count {\n  display: none;\n}\n.matter-workbench .thread-execution-step-count {\n  display: inline;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-ui-shell.thread-ui-shell,\n.thread-graph-dialog.matter-settings-dialog {\n  padding: 0;\n  background: var(--matter-chrome);\n  --thread-gc-bg: oklch(0.915 0.007 145);\n  --thread-gc-panel: oklch(0.946 0.006 145);\n  --thread-gc-workspace: oklch(0.895 0.008 145);\n  --thread-gc-surface: oklch(0.929 0.006 145);\n  --thread-gc-muted: oklch(0.875 0.008 145);\n  --thread-gc-hover: oklch(0.865 0.009 145);\n  --thread-gc-border: oklch(0.83 0.008 145);\n  --thread-gc-border-strong: oklch(0.76 0.009 145);\n  --thread-gc-border-contrast: #828a92;\n  --thread-gc-fg: #121416;\n  --thread-gc-fg-soft: #5b6269;\n  --thread-gc-fg-muted: oklch(0.47 0.013 155);\n  --thread-gc-primary: #00a764;\n  --thread-gc-primary-hover: #00975a;\n  --thread-gc-primary-fg: #fff;\n  --thread-gc-accent-soft: #e5f8f0;\n  --thread-gc-accent-strong: #008b53;\n  --thread-gc-accent-border: #bee9d8;\n  --matter-chrome: oklch(0.885 0.008 145);\n  --matter-composer-shadow: 0 18px 44px rgb(25 40 33 / 19%), 0 4px 12px rgb(25 40 33 / 10%);\n  --matter-glass-highlight: oklch(0.98 0.005 145 / 75%);\n  font-family:\n    "DM Sans",\n    Inter,\n    ui-sans-serif,\n    system-ui,\n    sans-serif;\n}\n.thread-ui-shell.thread-ui-shell[data-theme-effective=dark],\n.thread-graph-dialog.matter-settings-dialog[data-theme-effective=dark] {\n  --thread-gc-bg: #0c0f11;\n  --thread-gc-panel: #0f1317;\n  --thread-gc-workspace: #141b20;\n  --thread-gc-surface: #1c242a;\n  --thread-gc-muted: #1c242a;\n  --thread-gc-hover: #202a30;\n  --thread-gc-border: #263038;\n  --thread-gc-border-strong: #36434d;\n  --thread-gc-border-contrast: #737f87;\n  --thread-gc-fg: #f4f7f6;\n  --thread-gc-fg-soft: #c1cad1;\n  --thread-gc-fg-muted: #a2afb9;\n  --thread-gc-primary: #00cc76;\n  --thread-gc-primary-hover: #16de89;\n  --thread-gc-primary-fg: #082016;\n  --thread-gc-accent-soft: #102b23;\n  --thread-gc-accent-strong: #00cc76;\n  --thread-gc-accent-border: #215240;\n  --matter-chrome: #141a1f;\n  --matter-composer-shadow: 0 22px 52px rgb(3 8 6 / 48%), 0 4px 14px rgb(3 8 6 / 30%);\n  --matter-glass-highlight: oklch(0.8 0.014 155 / 15%);\n}\n.thread-ui-shell .matter-workbench {\n  display: grid;\n  height: 100%;\n  min-height: 0;\n  grid-template-columns: 49px var(--matter-sidebar-width, 236px) minmax(0, 1fr);\n  grid-template-rows: minmax(0, 1fr);\n  background: var(--matter-chrome);\n  font-size: 13px;\n}\n.thread-ui-shell .matter-workbench svg {\n  stroke-width: 1.65;\n}\n.thread-ui-shell .matter-workbench :where(button, a):focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 2px;\n}\n.thread-ui-shell .matter-workbench :where(button, a) {\n  -webkit-tap-highlight-color: transparent;\n}\n.thread-ui-shell .matter-workbench :is(.matter-rail, .matter-topbar, .matter-breadcrumb, .matter-sidebar-heading, .matter-explorer-heading, .matter-notifications-heading) :where(button, a),\n.matter-new-thread {\n  display: inline-flex;\n  flex-shrink: 0;\n  align-items: center;\n  justify-content: center;\n  width: 30px;\n  height: 30px;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  box-shadow: none;\n  transition: background 120ms, color 120ms;\n}\n.thread-ui-shell .matter-workbench :is(.matter-rail, .matter-topbar, .matter-breadcrumb, .matter-sidebar-heading, .matter-explorer-heading, .matter-notifications-heading) :where(button, a):active,\n.matter-new-thread:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench :is(.matter-rail, .matter-topbar, .matter-breadcrumb, .matter-sidebar-heading, .matter-explorer-heading, .matter-notifications-heading) :where(button, a):hover,\n  .matter-new-thread:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .matter-workbench :is(.matter-rail, .matter-topbar, .matter-breadcrumb, .matter-sidebar-heading, .matter-explorer-heading, .matter-notifications-heading) svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-rail {\n  grid-row: 1 / -1;\n  border-right: 1px solid var(--theme-border);\n  display: flex;\n  align-items: center;\n  flex-direction: column;\n  gap: 8px;\n  padding: 4px 0 10px;\n}\n.thread-ui-shell .matter-workbench .matter-rail > .matter-brand {\n  height: 32px;\n  margin-bottom: 4px;\n  font-size: 22px;\n  font-weight: 700;\n  letter-spacing: -3px;\n  color: var(--theme-fg);\n}\n.matter-brand span {\n  color: var(--theme-accent-strong);\n}\n.thread-ui-shell .matter-workbench .matter-rail > button {\n  width: 35px;\n  height: 35px;\n}\n.thread-ui-shell .matter-workbench .matter-rail > button[aria-pressed=true] {\n  color: var(--theme-accent-strong);\n  background: var(--theme-accent-soft);\n}\n.matter-rail-bottom {\n  margin-top: auto;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 8px;\n}\n.matter-watches-toggle {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 4px;\n  padding: 0 8px;\n  flex-shrink: 0;\n  height: 34px;\n  color: var(--theme-fg-muted);\n  border-left: 1px solid var(--theme-border);\n}\n.matter-watches-toggle:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .matter-watches-toggle:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n@media (min-width: 640px) {\n  .matter-explorer .thread-graph-workspace-resizable > [data-panel]:has(> .thread-graph-workspace-explorer-pane) {\n    min-width: 144px !important;\n  }\n}\n.matter-topbar {\n  grid-column: 2 / -1;\n  display: flex;\n  align-items: center;\n  gap: 3px;\n  padding: 0 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-topbar-brand {\n  font-weight: 600;\n  font-size: 12px;\n  margin: 0 10px;\n}\n.matter-topbar-separator {\n  height: 15px;\n  width: 1px;\n  background: var(--theme-border-strong);\n  margin-right: 7px;\n}\n.thread-ui-shell .matter-workbench .matter-topbar .matter-search-trigger {\n  width: auto;\n  gap: 8px;\n  padding: 0 10px;\n  margin-left: 8px;\n  font-size: 12px;\n  white-space: nowrap;\n}\n.matter-topbar-end {\n  margin-left: auto;\n  display: flex;\n  align-items: center;\n  gap: 7px;\n}\n.matter-topbar-end > button {\n  position: relative;\n}\n.matter-connection > * {\n  display: flex;\n  align-items: center;\n}\n.matter-connection .device-connection-button {\n  width: 28px;\n  height: 28px;\n}\n.matter-connection .device-connection-button > svg {\n  width: 17px;\n  height: 17px;\n}\n.matter-unread {\n  position: absolute;\n  width: 5px;\n  height: 5px;\n  right: 5px;\n  top: 5px;\n  border-radius: 50%;\n  background: var(--theme-accent-solid);\n}\n.matter-sidebar {\n  display: flex;\n  flex-direction: column;\n  min-height: 0;\n  overflow-y: auto;\n  padding: 14px 12px 10px;\n  border-right: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n}\n.matter-sidebar-heading {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  height: 30px;\n  margin-bottom: 17px;\n  padding: 0 8px;\n  font-weight: 600;\n}\n.matter-sidebar-upper {\n  display: flex;\n  flex: 0 0 50%;\n  flex-direction: column;\n  min-height: 0;\n  padding-bottom: 18px;\n}\n.matter-sidebar-upper.is-alone {\n  flex: 1 1 auto;\n}\n.matter-sidebar-upper:not(.is-alone) > .matter-sidebar-scroll {\n  -webkit-mask-image:\n    linear-gradient(\n      to bottom,\n      #000 calc(100% - 18px),\n      transparent);\n  mask-image:\n    linear-gradient(\n      to bottom,\n      #000 calc(100% - 18px),\n      transparent);\n}\n.matter-sidebar-recents {\n  display: flex;\n  flex: 1 1 0;\n  flex-direction: column;\n  min-height: 0;\n}\n.matter-sidebar-recents.is-folded {\n  flex: none;\n}\n.matter-sidebar-resize {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: -4px;\n  z-index: 30;\n  width: 7px;\n  cursor: col-resize;\n  touch-action: none;\n}\n.matter-sidebar-resize::after {\n  content: "";\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: 3px;\n  width: 1px;\n  background: transparent;\n  transition: background 120ms;\n}\n.matter-sidebar-resize:is(:active, :focus-visible, :active)::after {\n  background: var(--theme-accent-solid);\n}\n@media (hover: hover) {\n  .matter-sidebar-resize:is(:hover, :focus-visible, :active)::after {\n    background: var(--theme-accent-solid);\n  }\n}\n.matter-sidebar-resize:focus-visible {\n  outline: none;\n}\n@media (min-width: 640px) {\n  .thread-ui-shell .matter-workbench .matter-sidebar {\n    padding: 0 0 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar > .matter-nav-strip {\n    margin-bottom: 10px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar-heading {\n    margin-bottom: 8px;\n    padding: 0 16px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-sidebar-scroll {\n    padding: 0 4px 0 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar-recents > .matter-section-heading {\n    width: auto;\n    margin: 0 4px 0 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar :is(.matter-drawer-tools, .matter-drawer-home, .matter-sidebar-error) {\n    margin-inline: 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar-footer {\n    padding: 14px 16px 0;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-section {\n    margin-bottom: 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-row {\n    gap: 8px;\n    margin: 1px 0;\n    padding: 4px 8px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-copy {\n    gap: 0;\n    line-height: 16px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-copy small {\n    line-height: 14px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .matter-thread-row {\n    padding-right: 24px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row {\n    padding-right: 58px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-agent-toggle {\n    right: 24px;\n    height: 22px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions {\n    right: 2px;\n    width: 22px;\n    height: 26px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .recent-thread-actions svg {\n    transform: rotate(90deg);\n  }\n}\n@media (min-width: 640px) and (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions {\n    opacity: 0;\n    transition: opacity 120ms;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry:is(:hover, :has(:focus-visible)) > .recent-thread-actions,\n  .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions[aria-expanded=true] {\n    opacity: 1;\n  }\n}\n.matter-sidebar-scroll {\n  flex: 1 1 auto;\n  min-height: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.matter-section-heading {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  height: 34px;\n  flex-shrink: 0;\n  width: 100%;\n  padding: 0 8px;\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n  text-align: left;\n}\n.matter-section-heading-row {\n  display: flex;\n  align-items: center;\n  min-width: 0;\n}\n.matter-section-heading-row > .matter-section-heading {\n  flex: 1;\n  min-width: 0;\n}\n.matter-section-add {\n  display: flex;\n  flex: none;\n  align-items: center;\n  margin-left: 2px;\n}\n.thread-ui-shell .matter-workbench .matter-section-add :is(button, a) {\n  width: 26px;\n  height: 26px;\n  border-radius: 7px;\n}\n.thread-ui-shell .matter-workbench .matter-section-add svg {\n  width: 15px;\n  height: 15px;\n}\n.matter-section-heading svg {\n  width: 13px;\n  height: 13px;\n}\n.matter-section-heading svg:last-child,\n.matter-section-count {\n  margin-left: auto;\n  color: var(--theme-fg-muted);\n}\n.matter-thread-section {\n  margin-bottom: 14px;\n}\n.matter-sidebar-hint,\n.matter-sidebar-error {\n  padding: 8px 12px;\n  font-size: 12px;\n  line-height: 1.6;\n  color: var(--theme-fg-muted);\n}\n.matter-sidebar-error {\n  color: #c0544b;\n}\n.matter-thread-row {\n  display: flex;\n  align-items: center;\n  gap: 9px;\n  padding: 7px 10px;\n  margin: 2px 0;\n  border: 1px solid transparent;\n  border-radius: 7px;\n  color: var(--theme-fg-soft);\n  transition: background-color 150ms, border-color 150ms;\n}\n.matter-thread-row:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-thread-row:hover {\n    background: var(--theme-hover);\n  }\n}\n.matter-thread-row[aria-current=page] {\n  background: var(--theme-panel);\n  border-color: var(--theme-border);\n  box-shadow: 0 1px 2px rgb(18 24 32 / 3%);\n  color: var(--theme-fg);\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-row {\n  color: #c1cad1;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-row:active {\n  background: #202a32;\n}\n@media (hover: hover) {\n  .thread-ui-shell[data-theme-effective=dark] .matter-thread-row:hover {\n    background: #202a32;\n  }\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-row[aria-current=page] {\n  background: #2a3943;\n  border-color: #536977;\n  color: #f4f7f6;\n  box-shadow: none;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-row[aria-current=page] small {\n  color: #c1ced6;\n}\n.matter-copy-notice {\n  padding: 7px 9px;\n  font-size: 11px;\n  line-height: 1.5;\n  color: var(--theme-fg-muted);\n}\n.thread-graph-dialog.matter-settings-dialog {\n  width: min(640px, calc(100vw - 32px));\n  max-width: min(640px, calc(100vw - 32px));\n  max-height: calc(100dvh - 32px);\n  padding: 22px;\n  border-radius: 14px;\n  background: var(--theme-panel);\n  border-color: var(--theme-border-strong);\n  box-shadow: 0 24px 72px rgb(0 0 0 / 24%);\n  --action-primary-bg: var(--theme-accent-solid);\n  --action-primary-bg-hover: var(--theme-accent-solid-hover);\n  --action-primary-fg: var(--theme-accent-solid-fg);\n  --theme-accent: var(--theme-accent-solid);\n  --theme-accent-fg: var(--theme-accent-solid-fg);\n}\n.matter-settings-overlay {\n  background: rgb(12 18 22 / 40%);\n  backdrop-filter: blur(3px);\n}\n.matter-settings-dialog [data-slot=dialog-header] {\n  gap: 7px;\n  text-align: left;\n  padding-bottom: 4px;\n}\n.matter-settings-dialog [data-slot=dialog-title] {\n  font-size: 16px;\n  font-weight: 600;\n  letter-spacing: -.02em;\n}\n.matter-settings-dialog [data-slot=dialog-description] {\n  font-size: 12px;\n  line-height: 1.6;\n}\n.matter-settings-dialog [data-slot=dialog-close] {\n  display: grid;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  right: 16px;\n  top: 16px;\n  border-radius: 7px;\n}\n.matter-settings-dialog [data-slot=dialog-close]:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-settings-dialog [data-slot=dialog-close]:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-card {\n  padding: 12px 14px;\n  background: var(--theme-panel);\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(.thread-graph-theme-mode-group, .thread-graph-settings-tabs) {\n  background: var(--theme-surface);\n  border: 1px solid var(--theme-border);\n  padding: 3px;\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(.thread-graph-theme-mode-button, .thread-graph-settings-tab-button) {\n  font-size: 12px;\n  min-height: 32px;\n  padding: 6px 12px;\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(.thread-graph-theme-mode-button.is-selected, .thread-graph-settings-tab-button.is-active) {\n  background: var(--theme-panel);\n  color: var(--theme-accent-strong);\n  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);\n}\n.thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-body dl > div {\n  display: grid;\n  grid-template-columns: 110px minmax(0, 1fr);\n  column-gap: 12px;\n  padding-block: 9px;\n  margin: 0;\n  border-bottom: 1px solid var(--theme-border);\n  font-size: 12px;\n  line-height: 1.6;\n}\n.thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-body dl > div:last-child {\n  border-bottom: 0;\n}\n.thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-body dd {\n  margin-top: 0;\n  min-width: 0;\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(input, select, textarea) {\n  accent-color: var(--theme-accent-solid);\n  border-color: var(--theme-border-strong);\n}\n.thread-graph-settings-dialog.matter-settings-dialog :is(button, input, select, textarea):focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 2px;\n}\n@media (max-width: 639px) {\n  .thread-graph-dialog.matter-settings-dialog {\n    padding: 18px;\n  }\n  .thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-body dl > div {\n    grid-template-columns: 80px minmax(0, 1fr);\n  }\n}\n.matter-thread-copy {\n  display: flex;\n  flex-direction: column;\n  gap: 1px;\n  min-width: 0;\n  line-height: 18px;\n  font-size: 12px;\n}\n.matter-thread-copy > * {\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n}\n.matter-thread-copy small {\n  font-size: 10.5px;\n  color: var(--theme-fg-muted);\n}\n.matter-status-dot {\n  flex-shrink: 0;\n  display: inline-block;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  border: 1.5px solid var(--theme-border-contrast);\n  background: transparent;\n}\n.matter-status-dot[data-status=running] {\n  width: 12px;\n  height: 12px;\n  border-width: 2.5px;\n  border-color: oklch(0.48 0.19 255);\n  border-top-color: transparent;\n  animation: matter-running 1s linear infinite;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-status-dot[data-status=running] {\n  border-color: oklch(0.8 0.12 245);\n  border-top-color: transparent;\n}\n.matter-status-dot[data-status=agents-running] {\n  width: 10px;\n  height: 10px;\n  border-color: #8066cd;\n  background:\n    radial-gradient(\n      circle,\n      #8066cd 0 2px,\n      transparent 2.5px);\n  animation: matter-agents-running 1.8s ease-in-out infinite;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-status-dot[data-status=agents-running] {\n  border-color: #b39af2;\n  background:\n    radial-gradient(\n      circle,\n      #b39af2 0 2px,\n      transparent 2.5px);\n}\n.matter-status-dot[data-status=unread] {\n  background: var(--theme-accent-solid);\n  border-color: var(--theme-accent-solid);\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-solid) 12%, transparent);\n}\n.matter-status-dot:is([data-status=failed], [data-status=error]) {\n  background: #d56b62;\n  border-color: #d56b62;\n  border-radius: 2px;\n  transform: rotate(45deg);\n}\n.matter-status-dot[data-status=unknown] {\n  border-style: dotted;\n  opacity: .6;\n}\n.matter-status-dot[data-status=interrupted] {\n  border-color: #c08a3e;\n  background: #c08a3e;\n  border-radius: 1.5px;\n}\n@keyframes matter-running {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes matter-agents-running {\n  50% {\n    opacity: .45;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-status-dot:is([data-status=running], [data-status=agents-running]) {\n    animation: none;\n  }\n}\n.matter-thread-avatar {\n  display: none;\n}\n.matter-sidebar-footer {\n  margin-top: auto;\n  padding: 20px 8px 0;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.matter-main {\n  position: relative;\n  min-width: 0;\n  min-height: 0;\n  display: flex;\n  flex-direction: column;\n  background: var(--theme-bg);\n}\n.matter-tabs-row {\n  position: relative;\n  display: flex;\n  flex-wrap: wrap;\n  min-width: 0;\n  flex-shrink: 0;\n  background: var(--theme-surface);\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-tabs-main {\n  position: relative;\n  display: flex;\n  flex: 1;\n  min-width: 0;\n}\n.matter-tabs-search {\n  display: flex;\n  flex: none;\n  align-items: stretch;\n  width: 38px;\n  border-right: 1px solid var(--theme-border);\n}\n.thread-ui-shell .matter-workbench .matter-tabs-search .matter-search-trigger {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .matter-workbench .matter-tabs-search .matter-search-trigger:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-tabs-search .matter-search-trigger:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.matter-tabs-search .matter-search-trigger > span {\n  display: none;\n}\n.matter-tabs-search .matter-search-trigger svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-tabs-search .workbench-search.is-open {\n  position: absolute;\n  inset: 0;\n  z-index: 8;\n  display: flex;\n  align-items: center;\n  padding: 0 8px;\n  background: var(--theme-surface);\n  animation: matter-tabs-search-in 120ms ease-out;\n}\n.matter-tabs-search .workbench-search.is-open .workbench-search-field {\n  flex: 1;\n  max-width: 640px;\n  height: 28px;\n}\n@keyframes matter-tabs-search-in {\n  from {\n    opacity: 0;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-tabs-search .workbench-search.is-open {\n    animation: none;\n  }\n}\n.matter-tabs-end {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 2px;\n  padding: 0 6px;\n  border-left: 1px solid var(--theme-border);\n}\n.matter-tabs-end .matter-connection:empty {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .matter-tabs-end > button {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 30px;\n  height: 30px;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .matter-workbench .matter-tabs-end > button:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-tabs-end > button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.matter-tabs-end > button svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-nav-strip {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 2px;\n  height: 35px;\n  padding: 0 8px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-tabs-row > .matter-nav-strip {\n  height: auto;\n  border-bottom: 0;\n  border-right: 1px solid var(--theme-border);\n}\n.thread-ui-shell .matter-workbench .matter-nav-strip > :is(button, a) {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 30px;\n  height: 30px;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .matter-workbench .matter-nav-strip > :is(button, a):active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-nav-strip > :is(button, a):hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.matter-nav-strip > :is(button, a) svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-toolbar-toggle {\n  flex-shrink: 0;\n  width: 36px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  color: var(--theme-fg-soft);\n  border-left: 1px solid var(--theme-border);\n}\n.matter-toolbar-toggle svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-toolbar-toggle:active {\n  background: var(--theme-hover);\n}\n.matter-thread-tabs {\n  flex: 1;\n  min-width: 0;\n  height: 34px;\n  flex-shrink: 0;\n  display: flex;\n  align-items: stretch;\n  overflow-x: auto;\n  overflow-y: hidden;\n  background: var(--theme-surface);\n}\n.matter-thread-tabs > a,\n.matter-group-tab {\n  display: flex;\n  align-items: center;\n  flex-shrink: 0;\n  gap: 9px;\n  min-width: 76px;\n  max-width: 180px;\n  padding: 0 10px;\n  border-right: 1px solid var(--theme-border);\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n}\n.matter-thread-tabs > a > span:last-child,\n.matter-group-tab > span:last-child {\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.matter-thread-tabs > a[aria-current=page],\n.matter-group-tab[aria-current=page] {\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n  box-shadow: inset 0 -2px var(--theme-accent-solid);\n}\n.matter-group-toggle {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  flex-shrink: 0;\n  padding: 0 8px;\n  border-right: 1px solid var(--theme-border);\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.matter-group-toggle:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-group-toggle:hover {\n    background: var(--theme-hover);\n  }\n}\n.matter-thread-group {\n  position: relative;\n}\n.matter-group-tab {\n  position: relative;\n}\n.matter-tab-agents-slot {\n  flex: none;\n  align-self: stretch;\n}\n.matter-thread-group > .matter-group-tab > .matter-tab-agents-slot {\n  margin-inline: -5px;\n}\n.thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge {\n  position: absolute;\n  top: 50%;\n  left: var(--tab-agents-x, 0);\n  z-index: 1;\n  transform: translateY(-50%);\n  display: inline-flex;\n  align-items: center;\n  gap: 1px;\n  height: 17px;\n  padding: 0 1px;\n  border: 0;\n  border-radius: 4px;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-variant-numeric: tabular-nums;\n  line-height: 1;\n}\n.thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:active, [aria-expanded=true]) {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:hover, [aria-expanded=true]) {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.matter-thread-group > .matter-group-toggle.is-badge > svg {\n  width: 11px;\n  height: 11px;\n}\n.matter-thread-group > .matter-group-toggle.is-badge[data-running] > svg {\n  animation: matter-tab-agents-glow 2.4s ease-in-out infinite;\n}\n@keyframes matter-tab-agents-glow {\n  50% {\n    color: var(--matter-agents-glow, #20bc87);\n    filter: drop-shadow(0 0 3px var(--matter-agents-glow, #20bc87));\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-thread-group > .matter-group-toggle.is-badge[data-running] > svg {\n    animation: none;\n    color: var(--matter-agents-glow, #20bc87);\n  }\n}\n.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot {\n  position: absolute;\n  left: var(--tab-icon-right);\n  top: var(--tab-icon-bottom);\n  translate: -70% -70%;\n  width: 8px;\n  height: 8px;\n  margin: 0;\n  box-shadow: 0 0 0 2px var(--theme-surface);\n}\n.matter-thread-group[data-avatar] > .matter-group-tab[aria-current=page] > .matter-thread-avatar + .matter-status-dot {\n  box-shadow: 0 0 0 2px var(--theme-bg);\n}\n.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot:is([data-status=idle], [data-status=running], [data-status=agents-running]) {\n  visibility: hidden;\n}\n.matter-thread-group[data-avatar] > .matter-group-tab {\n  --tab-agents-ring: #b65bd3;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-thread-group[data-avatar] > .matter-group-tab {\n  --tab-agents-ring: #d99cf3;\n}\n.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status=running]) > .matter-thread-avatar {\n  --tab-ring: var(--theme-accent-solid);\n  animation: matter-tab-running 1.8s ease-in-out infinite;\n}\n.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status=agents-running]) > .matter-thread-avatar {\n  --tab-ring: var(--tab-agents-ring);\n  animation: matter-tab-running 1.8s ease-in-out infinite;\n}\n@keyframes matter-tab-running {\n  0%, 100% {\n    box-shadow: 0 0 0 2px var(--tab-ring);\n  }\n  50% {\n    box-shadow: 0 0 0 2px var(--tab-ring), 0 0 0 4.5px color-mix(in srgb, var(--tab-ring) 28%, transparent);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot:is([data-status=running], [data-status=agents-running])) > .matter-thread-avatar {\n    animation: none;\n    box-shadow: 0 0 0 2px var(--tab-ring);\n  }\n}\n.matter-thread-group:has(> .matter-tab-close) {\n  border-right: 1px solid var(--theme-border);\n}\n.matter-thread-group:has(> .matter-tab-close) > :is(.matter-group-tab, .matter-group-toggle) {\n  border-right: 0;\n}\n.matter-thread-group:has(> .matter-tab-close):has(> .matter-group-tab[aria-current=page]) {\n  background: var(--theme-bg);\n}\n.matter-thread-group:has(> .matter-tab-close):has(> .matter-group-tab[aria-current=page]) > .matter-group-tab {\n  padding-right: 4px;\n}\n.thread-ui-shell .matter-workbench .matter-thread-group:not(:has(> .matter-group-tab[aria-current=page])) > .matter-tab-close {\n  position: absolute;\n  top: 50%;\n  right: 4px;\n  z-index: 2;\n  margin: 0;\n  transform: translateY(-50%);\n  background: color-mix(in srgb, var(--theme-surface) 92%, transparent);\n  box-shadow: 0 0 0 1px var(--theme-border), -6px 0 8px var(--theme-surface);\n}\n.matter-thread-group {\n  max-width: 200px;\n}\n.matter-thread-group > .matter-group-tab {\n  flex: 0 1 auto;\n  min-width: 0;\n  max-width: none;\n}\n.matter-thread-group > .matter-group-tab > span:last-child {\n  min-width: 0;\n}\n.matter-thread-group > :is(.matter-group-toggle, .matter-tab-close) {\n  flex: none;\n}\n.thread-ui-shell .matter-workbench .matter-tab-close {\n  display: flex;\n  flex: none;\n  align-items: center;\n  justify-content: center;\n  align-self: center;\n  width: 22px;\n  height: 22px;\n  margin: 0 6px 0 2px;\n  padding: 0;\n  border: 0;\n  border-radius: 5px;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  opacity: 0;\n}\n.matter-tab-close svg {\n  width: 13px;\n  height: 13px;\n}\n.matter-thread-group:is(:has(:focus-visible), :has(> .matter-group-tab[aria-current=page])) > .matter-tab-close {\n  opacity: 1;\n}\n@media (hover: hover) {\n  .matter-thread-group:is(:hover, :has(:focus-visible), :has(> .matter-group-tab[aria-current=page])) > .matter-tab-close {\n    opacity: 1;\n  }\n}\n.thread-ui-shell .matter-workbench .matter-tab-close:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-tab-close:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n@media (hover: none) {\n  .thread-ui-shell .matter-workbench .matter-tab-close {\n    opacity: 1;\n  }\n}\n.matter-new-thread {\n  align-self: center;\n  margin: 0 6px;\n}\n.matter-tab-add {\n  display: flex;\n  flex: none;\n  align-items: center;\n  height: 34px;\n}\n.matter-new-thread svg {\n  width: 16px;\n  height: 16px;\n}\n.matter-breadcrumb {\n  order: 10;\n  flex: 0 0 100%;\n  min-width: 0;\n  background: var(--theme-surface);\n  border-top: 1px solid var(--theme-border);\n  display: flex;\n  align-items: center;\n  height: 40px;\n  flex-shrink: 0;\n  gap: 8px;\n  padding: 0 16px;\n  font-size: 11.5px;\n  color: var(--theme-fg-soft);\n}\n.matter-workspace-path {\n  flex: 0 1 45%;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-family: ui-monospace, monospace;\n}\n.matter-current-title {\n  flex: 0 1 auto;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.matter-breadcrumb > svg {\n  flex-shrink: 0;\n  width: 12px !important;\n}\n.matter-breadcrumb button[aria-pressed=true] {\n  color: var(--theme-accent-strong);\n}\n@media (hover: none) {\n  .thread-ui-shell .matter-workbench .matter-breadcrumb :is(button, a):not(:active) {\n    background: transparent;\n    box-shadow: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-breadcrumb :is(button, a):active {\n    background: var(--theme-hover);\n  }\n}\n.matter-thread-actions {\n  display: flex;\n  align-items: center;\n  gap: 3px;\n  margin-left: auto;\n  flex-shrink: 0;\n}\n.matter-thread-actions > div {\n  display: flex;\n  align-items: center;\n  gap: 3px;\n}\n.matter-content {\n  display: flex;\n  flex: 1;\n  min-height: 0;\n  position: relative;\n}\n.matter-chat {\n  --matter-reading-width: max(880px, 78%);\n  flex: 1;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.matter-content.has-explorer .matter-chat {\n  --matter-reading-width: 100%;\n}\n.matter-workspace-home {\n  display: flex;\n  flex-direction: column;\n  min-height: 0;\n}\n.matter-workspace-home > .matter-workspace-intro {\n  flex: none;\n  height: auto;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  padding: 14px 16px 8px;\n  text-align: left;\n}\n.matter-workspace-home > .matter-workspace-intro > :is(svg, p) {\n  display: none;\n}\n.matter-workspace-home > .matter-workspace-intro > h1 {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 17px;\n}\n.matter-workspace-home > .matter-workspace-intro > a {\n  flex: none;\n  padding: 8px 12px;\n}\n.matter-workspace-home-list {\n  flex: 1;\n  min-height: 0;\n  overflow-y: auto;\n  padding: 0 6px 12px;\n}\n.matter-chat > div {\n  height: 100%;\n}\n.matter-explorer {\n  position: relative;\n  flex-shrink: 0;\n  display: flex;\n  flex-direction: column;\n  width: min(var(--explorer-width, 360px), max(260px, calc(100% - 320px)));\n  min-height: 0;\n  border-left: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n}\n.matter-explorer-resize {\n  position: absolute;\n  z-index: 5;\n  left: -4px;\n  top: 0;\n  bottom: 0;\n  width: 8px;\n  cursor: col-resize;\n  touch-action: none;\n}\n.matter-explorer-resize:active,\n.matter-explorer-resize:focus-visible {\n  background: color-mix(in srgb, var(--theme-accent-solid) 30%, transparent);\n  outline: none;\n}\n@media (hover: hover) {\n  .matter-explorer-resize:hover {\n    background: color-mix(in srgb, var(--theme-accent-solid) 30%, transparent);\n    outline: none;\n  }\n}\n.matter-notification-summary {\n  margin: 5px 0;\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n  line-height: 1.5;\n  display: -webkit-box;\n  -webkit-line-clamp: 3;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n}\n.thread-ui-shell .matter-workbench .thread-graph-message-time-row .thread-graph-message-time {\n  opacity: 1;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-workbench .animate-pulse.rounded-full {\n  background: var(--theme-accent-strong);\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-stop-button {\n  right: 0 !important;\n  top: 0 !important;\n  width: 32px !important;\n  height: 32px !important;\n  border-radius: 50%;\n  background: color-mix(in srgb, #c83b42 12%, var(--theme-panel));\n  color: #b62f38;\n  border: 1px solid color-mix(in srgb, #c83b42 30%, var(--theme-border)) !important;\n  box-shadow: none;\n}\n.thread-ui-shell[data-theme-effective=dark] .matter-workbench .thread-graph-composer-stop-button {\n  color: #ff9b9f;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-stop-button:active {\n  background: color-mix(in srgb, #c83b42 22%, var(--theme-panel));\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .thread-graph-composer-stop-button:hover {\n    background: color-mix(in srgb, #c83b42 22%, var(--theme-panel));\n  }\n}\n.thread-ui-shell .matter-workbench :is(.thread-graph-composer-stop-button, .thread-graph-composer-send-button) {\n  min-width: 32px !important;\n  min-height: 32px !important;\n}\n.matter-explorer > :last-child {\n  flex: 1;\n  min-height: 0;\n}\n.matter-explorer-heading {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 5px 12px;\n  border-bottom: 1px solid var(--theme-border);\n  font-size: 12px;\n}\n.matter-workbench.is-sidebar-hidden {\n  grid-template-columns: 49px 0 minmax(0, 1fr);\n}\n.matter-workbench.is-sidebar-hidden .matter-sidebar {\n  visibility: hidden;\n  padding: 0;\n}\n.thread-ui-shell .matter-workbench .matter-mobile-close,\n.matter-sidebar-scrim {\n  display: none;\n}\n.matter-popover-scrim {\n  position: fixed;\n  inset: 0;\n  z-index: 69;\n  cursor: default;\n}\n.matter-notifications {\n  position: absolute;\n  top: 44px;\n  right: 12px;\n  z-index: 70;\n  width: min(360px, calc(100vw - 24px));\n  max-height: 70vh;\n  overflow: auto;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 12px;\n  background: var(--theme-panel);\n  box-shadow: var(--matter-composer-shadow);\n}\n.matter-notifications-heading {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--theme-border);\n  font-weight: 600;\n}\n.matter-notifications > p {\n  padding: 24px 18px;\n  font-size: 13px;\n  color: var(--theme-fg-muted);\n  line-height: 1.6;\n}\n.matter-notifications > a {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  padding: 14px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-notification-group {\n  border-bottom: 1px solid var(--theme-border);\n}\n.matter-notification-root {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 10px 14px 4px;\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n  font-weight: 600;\n}\n.matter-notification-root > svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n}\n.matter-notification-root > span {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.matter-notification-group > a:not(.matter-notification-root) {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-left: 21px;\n  padding: 10px 14px 10px 12px;\n  border-left: 1px solid var(--theme-border);\n}\n.matter-notifications small {\n  display: block;\n  margin-top: 5px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-host {\n  position: absolute;\n  inset: auto 0 32px;\n  z-index: 30;\n  pointer-events: none;\n  background: transparent;\n  border: 0;\n  padding: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-layer {\n  width: 100%;\n  max-width: var(--matter-reading-width);\n  margin: 0 auto;\n  padding: 0 28px;\n  background: transparent;\n  border: 0;\n  pointer-events: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-layer > .thread-composer-pending-queue,\n.thread-ui-shell .matter-workbench .thread-graph-composer-form > * {\n  pointer-events: auto;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-form {\n  pointer-events: none;\n  padding: 0;\n  border: 0;\n  background: transparent;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-shell {\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 22px;\n  background: color-mix(in srgb, var(--theme-panel) 86%, transparent);\n  backdrop-filter: blur(24px) saturate(135%);\n  -webkit-backdrop-filter: blur(24px) saturate(135%);\n  box-shadow: inset 0 1px 0 var(--matter-glass-highlight), var(--matter-composer-shadow);\n  padding: 12px 14px 10px;\n}\n.thread-pane-switch {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  flex: 0 1 auto;\n  min-width: 0;\n  height: 28px;\n  max-width: min(9rem, calc((100vw - 9.75rem) / 2));\n  padding: 0 11px;\n  border: 0;\n  border-radius: 999px;\n  background: color-mix(in srgb, var(--theme-panel) 52%, transparent);\n  color: var(--theme-fg-muted);\n  font-size: 11.5px;\n  font-weight: 500;\n  line-height: 1;\n  pointer-events: auto;\n  backdrop-filter: blur(18px) saturate(130%);\n  -webkit-backdrop-filter: blur(18px) saturate(130%);\n  box-shadow:\n    inset 0 1px 0 var(--matter-glass-highlight),\n    0 0 0 1px color-mix(in srgb, var(--theme-border) 70%, transparent),\n    0 3px 10px rgb(18 32 25 / 14%);\n  transition:\n    color 150ms ease,\n    background-color 150ms ease,\n    box-shadow 150ms ease;\n}\n.thread-pane-switch::after {\n  content: "";\n  position: absolute;\n  inset: -8px -3px;\n}\n.thread-pane-switch > span {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-pane-switch-glyph {\n  width: 13px;\n  height: 13px;\n  flex: none;\n  opacity: 0.8;\n}\n.thread-pane-switch:active {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-pane-switch:hover {\n    color: var(--theme-fg);\n  }\n}\n.thread-pane-switch[aria-pressed=true] {\n  color: var(--theme-accent-strong);\n  background: var(--theme-accent-soft);\n  box-shadow:\n    inset 0 1px 0 var(--matter-glass-highlight),\n    0 0 0 1px color-mix(in srgb, var(--theme-accent-strong) 38%, transparent),\n    0 3px 10px rgb(18 32 25 / 14%);\n}\n.thread-pane-switch[aria-pressed=true] .thread-pane-switch-glyph {\n  opacity: 1;\n}\n.thread-pane-switch:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 2px;\n}\n.workbench-pane-switch-fallback {\n  display: flex;\n  justify-content: center;\n  gap: 8px;\n  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));\n  border-top: 1px solid var(--theme-border);\n}\n@media (prefers-reduced-transparency: reduce) {\n  .thread-pane-switch {\n    background: var(--theme-panel);\n    backdrop-filter: none;\n    -webkit-backdrop-filter: none;\n  }\n}\n.matter-thread-entry {\n  display: flex;\n  align-items: center;\n  min-width: 0;\n  position: relative;\n}\n.matter-thread-entry > .matter-thread-row {\n  flex: 1;\n  min-width: 0;\n  padding-right: 32px;\n}\n.matter-thread-entry > .recent-thread-actions {\n  position: absolute;\n  right: 3px;\n}\n.matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row {\n  padding-right: 70px;\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle {\n  position: absolute;\n  right: 34px;\n  display: inline-flex;\n  align-items: center;\n  gap: 1px;\n  height: 22px;\n  padding: 0 2px;\n  border: 0;\n  border-radius: 4px;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n  line-height: 1;\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .matter-agent-toggle:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded=true] {\n  color: var(--theme-fg-soft, var(--theme-fg));\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle > svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle > .matter-agent-toggle-chevron {\n  width: 10px;\n  height: 10px;\n  transition: transform 140ms ease;\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded=true] > .matter-agent-toggle-chevron {\n  transform: rotate(90deg);\n}\n.thread-ui-shell .matter-workbench .matter-agent-toggle[data-running] > svg:first-child {\n  color: #20bc87;\n}\n.matter-agent-children {\n  position: relative;\n  margin: 0 0 4px 22px;\n  padding-left: 6px;\n}\n.matter-agent-children::before {\n  content: "";\n  position: absolute;\n  top: 2px;\n  bottom: 6px;\n  left: 0;\n  width: 1px;\n  background: var(--theme-border);\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-ui-shell .matter-workbench .matter-agent-toggle > .matter-agent-toggle-chevron {\n    transition: none;\n  }\n}\n@media (prefers-reduced-transparency: reduce) {\n  .thread-ui-shell .matter-workbench .thread-graph-composer-shell {\n    background: var(--theme-panel);\n    backdrop-filter: none;\n  }\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-shell:has(:focus-visible, input:focus, textarea:focus, select:focus, [contenteditable=true]:focus) {\n  border-color: var(--theme-accent-solid);\n  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent-solid) 10%, transparent), var(--matter-composer-shadow);\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-input-group {\n  border: 0;\n  padding: 0;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-input {\n  min-height: 64px;\n  max-height: 200px;\n  padding: 3px 42px 8px 2px;\n  font-size: 15px;\n  line-height: 1.5;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-prompt-region {\n  padding: 0;\n  border: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-toolbar {\n  padding: 5px 0 0;\n  margin: 0;\n  border: 0;\n  gap: 5px;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-icon-button {\n  background: var(--theme-surface-strong);\n  border: 0;\n  width: 32px;\n  height: 32px;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-chip-button {\n  background: transparent;\n  border: 0;\n  font-size: 12px;\n  font-weight: 500;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-send-button {\n  width: 32px;\n  height: 32px;\n  border: 0;\n  border-radius: 50%;\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-send-button:disabled {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-workbench .thread-graph-composer-toolbar [data-action=switch-to-shell] {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .thread-chat-usage-footer {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .thread-timeline-surface {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group {\n  padding: 6px 0;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-card {\n  border: 0;\n  background: transparent;\n  box-shadow: none;\n  padding: 2px 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-icon > span {\n  width: 18px;\n  height: 24px;\n  background: transparent;\n  border: 0;\n  color: var(--theme-fg-muted);\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-icon > span > span {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-summary > span {\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n  letter-spacing: 0;\n  text-transform: none;\n  border: 0;\n  background: transparent;\n  padding: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-list {\n  margin-top: 2px;\n  padding: 0;\n  margin-left: -28px;\n  border-top: 0;\n  border-left: 0;\n  border-radius: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-detail-row {\n  position: relative;\n  border: 0;\n  border-radius: 6px;\n  background: transparent;\n  padding: 6px 8px;\n  box-shadow: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-detail-row::before {\n  content: none;\n  position: absolute;\n  top: 17px;\n  left: -18px;\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  background: var(--theme-accent-solid);\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-detail-row:active {\n  background: var(--theme-surface);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-workbench .thread-graph-history-detail-row:hover {\n    background: var(--theme-surface);\n  }\n}\n.thread-ui-shell .matter-workbench .thread-graph-chat-panel,\n.thread-ui-shell .matter-workbench .thread-graph-scroll-container {\n  background: var(--theme-bg);\n}\n.thread-ui-shell[data-theme-effective=light] .matter-workbench .thread-graph-code-block {\n  background: var(--theme-panel);\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .matter-workbench .thread-graph-message-list {\n  width: 100%;\n  max-width: var(--matter-reading-width);\n  padding-inline: 28px;\n  margin: 0 auto;\n}\n.thread-ui-shell .matter-workbench .thread-graph-turn {\n  padding-inline: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-worked-summary {\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.thread-ui-shell .matter-workbench .thread-graph-worked-rule {\n  display: none;\n}\n.thread-ui-shell .matter-workbench .thread-graph-worked-label {\n  font-size: 12px;\n  font-weight: 500;\n}\n.thread-ui-shell .matter-workbench .thread-execution-timeline .thread-graph-message-bubble {\n  font-size: 13px;\n  line-height: 1.6;\n  padding-block: 2px;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-toggle {\n  padding-block: 5px;\n  min-height: 28px;\n}\n.thread-ui-shell .matter-workbench .matter-command-step {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  width: 100%;\n  min-width: 0;\n  min-height: 32px;\n  padding: 5px 7px;\n  border-radius: 5px;\n  text-align: left;\n  line-height: 20px;\n  font-size: 11px;\n  color: var(--theme-fg-soft);\n  transition: background-color 150ms;\n}\n.matter-command-step:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .matter-command-step:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-list > .matter-command-step {\n  margin-block: 0;\n}\n.matter-step-number {\n  font-size: 10px;\n  font-variant-numeric: tabular-nums;\n  color: var(--theme-fg-muted);\n}\n.matter-step-title {\n  min-width: 0;\n  flex: 1;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg);\n}\n.matter-step-status {\n  display: flex;\n  flex-shrink: 0;\n}\n.matter-step-status.is-completed {\n  color: var(--theme-accent-strong);\n}\n.matter-step-status.is-failed {\n  color: #d56b62;\n}\n.matter-step-status.is-pending {\n  color: #418ad4;\n}\n.matter-step-time {\n  flex-shrink: 0;\n  font-size: 10px;\n  font-variant-numeric: tabular-nums;\n  color: var(--theme-fg-muted);\n}\n.matter-step-chevron {\n  flex-shrink: 0;\n  color: var(--theme-fg-muted);\n  opacity: 0;\n}\n.thread-diff {\n  font: 12px/1.7 ui-monospace, monospace;\n  min-width: max-content;\n}\n.thread-diff-line {\n  display: flex;\n  min-height: 1.7em;\n  padding-right: 12px;\n}\n.thread-diff-number {\n  width: 4ch;\n  text-align: right;\n  margin-right: 1ch;\n  color: var(--theme-fg-muted);\n  user-select: none;\n}\n.thread-diff-sign {\n  width: 2ch;\n  flex-shrink: 0;\n}\n.thread-diff-line.is-add {\n  background: light-dark(oklch(91% .045 150), oklch(29% .05 150));\n}\n.thread-diff-line.is-remove {\n  background: light-dark(oklch(91% .04 25), oklch(29% .05 25));\n}\n.thread-diff-line.is-add .thread-diff-sign {\n  color: light-dark(oklch(40% .12 150), oklch(77% .14 150));\n}\n.thread-diff-line.is-remove .thread-diff-sign {\n  color: light-dark(oklch(43% .16 25), oklch(77% .12 25));\n}\n.thread-diff-line.is-meta {\n  color: var(--theme-fg-muted);\n}\n.thread-history-direct-row {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  padding: 3px 0;\n  font-size: 11px;\n  color: var(--theme-fg-soft);\n}\n.thread-history-direct-action {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex: 1;\n  min-width: 0;\n  text-align: left;\n  border-radius: 6px;\n  padding: 4px 2px;\n}\n.thread-history-direct-action:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-history-direct-action:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-history-direct-action:focus-visible {\n  outline: 2px solid var(--theme-accent-border);\n}\n.thread-history-direct-action .thread-graph-history-tool-icon {\n  display: flex;\n  flex-shrink: 0;\n  width: 18px;\n}\n.thread-history-direct-preview {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-history-direct-preview.is-path {\n  direction: rtl;\n  text-align: left;\n}\n.thread-history-direct-preview.is-expanded {\n  direction: ltr;\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-icon {\n  margin-top: 0;\n}\n.thread-ui-shell .matter-workbench .thread-graph-history-group-verb {\n  font-weight: 500;\n}\n.matter-command-step:is(:active, :focus-visible) .matter-step-chevron {\n  opacity: 1;\n}\n@media (hover: hover) {\n  .matter-command-step:is(:hover, :focus-visible) .matter-step-chevron {\n    opacity: 1;\n  }\n}\n@media (max-width: 1000px) and (min-width: 640px) {\n  .thread-ui-shell .matter-workbench {\n    grid-template-columns: 43px var(--matter-sidebar-width, 200px) minmax(0, 1fr);\n  }\n  .thread-ui-shell .matter-workbench.is-sidebar-hidden {\n    grid-template-columns: 43px 0 minmax(0, 1fr);\n  }\n  .matter-topbar-brand {\n    display: none;\n  }\n  .matter-workspace-path {\n    max-width: 25%;\n  }\n  .matter-current-title {\n    display: none;\n  }\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .matter-workbench,\n  .thread-ui-shell .matter-workbench.is-sidebar-hidden {\n    grid-template-columns: minmax(0, 1fr);\n    grid-template-rows: calc(44px + env(safe-area-inset-top)) minmax(0, 1fr);\n  }\n  .matter-topbar {\n    grid-column: 1;\n    padding: env(safe-area-inset-top) 4px 0;\n    gap: 0;\n  }\n  .matter-topbar-brand,\n  .matter-topbar-separator,\n  .matter-search-trigger span,\n  .matter-topbar [data-action=go-forward] {\n    display: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar [data-action=go-forward] {\n    display: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar .matter-search-trigger {\n    width: 36px;\n    padding: 0;\n    margin: 0;\n  }\n  .matter-rail {\n    padding-top: env(safe-area-inset-top);\n  }\n  .matter-main {\n    grid-column: 1;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar {\n    position: fixed;\n    top: 44px;\n    bottom: 0;\n    left: 0;\n    width: min(270px, calc(100vw - 56px));\n    z-index: 65;\n    visibility: hidden;\n    transform: translateX(-120%);\n    transition: transform 160ms;\n    padding: 12px;\n  }\n  .thread-ui-shell .matter-workbench .matter-sidebar.is-open {\n    visibility: visible;\n    transform: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-mobile-close {\n    display: inline-flex;\n  }\n  .matter-sidebar-scrim {\n    display: block;\n    position: fixed;\n    inset: 44px 0 0 0;\n    background: rgb(0 0 0 / 25%);\n    z-index: 64;\n    opacity: 0;\n    pointer-events: none;\n    transition: opacity 160ms;\n  }\n  .matter-sidebar-scrim[data-open] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n  .matter-workbench .matter-sidebar[data-dragging]:not(#_) {\n    visibility: visible;\n    transition: none;\n  }\n  .matter-sidebar-scrim[data-dragging]:not(#_) {\n    transition: none;\n  }\n  .matter-thread-tabs {\n    scrollbar-width: none;\n    height: 36px;\n  }\n  .matter-thread-tabs > a,\n  .matter-group-tab {\n    min-width: 64px;\n    max-width: 140px;\n    padding: 0 8px;\n  }\n  .matter-thread-tabs::-webkit-scrollbar {\n    display: none;\n  }\n  .matter-breadcrumb {\n    height: 42px;\n    padding: 0 5px;\n    gap: 1px;\n  }\n  .matter-current-title,\n  .matter-breadcrumb > svg {\n    display: none;\n  }\n  .matter-workspace-path {\n    flex: 1;\n    max-width: none;\n    font-size: 10px;\n  }\n  .thread-ui-shell .matter-workbench .matter-breadcrumb button {\n    width: 32px;\n    height: 36px;\n  }\n  .matter-thread-actions,\n  .matter-thread-actions > div {\n    gap: 0;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-host {\n    bottom: max(22px, calc(env(safe-area-inset-bottom) + 14px), calc(var(--thread-composer-keyboard-inset, 0px) + 14px));\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-layer {\n    padding: 0 9px;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-form {\n    padding-top: 0 !important;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-message-list {\n    padding-inline: 9px;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-shell {\n    padding: 10px;\n    border-radius: 18px;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-input {\n    font-size: 16px;\n    min-height: 54px;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-toolbar {\n    flex-wrap: wrap;\n  }\n  .thread-ui-shell .matter-workbench .thread-graph-composer-toolbar > div:last-child {\n    gap: 1px;\n  }\n  .matter-explorer {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    z-index: 40;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-workbench *,\n  .matter-workbench *::before {\n    transition: none !important;\n    animation: none !important;\n  }\n}\n.workbench-panels {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.workbench-panels :is(.workbench-pane-heading, .workbench-mobile-views, .workbench-collaboration, .workbench-reference-status) button {\n  display: inline-flex;\n  justify-content: center;\n  align-items: center;\n  gap: 6px;\n  min-height: 32px;\n  padding: 5px 9px;\n  border-radius: 7px;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n}\n.workbench-panels :is(.workbench-pane-heading, .workbench-mobile-views, .workbench-collaboration, .workbench-reference-status) button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-panels :is(.workbench-pane-heading, .workbench-mobile-views, .workbench-collaboration, .workbench-reference-status) button:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-content {\n  position: relative;\n  display: flex;\n  flex: 1;\n  min-width: 0;\n  min-height: 0;\n}\n.workbench-main-column {\n  position: relative;\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n}\n.workbench-pane-grid {\n  display: flex;\n  flex: 1;\n  min-width: 0;\n  min-height: 0;\n}\n.workbench-primary,\n.workbench-reference {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n  flex: 1;\n}\n.workbench-pane-grid.has-reference > .workbench-primary {\n  flex: 0 0 clamp(360px, var(--primary-ratio), calc(100% - 365px));\n  --matter-reading-width: 100%;\n}\n.workbench-reference {\n  background: var(--theme-bg);\n  --matter-reading-width: 100%;\n}\n.workbench-pane-heading {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-height: 40px;\n  padding: 4px 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.workbench-pane-heading > div {\n  flex: 1;\n  min-width: 0;\n}\n.workbench-pane-heading strong {\n  display: block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--theme-fg);\n}\n.workbench-pane-eyebrow {\n  display: block;\n  margin-bottom: 4px;\n  font-size: 10px;\n  color: var(--theme-accent-strong);\n}\n.workbench-pane-meta {\n  max-width: 35%;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n  text-align: right;\n}\n.workbench-pane-body {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.workbench-pane-body > .thread-detail-surface {\n  height: 100%;\n}\n.workbench-pane-resize {\n  width: 5px;\n  flex-shrink: 0;\n  cursor: col-resize;\n  touch-action: none;\n  background: var(--theme-border);\n}\n.workbench-pane-resize:active,\n.workbench-pane-resize:focus-visible {\n  background: var(--theme-accent-solid);\n}\n@media (hover: hover) {\n  .workbench-pane-resize:hover {\n    background: var(--theme-accent-solid);\n  }\n}\n.workbench-panels [hidden] {\n  display: none !important;\n}\n.workbench-mobile-views {\n  display: flex;\n  gap: 4px;\n  padding: 4px 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.workbench-mobile-views button {\n  flex: 1;\n}\n.workbench-mobile-views button[aria-pressed=true] {\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n}\n.workbench-panels.is-compact .workbench-primary {\n  flex: 1;\n}\n.workbench-panels.is-compact .workbench-pane-resize {\n  display: none;\n}\n.workbench-panels.is-compact .workbench-pane-heading {\n  padding-inline: 12px;\n}\n.workbench-collaboration {\n  overflow-y: auto;\n  padding: 18px;\n  gap: 18px;\n}\n.workbench-collaboration h3 {\n  font-size: 12px;\n  font-weight: 600;\n  margin-bottom: 10px;\n}\n.workbench-collaboration p {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 1.7;\n}\n.workbench-collaboration article {\n  padding: 12px;\n  margin-bottom: 8px;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-panel);\n}\n.workbench-collaboration article header {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  justify-content: space-between;\n  font-size: 12px;\n}\n.workbench-collaboration article strong {\n  overflow-wrap: anywhere;\n}\n.workbench-collaboration article footer {\n  display: flex;\n  gap: 5px;\n  margin-top: 8px;\n}\n.workbench-collaboration [data-status=failed] {\n  color: #d1555f;\n}\n.workbench-collaboration [data-status=running] {\n  color: var(--theme-accent-strong);\n}\n.workbench-reference-status,\n.workbench-persistence-notice {\n  padding: 10px 16px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.workbench-reference .thread-graph-message-list {\n  padding-bottom: 32px;\n}\n.workbench-files .thread-graph-explorer-header h2 {\n  display: none;\n}\n@media (max-width: 639px) {\n  .workbench-panels :is(.workbench-pane-heading, .workbench-mobile-views, .workbench-collaboration, .workbench-reference-status) button {\n    min-height: 44px;\n  }\n  .workbench-pane-heading {\n    min-height: 48px;\n  }\n}\n.workbench-composer-target {\n  display: flex;\n  gap: 8px;\n  justify-content: space-between;\n  padding: 3px 12px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.workbench-composer-target span {\n  font-size: 10px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.workbench-mobile-views button {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n@media (max-width: 639px) {\n  .workbench-composer-target span {\n    display: none;\n  }\n}\n.workbench-thread-picker-actions {\n  display: inline-flex;\n  align-items: center;\n  gap: 2px;\n}\n.workbench-thread-picker-trigger {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 auto;\n  width: 30px;\n  height: 30px;\n  border: 1px solid transparent;\n  border-radius: 7px;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  cursor: pointer;\n}\n.workbench-thread-picker-trigger:active,\n.workbench-thread-picker-trigger[aria-expanded=true] {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .workbench-thread-picker-trigger:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.workbench-thread-picker-trigger.is-active {\n  color: var(--theme-accent-strong);\n  background: var(--theme-accent-soft);\n}\n.workbench-thread-picker-trigger:disabled {\n  opacity: .45;\n  cursor: default;\n}\n.workbench-thread-picker-popover {\n  position: fixed;\n  z-index: 250;\n  display: flex;\n  flex-direction: column;\n  width: min(372px, calc(100vw - 24px));\n  min-height: 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 14px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 18px 56px rgb(0 0 0 / .2), 0 3px 10px rgb(0 0 0 / .08);\n  font-family: inherit;\n  animation: workbench-picker-enter .12s ease-out;\n}\n.workbench-thread-picker-popover button {\n  border: 0;\n  background: transparent;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n}\n.workbench-thread-picker-popover button:focus-visible,\n.workbench-thread-picker-trigger:focus-visible {\n  outline: 2px solid var(--theme-accent-strong);\n  outline-offset: -2px;\n}\n.workbench-thread-picker-heading {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  flex-shrink: 0;\n  padding: 14px 14px 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.workbench-thread-picker-heading > svg {\n  color: var(--theme-accent-strong);\n}\n.workbench-thread-picker-heading > div {\n  flex: 1;\n  min-width: 0;\n}\n.workbench-thread-picker-heading strong {\n  display: block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 13px;\n  font-weight: 600;\n}\n.workbench-thread-picker-heading small {\n  display: block;\n  margin-top: 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.workbench-thread-picker-heading button {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 6px;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-heading button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-thread-picker-heading button:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-thread-picker-scroll {\n  min-height: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  padding: 5px 6px 10px;\n}\n.workbench-thread-picker-section-label {\n  padding: 13px 9px 6px;\n  font-size: 10px;\n  line-height: 1.4;\n  font-weight: 600;\n  letter-spacing: .045em;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-popover .workbench-thread-picker-row {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  width: 100%;\n  min-height: 49px;\n  padding: 8px 9px;\n  border-radius: 8px;\n  text-align: left;\n}\n.workbench-thread-picker-row:active,\n.workbench-thread-picker-row:focus-visible {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-thread-picker-row:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-thread-picker-row[aria-current=true] {\n  background: var(--theme-accent-soft);\n}\n.workbench-thread-picker-row > svg {\n  flex-shrink: 0;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-row-icon {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 30px;\n  height: 30px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  color: var(--theme-fg-muted);\n  background: var(--theme-surface);\n}\n.workbench-thread-picker-row-icon.is-favorite,\n.workbench-thread-picker-row > .workbench-thread-picker-favorite {\n  color: var(--theme-accent-strong);\n}\n.workbench-thread-picker-row-label {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  gap: 4px;\n  min-width: 0;\n}\n.workbench-thread-picker-row-label strong {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n  font-weight: 500;\n}\n.workbench-thread-picker-row-label small {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.workbench-thread-picker-row > .workbench-thread-picker-check {\n  color: var(--theme-accent-strong);\n}\n.workbench-split-status {\n  width: 5px;\n  height: 5px;\n  flex-shrink: 0;\n  border-radius: 50%;\n  background: var(--theme-fg-muted);\n  opacity: .55;\n}\n.workbench-split-status:is(.is-running, .is-recovering, .is-connected) {\n  background: var(--theme-accent-strong);\n  opacity: 1;\n}\n.workbench-split-status:is(.is-failed, .is-error) {\n  background: #d1555f;\n  opacity: 1;\n}\n.workbench-thread-picker-state {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  padding: 11px 10px;\n  margin: 0;\n  font-size: 11px;\n  line-height: 1.5;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-error {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px;\n  padding: 10px;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n}\n.workbench-thread-picker-error span {\n  flex: 1;\n  min-width: 100px;\n  overflow-wrap: anywhere;\n}\n.workbench-thread-picker-error button {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  padding: 6px 8px;\n  border-radius: 6px;\n  background: var(--theme-hover);\n}\n.workbench-thread-picker-popover footer {\n  flex-shrink: 0;\n  padding: 6px;\n  border-top: 1px solid var(--theme-border);\n}\n.workbench-thread-picker-popover footer button {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  width: 100%;\n  padding: 9px;\n  border-radius: 7px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.workbench-thread-picker-popover footer button svg:last-child {\n  margin-left: auto;\n}\n.workbench-thread-picker-popover footer button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-thread-picker-popover footer button:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-thread-picker-popover .is-spinning {\n  animation: workbench-picker-spin .9s linear infinite;\n}\n@keyframes workbench-picker-enter {\n  from {\n    opacity: 0;\n    transform: translateY(-3px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n@keyframes workbench-picker-spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n.workbench-panels {\n  position: relative;\n}\n.workbench-tool-drawer {\n  position: relative;\n  display: flex;\n  flex: 0 0 min(var(--workbench-tool-width, 560px), calc(100% - 280px));\n  flex-direction: column;\n  width: min(var(--workbench-tool-width, 560px), calc(100% - 280px));\n  min-width: 0;\n  min-height: 0;\n  border-left: 1px solid var(--theme-border-strong);\n  background: var(--theme-panel);\n}\n.workbench-tool-drawer > header {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  min-height: 42px;\n  padding: 5px 12px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.workbench-tool-drawer > header strong {\n  flex: 1;\n  font-size: 12px;\n  font-weight: 600;\n}\n.workbench-tool-drawer > header button {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 32px;\n  height: 32px;\n  border-radius: 7px;\n  color: var(--theme-fg-muted);\n}\n.workbench-tool-drawer > header button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .workbench-tool-drawer > header button:hover {\n    background: var(--theme-hover);\n  }\n}\n.workbench-primary[data-focused=true],\n.workbench-reference[data-focused=true] {\n  box-shadow: inset 0 2px 0 var(--theme-accent-soft);\n}\n@media (max-width: 639px) {\n  .workbench-thread-picker-trigger {\n    width: 34px;\n    min-height: 36px;\n  }\n  .workbench-thread-picker-popover .workbench-thread-picker-row {\n    min-height: 54px;\n  }\n  .workbench-thread-picker-heading button {\n    width: 34px;\n    height: 34px;\n  }\n  .workbench-tool-drawer > header {\n    min-height: 48px;\n  }\n  .workbench-tool-drawer > header button {\n    width: 40px;\n    height: 40px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .workbench-thread-picker-popover,\n  .workbench-thread-picker-popover .is-spinning {\n    animation: none;\n  }\n}\n.workbench-tool-drawer > header > div {\n  flex: 1;\n  min-width: 0;\n}\n.workbench-tool-drawer > header small {\n  display: block;\n  margin-top: 3px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 10px;\n  color: var(--theme-fg-muted);\n}\n@media (max-width: 639px) {\n  .matter-topbar-end {\n    gap: 0;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar-end > button,\n  .thread-ui-shell .matter-workbench .matter-topbar-end > [data-slot=dialog-trigger] {\n    width: 34px;\n    min-width: 34px;\n    margin: 0;\n    padding: 0;\n  }\n  .matter-topbar-end .matter-connection:empty {\n    display: none;\n  }\n  .matter-topbar-end .matter-connection:has(.device-connection-slot:empty):not(:has(button, a, svg)) {\n    display: none;\n  }\n}\n.workbench-tool-resize {\n  position: absolute;\n  inset: 0 auto 0 -4px;\n  width: 8px;\n  z-index: 2;\n  cursor: col-resize;\n  touch-action: none;\n  user-select: none;\n}\n.workbench-tool-drawer[data-minimized] {\n  flex: 0 0 236px;\n  width: 236px;\n}\n.workbench-tool-drawer[data-minimized] > .workbench-tool-resize {\n  display: none;\n}\n.workbench-files-restore {\n  position: absolute;\n  top: 50%;\n  right: 100%;\n  z-index: 6;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 18px;\n  height: 56px;\n  transform: translateY(-50%);\n  border: 1px solid var(--theme-border-strong);\n  border-right: 0;\n  border-radius: 8px 0 0 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n  box-shadow: -2px 0 10px rgb(0 0 0 / 10%);\n  transition: width 120ms ease, color 120ms ease;\n}\n.workbench-files-restore:active {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .workbench-files-restore:hover {\n    width: 22px;\n    color: var(--theme-fg);\n  }\n}\n.workbench-files-restore:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.workbench-tool-resize::after {\n  content: "";\n  position: absolute;\n  inset: 0 auto 0 3px;\n  width: 2px;\n  background: transparent;\n  transition: background 120ms;\n}\n.workbench-tool-resize:active::after,\n.workbench-tool-resize:focus-visible::after {\n  background: var(--theme-accent-solid);\n}\n@media (hover: hover) {\n  .workbench-tool-resize:hover::after {\n    background: var(--theme-accent-solid);\n  }\n}\n.workbench-tool-resize:focus-visible {\n  outline: none;\n}\n.workbench-panels.is-compact .workbench-tool-drawer {\n  position: absolute;\n  inset: 0;\n  z-index: 90;\n  width: 100%;\n}\n.workbench-bottom-panel {\n  position: relative;\n  display: flex;\n  flex: 0 0 var(--workbench-panel-height, 320px);\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n  border-top: 1px solid var(--theme-border-strong);\n  background: var(--theme-panel);\n}\n.workbench-bottom-panel.is-collapsed {\n  flex-basis: auto;\n}\n.workbench-bottom-panel.is-maximized {\n  position: absolute;\n  inset: 0;\n  z-index: 6;\n  border-top: 0;\n}\n.workbench-main-column.has-maximized-panel > .workbench-pane-grid {\n  visibility: hidden;\n}\n.workbench-panel-sash {\n  position: absolute;\n  inset: -4px 0 auto;\n  z-index: 4;\n  height: 8px;\n  cursor: row-resize;\n  touch-action: none;\n  user-select: none;\n}\n.workbench-panel-sash::after {\n  content: "";\n  position: absolute;\n  inset: 3px 0 auto;\n  height: 2px;\n  background: transparent;\n  transition: background 120ms;\n}\n.workbench-panel-sash:active::after,\n.workbench-panel-sash:focus-visible::after,\n.workbench-panel-sash:active::after {\n  background: var(--theme-accent-solid);\n}\n@media (hover: hover) {\n  .workbench-panel-sash:hover::after {\n    background: var(--theme-accent-solid);\n  }\n}\n.workbench-panel-sash:focus-visible {\n  outline: none;\n}\n.workbench-panels.is-compact .workbench-panel-sash {\n  position: relative;\n  inset: auto;\n  display: flex;\n  flex: 0 0 18px;\n  align-items: center;\n  justify-content: center;\n  height: 18px;\n  margin-top: -1px;\n}\n.workbench-panels.is-compact .workbench-panel-sash::after {\n  position: static;\n  width: 36px;\n  height: 4px;\n  border-radius: 2px;\n  background: var(--theme-border-strong);\n}\n.workbench-panels.is-compact .workbench-panel-sash:active::after {\n  background: var(--theme-accent-solid);\n}\n@media (pointer: coarse) {\n  .workbench-panel-sash {\n    inset: -10px 0 auto;\n    height: 20px;\n  }\n  .workbench-panel-sash::after {\n    inset: 9px 0 auto;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .workbench-panel-sash::after {\n    transition: none;\n  }\n}\n.matter-shortcut-list {\n  position: relative;\n}\n.matter-shortcut {\n  position: relative;\n  -webkit-touch-callout: none;\n  user-select: none;\n}\n.matter-shortcut-list[data-reordering] .matter-shortcut {\n  transition: transform 160ms ease;\n}\n.matter-shortcut-list[data-reordering] .matter-shortcut[data-dragging] {\n  z-index: 2;\n  transition: none;\n}\n.thread-ui-shell .matter-workbench .matter-shortcut[data-dragging] .matter-thread-row {\n  background: var(--theme-panel);\n  box-shadow: 0 10px 28px rgb(0 0 0 / 24%), 0 0 0 1px var(--theme-border);\n}\n.matter-shortcut-list[data-reordering] {\n  cursor: grabbing;\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-shortcut-list[data-reordering] .matter-shortcut {\n    transition: none;\n  }\n}\n.matter-thread-group,\n.matter-thread-group-entry[data-reorder-key] {\n  -webkit-touch-callout: none;\n  -webkit-user-select: none;\n  user-select: none;\n  -webkit-user-drag: none;\n}\n.thread-ui-shell .matter-workbench :is(.matter-topbar, .matter-tabs-row) {\n  -webkit-user-select: none;\n  user-select: none;\n  -webkit-touch-callout: none;\n}\n.thread-ui-shell .matter-workbench :is(.matter-topbar, .matter-tabs-row) :is(input, textarea, [contenteditable]) {\n  -webkit-user-select: text;\n  user-select: text;\n}\n.matter-thread-group a {\n  -webkit-user-drag: none;\n}\n.matter-thread-group-entry[data-reorder-key] {\n  position: relative;\n}\n:is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry) {\n  transition: transform 160ms ease;\n}\n:is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry)[data-dragging] {\n  z-index: 3;\n  transition: none;\n}\n:is(.matter-thread-tabs, .matter-thread-section)[data-reordering] {\n  cursor: grabbing;\n}\n.thread-ui-shell .matter-workbench .matter-thread-group[data-dragging] {\n  border-radius: 10px 10px 0 0;\n  background: var(--theme-panel);\n  box-shadow: 0 8px 22px rgb(0 0 0 / 28%), 0 0 0 1px var(--theme-border);\n}\n.thread-ui-shell .matter-workbench .matter-thread-group-entry[data-dragging] > .matter-thread-entry > .matter-thread-row {\n  background: var(--theme-panel);\n  box-shadow: 0 10px 28px rgb(0 0 0 / 24%), 0 0 0 1px var(--theme-border);\n}\n:is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing] {\n  position: relative;\n  animation: matter-reorder-sink 700ms ease-out forwards;\n}\n:is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing]::after {\n  content: "";\n  position: absolute;\n  inset: 0;\n  border-radius: 10px;\n  pointer-events: none;\n  background: var(--theme-accent-solid);\n  opacity: 0;\n  animation: matter-reorder-tint 700ms ease-in forwards;\n}\n@keyframes matter-reorder-sink {\n  to {\n    transform: scale(.975);\n  }\n}\n@keyframes matter-reorder-tint {\n  to {\n    opacity: .16;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  :is(.matter-thread-tabs, .matter-thread-section)[data-reordering] :is(.matter-thread-group, .matter-thread-group-entry) {\n    transition: none;\n  }\n  :is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing] {\n    animation: none;\n  }\n  :is(.matter-thread-group, .matter-thread-group-entry, .matter-shortcut)[data-pressing]::after {\n    animation: none;\n    opacity: .12;\n  }\n}\n.matter-split-drop {\n  position: fixed;\n  z-index: 60;\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n  padding: 10px;\n  pointer-events: none;\n  animation: matter-split-drop-in 180ms ease-out;\n}\n.matter-split-drop-zone {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 12px;\n  border: 1.5px dashed color-mix(in srgb, var(--theme-accent-solid) 40%, transparent);\n  background: color-mix(in srgb, var(--theme-accent-solid) 6%, transparent);\n  color: var(--theme-fg-muted);\n  transition:\n    background 140ms ease,\n    border-color 140ms ease,\n    color 140ms ease;\n}\n.matter-split-drop-zone[data-active] {\n  border-style: solid;\n  border-color: color-mix(in srgb, var(--theme-accent-solid) 70%, transparent);\n  background: color-mix(in srgb, var(--theme-accent-solid) 16%, transparent);\n  color: var(--theme-fg);\n}\n.matter-split-drop-zone > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 14px;\n  border-radius: 999px;\n  background: var(--theme-panel);\n  box-shadow: 0 6px 18px rgb(0 0 0 / 18%);\n  font-size: 13px;\n  transition: transform 140ms ease;\n}\n.matter-split-drop-zone[data-active] > span {\n  transform: scale(1.06);\n}\n.matter-split-drop-zone svg {\n  width: 16px;\n  height: 16px;\n}\n@keyframes matter-split-drop-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-split-drop {\n    animation: none;\n  }\n  .matter-split-drop-zone,\n  .matter-split-drop-zone > span {\n    transition: none;\n  }\n  .matter-split-drop-zone[data-active] > span {\n    transform: none;\n  }\n}\n.workbench-thread-picker-scrim {\n  position: fixed;\n  inset: 0;\n  z-index: 249;\n  background: var(--overlay-scrim, rgb(0 0 0 / 45%));\n  backdrop-filter: blur(6px);\n}\n.workbench-thread-picker-popover.is-sheet {\n  border-bottom: 0;\n  border-radius: 18px 18px 0 0;\n  padding-bottom: env(safe-area-inset-bottom);\n  animation: workbench-picker-rise .18s ease-out;\n}\n@keyframes workbench-picker-rise {\n  from {\n    transform: translateY(24px);\n    opacity: 0;\n  }\n}\n.matter-workspace-path-chip {\n  display: inline-flex;\n  flex: 0 1 45%;\n  align-items: center;\n  gap: 2px;\n  min-width: 0;\n}\n.matter-workspace-path-chip > .matter-workspace-path {\n  flex: 1 1 auto;\n}\n.thread-ui-shell .matter-thread-tools-menu {\n  position: fixed;\n  z-index: 120;\n  width: 304px;\n  max-width: calc(100vw - 16px);\n  padding: 6px;\n  border: 1px solid var(--theme-border-strong, var(--theme-border));\n  border-radius: 12px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  font-size: 13px;\n  box-shadow: 0 12px 32px -8px rgb(0 0 0 / 28%), 0 2px 6px rgb(0 0 0 / 10%);\n}\n.thread-ui-shell .matter-thread-tools-menu:not([data-open]) {\n  visibility: hidden;\n  pointer-events: none;\n}\n.thread-ui-shell .matter-thread-tools-menu[data-open] {\n  animation: matter-thread-tools-in 140ms ease-out;\n}\n@keyframes matter-thread-tools-in {\n  from {\n    opacity: 0;\n    transform: translateY(-4px) scale(.98);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-ui-shell .matter-thread-tools-menu[data-open] {\n    animation: none;\n  }\n}\n.thread-ui-shell .matter-thread-tools-head {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) auto;\n  gap: 2px 6px;\n  align-items: center;\n  margin-bottom: 4px;\n  padding: 6px 4px 10px 10px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.thread-ui-shell .matter-thread-tools-path {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  min-width: 0;\n  font: 12.5px/1.3 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);\n}\n.thread-ui-shell .matter-thread-tools-path > svg {\n  flex: none;\n  width: 16px;\n  height: 16px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-thread-tools-path {\n  gap: 0;\n}\n.thread-ui-shell .matter-thread-tools-path > svg:first-child {\n  margin-right: 7px;\n}\n.thread-ui-shell .matter-thread-tools-path-head {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell .matter-thread-tools-path-tail {\n  flex: none;\n  max-width: 70%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell .matter-thread-tools-copy {\n  margin-left: 6px;\n}\n.thread-ui-shell .matter-thread-tools-copy {\n  flex: none;\n  width: 24px;\n  height: 24px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-thread-tools-title {\n  min-width: 0;\n  padding-left: 23px;\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 12px;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell .matter-thread-tools-star {\n  grid-column: 2;\n  grid-row: 1 / span 2;\n  display: grid;\n  place-items: center;\n  width: 34px;\n  height: 34px;\n  border-radius: 8px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .matter-thread-tools-star:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .matter-thread-tools-star:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .matter-thread-tools-star[aria-pressed=true] {\n  color: #e3a33b;\n}\n.thread-ui-shell .matter-thread-tools-star svg {\n  width: 17px;\n  height: 17px;\n}\n.thread-ui-shell .matter-thread-tools-panels {\n  position: relative;\n  margin-top: 5px;\n  padding-top: 5px;\n}\n.thread-ui-shell .matter-thread-tools-panels::before {\n  content: "";\n  position: absolute;\n  top: 0;\n  left: 4px;\n  right: 4px;\n  height: 1px;\n  background: var(--theme-border);\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) {\n  display: flex;\n  flex-direction: column;\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(div, span):has(> :is(button, a)) {\n  display: contents;\n}\n.thread-ui-shell .matter-thread-tools-menu :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label] {\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  gap: 10px;\n  width: 100%;\n  height: auto;\n  min-height: 36px;\n  padding: 0 10px;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg);\n  font-size: 13px;\n  text-align: left;\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]::after {\n  content: attr(aria-label);\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label] > svg {\n  flex: none;\n  width: 16px;\n  height: 16px;\n  color: var(--theme-fg-soft, var(--theme-fg-muted));\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:is(:active, :focus-visible):not(:disabled) {\n  background: var(--theme-hover);\n  outline: none;\n}\n@media (hover: hover) {\n  .thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:is(:hover, :focus-visible):not(:disabled) {\n    background: var(--theme-hover);\n    outline: none;\n  }\n}\n.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:disabled {\n  opacity: .45;\n}\n.thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon=ports]) {\n  order: 10;\n  margin-top: 5px;\n  position: relative;\n}\n.thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon=ports])::before {\n  content: "";\n  position: absolute;\n  top: -3px;\n  left: 4px;\n  right: 4px;\n  height: 1px;\n  background: var(--theme-border);\n}\n.thread-ui-shell .matter-toolbar-toggle[aria-expanded=true] {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.matter-status-dot[data-status=waiting] {\n  --status-waiting: #b77915;\n  width: 12px;\n  height: 11px;\n  border: 0;\n  border-radius: 0;\n  background: var(--status-waiting);\n  transform: none;\n  animation: none;\n  clip-path: polygon(22% 0, 78% 0, 100% 20%, 100% 64%, 83% 80%, 94% 100%, 58% 80%, 22% 80%, 0 64%, 0 20%);\n}\n:root[data-theme-effective=dark] .matter-status-dot[data-status=waiting] {\n  --status-waiting: #edb75d;\n}\n.matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot[data-status=waiting] {\n  width: 12px;\n  height: 11px;\n  border: 0;\n  box-shadow: none;\n}\n');
 
 // src/styles/phone-dock.css
 styleInject('.matter-phone-dock,\n.matter-phone-sheet,\n.matter-phone-sheet-scrim {\n  display: none;\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .matter-workbench.has-phone-dock,\n  .thread-ui-shell .matter-workbench.has-phone-dock.is-sidebar-hidden {\n    grid-template-rows: calc(34px + env(safe-area-inset-top)) minmax(0, 1fr) auto;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock > .matter-topbar {\n    grid-row: 1;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock > .matter-main {\n    grid-row: 2;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only {\n    gap: 6px;\n    padding: env(safe-area-inset-top) 6px 0 4px;\n  }\n  .matter-topbar.is-status-only .matter-topbar-status {\n    display: flex;\n    flex: none;\n    align-items: center;\n  }\n  .matter-topbar.is-status-only:not(#_) .matter-topbar-status > button {\n    flex: none;\n    width: auto;\n    min-width: 0;\n    height: 34px;\n  }\n  .matter-topbar-spacer {\n    flex: 1;\n  }\n  .matter-topbar.is-status-only .matter-topbar-usage {\n    display: flex;\n    flex: none;\n    align-items: center;\n  }\n  .matter-topbar.is-status-only:not(#_) .matter-topbar-usage .thread-subscription-usage {\n    flex: none;\n    width: auto;\n    min-width: 0;\n    height: 30px;\n    gap: 8px;\n    padding: 0 6px;\n  }\n  .matter-topbar.is-status-only.is-search-open .matter-topbar-usage {\n    display: none;\n  }\n  .matter-topbar.is-status-only.is-search-open .matter-topbar-status,\n  .matter-topbar.is-status-only.is-search-open .matter-topbar-spacer,\n  .matter-topbar.is-status-only.is-search-open .matter-running-chip {\n    display: none;\n  }\n  .matter-topbar.is-status-only.is-search-open .matter-topbar-search {\n    flex: 1;\n    min-width: 0;\n  }\n  .matter-topbar.is-status-only:not(#_) > button,\n  .matter-topbar.is-status-only:not(#_) .matter-connection > button {\n    flex: none;\n    width: 34px;\n    min-width: 34px;\n    height: 34px;\n  }\n  .matter-topbar.is-status-only:not(#_) > .matter-running-chip {\n    width: auto;\n    min-width: 0;\n    gap: 4px;\n    padding: 0 9px;\n    height: 26px;\n    border-radius: 999px;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > .matter-running-chip {\n    background: color-mix(in oklch, var(--theme-accent-solid) 14%, transparent);\n    color: var(--theme-accent-strong);\n    font-weight: 600;\n    font-size: 12px;\n  }\n  .matter-running-icon {\n    position: relative;\n    display: inline-flex;\n    flex: none;\n  }\n  .matter-running-icon svg {\n    width: 14px;\n    height: 14px;\n  }\n  .matter-running-icon > i {\n    position: absolute;\n    top: -2px;\n    right: -3px;\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n    background: currentColor;\n    box-shadow: 0 0 0 1.5px var(--matter-chrome);\n    animation: matter-running-pulse 1.6s ease-in-out infinite;\n  }\n  @keyframes matter-running-pulse {\n    0%, 100% {\n      opacity: 1;\n    }\n    50% {\n      opacity: 0.35;\n    }\n  }\n  @media (max-width: 419px) {\n    .matter-running-label {\n      display: none;\n    }\n  }\n  @media (max-width: 379px) {\n    .thread-ui-shell .matter-workbench .matter-topbar.is-status-only {\n      gap: 3px;\n    }\n    .matter-topbar.is-status-only:not(#_) .matter-topbar-usage .thread-subscription-usage {\n      gap: 6px;\n      padding: 0 3px;\n    }\n    .matter-topbar.is-status-only:not(#_) > .matter-running-chip {\n      padding: 0 7px;\n    }\n  }\n  .matter-topbar.is-status-only .matter-connection:empty {\n    display: none;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-phone-dock {\n    grid-row: 3;\n    grid-column: 1 / -1;\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 8px max(6px, env(safe-area-inset-bottom));\n    background: var(--matter-dock-surface, var(--matter-chrome));\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock.is-typing .matter-phone-dock {\n    transform: translateY(calc(-1 * var(--thread-detail-keyboard-inset, 0px)));\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock button {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    height: 44px;\n    min-width: 44px;\n    margin: 0;\n    padding: 0;\n    border-radius: 13px;\n    color: var(--theme-fg-soft);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock svg {\n    width: 20px;\n    height: 20px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread {\n    position: relative;\n    flex: 1;\n    min-width: 0;\n    justify-content: flex-start;\n    gap: 8px;\n    padding: 0 10px;\n    border: 1px solid var(--theme-border);\n    background: var(--theme-panel);\n    color: var(--theme-fg);\n    font-size: 14px;\n    font-weight: 600;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread svg {\n    width: 16px;\n    height: 16px;\n    flex: none;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-thread .matter-status-dot {\n    flex: none;\n  }\n  .matter-phone-thread-title {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-align: left;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .matter-phone-pins {\n    display: flex;\n    flex: 1;\n    min-width: 0;\n    gap: 2px;\n    padding: 2px;\n    border: 1px solid var(--theme-border);\n    border-radius: 15px;\n    background: var(--theme-panel);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin {\n    flex: 1 1 0;\n    min-width: 0;\n    height: 40px;\n    gap: 4px;\n    padding: 0 8px;\n    border-radius: 12px;\n    color: var(--theme-fg-muted);\n    font-size: 13px;\n    font-weight: 500;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin[aria-pressed=true] {\n    background: var(--theme-surface-strong);\n    color: var(--theme-fg);\n    font-weight: 600;\n    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin svg {\n    width: 14px;\n    height: 14px;\n    flex: none;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-pin-title {\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .matter-phone-panes {\n    display: flex;\n    padding: 2px;\n    border: 1px solid var(--theme-border);\n    border-radius: 15px;\n    background: var(--theme-panel);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-panes button {\n    height: 40px;\n    border-radius: 12px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-panes button[aria-pressed=true] {\n    background: var(--theme-surface-strong);\n    color: var(--theme-fg);\n    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .thread-graph-composer-host {\n    bottom: var(--thread-composer-keyboard-inset, 0px);\n    padding: 8px 0 6px;\n    border-top: 1px solid var(--matter-dock-edge, var(--theme-border));\n    background: var(--matter-dock-surface, var(--matter-chrome));\n    pointer-events: auto;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock:not(.is-typing) .thread-graph-composer-host {\n    bottom: 0;\n    padding-bottom: 0;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .thread-graph-composer-form {\n    padding-bottom: 0;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .file-ask-bar {\n    margin-top: 0;\n    padding: 8px 10px max(8px, calc(var(--thread-detail-keyboard-inset, 0px) + 8px));\n    border-top: 1px solid var(--matter-dock-edge, var(--theme-border));\n    background: var(--matter-dock-surface, var(--matter-chrome));\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock:not(.is-typing) .file-ask-bar {\n    padding-bottom: 0;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .file-ask-bar-shell {\n    box-shadow: none;\n    -webkit-backdrop-filter: none;\n    backdrop-filter: none;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed .matter-phone-dock,\n  .thread-ui-shell .matter-workbench.is-left-handed .matter-phone-sheet-footer,\n  .thread-ui-shell .matter-workbench.is-left-handed .file-ask-bar-shell {\n    flex-direction: row-reverse;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed .file-ask-bar-shell {\n    padding: 5px 14px 5px 5px;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed .matter-phone-thread-title {\n    text-align: left;\n  }\n  .matter-workbench.is-left-handed .matter-phone-hand-icon {\n    transform: scaleX(-1);\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] .thread-graph-composer-input-group {\n    grid-template-columns: max-content minmax(0, 1fr);\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-prompt-region {\n    grid-column: 2;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] .thread-graph-composer-toolbar {\n    grid-column: 1;\n    flex-direction: row-reverse;\n    justify-content: flex-end;\n    justify-self: start;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] :is(.composer-tools, .composer-settings) {\n    flex-direction: row-reverse;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed :is(.thread-jump-latest-cluster, .thread-jump-nav) {\n    flex-direction: row-reverse;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed .thread-jump-nav > .thread-jump-latest {\n    margin: 0 3px 0 0;\n  }\n  .matter-phone-sheet-scrim {\n    display: block;\n    position: fixed;\n    inset: 0;\n    z-index: 94;\n    background: rgb(10 14 12 / 36%);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet {\n    position: fixed;\n    inset: auto 0 0;\n    z-index: 95;\n    display: flex;\n    flex-direction: column;\n    max-height: 78dvh;\n    padding: 6px 0 max(8px, env(safe-area-inset-bottom));\n    border-radius: 22px 22px 0 0;\n    background: var(--theme-panel);\n    box-shadow: 0 -10px 34px rgb(0 0 0 / 18%);\n    visibility: hidden;\n    transform: translateY(105%);\n    transition: transform 180ms ease-out, visibility 0s linear 180ms;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet[data-open] {\n    visibility: visible;\n    transform: none;\n    transition: transform 180ms ease-out;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet[data-dragging] {\n    transition: none;\n  }\n  .matter-phone-sheet-body {\n    touch-action: pan-y;\n  }\n  .matter-phone-sheet-grabber {\n    flex: none;\n    width: 40px;\n    height: 5px;\n    margin: 2px auto 8px;\n    border-radius: 3px;\n    background: var(--theme-border-strong);\n  }\n  .matter-phone-sheet-body {\n    flex: 1;\n    min-height: 0;\n    overflow-y: auto;\n    overscroll-behavior: contain;\n    padding: 0 10px 6px;\n  }\n  .matter-phone-sheet-body h3 {\n    margin: 10px 8px 6px;\n    overflow: hidden;\n    color: var(--theme-fg-muted);\n    font-size: 12px;\n    font-weight: 600;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-body .matter-sheet-section-heading {\n    height: 36px;\n    margin: 6px 0 2px;\n    padding: 0 8px;\n    font-weight: 600;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-sheet-head {\n    display: grid;\n    gap: 4px;\n    margin: 10px 8px 8px;\n  }\n  .matter-phone-sheet-body .matter-phone-sheet-head h3.matter-phone-sheet-title {\n    display: -webkit-box;\n    margin: 0;\n    color: var(--theme-fg);\n    font-size: 14px;\n    line-height: 1.35;\n    white-space: normal;\n    overflow-wrap: anywhere;\n    -webkit-box-orient: vertical;\n    -webkit-line-clamp: 2;\n  }\n  .matter-phone-sheet-head .matter-phone-sheet-path {\n    max-width: 100%;\n    justify-self: start;\n  }\n  .matter-phone-sheet .matter-thread-row {\n    min-height: 52px;\n    font-size: 14px;\n  }\n  .matter-phone-sheet .matter-thread-entry {\n    position: relative;\n  }\n  .matter-phone-sheet-footer {\n    display: flex;\n    flex: none;\n    gap: 8px;\n    align-items: center;\n    padding: 8px 12px 0;\n    border-top: 1px solid var(--theme-border);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer > * {\n    height: 46px;\n    min-width: 46px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer .matter-new-thread {\n    display: flex;\n    flex: 1;\n    align-items: center;\n    justify-content: center;\n    gap: 8px;\n    width: auto;\n    border: 1px solid color-mix(in oklch, var(--theme-accent-solid) 38%, transparent);\n    border-radius: 14px;\n    background: color-mix(in oklch, var(--theme-accent-solid) 14%, transparent);\n    color: var(--theme-accent-strong, var(--theme-accent-solid));\n    font-size: 14px;\n    font-weight: 600;\n  }\n  .matter-phone-sheet-footer .matter-new-thread::after {\n    content: attr(aria-label);\n  }\n  .matter-phone-sheet-footer .matter-new-thread svg {\n    width: 18px;\n    height: 18px;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar {\n    top: 0;\n    z-index: 96;\n    padding-top: calc(12px + env(safe-area-inset-top));\n    padding-bottom: max(12px, env(safe-area-inset-bottom));\n    border-right: 1px solid var(--theme-border);\n    box-shadow: 12px 0 40px rgb(0 0 0 / 28%);\n  }\n  .matter-workbench.has-phone-dock .matter-sidebar[data-dragging]:not(#_) {\n    visibility: visible;\n    transition: none;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar-scrim {\n    inset: 0;\n    z-index: 95;\n    background: rgb(0 0 0 / 42%);\n    opacity: 0;\n    pointer-events: none;\n    transition: opacity 160ms;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar-scrim[data-open] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n  .matter-workbench.has-phone-dock .matter-sidebar-scrim[data-dragging]:not(#_) {\n    transition: none;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar {\n    width: min(320px, calc(100vw - 48px));\n  }\n  .matter-drawer-brand {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    min-width: 0;\n    font-size: 17px;\n    font-weight: 700;\n    letter-spacing: -.01em;\n  }\n  .matter-drawer-brand b {\n    display: inline-flex;\n    flex: none;\n    align-items: center;\n    justify-content: center;\n    width: 30px;\n    height: 30px;\n    border-radius: 9px;\n    background: var(--theme-surface-strong);\n    font-size: 15px;\n    letter-spacing: -1.5px;\n  }\n  .matter-drawer-brand i {\n    color: var(--theme-accent-strong, var(--theme-accent-solid));\n    font-style: normal;\n  }\n  .thread-ui-shell .matter-workbench .matter-drawer-home {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n    min-height: 46px;\n    margin: 2px 0 10px;\n    padding: 0 12px;\n    border: 1px solid var(--theme-border);\n    border-radius: 12px;\n    background: var(--theme-surface);\n    color: var(--theme-fg);\n    font-size: 14px;\n    font-weight: 600;\n  }\n  .matter-drawer-home > span {\n    flex: 1;\n    min-width: 0;\n    text-align: left;\n  }\n  .thread-ui-shell .matter-workbench .matter-drawer-home + .matter-drawer-home {\n    margin-top: -4px;\n  }\n  .matter-drawer-home svg {\n    width: 18px;\n    height: 18px;\n    flex: none;\n    color: var(--theme-fg-muted);\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-main {\n    overscroll-behavior-x: none;\n  }\n  .matter-phone-sheet-tools {\n    display: grid;\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n    gap: 4px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-tools > button {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 5px;\n    width: auto;\n    height: 64px;\n    padding: 6px 2px;\n    border-radius: 14px;\n    color: var(--theme-fg);\n    font-size: 11.5px;\n    line-height: 1.2;\n    text-align: center;\n  }\n  .matter-phone-sheet-tools svg {\n    width: 22px;\n    height: 22px;\n  }\n  .matter-phone-sheet-host {\n    display: contents;\n  }\n  .matter-phone-sheet-host :is(div, span):not(:has(svg)):not(.matter-phone-sheet-host [role=dialog] *, [role=dialog]) {\n    display: none;\n  }\n  .matter-phone-sheet-host :is(div, span):has(> :is(button, a)):not(.matter-phone-sheet-host [role=dialog] *, [role=dialog]) {\n    display: contents;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-host :is(button, a)[aria-label]:not(.matter-phone-sheet-host [role=dialog] *) {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 5px;\n    width: auto;\n    height: 64px;\n    padding: 6px 2px;\n    border: 0;\n    border-radius: 14px;\n    background: transparent;\n    color: var(--theme-fg);\n    font-size: 11.5px;\n    line-height: 1.2;\n    text-align: center;\n  }\n  .matter-phone-sheet-host :is(button, a)[aria-label]:not(.matter-phone-sheet-host [role=dialog] *)::after {\n    content: attr(aria-label);\n    max-width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-host svg {\n    width: 22px;\n    height: 22px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-tools :is(button, a)[aria-pressed=true] {\n    background: var(--theme-surface-strong);\n    color: var(--theme-fg);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer > .matter-phone-sheet-apps {\n    display: grid;\n    flex: 1;\n    grid-auto-columns: minmax(0, 1fr);\n    grid-auto-flow: column;\n    gap: 2px;\n    height: auto;\n    margin: 0 -6px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-apps > :is(button, a, div) {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 4px;\n    width: auto;\n    height: 54px;\n    padding: 4px 2px;\n    border-radius: 12px;\n    color: var(--theme-fg);\n    font-size: 11px;\n    line-height: 1.2;\n    text-align: center;\n  }\n  .matter-phone-sheet-apps > * > span {\n    max-width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-all {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 8px;\n    width: 100%;\n    height: 44px;\n    border: 1px solid var(--theme-border);\n    border-radius: 12px;\n    background: var(--theme-surface);\n    color: var(--theme-fg);\n    font-size: 14px;\n    font-weight: 600;\n  }\n  .matter-phone-sheet-all svg {\n    width: 17px;\n    height: 17px;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-sheet-apps svg {\n    width: 20px;\n    height: 20px;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-sheet-settings {\n    position: relative;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-settings > :first-child {\n    position: static;\n    width: 20px;\n    min-width: 20px;\n    height: 20px;\n  }\n  .matter-phone-sheet-settings > :first-child::after {\n    content: "";\n    position: absolute;\n    inset: 0;\n  }\n}\n@keyframes matter-phone-spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-running-icon > i {\n    animation: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet,\n  .thread-ui-shell .matter-workbench .matter-phone-sheet[data-open],\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread {\n    transition: none;\n  }\n}\n.thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin .matter-status-dot {\n  flex: none;\n}\n');
@@ -126,7 +127,7 @@ styleInject('.terminal-panel {\n  --terminal-bg: #0f1317;\n  --terminal-header-h
 styleInject('.thread-ui-shell {\n  --tlog-font-mono:\n    ui-monospace,\n    "SF Mono",\n    "Cascadia Mono",\n    "JetBrains Mono",\n    Menlo,\n    Consolas,\n    "Liberation Mono",\n    monospace;\n  --tlog-add: light-dark(oklch(45% 0.13 150), oklch(78% 0.14 150));\n  --tlog-remove: light-dark(oklch(50% 0.17 25), oklch(76% 0.13 25));\n  --tlog-failed: light-dark(#b3302c, #f0847f);\n  --tlog-rule: color-mix(in srgb, var(--theme-fg-muted) 45%, transparent);\n  --tlog-row-height: 26px;\n}\n.thread-ui-shell .thread-graph-worked-summary {\n  min-width: 0;\n}\n.thread-ui-shell .thread-worked-toggle {\n  flex: 0 1 auto;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-worked-toggle:active,\n.thread-ui-shell .thread-worked-toggle:focus-visible {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-worked-toggle:hover {\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .thread-worked-chevron {\n  width: 14px;\n  height: 14px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-worked-summary .thread-graph-worked-rule,\n.thread-ui-shell .matter-workbench .thread-graph-worked-summary .thread-graph-worked-rule {\n  display: block;\n  height: 0;\n  background: none;\n  border-top: 1px dashed var(--tlog-rule);\n  min-width: 16px;\n}\n.tlog-summary {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-variant-numeric: tabular-nums;\n}\n.tlog-part.is-add {\n  color: var(--tlog-add);\n}\n.tlog-part.is-remove {\n  color: var(--tlog-remove);\n}\n.tlog-part.is-failed {\n  color: inherit;\n  font-weight: inherit;\n}\n.tlog-sep {\n  margin: 0 0.4em;\n  color: var(--theme-fg-muted);\n}\n.tlog-sep.is-lead {\n  margin-left: 0;\n}\n.thread-ui-shell .thread-turn-head {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  min-width: 0;\n  margin: 4px 0 2px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 20px;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-ui-shell .thread-turn-head::before,\n.thread-ui-shell .thread-turn-head::after {\n  content: "";\n  flex: 1 1 0;\n  min-width: 12px;\n  height: 1px;\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-turn-head-main {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  padding: 0 3px;\n  border-radius: 5px;\n  color: inherit;\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-turn-head:active .thread-turn-head-main,\n.thread-ui-shell .thread-turn-head-main[aria-expanded=true],\n.thread-ui-shell .thread-turn-head[data-active] .thread-turn-head-main {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-turn-head:hover .thread-turn-head-main {\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .thread-turn-head-main:focus-visible {\n  outline: 2px solid var(--theme-accent-border);\n  outline-offset: 1px;\n}\n.thread-ui-shell .thread-turn-head-dot {\n  flex: none;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--turn-head-dot, #2fb37a);\n  opacity: 0.55;\n}\n.thread-ui-shell .thread-turn-head[data-active] .thread-turn-head-dot {\n  opacity: 1;\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--turn-head-dot, #2fb37a) 20%, transparent);\n  animation: thread-live-dot 1.6s ease-in-out infinite;\n}\n.thread-ui-shell .thread-turn-head[data-status=failed]:not([data-active]) .thread-turn-head-dot {\n  background: var(--theme-danger, #e5484d);\n  opacity: 0.85;\n}\n.thread-ui-shell .thread-turn-head[data-status=interrupted]:not([data-active]) .thread-turn-head-dot {\n  background: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-turn-head .thread-usage-cost {\n  flex: none;\n}\n.thread-ui-shell .thread-turn-head .thread-turn-usage-price {\n  font-size: 11px;\n  line-height: 16px;\n}\n.thread-ui-shell .thread-turn-head .thread-turn-usage-unavailable {\n  font-size: 0;\n}\n.thread-ui-shell .thread-turn-head .thread-turn-usage-unavailable::before {\n  content: "$ \\2014";\n  font-size: 11px;\n}\n.thread-ui-shell .thread-turn-head-more {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 2px 12px;\n  min-width: 0;\n  margin: 0 0 6px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 20px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > * {\n  flex: none;\n  white-space: nowrap;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > .thread-turn-head-model {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > .thread-turn-head-models {\n  display: inline-flex;\n  overflow: visible;\n}\n.thread-ui-shell .thread-turn-head-models > span {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models) {\n  padding: 0 2px;\n  border-radius: 4px;\n  color: inherit;\n  text-decoration: underline dotted;\n  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);\n  text-underline-offset: 3px;\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):is(:active, [aria-expanded=true], [aria-pressed=true]) {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):is(:hover, [aria-expanded=true], [aria-pressed=true]) {\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell :is(.thread-turn-head-more, .thread-turn-head.is-wide) > :is(.thread-turn-head-time, .thread-turn-head-speed, .thread-turn-head-models):focus-visible {\n  outline: 2px solid var(--theme-accent-border);\n  outline-offset: 1px;\n}\n.thread-ui-shell .thread-turn-head.is-wide {\n  gap: 12px;\n  cursor: default;\n}\n.thread-ui-shell .thread-turn-head.is-wide .thread-turn-head-main {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-turn-head-added {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n.thread-ui-shell .thread-added-prompt-icon {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-ui-shell :is(.thread-wait-mark, .thread-background-agent-status) {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-ui-shell :is(.thread-wait-mark, .thread-background-agent-status) svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-ui-shell .thread-wait-mark svg {\n  animation: thread-hourglass 2.4s ease-in-out infinite;\n}\n.thread-ui-shell .thread-background-agent-status svg {\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n  animation: thread-agent-breathe 1.8s ease-in-out infinite;\n}\n.thread-ui-shell .thread-background-agent-status b {\n  font-weight: 600;\n}\n@keyframes thread-live-dot {\n  0%, 100% {\n    opacity: 0.35;\n  }\n  50% {\n    opacity: 1;\n  }\n}\n@keyframes thread-hourglass {\n  0%, 40% {\n    transform: rotate(0);\n  }\n  50%, 90% {\n    transform: rotate(180deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n@keyframes thread-agent-breathe {\n  0%, 100% {\n    opacity: 0.55;\n    transform: translateY(0);\n  }\n  50% {\n    opacity: 1;\n    transform: translateY(-1px);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-ui-shell :is(.thread-turn-head-dot, .thread-wait-mark svg, .thread-background-agent-status svg) {\n    animation: none;\n  }\n}\n.thread-ui-shell .thread-graph-message-kicker {\n  margin: 0 4px 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 14px;\n}\n.thread-ui-shell .thread-graph-message-kicker .thread-added-prompt {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-ui-shell .thread-execution-timeline {\n  margin: 0 0 4px;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.thread-ui-shell .thread-execution-timeline > * {\n  margin: 0;\n}\n.tlog-run {\n  min-width: 0;\n}\n.tlog-run-head {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  width: 100%;\n  min-width: 0;\n  min-height: var(--tlog-row-height);\n  padding: 0;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  text-align: left;\n}\n.tlog-run-head:active .tlog-summary,\n.tlog-run-head:focus-visible .tlog-summary {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .tlog-run-head:hover .tlog-summary {\n    color: var(--theme-fg);\n  }\n}\n.tlog-run-head .tlog-summary {\n  flex: 0 1 auto;\n  color: var(--theme-fg-soft);\n}\n.tlog-chev {\n  width: 13px;\n  height: 13px;\n  flex: none;\n  color: var(--theme-fg-muted);\n  transition: transform 120ms;\n}\n.tlog-run[data-open] > .tlog-run-head .tlog-chev {\n  transform: rotate(90deg);\n}\n.tlog-rule {\n  flex: 1;\n  min-width: 16px;\n  border-top: 1px dashed var(--tlog-rule);\n}\n.tlog-run-body {\n  display: flex;\n  flex-direction: column;\n  margin: 2px 0 6px 6px;\n  padding-left: 13px;\n  border-left: 1px solid var(--theme-border);\n}\n.tlog-row {\n  min-width: 0;\n}\n.tlog-row-line {\n  position: relative;\n  display: flex;\n  align-items: center;\n  min-width: 0;\n  margin-left: -6px;\n  border-radius: 5px;\n}\n.tlog-row-line:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .tlog-row-line:hover {\n    background: var(--theme-hover);\n  }\n}\n.tlog-row-head {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  min-height: var(--tlog-row-height);\n  padding: 0 6px;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  text-align: left;\n}\n.tlog-row-line:active .tlog-row-head {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .tlog-row-line:hover .tlog-row-head {\n    color: var(--theme-fg);\n  }\n}\n.tlog-copy {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 24px;\n  height: 22px;\n  margin-right: 2px;\n  border-radius: 4px;\n  color: var(--theme-fg-muted);\n  opacity: 0;\n  pointer-events: none;\n  transition: opacity 120ms;\n}\n.tlog-copy svg {\n  width: 13px;\n  height: 13px;\n}\n.tlog-row[data-open] .tlog-copy,\n.tlog-copy:focus-visible {\n  opacity: 0.55;\n  pointer-events: auto;\n}\n@media (hover: hover) {\n  .tlog-row-line:hover .tlog-copy {\n    opacity: 0.55;\n    pointer-events: auto;\n  }\n}\n.tlog-copy:active {\n  opacity: 1;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .tlog-copy:hover {\n    opacity: 1;\n    background: var(--theme-surface);\n    color: var(--theme-fg);\n  }\n}\n.tlog-glyph {\n  flex: none;\n  width: 1.6ch;\n  font: 700 12px/1 var(--tlog-font-mono);\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n  text-align: center;\n}\n.tlog-row[data-kind=reasoning] .tlog-glyph,\n.tlog-row[data-kind=fileRead] .tlog-glyph,\n.tlog-row[data-kind=webSearch] .tlog-glyph {\n  color: var(--theme-fg-muted);\n}\n.tlog-row[data-status=failed] .tlog-glyph {\n  color: var(--tlog-failed);\n}\n.tlog-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.tlog-title.is-mono {\n  font-family: var(--tlog-font-mono);\n  font-size: 11.5px;\n}\n.tlog-row[data-kind=reasoning] .tlog-title {\n  font-style: italic;\n  color: var(--theme-fg-muted);\n}\n.tlog-row[data-kind=fileRead][data-batch] .tlog-title {\n  flex: none;\n}\n.tlog-batch-names {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font: 11px var(--tlog-font-mono);\n  color: var(--theme-fg-muted);\n}\n.tlog-delta {\n  display: inline-flex;\n  flex: none;\n  gap: 6px;\n  font: 600 11px var(--tlog-font-mono);\n}\n.tlog-delta .is-add {\n  color: var(--tlog-add);\n}\n.tlog-delta .is-remove {\n  color: var(--tlog-remove);\n}\n.tlog-tag {\n  flex: none;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.tlog-tag.is-failed {\n  color: var(--tlog-failed);\n  font-weight: 600;\n}\n.tlog-spinner {\n  flex: none;\n  width: 11px;\n  height: 11px;\n  border: 1.5px solid var(--theme-border-strong);\n  border-top-color: var(--theme-accent-solid);\n  border-radius: 50%;\n  animation: tlog-spin 0.9s linear infinite;\n}\n@keyframes tlog-spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .tlog-spinner {\n    animation: none;\n  }\n}\n.tlog-batch {\n  padding-left: 14px;\n}\n.tlog-more {\n  align-self: flex-start;\n  margin: 2px 0;\n  font-size: 11.5px;\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.tlog-more:active {\n  text-decoration: underline;\n}\n@media (hover: hover) {\n  .tlog-more:hover {\n    text-decoration: underline;\n  }\n}\n.tlog-single {\n  min-width: 0;\n}\n.tlog-other {\n  min-width: 0;\n  margin: 2px 0;\n}\n.tlog-detail {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  margin: 2px 0 8px 1.6ch;\n  min-width: 0;\n}\n.tlog-detail.is-loading,\n.tlog-empty {\n  margin: 0;\n  font-size: 11.5px;\n  color: var(--theme-fg-muted);\n}\n.tlog-detail.is-loading {\n  margin: 2px 0 6px calc(1.6ch + 8px);\n}\n.tlog-detail.is-prose {\n  margin-left: calc(1.6ch + 8px);\n  font-size: 12.5px;\n  line-height: 1.6;\n  color: var(--theme-fg-soft);\n  white-space: pre-wrap;\n}\n.tlog-command,\n.tlog-output pre,\n.tlog-output {\n  margin: 0;\n  max-height: calc(16 * 1.55em);\n  overflow: auto;\n  padding: 6px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-surface);\n  font: 11.5px/1.55 var(--tlog-font-mono);\n  color: var(--theme-fg-soft);\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n}\n.tlog-command {\n  max-height: calc(6 * 1.55em);\n  color: var(--theme-fg);\n}\n.tlog-output.is-error {\n  color: var(--tlog-failed);\n}\n.tlog-diff {\n  max-height: calc(12 * 1.6em * 11.5 / 12 + 6px);\n  overflow: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-panel);\n}\n.tlog-diff .thread-diff {\n  font-size: 11.5px;\n  padding: 2px 0;\n}\n.tlog-diff .thread-diff-line {\n  min-height: 1.6em;\n}\n.thread-diff-line.is-file {\n  position: sticky;\n  left: 0;\n  padding: 2px 10px;\n  border-block: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n  font-weight: 600;\n}\n.thread-diff-line.is-file:first-child {\n  border-top: 0;\n}\n.thread-diff-line.is-file .thread-diff-number,\n.thread-diff-line.is-file .thread-diff-sign {\n  display: none;\n}\n.tlog-detail-foot {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.tlog-open {\n  font-size: 11px;\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.tlog-open:active {\n  text-decoration: underline;\n}\n@media (hover: hover) {\n  .tlog-open:hover {\n    text-decoration: underline;\n  }\n}\n.thread-ui-shell .thread-execution-timeline .thread-graph-message[data-role=assistant] .thread-graph-message-content {\n  color: var(--theme-fg-soft);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell {\n    --tlog-row-height: 32px;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) {\n    row-gap: 0;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-worked-toggle {\n    flex: 1 1 0;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle)::after {\n    content: "";\n    order: 1;\n    flex-basis: 100%;\n    height: 0;\n  }\n  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle {\n    order: 2;\n    margin-left: 22px;\n  }\n  .thread-ui-shell .thread-graph-worked-summary > .tlog-files-toggle > .tlog-sep {\n    display: none;\n  }\n  .thread-ui-shell .thread-graph-worked-summary:has(> .tlog-files-toggle) > .thread-graph-worked-rule {\n    order: 3;\n  }\n  .tlog-run-body {\n    margin-left: 4px;\n    padding-left: 10px;\n  }\n  .tlog-detail {\n    margin-left: 0;\n  }\n}\n.tlog-current {\n  min-width: 0;\n  margin-top: -4px;\n}\n.thread-ui-shell .tlog-plan {\n  padding: 8px 12px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n}\n.tlog-plan-head {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n  margin-bottom: 4px;\n  font-size: 11px;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--theme-fg-muted);\n}\n.tlog-plan-title {\n  font-weight: 600;\n}\n.tlog-plan-count {\n  font-variant-numeric: tabular-nums;\n  letter-spacing: 0;\n}\n.tlog-plan-note {\n  margin: 0 0 4px;\n  font-size: 12.5px;\n  color: var(--theme-fg-soft);\n}\n.tlog-plan-list {\n  display: grid;\n  gap: 2px;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n.thread-ui-shell .tlog-plan .tlog-plan-step {\n  padding: 0;\n  border: 0;\n  border-radius: 0;\n  background: none;\n}\n.tlog-plan-step {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n  font-size: 13px;\n  line-height: 1.6;\n  color: var(--theme-fg);\n}\n.tlog-plan-mark {\n  flex: none;\n  width: 1.6ch;\n  font: 700 12px/1 var(--tlog-font-mono);\n  text-align: center;\n}\n.tlog-plan-mark::before {\n  content: "\\25cb";\n  color: var(--theme-fg-muted);\n}\n.tlog-plan-step[data-status=completed] {\n  color: var(--theme-fg-muted);\n}\n.tlog-plan-step[data-status=completed] .tlog-plan-mark::before {\n  content: "\\2713";\n  color: var(--tlog-add);\n}\n.tlog-plan-step[data-status=in_progress] {\n  font-weight: 600;\n}\n.tlog-plan-step[data-status=in_progress] .tlog-plan-mark::before {\n  content: "\\25b8";\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.tlog-plan-step[data-status=failed] .tlog-plan-mark::before {\n  content: "\\2715";\n  color: var(--tlog-failed);\n}\n@media (max-width: 639px) {\n  .tlog-output {\n    max-height: calc(10 * 1.55em);\n  }\n  .tlog-diff .thread-diff-line > .thread-diff-number:first-child {\n    display: none;\n  }\n}\n.thread-ui-shell .tlog-files-toggle {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n  color: var(--theme-fg-soft);\n  font-variant-numeric: tabular-nums;\n  text-decoration: underline dotted var(--tlog-rule);\n  text-underline-offset: 3px;\n}\n.thread-ui-shell .tlog-files-toggle:active,\n.thread-ui-shell .tlog-files-toggle[aria-expanded=true] {\n  color: var(--theme-fg);\n  text-decoration-style: solid;\n}\n@media (hover: hover) {\n  .thread-ui-shell .tlog-files-toggle:hover {\n    color: var(--theme-fg);\n    text-decoration-style: solid;\n  }\n}\n.tlog-files {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n  margin: -4px 0 4px 6px;\n  padding-left: 13px;\n  border-left: 1px solid var(--theme-border);\n}\n.tlog-files-more {\n  margin: 2px 0;\n  font-size: 11.5px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message:is([data-variant=envelope], [data-variant=notice]) {\n  justify-content: flex-start;\n}\n.thread-ui-shell .thread-graph-message:is([data-variant=envelope], [data-variant=notice]) :is(.thread-graph-message-stack, .thread-graph-message-bubble, .thread-graph-message-content) {\n  max-width: 100%;\n  width: 100%;\n  margin-left: 0;\n  align-items: stretch;\n}\n.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant=envelope] .thread-graph-message-bubble {\n  padding: 8px 12px;\n  border: 1px solid var(--theme-border);\n  border-left: 3px solid var(--theme-accent-solid);\n  border-radius: 6px;\n  background: var(--theme-panel);\n  box-shadow: none;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message[data-variant=envelope] .thread-graph-message-prose {\n  font-size: 13.5px;\n  line-height: 1.6;\n}\n.thread-ui-shell.thread-ui-shell .thread-graph-message[data-variant=notice] .thread-graph-message-bubble {\n  padding: 0;\n  border: 0;\n  background: none;\n  box-shadow: none;\n}\n.prompt-envelope-head,\n.prompt-notice-head {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n  min-width: 0;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n}\n.prompt-envelope-head {\n  margin-bottom: 4px;\n}\n.prompt-envelope-glyph {\n  flex: none;\n  width: 1.6ch;\n  text-align: center;\n  font: 700 12px var(--tlog-font-mono);\n  color: var(--theme-accent-strong, var(--theme-accent-solid));\n}\n.prompt-envelope-icon {\n  width: 12px;\n  height: 12px;\n  vertical-align: -1px;\n}\n.prompt-envelope-kind {\n  flex: none;\n  font-weight: 600;\n  color: var(--theme-fg-soft);\n}\n.prompt-envelope-from {\n  flex: none;\n  font-family: var(--tlog-font-mono);\n  font-size: 11.5px;\n}\n.prompt-envelope-from[data-titled] {\n  flex: 0 1 auto;\n  min-width: 0;\n  max-width: min(45%, 20em);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-family: inherit;\n  font-size: 12px;\n}\n.prompt-envelope-link {\n  color: inherit;\n  text-decoration: underline dotted var(--tlog-rule);\n  text-underline-offset: 3px;\n  border-radius: 3px;\n}\n.prompt-envelope-link:active {\n  color: var(--theme-accent-strong, var(--theme-fg));\n  text-decoration-style: solid;\n}\n@media (hover: hover) {\n  .prompt-envelope-link:hover {\n    color: var(--theme-accent-strong, var(--theme-fg));\n    text-decoration-style: solid;\n  }\n}\n.prompt-envelope-link:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.prompt-envelope-subject {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.prompt-envelope-head[data-kind=result] .prompt-envelope-glyph {\n  color: var(--tlog-add);\n}\n.prompt-envelope-head[data-kind=question] .prompt-envelope-glyph {\n  color: var(--tlog-failed);\n}\n.prompt-envelope-urgent {\n  margin: 0 0 4px;\n  font-size: 12px;\n  color: var(--tlog-failed);\n}\n.prompt-notice-head {\n  width: 100%;\n  min-height: var(--tlog-row-height);\n  text-align: left;\n}\n.prompt-notice-head:active .prompt-notice-preview {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .prompt-notice-head:hover .prompt-notice-preview {\n    color: var(--theme-fg);\n  }\n}\n.prompt-notice-preview {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.prompt-notice-chev {\n  flex: none;\n  width: 12px;\n  height: 12px;\n  align-self: center;\n  transition: transform 120ms;\n}\n.prompt-notice[data-open] .prompt-notice-chev {\n  transform: rotate(90deg);\n}\n.prompt-notice-body {\n  margin: 2px 0 6px calc(1.6ch + 8px);\n  padding: 6px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 6px;\n  background: var(--theme-surface);\n  font-size: 12px;\n  line-height: 1.6;\n  color: var(--theme-fg-soft);\n  white-space: pre-wrap;\n}\n.tlog-notice {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  min-height: var(--tlog-row-height);\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n}\n.tlog-notice .tlog-glyph {\n  color: var(--theme-fg-muted);\n}\n.tlog-notice .tlog-title {\n  flex: 0 1 auto;\n}\n.tlog-notice-detail {\n  min-width: 0;\n  flex: 1;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  opacity: 0.8;\n  padding: 0;\n  border: 0;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: pointer;\n}\n.tlog-notice:has(> .tlog-notice-detail.is-open) {\n  flex-wrap: wrap;\n}\n.tlog-notice-detail.is-open {\n  flex-basis: 100%;\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n  overflow: visible;\n}\n.thread-ui-shell .thread-graph-message-hover-time {\n  align-self: center;\n  margin-right: 6px;\n  padding: 0 4px;\n  border-radius: 4px;\n  background: none;\n  font-size: 10.5px;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-variant-numeric: tabular-nums;\n}\n.tlog-output:has(> pre) {\n  padding: 0;\n  overflow: hidden;\n  max-height: none;\n}\n.tlog-output > pre {\n  border: 0;\n  border-radius: 0;\n  background: none;\n}\n.tlog-viewable {\n  position: relative;\n}\n.tlog-viewable:active {\n  border-color: var(--theme-border-strong);\n}\n@media (hover: hover) {\n  .tlog-viewable:hover {\n    border-color: var(--theme-border-strong);\n  }\n}\n.tlog-viewable:focus-visible {\n  outline: 2px solid var(--theme-accent-border);\n  outline-offset: 1px;\n}\n.tlog-more-lines {\n  position: sticky;\n  bottom: 0;\n  display: block;\n  padding: 2px 10px;\n  border-top: 1px solid var(--theme-border);\n  background: var(--theme-surface);\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n  text-align: right;\n}\n.tlog-collapse {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr);\n  grid-template-rows: 1fr;\n  opacity: 1;\n  transition:\n    grid-template-rows 260ms cubic-bezier(0.2, 0, 0, 1),\n    margin 260ms cubic-bezier(0.2, 0, 0, 1),\n    opacity 200ms ease;\n}\n.tlog-collapse[data-state=closed] {\n  grid-template-rows: 0fr;\n  opacity: 0;\n  margin-block: 0 !important;\n}\n.tlog-collapse-inner {\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.tlog-collapse[data-settled] > .tlog-collapse-inner {\n  overflow: visible;\n}\n@media (prefers-reduced-motion: reduce) {\n  .tlog-collapse {\n    transition: none;\n  }\n  .tlog-collapse[data-state=open] > .tlog-collapse-inner {\n    overflow: visible;\n  }\n}\n.thread-ui-shell .thread-graph-show-more[aria-expanded=true] {\n  position: sticky;\n  bottom: calc(var(--sticky-inset, var(--timeline-bottom-inset, 0px)) + 6px);\n  z-index: 6;\n  min-height: 22px;\n  padding: 0 7px 0 4px;\n  border-radius: 6px;\n  background: color-mix(in srgb, var(--theme-panel) 82%, transparent);\n  -webkit-backdrop-filter: blur(8px);\n  backdrop-filter: blur(8px);\n  box-shadow: none;\n  opacity: 1;\n}\n.thread-ui-shell .thread-graph-show-more[aria-expanded=true]:active,\n.thread-ui-shell .thread-graph-show-more[aria-expanded=true]:focus-visible {\n  background: color-mix(in srgb, var(--theme-panel) 96%, transparent);\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-graph-show-more[aria-expanded=true]:hover {\n    background: color-mix(in srgb, var(--theme-panel) 96%, transparent);\n  }\n}\n.tlog-part.is-count {\n  display: inline-flex;\n  align-items: baseline;\n}\n.tlog-part.is-count + .tlog-part.is-count {\n  margin-left: 0.7em;\n}\n.tlog-count {\n  display: inline-flex;\n  align-items: baseline;\n  gap: 3px;\n  font-variant-numeric: tabular-nums;\n  cursor: default;\n}\n.tlog-count-icon {\n  width: 12px;\n  height: 12px;\n  flex: none;\n  align-self: center;\n  opacity: 0.75;\n}\n.tlog-count-icon.is-kind {\n  margin-right: 2px;\n  opacity: 0.6;\n}\n.tlog-part.is-count + .tlog-part.is-count:has(> .tlog-count[data-kind=failed]) {\n  margin-left: 0.45em;\n}\n.tlog-count[data-kind=failed] .tlog-count-icon {\n  stroke-width: 2.5;\n}\n.tlog-hint {\n  position: fixed;\n  z-index: 1000;\n  display: grid;\n  gap: 3px;\n  width: max-content;\n  max-width: 240px;\n  padding: 8px 10px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);\n  font-size: 12px;\n  line-height: 1.45;\n  white-space: normal;\n  text-align: left;\n  pointer-events: none;\n  transform: translate(-50%, -100%);\n  animation: tlog-hint-in 140ms ease-out;\n}\n.tlog-hint[data-below] {\n  transform: translate(-50%, 0);\n}\n.tlog-hint-title {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  font-weight: 600;\n}\n.tlog-hint-body {\n  color: var(--theme-fg-soft);\n}\n.tlog-hint-example {\n  color: var(--theme-fg-muted);\n  font-family: var(--tlog-font-mono);\n  font-size: 11px;\n}\n@keyframes tlog-hint-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .tlog-hint {\n    animation: none;\n  }\n}\n.thread-ui-shell .thread-graph-worked-summary:has(> .thread-worked-toggle[aria-expanded=true]) {\n  position: sticky;\n  top: 0;\n  z-index: 5;\n  background: color-mix(in srgb, var(--theme-bg) 94%, transparent);\n  -webkit-backdrop-filter: blur(10px);\n  backdrop-filter: blur(10px);\n}\n.thread-worked-spinner {\n  width: 12px;\n  height: 12px;\n  flex: none;\n  margin: 2px;\n}\n.thread-ui-shell .workspace-missing-file {\n  display: flex;\n  flex: 1;\n  min-height: 0;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  padding: 24px 20px;\n  text-align: center;\n  color: var(--theme-fg-soft);\n}\n.workspace-missing-file-icon {\n  width: 28px;\n  height: 28px;\n  color: var(--theme-fg-muted);\n  opacity: 0.8;\n}\n.workspace-missing-file-title {\n  margin: 4px 0 0;\n  color: var(--theme-fg);\n  font-size: 14px;\n  font-weight: 600;\n  overflow-wrap: anywhere;\n}\n.workspace-missing-file-hint {\n  margin: 0;\n  max-width: 34ch;\n  font-size: 13px;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .workspace-missing-file-path {\n  max-width: min(100%, 56ch);\n  padding: 6px 10px;\n  border-radius: 6px;\n  background: var(--theme-surface);\n  font-family: var(--tlog-font-mono);\n  font-size: 11.5px;\n  line-height: 1.5;\n  overflow-wrap: anywhere;\n  user-select: all;\n}\n.thread-ui-shell .workspace-missing-file-copy {\n  margin-top: 2px;\n  padding: 4px 12px;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.thread-ui-shell .workspace-missing-file-copy:active {\n  color: var(--theme-fg);\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-ui-shell .workspace-missing-file-copy:hover {\n    color: var(--theme-fg);\n    background: var(--theme-hover);\n  }\n}\n.thread-ui-shell .workspace-file-alert-download {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 5px;\n  min-height: 30px;\n  padding: 3px 12px;\n  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);\n  border-radius: 999px;\n  background: transparent;\n  color: var(--theme-fg);\n  font-size: 12.5px;\n}\n.thread-ui-shell .workspace-file-alert-download:active:not(:disabled) {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-ui-shell .workspace-file-alert-download:hover:not(:disabled) {\n    background: var(--theme-hover);\n  }\n}\n.workspace-loading-skeleton {\n  animation: workspace-skeleton-in 160ms ease-out 120ms both;\n}\n.workspace-loading-skeleton-bar {\n  height: 41px;\n  flex: none;\n  border-bottom: 1px solid var(--theme-border);\n}\n@keyframes workspace-skeleton-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .workspace-loading-skeleton {\n    animation: none;\n  }\n}\n.tlog-row-chev {\n  width: 11px;\n  height: 11px;\n  margin-right: -4px;\n  opacity: .7;\n}\n.tlog-row[data-open] > .tlog-row-line .tlog-row-chev {\n  transform: rotate(90deg);\n}\n.tlog-viewable {\n  position: relative;\n}\n.tlog-open-full {\n  position: absolute;\n  top: 4px;\n  right: 4px;\n  z-index: 1;\n  display: grid;\n  place-items: center;\n  width: 26px;\n  height: 26px;\n  border-radius: 6px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n  opacity: .75;\n  box-shadow: 0 0 0 1px var(--theme-border);\n}\n.tlog-open-full:active,\n.tlog-open-full:focus-visible {\n  opacity: 1;\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .tlog-open-full:hover {\n    opacity: 1;\n    color: var(--theme-fg);\n  }\n}\n.tlog-open-full > svg {\n  width: 13px;\n  height: 13px;\n}\n.tlog-open-full::after {\n  content: "";\n  position: absolute;\n  inset: -6px;\n}\n.tlog-detail-error {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px 8px;\n  padding: 6px 8px;\n  border: 1px solid color-mix(in srgb, var(--tlog-failed) 40%, transparent);\n  border-radius: 6px;\n  background: color-mix(in srgb, var(--tlog-failed) 8%, transparent);\n  color: var(--tlog-failed);\n  font-size: 12px;\n}\n.tlog-detail-error > svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n}\n.tlog-detail-error > span {\n  min-width: 0;\n  flex: 1;\n  overflow-wrap: anywhere;\n}\n.tlog-detail-retry {\n  flex: none;\n  min-height: 28px;\n  padding: 0 10px;\n  border: 1px solid currentColor;\n  border-radius: 6px;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n}\n.tlog-detail-retry:active {\n  background: color-mix(in srgb, var(--tlog-failed) 14%, transparent);\n}\n@media (hover: hover) {\n  .tlog-detail-retry:hover {\n    background: color-mix(in srgb, var(--tlog-failed) 14%, transparent);\n  }\n}\n.thread-ui-shell .tlog-row .tlog-wake-icon {\n  width: 12px;\n  height: 12px;\n  flex: none;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .tlog-wake-label {\n  flex: none;\n  margin-right: 6px;\n  color: var(--theme-fg-muted);\n  font-weight: 600;\n}\n.thread-ui-shell .tlog-wake-label.is-failed {\n  color: var(--tlog-failed);\n}\n.thread-ui-shell .tlog-wake-detail {\n  display: grid;\n  gap: 6px;\n  padding: 6px 0 8px 28px;\n  color: var(--theme-fg-muted);\n  font-size: 12.5px;\n  line-height: 1.5;\n}\n.thread-ui-shell .thread-earlier-answers {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  width: 100%;\n  min-height: 28px;\n  margin: 2px 0 6px;\n  padding: 0;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted);\n  font-size: 12.5px;\n  text-align: left;\n}\n.thread-ui-shell .thread-earlier-answers .tlog-chev {\n  width: 14px;\n  height: 14px;\n  flex: none;\n  transition: transform 160ms ease;\n}\n.thread-ui-shell .thread-earlier-answers[aria-expanded=true] .tlog-chev {\n  transform: rotate(90deg);\n}\n.thread-ui-shell .thread-earlier-answers .tlog-rule {\n  flex: 1;\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-earlier-answers:hover {\n    color: var(--theme-fg);\n  }\n}\n');
 
 // src/styles/thread-map.css
-styleInject('.thread-graph-dialog.thread-map-dialog {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  width: min(1180px, calc(100vw - 48px));\n  max-width: none;\n  height: min(820px, calc(100dvh - 48px));\n  max-height: none;\n  padding: 0;\n  overflow: hidden;\n  border-radius: 16px;\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-live: #ec7a08;\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-graph-dialog.thread-map-dialog[data-theme-effective=dark] {\n  --thread-map-live: #ffa64d;\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n@media (max-width: 639px) {\n  .thread-graph-dialog.thread-map-dialog {\n    inset: 0;\n    translate: none;\n    width: auto;\n    height: auto;\n    border: 0;\n    border-radius: 0;\n    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);\n  }\n}\n.thread-map {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n}\n.thread-map-bar {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  padding: 10px 10px 4px 16px;\n}\n.thread-map-title {\n  flex: none;\n  margin: 0;\n  font-size: 15px;\n  font-weight: 650;\n  letter-spacing: -0.01em;\n}\n.thread-map-summary {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-summary .thread-map-running-dot {\n  margin-right: 4px;\n}\n.thread-map-icon-button,\n.thread-map-goto {\n  position: relative;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 32px;\n  height: 32px;\n  padding: 0;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-map-icon-button:active:not(:disabled),\n.thread-map-goto:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-icon-button:hover:not(:disabled),\n  .thread-map-goto:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-icon-button:disabled {\n  opacity: 0.35;\n}\n.thread-map-dialog [data-slot=dialog-close].thread-map-close {\n  top: auto;\n  right: auto;\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  opacity: 1;\n}\n.thread-map-icon-button:focus-visible,\n.thread-map-goto:has(select:focus) {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-icon-button svg,\n.thread-map-goto svg {\n  width: 17px;\n  height: 17px;\n  pointer-events: none;\n}\n.thread-map-goto select {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 0;\n  font-size: 16px;\n  cursor: pointer;\n}\n.thread-map-path {\n  gap: 2px;\n  padding: 0 10px 6px 8px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.thread-map-crumbs {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  min-width: 0;\n  overflow: hidden;\n  border-radius: 6px;\n  outline: none;\n}\n.thread-map-crumbs:focus-visible {\n  box-shadow: 0 0 0 2px var(--theme-accent-solid);\n}\n.thread-map-crumb {\n  display: flex;\n  flex: 0 1 auto;\n  align-items: center;\n  min-width: 0;\n}\n.thread-map-crumb svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-crumb button {\n  min-width: 0;\n  max-width: 18em;\n  height: 30px;\n  padding: 0 6px;\n  overflow: hidden;\n  border: 0;\n  border-radius: 6px;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 12.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-crumb button:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-crumb button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-crumb button[aria-current] {\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-crumb-open {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 6px;\n  color: var(--theme-fg-muted);\n}\n@media (hover: hover) {\n  .thread-map-crumb-open:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-crumb-open:active {\n  background: var(--theme-hover);\n  color: var(--theme-accent-solid);\n}\n.thread-map-crumb-open:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n@media (max-width: 639px) {\n  .thread-map-crumb-open {\n    width: 40px;\n    height: 40px;\n  }\n  .thread-map-crumb button {\n    height: 40px;\n  }\n}\n.thread-map-canvas {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  margin: 8px 10px 0;\n  overflow: hidden;\n  touch-action: none;\n}\n.thread-map-stage {\n  position: absolute;\n  inset: 0;\n  transform-origin: 0 0;\n}\n.thread-map-preview {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n}\n.thread-map-preview > * {\n  pointer-events: auto;\n}\n.thread-map-zoom {\n  position: absolute;\n  inset: 0;\n  z-index: 3;\n  padding: 0;\n  border: 0;\n  border-radius: inherit;\n  background: transparent;\n  cursor: zoom-in;\n}\n.thread-map-zoom:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section[data-zoomable]:has(> :is(.thread-map-zoom, button.thread-map-section-head):active) {\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border));\n}\n@media (hover: hover) {\n  .thread-map-section[data-zoomable]:has(> :is(.thread-map-zoom, button.thread-map-section-head):hover) {\n    border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border));\n  }\n}\n.thread-map-section > button.thread-map-section-head {\n  cursor: zoom-in;\n}\n.thread-map-section[data-zoomable] > .thread-map-section-head {\n  color: var(--theme-fg);\n}\n.thread-map-dialog[data-swiped] {\n  animation: none !important;\n}\n.thread-map-empty {\n  display: grid;\n  place-items: center;\n  height: 100%;\n  margin: 0;\n  color: var(--theme-fg-muted);\n  font-size: 13px;\n}\n.thread-map-section,\n.thread-map-tile {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  isolation: isolate;\n}\n.thread-map-section {\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n}\n.thread-map-section[data-kind=device] {\n  background: var(--theme-bg);\n  border-color: var(--theme-border-strong);\n}\n.thread-map-section-head {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  width: 100%;\n  height: 26px;\n  padding: 0 7px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  font-weight: 600;\n  text-align: left;\n}\n.thread-map-section-head:is(button) {\n  cursor: pointer;\n}\n.thread-map-section[data-kind=device] > .thread-map-section-head {\n  color: var(--theme-fg);\n  font-size: 12px;\n}\n.thread-map-section-head:is(button):active:not(:disabled) {\n  color: var(--theme-fg);\n  background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n}\n@media (hover: hover) {\n  .thread-map-section-head:is(button):hover:not(:disabled) {\n    color: var(--theme-fg);\n    background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n  }\n}\n.thread-map-section-head:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section-head:disabled {\n  cursor: default;\n}\n.thread-map-section-head svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-section-label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-section-count {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-section[data-collapsed] > .thread-map-section-head {\n  position: absolute;\n  inset: 0;\n  height: auto;\n  align-items: flex-start;\n  padding-top: 6px;\n}\n.thread-map-section-summary {\n  position: absolute;\n  right: 9px;\n  bottom: 6px;\n  left: 9px;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section[data-state] {\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 7px,\n      color-mix(in oklab, var(--theme-border) 55%, transparent) 7px 8px),\n    var(--theme-surface);\n}\n.thread-map-section[data-state] > .thread-map-section-head {\n  color: var(--theme-fg-muted);\n}\n.thread-map-section-usd {\n  margin-left: 4px;\n  color: var(--theme-fg-soft);\n  font-weight: 600;\n}\n.thread-map-group {\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 45%, var(--theme-border));\n  background: var(--theme-panel);\n}\n.thread-map-group-head {\n  display: flex;\n  align-items: center;\n  height: 26px;\n}\n.thread-map-group-head > .thread-map-section-head {\n  flex: 1;\n  min-width: 0;\n  color: var(--theme-fg);\n}\n.thread-map-group-head .thread-map-agent {\n  width: 15px;\n  height: 15px;\n  border-radius: 4px;\n  font-size: 8px;\n}\n.thread-map-section-count svg {\n  width: 11px;\n  height: 11px;\n}\n.thread-map-group-open {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 26px;\n  height: 26px;\n  border-radius: 7px;\n  color: var(--theme-fg-soft);\n}\n.thread-map-group-open:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-group-open:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-group-open:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-group-open svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-tile {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  padding: 6px 7px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 7px;\n  color: var(--theme-fg);\n  text-decoration: none;\n  transition: filter 120ms ease;\n}\n.thread-map-tile[data-size=card] {\n  gap: 6px;\n  padding: 10px 11px 9px;\n  border-radius: 10px;\n}\n.thread-map-tile[data-size=large] {\n  gap: 5px;\n  padding: 8px 9px;\n  border-radius: 9px;\n}\n.thread-map-tile[data-size=named] {\n  justify-content: center;\n  padding: 3px 5px;\n}\n.thread-map-tile[data-size=icon] {\n  align-items: center;\n  justify-content: center;\n  padding: 1px;\n}\n.thread-map-tile[data-size=dot] {\n  padding: 0;\n  border: 0;\n  border-radius: 2px;\n}\n.thread-map-tile:active {\n  filter: brightness(0.96);\n}\n@media (hover: hover) {\n  .thread-map-tile:hover {\n    filter: brightness(0.96);\n  }\n}\n.thread-map-dialog[data-theme-effective=dark] .thread-map-tile:active {\n  filter: brightness(1.18);\n}\n@media (hover: hover) {\n  .thread-map-dialog[data-theme-effective=dark] .thread-map-tile:hover {\n    filter: brightness(1.18);\n  }\n}\n.thread-map-tile-link {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  border-radius: inherit;\n}\n.thread-map-tile-link:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-tile > :not(.thread-map-tile-link) {\n  position: relative;\n  pointer-events: none;\n}\n.thread-map-tile :is(.thread-map-children, .thread-map-usage) {\n  pointer-events: auto;\n}\n.thread-map-tile:has(> .thread-map-tile-link:focus-visible) {\n  z-index: 2;\n}\n.thread-map-tile[data-current] {\n  border-color: var(--theme-fg);\n  box-shadow: inset 0 0 0 1px var(--theme-fg);\n}\n.thread-map-tile-head {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-head {\n  align-items: flex-start;\n}\n.thread-map-tile-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 600;\n  line-height: 16px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-title {\n  display: -webkit-box;\n  white-space: normal;\n  overflow-wrap: anywhere;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--lines, 1);\n}\n.thread-map-tile[data-size=card] .thread-map-tile-title {\n  font-size: 14px;\n  line-height: 19px;\n  letter-spacing: -0.01em;\n}\n.thread-map-tile[data-size=large] .thread-map-tile-title {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-tile[data-size=card] .thread-map-agent {\n  width: 19px;\n  height: 19px;\n  border-radius: 5px;\n  font-size: 9.5px;\n}\n.thread-map-tile:is([data-size=card], [data-size=large]) .thread-map-agent {\n  margin-top: 0;\n}\n.thread-map-age {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  margin-left: auto;\n  padding: 2px;\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 72%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 13px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-age > span {\n  padding-right: 5px;\n}\n.thread-map-children {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  height: 19px;\n  margin-left: auto;\n  padding: 0 6px 0 5px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 85%, transparent);\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 78%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 650;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-children:active {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-children:hover {\n    border-color: var(--theme-border-strong);\n    background: var(--theme-panel);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-children:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.thread-map-children svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-children + .thread-map-age {\n  margin-left: 4px;\n}\n.thread-map-tile-children-row {\n  display: flex;\n}\n.thread-map-tile-children-row .thread-map-children {\n  margin-left: 0;\n}\n.thread-map-age-glyph {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-tile[data-size=card] .thread-map-age-glyph {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-age-glyph[data-age="0"] {\n  color: var(--thread-map-age-0);\n}\n.thread-map-age-glyph[data-age="1"] {\n  color: var(--thread-map-age-1);\n}\n.thread-map-age-glyph[data-age="2"] {\n  color: var(--thread-map-age-2);\n}\n.thread-map-age-glyph[data-age="3"] {\n  color: var(--thread-map-age-3);\n}\n.thread-map-age-glyph[data-age="4"] {\n  color: var(--thread-map-age-4);\n}\n.thread-map-tile-sub {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 14px;\n  white-space: nowrap;\n}\n.thread-map-tile-sub > * {\n  flex: none;\n}\n.thread-map-tile-sub > * + *::before {\n  margin-right: 6px;\n  opacity: 0.55;\n  content: "\\b7";\n}\n.thread-map-tile-who {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.thread-map-tile-from {\n  flex: 0 2 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-map-tile-live {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-tile-live .thread-map-running-dot {\n  margin-right: 0;\n}\n.thread-map-tile-failed {\n  color: var(--theme-danger, #c2410c);\n  font-weight: 600;\n}\n.thread-map-tile-prompt {\n  flex: none;\n  margin-top: 1px;\n  padding-left: 8px;\n  overflow: hidden;\n  border-left: 2px solid color-mix(in oklab, var(--theme-fg) 16%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  line-height: 16px;\n  overflow-wrap: anywhere;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--prompt-lines, 3);\n}\n.thread-map-stats {\n  display: flex;\n  gap: 14px;\n  min-width: 0;\n  margin-top: auto;\n  padding-top: 2px;\n}\n.thread-map-stats > span {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n}\n.thread-map-stats[data-layout=column] {\n  flex-direction: column;\n  gap: 2px;\n}\n.thread-map-stats[data-layout=column] > span {\n  flex-direction: row;\n  align-items: baseline;\n  gap: 5px;\n}\n.thread-map-stats[data-layout=column] b {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-stats b {\n  font-size: 14px;\n  font-weight: 650;\n  line-height: 18px;\n  letter-spacing: -0.01em;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-stats small {\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 9.5px;\n  line-height: 12px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-usage {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  align-self: flex-start;\n  gap: 8px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 18px;\n}\n.thread-map-usage .thread-turn-usage-price {\n  padding: 0 6px;\n  background: color-mix(in oklab, var(--theme-panel) 85%, transparent);\n  color: var(--theme-accent-strong, var(--theme-fg));\n  font-size: 12px;\n  font-weight: 650;\n  line-height: 18px;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-usage .thread-turn-usage-price:active {\n  border-color: var(--theme-border-strong);\n}\n@media (hover: hover) {\n  .thread-map-usage .thread-turn-usage-price:hover {\n    border-color: var(--theme-border-strong);\n  }\n}\n.thread-map-tokens {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-tokens svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-stat-usage .thread-map-usage {\n  gap: 6px;\n}\n.thread-map-tile-meta {\n  margin-top: auto;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  line-height: 14px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-spark {\n  display: flex;\n  flex: none;\n  align-items: flex-end;\n  gap: 1px;\n  height: var(--spark-h, 14px);\n}\n.thread-map-spark i {\n  flex: 1 1 0;\n  min-width: 0;\n  height: max(2px, calc(var(--h) * 100%));\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-spark i[data-zero] {\n  height: 1px;\n  background: color-mix(in oklab, var(--theme-fg) 16%, transparent);\n}\n.thread-map [data-heat] {\n  --thread-map-fill: var(--thread-map-tile);\n}\n.thread-map [data-heat="1"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 14%, var(--thread-map-tile));\n}\n.thread-map [data-heat="2"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 26%, var(--thread-map-tile));\n}\n.thread-map [data-heat="3"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 39%, var(--thread-map-tile));\n}\n.thread-map [data-heat="4"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 52%, var(--thread-map-tile));\n}\n.thread-map :is(.thread-map-tile, .thread-map-section[data-heat], .thread-map-scale i) {\n  background-color: var(--thread-map-fill);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n  border-color: var(--thread-map-live);\n  animation: thread-map-halo 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;\n}\n.thread-map .thread-map-section[data-live]:not([data-running]) {\n  border-color: color-mix(in oklab, var(--thread-map-live) 55%, var(--theme-border));\n}\n.thread-map .thread-map-section[data-live] > .thread-map-section-head .thread-map-section-count {\n  color: var(--theme-fg-soft);\n}\n.thread-map .thread-map-tile-live {\n  color: var(--thread-map-live);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  border-radius: inherit;\n  box-shadow: inset 0 0 0 2px var(--thread-map-live), inset 0 0 26px color-mix(in oklab, var(--thread-map-live) 70%, transparent);\n  content: "";\n  pointer-events: none;\n  animation: thread-map-glow 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;\n}\n.thread-map-running-dot {\n  display: inline-block;\n  flex: none;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--thread-map-live);\n  vertical-align: 0.05em;\n  animation: thread-map-breathe-dot 1.8s ease-out infinite;\n}\n@keyframes thread-map-halo {\n  0%, 100% {\n    box-shadow: 0 0 0 1px var(--thread-map-live), 0 0 0 0 transparent;\n  }\n  22% {\n    box-shadow: 0 0 0 1.5px var(--thread-map-live), 0 0 12px 3px color-mix(in oklab, var(--thread-map-live) 65%, transparent);\n  }\n}\n@keyframes thread-map-glow {\n  0%, 100% {\n    opacity: 0.12;\n  }\n  22% {\n    opacity: 1;\n  }\n}\n@keyframes thread-map-breathe-dot {\n  0% {\n    box-shadow: 0 0 0 0 color-mix(in oklab, var(--thread-map-live) 75%, transparent);\n  }\n  70%, 100% {\n    box-shadow: 0 0 0 6px transparent;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n    animation: none;\n    box-shadow: 0 0 0 1.5px var(--thread-map-live);\n  }\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n    animation: none;\n    opacity: 0.7;\n  }\n  .thread-map-running-dot {\n    animation: none;\n  }\n}\n.thread-map-agent {\n  display: inline-grid;\n  flex: none;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n  border-radius: 4px;\n  background: var(--thread-map-agent, #64748b);\n  color: #fff;\n  font-size: 8.5px;\n  font-weight: 700;\n  letter-spacing: -0.03em;\n  line-height: 1;\n}\n.thread-map-agent[data-agent=claude] {\n  --thread-map-agent: #c96442;\n}\n.thread-map-agent[data-agent=codex] {\n  --thread-map-agent: #0f8a69;\n}\n.thread-map-agent[data-agent=gemini] {\n  --thread-map-agent: #3b78e7;\n}\n.thread-map-agent[data-agent=deepseek] {\n  --thread-map-agent: #4d6bfe;\n}\n.thread-map-agent[data-agent=copilot] {\n  --thread-map-agent: #8250df;\n}\n.thread-map-agent[data-agent=opencode] {\n  --thread-map-agent: #475569;\n}\n.thread-map-agent[data-agent=grok] {\n  --thread-map-agent: #3f3f46;\n}\n.thread-map-agent[data-agent=cursor] {\n  --thread-map-agent: #27272a;\n}\n.thread-map-agent[data-agent=qwen] {\n  --thread-map-agent: #615ced;\n}\n.thread-map-agent[data-agent=kimi] {\n  --thread-map-agent: #0b84c6;\n}\n.thread-map-agent[data-art] {\n  color: transparent;\n  background: var(--theme-panel) var(--theme-agent-avatar) center / cover no-repeat;\n  box-shadow: 0 0 0 1px color-mix(in oklab, var(--theme-border) 80%, transparent);\n}\n.thread-map-tip {\n  position: absolute;\n  z-index: 10;\n  max-width: min(300px, calc(100% - 16px));\n  padding: 7px 10px;\n  border-radius: 8px;\n  background: var(--theme-fg);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);\n  color: var(--theme-bg);\n  font-size: 11.5px;\n  line-height: 1.45;\n  pointer-events: none;\n}\n.thread-map-tip[data-above] {\n  transform: translateY(-100%);\n}\n.thread-map-tip > * {\n  display: block;\n}\n.thread-map-tip > b {\n  margin-bottom: 2px;\n  font-weight: 650;\n}\n.thread-map-tip > span {\n  opacity: 0.82;\n}\n.thread-map-legend {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 14px;\n  padding: 8px 14px 10px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-scale {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n.thread-map-scale small {\n  margin: 0 2px 0 6px;\n  font-size: 10.5px;\n}\n.thread-map-scale i + small {\n  margin: 0 0 0 2px;\n}\n.thread-map-scale i {\n  width: 11px;\n  height: 11px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 3px;\n}\n.thread-map-legend-item {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-ages .thread-map-age-glyph {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-legend-spark {\n  display: inline-flex;\n  align-items: flex-end;\n  gap: 1px;\n  height: 11px;\n}\n.thread-map-legend-spark i {\n  width: 3px;\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-legend-spark i:nth-child(1) {\n  height: 30%;\n}\n.thread-map-legend-spark i:nth-child(2) {\n  height: 100%;\n}\n.thread-map-legend-spark i:nth-child(3) {\n  height: 60%;\n}\n.thread-map-legend-spark i:nth-child(4) {\n  height: 15%;\n}\n@media (max-width: 639px) {\n  .thread-map-canvas {\n    margin: 6px 6px 0;\n  }\n  .thread-map-legend {\n    gap: 2px 10px;\n    padding: 6px 10px calc(16px + env(safe-area-inset-bottom));\n  }\n}\n.thread-map-tile-head > .matter-status-dot {\n  flex: none;\n  position: relative;\n  z-index: 1;\n}\n.thread-map[data-presentation=page] {\n  width: 100%;\n  height: 100%;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-live: #dc7a16;\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n:root[data-theme-effective=dark] .thread-map[data-presentation=page] {\n  --thread-map-live: #ffa64d;\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n.thread-map[data-presentation=page] > .thread-map-bar:first-child {\n  padding: 18px 18px 12px;\n  gap: 12px;\n}\n.thread-map[data-presentation=page] > .thread-map-bar:first-child .thread-map-title {\n  font-size: 18px;\n  letter-spacing: -.025em;\n}\n.thread-map[data-presentation=page] .thread-map-canvas {\n  margin: 8px 14px 0;\n}\n.thread-map-filter {\n  position: relative;\n  display: flex;\n  align-items: center;\n  flex: 0 1 260px;\n  min-width: 120px;\n  height: 30px;\n  border: 1px solid var(--theme-border);\n  border-radius: 7px;\n  background: var(--theme-bg);\n}\n.thread-map-filter:has(input:focus-visible) {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.thread-map-filter input {\n  width: 100%;\n  min-width: 0;\n  height: 100%;\n  padding: 0 28px 0 10px;\n  border: 0;\n  outline: none;\n  background: transparent;\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 12px;\n}\n.thread-map-filter input::-webkit-search-cancel-button {\n  display: none;\n}\n.thread-map-filter input::placeholder {\n  color: var(--theme-fg-muted);\n}\n.thread-map-filter kbd {\n  position: absolute;\n  right: 8px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-filter > span {\n  flex: none;\n  padding-right: 8px;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-filter:has(> span) input {\n  padding-right: 5px;\n}\n.thread-map-scope {\n  display: flex;\n  flex: none;\n  gap: 2px;\n  padding: 3px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-bg);\n}\n.thread-map-scope button {\n  height: 25px;\n  padding: 0 12px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n  white-space: nowrap;\n}\n.thread-map-scope button[aria-pressed=true] {\n  background: var(--theme-panel);\n  box-shadow: 0 1px 3px rgb(0 0 0 / .08);\n  color: var(--theme-fg);\n  font-weight: 650;\n}\n.thread-map-scope button:active {\n  background: var(--theme-hover);\n}\n.thread-map :is(button, a):focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-attention-wrap {\n  display: grid;\n  flex: none;\n  grid-template-rows: 0fr;\n  transition: grid-template-rows 160ms ease;\n}\n.thread-map-attention-wrap[data-visible] {\n  grid-template-rows: 1fr;\n}\n.thread-map-attention {\n  display: flex;\n  gap: 8px;\n  min-height: 0;\n  overflow-x: auto;\n  overflow-y: hidden;\n  padding: 0 16px;\n  scrollbar-width: none;\n}\n.thread-map-attention::-webkit-scrollbar {\n  display: none;\n}\n.thread-map-attention-wrap[data-visible] .thread-map-attention {\n  padding-bottom: 12px;\n}\n.thread-map-attention-card {\n  position: relative;\n  flex: 0 0 220px;\n  height: 64px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-bg);\n  box-sizing: border-box;\n}\n.thread-map-attention-card:is([data-kind=approval], [data-kind=input]) {\n  border-color: color-mix(in oklab, #b77915 42%, var(--theme-border));\n}\n.thread-map-attention-open {\n  display: flex;\n  align-items: flex-start;\n  gap: 8px;\n  width: 100%;\n  height: 100%;\n  padding: 8px 10px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg);\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-attention-open > .matter-status-dot {\n  flex: none;\n  margin-top: 3px;\n}\n.thread-map-attention-open > span:last-child {\n  display: grid;\n  gap: 3px;\n  min-width: 0;\n}\n.thread-map-attention-open b {\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 650;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  line-height: 14px;\n}\n.thread-map-attention-open small {\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 11px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-card:has(.thread-map-decisions) .thread-map-attention-open {\n  padding-right: 86px;\n}\n.thread-map-decisions {\n  position: absolute;\n  right: 7px;\n  top: 18px;\n  display: flex;\n  gap: 8px;\n}\n.thread-map-decisions button {\n  padding: 4px 3px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n  font-size: 10px;\n  cursor: pointer;\n}\n.thread-map-decisions button:first-child {\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n}\n.thread-map-attention-more {\n  flex: none;\n  align-self: center;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  padding: 12px;\n  cursor: pointer;\n}\n.thread-map-compressed {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  padding: 10px;\n  border: 1px dashed var(--theme-border-strong);\n  border-radius: 7px;\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 6px,\n      color-mix(in oklab, var(--theme-border) 28%, transparent) 6px 7px),\n    var(--theme-panel);\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  text-align: center;\n  cursor: pointer;\n}\n.thread-map [data-dimmed] {\n  opacity: .3;\n}\n.thread-map [data-dimmed] [data-dimmed] {\n  opacity: 1;\n}\n.thread-map-tile[data-waiting] {\n  border-color: color-mix(in oklab, var(--status-waiting, #b77915) 65%, var(--theme-border));\n}\n.thread-map-tile-waiting,\n.thread-map-waiting-count {\n  color: var(--status-waiting, #b77915);\n}\n.thread-map .thread-map-quick-look {\n  position: absolute;\n  right: 6px;\n  bottom: 5px;\n  z-index: 2;\n  width: 24px;\n  height: 24px;\n  border: 0;\n  border-radius: 6px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font-size: 15px;\n  pointer-events: auto;\n  cursor: pointer;\n}\n@media (hover: hover) {\n  .thread-map .thread-map-quick-look {\n    opacity: 0;\n  }\n  .thread-map-tile:hover .thread-map-quick-look,\n  .thread-map-tile:has(:focus-visible) .thread-map-quick-look {\n    opacity: 1;\n  }\n  .thread-map-scope button:hover,\n  .thread-map-attention-open:hover,\n  .thread-map-decisions button:hover,\n  .thread-map-attention-more:hover,\n  .thread-map-compressed:hover,\n  .thread-map-quick-look:hover {\n    background-color: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-section-header {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  min-width: 0;\n}\n.thread-map-section-header > .thread-map-section-head {\n  flex: 1;\n  min-width: 0;\n  height: 100%;\n}\n.thread-map-section[data-zoomable] > .thread-map-section-header .thread-map-section-head {\n  color: var(--theme-fg);\n}\n.thread-map-section[data-collapsed] > .thread-map-section-header {\n  position: absolute;\n  inset: 0 0 auto;\n}\n.thread-map-section-header:has(.thread-map-device-readings) > .thread-map-section-head {\n  font-size: 12px;\n}\n.thread-map-section-header:has(.thread-map-device-menu-button) {\n  padding-right: 2px;\n}\n.thread-map-device-state {\n  display: inline-block;\n  flex: none;\n  box-sizing: border-box;\n  width: 7px;\n  height: 7px;\n  border: 1.5px solid currentColor;\n  border-radius: 50%;\n  background: currentColor;\n  color: var(--theme-fg-muted);\n}\n.thread-map-device-state[data-offline] {\n  background: transparent;\n}\n.thread-map-device-readings {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n  flex: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-weight: 400;\n  white-space: nowrap;\n}\n.thread-map-device-readings > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n}\n.thread-map-device-readings .thread-map-update {\n  padding: 2px 4px;\n  border-radius: 3px;\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n  font-size: 9px;\n}\n.thread-map-sync {\n  width: 4px;\n  height: 4px;\n  border-radius: 50%;\n  background: var(--theme-fg-muted);\n  opacity: .4;\n}\n.thread-map-device-menu-button {\n  position: relative;\n  z-index: 5;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  cursor: pointer;\n}\n.thread-map-device-menu-button svg {\n  width: 15px;\n  height: 15px;\n}\n.thread-map-metrics {\n  display: none;\n  position: absolute;\n  z-index: 8;\n  top: 35px;\n  left: 6px;\n  max-width: calc(100% - 12px);\n  box-sizing: border-box;\n  padding: 6px 8px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 5px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font-size: 10px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section-header:has(:focus-visible) .thread-map-metrics {\n  display: block;\n}\n@media (hover: hover) {\n  .thread-map-section-header:hover .thread-map-metrics {\n    display: block;\n  }\n  .thread-map-device-menu-button:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-graph-dialog.thread-map-device-menu {\n  z-index: 1000;\n  display: grid;\n  width: 220px;\n  padding: 5px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .15);\n}\n.thread-map-device-menu button {\n  min-height: 34px;\n  border: 0;\n  border-radius: 4px;\n  padding: 6px 10px;\n  background: none;\n  color: inherit;\n  text-align: left;\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-device-menu button:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n  background: var(--theme-hover);\n}\n.thread-map-device-menu button:disabled {\n  opacity: .4;\n}\n@media (hover: hover) {\n  .thread-map-device-menu button:hover:not(:disabled) {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-offline-strip {\n  display: flex;\n  flex-wrap: wrap;\n  flex: none;\n  gap: 4px;\n  margin: 8px 16px 0;\n  border-top: 1px solid var(--theme-border);\n  padding-top: 5px;\n}\n.thread-map-offline-strip button {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  height: 30px;\n  max-width: 100%;\n  padding: 0 8px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n}\n.thread-map-offline-strip b {\n  font-weight: 550;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-offline-strip small {\n  font-size: 10px;\n  padding: 2px 4px;\n  border: 1px solid var(--theme-border);\n  border-radius: 3px;\n}\n@media (hover: hover) {\n  .thread-map-offline-strip button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map [data-cached] {\n  filter: saturate(.35);\n}\n.thread-map-cached-label {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  padding: 0 8px;\n  white-space: nowrap;\n}\n.thread-map [data-pulse] {\n  --map-pulse: var(--theme-accent-solid);\n  animation: thread-map-event 800ms ease-out 1;\n}\n.thread-map [data-pulse=waiting] {\n  --map-pulse: var(--status-waiting, #d69b37);\n}\n@keyframes thread-map-event {\n  0%, 15% {\n    box-shadow: inset 0 0 0 3px var(--map-pulse), 0 0 18px color-mix(in oklab, var(--map-pulse) 60%, transparent);\n  }\n  100% {\n    box-shadow: inset 0 0 0 0 transparent, 0 0 0 transparent;\n  }\n}\n@media (max-width: 1050px) {\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child {\n    padding: 12px 14px 10px;\n    gap: 8px;\n  }\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child .thread-map-summary {\n    display: none;\n  }\n  .thread-map[data-presentation=page] .thread-map-filter {\n    margin-left: auto;\n  }\n  .thread-map-device-readings {\n    gap: 5px;\n  }\n}\n@media (max-width: 639px) {\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child {\n    flex-wrap: wrap;\n  }\n  .thread-map[data-presentation=page] .thread-map-filter {\n    flex: 1;\n  }\n  .thread-map-scope {\n    width: 100%;\n    justify-content: stretch;\n  }\n  .thread-map-scope button {\n    flex: 1;\n    height: 36px;\n  }\n  .thread-map-decisions button {\n    min-height: 40px;\n  }\n  .thread-map-decisions {\n    top: 11px;\n  }\n  .thread-map-device-menu-button,\n  .thread-map-quick-look {\n    min-width: 40px;\n    min-height: 40px;\n  }\n  .thread-map-offline-strip button {\n    min-height: 40px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map-attention-wrap {\n    transition: none;\n  }\n  .thread-map [data-pulse] {\n    animation: none;\n    outline: 2px solid var(--map-pulse);\n    outline-offset: -2px;\n  }\n}\n.thread-map-legend-footer {\n  display: flex;\n  flex: none;\n  padding: 5px 16px 8px;\n}\n.thread-map-legend-footer > button {\n  border: 0;\n  border-radius: 4px;\n  padding: 5px 8px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n}\n.thread-map-legend-popover {\n  z-index: 1000;\n  width: min(360px, calc(100vw - 16px));\n  max-height: 70dvh;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .16);\n}\n.thread-map-legend-popover > button {\n  align-self: flex-end;\n  margin: 0 10px 8px;\n  padding: 5px 10px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  font-size: 11px;\n  cursor: pointer;\n}\n@media (hover: hover) {\n  .thread-map-legend-footer > button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n@media (max-width: 639px) {\n  .thread-map-legend-footer > button,\n  .thread-map-legend-popover > button {\n    min-height: 40px;\n  }\n}\n.thread-map-device-readings {\n  flex: 0 1 auto;\n  min-width: 0;\n  max-width: calc(100% - 130px);\n  overflow: hidden;\n}\n.thread-map-device-readings > span {\n  flex: none;\n}\n.thread-map-section-header:has(.thread-map-device-readings) .thread-map-section-label {\n  flex: 1 0 64px;\n  min-width: 64px;\n}\n.thread-map-compressed {\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-legend-popover {\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-live: #ec7a08;\n  --thread-map-spark: var(--theme-accent-solid);\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-map-tile[data-readable] {\n  min-width: 132px;\n  min-height: 64px;\n}\n.thread-map-tile[data-readable][data-size=medium] {\n  gap: 3px;\n  padding: 4px 6px;\n}\n.thread-map-tile[data-readable][data-size=medium] .thread-map-tile-title {\n  line-height: 16px;\n  -webkit-line-clamp: 2;\n}\n.thread-map-tile[data-readable][data-size=medium] .thread-map-tile-meta {\n  line-height: 13px;\n}\n.thread-map-readable-section > .thread-map-section-header {\n  position: relative;\n  z-index: 4;\n}\n.thread-map-readable-section .thread-map-section-usd {\n  flex: none;\n  margin-left: 0;\n  padding-right: 5px;\n  font-size: 10px;\n}\n.thread-map-overflow {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  gap: 7px;\n  box-sizing: border-box;\n  overflow: hidden;\n  padding: 12px;\n  border: 1px dashed var(--theme-border-strong);\n  border-radius: 8px;\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 8px,\n      color-mix(in oklab, var(--theme-border) 12%, transparent) 8px 9px),\n    var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font: inherit;\n  text-align: left;\n  cursor: zoom-in;\n}\n.thread-map-overflow-title {\n  display: flex;\n  align-items: flex-start;\n  gap: 6px;\n  width: 100%;\n  min-width: 0;\n  font-size: 12px;\n  line-height: 17px;\n}\n.thread-map-overflow-title > b {\n  flex: 1;\n  min-width: 0;\n  font-weight: 600;\n}\n.thread-map-overflow-title svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n  margin-top: 1px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-overflow > small {\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map-overflow-marks {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 5px 10px;\n  font-size: 11px;\n}\n.thread-map-overflow-marks:empty {\n  display: none;\n}\n.thread-map-overflow-marks > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-overflow[data-important] {\n  border-style: solid;\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 45%, var(--theme-border));\n}\n.thread-map-overflow-preview {\n  display: grid;\n  gap: 3px;\n  min-width: 0;\n  width: 100%;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 14px;\n}\n.thread-map-overflow-preview > span {\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n@media (hover: hover) {\n  .thread-map-overflow:hover {\n    border-color: var(--theme-accent-solid);\n    background-color: var(--theme-hover);\n  }\n}\n.thread-map-readable-list {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-bg);\n}\n.thread-map-list-heading {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 7px;\n  height: 34px;\n  padding: 0 12px;\n  border-bottom: 1px solid var(--theme-border);\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.thread-map-list-heading svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-list-heading b {\n  flex: 1;\n  font-weight: 600;\n}\n.thread-map-list-heading > span {\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-scroll-list {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n}\n.thread-map-list-scroll {\n  height: 100%;\n  overflow: auto;\n  padding: 4px 12px 8px;\n  scrollbar-width: none;\n  box-sizing: border-box;\n  overscroll-behavior: contain;\n}\n.thread-map-list-scroll::-webkit-scrollbar {\n  display: none;\n}\n.thread-map-readable-list .thread-map-list-scroll {\n  padding: 0 8px 8px;\n  scroll-padding-top: 24px;\n}\n.thread-map-list-status-group {\n  position: relative;\n}\n.thread-map-list-status-heading {\n  position: sticky;\n  top: 0;\n  z-index: 4;\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  height: 24px;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0 10px;\n  background: var(--theme-bg);\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 24px;\n}\n.thread-map-list-status-heading small {\n  font-size: 10px;\n  font-weight: 400;\n  font-variant-numeric: tabular-nums;\n  opacity: .7;\n}\n.thread-map .thread-map-list-row {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 8px;\n  width: 100%;\n  min-width: 132px;\n  height: 40px;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0 10px;\n  border: 0;\n  border-bottom: 1px solid color-mix(in oklab, var(--theme-border) 35%, transparent);\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg);\n}\n.thread-map-list-row > :not(.thread-map-tile-link) {\n  position: relative;\n  pointer-events: none;\n}\n.thread-map-list-row > :is(.thread-map-agent, .matter-status-dot) {\n  flex: none;\n}\n.thread-map-list-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg);\n  font-size: 12.5px;\n  font-weight: 550;\n  line-height: 20px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-list-row-meta {\n  flex: 0 1 auto;\n  max-width: 48%;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n  line-height: 20px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map .thread-map-list-info {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font-size: 14px;\n  cursor: pointer;\n  pointer-events: auto;\n}\n.thread-map-list-info::before {\n  position: absolute;\n  inset: -6px;\n  content: "";\n}\n.thread-map-list-row:has(:focus-visible),\n.thread-map-list-row:active {\n  background: var(--theme-hover);\n}\n.thread-map-list-row[data-current] {\n  background: var(--theme-accent-soft);\n}\n.thread-map-list-row > .thread-map-tile-link:focus-visible {\n  outline: none;\n}\n@media (hover: hover) {\n  .thread-map-list-row:hover {\n    background: var(--theme-hover);\n  }\n  .thread-map-list-row .thread-map-list-info {\n    opacity: 0;\n  }\n  .thread-map-list-row:hover .thread-map-list-info,\n  .thread-map-list-row:has(:focus-visible) .thread-map-list-info {\n    opacity: 1;\n  }\n}\n.thread-map-list-group {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  width: 100%;\n  min-height: 64px;\n  padding: 12px;\n  margin: 4px 0;\n  border: 1px solid var(--theme-border);\n  border-radius: 7px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-list-group > b {\n  flex: 1;\n  min-width: 0;\n  text-align: left;\n  font-weight: 600;\n}\n.thread-map-list-group > span {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-list-group svg {\n  flex: none;\n  width: 15px;\n  height: 15px;\n}\n.thread-map-list-older {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  width: 100%;\n  min-height: 48px;\n  border: 1px dashed var(--theme-border);\n  border-radius: 7px;\n  margin-top: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-list-older svg {\n  width: 14px;\n  height: 14px;\n}\n@media (hover: hover) {\n  .thread-map-list-group:hover,\n  .thread-map-list-older:hover,\n  .thread-map-list-info:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-scroll-track {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  width: var(--scrollbar-size, 8px);\n  pointer-events: none;\n  background: var(--scrollbar-rail-y, transparent);\n}\n.thread-map-scroll-thumb {\n  position: absolute;\n  top: 0;\n  left: 2px;\n  right: 2px;\n  border-radius: var(--scrollbar-radius, 999px);\n  background: var(--scrollbar-thumb-idle, color-mix(in oklab, var(--theme-fg) 16%, transparent));\n  pointer-events: auto;\n  touch-action: none;\n}\n@media (hover: hover) {\n  .thread-map-scroll-list:hover .thread-map-scroll-thumb {\n    background: var(--scrollbar-thumb, color-mix(in oklab, var(--theme-fg) 32%, transparent));\n  }\n}\n.thread-map-scroll-thumb:active {\n  background: var(--scrollbar-thumb-active, var(--theme-accent-solid));\n}\n.thread-map-unlisted {\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  padding: 12px;\n}\n.thread-map-attention[data-responsive] {\n  width: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-card {\n  flex: 0 1 220px;\n  min-width: 200px;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-more {\n  flex: 0 0 80px;\n  padding: 8px 4px;\n  white-space: nowrap;\n}\n.thread-map-attention-menu {\n  z-index: 1000;\n  display: flex;\n  flex-direction: column;\n  width: min(336px, calc(100vw - 16px));\n  padding: 4px;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .16);\n}\n.thread-map-attention-menu .thread-map-list-scroll {\n  padding: 0 7px 0 0;\n}\n.thread-map-attention-menu [role=menuitem] {\n  display: flex;\n  align-items: flex-start;\n  gap: 9px;\n  width: 100%;\n  min-height: 68px;\n  padding: 9px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-attention-menu [role=menuitem] > .matter-status-dot {\n  margin-top: 3px;\n}\n.thread-map-attention-menu [role=menuitem] > span:last-child {\n  display: grid;\n  flex: 1;\n  gap: 4px;\n  min-width: 0;\n}\n.thread-map-attention-menu b {\n  font-size: 12px;\n  line-height: 16px;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-menu small {\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 13px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-menu [role=menuitem]:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-map-attention-menu [role=menuitem]:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map[data-presentation=page] .thread-map-canvas:has(.thread-map-list-scroll) {\n  touch-action: pan-y;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-more {\n  align-self: center;\n  height: 32px;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-panel);\n}\n@media (hover: hover) {\n  .thread-map-attention[data-responsive] .thread-map-attention-more:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-list-agent-slot,\n.thread-map-list-status-slot {\n  display: grid;\n  flex: 0 0 16px;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n}\n.thread-map-tip {\n  z-index: 1100;\n}\n.thread-map-overflow-with-list {\n  cursor: default;\n}\n.thread-map-overflow-open {\n  display: flex;\n  flex: none;\n  flex-direction: column;\n  gap: 7px;\n  width: 100%;\n  padding: 0 0 6px;\n  border: 0;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: zoom-in;\n}\n.thread-map-overflow-open > small {\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map-overflow-with-list .thread-map-list-scroll {\n  padding: 0 5px 0 0;\n}\n.thread-map-overflow-row {\n  display: flex;\n  position: relative;\n  align-items: center;\n  gap: 7px;\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 40px;\n  padding: 0 5px;\n  border: 0;\n  border-top: 1px solid color-mix(in oklab, var(--theme-border) 45%, transparent);\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  font: inherit;\n  font-size: 11px;\n  text-align: left;\n  text-decoration: none;\n  cursor: pointer;\n}\n.thread-map-overflow-row > span:not(.matter-status-dot) {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-overflow-row > svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-overflow-row > small {\n  flex: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-overflow-row:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n@media (hover: hover) {\n  .thread-map-overflow-row:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n');
+styleInject('.thread-graph-dialog.thread-map-dialog {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  width: min(1180px, calc(100vw - 48px));\n  max-width: none;\n  height: min(820px, calc(100dvh - 48px));\n  max-height: none;\n  padding: 0;\n  overflow: hidden;\n  border-radius: 16px;\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-live: #ec7a08;\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-graph-dialog.thread-map-dialog[data-theme-effective=dark] {\n  --thread-map-live: #ffa64d;\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n@media (max-width: 639px) {\n  .thread-graph-dialog.thread-map-dialog {\n    inset: 0;\n    translate: none;\n    width: auto;\n    height: auto;\n    border: 0;\n    border-radius: 0;\n    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);\n  }\n}\n.thread-map {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  min-width: 0;\n  min-height: 0;\n}\n.thread-map-bar {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 0;\n  padding: 10px 10px 4px 16px;\n}\n.thread-map-title {\n  flex: none;\n  margin: 0;\n  font-size: 15px;\n  font-weight: 650;\n  letter-spacing: -0.01em;\n}\n.thread-map-summary {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-summary .thread-map-running-dot {\n  margin-right: 4px;\n}\n.thread-map-icon-button,\n.thread-map-goto {\n  position: relative;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 32px;\n  height: 32px;\n  padding: 0;\n  border: 0;\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-map-icon-button:active:not(:disabled),\n.thread-map-goto:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-icon-button:hover:not(:disabled),\n  .thread-map-goto:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-icon-button:disabled {\n  opacity: 0.35;\n}\n.thread-map-dialog [data-slot=dialog-close].thread-map-close {\n  top: auto;\n  right: auto;\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  opacity: 1;\n}\n.thread-map-icon-button:focus-visible,\n.thread-map-goto:has(select:focus) {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-icon-button svg,\n.thread-map-goto svg {\n  width: 17px;\n  height: 17px;\n  pointer-events: none;\n}\n.thread-map-goto select {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 0;\n  font-size: 16px;\n  cursor: pointer;\n}\n.thread-map-path {\n  gap: 2px;\n  padding: 0 10px 6px 8px;\n  border-bottom: 1px solid var(--theme-border);\n}\n.thread-map-crumbs {\n  display: flex;\n  flex: 1;\n  align-items: center;\n  min-width: 0;\n  overflow: hidden;\n  border-radius: 6px;\n  outline: none;\n}\n.thread-map-crumbs:focus-visible {\n  box-shadow: 0 0 0 2px var(--theme-accent-solid);\n}\n.thread-map-crumb {\n  display: flex;\n  flex: 0 1 auto;\n  align-items: center;\n  min-width: 0;\n}\n.thread-map-crumb svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-crumb button {\n  min-width: 0;\n  max-width: 18em;\n  height: 30px;\n  padding: 0 6px;\n  overflow: hidden;\n  border: 0;\n  border-radius: 6px;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 12.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-crumb button:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-crumb button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-crumb button[aria-current] {\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-crumb-open {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 6px;\n  color: var(--theme-fg-muted);\n}\n@media (hover: hover) {\n  .thread-map-crumb-open:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-crumb-open:active {\n  background: var(--theme-hover);\n  color: var(--theme-accent-solid);\n}\n.thread-map-crumb-open:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n@media (max-width: 639px) {\n  .thread-map-crumb-open {\n    width: 40px;\n    height: 40px;\n  }\n  .thread-map-crumb button {\n    height: 40px;\n  }\n}\n.thread-map-canvas {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  margin: 8px 10px 0;\n  overflow: hidden;\n  touch-action: none;\n}\n.thread-map-stage {\n  position: absolute;\n  inset: 0;\n  transform-origin: 0 0;\n}\n.thread-map-preview {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n}\n.thread-map-preview > * {\n  pointer-events: auto;\n}\n.thread-map-zoom {\n  position: absolute;\n  inset: 0;\n  z-index: 3;\n  padding: 0;\n  border: 0;\n  border-radius: inherit;\n  background: transparent;\n  cursor: zoom-in;\n}\n.thread-map-zoom:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section[data-zoomable]:has(> :is(.thread-map-zoom, button.thread-map-section-head):active) {\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border));\n}\n@media (hover: hover) {\n  .thread-map-section[data-zoomable]:has(> :is(.thread-map-zoom, button.thread-map-section-head):hover) {\n    border-color: color-mix(in oklab, var(--theme-accent-solid) 55%, var(--theme-border));\n  }\n}\n.thread-map-section > button.thread-map-section-head {\n  cursor: zoom-in;\n}\n.thread-map-section[data-zoomable] > .thread-map-section-head {\n  color: var(--theme-fg);\n}\n.thread-map-dialog[data-swiped] {\n  animation: none !important;\n}\n.thread-map-empty {\n  display: grid;\n  place-items: center;\n  height: 100%;\n  margin: 0;\n  color: var(--theme-fg-muted);\n  font-size: 13px;\n}\n.thread-map-section,\n.thread-map-tile {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  isolation: isolate;\n}\n.thread-map-section {\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n}\n.thread-map-section[data-kind=device] {\n  background: var(--theme-bg);\n  border-color: var(--theme-border-strong);\n}\n.thread-map-section-head {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  width: 100%;\n  height: 26px;\n  padding: 0 7px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  font-weight: 600;\n  text-align: left;\n}\n.thread-map-section-head:is(button) {\n  cursor: pointer;\n}\n.thread-map-section[data-kind=device] > .thread-map-section-head {\n  color: var(--theme-fg);\n  font-size: 12px;\n}\n.thread-map-section-head:is(button):active:not(:disabled) {\n  color: var(--theme-fg);\n  background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n}\n@media (hover: hover) {\n  .thread-map-section-head:is(button):hover:not(:disabled) {\n    color: var(--theme-fg);\n    background: color-mix(in oklab, var(--theme-hover) 60%, transparent);\n  }\n}\n.thread-map-section-head:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-section-head:disabled {\n  cursor: default;\n}\n.thread-map-section-head svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-section-label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-section-count {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-section[data-collapsed] > .thread-map-section-head {\n  position: absolute;\n  inset: 0;\n  height: auto;\n  align-items: flex-start;\n  padding-top: 6px;\n}\n.thread-map-section-summary {\n  position: absolute;\n  right: 9px;\n  bottom: 6px;\n  left: 9px;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section[data-state] {\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 7px,\n      color-mix(in oklab, var(--theme-border) 55%, transparent) 7px 8px),\n    var(--theme-surface);\n}\n.thread-map-section[data-state] > .thread-map-section-head {\n  color: var(--theme-fg-muted);\n}\n.thread-map-section-usd {\n  margin-left: 4px;\n  color: var(--theme-fg-soft);\n  font-weight: 600;\n}\n.thread-map-group {\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 45%, var(--theme-border));\n  background: var(--theme-panel);\n}\n.thread-map-group-head {\n  display: flex;\n  align-items: center;\n  height: 26px;\n}\n.thread-map-group-head > .thread-map-section-head {\n  flex: 1;\n  min-width: 0;\n  color: var(--theme-fg);\n}\n.thread-map-group-head .thread-map-agent {\n  width: 15px;\n  height: 15px;\n  border-radius: 4px;\n  font-size: 8px;\n}\n.thread-map-section-count svg {\n  width: 11px;\n  height: 11px;\n}\n.thread-map-group-open {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 26px;\n  height: 26px;\n  border-radius: 7px;\n  color: var(--theme-fg-soft);\n}\n.thread-map-group-open:active {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-group-open:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-group-open:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-group-open svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-tile {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  padding: 6px 7px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 7px;\n  color: var(--theme-fg);\n  text-decoration: none;\n  transition: filter 120ms ease;\n}\n.thread-map-tile[data-size=card] {\n  gap: 6px;\n  padding: 10px 11px 9px;\n  border-radius: 10px;\n}\n.thread-map-tile[data-size=large] {\n  gap: 5px;\n  padding: 8px 9px;\n  border-radius: 9px;\n}\n.thread-map-tile[data-size=named] {\n  justify-content: center;\n  padding: 3px 5px;\n}\n.thread-map-tile[data-size=icon] {\n  align-items: center;\n  justify-content: center;\n  padding: 1px;\n}\n.thread-map-tile[data-size=dot] {\n  padding: 0;\n  border: 0;\n  border-radius: 2px;\n}\n.thread-map-tile:active {\n  filter: brightness(0.96);\n}\n@media (hover: hover) {\n  .thread-map-tile:hover {\n    filter: brightness(0.96);\n  }\n}\n.thread-map-dialog[data-theme-effective=dark] .thread-map-tile:active {\n  filter: brightness(1.18);\n}\n@media (hover: hover) {\n  .thread-map-dialog[data-theme-effective=dark] .thread-map-tile:hover {\n    filter: brightness(1.18);\n  }\n}\n.thread-map-tile-link {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  border-radius: inherit;\n}\n.thread-map-tile-link:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-tile > :not(.thread-map-tile-link) {\n  position: relative;\n  pointer-events: none;\n}\n.thread-map-tile :is(.thread-map-children, .thread-map-usage) {\n  pointer-events: auto;\n}\n.thread-map-tile:has(> .thread-map-tile-link:focus-visible) {\n  z-index: 2;\n}\n.thread-map-tile[data-current] {\n  border-color: var(--theme-fg);\n  box-shadow: inset 0 0 0 1px var(--theme-fg);\n}\n.thread-map-tile-head {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-head {\n  align-items: flex-start;\n}\n.thread-map-tile-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 600;\n  line-height: 16px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-tile:is([data-size=card], [data-size=large], [data-size=medium], [data-size=named]) .thread-map-tile-title {\n  display: -webkit-box;\n  white-space: normal;\n  overflow-wrap: anywhere;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--lines, 1);\n}\n.thread-map-tile[data-size=card] .thread-map-tile-title {\n  font-size: 14px;\n  line-height: 19px;\n  letter-spacing: -0.01em;\n}\n.thread-map-tile[data-size=large] .thread-map-tile-title {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-tile[data-size=card] .thread-map-agent {\n  width: 19px;\n  height: 19px;\n  border-radius: 5px;\n  font-size: 9.5px;\n}\n.thread-map-tile:is([data-size=card], [data-size=large]) .thread-map-agent {\n  margin-top: 0;\n}\n.thread-map-age {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  margin-left: auto;\n  padding: 2px;\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 72%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 13px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-age > span {\n  padding-right: 5px;\n}\n.thread-map-children {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 3px;\n  height: 19px;\n  margin-left: auto;\n  padding: 0 6px 0 5px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 85%, transparent);\n  border-radius: 999px;\n  background: color-mix(in oklab, var(--theme-panel) 78%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  font-weight: 650;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-children:active {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-map-children:hover {\n    border-color: var(--theme-border-strong);\n    background: var(--theme-panel);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-children:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.thread-map-children svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-children + .thread-map-age {\n  margin-left: 4px;\n}\n.thread-map-tile-children-row {\n  display: flex;\n}\n.thread-map-tile-children-row .thread-map-children {\n  margin-left: 0;\n}\n.thread-map-age-glyph {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-tile[data-size=card] .thread-map-age-glyph {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-age-glyph[data-age="0"] {\n  color: var(--thread-map-age-0);\n}\n.thread-map-age-glyph[data-age="1"] {\n  color: var(--thread-map-age-1);\n}\n.thread-map-age-glyph[data-age="2"] {\n  color: var(--thread-map-age-2);\n}\n.thread-map-age-glyph[data-age="3"] {\n  color: var(--thread-map-age-3);\n}\n.thread-map-age-glyph[data-age="4"] {\n  color: var(--thread-map-age-4);\n}\n.thread-map-tile-sub {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 14px;\n  white-space: nowrap;\n}\n.thread-map-tile-sub > * {\n  flex: none;\n}\n.thread-map-tile-sub > * + *::before {\n  margin-right: 6px;\n  opacity: 0.55;\n  content: "\\b7";\n}\n.thread-map-tile-who {\n  flex: 0 1 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.thread-map-tile-from {\n  flex: 0 2 auto;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-map-tile-live {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-tile-live .thread-map-running-dot {\n  margin-right: 0;\n}\n.thread-map-tile-failed {\n  color: var(--theme-danger, #c2410c);\n  font-weight: 600;\n}\n.thread-map-tile-prompt {\n  flex: none;\n  margin-top: 1px;\n  padding-left: 8px;\n  overflow: hidden;\n  border-left: 2px solid color-mix(in oklab, var(--theme-fg) 16%, transparent);\n  color: var(--theme-fg-soft);\n  font-size: 11.5px;\n  line-height: 16px;\n  overflow-wrap: anywhere;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: var(--prompt-lines, 3);\n}\n.thread-map-stats {\n  display: flex;\n  gap: 14px;\n  min-width: 0;\n  margin-top: auto;\n  padding-top: 2px;\n}\n.thread-map-stats > span {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n}\n.thread-map-stats[data-layout=column] {\n  flex-direction: column;\n  gap: 2px;\n}\n.thread-map-stats[data-layout=column] > span {\n  flex-direction: row;\n  align-items: baseline;\n  gap: 5px;\n}\n.thread-map-stats[data-layout=column] b {\n  font-size: 13px;\n  line-height: 17px;\n}\n.thread-map-stats b {\n  font-size: 14px;\n  font-weight: 650;\n  line-height: 18px;\n  letter-spacing: -0.01em;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-stats small {\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 9.5px;\n  line-height: 12px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-usage {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  align-self: flex-start;\n  gap: 8px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 18px;\n}\n.thread-map-usage .thread-turn-usage-price {\n  padding: 0 6px;\n  background: color-mix(in oklab, var(--theme-panel) 85%, transparent);\n  color: var(--theme-accent-strong, var(--theme-fg));\n  font-size: 12px;\n  font-weight: 650;\n  line-height: 18px;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n}\n.thread-map-usage .thread-turn-usage-price:active {\n  border-color: var(--theme-border-strong);\n}\n@media (hover: hover) {\n  .thread-map-usage .thread-turn-usage-price:hover {\n    border-color: var(--theme-border-strong);\n  }\n}\n.thread-map-tokens {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-tokens svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-stat-usage .thread-map-usage {\n  gap: 6px;\n}\n.thread-map-tile-meta {\n  margin-top: auto;\n  overflow: hidden;\n  color: var(--theme-fg-soft);\n  font-size: 10.5px;\n  line-height: 14px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-spark {\n  display: flex;\n  flex: none;\n  align-items: flex-end;\n  gap: 1px;\n  height: var(--spark-h, 14px);\n}\n.thread-map-spark i {\n  flex: 1 1 0;\n  min-width: 0;\n  height: max(2px, calc(var(--h) * 100%));\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-spark i[data-zero] {\n  height: 1px;\n  background: color-mix(in oklab, var(--theme-fg) 16%, transparent);\n}\n.thread-map [data-heat] {\n  --thread-map-fill: var(--thread-map-tile);\n}\n.thread-map [data-heat="1"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 14%, var(--thread-map-tile));\n}\n.thread-map [data-heat="2"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 26%, var(--thread-map-tile));\n}\n.thread-map [data-heat="3"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 39%, var(--thread-map-tile));\n}\n.thread-map [data-heat="4"] {\n  --thread-map-fill: color-mix(in oklab, var(--thread-map-heat) 52%, var(--thread-map-tile));\n}\n.thread-map :is(.thread-map-tile, .thread-map-section[data-heat], .thread-map-scale i) {\n  background-color: var(--thread-map-fill);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n  border-color: var(--thread-map-live);\n  animation: thread-map-halo 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;\n}\n.thread-map .thread-map-section[data-live]:not([data-running]) {\n  border-color: color-mix(in oklab, var(--thread-map-live) 55%, var(--theme-border));\n}\n.thread-map .thread-map-section[data-live] > .thread-map-section-head .thread-map-section-count {\n  color: var(--theme-fg-soft);\n}\n.thread-map .thread-map-tile-live {\n  color: var(--thread-map-live);\n}\n.thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  border-radius: inherit;\n  box-shadow: inset 0 0 0 2px var(--thread-map-live), inset 0 0 26px color-mix(in oklab, var(--thread-map-live) 70%, transparent);\n  content: "";\n  pointer-events: none;\n  animation: thread-map-glow 2.4s cubic-bezier(0.3, 0, 0.2, 1) infinite;\n}\n.thread-map-running-dot {\n  display: inline-block;\n  flex: none;\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: var(--thread-map-live);\n  vertical-align: 0.05em;\n  animation: thread-map-breathe-dot 1.8s ease-out infinite;\n}\n@keyframes thread-map-halo {\n  0%, 100% {\n    box-shadow: 0 0 0 1px var(--thread-map-live), 0 0 0 0 transparent;\n  }\n  22% {\n    box-shadow: 0 0 0 1.5px var(--thread-map-live), 0 0 12px 3px color-mix(in oklab, var(--thread-map-live) 65%, transparent);\n  }\n}\n@keyframes thread-map-glow {\n  0%, 100% {\n    opacity: 0.12;\n  }\n  22% {\n    opacity: 1;\n  }\n}\n@keyframes thread-map-breathe-dot {\n  0% {\n    box-shadow: 0 0 0 0 color-mix(in oklab, var(--thread-map-live) 75%, transparent);\n  }\n  70%, 100% {\n    box-shadow: 0 0 0 6px transparent;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running] {\n    animation: none;\n    box-shadow: 0 0 0 1.5px var(--thread-map-live);\n  }\n  .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before {\n    animation: none;\n    opacity: 0.7;\n  }\n  .thread-map-running-dot {\n    animation: none;\n  }\n}\n.thread-map-agent {\n  display: inline-grid;\n  flex: none;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n  border-radius: 4px;\n  background: var(--thread-map-agent, #64748b);\n  color: #fff;\n  font-size: 8.5px;\n  font-weight: 700;\n  letter-spacing: -0.03em;\n  line-height: 1;\n}\n.thread-map-agent[data-agent=claude] {\n  --thread-map-agent: #c96442;\n}\n.thread-map-agent[data-agent=codex] {\n  --thread-map-agent: #0f8a69;\n}\n.thread-map-agent[data-agent=gemini] {\n  --thread-map-agent: #3b78e7;\n}\n.thread-map-agent[data-agent=deepseek] {\n  --thread-map-agent: #4d6bfe;\n}\n.thread-map-agent[data-agent=copilot] {\n  --thread-map-agent: #8250df;\n}\n.thread-map-agent[data-agent=opencode] {\n  --thread-map-agent: #475569;\n}\n.thread-map-agent[data-agent=grok] {\n  --thread-map-agent: #3f3f46;\n}\n.thread-map-agent[data-agent=cursor] {\n  --thread-map-agent: #27272a;\n}\n.thread-map-agent[data-agent=qwen] {\n  --thread-map-agent: #615ced;\n}\n.thread-map-agent[data-agent=kimi] {\n  --thread-map-agent: #0b84c6;\n}\n.thread-map-agent[data-art] {\n  color: transparent;\n  background: var(--theme-panel) var(--theme-agent-avatar) center / cover no-repeat;\n  box-shadow: 0 0 0 1px color-mix(in oklab, var(--theme-border) 80%, transparent);\n}\n.thread-graph-dialog.thread-map-tip {\n  position: fixed;\n  z-index: 1100;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  box-sizing: border-box;\n  max-width: calc(100vw - 16px);\n  padding: 12px;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 28px rgb(0 0 0 / .16);\n  font: inherit;\n  font-size: 11px;\n  line-height: 1.4;\n  pointer-events: auto;\n}\n.thread-map-tip-header {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  min-width: 0;\n}\n.thread-map-tip-header > b {\n  flex: 1;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n  overflow: hidden;\n  min-width: 0;\n  font-size: 12px;\n  font-weight: 650;\n  line-height: 17px;\n  overflow-wrap: anywhere;\n}\n.thread-map-tip-header > .matter-status-dot {\n  flex: none;\n  width: 10px;\n  height: 10px;\n}\n.thread-map-tip-header > svg {\n  flex: none;\n  width: 15px;\n  height: 15px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-tip-agent {\n  display: flex;\n  flex: none;\n}\n.thread-map-tip-agent .thread-map-agent {\n  width: 16px;\n  height: 16px;\n  margin: 0;\n  border-radius: 4px;\n  font-size: 8px;\n}\n.thread-map-tip-subtitle,\n.thread-map-tip-footer {\n  margin: 0;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 14px;\n  overflow-wrap: anywhere;\n}\n.thread-map-tip-subtitle {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-map-tip-metrics {\n  display: grid;\n  grid-template-columns: repeat(var(--metrics), minmax(0, 1fr));\n  gap: 6px;\n}\n.thread-map-tip-metric {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  min-width: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 16px;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n.thread-map-tip-metric > svg {\n  flex: none;\n  width: 12px;\n  height: 12px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-tip-metric > span {\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.thread-map-tip-header > .thread-map-tip-metric {\n  flex: none;\n  margin-left: auto;\n}\n.thread-map-tip-bars {\n  display: flex;\n  align-items: flex-end;\n  gap: 2px;\n  height: 27px;\n  min-width: 0;\n}\n.thread-map-tip-bars[data-empty-series] {\n  height: 6px;\n}\n.thread-map-tip-bars > i {\n  flex: 1;\n  min-width: 0;\n  height: max(2px, calc(var(--bar) * 27px));\n  border-radius: 1px;\n  background: var(--theme-accent-solid);\n  opacity: .6;\n}\n.thread-map-tip-bars > i[data-empty] {\n  background: var(--theme-border-strong);\n  opacity: .5;\n}\n.thread-map-tip-prompt {\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n  overflow: hidden;\n  margin: 0;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  line-height: 16px;\n  overflow-wrap: anywhere;\n}\n.thread-map-legend {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 14px;\n  padding: 8px 14px 10px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-scale {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n.thread-map-scale small {\n  margin: 0 2px 0 6px;\n  font-size: 10.5px;\n}\n.thread-map-scale i + small {\n  margin: 0 0 0 2px;\n}\n.thread-map-scale i {\n  width: 11px;\n  height: 11px;\n  border: 1px solid color-mix(in oklab, var(--theme-border) 75%, transparent);\n  border-radius: 3px;\n}\n.thread-map-legend-item {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-ages .thread-map-age-glyph {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-legend-spark {\n  display: inline-flex;\n  align-items: flex-end;\n  gap: 1px;\n  height: 11px;\n}\n.thread-map-legend-spark i {\n  width: 3px;\n  border-radius: 1px 1px 0 0;\n  background: var(--thread-map-spark);\n}\n.thread-map-legend-spark i:nth-child(1) {\n  height: 30%;\n}\n.thread-map-legend-spark i:nth-child(2) {\n  height: 100%;\n}\n.thread-map-legend-spark i:nth-child(3) {\n  height: 60%;\n}\n.thread-map-legend-spark i:nth-child(4) {\n  height: 15%;\n}\n@media (max-width: 639px) {\n  .thread-map-canvas {\n    margin: 6px 6px 0;\n  }\n  .thread-map-legend {\n    gap: 2px 10px;\n    padding: 6px 10px calc(16px + env(safe-area-inset-bottom));\n  }\n}\n.thread-map-tile-head > .matter-status-dot {\n  flex: none;\n  position: relative;\n  z-index: 1;\n}\n.thread-map[data-presentation=page] {\n  width: 100%;\n  height: 100%;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-live: #dc7a16;\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-spark: color-mix(in oklab, var(--thread-map-heat) 70%, var(--theme-fg));\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n:root[data-theme-effective=dark] .thread-map[data-presentation=page] {\n  --thread-map-live: #ffa64d;\n  --thread-map-age-0: #4cc3e6;\n  --thread-map-age-1: #82a3f2;\n  --thread-map-age-2: #ae91f0;\n  --thread-map-age-3: #e3a453;\n  --thread-map-age-4: #c9966b;\n}\n.thread-map[data-presentation=page] > .thread-map-bar:first-child {\n  padding: 18px 18px 12px;\n  gap: 12px;\n}\n.thread-map[data-presentation=page] > .thread-map-bar:first-child .thread-map-title {\n  font-size: 18px;\n  letter-spacing: -.025em;\n}\n.thread-map[data-presentation=page] .thread-map-canvas {\n  margin: 8px 14px 0;\n}\n.thread-map-filter {\n  position: relative;\n  display: flex;\n  align-items: center;\n  flex: 0 1 260px;\n  min-width: 120px;\n  height: 30px;\n  border: 1px solid var(--theme-border);\n  border-radius: 7px;\n  background: var(--theme-bg);\n}\n.thread-map-filter:has(input:focus-visible) {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.thread-map-filter input {\n  width: 100%;\n  min-width: 0;\n  height: 100%;\n  padding: 0 28px 0 10px;\n  border: 0;\n  outline: none;\n  background: transparent;\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 12px;\n}\n.thread-map-filter input::-webkit-search-cancel-button {\n  display: none;\n}\n.thread-map-filter input::placeholder {\n  color: var(--theme-fg-muted);\n}\n.thread-map-filter kbd {\n  position: absolute;\n  right: 8px;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-filter > span {\n  flex: none;\n  padding-right: 8px;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-filter:has(> span) input {\n  padding-right: 5px;\n}\n.thread-map-scope {\n  display: flex;\n  flex: none;\n  gap: 2px;\n  padding: 3px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-bg);\n}\n.thread-map-scope button {\n  height: 25px;\n  padding: 0 12px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n  white-space: nowrap;\n}\n.thread-map-scope button[aria-pressed=true] {\n  background: var(--theme-panel);\n  box-shadow: 0 1px 3px rgb(0 0 0 / .08);\n  color: var(--theme-fg);\n  font-weight: 650;\n}\n.thread-map-scope button:active {\n  background: var(--theme-hover);\n}\n.thread-map :is(button, a):focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n.thread-map-attention-wrap {\n  display: grid;\n  flex: none;\n  grid-template-rows: 0fr;\n  transition: grid-template-rows 160ms ease;\n}\n.thread-map-attention-wrap[data-visible] {\n  grid-template-rows: 1fr;\n}\n.thread-map-attention {\n  display: flex;\n  gap: 8px;\n  min-height: 0;\n  overflow-x: auto;\n  overflow-y: hidden;\n  padding: 0 16px;\n  scrollbar-width: none;\n}\n.thread-map-attention::-webkit-scrollbar {\n  display: none;\n}\n.thread-map-attention-wrap[data-visible] .thread-map-attention {\n  padding-bottom: 12px;\n}\n.thread-map-attention-card {\n  position: relative;\n  flex: 0 0 220px;\n  height: 64px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-bg);\n  box-sizing: border-box;\n}\n.thread-map-attention-card:is([data-kind=approval], [data-kind=input]) {\n  border-color: color-mix(in oklab, #b77915 42%, var(--theme-border));\n}\n.thread-map-attention-open {\n  display: flex;\n  align-items: flex-start;\n  gap: 8px;\n  width: 100%;\n  height: 100%;\n  padding: 8px 10px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg);\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-attention-open > .matter-status-dot {\n  flex: none;\n  margin-top: 3px;\n}\n.thread-map-attention-open > span:last-child {\n  display: grid;\n  gap: 3px;\n  min-width: 0;\n}\n.thread-map-attention-open b {\n  overflow: hidden;\n  font-size: 12px;\n  font-weight: 650;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  line-height: 14px;\n}\n.thread-map-attention-open small {\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 11px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-card:has(.thread-map-decisions) .thread-map-attention-open {\n  padding-right: 86px;\n}\n.thread-map-decisions {\n  position: absolute;\n  right: 7px;\n  top: 18px;\n  display: flex;\n  gap: 8px;\n}\n.thread-map-decisions button {\n  padding: 4px 3px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n  font-size: 10px;\n  cursor: pointer;\n}\n.thread-map-decisions button:first-child {\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n}\n.thread-map-attention-more {\n  flex: none;\n  align-self: center;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-soft);\n  font-size: 11px;\n  padding: 12px;\n  cursor: pointer;\n}\n.thread-map-compressed {\n  position: absolute;\n  box-sizing: border-box;\n  overflow: hidden;\n  padding: 10px;\n  border: 1px dashed var(--theme-border-strong);\n  border-radius: 7px;\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 6px,\n      color-mix(in oklab, var(--theme-border) 28%, transparent) 6px 7px),\n    var(--theme-panel);\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  text-align: center;\n  cursor: pointer;\n}\n.thread-map [data-dimmed] {\n  opacity: .3;\n}\n.thread-map [data-dimmed] [data-dimmed] {\n  opacity: 1;\n}\n.thread-map-tile[data-waiting] {\n  border-color: color-mix(in oklab, var(--status-waiting, #b77915) 65%, var(--theme-border));\n}\n.thread-map-tile-waiting,\n.thread-map-waiting-count {\n  color: var(--status-waiting, #b77915);\n}\n.thread-map .thread-map-quick-look {\n  position: absolute;\n  right: 6px;\n  bottom: 5px;\n  z-index: 2;\n  width: 24px;\n  height: 24px;\n  border: 0;\n  border-radius: 6px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font-size: 15px;\n  pointer-events: auto;\n  cursor: pointer;\n}\n@media (hover: hover) {\n  .thread-map .thread-map-quick-look {\n    opacity: 0;\n  }\n  .thread-map-tile:hover .thread-map-quick-look,\n  .thread-map-tile:has(:focus-visible) .thread-map-quick-look {\n    opacity: 1;\n  }\n  .thread-map-scope button:hover,\n  .thread-map-attention-open:hover,\n  .thread-map-decisions button:hover,\n  .thread-map-attention-more:hover,\n  .thread-map-compressed:hover,\n  .thread-map-quick-look:hover {\n    background-color: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map-section-header {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  min-width: 0;\n}\n.thread-map-section-header > .thread-map-section-head {\n  flex: 1;\n  min-width: 0;\n  height: 100%;\n}\n.thread-map-section[data-zoomable] > .thread-map-section-header .thread-map-section-head {\n  color: var(--theme-fg);\n}\n.thread-map-section[data-collapsed] > .thread-map-section-header {\n  position: absolute;\n  inset: 0 0 auto;\n}\n.thread-map-section-header:has(.thread-map-device-readings) > .thread-map-section-head {\n  font-size: 12px;\n}\n.thread-map-section-header:has(.thread-map-device-menu-button) {\n  padding-right: 2px;\n}\n.thread-map-device-state {\n  display: inline-block;\n  flex: none;\n  box-sizing: border-box;\n  width: 7px;\n  height: 7px;\n  border: 1.5px solid currentColor;\n  border-radius: 50%;\n  background: currentColor;\n  color: var(--theme-fg-muted);\n}\n.thread-map-device-state[data-offline] {\n  background: transparent;\n}\n.thread-map-device-readings {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n  flex: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-weight: 400;\n  white-space: nowrap;\n}\n.thread-map-device-readings > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n}\n.thread-map-device-readings .thread-map-update {\n  padding: 2px 4px;\n  border-radius: 3px;\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n  font-size: 9px;\n}\n.thread-map-sync {\n  width: 4px;\n  height: 4px;\n  border-radius: 50%;\n  background: var(--theme-fg-muted);\n  opacity: .4;\n}\n.thread-map-device-menu-button {\n  position: relative;\n  z-index: 5;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  cursor: pointer;\n}\n.thread-map-device-menu-button svg {\n  width: 15px;\n  height: 15px;\n}\n.thread-map-metrics {\n  display: none;\n  position: absolute;\n  z-index: 8;\n  top: 35px;\n  left: 6px;\n  max-width: calc(100% - 12px);\n  box-sizing: border-box;\n  padding: 6px 8px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 5px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font-size: 10px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.thread-map-section-header:has(:focus-visible) .thread-map-metrics {\n  display: block;\n}\n@media (hover: hover) {\n  .thread-map-section-header:hover .thread-map-metrics {\n    display: block;\n  }\n  .thread-map-device-menu-button:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-graph-dialog.thread-map-device-menu {\n  z-index: 1000;\n  display: grid;\n  width: 220px;\n  padding: 5px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .15);\n}\n.thread-map-device-menu button {\n  min-height: 34px;\n  border: 0;\n  border-radius: 4px;\n  padding: 6px 10px;\n  background: none;\n  color: inherit;\n  text-align: left;\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-device-menu button:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n  background: var(--theme-hover);\n}\n.thread-map-device-menu button:disabled {\n  opacity: .4;\n}\n@media (hover: hover) {\n  .thread-map-device-menu button:hover:not(:disabled) {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-offline-strip {\n  display: flex;\n  flex-wrap: wrap;\n  flex: none;\n  gap: 4px;\n  margin: 8px 16px 0;\n  border-top: 1px solid var(--theme-border);\n  padding-top: 5px;\n}\n.thread-map-offline-strip button {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  height: 30px;\n  max-width: 100%;\n  padding: 0 8px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n}\n.thread-map-offline-strip b {\n  font-weight: 550;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-offline-strip small {\n  font-size: 10px;\n  padding: 2px 4px;\n  border: 1px solid var(--theme-border);\n  border-radius: 3px;\n}\n@media (hover: hover) {\n  .thread-map-offline-strip button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map [data-cached] {\n  filter: saturate(.35);\n}\n.thread-map-cached-label {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  padding: 0 8px;\n  white-space: nowrap;\n}\n.thread-map [data-pulse] {\n  --map-pulse: var(--theme-accent-solid);\n  animation: thread-map-event 800ms ease-out 1;\n}\n.thread-map [data-pulse=waiting] {\n  --map-pulse: var(--status-waiting, #d69b37);\n}\n@keyframes thread-map-event {\n  0%, 15% {\n    box-shadow: inset 0 0 0 3px var(--map-pulse), 0 0 18px color-mix(in oklab, var(--map-pulse) 60%, transparent);\n  }\n  100% {\n    box-shadow: inset 0 0 0 0 transparent, 0 0 0 transparent;\n  }\n}\n@media (max-width: 1050px) {\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child {\n    padding: 12px 14px 10px;\n    gap: 8px;\n  }\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child .thread-map-summary {\n    display: none;\n  }\n  .thread-map[data-presentation=page] .thread-map-filter {\n    margin-left: auto;\n  }\n  .thread-map-device-readings {\n    gap: 5px;\n  }\n}\n@media (max-width: 639px) {\n  .thread-map[data-presentation=page] > .thread-map-bar:first-child {\n    flex-wrap: wrap;\n  }\n  .thread-map[data-presentation=page] .thread-map-filter {\n    flex: 1;\n  }\n  .thread-map-scope {\n    width: 100%;\n    justify-content: stretch;\n  }\n  .thread-map-scope button {\n    flex: 1;\n    height: 36px;\n  }\n  .thread-map-decisions button {\n    min-height: 40px;\n  }\n  .thread-map-decisions {\n    top: 11px;\n  }\n  .thread-map-device-menu-button,\n  .thread-map-quick-look {\n    min-width: 40px;\n    min-height: 40px;\n  }\n  .thread-map-offline-strip button {\n    min-height: 40px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map-attention-wrap {\n    transition: none;\n  }\n  .thread-map [data-pulse] {\n    animation: none;\n    outline: 2px solid var(--map-pulse);\n    outline-offset: -2px;\n  }\n}\n.thread-map-legend-footer {\n  display: flex;\n  flex: none;\n  padding: 5px 16px 8px;\n}\n.thread-map-legend-footer > button {\n  border: 0;\n  border-radius: 4px;\n  padding: 5px 8px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n}\n.thread-map-legend-popover {\n  z-index: 1000;\n  width: min(360px, calc(100vw - 16px));\n  max-height: 70dvh;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .16);\n}\n.thread-map-legend-popover > button {\n  align-self: flex-end;\n  margin: 0 10px 8px;\n  padding: 5px 10px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  font-size: 11px;\n  cursor: pointer;\n}\n@media (hover: hover) {\n  .thread-map-legend-footer > button:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n@media (max-width: 639px) {\n  .thread-map-legend-footer > button,\n  .thread-map-legend-popover > button {\n    min-height: 40px;\n  }\n}\n.thread-map-device-readings {\n  flex: 0 1 auto;\n  min-width: 0;\n  max-width: calc(100% - 130px);\n  overflow: hidden;\n}\n.thread-map-device-readings > span {\n  flex: none;\n}\n.thread-map-section-header:has(.thread-map-device-readings) .thread-map-section-label {\n  flex: 1 0 64px;\n  min-width: 64px;\n}\n.thread-map-compressed {\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-legend-popover {\n  --thread-map-heat: var(--theme-accent-solid);\n  --thread-map-tile: var(--theme-surface);\n  --thread-map-live: #ec7a08;\n  --thread-map-spark: var(--theme-accent-solid);\n  --thread-map-age-0: #1597c2;\n  --thread-map-age-1: #4a78dc;\n  --thread-map-age-2: #8a62d4;\n  --thread-map-age-3: #c47f1f;\n  --thread-map-age-4: #96653f;\n}\n.thread-map-tile[data-readable] {\n  min-width: 132px;\n  min-height: 64px;\n}\n.thread-map-tile[data-readable][data-size=medium] {\n  gap: 3px;\n  padding: 4px 6px;\n}\n.thread-map-tile[data-readable][data-size=medium] .thread-map-tile-title {\n  line-height: 16px;\n  -webkit-line-clamp: 2;\n}\n.thread-map-tile[data-readable][data-size=medium] .thread-map-tile-meta {\n  line-height: 13px;\n}\n.thread-map-readable-section > .thread-map-section-header {\n  position: relative;\n  z-index: 4;\n}\n.thread-map-readable-section .thread-map-section-usd {\n  flex: none;\n  margin-left: 0;\n  padding-right: 5px;\n  font-size: 10px;\n}\n.thread-map-overflow {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  gap: 7px;\n  box-sizing: border-box;\n  overflow: hidden;\n  padding: 12px;\n  border: 1px dashed var(--theme-border-strong);\n  border-radius: 8px;\n  background:\n    repeating-linear-gradient(\n      135deg,\n      transparent 0 8px,\n      color-mix(in oklab, var(--theme-border) 12%, transparent) 8px 9px),\n    var(--theme-panel);\n  color: var(--theme-fg-soft);\n  font: inherit;\n  text-align: left;\n  cursor: zoom-in;\n}\n.thread-map-overflow-title {\n  display: flex;\n  align-items: flex-start;\n  gap: 6px;\n  width: 100%;\n  min-width: 0;\n  font-size: 12px;\n  line-height: 17px;\n}\n.thread-map-overflow-title > b {\n  flex: 1;\n  min-width: 0;\n  font-weight: 600;\n}\n.thread-map-overflow-title svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n  margin-top: 1px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-overflow > small {\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map-overflow-marks {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 5px 10px;\n  font-size: 11px;\n}\n.thread-map-overflow-marks:empty {\n  display: none;\n}\n.thread-map-overflow-marks > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n}\n.thread-map-overflow[data-important] {\n  border-style: solid;\n  border-color: color-mix(in oklab, var(--theme-accent-solid) 45%, var(--theme-border));\n}\n.thread-map-overflow-preview {\n  display: grid;\n  gap: 3px;\n  min-width: 0;\n  width: 100%;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 14px;\n}\n.thread-map-overflow-preview > span {\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n@media (hover: hover) {\n  .thread-map-overflow:hover {\n    border-color: var(--theme-accent-solid);\n    background-color: var(--theme-hover);\n  }\n}\n.thread-map-readable-list {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-bg);\n}\n.thread-map-list-heading {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 7px;\n  height: 34px;\n  padding: 0 12px;\n  border-bottom: 1px solid var(--theme-border);\n  color: var(--theme-fg-soft);\n  font-size: 12px;\n}\n.thread-map-list-heading svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-list-heading b {\n  flex: 1;\n  font-weight: 600;\n}\n.thread-map-list-heading > span {\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.thread-map-scroll-list {\n  position: relative;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n}\n.thread-map-list-scroll {\n  height: 100%;\n  overflow: auto;\n  padding: 4px 12px 8px;\n  scrollbar-width: none;\n  box-sizing: border-box;\n  overscroll-behavior: contain;\n}\n.thread-map-list-scroll::-webkit-scrollbar {\n  display: none;\n}\n.thread-map-readable-list .thread-map-list-scroll {\n  padding: 0 8px 8px;\n  scroll-padding-top: 24px;\n}\n.thread-map-list-status-group {\n  position: relative;\n}\n.thread-map-list-status-heading {\n  position: sticky;\n  top: 0;\n  z-index: 4;\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  height: 24px;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0 10px;\n  background: var(--theme-bg);\n  color: var(--theme-fg-muted);\n  font-size: 10.5px;\n  font-weight: 600;\n  line-height: 24px;\n}\n.thread-map-list-status-heading small {\n  font-size: 10px;\n  font-weight: 400;\n  font-variant-numeric: tabular-nums;\n  opacity: .7;\n}\n.thread-map .thread-map-list-row {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 8px;\n  width: 100%;\n  min-width: 132px;\n  height: 40px;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0 10px;\n  border: 0;\n  border-bottom: 1px solid color-mix(in oklab, var(--theme-border) 35%, transparent);\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg);\n}\n.thread-map-list-row > :not(.thread-map-tile-link) {\n  position: relative;\n  pointer-events: none;\n}\n.thread-map-list-row > :is(.thread-map-agent, .matter-status-dot) {\n  flex: none;\n}\n.thread-map-list-title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg);\n  font-size: 12.5px;\n  font-weight: 550;\n  line-height: 20px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-list-row-meta {\n  flex: 0 1 auto;\n  max-width: 48%;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n  line-height: 20px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map .thread-map-list-info {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: var(--theme-fg-muted);\n  font-size: 14px;\n  cursor: pointer;\n  pointer-events: auto;\n}\n.thread-map-list-info::before {\n  position: absolute;\n  inset: -6px;\n  content: "";\n}\n.thread-map-list-row:has(:focus-visible),\n.thread-map-list-row:active {\n  background: var(--theme-hover);\n}\n.thread-map-list-row[data-current] {\n  background: var(--theme-accent-soft);\n}\n.thread-map-list-row > .thread-map-tile-link:focus-visible {\n  outline: none;\n}\n@media (hover: hover) {\n  .thread-map-list-row:hover {\n    background: var(--theme-hover);\n  }\n  .thread-map-list-row .thread-map-list-info {\n    opacity: 0;\n  }\n  .thread-map-list-row:hover .thread-map-list-info,\n  .thread-map-list-row:has(:focus-visible) .thread-map-list-info {\n    opacity: 1;\n  }\n}\n.thread-map-list-group {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  width: 100%;\n  min-height: 64px;\n  padding: 12px;\n  margin: 4px 0;\n  border: 1px solid var(--theme-border);\n  border-radius: 7px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-list-group > b {\n  flex: 1;\n  min-width: 0;\n  text-align: left;\n  font-weight: 600;\n}\n.thread-map-list-group > span {\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.thread-map-list-group svg {\n  flex: none;\n  width: 15px;\n  height: 15px;\n}\n.thread-map-list-older {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  width: 100%;\n  min-height: 48px;\n  border: 1px dashed var(--theme-border);\n  border-radius: 7px;\n  margin-top: 8px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  cursor: pointer;\n}\n.thread-map-list-older svg {\n  width: 14px;\n  height: 14px;\n}\n@media (hover: hover) {\n  .thread-map-list-group:hover,\n  .thread-map-list-older:hover,\n  .thread-map-list-info:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-scroll-track {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  width: var(--scrollbar-size, 8px);\n  pointer-events: none;\n  background: var(--scrollbar-rail-y, transparent);\n}\n.thread-map-scroll-thumb {\n  position: absolute;\n  top: 0;\n  left: 2px;\n  right: 2px;\n  border-radius: var(--scrollbar-radius, 999px);\n  background: var(--scrollbar-thumb-idle, color-mix(in oklab, var(--theme-fg) 16%, transparent));\n  pointer-events: auto;\n  touch-action: none;\n}\n@media (hover: hover) {\n  .thread-map-scroll-list:hover .thread-map-scroll-thumb {\n    background: var(--scrollbar-thumb, color-mix(in oklab, var(--theme-fg) 32%, transparent));\n  }\n}\n.thread-map-scroll-thumb:active {\n  background: var(--scrollbar-thumb-active, var(--theme-accent-solid));\n}\n.thread-map-unlisted {\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted);\n  font: inherit;\n  font-size: 12px;\n  padding: 12px;\n}\n.thread-map-attention[data-responsive] {\n  width: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-card {\n  flex: 0 1 220px;\n  min-width: 200px;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-more {\n  flex: 0 0 80px;\n  padding: 8px 4px;\n  white-space: nowrap;\n}\n.thread-map-attention-menu {\n  z-index: 1000;\n  display: flex;\n  flex-direction: column;\n  width: min(336px, calc(100vw - 16px));\n  padding: 4px;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 8px 32px rgb(0 0 0 / .16);\n}\n.thread-map-attention-menu .thread-map-list-scroll {\n  padding: 0 7px 0 0;\n}\n.thread-map-attention-menu [role=menuitem] {\n  display: flex;\n  align-items: flex-start;\n  gap: 9px;\n  width: 100%;\n  min-height: 68px;\n  padding: 9px;\n  border: 0;\n  border-radius: 5px;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: pointer;\n}\n.thread-map-attention-menu [role=menuitem] > .matter-status-dot {\n  margin-top: 3px;\n}\n.thread-map-attention-menu [role=menuitem] > span:last-child {\n  display: grid;\n  flex: 1;\n  gap: 4px;\n  min-width: 0;\n}\n.thread-map-attention-menu b {\n  font-size: 12px;\n  line-height: 16px;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-menu small {\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 13px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-attention-menu [role=menuitem]:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .thread-map-attention-menu [role=menuitem]:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map[data-presentation=page] .thread-map-canvas:has(.thread-map-list-scroll) {\n  touch-action: pan-y;\n}\n.thread-map-attention[data-responsive] .thread-map-attention-more {\n  align-self: center;\n  height: 32px;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-panel);\n}\n@media (hover: hover) {\n  .thread-map-attention[data-responsive] .thread-map-attention-more:hover {\n    background: var(--theme-hover);\n  }\n}\n.thread-map-list-agent-slot,\n.thread-map-list-status-slot {\n  display: grid;\n  flex: 0 0 16px;\n  place-items: center;\n  width: 16px;\n  height: 16px;\n}\n.thread-map-tip {\n  z-index: 1100;\n}\n.thread-map-overflow-with-list {\n  cursor: default;\n}\n.thread-map-overflow-open {\n  display: flex;\n  flex: none;\n  flex-direction: column;\n  gap: 7px;\n  width: 100%;\n  padding: 0 0 6px;\n  border: 0;\n  background: none;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n  cursor: zoom-in;\n}\n.thread-map-overflow-open > small {\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map-overflow-with-list .thread-map-list-scroll {\n  padding: 0 5px 0 0;\n}\n.thread-map-overflow-row {\n  display: flex;\n  position: relative;\n  align-items: center;\n  gap: 7px;\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 40px;\n  padding: 0 5px;\n  border: 0;\n  border-top: 1px solid color-mix(in oklab, var(--theme-border) 45%, transparent);\n  border-radius: 0;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  font: inherit;\n  font-size: 11px;\n  text-align: left;\n  text-decoration: none;\n  cursor: pointer;\n}\n.thread-map-overflow-row > span:not(.matter-status-dot) {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.thread-map-overflow-row > svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-overflow-row > small {\n  flex: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-overflow-row:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: -2px;\n}\n@media (hover: hover) {\n  .thread-map-overflow-row:hover {\n    background: var(--theme-hover);\n    color: var(--theme-fg);\n  }\n}\n.thread-map[data-presentation=page] > .thread-map-dense-toolbar:first-child {\n  height: 40px;\n  min-height: 40px;\n  flex: none;\n  flex-wrap: nowrap;\n  gap: 6px;\n  padding: 0 6px;\n  user-select: none;\n}\n.thread-map-dense-toolbar .thread-map-crumbs {\n  flex: 1 1 auto;\n  min-width: 40px;\n  font-size: 11px;\n}\n.thread-map-dense-toolbar .thread-map-crumbs button {\n  padding: 3px 4px;\n}\n.thread-map-dense-toolbar .thread-map-icon-button {\n  flex: none;\n  width: 28px;\n  height: 28px;\n}\n.thread-map-dense-toolbar .thread-map-filter {\n  flex: 0 1 200px;\n  min-width: 80px;\n  height: 26px;\n  border-radius: 4px;\n}\n.thread-map-dense-toolbar .thread-map-filter input {\n  font-size: 11px;\n}\n.thread-map-dense-toolbar .thread-map-scope {\n  padding: 0;\n  border: 0;\n  background: none;\n  gap: 1px;\n}\n.thread-map-dense-toolbar .thread-map-scope button {\n  width: 28px;\n  height: 28px;\n  padding: 5px;\n  border-radius: 4px;\n}\n.thread-map-dense-toolbar .thread-map-scope button[aria-pressed=true] {\n  background: var(--theme-hover);\n  box-shadow: none;\n}\n.thread-map-dense-toolbar svg {\n  width: 14px;\n  height: 14px;\n}\n.thread-map-dense-summary {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 10px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-dense-summary > span {\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n  white-space: nowrap;\n}\n.thread-map-dense-toolbar .thread-map-legend-footer {\n  padding: 0;\n  border: 0;\n}\n.thread-map-dense-toolbar .thread-map-legend-footer > button {\n  display: grid;\n  place-items: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: 0;\n  background: none;\n  border-radius: 4px;\n}\n.thread-map[data-presentation=page] .thread-map-canvas {\n  margin: 0;\n  border-radius: 0;\n  background: var(--theme-panel);\n}\n.thread-map[data-presentation=page] .thread-map-stage {\n  overflow: hidden;\n}\n.thread-map-dense-section {\n  display: contents;\n}\n.thread-map-dense-header {\n  position: absolute;\n  display: flex;\n  align-items: center;\n  gap: 2px;\n  color: var(--theme-fg-muted);\n  background: var(--theme-panel);\n}\n.thread-map-dense-header .thread-map-section-head {\n  height: 100%;\n  min-width: 0;\n  padding: 0 3px;\n  gap: 4px;\n  font-size: 11px;\n  line-height: 1;\n}\n.thread-map-dense-header .thread-map-section-head svg {\n  flex: none;\n  width: 11px;\n  height: 11px;\n}\n.thread-map-dense-section[data-kind=device] > .thread-map-dense-header {\n  color: var(--theme-fg);\n  font-weight: 600;\n}\n.thread-map-dense-header small {\n  flex: none;\n  margin-left: auto;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  font-weight: 400;\n}\n.thread-map-dense-header .thread-map-device-menu-button {\n  width: 22px;\n  height: 22px;\n}\n.thread-map-dense-header .thread-map-device-menu-button svg {\n  width: 13px;\n  height: 13px;\n}\n.thread-map .thread-map-dense-tile {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 5px;\n  padding: 4px 5px;\n  min-width: 0;\n  min-height: 0;\n  border: 0;\n  border-radius: 4px;\n  box-shadow: none;\n}\n.thread-map .thread-map-dense-tile[data-heat="1"] {\n  --thread-map-fill:color-mix(in oklab,var(--thread-map-heat) 5%,var(--thread-map-tile));\n}\n.thread-map .thread-map-dense-tile[data-heat="2"] {\n  --thread-map-fill:color-mix(in oklab,var(--thread-map-heat) 9%,var(--thread-map-tile));\n}\n.thread-map .thread-map-dense-tile[data-heat="3"] {\n  --thread-map-fill:color-mix(in oklab,var(--thread-map-heat) 13%,var(--thread-map-tile));\n}\n.thread-map .thread-map-dense-tile[data-heat="4"] {\n  --thread-map-fill:color-mix(in oklab,var(--thread-map-heat) 17%,var(--thread-map-tile));\n}\n.thread-map-dense-head {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  min-width: 0;\n}\n.thread-map-dense-head > .matter-status-dot {\n  flex: none;\n  width: 9px;\n  height: 9px;\n  margin: 0;\n}\n.thread-map-dense-head > .thread-map-agent {\n  flex: none;\n  width: 14px;\n  height: 14px;\n  margin: 0;\n  border-radius: 3px;\n  font-size: 8px;\n}\n.thread-map-dense-tile .thread-map-tile-title {\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 1;\n  overflow: hidden;\n  min-width: 0;\n  font-size: 11px;\n  font-weight: 500;\n  line-height: 15px;\n  overflow-wrap: anywhere;\n}\n.thread-map-dense-tile:is([data-tier=two], [data-tier=stats]) .thread-map-tile-title {\n  -webkit-line-clamp: 2;\n}\n.thread-map-dense-stats {\n  display: flex;\n  gap: 7px;\n  min-width: 0;\n  overflow: hidden;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n  line-height: 13px;\n  font-variant-numeric: tabular-nums;\n}\n.thread-map-dense-stats > :is(span, button) {\n  display: inline-flex;\n  flex: none;\n  align-items: center;\n  gap: 2px;\n  white-space: nowrap;\n}\n.thread-map-dense-stats svg {\n  width: 11px;\n  height: 11px;\n}\n.thread-map-dense-stats > button {\n  z-index: 1;\n  pointer-events: auto;\n  border: 0;\n  padding: 0;\n  background: none;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n}\n.thread-map .thread-map-dense-tile[data-running] {\n  animation: thread-map-dense-breathe 2.4s ease-in-out infinite;\n  box-shadow: inset 0 0 0 1.5px var(--thread-map-live);\n}\n.thread-map .thread-map-dense-tile[data-running]::before {\n  display: none;\n}\n.thread-map .thread-map-dense-tile[data-current] {\n  box-shadow: inset 0 0 0 1.5px var(--theme-accent-solid);\n}\n.thread-map-dense-tile .thread-map-quick-look {\n  right: 3px;\n  bottom: 2px;\n  top: auto;\n  width: 22px;\n  height: 20px;\n}\n.thread-map-dense-tile:has(.thread-map-quick-look) .thread-map-dense-stats {\n  padding-right: 20px;\n}\n@keyframes thread-map-dense-breathe {\n  50% {\n    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--thread-map-live) 45%, transparent);\n  }\n}\n.thread-map .thread-map-dense-overflow {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  gap: 4px;\n  padding: 0 4px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--thread-map-tile);\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 1;\n  font-weight: 500;\n}\n.thread-map-dense-overflow svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map[data-presentation=page] .thread-map-offline-strip {\n  display: flex;\n  flex: none;\n  align-items: center;\n  gap: 10px;\n  height: 24px;\n  min-height: 24px;\n  padding: 0 5px;\n  border: 0;\n  overflow: hidden;\n}\n.thread-map[data-presentation=page] .thread-map-offline-strip button {\n  display: flex;\n  flex: 0 1 auto;\n  gap: 4px;\n  align-items: center;\n  min-width: 0;\n  height: 24px;\n  padding: 0 3px;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted);\n  font-size: 10px;\n}\n.thread-map[data-presentation=page] .thread-map-offline-strip b {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-weight: 400;\n}\n.thread-map[data-presentation=page] .thread-map-offline-strip button > span:not(.thread-map-device-state),\n.thread-map[data-presentation=page] .thread-map-offline-strip button > small {\n  display: none;\n}\n.thread-map[data-presentation=page] .thread-map-attention-wrap {\n  transition: none;\n}\n.thread-map[data-presentation=page] .thread-map-attention {\n  height: 30px;\n  gap: 4px;\n  padding: 0 2px 2px;\n}\n.thread-map[data-presentation=page] .thread-map-attention-wrap:not([data-visible]) {\n  display: none;\n}\n.thread-map[data-presentation=page] .thread-map-attention-card {\n  flex: 1 1 220px;\n  min-width: 180px;\n  max-width: 280px;\n  height: 28px;\n  border-radius: 5px;\n  border: 0;\n  background: var(--theme-surface);\n}\n.thread-map[data-presentation=page] .thread-map-attention-open {\n  align-items: center;\n  gap: 5px;\n  padding: 0 7px;\n}\n.thread-map[data-presentation=page] .thread-map-attention-open > .matter-status-dot {\n  margin: 0;\n}\n.thread-map[data-presentation=page] .thread-map-attention-open > span:last-child {\n  display: block;\n}\n.thread-map[data-presentation=page] .thread-map-attention-open b {\n  display: block;\n  font-size: 11px;\n  font-weight: 500;\n}\n.thread-map[data-presentation=page] .thread-map-attention-open small {\n  display: none;\n}\n.thread-map[data-presentation=page] .thread-map-attention-card:has(.thread-map-decisions) .thread-map-attention-open {\n  padding-right: 57px;\n}\n.thread-map[data-presentation=page] .thread-map-decisions {\n  top: 0;\n  bottom: 0;\n  right: 1px;\n  align-items: center;\n  gap: 1px;\n}\n.thread-map[data-presentation=page] .thread-map-decisions button {\n  display: grid;\n  place-items: center;\n  width: 26px;\n  height: 26px;\n  padding: 0;\n  border: 0;\n  background: none;\n}\n.thread-map[data-presentation=page] .thread-map-decisions svg {\n  width: 13px;\n  height: 13px;\n}\n.thread-map[data-presentation=page] .thread-map-attention-more {\n  flex: 0 0 40px;\n  align-self: start;\n  height: 28px;\n  padding: 0 5px;\n  border: 0;\n  border-radius: 4px;\n  background: var(--theme-surface);\n}\n.thread-map[data-presentation=page] .thread-map-readable-list {\n  border: 0;\n  border-radius: 0;\n}\n@media (max-width: 639px) {\n  .thread-map-dense-summary {\n    gap: 5px;\n  }\n  .thread-map-dense-summary > span:last-child:not(:first-child) {\n    display: none;\n  }\n  .thread-map-dense-toolbar .thread-map-filter {\n    flex-basis: 90px;\n  }\n  .thread-map-dense-toolbar .thread-map-crumbs {\n    max-width: 80px;\n  }\n  .thread-map[data-presentation=page] > .thread-map-dense-toolbar:first-child {\n    gap: 2px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map .thread-map-dense-tile[data-running] {\n    animation: none;\n  }\n}\n.thread-map-dense-section {\n  position: absolute;\n  display: block;\n  pointer-events: none;\n  padding: 0;\n  box-sizing: border-box;\n}\n.thread-map-dense-section[data-kind=device] {\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 8px;\n  background: color-mix(in oklab, var(--theme-fg) 4%, var(--theme-panel));\n}\n.thread-map-dense-section[data-kind=workspace] {\n  border: 1px solid var(--theme-border);\n  border-radius: 5px;\n  background: var(--theme-panel);\n}\n.thread-map-dense-section .thread-map-dense-header {\n  background: none;\n}\n.thread-map-dense-header {\n  pointer-events: auto;\n}\n.thread-map-dense-tile > .thread-map-dense-unread {\n  position: absolute;\n  top: 3px;\n  right: 3px;\n  line-height: 0;\n}\n.thread-map-dense-unread > .matter-status-dot {\n  width: 5px;\n  height: 5px;\n}\n.thread-map-dense-tile:has(.thread-map-dense-unread) .thread-map-dense-head {\n  padding-right: 4px;\n}\n.thread-map-group-menu {\n  display: flex;\n  flex-direction: column;\n  width: min(260px, calc(100vw - 16px));\n}\n.thread-map-group-menu [role=menuitem] {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  min-height: 36px;\n}\n.thread-map-group-menu [role=menuitem] svg {\n  flex: none;\n  width: 13px;\n  height: 13px;\n}\n.thread-map-goto > .pm-select {\n  min-width: 100px;\n  height: 28px;\n  font-size: 11px;\n}\n.thread-map .thread-map-dense-tile[data-pulse] {\n  animation: thread-map-event 800ms ease-out 1;\n}\n@media (max-width: 639px) {\n  .thread-map-dense-toolbar .thread-map-dense-summary {\n    display: none;\n  }\n  .thread-map-dense-toolbar .thread-map-scope {\n    width: auto;\n    flex: none;\n  }\n  .thread-map-dense-toolbar .thread-map-scope button {\n    flex: none;\n  }\n  .thread-map-dense-toolbar .thread-map-filter {\n    flex: 1 1 90px;\n  }\n  .thread-map[data-presentation=page] .thread-map-offline-strip button {\n    min-height: 24px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .thread-map .thread-map-dense-tile[data-pulse] {\n    animation: none;\n  }\n}\n.thread-map-dense-update {\n  display: flex;\n  flex: none;\n  align-items: center;\n  padding: 0 2px;\n  color: var(--theme-accent-solid);\n}\n.thread-map-dense-update svg {\n  width: 12px;\n  height: 12px;\n}\n.thread-map-goto:has(> .pm-select) {\n  width: 132px;\n  height: 28px;\n  padding: 0;\n}\n.thread-map-goto:has(> .pm-select) > svg {\n  display: none;\n}\n.thread-map-goto > .pm-select {\n  width: 100%;\n}\n');
 
 // src/styles/attachments.css
 styleInject(".attachment-tile {\n  --file-color: var(--theme-fg-muted);\n  position: relative;\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 3px;\n  box-sizing: border-box;\n  width: 78px;\n  height: 66px;\n  margin: 2px 3px;\n  padding: 5px 5px 4px;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 10px;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  font: inherit;\n  font-size: 10.5px;\n  font-weight: 500;\n  line-height: 13px;\n  text-align: center;\n  vertical-align: middle;\n  white-space: nowrap;\n  cursor: pointer;\n  user-select: none;\n  -webkit-user-select: none;\n  transition: border-color 120ms ease, background 120ms ease;\n}\n.attachment-tile:active,\n.attachment-tile[aria-expanded=true] {\n  border-color: color-mix(in srgb, var(--file-color) 55%, var(--theme-border));\n  background: color-mix(in srgb, var(--file-color) 7%, var(--theme-surface));\n}\n@media (hover: hover) {\n  .attachment-tile:hover {\n    border-color: color-mix(in srgb, var(--file-color) 55%, var(--theme-border));\n    background: color-mix(in srgb, var(--file-color) 7%, var(--theme-surface));\n  }\n}\n.attachment-tile:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.attachment-tile-icon {\n  position: relative;\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 100%;\n  height: 40px;\n}\n.attachment-tile-icon > img {\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n  background: var(--theme-bg);\n  object-fit: cover;\n}\n.attachment-tile-glyph {\n  display: block;\n  width: 28px;\n  height: 34px;\n}\n.attachment-glyph {\n  display: block;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n}\n.attachment-glyph-sheet {\n  fill: color-mix(in srgb, var(--file-color) 13%, var(--theme-panel));\n  stroke: var(--file-color);\n  stroke-width: 1.4;\n}\n.attachment-glyph-fold {\n  fill: none;\n  stroke: var(--file-color);\n  stroke-width: 1.4;\n  stroke-linejoin: round;\n}\n.attachment-tile-icon > b {\n  position: absolute;\n  bottom: 4px;\n  left: 50%;\n  transform: translateX(-50%);\n  padding: 0 3px;\n  border-radius: 3px;\n  background: var(--file-color);\n  color: #fff;\n  font-size: 7.5px;\n  font-weight: 700;\n  letter-spacing: 0.02em;\n  line-height: 11px;\n}\n.attachment-tile-name {\n  display: block;\n  max-width: 100%;\n  overflow: hidden;\n  color: var(--theme-fg-soft, var(--theme-fg));\n  font-size: 10px;\n  letter-spacing: -0.01em;\n  text-overflow: ellipsis;\n}\n:is(.attachment-tile, .attachment-card)[data-family=pdf] {\n  --file-color: #e5484d;\n}\n:is(.attachment-tile, .attachment-card)[data-family=image] {\n  --file-color: #3b8fe0;\n}\n:is(.attachment-tile, .attachment-card)[data-family=archive] {\n  --file-color: #d0921d;\n}\n:is(.attachment-tile, .attachment-card)[data-family=code] {\n  --file-color: #2b9e6a;\n}\n:is(.attachment-tile, .attachment-card)[data-family=text] {\n  --file-color: #6b7c8c;\n}\n:is(.attachment-tile, .attachment-card)[data-family=sheet] {\n  --file-color: #1f9254;\n}\n:is(.attachment-tile, .attachment-card)[data-family=doc] {\n  --file-color: #3e63dd;\n}\n:is(.attachment-tile, .attachment-card)[data-family=audio] {\n  --file-color: #9b55d0;\n}\n:is(.attachment-tile, .attachment-card)[data-family=video] {\n  --file-color: #d0457a;\n}\n.thread-ui-shell.thread-ui-shell.attachment-float {\n  position: fixed;\n  z-index: 1200;\n  box-sizing: border-box;\n  width: min(300px, calc(100vw - 16px));\n  border: 1px solid var(--theme-border);\n  border-radius: 14px;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 16px 40px rgb(0 0 0 / 22%), 0 2px 8px rgb(0 0 0 / 10%);\n  font-size: 12.5px;\n}\n.attachment-card {\n  --file-color: var(--theme-fg-muted);\n  padding: 10px;\n}\n.attachment-card-preview {\n  display: grid;\n  place-items: center;\n  box-sizing: border-box;\n  width: 100%;\n  max-height: 200px;\n  padding: 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 9px;\n  background: var(--theme-surface);\n}\nbutton.attachment-card-preview {\n  cursor: zoom-in;\n}\nbutton.attachment-card-preview:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.attachment-card-preview > img {\n  display: block;\n  max-width: 100%;\n  max-height: 198px;\n  object-fit: contain;\n}\n.attachment-card-head {\n  display: flex;\n  align-items: flex-start;\n  gap: 10px;\n}\n.attachment-card-head > .attachment-tile-icon {\n  width: 40px;\n  height: 48px;\n}\n.attachment-card-head .attachment-tile-glyph {\n  width: 34px;\n  height: 42px;\n}\n.attachment-card-head .attachment-tile-icon > b {\n  bottom: 6px;\n  font-size: 8px;\n  line-height: 12px;\n}\n.attachment-card-info {\n  display: flex;\n  flex-direction: column;\n  gap: 2px;\n  min-width: 0;\n  padding: 0 2px;\n}\n.attachment-card-preview + .attachment-card-info {\n  margin-top: 9px;\n}\n.attachment-card-head > .attachment-card-info {\n  flex: 1;\n  padding-top: 2px;\n}\n.attachment-card-info > strong {\n  display: -webkit-box;\n  overflow: hidden;\n  color: var(--theme-fg);\n  font-size: 13px;\n  font-weight: 600;\n  line-height: 1.35;\n  overflow-wrap: anywhere;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n}\n.attachment-card-info > span {\n  color: var(--theme-fg-muted);\n  font-size: 11.5px;\n}\n.attachment-card-info > .attachment-card-path {\n  margin-top: 3px;\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n}\n.attachment-card-actions {\n  display: flex;\n  gap: 6px;\n  margin-top: 10px;\n}\n.attachment-card-actions > button {\n  display: inline-flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  min-width: 0;\n  height: 30px;\n  padding: 0 8px;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  background: transparent;\n  color: var(--theme-fg);\n  font-size: 12px;\n  font-weight: 500;\n  white-space: nowrap;\n}\n.attachment-card-actions > button > svg {\n  flex: none;\n  width: 14px;\n  height: 14px;\n}\n.attachment-card-actions > button:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  .attachment-card-actions > button:hover {\n    background: var(--theme-hover);\n  }\n}\n.attachment-card-actions > button:focus-visible {\n  outline: 2px solid var(--theme-accent-solid);\n  outline-offset: 1px;\n}\n.attachment-card-actions > button.is-primary {\n  border-color: color-mix(in srgb, var(--theme-accent-solid) 40%, var(--theme-border));\n  background: color-mix(in srgb, var(--theme-accent-solid) 13%, transparent);\n}\n.attachment-card-actions > button.is-primary:active {\n  background: color-mix(in srgb, var(--theme-accent-solid) 20%, transparent);\n}\n@media (hover: hover) {\n  .attachment-card-actions > button.is-primary:hover {\n    background: color-mix(in srgb, var(--theme-accent-solid) 20%, transparent);\n  }\n}\n.attachment-card-actions > button.is-danger {\n  color: var(--theme-danger, #e5484d);\n}\n");
@@ -204,8 +205,8 @@ var FILE_GLYPH_SVG = '<svg class="attachment-glyph" viewBox="0 0 28 34" aria-hid
 
 // src/components/StatusMark.tsx
 import { jsx } from "react/jsx-runtime";
-function navigationStatusLabel(status2) {
-  switch (status2) {
+function navigationStatusLabel(status3) {
+  switch (status3) {
     case "waiting":
       return translate("workbench.waitingForYou");
     case "running":
@@ -224,9 +225,9 @@ function navigationStatusLabel(status2) {
       return translate("workbench.statusUnavailable");
   }
 }
-function StatusMark({ status: status2, label }) {
+function StatusMark({ status: status3, label }) {
   useI18n();
-  return /* @__PURE__ */ jsx("span", { className: "matter-status-dot", "data-status": status2, role: "img", "aria-label": label ?? navigationStatusLabel(status2) });
+  return /* @__PURE__ */ jsx("span", { className: "matter-status-dot", "data-status": status3, role: "img", "aria-label": label ?? navigationStatusLabel(status3) });
 }
 
 // src/components/ThreadComposer.tsx
@@ -632,11 +633,11 @@ function parseMcpServerName(value) {
 }
 function parseMcpServerNameFromBlock(value) {
   const lines = normalizeTomlContent(value).split("\n").map((line) => line.trim()).filter(Boolean);
-  const header = lines.find((line) => /^\[mcp_servers\.[^\]]+\]$/.test(line));
-  if (!header) {
+  const header2 = lines.find((line) => /^\[mcp_servers\.[^\]]+\]$/.test(line));
+  if (!header2) {
     return null;
   }
-  const match = header.match(/^\[mcp_servers\.([A-Za-z0-9_-]+)\]$/);
+  const match = header2.match(/^\[mcp_servers\.([A-Za-z0-9_-]+)\]$/);
   return match?.[1] ?? null;
 }
 function renderHttpMcpBlock(name, url) {
@@ -741,8 +742,8 @@ function attachmentDisplayLabel(attachment) {
 var REASONING_EFFORT_ORDER = ["none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"];
 var REASONING_EFFORT_COLORS = ["#3d8bff", "#2f7cf6", "#0fb5c8", "#16b364", "#f5b000", "#ff7a1a", "#f43f7a", "#9b5cff"];
 function reasoningEffortColor(effort, index = 0, count = 1) {
-  const known2 = REASONING_EFFORT_ORDER.indexOf(effort ?? "");
-  const at = known2 >= 0 ? known2 : Math.round(index / Math.max(1, count - 1) * (REASONING_EFFORT_COLORS.length - 1));
+  const known3 = REASONING_EFFORT_ORDER.indexOf(effort ?? "");
+  const at = known3 >= 0 ? known3 : Math.round(index / Math.max(1, count - 1) * (REASONING_EFFORT_COLORS.length - 1));
   return REASONING_EFFORT_COLORS[at];
 }
 
@@ -1251,8 +1252,8 @@ function resolveOffsetToDomPosition(root, targetOffset) {
   const target = Math.max(0, targetOffset);
   let text = "";
   function visit(parent) {
-    const children = Array.from(parent.childNodes);
-    for (const [index, child] of children.entries()) {
+    const children2 = Array.from(parent.childNodes);
+    for (const [index, child] of children2.entries()) {
       if (child.nodeType === Node.TEXT_NODE) {
         const end = text.length + (child.textContent?.length ?? 0);
         if (target <= end) return { node: child, offset: target - text.length };
@@ -1262,7 +1263,7 @@ function resolveOffsetToDomPosition(root, targetOffset) {
           if (target === text.length) return { node: parent, offset: index };
           text += child.dataset.placeholder;
           if (target <= text.length) {
-            const next = children[index + 1];
+            const next = children2[index + 1];
             return target === text.length && next?.nodeType === Node.TEXT_NODE ? { node: next, offset: 0 } : { node: parent, offset: index + 1 };
           }
         } else if (child.tagName === "BR") {
@@ -1833,7 +1834,7 @@ import { jsx as jsx7 } from "react/jsx-runtime";
 function ComposerMenuSurface({
   align = "start",
   anchorSelector,
-  children,
+  children: children2,
   className = "",
   ...props
 }) {
@@ -1911,7 +1912,7 @@ function ComposerMenuSurface({
       popover: "manual",
       "data-composer-menu-surface": "true",
       className: `thread-composer-menu-surface ${className}`,
-      children
+      children: children2
     }
   );
 }
@@ -2249,9 +2250,9 @@ import {
 import { createContext as createContext4, useContext as useContext4, useEffect as useEffect3, useState as useState3 } from "react";
 import { jsx as jsx10 } from "react/jsx-runtime";
 var ExpansionContext = createContext4(null);
-function MessageExpansionScope({ children }) {
+function MessageExpansionScope({ children: children2 }) {
   const [cache] = useState3(() => ({ messages: /* @__PURE__ */ new Map(), live: null }));
-  return /* @__PURE__ */ jsx10(ExpansionContext.Provider, { value: cache, children });
+  return /* @__PURE__ */ jsx10(ExpansionContext.Provider, { value: cache, children: children2 });
 }
 function useMessageExpansion(messageId, text, streaming) {
   const cache = useContext4(ExpansionContext);
@@ -2317,7 +2318,7 @@ var ViewAction = ({ onClick }) => /* @__PURE__ */ jsxs7("button", { type: "butto
   /* @__PURE__ */ jsx11(Maximize2, { "aria-hidden": "true" }),
   translate("chat.attachmentView")
 ] });
-function FloatingCard({ anchor, onClose, children }) {
+function FloatingCard({ anchor, onClose, children: children2 }) {
   const card = useRef4(null);
   const [place, setPlace] = useState4(null);
   const close = useRef4(onClose);
@@ -2390,7 +2391,7 @@ function FloatingCard({ anchor, onClose, children }) {
         className: `thread-ui-shell attachment-float ${themeClass}`,
         ...theme,
         style: { left: place?.left ?? -9999, top: place?.top ?? -9999 },
-        children
+        children: children2
       }
     ),
     document.body
@@ -2616,7 +2617,7 @@ import "katex/dist/katex.min.css";
 // src/components/VerifiedWorkspacePath.tsx
 import { useEffect as useEffect5, useState as useState5 } from "react";
 import { Fragment as Fragment4, jsx as jsx12 } from "react/jsx-runtime";
-function VerifiedWorkspacePath({ target, resolve, onOpen, children }) {
+function VerifiedWorkspacePath({ target, resolve, onOpen, children: children2 }) {
   const [verified, setVerified] = useState5(null);
   useEffect5(() => {
     let current = true;
@@ -2629,7 +2630,7 @@ function VerifiedWorkspacePath({ target, resolve, onOpen, children }) {
       current = false;
     };
   }, [target.path, resolve]);
-  return verified?.path === target.path && verified.resolve === resolve ? /* @__PURE__ */ jsx12(WorkspaceFileLink, { ...target, onOpen, children }) : /* @__PURE__ */ jsx12(Fragment4, { children });
+  return verified?.path === target.path && verified.resolve === resolve ? /* @__PURE__ */ jsx12(WorkspaceFileLink, { ...target, onOpen, children: children2 }) : /* @__PURE__ */ jsx12(Fragment4, { children: children2 });
 }
 
 // src/plugins/usePlugins.ts
@@ -2755,7 +2756,7 @@ function AccordionItem({
 }
 function AccordionTrigger({
   className,
-  children,
+  children: children2,
   ...props
 }) {
   return /* @__PURE__ */ jsx13(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs8(
@@ -2768,7 +2769,7 @@ function AccordionTrigger({
       ),
       ...props,
       children: [
-        children,
+        children2,
         /* @__PURE__ */ jsx13(ChevronDownIcon, { className: "pointer-events-none size-4 shrink-0 translate-y-0.5 text-[var(--theme-fg-muted)] transition-transform duration-200" })
       ]
     }
@@ -2776,7 +2777,7 @@ function AccordionTrigger({
 }
 function AccordionContent({
   className,
-  children,
+  children: children2,
   ...props
 }) {
   return /* @__PURE__ */ jsx13(
@@ -2785,7 +2786,7 @@ function AccordionContent({
       "data-slot": "accordion-content",
       className: "overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
       ...props,
-      children: /* @__PURE__ */ jsx13("div", { className: classNames("pb-4 pt-0", className), children })
+      children: /* @__PURE__ */ jsx13("div", { className: classNames("pb-4 pt-0", className), children: children2 })
     }
   );
 }
@@ -2838,13 +2839,13 @@ function renderResultValue(key, value) {
 function GraphChatToolCall({
   callId,
   toolName,
-  status: status2,
+  status: status3,
   parameters,
   result
 }) {
   const { locale: i18nLocale } = useI18n();
   const statusConfig = useMemo(() => {
-    switch (status2) {
+    switch (status3) {
       case "completed":
         return {
           className: "is-completed",
@@ -2864,13 +2865,13 @@ function GraphChatToolCall({
           label: translate("chat.running")
         };
     }
-  }, [status2, i18nLocale]);
+  }, [status3, i18nLocale]);
   const resultEntries = useMemo(() => normalizeObjectEntries(result), [result]);
   const parameterEntries = useMemo(
     () => normalizeObjectEntries(parameters),
     [parameters]
   );
-  const shouldAutoOpen = status2 === "pending";
+  const shouldAutoOpen = status3 === "pending";
   const actionLabel = /(?:exec|command|shell|terminal)/i.test(toolName) ? translate("chat.ran") : translate("chat.used");
   const [openItem, setOpenItem] = useState6(
     shouldAutoOpen ? "item-1" : void 0
@@ -3152,11 +3153,11 @@ function getGraphChatToolUiStatus(result) {
   if (!isRecord2(result)) {
     return "completed";
   }
-  const status2 = result.status;
-  if (status2 === "stream" || status2 === "pending" || status2 === "running") {
+  const status3 = result.status;
+  if (status3 === "stream" || status3 === "pending" || status3 === "running") {
     return "pending";
   }
-  if (status2 === "failed" || status2 === "error" || status2 === "timed_out") {
+  if (status3 === "failed" || status3 === "error" || status3 === "timed_out") {
     return "failed";
   }
   if (typeof result.exit_code === "number" && result.exit_code !== 0) {
@@ -3243,11 +3244,11 @@ function StableCodeRenderer(props) {
 function ensureTransparentShikiBg(html) {
   return html.replace(/background-color:[^;"]+;?/g, "background-color: transparent;").replace(/background:[^;"]+;?/g, "background: transparent;");
 }
-function textFromReactNode(children) {
-  if (Array.isArray(children)) {
-    return children.map((child) => String(child)).join("");
+function textFromReactNode(children2) {
+  if (Array.isArray(children2)) {
+    return children2.map((child) => String(child)).join("");
   }
-  return String(children ?? "");
+  return String(children2 ?? "");
 }
 function readMarkdownNodeLineRange(node) {
   if (!node || typeof node !== "object" || !("position" in node)) {
@@ -3284,14 +3285,14 @@ function parseWorkspaceFileHref(href, workspaceRootPath) {
     ...Number.isFinite(line) ? { line } : {}
   };
 }
-function PreRenderer({ children, ...props }) {
+function PreRenderer({ children: children2, ...props }) {
   const { locale: i18nLocale } = useI18n();
-  const code = isValidElement(children) ? children.props : void 0;
+  const code = isValidElement(children2) ? children2.props : void 0;
   const language = /language-([\w-]+)/.exec(code?.className ?? "")?.[1] ?? "";
-  if (isToolCodeElement(children) || code && isMermaidCode(language, textFromReactNode(code.children))) {
-    return /* @__PURE__ */ jsx16(Fragment5, { children });
+  if (isToolCodeElement(children2) || code && isMermaidCode(language, textFromReactNode(code.children))) {
+    return /* @__PURE__ */ jsx16(Fragment5, { children: children2 });
   }
-  return /* @__PURE__ */ jsx16("pre", { ...props, children });
+  return /* @__PURE__ */ jsx16("pre", { ...props, children: children2 });
 }
 function isToolCodeElement(value) {
   if (!value || typeof value !== "object" || !("props" in value)) {
@@ -3356,7 +3357,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
     return () => observer.disconnect();
   }, []);
   const CodeBlockRenderer = ({
-    children,
+    children: children2,
     className: codeClassName,
     inline,
     node,
@@ -3366,7 +3367,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
     const { locale: i18nLocale2 } = useI18n();
     const match = /language-(\w+(?:-\w+)*)/.exec(codeClassName || "");
     const language = match ? match[1] ?? "" : "";
-    const textContent = textFromReactNode(children).replace(/\n$/, "");
+    const textContent = textFromReactNode(children2).replace(/\n$/, "");
     const { startLine, endLine } = readMarkdownNodeLineRange(node);
     const isFencedOrBlockCode = inline === false || Boolean(codeClassName) || textContent.includes("\n") || startLine !== endLine;
     if (isFencedOrBlockCode && isMermaidCode(language, textContent)) {
@@ -3486,7 +3487,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
         )
       );
     }
-    const inlineDisplayText = textFromReactNode(children).replace(/`+/g, "");
+    const inlineDisplayText = textFromReactNode(children2).replace(/`+/g, "");
     const inlineCode = /* @__PURE__ */ jsx16(
       "code",
       {
@@ -3506,7 +3507,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
       rehypePlugins: [...markdownHtmlPlugins, rehypeKatex],
       components: {
         a({ href, children: originalChildren, node: _node, ...props }) {
-          const children = /* @__PURE__ */ jsx16(MarkdownLinkContext.Provider, { value: true, children: /* @__PURE__ */ jsx16(MarkdownImageLinkContext.Provider, { value: true, children: originalChildren }) });
+          const children2 = /* @__PURE__ */ jsx16(MarkdownLinkContext.Provider, { value: true, children: /* @__PURE__ */ jsx16(MarkdownImageLinkContext.Provider, { value: true, children: originalChildren }) });
           if (href?.startsWith("workspace-auto:")) {
             let value = "";
             try {
@@ -3514,12 +3515,12 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
             } catch {
             }
             const target = parseWorkspacePathText(value, workspaceRootPath);
-            return !readOnly && target && resolveWorkspacePath && onOpenWorkspaceFile ? /* @__PURE__ */ jsx16(VerifiedWorkspacePath, { target, resolve: resolveWorkspacePath, onOpen: onOpenWorkspaceFile, children }) : /* @__PURE__ */ jsx16(Fragment5, { children });
+            return !readOnly && target && resolveWorkspacePath && onOpenWorkspaceFile ? /* @__PURE__ */ jsx16(VerifiedWorkspacePath, { target, resolve: resolveWorkspacePath, onOpen: onOpenWorkspaceFile, children: children2 }) : /* @__PURE__ */ jsx16(Fragment5, { children: children2 });
           }
-          if (readOnly && (!href || !/^https?:\/\//i.test(href))) return /* @__PURE__ */ jsx16("span", { children });
+          if (readOnly && (!href || !/^https?:\/\//i.test(href))) return /* @__PURE__ */ jsx16("span", { children: children2 });
           const workspaceTarget = parseWorkspaceFileHref(href, workspaceRootPath);
           if (workspaceTarget && onOpenWorkspaceFile) {
-            return /* @__PURE__ */ jsx16(WorkspaceFileLink, { ...workspaceTarget, onOpen: onOpenWorkspaceFile, children });
+            return /* @__PURE__ */ jsx16(WorkspaceFileLink, { ...workspaceTarget, onOpen: onOpenWorkspaceFile, children: children2 });
           }
           const resolvedHref = href ? resolveHref?.(href) ?? href : href;
           return /* @__PURE__ */ jsx16(
@@ -3529,7 +3530,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
               ...externalLinkProps(resolvedHref),
               href: resolvedHref,
               className: "thread-inline-link",
-              children
+              children: children2
             }
           );
         },
@@ -4021,10 +4022,10 @@ function wakeState(state) {
 function delegateWakeMessages(turn, context) {
   const text = turn.items.find((item) => item.kind === "userMessage" && item.peerWork)?.text ?? "";
   const reports = /* @__PURE__ */ new Map();
-  const header = WAKE_HEADER.exec(text);
-  if (header) {
+  const header2 = WAKE_HEADER.exec(text);
+  if (header2) {
     const footer = text.lastIndexOf(WAKE_FOOTER);
-    const body = text.slice(header[0].length, footer < 0 ? void 0 : footer);
+    const body = text.slice(header2[0].length, footer < 0 ? void 0 : footer);
     const entries = wakeEntries(body);
     for (const [index, entry] of entries.entries()) {
       const block = body.slice(entry.index + entry[0].length, entries[index + 1]?.index);
@@ -4058,10 +4059,10 @@ function shortIds(text) {
 function parsePromptEnvelope(text) {
   if (text.startsWith(RESUME_PREFIX)) return { type: "notice", notice: "resume", preview: "", body: text };
   const newline = text.indexOf("\n");
-  const header = (newline < 0 ? text : text.slice(0, newline)).trim();
+  const header2 = (newline < 0 ? text : text.slice(0, newline)).trim();
   const rest = newline < 0 ? "" : text.slice(newline + 1);
-  if (!header.startsWith("[Pockymoe ") || !header.endsWith("]")) return null;
-  const inner = header.slice("[Pockymoe ".length, -1);
+  if (!header2.startsWith("[Pockymoe ") || !header2.endsWith("]")) return null;
+  const inner = header2.slice("[Pockymoe ".length, -1);
   if (inner.startsWith("inbox reminder")) {
     const lines = rest.split("\n").map((line) => line.trim()).filter(Boolean);
     const first = lines.find((line) => line.startsWith("- "))?.slice(2) ?? lines[0] ?? "";
@@ -4303,15 +4304,15 @@ function ComposerPendingQueue({
 import { BellRing as BellRing2 } from "lucide-react";
 import { useEffect as useEffect11, useId as useId3, useRef as useRef9, useState as useState13 } from "react";
 import { jsx as jsx22, jsxs as jsxs17 } from "react/jsx-runtime";
-function markStatus(status2) {
-  switch (status2) {
+function markStatus(status3) {
+  switch (status3) {
     case "running":
     case "recovering":
       return "running";
     case "idle":
     case "failed":
     case "interrupted":
-      return status2;
+      return status3;
     default:
       return "unknown";
   }
@@ -4727,8 +4728,8 @@ function sourceLabel(snapshot) {
 }
 function ContextNote({ state, inspector, hasSnapshot, onRetry }) {
   useI18n();
-  const { response, status: status2, error } = state;
-  if (status2 === "failed") {
+  const { response, status: status3, error } = state;
+  if (status3 === "failed") {
     return /* @__PURE__ */ jsxs19("p", { className: "thread-context-note", "data-context-note": "failed", children: [
       /* @__PURE__ */ jsx24("span", { children: translate(hasSnapshot ? "chat.contextRefreshFailed" : "chat.contextLoadFailed") }),
       /* @__PURE__ */ jsx24(ErrorMark, { message: error ?? translate("chat.contextLoadFailed"), onRetry })
@@ -4736,7 +4737,7 @@ function ContextNote({ state, inspector, hasSnapshot, onRetry }) {
   }
   if (!inspector) return null;
   if (!response) {
-    return status2 === "loading" ? /* @__PURE__ */ jsxs19("p", { className: "thread-context-note", "data-context-note": "loading", role: "status", children: [
+    return status3 === "loading" ? /* @__PURE__ */ jsxs19("p", { className: "thread-context-note", "data-context-note": "loading", role: "status", children: [
       /* @__PURE__ */ jsx24(Loader23, { "aria-hidden": "true", className: "thread-context-spinner animate-spin" }),
       /* @__PURE__ */ jsx24("span", { children: translate("chat.contextLoading") })
     ] }) : null;
@@ -4765,7 +4766,7 @@ function ContextNote({ state, inspector, hasSnapshot, onRetry }) {
     reason
   ] }) : null;
 }
-function ContextPanelSurface({ phone, label, subtitle, trigger, onClose, footer, expandableItems, layoutKey, children }) {
+function ContextPanelSurface({ phone, label, subtitle, trigger, onClose, footer, expandableItems, layoutKey, children: children2 }) {
   useI18n();
   const root = useRef10(null);
   useModalFocus(root, true, onClose);
@@ -4784,7 +4785,7 @@ function ContextPanelSurface({ phone, label, subtitle, trigger, onClose, footer,
       ] }),
       phone ? /* @__PURE__ */ jsx24("button", { type: "button", className: "thread-context-close", "aria-label": translate("chat.contextClose"), onClick: onClose, children: /* @__PURE__ */ jsx24(X2, { "aria-hidden": "true" }) }) : null
     ] }),
-    /* @__PURE__ */ jsx24("div", { className: "thread-context-body", children }),
+    /* @__PURE__ */ jsx24("div", { className: "thread-context-body", children: children2 }),
     footer ? /* @__PURE__ */ jsx24("footer", { className: "thread-context-footer", children: footer }) : null
   ] });
   if (!phone) {
@@ -5601,13 +5602,13 @@ function ComposerHooksPanel({
         /* @__PURE__ */ jsxs24("label", { className: "block text-xs text-stone-400", children: [
           translate("chat.scope"),
           /* @__PURE__ */ jsxs24(
-            "select",
+            Select,
             {
               "aria-label": translate("chat.hookScope"),
               value: hookScope,
-              onChange: (event) => onSetHookScope(event.target.value),
+              onValueChange: (selectedValue) => onSetHookScope(selectedValue),
               disabled: hooksPanelMode === "edit",
-              className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50",
+              className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus-visible:border-sky-300/50",
               children: [
                 /* @__PURE__ */ jsx29("option", { value: "project", children: translate("chat.project_f6f4da") }),
                 /* @__PURE__ */ jsx29("option", { value: "global", children: translate("chat.global_5f1184") })
@@ -5618,12 +5619,12 @@ function ComposerHooksPanel({
         /* @__PURE__ */ jsxs24("label", { className: "block text-xs text-stone-400", children: [
           translate("chat.event"),
           /* @__PURE__ */ jsx29(
-            "select",
+            Select,
             {
               "aria-label": translate("chat.hookEvent"),
               value: hookEventName,
-              onChange: (event) => onSetHookEventName(event.target.value),
-              className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50",
+              onValueChange: (selectedValue) => onSetHookEventName(selectedValue),
+              className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus-visible:border-sky-300/50",
               children: HOOK_EVENT_OPTIONS.map((eventOption) => /* @__PURE__ */ jsx29("option", { value: eventOption.value, children: eventOption.label }, eventOption.value))
             }
           )
@@ -5638,7 +5639,7 @@ function ComposerHooksPanel({
             value: hookMatcher,
             onChange: (event) => onSetHookMatcher(event.target.value),
             placeholder: "Bash",
-            className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+            className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus-visible:border-sky-300/50"
           }
         )
       ] }),
@@ -5651,7 +5652,7 @@ function ComposerHooksPanel({
             value: hookCommand,
             onChange: (event) => onSetHookCommand(event.target.value),
             rows: 3,
-            className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+            className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs text-stone-100 outline-none placeholder:text-stone-500 focus-visible:border-sky-300/50"
           }
         )
       ] }),
@@ -5665,7 +5666,7 @@ function ComposerHooksPanel({
               value: hookTimeoutSec,
               onChange: (event) => onSetHookTimeoutSec(event.target.value),
               inputMode: "numeric",
-              className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
+              className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus-visible:border-sky-300/50"
             }
           )
         ] }),
@@ -5677,7 +5678,7 @@ function ComposerHooksPanel({
               "aria-label": translate("chat.hookStatusMessage"),
               value: hookStatusMessage,
               onChange: (event) => onSetHookStatusMessage(event.target.value),
-              className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
+              className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus-visible:border-sky-300/50"
             }
           )
         ] })
@@ -5826,8 +5827,8 @@ function elapsedLabel(seconds2) {
   }
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 }
-function statusLabel(status2) {
-  switch (status2) {
+function statusLabel(status3) {
+  switch (status3) {
     case "budgetLimited":
       return translate("chat.budgetLimited");
     case "complete":
@@ -10203,8 +10204,8 @@ function formatMessageTimestamp(value) {
 function formatPreciseMessageTimestamp(value) {
   return formatMessageTime(value, true);
 }
-function threadStatusLabel(status2) {
-  switch (status2) {
+function threadStatusLabel(status3) {
+  switch (status3) {
     case "recovering":
       return translate("chat.confirmingStatus");
     case "idle":
@@ -10221,8 +10222,8 @@ function threadStatusLabel(status2) {
       return translate("chat.systemError");
   }
 }
-function threadStatusClassName(status2) {
-  switch (status2) {
+function threadStatusClassName(status3) {
+  switch (status3) {
     case "idle":
       return "ui-status-neutral";
     case "running":
@@ -10237,8 +10238,8 @@ function threadStatusClassName(status2) {
       return "ui-status-neutral";
   }
 }
-function turnStatusLabel(status2) {
-  switch (status2) {
+function turnStatusLabel(status3) {
+  switch (status3) {
     case "recovering":
       return translate("chat.confirmingStatus");
     case "sending":
@@ -10549,7 +10550,7 @@ function useWorkbenchToolPanel() {
 import { jsx as jsx45, jsxs as jsxs38 } from "react/jsx-runtime";
 function WorkbenchPanels({
   options: o,
-  children,
+  children: children2,
   explorer,
   revealExplorer,
   toolPanel: sharedToolPanel
@@ -10877,7 +10878,7 @@ function WorkbenchPanels({
                       },
                       hidden: compact && showReference && mobileView !== "primary",
                       children: [
-                        /* @__PURE__ */ jsx45(WorkbenchPaneSwitchContext.Provider, { value: paneSwitches?.primary ?? null, children: /* @__PURE__ */ jsx45("div", { className: "workbench-pane-body", children }) }),
+                        /* @__PURE__ */ jsx45(WorkbenchPaneSwitchContext.Provider, { value: paneSwitches?.primary ?? null, children: /* @__PURE__ */ jsx45("div", { className: "workbench-pane-body", children: children2 }) }),
                         paneSwitchFallback("primary")
                       ]
                     }
@@ -11107,7 +11108,7 @@ import { useLayoutEffect as useLayoutEffect11, useRef as useRef22, useState as u
 import { createPortal as createPortal3 } from "react-dom";
 import { Folder, Star } from "lucide-react";
 import { jsx as jsx47, jsxs as jsxs40 } from "react/jsx-runtime";
-function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteBusy, onToggleFavorite, onClose, children, panels }) {
+function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteBusy, onToggleFavorite, onClose, children: children2, panels }) {
   useI18n();
   const menuRef = useRef22(null);
   const [place, setPlace] = useState34(null);
@@ -11183,7 +11184,7 @@ function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteB
             ),
             /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-title", title, children: title })
           ] }),
-          /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-items", children }),
+          /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-items", children: children2 }),
           panels ? /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-panels", children: panels }) : null
         ]
       }
@@ -11197,9 +11198,9 @@ import { useEffect as useEffect25, useLayoutEffect as useLayoutEffect12, useRef 
 import { createPortal as createPortal4 } from "react-dom";
 import { Bot, X as X6 } from "lucide-react";
 import { Fragment as Fragment15, jsx as jsx48, jsxs as jsxs41 } from "react/jsx-runtime";
-var statusLabels = new Proxy({}, { get: (_, status2) => navigationStatusLabel(String(status2)) });
-function threadGroupActivity(root, children = []) {
-  const running = children.filter((child) => child.status === "running").length;
+var statusLabels = new Proxy({}, { get: (_, status3) => navigationStatusLabel(String(status3)) });
+function threadGroupActivity(root, children2 = []) {
+  const running = children2.filter((child) => child.status === "running").length;
   const label = statusLabels[root.status] ?? root.status;
   if (running && (root.status === "idle" || root.status === "unread")) {
     return {
@@ -11274,10 +11275,10 @@ function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, onThreadM
     return () => observer?.disconnect();
   });
   return /* @__PURE__ */ jsxs41(Fragment15, { children: [
-    groups.map(({ root, children }) => {
-      const selected = children.find((child) => child.key === currentKey);
+    groups.map(({ root, children: children2 }) => {
+      const selected = children2.find((child) => child.key === currentKey);
       const active = root.key === currentKey || !!selected;
-      const activity = threadGroupActivity(root, children);
+      const activity = threadGroupActivity(root, children2);
       return /* @__PURE__ */ jsxs41(
         "div",
         {
@@ -11323,7 +11324,7 @@ ${activity.label}`,
                 children: [
                   root.agent && /* @__PURE__ */ jsx48("span", { className: "matter-thread-avatar", "data-agent": root.agent, "aria-hidden": "true" }),
                   /* @__PURE__ */ jsx48("span", { className: "matter-status-dot", role: "img", "aria-label": activity.label, "data-status": activity.status }),
-                  children.length > 0 && /* @__PURE__ */ jsx48("span", { className: "matter-tab-agents-slot", "aria-hidden": "true" }),
+                  children2.length > 0 && /* @__PURE__ */ jsx48("span", { className: "matter-tab-agents-slot", "aria-hidden": "true" }),
                   /* @__PURE__ */ jsxs41("span", { children: [
                     root.title,
                     selected ? ` \xB7 ${selected.title}` : ""
@@ -11331,13 +11332,14 @@ ${activity.label}`,
                 ]
               }
             ),
-            children.length > 0 && /* @__PURE__ */ jsxs41(
+            children2.length > 0 && /* @__PURE__ */ jsxs41(
               "button",
               {
                 className: "matter-group-toggle is-badge",
-                "aria-label": translate("workbench.agentThreads", { value1: root.title, value2: children.length }),
+                "aria-label": translate("workbench.agentThreads", { value1: root.title, value2: children2.length }),
                 "aria-expanded": menu?.key === root.key,
                 "aria-controls": "matter-agent-threads",
+                "data-running": children2.some((child) => child.status === "running") || void 0,
                 onClick: (event) => {
                   const bounds = event.currentTarget.getBoundingClientRect();
                   trigger.current = event.currentTarget;
@@ -11345,7 +11347,7 @@ ${activity.label}`,
                 },
                 children: [
                   /* @__PURE__ */ jsx48(Bot, { "aria-hidden": "true" }),
-                  children.length
+                  children2.length
                 ]
               }
             ),
@@ -11478,7 +11480,7 @@ function PinnedThreads({ value, threadsOpen, onOpenThreads }) {
     );
   }) });
 }
-function PhoneSheet({ open, label, onClose, children, footer }) {
+function PhoneSheet({ open, label, onClose, children: children2, footer }) {
   useI18n();
   const sheet = useRef24(null);
   const close = useRef24(onClose);
@@ -11569,7 +11571,7 @@ function PhoneSheet({ open, label, onClose, children, footer }) {
         },
         children: [
           /* @__PURE__ */ jsx49("div", { className: "matter-phone-sheet-grabber", "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx49("div", { className: "matter-phone-sheet-body", children }),
+          /* @__PURE__ */ jsx49("div", { className: "matter-phone-sheet-body", children: children2 }),
           footer && /* @__PURE__ */ jsx49("div", { className: "matter-phone-sheet-footer", children: footer })
         ]
       }
@@ -11900,7 +11902,7 @@ function MatterWorkbench({
   deviceMonitor,
   explorer,
   revealExplorer,
-  children
+  children: children2
 }) {
   useI18n();
   const listedTabs = o.workspaceThreads ?? o.threads.filter((thread) => thread.key === o.currentKey);
@@ -12262,12 +12264,22 @@ function MatterWorkbench({
   const [toolbarOpen, setToolbarOpen] = useState39(false);
   const toolbarToggleRef = useRef27(null);
   const [legacyExplorerOpen, setLegacyExplorerOpen] = useState39(false);
-  const explorerOpen = o.panels ? o.panels.presentation.mode === "files" : legacyExplorerOpen;
+  const workspaceControlsEnabled = o.workspaceControlsEnabled !== false;
+  const explorerOpen = workspaceControlsEnabled && (o.panels ? o.panels.presentation.mode === "files" : legacyExplorerOpen);
+  const panelOptions = !workspaceControlsEnabled && o.panels ? { ...o.panels, presentation: { ...o.panels.presentation, ...closeFilesPatch(o.panels.presentation) }, toolsOpen: false } : o.panels;
   const setExplorerOpen = (value) => {
     const next = typeof value === "function" ? value(explorerOpen) : value;
+    if (next && !workspaceControlsEnabled) return;
     if (o.panels) o.panels.onPresentationChange(next ? openFilesPatch(o.panels.presentation) : closeFilesPatch(o.panels.presentation));
     else setLegacyExplorerOpen(next);
   };
+  useEffect28(() => {
+    if (workspaceControlsEnabled) return;
+    setLegacyExplorerOpen(false);
+    setToolbarOpen(false);
+    if (o.panels?.presentation.mode === "files") o.panels.onPresentationChange(closeFilesPatch(o.panels.presentation));
+    if (o.panels?.toolsOpen) o.panels.onCloseTools?.();
+  }, [workspaceControlsEnabled, o.panels]);
   const [explorerWidth, setExplorerWidth] = useState39(() => {
     try {
       return Math.max(260, Math.min(800, Number(localStorage.getItem("remote-codex.explorer-width")) || 360));
@@ -12345,7 +12357,7 @@ function MatterWorkbench({
   };
   const currentThread = o.threads.find((thread) => thread.key === o.currentKey) ?? tabs.find((thread) => thread.key === o.currentKey);
   const knownThreads = [...o.threads, ...tabs.filter((tab) => !o.threads.some((thread) => thread.key === tab.key))];
-  const accountThreads = [...knownThreads, ...(o.activeThreads ?? []).filter((thread) => !knownThreads.some((known2) => known2.key === thread.key))];
+  const accountThreads = [...knownThreads, ...(o.activeThreads ?? []).filter((thread) => !knownThreads.some((known3) => known3.key === thread.key))];
   const runningThreads = accountThreads.filter((thread) => thread.status === "running");
   const threadByKey = new Map(accountThreads.map((thread) => [thread.key, thread]));
   const inConversations = (list) => {
@@ -12519,11 +12531,11 @@ ${thread.subtitle} \xB7 ${activity.label}`,
     ),
     o.renderThreadMenu?.(thread)
   ] }, thread.key);
-  const renderThreadGroups = (threads, reorder = false) => groupThreads(threads).map(({ root, children: children2 }) => {
-    const open = agentsOpen[root.key] ?? children2.some((child) => child.key === o.currentKey);
+  const renderThreadGroups = (threads, reorder = false) => groupThreads(threads).map(({ root, children: children3 }) => {
+    const open = agentsOpen[root.key] ?? children3.some((child) => child.key === o.currentKey);
     return /* @__PURE__ */ jsxs44("div", { className: "matter-thread-group-entry", "data-reorder-key": reorder ? root.key : void 0, children: [
-      renderThread(root, threadGroupActivity(root, children2), children2.length > 0 ? { count: children2.length, running: children2.filter((child) => child.status === "running").length, open } : void 0),
-      children2.length > 0 && open && /* @__PURE__ */ jsx51("div", { className: "matter-agent-children", role: "group", "aria-label": translate("workbench.agentThreads_187f89", { value1: root.title }), children: children2.map((child) => renderThread(child)) })
+      renderThread(root, threadGroupActivity(root, children3), children3.length > 0 ? { count: children3.length, running: children3.filter((child) => child.status === "running").length, open } : void 0),
+      children3.length > 0 && open && /* @__PURE__ */ jsx51("div", { className: "matter-agent-children", role: "group", "aria-label": translate("workbench.agentThreads_187f89", { value1: root.title }), children: children3.map((child) => renderThread(child)) })
     ] }, root.key);
   });
   return /* @__PURE__ */ jsxs44(
@@ -12596,6 +12608,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
           /* @__PURE__ */ jsx51(
             "button",
             {
+              disabled: !workspaceControlsEnabled,
               "aria-label": translate("workbench.toggleExplorer"),
               "aria-pressed": explorerOpen,
               "aria-expanded": explorerOpen,
@@ -12682,7 +12695,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                 o.onViewChange("shell");
               }, children: /* @__PURE__ */ jsx51(Terminal2, { "data-icon": "terminal" }) }),
               o.toolPanels?.map((panel) => /* @__PURE__ */ jsx51("button", { "aria-label": panel.label, title: panel.label, "aria-pressed": panel.active, onClick: panel.onToggle, children: panel.icon }, panel.id)),
-              /* @__PURE__ */ jsx51("button", { "aria-label": translate("workbench.toggleExplorer"), "aria-pressed": explorerOpen, "aria-expanded": explorerOpen, title: translate("workbench.explorer"), onClick: () => setExplorerOpen((open) => !open), children: /* @__PURE__ */ jsx51(FolderOpen4, { "data-icon": "explorer" }) }),
+              /* @__PURE__ */ jsx51("button", { disabled: !workspaceControlsEnabled, "aria-label": translate("workbench.toggleExplorer"), "aria-pressed": explorerOpen, "aria-expanded": explorerOpen, title: translate("workbench.explorer"), onClick: () => setExplorerOpen((open) => !open), children: /* @__PURE__ */ jsx51(FolderOpen4, { "data-icon": "explorer" }) }),
               settings
             ] }),
             /* @__PURE__ */ jsx51("div", { className: "matter-connection", children: connection }),
@@ -12884,12 +12897,12 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                 /* @__PURE__ */ jsx51(TabScrollButtons, { targetRef: tabsRef, edges: tabScrollEdges })
               ] }),
               /* @__PURE__ */ jsx51("div", { className: "matter-tab-add", children: newThread }),
-              !o.emptyWorkspace && /* @__PURE__ */ jsx51("button", { ref: toolbarToggleRef, className: "matter-toolbar-toggle", "aria-label": translate("workbench.threadTools"), "aria-haspopup": "menu", "aria-expanded": toolbarOpen, "aria-controls": "matter-thread-tools", onClick: () => setToolbarOpen((open) => !open), title: toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools"), children: /* @__PURE__ */ jsx51(SlidersHorizontal2, { "data-icon": "thread-tools" }) }),
+              !o.emptyWorkspace && /* @__PURE__ */ jsx51("button", { ref: toolbarToggleRef, disabled: !workspaceControlsEnabled, className: "matter-toolbar-toggle", "aria-label": translate("workbench.threadTools"), "aria-haspopup": "menu", "aria-expanded": toolbarOpen, "aria-controls": "matter-thread-tools", onClick: () => setToolbarOpen((open) => !open), title: toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools"), children: /* @__PURE__ */ jsx51(SlidersHorizontal2, { "data-icon": "thread-tools" }) }),
               /* @__PURE__ */ jsxs44(
                 ThreadToolsMenu,
                 {
                   id: "matter-thread-tools",
-                  open: toolbarOpen && !o.emptyWorkspace,
+                  open: toolbarOpen && !o.emptyWorkspace && workspaceControlsEnabled,
                   anchorRef: toolbarToggleRef,
                   panels: o.statusActions,
                   path: o.workspacePath,
@@ -12913,11 +12926,11 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               bell
             ] })
           ] }),
-          /* @__PURE__ */ jsx51(PhoneDockContext.Provider, { value: dock, children: o.panels ? /* @__PURE__ */ jsx51(WorkbenchContext.Provider, { value: true, children: /* @__PURE__ */ jsx51(WorkbenchPanels, { options: dock ? { ...o.panels, onPaneSwitchChange: setPaneSwitch } : o.panels, explorer, revealExplorer, toolPanel, children }) }) : /* @__PURE__ */ jsxs44("div", { ref: contentRef, style: { "--explorer-width": `${explorerWidth}px` }, className: `matter-content ${explorerOpen ? "has-explorer" : ""}`, children: [
+          /* @__PURE__ */ jsx51(PhoneDockContext.Provider, { value: dock, children: panelOptions ? /* @__PURE__ */ jsx51(WorkbenchContext.Provider, { value: true, children: /* @__PURE__ */ jsx51(WorkbenchPanels, { options: dock ? { ...panelOptions, onPaneSwitchChange: setPaneSwitch } : panelOptions, explorer, revealExplorer, toolPanel, children: children2 }) }) : /* @__PURE__ */ jsxs44("div", { ref: contentRef, style: { "--explorer-width": `${explorerWidth}px` }, className: `matter-content ${explorerOpen ? "has-explorer" : ""}`, children: [
             /* @__PURE__ */ jsx51("div", { className: "matter-chat", children: /* @__PURE__ */ jsx51(WorkbenchContext.Provider, { value: true, children: o.emptyWorkspace && mobile && workspaceThreads.length > 0 ? /* @__PURE__ */ jsxs44("div", { className: "matter-workspace-home", children: [
-              children,
+              children2,
               /* @__PURE__ */ jsx51("section", { className: "matter-workspace-home-list matter-thread-section", "aria-label": translate("workbench.thisWorkspace"), "data-testid": "workspace-home-threads", children: renderThreadGroups(workspaceThreads, reorderable) })
-            ] }) : children }) }),
+            ] }) : children2 }) }),
             explorerOpen && /* @__PURE__ */ jsxs44("aside", { className: "matter-explorer", "aria-label": translate("workbench.explorer"), children: [
               !mobile && /* @__PURE__ */ jsx51(
                 "div",
@@ -13184,7 +13197,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
 // src/components/graph-chat/GraphChatShellLayout.tsx
 import { jsx as jsx52 } from "react/jsx-runtime";
 function GraphChatShellRoot({
-  children,
+  children: children2,
   effectiveTheme,
   layoutMode,
   themeMode,
@@ -13197,12 +13210,12 @@ function GraphChatShellRoot({
       "data-theme-effective": effectiveTheme,
       "data-theme-mode": themeMode ?? effectiveTheme,
       "data-thread-layout": layoutMode,
-      children
+      children: children2
     }
   );
 }
 function GraphChatShellFrame({
-  children,
+  children: children2,
   roomsRailCollapsed,
   hideRoomsRail = false
 }) {
@@ -13210,7 +13223,7 @@ function GraphChatShellFrame({
     "div",
     {
       className: `thread-shell-frame relative h-full min-h-0 ${hideRoomsRail ? "is-rail-hidden sm:grid-cols-[minmax(0,1fr)]" : roomsRailCollapsed ? "is-rail-collapsed sm:grid-cols-[56px_minmax(0,1fr)]" : "sm:grid-cols-[264px_minmax(0,1fr)]"}`,
-      children
+      children: children2
     }
   );
 }
@@ -13233,7 +13246,7 @@ function GraphChatMobileScrim({
   );
 }
 function GraphChatRoomsRailShell({
-  children,
+  children: children2,
   collapsed,
   mobileOpen
 }) {
@@ -13242,18 +13255,18 @@ function GraphChatRoomsRailShell({
     {
       className: `thread-graph-rooms-surface thread-rooms-rail fixed inset-y-0 left-0 z-50 flex min-h-0 min-w-0 w-[min(20rem,calc(100vw-2rem))] flex-col overflow-x-hidden border-r border-slate-200/80 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.18)] transition-transform duration-200 ease-out sm:static sm:z-auto sm:w-auto sm:translate-x-0 sm:rounded-[12px] sm:border sm:shadow-[0_10px_30px_rgba(15,23,42,0.04)] ${mobileOpen ? "translate-x-0" : "pointer-events-none -translate-x-full sm:pointer-events-auto"} ${collapsed ? "thread-ui-rail-collapsed sm:items-center" : ""}`,
       style: { paddingTop: "var(--android-safe-area-top, 0px)" },
-      children
+      children: children2
     }
   );
 }
-function GraphChatMainShell({ children }) {
-  return /* @__PURE__ */ jsx52("main", { className: "thread-shell-main h-full min-h-0 min-w-0 overflow-hidden", children: /* @__PURE__ */ jsx52("div", { className: "thread-main-panel thread-shell-card flex h-full min-h-0 flex-col overflow-hidden bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] sm:rounded-[12px] sm:border sm:border-slate-200/80", children }) });
+function GraphChatMainShell({ children: children2 }) {
+  return /* @__PURE__ */ jsx52("main", { className: "thread-shell-main h-full min-h-0 min-w-0 overflow-hidden", children: /* @__PURE__ */ jsx52("div", { className: "thread-main-panel thread-shell-card flex h-full min-h-0 flex-col overflow-hidden bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] sm:rounded-[12px] sm:border sm:border-slate-200/80", children: children2 }) });
 }
-function GraphChatTopbarShell({ children }) {
-  return /* @__PURE__ */ jsx52("div", { className: "thread-topbar-surface flex shrink-0 flex-col border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] sm:pt-0", children });
+function GraphChatTopbarShell({ children: children2 }) {
+  return /* @__PURE__ */ jsx52("div", { className: "thread-topbar-surface flex shrink-0 flex-col border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] sm:pt-0", children: children2 });
 }
-function GraphChatSplitRegion({ children }) {
-  return /* @__PURE__ */ jsx52("div", { className: "thread-split-region min-h-0 flex-1 overflow-hidden p-0 sm:p-2", children });
+function GraphChatSplitRegion({ children: children2 }) {
+  return /* @__PURE__ */ jsx52("div", { className: "thread-split-region min-h-0 flex-1 overflow-hidden p-0 sm:p-2", children: children2 });
 }
 
 // src/components/ThreadWorkspaceLayout.tsx
@@ -13487,7 +13500,7 @@ function ThreadCards({
 function ThreadWorkspaceLayout({
   workbench,
   threads,
-  status: status2,
+  status: status3,
   loading = false,
   error,
   viewportConstrained = false,
@@ -13535,7 +13548,7 @@ function ThreadWorkspaceLayout({
   workspaceTitle = translate("files.workspace"),
   workspaceActions,
   workspaceRevealRequestKey,
-  children
+  children: children2
 }) {
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
@@ -13654,7 +13667,7 @@ function ThreadWorkspaceLayout({
   const topbarWorkspaceLabel = currentWorkspaceLabel ?? currentWorkspaceId ?? translate("files.allWorkspaces");
   const topbarHarnessLabel = harnessLabel ?? translate("files.agent");
   const topbarSessionLabel = sessionLabel ?? currentThreadLabel ?? currentThreadId ?? "default_session";
-  const topbarUsageLabel = usageLabel ?? (status2?.state ? `runtime ${status2.state}` : translate("files.waitingForAgentUsage"));
+  const topbarUsageLabel = usageLabel ?? (status3?.state ? `runtime ${status3.state}` : translate("files.waitingForAgentUsage"));
   const setThemeMode = onThemeModeChange ?? shellNav?.setThemeMode;
   const canUpdateThemeMode = Boolean(setThemeMode);
   const closeNavigationSurfaces = () => {
@@ -13969,7 +13982,7 @@ function ThreadWorkspaceLayout({
       /* @__PURE__ */ jsx53("div", { className: "min-h-0 flex-1 overflow-hidden", children: workspaceContent ?? /* @__PURE__ */ jsxs45("div", { className: "grid h-full min-h-0 gap-3 overflow-y-auto p-3 text-sm text-[var(--theme-fg-soft)]", children: [
         /* @__PURE__ */ jsxs45("div", { className: "thread-workspace-card rounded-lg border p-3", children: [
           /* @__PURE__ */ jsx53("p", { className: "text-xs font-medium uppercase tracking-[0.14em] text-[var(--theme-fg-muted)]", children: translate("files.runtime") }),
-          /* @__PURE__ */ jsx53("p", { className: "mt-2 text-[var(--theme-fg)]", children: status2?.state ?? translate("files.unknown") })
+          /* @__PURE__ */ jsx53("p", { className: "mt-2 text-[var(--theme-fg)]", children: status3?.state ?? translate("files.unknown") })
         ] }),
         /* @__PURE__ */ jsxs45("div", { className: "thread-workspace-card rounded-lg border p-3", children: [
           /* @__PURE__ */ jsx53("p", { className: "text-xs font-medium uppercase tracking-[0.14em] text-[var(--theme-fg-muted)]", children: translate("files.workspace") }),
@@ -14017,7 +14030,7 @@ function ThreadWorkspaceLayout({
           threadMenu: null,
           explorer: workspaceContent,
           revealExplorer: workspaceRevealRequestKey ?? 0,
-          children
+          children: children2
         }
       ),
       /* @__PURE__ */ jsx53(RenameDialog, { open: editingThreadId !== null, title: translate("files.renameThread_c51d25"), label: translate("files.threadTitle"), value: draftTitle, busy: renamingThreadId !== null, onChange: setDraftTitle, onCancel: cancelRenameThread, onSubmit: () => editingThreadId ? handleRenameThread(editingThreadId) : void 0 })
@@ -14236,7 +14249,7 @@ function ThreadWorkspaceLayout({
                     "div",
                     {
                       className: `h-full min-h-0 overflow-hidden ${mobileWorkspace === "chat" ? "block" : renderMobileWorkspaceSplit ? "thread-mobile-chat-hidden" : "hidden"}`,
-                      children
+                      children: children2
                     }
                   ),
                   /* @__PURE__ */ jsx53(
@@ -14259,7 +14272,7 @@ function ThreadWorkspaceLayout({
                           minSize: 30,
                           maxSize: 75,
                           className: "thread-split-chat-pane min-w-0 overflow-hidden",
-                          children
+                          children: children2
                         }
                       ),
                       /* @__PURE__ */ jsx53(ResizableHandle, { className: "thread-resize-handle w-2 bg-transparent after:w-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" }),
@@ -14287,7 +14300,7 @@ function ThreadWorkspaceLayout({
                       children: /* @__PURE__ */ jsx53(ChevronsLeft, { className: "h-4 w-4" })
                     }
                   ) : null,
-                  children
+                  children2
                 ] }) }) })
               ]
             }
@@ -14338,13 +14351,13 @@ function DiffDetail({ text, compact = false, formatPath }) {
   const rows = useMemo9(() => {
     let oldLine = 0, newLine = 0, path = "", inHunk = false;
     const lines = text.split("\n");
-    const header = (index) => {
+    const header2 = (index) => {
       const line = lines[index];
       return line.startsWith("diff ") || line.startsWith("index ") || line.startsWith("--- ") && lines[index + 1]?.startsWith("+++ ") || line.startsWith("+++ ") && lines[index - 1]?.startsWith("--- ");
     };
-    const files = new Set(lines.filter((line, index) => line.startsWith("+++ ") && header(index)));
+    const files = new Set(lines.filter((line, index) => line.startsWith("+++ ") && header2(index)));
     return lines.flatMap((line, index) => {
-      if (header(index)) {
+      if (header2(index)) {
         inHunk = false;
         if (line.startsWith("+++ ")) path = line.slice(4).replace(/^b\//, "");
         if (compact) {
@@ -14417,7 +14430,7 @@ function LongTextDialog({
 // src/components/timeline/PeerWorkGroup.tsx
 import { BellRing as BellRing3, ChevronRight as ChevronRight4, MessageCircle, LoaderCircle as LoaderCircle2 } from "lucide-react";
 import { jsx as jsx56, jsxs as jsxs48 } from "react/jsx-runtime";
-function PeerWorkGroup({ turn, context, expanded, loading, error, onToggle, children, scrollRootRef }) {
+function PeerWorkGroup({ turn, context, expanded, loading, error, onToggle, children: children2, scrollRootRef }) {
   useI18n();
   const messages = delegateWakeMessages(turn, context);
   const first = messages[0];
@@ -14447,7 +14460,7 @@ function PeerWorkGroup({ turn, context, expanded, loading, error, onToggle, chil
         message.text || message.kind === "question" ? /* @__PURE__ */ jsx56(GraphChatAgentMessageBody, { messageId: message.id, text: message.text ?? message.subject ?? "", scrollRootRef }) : /* @__PURE__ */ jsx56("p", { className: "thread-peer-report-empty", children: translate("chat.peerNoReport") })
       ] }, message.id)),
       /* @__PURE__ */ jsx56("div", { className: "thread-peer-processing-label", children: translate(wake ? "chat.peerAfterWake" : "chat.peerQuestionHandling") }),
-      /* @__PURE__ */ jsx56("div", { className: "thread-peer-work-operations", children })
+      /* @__PURE__ */ jsx56("div", { className: "thread-peer-work-operations", children: children2 })
     ] }) : null
   ] });
 }
@@ -14772,14 +14785,14 @@ function GraphChatRunningDots() {
   )) });
 }
 function GraphChatMessageStatusBadge({
-  status: status2
+  status: status3
 }) {
   const { locale: i18nLocale } = useI18n();
-  if (!status2) {
+  if (!status3) {
     return null;
   }
-  const label = status2 === "Accepted" ? translate("chat.acceptedStatus") : status2 === "Steering" ? translate("chat.steeringStatus") : status2 === "Awaiting response" ? translate("chat.awaitingResponseStatus") : status2 === "Completed" ? translate("chat.completed") : status2;
-  const normalized = status2.toLowerCase();
+  const label = status3 === "Accepted" ? translate("chat.acceptedStatus") : status3 === "Steering" ? translate("chat.steeringStatus") : status3 === "Awaiting response" ? translate("chat.awaitingResponseStatus") : status3 === "Completed" ? translate("chat.completed") : status3;
+  const normalized = status3.toLowerCase();
   const isRunning = normalized.includes("running") || normalized.includes("generating") || normalized.includes("steering");
   const isFailed = normalized.includes("failed") || normalized.includes("error");
   const isCompleted = normalized.includes("accepted") || normalized.includes("complete");
@@ -14799,12 +14812,12 @@ function GraphChatMessageStatusBadge({
   );
 }
 function GraphChatMessageFrame({
-  children,
+  children: children2,
   copyButton,
   kind,
   metaControl,
   reasoning,
-  status: status2,
+  status: status3,
   timeLabel,
   timeTitle,
   actionsTime,
@@ -14825,9 +14838,9 @@ function GraphChatMessageFrame({
     setActionsBeside(Boolean(row && box.left - row.left >= SIDE_ACTIONS_WIDTH));
   };
   const failureText = failure ? failureMessage(failure) : null;
-  const normalizedStatus = status2?.trim().toLowerCase() ?? "";
+  const normalizedStatus = status3?.trim().toLowerCase() ?? "";
   const showStatus = Boolean(
-    isUser && status2 && normalizedStatus !== "complete" && normalizedStatus !== "completed"
+    isUser && status3 && normalizedStatus !== "complete" && normalizedStatus !== "completed"
   );
   const timeNode = timeLabel ? /* @__PURE__ */ jsx59(
     "span",
@@ -14885,7 +14898,7 @@ function GraphChatMessageFrame({
                     "div",
                     {
                       className: `thread-graph-message-content min-w-0 ${isUser ? "is-user" : "is-assistant"}`,
-                      children
+                      children: children2
                     }
                   ),
                   isUser && failure && failureText ? /* @__PURE__ */ jsx59(
@@ -14910,7 +14923,7 @@ ${failureText}`,
               "div",
               {
                 className: `thread-graph-message-user-meta flex items-center justify-end gap-2 ${showStatus || timeNode ? "has-persistent-meta" : ""}`,
-                children: showStatus ? /* @__PURE__ */ jsx59(GraphChatMessageStatusBadge, { status: status2 }) : null
+                children: showStatus ? /* @__PURE__ */ jsx59(GraphChatMessageStatusBadge, { status: status3 }) : null
               }
             ) : null
           ]
@@ -14945,11 +14958,11 @@ function AddedPromptIcon({ className = "" }) {
 
 // src/components/graph-chat/GraphChatCompactMessageItem.tsx
 import { Fragment as Fragment21, jsx as jsx61, jsxs as jsxs53 } from "react/jsx-runtime";
-function isGraphChatRunningStatus(status2) {
-  if (!status2) {
+function isGraphChatRunningStatus(status3) {
+  if (!status3) {
     return false;
   }
-  const normalized = status2.toLowerCase();
+  const normalized = status3.toLowerCase();
   return normalized.includes("running") || normalized.includes("inprogress") || normalized.includes("in_progress");
 }
 function GraphChatRunningDots2({ tone = "amber" }) {
@@ -15347,15 +15360,15 @@ function getLiveOutputTailForTurn(liveOutput, items) {
   const remainingOutput = liveOutput.slice(consumedLength);
   return remainingOutput.trim() ? remainingOutput : "";
 }
-function isRunningHistoryStatus(status2) {
-  if (!status2) {
+function isRunningHistoryStatus(status3) {
+  if (!status3) {
     return false;
   }
-  const normalized = status2.toLowerCase();
+  const normalized = status3.toLowerCase();
   return normalized.includes("running") || normalized.includes("inprogress") || normalized.includes("in_progress");
 }
-function isActiveTurnStatus(status2) {
-  return status2 === "inProgress" || status2 === "sending";
+function isActiveTurnStatus(status3) {
+  return status3 === "inProgress" || status3 === "sending";
 }
 function groupTimelineHistoryItems(items) {
   return groupAgentActivitySequences(
@@ -16099,9 +16112,9 @@ function Badge({
 
 // src/components/graph-chat/GraphChatHistoryItems.tsx
 import { Fragment as Fragment23, jsx as jsx64, jsxs as jsxs55 } from "react/jsx-runtime";
-function isRunningHistoryStatus2(status2) {
-  if (!status2) return false;
-  const normalized = status2.trim().toLowerCase();
+function isRunningHistoryStatus2(status3) {
+  if (!status3) return false;
+  const normalized = status3.trim().toLowerCase();
   return normalized === "running" || normalized === "in_progress" || normalized === "in progress" || normalized === "pending";
 }
 function projectRelativePathLabel(label) {
@@ -16226,8 +16239,8 @@ function summarizeInlinePreviewText(text) {
     isTruncated: true
   };
 }
-function graphHistoryStatusConfig(status2) {
-  const normalized = status2?.trim().toLowerCase() ?? "";
+function graphHistoryStatusConfig(status3) {
+  const normalized = status3?.trim().toLowerCase() ?? "";
   if (normalized === "completed" || normalized === "complete" || normalized === "success" || normalized === "succeeded") {
     return {
       className: "is-completed",
@@ -16242,17 +16255,17 @@ function graphHistoryStatusConfig(status2) {
       label: translate("chat.failed")
     };
   }
-  if (isRunningHistoryStatus2(status2)) {
+  if (isRunningHistoryStatus2(status3)) {
     return {
       className: "is-pending",
       icon: /* @__PURE__ */ jsx64(Loader26, { className: "h-3.5 w-3.5 animate-spin" }),
-      label: status2?.trim() || translate("chat.running")
+      label: status3?.trim() || translate("chat.running")
     };
   }
   return {
     className: "is-neutral",
     icon: null,
-    label: status2?.trim() || translate("chat.event")
+    label: status3?.trim() || translate("chat.event")
   };
 }
 function graphHistoryToneClassName(tone) {
@@ -16291,7 +16304,7 @@ function graphHistoryEventToneClassName(tone) {
 }
 function GraphChatHistoryEventFrame({
   actions,
-  children,
+  children: children2,
   className,
   headerMeta,
   icon,
@@ -16349,7 +16362,7 @@ function GraphChatHistoryEventFrame({
               timeMeta
             ] }) : null
           ] }),
-          children ? /* @__PURE__ */ jsx64("div", { className: "thread-graph-history-event-body", children }) : null
+          children2 ? /* @__PURE__ */ jsx64("div", { className: "thread-graph-history-event-body", children: children2 }) : null
         ] })
       ]
     }
@@ -16367,7 +16380,7 @@ function GraphChatHistoryToolFrame({
   tone
 }) {
   const { locale: i18nLocale } = useI18n();
-  const status2 = graphHistoryStatusConfig(item.status);
+  const status3 = graphHistoryStatusConfig(item.status);
   const [pathExpanded, setPathExpanded] = useState48(false);
   const isRead = tone === "fileRead";
   return /* @__PURE__ */ jsx64("div", { className: `thread-graph-event thread-graph-history-tool ${graphHistoryToneClassName(tone)} ${className ?? ""}`, children: /* @__PURE__ */ jsxs55("div", { className: "thread-history-direct-row", children: [
@@ -16383,7 +16396,7 @@ function GraphChatHistoryToolFrame({
           /* @__PURE__ */ jsx64("span", { className: "thread-graph-history-tool-icon", children: icon }),
           /* @__PURE__ */ jsx64("span", { className: "thread-graph-history-tool-label", children: title }),
           /* @__PURE__ */ jsx64("span", { title: preview.firstLine, className: `thread-history-direct-preview ${isRead ? "is-path" : ""} ${pathExpanded ? "is-expanded" : ""}`, children: isRead ? /* @__PURE__ */ jsx64("bdi", { children: preview.firstLine }) : preview.firstLine }),
-          /* @__PURE__ */ jsx64("span", { className: `matter-step-status ${status2.className}`, "aria-label": status2.label, children: status2.icon })
+          /* @__PURE__ */ jsx64("span", { className: `matter-step-status ${status3.className}`, "aria-label": status3.label, children: status3.icon })
         ]
       }
     ),
@@ -16458,13 +16471,13 @@ function GraphChatNativeTaskNotification({
 }) {
   const { locale } = useI18n();
   const [open, setOpen] = useState48(false);
-  const status2 = (item.taskStatus ?? item.status ?? "").trim().toLowerCase();
-  const failed = ["failed", "failure", "error", "errored"].includes(status2);
-  const stopped = ["stopped", "killed", "cancelled", "canceled", "interrupted"].includes(status2);
-  const completed = ["completed", "complete", "success", "succeeded"].includes(status2);
-  const waiting = item.origin === "nativeBackgroundWait" && status2 === "waiting";
+  const status3 = (item.taskStatus ?? item.status ?? "").trim().toLowerCase();
+  const failed = ["failed", "failure", "error", "errored"].includes(status3);
+  const stopped = ["stopped", "killed", "cancelled", "canceled", "interrupted"].includes(status3);
+  const completed = ["completed", "complete", "success", "succeeded"].includes(status3);
+  const waiting = item.origin === "nativeBackgroundWait" && status3 === "waiting";
   const label = translate(
-    waiting ? "chat.waitingForWake" : item.origin === "nativeTaskNotification" && !failed && !stopped ? "chat.backgroundAwakened" : item.origin === "nativeBackgroundWait" && status2 === "running" ? "chat.backgroundResumed" : item.origin === "nativeBackgroundWait" ? "chat.backgroundWaitEnded" : failed ? "chat.backgroundTaskFailed" : stopped ? "chat.backgroundTaskStopped" : completed ? "chat.backgroundTaskCompleted" : "chat.backgroundTaskUpdated"
+    waiting ? "chat.waitingForWake" : item.origin === "nativeTaskNotification" && !failed && !stopped ? "chat.backgroundAwakened" : item.origin === "nativeBackgroundWait" && status3 === "running" ? "chat.backgroundResumed" : item.origin === "nativeBackgroundWait" ? "chat.backgroundWaitEnded" : failed ? "chat.backgroundTaskFailed" : stopped ? "chat.backgroundTaskStopped" : completed ? "chat.backgroundTaskCompleted" : "chat.backgroundTaskUpdated"
   );
   const notificationAt = typeof item.awakenedAt === "string" ? item.awakenedAt : item.createdAt;
   const timestamp = notificationAt ? new Date(notificationAt) : null;
@@ -16909,8 +16922,8 @@ var GraphChatHookItem = memo5(function GraphChatHookItem2({
 
 // src/components/graph-chat/GraphChatTurnBody.tsx
 import { Fragment as Fragment24, jsx as jsx65, jsxs as jsxs56 } from "react/jsx-runtime";
-function normalizeGraphChatPlanStepStatus(status2) {
-  const normalized = status2.trim().toLowerCase();
+function normalizeGraphChatPlanStepStatus(status3) {
+  const normalized = status3.trim().toLowerCase();
   if (normalized === "completed" || normalized === "done" || normalized === "complete") {
     return "completed";
   }
@@ -16946,9 +16959,9 @@ function GraphChatLivePlanCard({ livePlan }) {
     ] }, `${livePlan.turnId}-${index}`)) })
   ] });
 }
-function GraphChatPlanStepStatusLabel({ status: status2 }) {
-  const normalized = normalizeGraphChatPlanStepStatus(status2);
-  return /* @__PURE__ */ jsx65(Fragment24, { children: normalized === "completed" ? translate("chat.planStepStatusCompleted") : normalized === "in_progress" ? translate("chat.planStepStatusInProgress") : normalized === "pending" ? translate("chat.planStepStatusPending") : normalized === "failed" ? translate("chat.planStepStatusFailed") : translate("chat.planStepStatus", { value1: status2 }) });
+function GraphChatPlanStepStatusLabel({ status: status3 }) {
+  const normalized = normalizeGraphChatPlanStepStatus(status3);
+  return /* @__PURE__ */ jsx65(Fragment24, { children: normalized === "completed" ? translate("chat.planStepStatusCompleted") : normalized === "in_progress" ? translate("chat.planStepStatusInProgress") : normalized === "pending" ? translate("chat.planStepStatusPending") : normalized === "failed" ? translate("chat.planStepStatusFailed") : translate("chat.planStepStatus", { value1: status3 }) });
 }
 function GraphChatTurnBody({
   footer,
@@ -16980,7 +16993,7 @@ function GraphChatTurnFrame({
   isActive = false,
   refCallback,
   startedAt,
-  status: status2,
+  status: status3,
   timeLabel,
   timeTitle,
   tokenSummary
@@ -16992,7 +17005,7 @@ function GraphChatTurnFrame({
       ref: refCallback,
       "data-testid": "chat-turn",
       "data-turn-active": isActive ? "true" : "false",
-      "data-turn-status": status2 ?? void 0,
+      "data-turn-status": status3 ?? void 0,
       className: "thread-graph-turn px-3 py-2 sm:px-5 sm:py-3",
       children: [
         /* @__PURE__ */ jsx66("div", { className: "thread-graph-turn-header flex items-start justify-between gap-2", children: /* @__PURE__ */ jsxs57("div", { className: "min-w-0 flex flex-1 items-start gap-1.5", children: [
@@ -17038,11 +17051,11 @@ var DURATION = 260;
 function animates() {
   return typeof window !== "undefined" && typeof window.matchMedia === "function" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
-function Collapse({ open, children }) {
+function Collapse({ open, children: children2 }) {
   const [phase, setPhase] = useState49(open ? "open" : "closed");
   const previous = useRef31(open);
-  const last = useRef31(children);
-  if (open) last.current = children;
+  const last = useRef31(children2);
+  if (open) last.current = children2;
   useEffect34(() => {
     if (previous.current === open) return;
     previous.current = open;
@@ -17075,7 +17088,7 @@ function Collapse({ open, children }) {
       className: "tlog-collapse",
       "data-state": shown === "growing" || shown === "open" ? "open" : "closed",
       "data-settled": shown === "open" || void 0,
-      children: /* @__PURE__ */ jsx67("div", { className: "tlog-collapse-inner", children: open ? children : last.current })
+      children: /* @__PURE__ */ jsx67("div", { className: "tlog-collapse-inner", children: open ? children2 : last.current })
     }
   );
 }
@@ -17277,8 +17290,8 @@ function transcriptAgentFor(thread) {
   if (!agent) return null;
   return { agent, name: themeAgentName(thread.agentId || thread.provider || "", agent) };
 }
-function TranscriptAgentProvider({ agent, children }) {
-  return /* @__PURE__ */ jsx71(TranscriptAgentContext.Provider, { value: agent, children });
+function TranscriptAgentProvider({ agent, children: children2 }) {
+  return /* @__PURE__ */ jsx71(TranscriptAgentContext.Provider, { value: agent, children: children2 });
 }
 function useTranscriptAgentIdentity() {
   return useThemeFeature("transcript.agentByline");
@@ -17384,11 +17397,11 @@ function formatElapsedDuration(startedAt, now) {
   return `${seconds2}s`;
 }
 function TurnStatusIndicator({
-  status: status2
+  status: status3
 }) {
   const { locale: i18nLocale } = useI18n();
-  const label = turnStatusLabel(status2);
-  if (status2 === "completed") {
+  const label = turnStatusLabel(status3);
+  if (status3 === "completed") {
     return /* @__PURE__ */ jsx72(
       "span",
       {
@@ -17410,7 +17423,7 @@ function TurnStatusIndicator({
       }
     );
   }
-  if (status2 === "failed") {
+  if (status3 === "failed") {
     return /* @__PURE__ */ jsx72(
       "span",
       {
@@ -17432,7 +17445,7 @@ function TurnStatusIndicator({
       }
     );
   }
-  if (status2 === "interrupted") {
+  if (status3 === "interrupted") {
     return /* @__PURE__ */ jsx72(
       "span",
       {
@@ -17759,8 +17772,8 @@ var KEY_BY_KIND = {
   agentToolCall: "agents",
   reasoning: "reasoning"
 };
-function logStatus(status2) {
-  const value = (status2 ?? "").trim().toLowerCase();
+function logStatus(status3) {
+  const value = (status3 ?? "").trim().toLowerCase();
   if (/fail|error|declin|denied|reject/.test(value)) return "failed";
   if (/interrupt|cancel|abort|stopp/.test(value)) return "interrupted";
   if (/running|progress|pending|started/.test(value)) return "running";
@@ -18199,17 +18212,17 @@ function unwrapShellCommand(command) {
   const body = match[2];
   return match[1] === "'" ? body.replace(/'\\''/g, "'") : body.replace(/\\(["\\$`])/g, "$1");
 }
-function statusTag(status2) {
-  if (status2 === "failed") return /* @__PURE__ */ jsx76("span", { className: "tlog-tag is-failed", children: translate("chat.logFailedTag") });
-  if (status2 === "interrupted") return /* @__PURE__ */ jsx76("span", { className: "tlog-tag is-interrupted", children: translate("chat.logInterrupted") });
-  if (status2 === "running") return /* @__PURE__ */ jsx76("span", { className: "tlog-spinner", role: "img", "aria-label": translate("chat.logRunning") });
+function statusTag(status3) {
+  if (status3 === "failed") return /* @__PURE__ */ jsx76("span", { className: "tlog-tag is-failed", children: translate("chat.logFailedTag") });
+  if (status3 === "interrupted") return /* @__PURE__ */ jsx76("span", { className: "tlog-tag is-interrupted", children: translate("chat.logInterrupted") });
+  if (status3 === "running") return /* @__PURE__ */ jsx76("span", { className: "tlog-spinner", role: "img", "aria-label": translate("chat.logRunning") });
   return null;
 }
-function Viewable({ className, label, onOpen, more, children }) {
-  if (!onOpen) return /* @__PURE__ */ jsx76("div", { className, children });
+function Viewable({ className, label, onOpen, more, children: children2 }) {
+  if (!onOpen) return /* @__PURE__ */ jsx76("div", { className, children: children2 });
   return /* @__PURE__ */ jsxs66("div", { className: `${className} tlog-viewable`, children: [
     /* @__PURE__ */ jsx76("button", { type: "button", className: "tlog-open-full", "aria-label": label, title: label, onClick: onOpen, children: /* @__PURE__ */ jsx76(Maximize23, { "aria-hidden": "true" }) }),
-    children,
+    children2,
     more ? /* @__PURE__ */ jsx76("button", { type: "button", className: "tlog-more-lines", onClick: onOpen, children: more }) : null
   ] });
 }
@@ -18293,9 +18306,9 @@ function OperationRow({ item, defaultOpen = false, path }) {
   const actions = useContext13(TranscriptLogContext);
   const [chosen, setChosen] = useState55(null);
   const open = chosen ?? defaultOpen;
-  const status2 = logStatus(item.status);
+  const status3 = logStatus(item.status);
   const title = rowTitle(item, actions?.workspaceRoot);
-  return /* @__PURE__ */ jsxs66("div", { className: "tlog-row", "data-kind": item.kind, "data-status": status2, "data-open": open || void 0, children: [
+  return /* @__PURE__ */ jsxs66("div", { className: "tlog-row", "data-kind": item.kind, "data-status": status3, "data-open": open || void 0, children: [
     /* @__PURE__ */ jsxs66("div", { className: "tlog-row-line", children: [
       /* @__PURE__ */ jsxs66("button", { type: "button", className: "tlog-row-head", "aria-expanded": open, onClick: (event) => {
         actions?.anchor?.(event.currentTarget);
@@ -18305,7 +18318,7 @@ function OperationRow({ item, defaultOpen = false, path }) {
         /* @__PURE__ */ jsx76("span", { className: "tlog-glyph", "aria-hidden": "true", children: GLYPH[item.kind] ?? "\xB7" }),
         /* @__PURE__ */ jsx76("span", { className: `tlog-title${title.mono ? " is-mono" : ""}`, children: title.text }),
         item.kind === "fileChange" ? /* @__PURE__ */ jsx76(DeltaBadges, { added: item.addedLines, removed: item.removedLines }) : null,
-        statusTag(status2)
+        statusTag(status3)
       ] }),
       item.kind === "commandExecution" && title.full ? /* @__PURE__ */ jsx76(CopyCommand, { text: title.full }) : null
     ] }),
@@ -18415,7 +18428,7 @@ var LogRun = memo6(function LogRun2({
     ...wakes ? [{ key: "wakes", count: wakes, text: translate("chat.logWakes", { count: wakes }) }] : []
   ];
   const running = items.some((item) => logStatus(item.status) === "running");
-  const duration = itemsDuration(items);
+  const duration2 = itemsDuration(items);
   const blocks = useMemo11(() => rowBlocks(items), [items]);
   const openDiffs = useMemo11(() => new Set(live ? items.filter(opensDiff).slice(0, OPEN_DIFFS).map((item) => item.id) : []), [items, live]);
   const [revealed, setRevealed] = useState55(false);
@@ -18431,9 +18444,9 @@ var LogRun = memo6(function LogRun2({
       /* @__PURE__ */ jsx76(ChevronRight6, { className: "tlog-chev", "aria-hidden": "true" }),
       /* @__PURE__ */ jsxs66("span", { className: "tlog-summary", children: [
         parts.length ? /* @__PURE__ */ jsx76(Parts, { parts }) : translate("chat.operationCount", { count: items.length }),
-        duration && !running ? /* @__PURE__ */ jsxs66("span", { className: "tlog-part is-time", children: [
+        duration2 && !running ? /* @__PURE__ */ jsxs66("span", { className: "tlog-part is-time", children: [
           /* @__PURE__ */ jsx76("span", { className: "tlog-sep", "aria-hidden": "true", children: "\xB7" }),
-          compactDuration(duration)
+          compactDuration(duration2)
         ] }) : null
       ] }),
       running ? /* @__PURE__ */ jsx76("span", { className: "tlog-spinner", role: "img", "aria-label": translate("chat.logRunning") }) : null,
@@ -18468,7 +18481,7 @@ function RunPlaceholder({ segment, loading, onOpen, open = false }) {
   useI18n();
   const actions = useContext13(TranscriptLogContext);
   const parts = activityParts(segmentCounts(segment));
-  const duration = segmentDuration(segment);
+  const duration2 = segmentDuration(segment);
   return /* @__PURE__ */ jsx76("section", { className: "tlog-run", "data-placeholder": "true", "data-open": open || void 0, children: /* @__PURE__ */ jsxs66("button", { type: "button", className: "tlog-run-head", "aria-expanded": open, "aria-busy": loading, disabled: loading, onClick: (event) => {
     actions?.anchor?.(event.currentTarget);
     onOpen();
@@ -18476,9 +18489,9 @@ function RunPlaceholder({ segment, loading, onOpen, open = false }) {
     /* @__PURE__ */ jsx76(ChevronRight6, { className: "tlog-chev", "aria-hidden": "true" }),
     /* @__PURE__ */ jsxs66("span", { className: "tlog-summary", children: [
       parts.length ? /* @__PURE__ */ jsx76(Parts, { parts }) : translate("chat.logActivity"),
-      duration ? /* @__PURE__ */ jsxs66("span", { className: "tlog-part is-time", children: [
+      duration2 ? /* @__PURE__ */ jsxs66("span", { className: "tlog-part is-time", children: [
         /* @__PURE__ */ jsx76("span", { className: "tlog-sep", "aria-hidden": "true", children: "\xB7" }),
-        compactDuration(duration)
+        compactDuration(duration2)
       ] }) : null
     ] }),
     loading ? /* @__PURE__ */ jsx76("span", { className: "tlog-spinner", role: "img", "aria-label": translate("chat.logLoading") }) : null,
@@ -18766,8 +18779,8 @@ var HistoryItemRow = memo7(function HistoryItemRow2({
   }
   return /* @__PURE__ */ jsx78(GraphChatGenericHistoryItem, { item, timeMeta });
 });
-function isTerminalTurnStatus(status2) {
-  return status2 === "completed" || status2 === "failed" || status2 === "interrupted";
+function isTerminalTurnStatus(status3) {
+  return status3 === "completed" || status3 === "failed" || status3 === "interrupted";
 }
 function itemCreatedAtMillis(item) {
   const millis = Date.parse(item.createdAt ?? "");
@@ -20196,8 +20209,8 @@ function useTimelineScroll({
 
 // src/components/ThreadTimeline.tsx
 import { Fragment as Fragment30, jsx as jsx79, jsxs as jsxs68 } from "react/jsx-runtime";
-function isTerminalTurnStatus2(status2) {
-  return status2 === "completed" || status2 === "failed" || status2 === "interrupted";
+function isTerminalTurnStatus2(status3) {
+  return status3 === "completed" || status3 === "failed" || status3 === "interrupted";
 }
 function latestTimestamp(...timestamps) {
   let latest = null;
@@ -21373,8 +21386,8 @@ function terminalThemeFor(effectiveTheme, container) {
     ]))
   };
 }
-function statusLabel2(status2) {
-  switch (status2) {
+function statusLabel2(status3) {
+  switch (status3) {
     case "not_created":
       return translate("chat.notCreated");
     case "creating":
@@ -21993,10 +22006,10 @@ function buildConnectionButtonState({
   activeShell,
   busy,
   loading,
-  status: status2,
+  status: status3,
   workspacePathMissing
 }) {
-  const disabled = busy || loading || status2 === "creating" || workspacePathMissing;
+  const disabled = busy || loading || status3 === "creating" || workspacePathMissing;
   const label = activeRuntime.shellInputEnabled ? translate("workbench.disconnectShell") : activeShell && !isLiveShell(activeShell) ? translate("workbench.restartShell") : activeShell ? translate("workbench.connectShell") : translate("workbench.createShell");
   const className = activeRuntime.shellInputEnabled ? "border-emerald-300/45 bg-emerald-300/18 text-emerald-50 ring-1 ring-emerald-300/20 hover:bg-emerald-300/24" : activeShell && !isLiveShell(activeShell) ? "border-stone-600 bg-stone-800/90 text-stone-100 hover:border-stone-500 hover:bg-stone-800" : workspacePathMissing ? "border-rose-300/35 bg-rose-300/12 text-rose-100" : "border-stone-600 bg-stone-800/90 text-stone-100 hover:border-stone-500 hover:bg-stone-800";
   return { disabled, label, className };
@@ -22601,7 +22614,7 @@ function TerminalMenu({
   anchor,
   label,
   onClose,
-  children
+  children: children2
 }) {
   const ref = useRef40(null);
   const [position, setPosition] = useState61(null);
@@ -22654,7 +22667,7 @@ function TerminalMenu({
         const index = items.indexOf(document.activeElement);
         items[(index + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length]?.focus();
       },
-      children
+      children: children2
     }
   );
 }
@@ -22704,8 +22717,8 @@ function TerminalSelection({ terminal, host, point, onCopy, onClose }) {
   useEffect44(() => {
     const update = () => {
       const selection = window.getSelection();
-      const inside = selection && selection.rangeCount > 0 && body.current?.contains(selection.anchorNode);
-      setSelected(inside ? selection.toString() : "");
+      const inside2 = selection && selection.rangeCount > 0 && body.current?.contains(selection.anchorNode);
+      setSelected(inside2 ? selection.toString() : "");
     };
     document.addEventListener("selectionchange", update);
     return () => document.removeEventListener("selectionchange", update);
@@ -23633,14 +23646,14 @@ function ShellTouchControls({ enabled, ctrl, onCtrl, onInput, onFocus, onPaste, 
     ["\u2190", "\x1B[D"],
     ["\u2192", "\x1B[C"]
   ];
-  const icons = { "\u2191": ArrowUp2, "\u2193": ArrowDown3, "\u2190": ArrowLeft3, "\u2192": ArrowRight2 };
+  const icons2 = { "\u2191": ArrowUp2, "\u2193": ArrowDown3, "\u2190": ArrowLeft3, "\u2192": ArrowRight2 };
   return /* @__PURE__ */ jsxs71("div", { className: "shell-touch-controls", role: "toolbar", "aria-label": translate("files.terminalControls"), children: [
     /* @__PURE__ */ jsx83("button", { type: "button", "aria-label": translate("files.controlModifier"), "aria-pressed": ctrl, disabled: !enabled, onPointerDown: (e) => e.preventDefault(), onClick: () => {
       onCtrl();
       onFocus();
     }, children: "Ctrl" }),
     keys.map(([label, data]) => {
-      const Icon = icons[label];
+      const Icon = icons2[label];
       return /* @__PURE__ */ jsx83("button", { type: "button", "aria-label": translate("files.terminal", { value1: label }), disabled: !enabled, onPointerDown: (e) => e.preventDefault(), onClick: () => {
         onInput(data);
         onFocus();
@@ -23663,9 +23676,9 @@ function splitPrefix(index, count) {
   if (count < 2) return "";
   return index === 0 ? "\u250C" : index === count - 1 ? "\u2514" : "\u251C";
 }
-function TerminalStatusDot({ status: status2 }) {
-  const label = status2 === "connected" ? translate("workbench.terminalStatusConnected") : status2 === "connecting" ? translate("workbench.terminalConnecting") : status2 === "running" ? statusLabel2("running") : translate("workbench.terminalDisconnected");
-  return /* @__PURE__ */ jsx84("span", { className: "terminal-status-dot", "data-status": status2, role: "img", "aria-label": label, title: label });
+function TerminalStatusDot({ status: status3 }) {
+  const label = status3 === "connected" ? translate("workbench.terminalStatusConnected") : status3 === "connecting" ? translate("workbench.terminalConnecting") : status3 === "running" ? statusLabel2("running") : translate("workbench.terminalDisconnected");
+  return /* @__PURE__ */ jsx84("span", { className: "terminal-status-dot", "data-status": status3, role: "img", "aria-label": label, title: label });
 }
 function TerminalTabs({
   layout,
@@ -23922,7 +23935,7 @@ function readTabsWidth() {
     return TERMINAL_TABS_DEFAULT;
   }
 }
-function IconButton({ label, onClick, disabled, pressed, expanded, children, testId, keepFocus, danger }) {
+function IconButton({ label, onClick, disabled, pressed, expanded, children: children2, testId, keepFocus, danger }) {
   return /* @__PURE__ */ jsx85(
     "button",
     {
@@ -23938,7 +23951,7 @@ function IconButton({ label, onClick, disabled, pressed, expanded, children, tes
         if (document.activeElement?.closest(".xterm")) event.preventDefault();
       } } : {},
       onClick,
-      children
+      children: children2
     }
   );
 }
@@ -24010,7 +24023,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
   const workspacePathMissing = shellState?.workspacePathStatus === "missing";
   const vertical = compact || groupsSize.width > 0 && groupsSize.width < 520;
   const showTabs = !compact && liveShells.length >= 2;
-  const status2 = shellState?.state ?? "not_created";
+  const status3 = shellState?.state ?? "not_created";
   const labels = useMemo16(() => new Map(liveShells.map((shell, index) => [
     shell.id,
     shell.label?.trim() || translate("workbench.terminalDefaultName", { value1: layout.numbers?.[shell.id] ?? index + 1 })
@@ -24184,10 +24197,10 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     setFocusArmed(true);
   }, [openRequest]);
   useEffect46(() => {
-    if (!pendingAutoCreate.current || !panelVisible || !shellState || loading || busy || workspacePathMissing || status2 === "creating") return;
+    if (!pendingAutoCreate.current || !panelVisible || !shellState || loading || busy || workspacePathMissing || status3 === "creating") return;
     pendingAutoCreate.current = false;
     if (liveShells.length === 0) void createTerminal("group");
-  }, [busy, createTerminal, liveShells.length, loading, openRequest, panelVisible, shellState, status2, workspacePathMissing]);
+  }, [busy, createTerminal, liveShells.length, loading, openRequest, panelVisible, shellState, status3, workspacePathMissing]);
   useEffect46(() => {
     if (!shellState || loading) return;
     if (hadLiveShells.current && liveShells.length === 0) onLastTerminalClosed?.();
@@ -24235,7 +24248,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     activeShell,
     busy,
     loading,
-    status: status2,
+    status: status3,
     workspacePathMissing
   });
   const handleConnectionToggle = async () => {
@@ -24454,7 +24467,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     void loadShellState();
   } }) : null;
   const missingMark = workspacePathMissing ? /* @__PURE__ */ jsx85(ErrorMark, { kind: "unavailable", message: translate("files.workspacePathIsMissingOnThisMachine") }) : null;
-  const header = showHeader && /* @__PURE__ */ jsxs73("div", { className: "terminal-header", onDoubleClick: (event) => {
+  const header2 = showHeader && /* @__PURE__ */ jsxs73("div", { className: "terminal-header", onDoubleClick: (event) => {
     if (panelControls && event.target === event.currentTarget) panelControls.toggleMaximized();
   }, children: [
     compact ? /* @__PURE__ */ jsxs73(
@@ -24508,8 +24521,8 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       "data-terminal-theme": effectiveTheme,
       "data-testid": "terminal-panel",
       children: [
-        header,
-        !header && (errorMark || missingMark) && !collapsed && /* @__PURE__ */ jsxs73("div", { className: "terminal-marks flex shrink-0 items-center justify-end gap-1 px-2 py-1", children: [
+        header2,
+        !header2 && (errorMark || missingMark) && !collapsed && /* @__PURE__ */ jsxs73("div", { className: "terminal-marks flex shrink-0 items-center justify-end gap-1 px-2 py-1", children: [
           errorMark,
           missingMark
         ] }),
@@ -24766,8 +24779,8 @@ function formatTurnTime(value) {
     minute: "2-digit"
   });
 }
-function statusLabel3(status2) {
-  switch (status2) {
+function statusLabel3(status3) {
+  switch (status3) {
     case "inProgress":
       return "running";
     case "completed":
@@ -25174,11 +25187,11 @@ function ThreadActionsDialog({
                     /* @__PURE__ */ jsxs76("label", { className: "thread-export-dialog-body-text mt-4 block text-sm", children: [
                       translate("sharing.turns_3037e1"),
                       /* @__PURE__ */ jsx88(
-                        "select",
+                        Select,
                         {
                           className: "thread-export-dialog-box mt-2 w-full rounded-xl border bg-transparent px-3 py-2 outline-none",
                           value: turnSelection,
-                          onChange: (event) => setTurnSelection(event.target.value),
+                          onValueChange: (selectedValue) => setTurnSelection(selectedValue),
                           children: ["latest-3", "latest-10", "latest-20", "all-loaded", "custom"].map((entry) => /* @__PURE__ */ jsx88("option", { value: entry, children: turnSelectionLabel(entry) }, entry))
                         }
                       )
@@ -26063,7 +26076,7 @@ function ThreadDetailSurface({
   detail: rawDetail,
   loading,
   error,
-  status: status2 = null,
+  status: status3 = null,
   plugins: providedPlugins,
   adapter,
   metaContent,
@@ -26195,7 +26208,7 @@ function ThreadDetailSurface({
     ThreadGraphWorkspacePanel,
     {
       detail,
-      status: status2,
+      status: status3,
       plugins,
       workspaceAdapter: adapter.workspace ?? null,
       metaContent,
@@ -26287,7 +26300,7 @@ ${pageMark}` : pageMark } : composerProps,
       deviceMonitor,
       ...workbench ? { workbench } : {},
       threads,
-      status: status2,
+      status: status3,
       loading,
       error: loading ? null : error,
       viewportConstrained: true,
@@ -26374,14 +26387,14 @@ function PluginProvider({
   adapter = DEFAULT_PLUGIN_PROVIDER_ADAPTER,
   builtinPlugins = DEFAULT_BUILTIN_PLUGINS,
   scope = null,
-  children
+  children: children2
 }) {
   useI18n();
   const [plugins, setPlugins] = useState69(
     () => mergePluginState(builtinPlugins, [])
   );
   const [settingsPluginIds, setSettingsPluginIds] = useState69(/* @__PURE__ */ new Set());
-  const known2 = useRef50(/* @__PURE__ */ new Map());
+  const known3 = useRef50(/* @__PURE__ */ new Map());
   const current = useRef50({ scope, adapter });
   current.current = { scope, adapter };
   const [settingsVersion, setSettingsVersion] = useState69(0);
@@ -26391,8 +26404,8 @@ function PluginProvider({
   const [devicePluginsKnown, setDevicePluginsKnown] = useState69(false);
   const [shownScope, setShownScope] = useState69(scope);
   if (shownScope !== scope) {
-    known2.current.set(shownScope, { plugins, settingsPluginIds, devicePluginsKnown });
-    const next = known2.current.get(scope);
+    known3.current.set(shownScope, { plugins, settingsPluginIds, devicePluginsKnown });
+    const next = known3.current.get(scope);
     setShownScope(scope);
     setPlugins(next?.plugins ?? mergePluginState(builtinPlugins, []));
     setSettingsPluginIds(next?.settingsPluginIds ?? /* @__PURE__ */ new Set());
@@ -26555,7 +26568,7 @@ function PluginProvider({
       uninstallPlugin
     ]
   );
-  return /* @__PURE__ */ jsx95(PluginContext.Provider, { value, children });
+  return /* @__PURE__ */ jsx95(PluginContext.Provider, { value, children: children2 });
 }
 
 // src/plugins/PluginActionOutput.tsx
@@ -26617,7 +26630,7 @@ function useDevicePlugins() {
 function ThreadPluginScope({
   threadId,
   adapter,
-  children
+  children: children2
 }) {
   const parent = useContext14(PluginContext);
   const device = parent.device ?? parent;
@@ -26659,10 +26672,10 @@ function ThreadPluginScope({
       });
     } catch (error) {
       if (id !== request.current) return;
-      const status2 = errorStatus(error);
+      const status3 = errorStatus(error);
       setLoaded({
         threadId,
-        status: status2 === 404 || status2 === 405 ? "unsupported" : status2 === 401 || status2 === 403 ? "forbidden" : "error",
+        status: status3 === 404 || status3 === 405 ? "unsupported" : status3 === 401 || status3 === 403 ? "forbidden" : "error",
         plugins: [],
         error: error instanceof Error && error.message ? error.message : translate("settings.threadPluginsLoadFailed")
       });
@@ -26775,10 +26788,10 @@ function ThreadPluginScope({
         enabled: gateByDevice ? plugin.enabled && own.enabled : own.enabled
       };
     });
-    const known2 = new Set(device.plugins.map((plugin) => plugin.id));
+    const known3 = new Set(device.plugins.map((plugin) => plugin.id));
     return [
       ...merged,
-      ...loaded.plugins.filter((plugin) => !known2.has(plugin.id))
+      ...loaded.plugins.filter((plugin) => !known3.has(plugin.id))
     ];
   }, [device.plugins, loaded, gateByDevice]);
   const thread = useMemo21(
@@ -26817,7 +26830,7 @@ function ThreadPluginScope({
     }),
     [device, plugins, thread]
   );
-  return /* @__PURE__ */ jsx97(PluginContext.Provider, { value, children });
+  return /* @__PURE__ */ jsx97(PluginContext.Provider, { value, children: children2 });
 }
 
 // src/plugins/InstalledPluginPanel.tsx
@@ -26832,11 +26845,11 @@ var HEALTH = {
 };
 function HealthMark({ item }) {
   const { t: t2 } = useI18n();
-  const known2 = HEALTH[item.status] ?? HEALTH.transient;
-  const Icon = known2.icon;
+  const known3 = HEALTH[item.status] ?? HEALTH.transient;
+  const Icon = known3.icon;
   return /* @__PURE__ */ jsxs84("span", { className: "installed-plugin-health", "data-status": HEALTH[item.status] ? item.status : "transient", children: [
     /* @__PURE__ */ jsx98(Icon, { size: 15, "aria-hidden": "true" }),
-    /* @__PURE__ */ jsx98("span", { children: item.statusText || t2(known2.label) })
+    /* @__PURE__ */ jsx98("span", { children: item.statusText || t2(known3.label) })
   ] });
 }
 function statusOf(output) {
@@ -26854,7 +26867,7 @@ function InstalledPluginPanel({ plugin }) {
   const adapter = useDevicePlugins().adapter;
   const actions = plugin.capabilities.actions ?? [];
   const canStatus = plugin.enabled && actions.includes("status") && !!adapter?.runPluginAction;
-  const [status2, setStatus] = useState71(null);
+  const [status3, setStatus] = useState71(null);
   const [error, setError] = useState71(null);
   const [loading, setLoading] = useState71(false);
   const [runs, setRuns] = useState71(null);
@@ -26899,8 +26912,8 @@ function InstalledPluginPanel({ plugin }) {
         )
       ] }),
       error && /* @__PURE__ */ jsx98(ErrorMark, { message: t2("settings.installedStatusFailed"), detail: error, onRetry: () => void refresh() }),
-      status2?.summary && /* @__PURE__ */ jsx98("p", { className: "installed-plugin-summary", children: status2.summary }),
-      status2?.sections?.map((section) => /* @__PURE__ */ jsxs84("div", { className: "installed-plugin-group", children: [
+      status3?.summary && /* @__PURE__ */ jsx98("p", { className: "installed-plugin-summary", children: status3.summary }),
+      status3?.sections?.map((section) => /* @__PURE__ */ jsxs84("div", { className: "installed-plugin-group", children: [
         /* @__PURE__ */ jsx98("h4", { children: section.title }),
         /* @__PURE__ */ jsx98("ul", { children: section.items.map((item) => /* @__PURE__ */ jsxs84("li", { children: [
           /* @__PURE__ */ jsx98("span", { className: "installed-plugin-label", children: item.label }),
@@ -27848,8 +27861,8 @@ function AppShellSettingsDialog({
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { useCallback as useCallback27, useEffect as useEffect57, useLayoutEffect as useLayoutEffect23, useMemo as useMemo23, useRef as useRef60, useState as useState79 } from "react";
-import { ArrowLeft as ArrowLeft4, ArrowUpRight as ArrowUpRight2, ChevronRight as ChevronRight9, ChevronUp as ChevronUp4, Folder as Folder4, List, Monitor as Monitor3, Network as Network2, RotateCw as RotateCw2 } from "lucide-react";
+import { useCallback as useCallback27, useEffect as useEffect59, useLayoutEffect as useLayoutEffect23, useMemo as useMemo23, useRef as useRef61, useState as useState80 } from "react";
+import { ArrowLeft as ArrowLeft4, ArrowUpRight as ArrowUpRight2, ChevronRight as ChevronRight9, ChevronUp as ChevronUp4, Folder as Folder6, List, Monitor as Monitor4, Network as Network2, RotateCw as RotateCw2, Layers as Layers4, Activity as Activity2, DollarSign as DollarSign4 } from "lucide-react";
 
 // src/components/threadMap/model.ts
 var threadWeight = (turns) => 1 + Math.sqrt(Math.max(0, turns ?? 0));
@@ -27877,11 +27890,24 @@ function inScope(thread, scope, now) {
   const age = now - Date.parse(thread.lastActiveAt ?? "");
   return Number.isFinite(age) && age <= (scope === "active" ? DAY : 7 * DAY);
 }
+function inDenseScope(thread, now) {
+  return isLive(thread) || isWaiting(thread) || now - Date.parse(thread.lastActiveAt ?? "") <= DAY || Boolean(thread.children?.some((child) => inDenseScope(child, now)));
+}
+var RECENCY_HALF_LIFE = 2 * DAY;
+var RECENCY_FLOOR = 0.03;
+var lastActivity = (thread) => Math.max(Date.parse(thread.lastActiveAt ?? "") || 0, ...(thread.children ?? []).map(lastActivity));
+function recencyFactor(thread, now) {
+  if (isLive(thread) || isWaiting(thread)) return 1;
+  const last = lastActivity(thread);
+  return last ? Math.max(RECENCY_FLOOR, 0.5 ** (Math.max(0, now - last) / RECENCY_HALF_LIFE)) : RECENCY_FLOOR;
+}
+var activityBoost = (thread) => 1 + heatLevel(thread.activeMs) * 0.5;
 function recencyWeight(thread, now) {
-  const age = now - Date.parse(thread.lastActiveAt ?? "");
-  const factor = age <= DAY ? 1 : age <= 7 * DAY ? 0.7 : 0.45;
-  const weight = threadWeight(thread.turns) * factor;
+  const weight = threadWeight(thread.turns) * recencyFactor(thread, now) * activityBoost(thread);
   return isLive(thread) || isWaiting(thread) ? Math.max(weight, runningWeight(thread.turns)) : weight;
+}
+function roomFor(thread, now) {
+  return (0.15 + 0.85 * recencyFactor(thread, now)) * activityBoost(thread);
 }
 function buildThreadMap(devices, rootLabel, options = {}) {
   const blank = { children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0, usd: 0, tokens: 0 };
@@ -27914,7 +27940,8 @@ function buildThreadMap(devices, rootLabel, options = {}) {
           thread,
           device,
           workspace,
-          weight: options.scope ? recencyWeight(thread, now) : live || isWaiting(thread) ? runningWeight(thread.turns) : threadWeight(thread.turns),
+          weight: recencyWeight(thread, now),
+          room: roomFor(thread, now),
           turns: thread.turns ?? 0,
           activeMs: thread.activeMs ?? 0,
           threads: 1,
@@ -27922,10 +27949,11 @@ function buildThreadMap(devices, rootLabel, options = {}) {
           usd: thread.priceEstimate?.totalUsd ?? 0,
           tokens: thread.tokenUsage?.totalTokens ?? 0
         };
-        if (options.scope && !expanded && !inScope(thread, options.scope, now)) hidden.push(leaf);
+        if (options.scope && !expanded && !(options.dense && options.scope === "active" ? inDenseScope(thread, now) : inScope(thread, options.scope, now))) hidden.push(leaf);
         else space.children.push(leaf);
         add(space, leaf);
       }
+      if (options.dense) hidden.length = 0;
       if (!space.children.length && hidden.length) {
         space.hiddenNodes = hidden;
         hiddenSpaces.push(space);
@@ -28087,7 +28115,7 @@ function threadDetails(node, hours) {
   const thread = node.thread;
   const who = [
     thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null,
-    thread.model,
+    thread.modelDisplayName?.trim() || thread.model,
     node.parent && node.parent.kind !== "root" ? node.parent.label : null,
     thread.from ? translate("workbench.threadMapFrom", { title: thread.from }) : null
   ].filter(Boolean).join(" \xB7 ");
@@ -28167,9 +28195,9 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   const showAge = (!readable || w >= 220 && h >= 110) && age !== null && w >= 110 && h >= 44 && headRoom - childrenWidth - 19 >= 52;
   const showAgeText = showAge && headRoom - childrenWidth - 52 >= 80;
   const showWho = w >= 100 && h >= (readable ? 110 : 80);
-  const known2 = thread.turns !== null;
+  const known3 = thread.turns !== null;
   const priced = Boolean(thread.tokenUsage || thread.priceEstimate);
-  const figures = known2 && w >= 176 && h >= 120 ? "grid" : known2 && w >= 96 && h >= 170 ? "column" : known2 && w >= 64 && h >= 46 ? "line" : null;
+  const figures = known3 && w >= 176 && h >= 120 ? "grid" : known3 && w >= 96 && h >= 170 ? "column" : known3 && w >= 64 && h >= 46 ? "line" : null;
   const usage = !priced ? null : figures === "grid" && w >= 270 ? "cell" : (figures === "grid" || figures === "column") && w >= 110 ? "row" : null;
   const showSpark = Boolean(thread.hourlyMs?.some((ms) => ms > 0)) && w >= 96 && h >= 100;
   const fixed = FIT.padding + (childrenRow ? 19 + FIT.gap : 0) + (showWho ? FIT.who + FIT.gap : 0) + (figures ? FIT[figures === "line" ? "meta" : figures] + FIT.gap : 0) + (usage === "row" ? FIT.usage + FIT.gap : 0) + (showSpark ? FIT.spark + FIT.gap : 0);
@@ -28183,9 +28211,9 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   const lines = readable && h < 110 ? 2 : !wraps ? 1 : prompt ? Math.min(2, titleLines) : titleLines;
   const left = h - fixed - lines * lineHeight - (prompt ? promptLines * FIT.promptLine + FIT.gap : 0);
   const sparkHeight = FIT.spark + Math.max(0, Math.min(28, Math.floor(left * 0.4)));
-  const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.model].filter(Boolean).join(" \xB7 ") : "";
+  const who = w >= 160 ? [thread.agent ? thread.agentName ?? themeAgentName(thread.agent) : null, thread.modelDisplayName?.trim() || thread.model].filter(Boolean).join(" \xB7 ") : "";
   const from = w >= 160 && thread.from ? translate("workbench.threadMapFrom", { title: thread.from }) : "";
-  const status2 = waiting ? /* @__PURE__ */ jsx103("span", { className: "thread-map-tile-waiting", children: translate("workbench.waitingForYou") }) : thread.running ? /* @__PURE__ */ jsxs89("span", { className: "thread-map-tile-live", children: [
+  const status3 = waiting ? /* @__PURE__ */ jsx103("span", { className: "thread-map-tile-waiting", children: translate("workbench.waitingForYou") }) : thread.running ? /* @__PURE__ */ jsxs89("span", { className: "thread-map-tile-live", children: [
     /* @__PURE__ */ jsx103("i", { className: "thread-map-running-dot" }),
     translate("workbench.threadMapRunning")
   ] }) : thread.lastActiveAt ? /* @__PURE__ */ jsx103("span", { children: translate("workbench.threadMapActiveAgo", { ago: ago(thread.lastActiveAt) }) }) : null;
@@ -28258,11 +28286,11 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
           }
         ),
         childrenRow && /* @__PURE__ */ jsx103("span", { className: "thread-map-tile-children-row", children: childrenButton(true) }),
-        showWho && (who || from || status2 || thread.failed) && /* @__PURE__ */ jsxs89("span", { className: "thread-map-tile-sub", children: [
+        showWho && (who || from || status3 || thread.failed) && /* @__PURE__ */ jsxs89("span", { className: "thread-map-tile-sub", children: [
           who && /* @__PURE__ */ jsx103("span", { className: "thread-map-tile-who", children: who }),
           from && /* @__PURE__ */ jsx103("span", { className: "thread-map-tile-from", children: from }),
           thread.failed && /* @__PURE__ */ jsx103("span", { className: "thread-map-tile-failed", children: translate("workbench.threadMapFailedTurn") }),
-          status2
+          status3
         ] }),
         prompt && /* @__PURE__ */ jsx103("span", { className: "thread-map-tile-prompt", children: prompt }),
         (figures === "grid" || figures === "column") && /* @__PURE__ */ jsxs89("span", { className: "thread-map-stats", "data-layout": figures, children: [
@@ -28293,85 +28321,36 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
 var ThreadTile = memo10(ThreadTileContent, (a, b) => a.node.thread === b.node.thread && a.node.parent?.label === b.node.parent?.label && a.node.running === b.node.running && a.box.x === b.box.x && a.box.y === b.box.y && a.box.width === b.box.width && a.box.height === b.box.height && a.readable === b.readable && a.hours === b.hours && a.current === b.current && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook && Boolean(a.onShowChildren) === Boolean(b.onShowChildren));
 
 // src/components/threadMap/MapTooltip.tsx
-import { useLayoutEffect as useLayoutEffect20, useRef as useRef55, useState as useState75 } from "react";
-import { createPortal as createPortal10 } from "react-dom";
-import { jsx as jsx104 } from "react/jsx-runtime";
-function placeMapTooltip(anchor, tip, viewport) {
-  const gap = 8, left = viewport.x + gap, top = viewport.y + gap;
-  const right = viewport.x + viewport.width - gap, bottom = viewport.y + viewport.height - gap;
-  const x = Math.max(left, Math.min(right - tip.width, anchor.x));
-  const y = Math.max(top, Math.min(bottom - tip.height, anchor.y));
-  const candidates = [
-    { x, y: anchor.y + anchor.height + gap },
-    { x: anchor.x + anchor.width + gap, y },
-    { x: anchor.x - tip.width - gap, y },
-    { x, y: anchor.y - tip.height - gap }
-  ];
-  return candidates.find((p) => p.x >= left && p.y >= top && p.x + tip.width <= right && p.y + tip.height <= bottom && (p.x >= anchor.x + anchor.width || p.x + tip.width <= anchor.x || p.y >= anchor.y + anchor.height || p.y + tip.height <= anchor.y)) ?? null;
-}
-function MapTooltip({ anchor, lines, onClose }) {
-  const element = useRef55(null), close = useRef55(onClose);
-  close.current = onClose;
-  const [position, setPosition] = useState75(null);
-  useLayoutEffect20(() => {
-    const update = () => {
-      if (!anchor.isConnected || !anchor.getClientRects().length || !element.current) {
-        close.current();
-        return;
-      }
-      const a = anchor.getBoundingClientRect(), t2 = element.current.getBoundingClientRect(), view = window.visualViewport;
-      const next = placeMapTooltip(
-        { x: a.left, y: a.top, width: a.width, height: a.height },
-        t2,
-        { x: view?.offsetLeft ?? 0, y: view?.offsetTop ?? 0, width: view?.width ?? innerWidth, height: view?.height ?? innerHeight }
-      );
-      setPosition(next);
-    };
-    update();
-    const resize = new ResizeObserver(update);
-    resize.observe(anchor);
-    if (element.current) resize.observe(element.current);
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", update, true);
-    window.visualViewport?.addEventListener("resize", update);
-    window.visualViewport?.addEventListener("scroll", update);
-    return () => {
-      resize.disconnect();
-      window.removeEventListener("resize", update);
-      window.removeEventListener("scroll", update, true);
-      window.visualViewport?.removeEventListener("resize", update);
-      window.visualViewport?.removeEventListener("scroll", update);
-    };
-  }, [anchor, lines]);
-  return createPortal10(/* @__PURE__ */ jsx104(
-    "div",
-    {
-      ref: element,
-      role: "tooltip",
-      className: "thread-graph-dialog thread-map-tip",
-      "data-theme-effective": document.documentElement.dataset.themeEffective,
-      style: { position: "fixed", left: position?.x ?? 0, top: position?.y ?? 0, visibility: position ? "visible" : "hidden", width: "min(300px, calc(100vw - 16px))" },
-      children: lines.map((line, index) => index ? /* @__PURE__ */ jsx104("span", { children: line }, index) : /* @__PURE__ */ jsx104("b", { children: line }, index))
-    }
-  ), document.body);
-}
-
-// src/components/threadMap/ReadableMap.tsx
-import { memo as memo11, useRef as useRef58, useState as useState78 } from "react";
-import { ArrowUpRight, ChevronRight as ChevronRight8, Folder as Folder3, Layers, Monitor as Monitor2 } from "lucide-react";
+import {
+  useEffect as useEffect57,
+  useId as useId7,
+  useLayoutEffect as useLayoutEffect21,
+  useRef as useRef57,
+  useState as useState77
+} from "react";
+import { createPortal as createPortal11 } from "react-dom";
+import {
+  Activity,
+  Clock3,
+  DollarSign as DollarSign2,
+  Folder as Folder3,
+  Layers,
+  ListRestart,
+  Monitor as Monitor2
+} from "lucide-react";
 
 // src/components/threadMap/MapChrome.tsx
-import { useEffect as useEffect56, useLayoutEffect as useLayoutEffect21, useRef as useRef57, useState as useState77 } from "react";
-import { createPortal as createPortal11 } from "react-dom";
-import { MoreVertical } from "lucide-react";
+import { useEffect as useEffect56, useLayoutEffect as useLayoutEffect20, useRef as useRef56, useState as useState76 } from "react";
+import { createPortal as createPortal10 } from "react-dom";
+import { MoreVertical, Check as Check6, X as X13, Info as Info2 } from "lucide-react";
 
 // src/components/threadMap/MapScrollList.tsx
-import { useEffect as useEffect55, useRef as useRef56, useState as useState76 } from "react";
-import { jsx as jsx105, jsxs as jsxs90 } from "react/jsx-runtime";
-function MapScrollList({ children, label }) {
-  const viewport = useRef56(null), track = useRef56(null);
-  const [thumb, setThumb] = useState76({ height: 0, top: 0 });
-  const frame = useRef56(null);
+import { useEffect as useEffect55, useRef as useRef55, useState as useState75 } from "react";
+import { jsx as jsx104, jsxs as jsxs90 } from "react/jsx-runtime";
+function MapScrollList({ children: children2, label }) {
+  const viewport = useRef55(null), track = useRef55(null);
+  const [thumb, setThumb] = useState75({ height: 0, top: 0 });
+  const frame = useRef55(null);
   const measure = () => {
     if (frame.current !== null) return;
     frame.current = requestAnimationFrame(() => {
@@ -28398,10 +28377,10 @@ function MapScrollList({ children, label }) {
     };
   }, []);
   return /* @__PURE__ */ jsxs90("div", { className: "thread-map-scroll-list", children: [
-    /* @__PURE__ */ jsx105("div", { ref: viewport, className: "thread-map-list-scroll", role: "region", "aria-label": label, onScroll: measure, onFocusCapture: (event) => {
+    /* @__PURE__ */ jsx104("div", { ref: viewport, className: "thread-map-list-scroll", role: "region", "aria-label": label, onScroll: measure, onFocusCapture: (event) => {
       event.target.closest(".thread-map-list-row")?.scrollIntoView?.({ block: "nearest" });
-    }, children }),
-    thumb.height > 0 && /* @__PURE__ */ jsx105("div", { ref: track, className: "thread-map-scroll-track", "aria-hidden": "true", children: /* @__PURE__ */ jsx105("div", { className: "thread-map-scroll-thumb", style: { height: thumb.height, transform: `translateY(${thumb.top}px)` }, onPointerDown: (event) => {
+    }, children: children2 }),
+    thumb.height > 0 && /* @__PURE__ */ jsx104("div", { ref: track, className: "thread-map-scroll-track", "aria-hidden": "true", children: /* @__PURE__ */ jsx104("div", { className: "thread-map-scroll-thumb", style: { height: thumb.height, transform: `translateY(${thumb.top}px)` }, onPointerDown: (event) => {
       event.preventDefault();
       const el = viewport.current;
       const start = event.clientY, at = el.scrollTop, range = el.scrollHeight - el.clientHeight;
@@ -28430,9 +28409,9 @@ function orderAttention(items) {
 }
 
 // src/components/threadMap/MapChrome.tsx
-import { Fragment as Fragment37, jsx as jsx106, jsxs as jsxs91 } from "react/jsx-runtime";
+import { Fragment as Fragment37, jsx as jsx105, jsxs as jsxs91 } from "react/jsx-runtime";
 function DeviceStateMark({ offline = false }) {
-  return /* @__PURE__ */ jsx106(
+  return /* @__PURE__ */ jsx105(
     "span",
     {
       className: "thread-map-device-state",
@@ -28449,55 +28428,55 @@ function relativeCache(at) {
   return new Intl.RelativeTimeFormat(getLocale(), { numeric: "auto", style: "short" }).format(Math.round(ms / (unit === "day" ? 864e5 : unit === "hour" ? 36e5 : 6e4)), unit);
 }
 function AttentionStrip({ items, onOpen, onRequestDecision, responsive = false }) {
-  const [expanded, setExpanded] = useState77(false);
+  const [expanded, setExpanded] = useState76(false);
   const ordered = orderAttention(items);
-  if (responsive) return /* @__PURE__ */ jsx106(ResponsiveAttention, { items: ordered, onOpen, onRequestDecision });
-  return /* @__PURE__ */ jsx106("div", { className: "thread-map-attention-wrap", "data-visible": items.length > 0 || void 0, children: /* @__PURE__ */ jsxs91("div", { className: "thread-map-attention", role: "region", "aria-label": translate("workbench.threadMapAttention"), children: [
-    ordered.slice(0, expanded ? void 0 : 6).map((item) => /* @__PURE__ */ jsx106(AttentionCard, { item, onOpen, onRequestDecision }, item.key)),
-    !expanded && ordered.length > 6 && /* @__PURE__ */ jsx106("button", { type: "button", className: "thread-map-attention-more", onClick: () => setExpanded(true), children: translate("workbench.threadMapMoreAttention", { count: ordered.length - 6 }) })
+  if (responsive) return /* @__PURE__ */ jsx105(ResponsiveAttention, { items: ordered, onOpen, onRequestDecision, compact: true });
+  return /* @__PURE__ */ jsx105("div", { className: "thread-map-attention-wrap", "data-visible": items.length > 0 || void 0, children: /* @__PURE__ */ jsxs91("div", { className: "thread-map-attention", role: "region", "aria-label": translate("workbench.threadMapAttention"), children: [
+    ordered.slice(0, expanded ? void 0 : 6).map((item) => /* @__PURE__ */ jsx105(AttentionCard, { item, onOpen, onRequestDecision }, item.key)),
+    !expanded && ordered.length > 6 && /* @__PURE__ */ jsx105("button", { type: "button", className: "thread-map-attention-more", onClick: () => setExpanded(true), children: translate("workbench.threadMapMoreAttention", { count: ordered.length - 6 }) })
   ] }) });
 }
-function AttentionCard({ item, onOpen, onRequestDecision }) {
+function AttentionCard({ item, onOpen, onRequestDecision, compact = false }) {
   return /* @__PURE__ */ jsxs91("article", { className: "thread-map-attention-card", "data-kind": item.kind, children: [
     /* @__PURE__ */ jsxs91("button", { className: "thread-map-attention-open", type: "button", onClick: () => onOpen(item.key), title: item.title, children: [
-      /* @__PURE__ */ jsx106(StatusMark, { status: item.kind === "approval" || item.kind === "input" ? "waiting" : item.kind === "failed" ? "failed" : "unread" }),
+      /* @__PURE__ */ jsx105(StatusMark, { status: item.kind === "approval" || item.kind === "input" ? "waiting" : item.kind === "failed" ? "failed" : "unread" }),
       /* @__PURE__ */ jsxs91("span", { children: [
-        /* @__PURE__ */ jsx106("b", { children: item.title }),
+        /* @__PURE__ */ jsx105("b", { children: item.title }),
         /* @__PURE__ */ jsxs91("small", { children: [
           item.device,
           " \xB7 ",
           item.workspace
         ] }),
-        /* @__PURE__ */ jsx106("small", { children: item.summary ?? translate(item.kind === "input" || item.kind === "approval" ? "workbench.waitingForYou" : item.kind === "failed" ? "workbench.failed" : "workbench.completedUnread") })
+        /* @__PURE__ */ jsx105("small", { children: item.summary ?? translate(item.kind === "input" || item.kind === "approval" ? "workbench.waitingForYou" : item.kind === "failed" ? "workbench.failed" : "workbench.completedUnread") })
       ] })
     ] }),
     item.kind === "approval" && item.requestId && onRequestDecision && /* @__PURE__ */ jsxs91("div", { className: "thread-map-decisions", children: [
-      /* @__PURE__ */ jsx106("button", { type: "button", onClick: () => onRequestDecision(item.key, item.requestId, "approve"), children: translate("workbench.threadMapApprove") }),
-      /* @__PURE__ */ jsx106("button", { type: "button", onClick: () => onRequestDecision(item.key, item.requestId, "deny"), children: translate("workbench.threadMapDeny") })
+      /* @__PURE__ */ jsx105("button", { type: "button", "aria-label": translate("workbench.threadMapApprove"), title: translate("workbench.threadMapApprove"), onClick: () => onRequestDecision(item.key, item.requestId, "approve"), children: compact ? /* @__PURE__ */ jsx105(Check6, { "aria-hidden": "true" }) : translate("workbench.threadMapApprove") }),
+      /* @__PURE__ */ jsx105("button", { type: "button", "aria-label": translate("workbench.threadMapDeny"), title: translate("workbench.threadMapDeny"), onClick: () => onRequestDecision(item.key, item.requestId, "deny"), children: compact ? /* @__PURE__ */ jsx105(X13, { "aria-hidden": "true" }) : translate("workbench.threadMapDeny") })
     ] })
   ] });
 }
-function ResponsiveAttention({ items, onOpen, onRequestDecision }) {
-  const strip = useRef57(null), trigger = useRef57(null), menu = useRef57(null);
-  const [capacity, setCapacity] = useState77(1);
-  const [anchor, setAnchor] = useState77(null);
+function ResponsiveAttention({ items, onOpen, onRequestDecision, compact = false }) {
+  const strip = useRef56(null), trigger = useRef56(null), menu = useRef56(null);
+  const [capacity, setCapacity] = useState76(1);
+  const [anchor, setAnchor] = useState76(null);
   const shown = Math.min(capacity, items.length), hidden = items.slice(shown);
   useEffect56(() => {
     if (!hidden.length) setAnchor(null);
   }, [hidden.length]);
-  useLayoutEffect21(() => {
+  useLayoutEffect20(() => {
     const el = strip.current;
     if (!el) return;
     const measure = () => {
-      const width = Math.max(0, el.clientWidth - 32);
-      const all = Math.floor((width + 8) / 208);
-      setCapacity(Math.min(6, items.length <= all ? all : Math.max(0, Math.floor((width - 80) / 208))));
+      const width = Math.max(0, el.clientWidth - (compact ? 4 : 32));
+      const all = Math.floor((width + 4) / (compact ? 184 : 208));
+      setCapacity(Math.min(6, items.length <= all ? all : Math.max(0, Math.floor((width - (compact ? 48 : 80)) / (compact ? 184 : 208)))));
     };
     measure();
     const resize = new ResizeObserver(measure);
     resize.observe(el);
     return () => resize.disconnect();
-  }, [items.length]);
+  }, [items.length, compact]);
   const close = (restore = false) => {
     setAnchor(null);
     if (restore) trigger.current?.focus();
@@ -28527,17 +28506,17 @@ function ResponsiveAttention({ items, onOpen, onRequestDecision }) {
   }, [anchor]);
   return /* @__PURE__ */ jsxs91("div", { className: "thread-map-attention-wrap", "data-visible": items.length > 0 || void 0, children: [
     /* @__PURE__ */ jsxs91("div", { ref: strip, className: "thread-map-attention", "data-responsive": true, role: "region", "aria-label": translate("workbench.threadMapAttention"), children: [
-      items.slice(0, shown).map((item) => /* @__PURE__ */ jsx106(AttentionCard, { item, onOpen, onRequestDecision }, item.key)),
-      hidden.length > 0 && /* @__PURE__ */ jsx106("button", { ref: trigger, type: "button", className: "thread-map-attention-more", "aria-haspopup": "menu", "aria-expanded": Boolean(anchor), onClick: () => {
+      items.slice(0, shown).map((item) => /* @__PURE__ */ jsx105(AttentionCard, { item, onOpen, onRequestDecision, compact }, item.key)),
+      hidden.length > 0 && /* @__PURE__ */ jsx105("button", { ref: trigger, type: "button", className: "thread-map-attention-more", "aria-label": translate("workbench.threadMapMoreAttention", { count: hidden.length }), "aria-haspopup": "menu", "aria-expanded": Boolean(anchor), onClick: () => {
         if (anchor) {
           close();
           return;
         }
         const box = trigger.current.getBoundingClientRect();
         setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 344)), top: Math.min(box.bottom + 5, window.innerHeight - 180) });
-      }, children: translate("workbench.threadMapMoreAttention", { count: hidden.length }) })
+      }, children: compact ? `+${hidden.length}` : translate("workbench.threadMapMoreAttention", { count: hidden.length }) })
     ] }),
-    anchor && hidden.length > 0 && createPortal11(/* @__PURE__ */ jsx106(
+    anchor && hidden.length > 0 && createPortal10(/* @__PURE__ */ jsx105(
       "div",
       {
         ref: menu,
@@ -28546,19 +28525,19 @@ function ResponsiveAttention({ items, onOpen, onRequestDecision }) {
         "data-theme-effective": document.documentElement.dataset.themeEffective,
         className: "thread-graph-dialog thread-map-attention-menu",
         style: { position: "fixed", ...anchor, height: Math.min(420, hidden.length * 72 + 10, window.innerHeight - anchor.top - 12) },
-        children: /* @__PURE__ */ jsx106(MapScrollList, { label: translate("workbench.threadMapAttention"), children: hidden.map((item) => /* @__PURE__ */ jsxs91("button", { type: "button", role: "menuitem", onClick: () => {
+        children: /* @__PURE__ */ jsx105(MapScrollList, { label: translate("workbench.threadMapAttention"), children: hidden.map((item) => /* @__PURE__ */ jsxs91("button", { type: "button", role: "menuitem", onClick: () => {
           close(true);
           onOpen(item.key);
         }, children: [
-          /* @__PURE__ */ jsx106(StatusMark, { status: item.kind === "approval" || item.kind === "input" ? "waiting" : item.kind === "failed" ? "failed" : "unread" }),
+          /* @__PURE__ */ jsx105(StatusMark, { status: item.kind === "approval" || item.kind === "input" ? "waiting" : item.kind === "failed" ? "failed" : "unread" }),
           /* @__PURE__ */ jsxs91("span", { children: [
-            /* @__PURE__ */ jsx106("b", { children: item.title }),
+            /* @__PURE__ */ jsx105("b", { children: item.title }),
             /* @__PURE__ */ jsxs91("small", { children: [
               item.device,
               " \xB7 ",
               item.workspace
             ] }),
-            /* @__PURE__ */ jsx106("small", { children: item.summary })
+            /* @__PURE__ */ jsx105("small", { children: item.summary })
           ] })
         ] }, item.key)) })
       }
@@ -28566,8 +28545,8 @@ function ResponsiveAttention({ items, onOpen, onRequestDecision }) {
   ] });
 }
 function DeviceMenu({ device, items }) {
-  const trigger = useRef57(null), menu = useRef57(null);
-  const [anchor, setAnchor] = useState77(null);
+  const trigger = useRef56(null), menu = useRef56(null);
+  const [anchor, setAnchor] = useState76(null);
   const close = (restore) => {
     setAnchor(null);
     if (restore) trigger.current?.focus();
@@ -28593,7 +28572,7 @@ function DeviceMenu({ device, items }) {
     };
   }, [anchor]);
   return /* @__PURE__ */ jsxs91(Fragment37, { children: [
-    /* @__PURE__ */ jsx106(
+    /* @__PURE__ */ jsx105(
       "button",
       {
         ref: trigger,
@@ -28610,10 +28589,10 @@ function DeviceMenu({ device, items }) {
           const box = trigger.current.getBoundingClientRect();
           setAnchor({ top: Math.max(8, Math.min(box.bottom + 4, window.innerHeight - items.length * 36 - 16)), left: Math.max(8, Math.min(box.right - 220, window.innerWidth - 228)) });
         },
-        children: /* @__PURE__ */ jsx106(MoreVertical, { "aria-hidden": "true" })
+        children: /* @__PURE__ */ jsx105(MoreVertical, { "aria-hidden": "true" })
       }
     ),
-    anchor && createPortal11(/* @__PURE__ */ jsx106(
+    anchor && createPortal10(/* @__PURE__ */ jsx105(
       "div",
       {
         ref: menu,
@@ -28622,7 +28601,7 @@ function DeviceMenu({ device, items }) {
         role: "menu",
         "aria-label": device.name,
         style: { position: "fixed", ...anchor },
-        children: items.map((item) => /* @__PURE__ */ jsx106(
+        children: items.map((item) => /* @__PURE__ */ jsx105(
           "button",
           {
             role: "menuitem",
@@ -28642,7 +28621,7 @@ function DeviceMenu({ device, items }) {
 }
 function DeviceReadings({ extra }) {
   return /* @__PURE__ */ jsxs91("span", { className: "thread-map-device-readings", children: [
-    extra.syncing && /* @__PURE__ */ jsx106("i", { className: "thread-map-sync", role: "img", "aria-label": translate("workbench.threadMapSyncing") }),
+    extra.syncing && /* @__PURE__ */ jsx105("i", { className: "thread-map-sync", role: "img", "aria-label": translate("workbench.threadMapSyncing") }),
     extra.latencyMs != null && /* @__PURE__ */ jsxs91("span", { children: [
       Math.round(extra.latencyMs),
       " ms"
@@ -28651,18 +28630,18 @@ function DeviceReadings({ extra }) {
       "v",
       extra.runtimeVersion.replace(/^v/, "")
     ] }),
-    extra.updateAvailable && /* @__PURE__ */ jsx106("span", { className: "thread-map-update", children: translate("workbench.threadMapUpdate") }),
-    extra.runningCount != null && extra.runningCount > 0 && /* @__PURE__ */ jsx106("span", { children: translate("workbench.threadMapRunningCount", { count: extra.runningCount }) }),
+    extra.updateAvailable && /* @__PURE__ */ jsx105("span", { className: "thread-map-update", children: translate("workbench.threadMapUpdate") }),
+    extra.runningCount != null && extra.runningCount > 0 && /* @__PURE__ */ jsx105("span", { children: translate("workbench.threadMapRunningCount", { count: extra.runningCount }) }),
     extra.waitingCount != null && extra.waitingCount > 0 && /* @__PURE__ */ jsxs91("span", { className: "thread-map-waiting-count", "aria-label": translate("workbench.threadMapWaitingCount", { count: extra.waitingCount }), children: [
-      /* @__PURE__ */ jsx106(StatusMark, { status: "waiting" }),
+      /* @__PURE__ */ jsx105(StatusMark, { status: "waiting" }),
       extra.waitingCount
     ] }),
-    extra.todayCostUsd != null && /* @__PURE__ */ jsx106("span", { children: translate("workbench.threadMapTodayCost", { usd: formatCompactUsd(extra.todayCostUsd) }) })
+    extra.todayCostUsd != null && /* @__PURE__ */ jsx105("span", { children: translate("workbench.threadMapTodayCost", { usd: formatCompactUsd(extra.todayCostUsd) }) })
   ] });
 }
-function MapLegend({ compact, children }) {
-  const trigger = useRef57(null), dialog = useRef57(null);
-  const [anchor, setAnchor] = useState77(null);
+function MapLegend({ compact, inline = false, children: children2 }) {
+  const trigger = useRef56(null), dialog = useRef56(null);
+  const [anchor, setAnchor] = useState76(null);
   const close = () => setAnchor(null);
   useModalFocus(dialog, Boolean(anchor), close);
   useEffect56(() => {
@@ -28679,17 +28658,17 @@ function MapLegend({ compact, children }) {
       document.removeEventListener("pointerdown", outside);
     };
   }, [anchor]);
-  if (!compact) return /* @__PURE__ */ jsx106("div", { className: "thread-map-legend", children });
+  if (!compact) return /* @__PURE__ */ jsx105("div", { className: "thread-map-legend", children: children2 });
   return /* @__PURE__ */ jsxs91("div", { className: "thread-map-legend-footer", children: [
-    /* @__PURE__ */ jsx106("button", { type: "button", ref: trigger, "aria-haspopup": "dialog", "aria-expanded": Boolean(anchor), onClick: () => {
+    /* @__PURE__ */ jsx105("button", { type: "button", ref: trigger, "aria-haspopup": "dialog", "aria-expanded": Boolean(anchor), onClick: () => {
       if (anchor) {
         close();
         return;
       }
       const box = trigger.current.getBoundingClientRect();
-      setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 368)), bottom: window.innerHeight - box.top + 6 });
-    }, children: translate("workbench.threadMapLegend") }),
-    anchor && createPortal11(/* @__PURE__ */ jsxs91(
+      setAnchor({ left: Math.max(8, Math.min(box.left, window.innerWidth - 368)), bottom: inline ? Math.max(8, window.innerHeight - box.bottom - 210) : window.innerHeight - box.top + 6 });
+    }, "aria-label": translate("workbench.threadMapLegend"), title: translate("workbench.threadMapLegend"), children: inline ? /* @__PURE__ */ jsx105(Info2, { "aria-hidden": "true" }) : translate("workbench.threadMapLegend") }),
+    anchor && createPortal10(/* @__PURE__ */ jsxs91(
       "div",
       {
         ref: dialog,
@@ -28700,8 +28679,8 @@ function MapLegend({ compact, children }) {
         className: "thread-graph-dialog thread-map thread-map-legend-popover",
         style: { position: "fixed", ...anchor },
         children: [
-          /* @__PURE__ */ jsx106("div", { className: "thread-map-legend", children }),
-          /* @__PURE__ */ jsx106("button", { type: "button", onClick: close, children: translate("workbench.close") })
+          /* @__PURE__ */ jsx105("div", { className: "thread-map-legend", children: children2 }),
+          /* @__PURE__ */ jsx105("button", { type: "button", onClick: close, children: translate("workbench.close") })
         ]
       }
     ), document.body)
@@ -28878,8 +28857,8 @@ var ReadableSelection = class {
           }
         }
       }
-      const fits = readable(placed, !partial);
-      if (!fits && count > 0) continue;
+      const fits2 = readable(placed, !partial);
+      if (!fits2 && count > 0) continue;
       plan = {
         entries: placed.filter((entry) => !entry.item.overflow).map(({ item, rect }) => ({ node: item.node, rect })),
         overflow: hidden.length ? summary(hidden, kind, older, placed.find((entry) => entry.item.overflow)?.rect ?? bounds) : null
@@ -28892,26 +28871,703 @@ var ReadableSelection = class {
   }
 };
 
+// src/components/threadMap/tooltipData.ts
+var known2 = (value) => typeof value === "number" && Number.isFinite(value) && value >= 0;
+var duration = (ms) => ms === 0 ? translate("workbench.threadMapShortMinutes", { value: 0 }) : formatShortDuration(ms);
+var atOf = (thread) => Date.parse(thread.lastActiveAt ?? "");
+function mapTipData(node, hours = 24, extra) {
+  const thread = node.thread;
+  const entries = thread ? [thread] : threadLeaves([node]).map((item) => item.thread);
+  const windowHours = Number.isFinite(hours) && hours > 0 ? hours : 24;
+  const values = (field) => entries.map((t2) => t2[field]).filter(known2);
+  const turns = values("turns"), total = values("totalMs"), recent = values("activeMs");
+  const prices = entries.flatMap(
+    (t2) => known2(t2.priceEstimate?.totalUsd) ? [t2.priceEstimate.totalUsd] : []
+  );
+  const metrics = [];
+  const sum = (list) => list.reduce((a, b) => a + b, 0);
+  if (!thread)
+    metrics.push({
+      kind: "threads",
+      value: formatCompactTokenCount(node.threads),
+      label: translate("workbench.threadMapThreads", { count: node.threads })
+    });
+  if (turns.length)
+    metrics.push({
+      kind: "turns",
+      value: formatCompactTokenCount(sum(turns)),
+      label: translate("workbench.threadMapTurns", { count: sum(turns) })
+    });
+  if (total.length)
+    metrics.push({
+      kind: "total",
+      value: duration(sum(total)),
+      label: translate("workbench.threadMapTotalShort", {
+        duration: duration(sum(total))
+      })
+    });
+  if (recent.length)
+    metrics.push({
+      kind: "recent",
+      value: duration(sum(recent)),
+      label: `${translate("workbench.threadMapStatRecent", { hours: windowHours })}: ${duration(sum(recent))}`
+    });
+  if (prices.length) {
+    const usd = formatCompactUsd(sum(prices)), partial = entries.some(
+      (t2) => t2.pricePartial || !known2(t2.priceEstimate?.totalUsd)
+    );
+    metrics.push({
+      kind: "cost",
+      value: `${partial ? "\u2265 " : ""}${usd}`,
+      label: translate("workbench.threadMapCost", { usd }) + (partial ? ` \xB7 ${translate("workbench.threadMapPricePartialShort")}` : "")
+    });
+  }
+  const charts = entries.flatMap(
+    (t2) => t2.hourlyMs?.length ? [t2.hourlyMs.slice(-24)] : []
+  );
+  const hourly = charts.length ? Array.from(
+    { length: 24 },
+    (_, i) => charts.reduce((sum2, bars) => {
+      const value = bars[i - (24 - bars.length)];
+      return sum2 + (known2(value) ? value : 0);
+    }, 0)
+  ) : void 0;
+  let latest, latestAt = -Infinity;
+  for (const entry of entries) {
+    const at = atOf(entry);
+    if (Number.isFinite(at) && at > latestAt) {
+      latest = entry.lastActiveAt;
+      latestAt = at;
+    }
+  }
+  const waiting = entries.some(isWaiting), running = entries.some(isLive);
+  const status3 = thread ? waiting ? "waiting" : thread.running ? "running" : running ? "agents-running" : thread.failed ? "failed" : thread.interrupted ? "interrupted" : thread.unread ? "unread" : "idle" : waiting ? "waiting" : running ? "running" : void 0;
+  return {
+    kind: thread ? "thread" : node.workspace ? "workspace" : node.device ? "device" : node.kind,
+    title: node.label,
+    ...status3 ? { status: status3 } : {},
+    ...thread?.agent ? {
+      agent: thread.agent,
+      agentLabel: thread.agentName?.trim() || themeAgentName(thread.agent)
+    } : {},
+    subtitle: thread ? [
+      thread.modelDisplayName?.trim() || thread.model?.trim(),
+      node.workspace?.label ?? (node.parent?.kind === "workspace" ? node.parent.label : void 0)
+    ].map((value) => value?.trim()).filter(Boolean).join(" \xB7 ") : node.kind === "workspace" ? node.device?.name?.trim() ?? "" : extra?.runtimeVersion ? `v${extra.runtimeVersion.replace(/^v/, "")}` : "",
+    metrics,
+    ...!thread && !node.workspace && extra?.metrics?.trim() && !extra.metrics.includes("\u2014") ? { details: extra.metrics.trim() } : {},
+    ...hourly ? { hourly } : {},
+    ...thread?.lastPrompt?.trim() ? { prompt: promptLine(thread.lastPrompt) } : {},
+    ...latest ? {
+      footer: translate("workbench.threadMapActiveAgo", {
+        ago: relativeCache(latest)
+      })
+    } : {}
+  };
+}
+
+// src/components/threadMap/MapTooltip.tsx
+import { Fragment as Fragment38, jsx as jsx106, jsxs as jsxs92 } from "react/jsx-runtime";
+function placeMapTooltip(anchor, tip, viewport) {
+  const gap = 8, left = viewport.x + gap, top = viewport.y + gap;
+  const right = viewport.x + viewport.width - gap, bottom = viewport.y + viewport.height - gap;
+  const x = Math.max(left, Math.min(right - tip.width, anchor.x));
+  const y = Math.max(top, Math.min(bottom - tip.height, anchor.y));
+  const candidates = [
+    { x: anchor.x + anchor.width + gap, y },
+    { x: anchor.x - tip.width - gap, y },
+    { x, y: anchor.y + anchor.height + gap },
+    { x, y: anchor.y - tip.height - gap }
+  ];
+  return candidates.find(
+    (p) => p.x >= left && p.y >= top && p.x + tip.width <= right && p.y + tip.height <= bottom && (p.x >= anchor.x + anchor.width || p.x + tip.width <= anchor.x || p.y >= anchor.y + anchor.height || p.y + tip.height <= anchor.y)
+  ) ?? null;
+}
+var icons = {
+  threads: Layers,
+  turns: ListRestart,
+  total: Clock3,
+  recent: Activity,
+  cost: DollarSign2
+};
+function Metric({ metric }) {
+  const Icon = icons[metric.kind];
+  return /* @__PURE__ */ jsxs92(
+    "span",
+    {
+      className: "thread-map-tip-metric",
+      "data-metric": metric.kind,
+      role: "img",
+      "aria-label": metric.label,
+      title: metric.label,
+      children: [
+        /* @__PURE__ */ jsx106(Icon, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsx106("span", { children: metric.kind === "cost" ? metric.value.replace("$", "").trim() : metric.value })
+      ]
+    }
+  );
+}
+function MapTipContent({ data }) {
+  useI18n();
+  const count = data.metrics.find((metric) => metric.kind === "threads");
+  const metrics = data.metrics.filter((metric) => metric.kind !== "threads");
+  const peak = Math.max(1, ...data.hourly ?? []);
+  return /* @__PURE__ */ jsxs92(Fragment38, { children: [
+    /* @__PURE__ */ jsxs92("div", { className: "thread-map-tip-header", children: [
+      data.status && /* @__PURE__ */ jsx106(StatusMark, { status: data.status }),
+      data.agent ? /* @__PURE__ */ jsx106(
+        "span",
+        {
+          className: "thread-map-tip-agent",
+          role: "img",
+          "aria-label": data.agentLabel,
+          title: data.agentLabel,
+          children: /* @__PURE__ */ jsx106(AgentChip, { agent: data.agent })
+        }
+      ) : data.kind === "device" ? /* @__PURE__ */ jsx106(Monitor2, { "aria-hidden": "true" }) : data.kind === "workspace" ? /* @__PURE__ */ jsx106(Folder3, { "aria-hidden": "true" }) : null,
+      /* @__PURE__ */ jsx106("b", { title: data.title, children: data.title }),
+      count && /* @__PURE__ */ jsx106(Metric, { metric: count })
+    ] }),
+    data.subtitle && /* @__PURE__ */ jsx106("p", { className: "thread-map-tip-subtitle", title: data.subtitle, children: data.subtitle }),
+    metrics.length > 0 && /* @__PURE__ */ jsx106(
+      "div",
+      {
+        className: "thread-map-tip-metrics",
+        style: { "--metrics": metrics.length },
+        children: metrics.map((metric) => /* @__PURE__ */ jsx106(Metric, { metric }, metric.kind))
+      }
+    ),
+    data.hourly && /* @__PURE__ */ jsx106(
+      "div",
+      {
+        className: "thread-map-tip-bars",
+        "data-empty-series": data.hourly.every((value) => value === 0) || void 0,
+        role: "img",
+        "aria-label": `${translate("workbench.threadMapStatRecent", { hours: 24 })} \xB7 ${translate("workbench.threadMapLegendHourly")}`,
+        children: data.hourly.map((value, i) => /* @__PURE__ */ jsx106(
+          "i",
+          {
+            "data-empty": value === 0 || void 0,
+            "aria-hidden": "true",
+            style: { "--bar": value / peak }
+          },
+          i
+        ))
+      }
+    ),
+    data.prompt && /* @__PURE__ */ jsx106("p", { className: "thread-map-tip-prompt", children: data.prompt }),
+    data.details && /* @__PURE__ */ jsx106("p", { className: "thread-map-tip-footer", children: data.details }),
+    data.footer && /* @__PURE__ */ jsx106("p", { className: "thread-map-tip-footer", children: data.footer })
+  ] });
+}
+function MapTooltip({
+  anchor,
+  trigger = anchor,
+  lines,
+  node,
+  hours = 24,
+  extra,
+  onClose,
+  onHold,
+  onLeave
+}) {
+  useI18n();
+  const element = useRef57(null), close = useRef57(onClose);
+  close.current = onClose;
+  const id = useId7();
+  const [effectiveTheme, setEffectiveTheme] = useState77(
+    () => document.documentElement.dataset.themeEffective
+  );
+  const [position, setPosition] = useState77(
+    null
+  );
+  const [viewportWidth, setViewportWidth] = useState77(
+    () => window.visualViewport?.width ?? innerWidth
+  );
+  const data = node ? mapTipData(node, hours, extra) : null;
+  useLayoutEffect21(() => {
+    const described = trigger.getAttribute("aria-describedby")?.split(/\s+/).filter(Boolean) ?? [];
+    trigger.setAttribute(
+      "aria-describedby",
+      [.../* @__PURE__ */ new Set([...described, id])].join(" ")
+    );
+    return () => {
+      const remaining = trigger.getAttribute("aria-describedby")?.split(/\s+/).filter((value) => value && value !== id) ?? [];
+      if (remaining.length)
+        trigger.setAttribute("aria-describedby", remaining.join(" "));
+      else trigger.removeAttribute("aria-describedby");
+    };
+  }, [trigger, id]);
+  useLayoutEffect21(() => {
+    const update = () => {
+      if (!anchor.isConnected || !anchor.getClientRects().length || !element.current) {
+        close.current();
+        return;
+      }
+      const a = anchor.getBoundingClientRect(), t2 = element.current.getBoundingClientRect(), view = window.visualViewport;
+      const viewport = {
+        x: view?.offsetLeft ?? 0,
+        y: view?.offsetTop ?? 0,
+        width: view?.width ?? innerWidth,
+        height: view?.height ?? innerHeight
+      };
+      const clip2 = anchor.closest(".thread-map-list-scroll")?.getBoundingClientRect();
+      const visible = {
+        left: Math.max(viewport.x, clip2?.left ?? viewport.x),
+        top: Math.max(viewport.y, clip2?.top ?? viewport.y),
+        right: Math.min(viewport.x + viewport.width, clip2?.right ?? Infinity),
+        bottom: Math.min(
+          viewport.y + viewport.height,
+          clip2?.bottom ?? Infinity
+        )
+      };
+      if (a.right <= visible.left || a.left >= visible.right || a.bottom <= visible.top || a.top >= visible.bottom) {
+        close.current();
+        return;
+      }
+      setViewportWidth(viewport.width);
+      setEffectiveTheme(document.documentElement.dataset.themeEffective);
+      let next = placeMapTooltip(a, t2, viewport);
+      if (!next) {
+        const head = anchor.querySelector(
+          ".thread-map-dense-head, .thread-map-tile-head, .thread-map-section-header"
+        );
+        if (head)
+          next = placeMapTooltip(head.getBoundingClientRect(), t2, viewport);
+      }
+      setPosition(
+        (previous) => previous?.x === next?.x && previous?.y === next?.y ? previous : next
+      );
+      const chip = element.current.querySelector(".thread-map-agent");
+      if (chip)
+        chip.toggleAttribute(
+          "data-art",
+          getComputedStyle(chip).getPropertyValue("--theme-agent-avatar").includes("url(")
+        );
+    };
+    update();
+    const resize = new ResizeObserver(update);
+    resize.observe(anchor);
+    if (element.current) resize.observe(element.current);
+    const theme = new MutationObserver(update);
+    theme.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme-preset", "data-theme-effective"]
+    });
+    window.addEventListener("resize", update);
+    window.addEventListener("scroll", update, true);
+    window.visualViewport?.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("scroll", update);
+    return () => {
+      resize.disconnect();
+      theme.disconnect();
+      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", update, true);
+      window.visualViewport?.removeEventListener("resize", update);
+      window.visualViewport?.removeEventListener("scroll", update);
+    };
+  }, [anchor, trigger, node?.thread?.agent]);
+  useEffect57(() => {
+    const key = (event) => {
+      if (event.key === "Escape" && !event.defaultPrevented) {
+        event.preventDefault();
+        close.current();
+      }
+    };
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, []);
+  return createPortal11(
+    /* @__PURE__ */ jsx106(
+      "div",
+      {
+        ref: element,
+        id,
+        role: "tooltip",
+        className: "thread-graph-dialog thread-map-tip",
+        "data-structured": Boolean(data) || void 0,
+        "data-theme-effective": effectiveTheme,
+        onPointerEnter: onHold,
+        onPointerLeave: onLeave,
+        style: {
+          position: "fixed",
+          left: position?.x ?? 0,
+          top: position?.y ?? 0,
+          visibility: position ? "visible" : "hidden",
+          width: Math.max(0, Math.min(300, viewportWidth - 16))
+        },
+        children: data ? /* @__PURE__ */ jsx106(MapTipContent, { data }) : /* @__PURE__ */ jsxs92(Fragment38, { children: [
+          /* @__PURE__ */ jsx106("div", { className: "thread-map-tip-header", children: /* @__PURE__ */ jsx106("b", { children: lines[0] }) }),
+          lines.slice(1).map((line, i) => /* @__PURE__ */ jsx106("p", { className: "thread-map-tip-subtitle", children: line }, i))
+        ] })
+      }
+    ),
+    document.body
+  );
+}
+
+// src/components/threadMap/DenseMap.tsx
+import { createPortal as createPortal12 } from "react-dom";
+import {
+  Fragment as Fragment40,
+  memo as memo12,
+  useRef as useRef59,
+  useState as useState79,
+  useEffect as useEffect58
+} from "react";
+import {
+  ArrowUpCircle,
+  Bot as Bot6,
+  Clock3 as Clock32,
+  DollarSign as DollarSign3,
+  Folder as Folder5,
+  Layers as Layers3,
+  ListRestart as ListRestart2
+} from "lucide-react";
+
+// src/components/threadMap/density.ts
+var DENSE_MIN = { width: 88, height: 34 };
+var GAP2 = 2;
+var roomOf = (nodes) => nodes.reduce((sum, n) => sum + shape(n).room, 0);
+var fits = (r) => r.width >= DENSE_MIN.width - 0.01 && r.height >= DENSE_MIN.height - 0.01;
+var gapOf = (n) => n.kind === "device" ? 4 : n.kind === "workspace" ? 3 : GAP2;
+var paddingOf = (n) => n.kind === "device" ? 3 : 2;
+var childGapOf = (n) => n.kind === "device" ? 3 : GAP2;
+var inside = (r, gap = GAP2) => ({
+  x: r.x,
+  y: r.y,
+  width: Math.max(0, r.width - gap),
+  height: Math.max(0, r.height - gap)
+});
+var shapes = /* @__PURE__ */ new WeakMap();
+function shape(node) {
+  const cached = shapes.get(node);
+  if (cached) return cached;
+  const rank = node.thread ? mapPriority(node) : 5;
+  const value = {
+    leaves: node.thread ? 1 : 0,
+    workspaces: node.kind === "workspace" ? 1 : 0,
+    devices: node.kind === "device" ? 1 : 0,
+    rank,
+    room: node.thread ? node.room ?? 1 : 0,
+    loss: node.thread ? [1e12, 1e9, 1e6, 1e3, 0, 0][rank] ?? 0 : 0,
+    fingerprint: `${node.id}:${node.parent?.id}:${node.weight}:${rank}`
+  };
+  if (!node.thread)
+    for (const child of children(node)) {
+      const nested = shape(child);
+      value.leaves += nested.leaves;
+      value.workspaces += nested.workspaces;
+      value.devices += nested.devices;
+      value.rank = Math.min(value.rank, nested.rank);
+      value.loss += nested.loss;
+      value.room += nested.room;
+      value.fingerprint += `[${nested.fingerprint}]`;
+    }
+  shapes.set(node, value);
+  return value;
+}
+var byPriority2 = (a, b) => shape(a).rank - shape(b).rank || b.weight - a.weight || a.id.localeCompare(b.id);
+var priorityLoss = (nodes) => nodes.reduce((sum, n) => sum + shape(n).loss, 0);
+var OVERFLOW_STRIP = 22;
+var overflowStrip = (bounds) => ({
+  x: bounds.x,
+  y: bounds.y + Math.max(0, bounds.height - OVERFLOW_STRIP - GAP2),
+  width: Math.max(0, bounds.width - GAP2),
+  height: Math.min(OVERFLOW_STRIP, Math.max(0, bounds.height - GAP2))
+});
+var aboveStrip = (bounds) => ({
+  ...bounds,
+  height: Math.max(0, bounds.height - OVERFLOW_STRIP - GAP2)
+});
+var header = (n) => n.kind === "device" ? 22 : 18;
+var frameOf = (n) => {
+  const gap = gapOf(n), pad = paddingOf(n), child = childGapOf(n);
+  return { x: gap + pad * 2 - child, y: header(n) + gap + pad - child };
+};
+var children = (n) => n.children.filter(
+  (c) => c.kind !== "compressed" && (c.thread || c.threads > 0)
+);
+function footprint(n, overhead = 0.6) {
+  const value = shape(n);
+  return value.leaves + value.workspaces * overhead + value.devices;
+}
+function grids(items, bounds, minimumHeight2) {
+  const result = [];
+  const max = Math.min(
+    items.length,
+    Math.floor(bounds.width / (DENSE_MIN.width + GAP2))
+  );
+  for (let cols = 1; cols <= max; cols++) {
+    const rows = Math.ceil(items.length / cols), w = bounds.width / cols, h = bounds.height / rows;
+    if (h < minimumHeight2) continue;
+    result.push(
+      items.map((item, i) => ({
+        item,
+        rect: {
+          x: bounds.x + i % cols * w,
+          y: bounds.y + Math.floor(i / cols) * h,
+          width: i >= (rows - 1) * cols ? bounds.width / (items.length - (rows - 1) * cols) : w,
+          height: h
+        }
+      })).map(
+        (entry, i) => i >= (rows - 1) * cols ? {
+          ...entry,
+          rect: {
+            ...entry.rect,
+            x: bounds.x + i % cols * entry.rect.width
+          }
+        } : entry
+      )
+    );
+  }
+  return result.sort(
+    (a, b) => Math.abs(Math.log(a[0].rect.width / a[0].rect.height / 2.5)) - Math.abs(Math.log(b[0].rect.width / b[0].rect.height / 2.5))
+  );
+}
+function threadPlan(items, bounds) {
+  const ordered = [...items].sort(byPriority2);
+  const maximum = Math.floor(bounds.width / 90) * Math.floor(bounds.height / 36);
+  for (let count = Math.min(ordered.length, Math.max(0, maximum)); count >= 0; count--) {
+    const hidden = ordered.slice(count), visible = ordered.slice(0, count);
+    const cells = visible.map((node) => ({ node }));
+    if (!cells.length && !hidden.length)
+      return { boxes: [], missing: 0, lost: 0, important: 0, invalid: 0 };
+    const area = hidden.length ? aboveStrip(bounds) : bounds;
+    const median = [...visible].sort((a, b) => a.weight - b.weight)[Math.floor(visible.length / 2)]?.weight || 1;
+    const candidates = [
+      squarify(
+        cells,
+        (c) => Math.max(1, Math.min(1.8, c.node.weight / median)),
+        area
+      ),
+      squarify(cells, () => 1, area),
+      ...grids(cells, area, 36)
+    ];
+    const layout = candidates.find(
+      (c) => c.length === cells.length && c.every((e) => fits(inside(e.rect)))
+    );
+    if (!layout && count > 0) continue;
+    const boxes = (layout ?? []).map(({ item, rect }) => ({
+      ...item,
+      rect: inside(rect)
+    }));
+    if (hidden.length)
+      boxes.push({
+        node: hidden[0],
+        rect: overflowStrip(bounds),
+        overflow: hidden
+      });
+    return {
+      boxes,
+      missing: hidden.length,
+      lost: roomOf(hidden),
+      important: priorityLoss(hidden),
+      invalid: fits(inside(bounds)) ? 0 : 1
+    };
+  }
+  return { boxes: [], missing: items.length, lost: roomOf(items), important: 0, invalid: 1 };
+}
+var minimumHeights = /* @__PURE__ */ new WeakMap();
+function minimumHeight(node, cell) {
+  if (node.thread) return cell < 90 ? Infinity : 36;
+  const frame = frameOf(node), width = cell - frame.x;
+  if (width < 90) return Infinity;
+  let sizes = minimumHeights.get(node);
+  if (!sizes) {
+    sizes = /* @__PURE__ */ new Map();
+    minimumHeights.set(node, sizes);
+  }
+  const key = Math.floor(width * 100) / 100, cached = sizes.get(key);
+  if (cached !== void 0) return cached;
+  const list = children(node);
+  if (list.every((n) => n.thread)) {
+    const h = frame.y + Math.ceil(list.length / Math.floor(width / 90)) * 36;
+    sizes.set(key, h);
+    return h;
+  }
+  let best = Infinity;
+  for (let cols = 1; cols <= Math.min(list.length, Math.floor(width / 90)); cols++) {
+    let h = frame.y;
+    for (let i = 0; i < list.length; i += cols) {
+      const row = list.slice(i, i + cols), w = width / row.length;
+      h += Math.max(...row.map((n) => minimumHeight(n, w)));
+    }
+    best = Math.min(best, h);
+  }
+  sizes.set(key, best);
+  return best;
+}
+function strips(items, bounds) {
+  const plans = [];
+  for (let cols = 1; cols <= Math.min(items.length, Math.floor(bounds.width / 90)); cols++) {
+    const rows = Array.from(
+      { length: Math.ceil(items.length / cols) },
+      (_, r) => {
+        const list = items.slice(r * cols, (r + 1) * cols), w = bounds.width / list.length;
+        return {
+          list,
+          w,
+          h: Math.max(...list.map((n) => minimumHeight(n, w)))
+        };
+      }
+    );
+    const total = rows.reduce((s, r) => s + r.h, 0);
+    if (!Number.isFinite(total)) continue;
+    const extra = Math.max(0, bounds.height - total) / rows.length, scale = Math.min(1, bounds.height / total);
+    let y = bounds.y;
+    plans.push(
+      rows.flatMap((row) => {
+        const h = row.h * scale + extra;
+        const cells = row.list.map((item, c) => ({
+          item,
+          rect: { x: bounds.x + c * row.w, y, width: row.w, height: h }
+        }));
+        y += h;
+        return cells;
+      })
+    );
+  }
+  return plans;
+}
+function layoutLevel(items, bounds, levels) {
+  const key = `${bounds.x}:${bounds.y}:${bounds.width}:${bounds.height}|${items.map((n) => shape(n).fingerprint).join("|")}`;
+  const cached = levels.get(key);
+  if (cached) return cached;
+  const save = (result) => {
+    if (levels.size >= 4096) levels.delete(levels.keys().next().value);
+    levels.set(key, result);
+    return result;
+  };
+  if (!items.length) return { boxes: [], missing: 0, lost: 0, important: 0, invalid: 0 };
+  if (items.every((n) => n.thread)) return save(threadPlan(items, bounds));
+  const ranked = [...items].sort(byPriority2);
+  let best;
+  for (let count = items.length; count >= 0; count--) {
+    const visible = count === items.length ? items : ranked.slice(0, count), hidden = ranked.slice(count);
+    if (best?.invalid === 0 && priorityLoss(hidden) > best.important) break;
+    const overflow = hidden.length ? {
+      ...hidden[0],
+      id: `group-overflow:${hidden[0].parent?.id}`,
+      children: [],
+      threads: 0
+    } : null;
+    const cells = visible;
+    const area = overflow ? aboveStrip(bounds) : bounds;
+    const cost = (n, overhead = 0.6) => footprint(n, overhead);
+    const recent = (n) => {
+      const value = shape(n);
+      return value.room + value.workspaces * 0.6 + value.devices;
+    };
+    const planned = [
+      squarify(cells, recent, area),
+      squarify(cells, (n) => (recent(n) + footprint(n)) / 2, area),
+      squarify(cells, footprint, area),
+      squarify(cells, (n) => Math.max(n.kind === "device" ? 5 : 1, cost(n)), area),
+      squarify(cells, (n) => Math.max(n.kind === "device" ? 8 : 1, cost(n)), area),
+      squarify(cells, (n) => cost(n, 1.2), area),
+      squarify(cells, (n) => cost(n, 2), area),
+      squarify(cells, (n) => cost(n) + 0.75, area),
+      squarify(cells, (n) => cost(n) ** 0.85, area),
+      squarify(cells, (n) => Math.sqrt(cost(n)), area),
+      ...strips(cells, area),
+      ...grids(cells, area, 56)
+    ];
+    const candidates = cells.length ? planned : [[]];
+    for (const candidate of candidates) {
+      const boxes = [];
+      let missing = 0, lost = 0, important = 0, invalid = 0;
+      for (const { item: node, rect: r } of candidate) {
+        const rect = inside(r, gapOf(node));
+        const h = header(node), pad = paddingOf(node), childGap = childGapOf(node), area2 = {
+          x: rect.x + pad,
+          y: rect.y + h,
+          width: Math.max(0, rect.width - pad * 2 + childGap),
+          height: Math.max(0, rect.height - h - pad + childGap)
+        };
+        const nested = layoutLevel(children(node), area2, levels);
+        boxes.push({ node, rect, children: nested.boxes });
+        missing += nested.missing;
+        lost += nested.lost;
+        important += nested.important;
+        invalid += nested.invalid;
+      }
+      if (overflow) {
+        const leaves = threadLeaves(hidden);
+        missing += leaves.length;
+        lost += roomOf(leaves);
+        important += priorityLoss(leaves);
+        if (!fits(inside(bounds))) invalid++;
+        boxes.push({ node: hidden[0], rect: overflowStrip(bounds), overflow: hidden });
+      }
+      const result = { boxes, missing, lost, important, invalid };
+      if (!best || invalid < best.invalid || invalid === best.invalid && (important < best.important || important === best.important && lost < best.lost))
+        best = result;
+      if (!missing && !invalid) return save(result);
+    }
+    if (best?.invalid === 0 && best.important === 0) return save(best);
+  }
+  return save(best);
+}
+var DenseLayout = class {
+  levels = /* @__PURE__ */ new Map();
+  snapshot;
+  layout(root, bounds, frozen, version) {
+    const leaves = threadLeaves(root.children), scores = new Map(
+      leaves.map((n) => [
+        n.id,
+        { weight: n.weight, rank: mapPriority(n), parent: n.parent?.id }
+      ])
+    );
+    const key = `${version}:${root.id}:${bounds.width}:${bounds.height}`;
+    const old = this.snapshot;
+    const changed = !old || old.scores.size !== scores.size || [...scores].some(([id, s]) => {
+      const before = old.scores.get(id);
+      return !before || before.rank !== s.rank || before.parent !== s.parent || Math.abs(s.weight - before.weight) / Math.max(1e-3, before.weight) > 0.3;
+    });
+    const latest = /* @__PURE__ */ new Map();
+    const visit = (n) => {
+      latest.set(n.id, n);
+      n.children.forEach(visit);
+    };
+    visit(root);
+    const rebind = (boxes2) => boxes2.map((b) => ({
+      ...b,
+      node: latest.get(b.node.id) ?? b.node,
+      children: b.children ? rebind(b.children) : void 0,
+      overflow: b.overflow?.map((n) => latest.get(n.id) ?? n)
+    }));
+    if (old && old.key === key && old.boxes.length && (frozen || !changed))
+      return rebind(old.boxes);
+    const result = layoutLevel(children(root), bounds, this.levels);
+    const boxes = rebind(result.boxes);
+    this.snapshot = { key, scores, boxes };
+    return boxes;
+  }
+};
+
 // src/components/threadMap/ReadableMap.tsx
-import { Fragment as Fragment38, jsx as jsx107, jsxs as jsxs92 } from "react/jsx-runtime";
+import { memo as memo11, useRef as useRef58, useState as useState78 } from "react";
+import { ArrowUpRight, ChevronRight as ChevronRight8, Folder as Folder4, Layers as Layers2, Monitor as Monitor3 } from "lucide-react";
+import { Fragment as Fragment39, jsx as jsx107, jsxs as jsxs93 } from "react/jsx-runtime";
 var inset = (r) => ({ x: r.x + 3, y: r.y + 3, width: Math.max(0, r.width - 6), height: Math.max(0, r.height - 6) });
 var kindFor = (node) => node.kind === "workspace" || node.kind === "thread" ? "threads" : node.kind === "device" ? "workspaces" : "devices";
 var status = (node) => isWaiting(node.thread) ? "waiting" : isLive(node.thread) ? "running" : node.thread.failed ? "failed" : node.thread.interrupted ? "interrupted" : node.thread.unread ? "unread" : "idle";
 function OverflowMarks({ overflow }) {
-  return /* @__PURE__ */ jsxs92("span", { className: "thread-map-overflow-marks", children: [
-    overflow.waiting > 0 && /* @__PURE__ */ jsxs92("span", { children: [
+  return /* @__PURE__ */ jsxs93("span", { className: "thread-map-overflow-marks", children: [
+    overflow.waiting > 0 && /* @__PURE__ */ jsxs93("span", { children: [
       /* @__PURE__ */ jsx107(StatusMark, { status: "waiting" }),
       translate("workbench.threadMapWaitingCount", { count: overflow.waiting })
     ] }),
-    overflow.running > 0 && /* @__PURE__ */ jsxs92("span", { children: [
+    overflow.running > 0 && /* @__PURE__ */ jsxs93("span", { children: [
       /* @__PURE__ */ jsx107(StatusMark, { status: "running" }),
       translate("workbench.threadMapRunningCount", { count: overflow.running })
     ] }),
-    overflow.failed > 0 && /* @__PURE__ */ jsxs92("span", { children: [
+    overflow.failed > 0 && /* @__PURE__ */ jsxs93("span", { children: [
       /* @__PURE__ */ jsx107(StatusMark, { status: "failed" }),
       overflow.failed
     ] }),
-    overflow.unread > 0 && /* @__PURE__ */ jsxs92("span", { children: [
+    overflow.unread > 0 && /* @__PURE__ */ jsxs93("span", { children: [
       /* @__PURE__ */ jsx107(StatusMark, { status: "unread" }),
       overflow.unread
     ] })
@@ -28920,16 +29576,16 @@ function OverflowMarks({ overflow }) {
 function overflowLabel(overflow) {
   return translate(overflow.kind === "threads" ? "workbench.threadMapRemainingThreads" : overflow.kind === "workspaces" ? "workbench.threadMapOtherWorkspaces" : "workbench.threadMapOtherDevices", { count: overflow.count });
 }
-var ThreadRow = memo11(function ThreadRow2({ node, dimmed, current, onOpen, onQuickLook }) {
+var ThreadRow = memo11(function ThreadRow2({ node, dimmed, current, onOpen, onQuickLook, hover }) {
   useI18n();
   const thread = node.thread;
   const at = thread.lastActiveAt ?? thread.createdAt;
   const metadata = [
-    thread.model,
+    thread.modelDisplayName?.trim() || thread.model,
     thread.priceEstimate ? formatCompactUsd(thread.priceEstimate.totalUsd) : null,
     at ? relativeCache(at) : null
   ].filter(Boolean).join(" \xB7 ");
-  return /* @__PURE__ */ jsxs92(
+  return /* @__PURE__ */ jsxs93(
     "div",
     {
       className: "thread-map-list-row",
@@ -28938,7 +29594,7 @@ var ThreadRow = memo11(function ThreadRow2({ node, dimmed, current, onOpen, onQu
       "data-current": current || void 0,
       "data-dimmed": dimmed || void 0,
       children: [
-        /* @__PURE__ */ jsx107("a", { className: "thread-map-tile-link", href: thread.href, "aria-label": [thread.title, navigationStatusLabel(status(node)), metadata].filter(Boolean).join(" \xB7 "), "aria-current": current ? "page" : void 0, title: thread.title, onClick: onOpen(thread) }),
+        /* @__PURE__ */ jsx107("a", { className: "thread-map-tile-link", href: thread.href, "aria-label": [thread.title, navigationStatusLabel(status(node)), metadata].filter(Boolean).join(" \xB7 "), "aria-current": current ? "page" : void 0, onClick: onOpen(thread), ...hover([thread.title]) }),
         /* @__PURE__ */ jsx107("span", { className: "thread-map-list-agent-slot", children: /* @__PURE__ */ jsx107(AgentChip, { agent: thread.agent }) }),
         /* @__PURE__ */ jsx107("span", { className: "thread-map-list-status-slot", children: /* @__PURE__ */ jsx107(StatusMark, { status: status(node) }) }),
         /* @__PURE__ */ jsx107("b", { className: "thread-map-list-title", children: thread.title }),
@@ -28968,13 +29624,13 @@ function ReadableMap(props) {
     const items = cache.current.ordered(`${version}:${node.id}`, node.children.filter((child) => child.kind !== "compressed"));
     const older = node.children.filter((child) => child.kind === "compressed");
     const threads = items.every((child) => child.kind === "thread");
-    return /* @__PURE__ */ jsxs92("section", { className: "thread-map-readable-list", style: { left: rect.x, top: rect.y, width: rect.width, height: rect.height }, "aria-label": translate("workbench.threadMapAllThreads"), children: [
-      /* @__PURE__ */ jsxs92("div", { className: "thread-map-list-heading", children: [
-        /* @__PURE__ */ jsx107(Layers, { "aria-hidden": "true" }),
+    return /* @__PURE__ */ jsxs93("section", { className: "thread-map-readable-list", style: { left: rect.x, top: rect.y, width: rect.width, height: rect.height }, "aria-label": translate("workbench.threadMapAllThreads"), children: [
+      /* @__PURE__ */ jsxs93("div", { className: "thread-map-list-heading", children: [
+        /* @__PURE__ */ jsx107(Layers2, { "aria-hidden": "true" }),
         /* @__PURE__ */ jsx107("b", { children: translate(threads ? "workbench.threadMapAllThreads" : "workbench.threadMapGoTo") }),
         /* @__PURE__ */ jsx107("span", { children: items.length })
       ] }),
-      /* @__PURE__ */ jsxs92(MapScrollList, { label: translate(threads ? "workbench.threadMapAllThreads" : "workbench.threadMapGoTo"), children: [
+      /* @__PURE__ */ jsxs93(MapScrollList, { label: translate(threads ? "workbench.threadMapAllThreads" : "workbench.threadMapGoTo"), children: [
         threads ? (() => {
           const groups = [
             { id: "waiting", label: translate("workbench.waitingForYou"), items: [] },
@@ -28989,28 +29645,28 @@ function ReadableMap(props) {
           let y = rect.y + 34;
           return groups.filter((group) => group.items.length > 0).map((group) => {
             y += 24;
-            return /* @__PURE__ */ jsxs92("div", { className: "thread-map-list-status-group", "data-list-group": group.id, role: "group", "aria-label": group.label, children: [
-              /* @__PURE__ */ jsxs92("h3", { className: "thread-map-list-status-heading", children: [
+            return /* @__PURE__ */ jsxs93("div", { className: "thread-map-list-status-group", "data-list-group": group.id, role: "group", "aria-label": group.label, children: [
+              /* @__PURE__ */ jsxs93("h3", { className: "thread-map-list-status-heading", children: [
                 /* @__PURE__ */ jsx107("span", { children: group.label }),
                 /* @__PURE__ */ jsx107("small", { children: group.items.length })
               ] }),
               group.items.map((item) => {
                 addTarget(item.id, { x: rect.x + 8, y, width: rect.width - 16, height: 40 }, offset);
                 y += 40;
-                return /* @__PURE__ */ jsx107(ThreadRow, { node: item, dimmed: dim(item), current: item.thread.key === currentKey, onOpen: rowOpen.current, onQuickLook }, item.id);
+                return /* @__PURE__ */ jsx107(ThreadRow, { node: item, dimmed: dim(item), current: item.thread.key === currentKey, onOpen: rowOpen.current, onQuickLook, hover }, item.id);
               })
             ] }, group.id);
           });
         })() : items.map((item, index) => {
           addTarget(item.id, { x: rect.x + 10, y: rect.y + 34 + index * 68, width: rect.width - 20, height: 64 }, offset);
-          return /* @__PURE__ */ jsxs92("button", { type: "button", className: "thread-map-list-group", "data-map-id": item.id, onClick: () => navigate(item), children: [
-            item.kind === "device" ? /* @__PURE__ */ jsx107(Monitor2, { "aria-hidden": "true" }) : /* @__PURE__ */ jsx107(Folder3, { "aria-hidden": "true" }),
+          return /* @__PURE__ */ jsxs93("button", { type: "button", className: "thread-map-list-group", "data-map-id": item.id, onClick: () => navigate(item), children: [
+            item.kind === "device" ? /* @__PURE__ */ jsx107(Monitor3, { "aria-hidden": "true" }) : /* @__PURE__ */ jsx107(Folder4, { "aria-hidden": "true" }),
             /* @__PURE__ */ jsx107("b", { children: item.label }),
             /* @__PURE__ */ jsx107("span", { children: translate("workbench.threadMapThreads", { count: item.threads }) }),
             /* @__PURE__ */ jsx107(ChevronRight8, { "aria-hidden": "true" })
           ] }, item.id);
         }),
-        older.map((item) => /* @__PURE__ */ jsxs92("button", { type: "button", className: "thread-map-list-older", onClick: () => expand(item), children: [
+        older.map((item) => /* @__PURE__ */ jsxs93("button", { type: "button", className: "thread-map-list-older", onClick: () => expand(item), children: [
           item.label,
           /* @__PURE__ */ jsx107(ChevronRight8, { "aria-hidden": "true" })
         ] }, item.id))
@@ -29046,10 +29702,10 @@ function ReadableMap(props) {
       }
       const extra = node.device ? extras?.[node.device.id] : void 0;
       const isDevice = node.kind === "device";
-      const header = isDevice ? 36 : 28;
-      const inner = { x: 3, y: header, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header - 3) };
+      const header2 = isDevice ? 36 : 28;
+      const inner = { x: 3, y: header2, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header2 - 3) };
       const unlisted = isDevice && node.device.state !== "ready" && !node.children.length;
-      return /* @__PURE__ */ jsxs92(
+      return /* @__PURE__ */ jsxs93(
         "section",
         {
           className: "thread-map-section thread-map-readable-section",
@@ -29061,12 +29717,12 @@ function ReadableMap(props) {
           "data-dimmed": dim(node) || void 0,
           style: { left: box.x, top: box.y, width: box.width, height: box.height },
           children: [
-            /* @__PURE__ */ jsxs92("div", { className: "thread-map-section-header", style: { height: header }, title: isDevice ? extra?.metrics : void 0, children: [
-              /* @__PURE__ */ jsxs92("button", { type: "button", className: "thread-map-section-head", onClick: (event) => navigate(node, event.currentTarget.closest("section")), ...hover([node.label]), children: [
-                isDevice ? /* @__PURE__ */ jsx107(DeviceStateMark, {}) : /* @__PURE__ */ jsx107(Folder3, { "aria-hidden": "true" }),
+            /* @__PURE__ */ jsxs93("div", { className: "thread-map-section-header", style: { height: header2 }, children: [
+              /* @__PURE__ */ jsxs93("button", { type: "button", className: "thread-map-section-head", onClick: (event) => navigate(node, event.currentTarget.closest("section")), ...hover([node.label]), children: [
+                isDevice ? /* @__PURE__ */ jsx107(DeviceStateMark, {}) : /* @__PURE__ */ jsx107(Folder4, { "aria-hidden": "true" }),
                 /* @__PURE__ */ jsx107("span", { className: "thread-map-section-label", children: node.label }),
                 isDevice && extra && box.width > 320 && /* @__PURE__ */ jsx107(DeviceReadings, { extra }),
-                /* @__PURE__ */ jsxs92("span", { className: "thread-map-section-count", children: [
+                /* @__PURE__ */ jsxs93("span", { className: "thread-map-section-count", children: [
                   node.running > 0 && /* @__PURE__ */ jsx107("i", { className: "thread-map-running-dot" }),
                   node.threads
                 ] }),
@@ -29092,9 +29748,9 @@ function ReadableMap(props) {
           setListFor(parent.id);
         }
       };
-      const header = /* @__PURE__ */ jsxs92(Fragment38, { children: [
-        /* @__PURE__ */ jsxs92("span", { className: "thread-map-overflow-title", children: [
-          /* @__PURE__ */ jsx107(Layers, { "aria-hidden": "true" }),
+      const header2 = /* @__PURE__ */ jsxs93(Fragment39, { children: [
+        /* @__PURE__ */ jsxs93("span", { className: "thread-map-overflow-title", children: [
+          /* @__PURE__ */ jsx107(Layers2, { "aria-hidden": "true" }),
           /* @__PURE__ */ jsx107("b", { children: label }),
           /* @__PURE__ */ jsx107(ArrowUpRight, { "aria-hidden": "true" })
         ] }),
@@ -29102,7 +29758,7 @@ function ReadableMap(props) {
         /* @__PURE__ */ jsx107(OverflowMarks, { overflow })
       ] });
       const roomy = box.width >= 160 && box.height >= 180;
-      result.push(roomy ? /* @__PURE__ */ jsxs92(
+      result.push(roomy ? /* @__PURE__ */ jsxs93(
         "section",
         {
           "data-map-id": id,
@@ -29114,7 +29770,7 @@ function ReadableMap(props) {
             if (!event.target.closest("button, a, .thread-map-scroll-track")) zoom();
           },
           children: [
-            /* @__PURE__ */ jsx107("button", { type: "button", className: "thread-map-overflow-open", onClick: zoom, "aria-label": label, ...hover([label]), children: header }),
+            /* @__PURE__ */ jsx107("button", { type: "button", className: "thread-map-overflow-open", onClick: zoom, "aria-label": label, ...hover([label]), children: header2 }),
             /* @__PURE__ */ jsx107(MapScrollList, { label, children: /* @__PURE__ */ jsx107("div", { className: "thread-map-overflow-items", onKeyDown: (event) => {
               if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
               const controls = [...event.currentTarget.querySelectorAll("a, button")];
@@ -29124,15 +29780,15 @@ function ReadableMap(props) {
                 event.stopPropagation();
                 next.focus();
               }
-            }, children: cache.current.ordered(`${version}:${parent.id}`, overflow.nodes).map((item) => item.thread ? /* @__PURE__ */ jsxs92("a", { className: "thread-map-overflow-row", "data-map-id": item.id, href: item.thread.href, onClick: onOpen(item.thread), ...hover([item.label]), children: [
+            }, children: cache.current.ordered(`${version}:${parent.id}`, overflow.nodes).map((item) => item.thread ? /* @__PURE__ */ jsxs93("a", { className: "thread-map-overflow-row", "data-map-id": item.id, href: item.thread.href, onClick: onOpen(item.thread), ...hover([item.label]), children: [
               /* @__PURE__ */ jsx107(StatusMark, { status: status(item) }),
               /* @__PURE__ */ jsx107("span", { children: item.label }),
               item.usd > 0 && /* @__PURE__ */ jsx107("small", { children: formatCompactUsd(item.usd) })
-            ] }, item.id) : /* @__PURE__ */ jsxs92("button", { type: "button", className: "thread-map-overflow-row", "data-map-id": item.id, onClick: () => {
+            ] }, item.id) : /* @__PURE__ */ jsxs93("button", { type: "button", className: "thread-map-overflow-row", "data-map-id": item.id, onClick: () => {
               for (const child of parent.children) if (child.kind === "compressed" && child.hiddenNodes?.some((hidden) => hidden.id === item.id)) expand(child);
               navigate(item);
             }, ...hover([item.label]), children: [
-              item.kind === "device" ? /* @__PURE__ */ jsx107(Monitor2, { "aria-hidden": "true" }) : /* @__PURE__ */ jsx107(Folder3, { "aria-hidden": "true" }),
+              item.kind === "device" ? /* @__PURE__ */ jsx107(Monitor3, { "aria-hidden": "true" }) : /* @__PURE__ */ jsx107(Folder4, { "aria-hidden": "true" }),
               /* @__PURE__ */ jsx107("span", { children: item.label }),
               /* @__PURE__ */ jsx107("small", { children: item.threads }),
               /* @__PURE__ */ jsx107(ChevronRight8, { "aria-hidden": "true" })
@@ -29140,7 +29796,7 @@ function ReadableMap(props) {
           ]
         },
         id
-      ) : /* @__PURE__ */ jsxs92(
+      ) : /* @__PURE__ */ jsxs93(
         "button",
         {
           "data-map-id": id,
@@ -29153,7 +29809,7 @@ function ReadableMap(props) {
           "aria-label": label,
           ...hover([label, ...overflow.recent]),
           children: [
-            header,
+            header2,
             box.height >= 110 && /* @__PURE__ */ jsx107("span", { className: "thread-map-overflow-preview", children: overflow.recent.slice(0, Math.min(3, Math.floor((box.height - 70) / 17))).map((title, i) => /* @__PURE__ */ jsx107("span", { children: title }, i)) })
           ]
         },
@@ -29164,15 +29820,404 @@ function ReadableMap(props) {
   };
   const content = bounds.width > 0 && bounds.height > 0 ? render(current, bounds, 0, { x: 0, y: 0 }) : null;
   props.register(targets);
-  return /* @__PURE__ */ jsx107(Fragment38, { children: content });
+  return /* @__PURE__ */ jsx107(Fragment39, { children: content });
+}
+
+// src/components/threadMap/DenseMap.tsx
+import { Fragment as Fragment41, jsx as jsx108, jsxs as jsxs94 } from "react/jsx-runtime";
+function status2(n) {
+  const t2 = n.thread;
+  return isWaiting(t2) ? "waiting" : isLive(t2) ? "running" : t2.failed ? "failed" : t2.interrupted ? "interrupted" : t2.unread ? "unread" : "idle";
+}
+var DenseTileContent = memo12(
+  function DenseTileContent2({
+    node,
+    current,
+    onOpen,
+    onQuickLook,
+    hover,
+    hours,
+    navigate,
+    contentTier
+  }) {
+    useI18n();
+    const t2 = node.thread, mark = status2(node), detailed = contentTier > 0;
+    return /* @__PURE__ */ jsxs94(Fragment41, { children: [
+      /* @__PURE__ */ jsx108(
+        "a",
+        {
+          href: t2.href,
+          className: "thread-map-tile-link",
+          "aria-current": current ? "page" : void 0,
+          "aria-label": [t2.title, navigationStatusLabel(mark)].join(" \xB7 "),
+          onClick: onOpen(t2),
+          ...hover(() => threadDetails(node, hours))
+        }
+      ),
+      /* @__PURE__ */ jsxs94("span", { className: "thread-map-dense-head", children: [
+        /* @__PURE__ */ jsx108(StatusMark, { status: mark }),
+        /* @__PURE__ */ jsx108(AgentChip, { agent: t2.agent }),
+        /* @__PURE__ */ jsx108("span", { className: "thread-map-tile-title", children: t2.title })
+      ] }),
+      t2.unread && mark !== "unread" && /* @__PURE__ */ jsx108("span", { className: "thread-map-dense-unread", children: /* @__PURE__ */ jsx108(StatusMark, { status: "unread" }) }),
+      detailed && /* @__PURE__ */ jsxs94("span", { className: "thread-map-dense-stats", children: [
+        t2.turns != null && /* @__PURE__ */ jsxs94(
+          "span",
+          {
+            title: translate("workbench.threadMapTurns", {
+              count: t2.turns
+            }),
+            children: [
+              /* @__PURE__ */ jsx108(ListRestart2, { "aria-hidden": "true" }),
+              t2.turns
+            ]
+          }
+        ),
+        !!t2.totalMs && contentTier >= 3 && /* @__PURE__ */ jsxs94(
+          "span",
+          {
+            title: translate("workbench.threadMapTotalRan", {
+              duration: formatShortDuration(t2.totalMs)
+            }),
+            children: [
+              /* @__PURE__ */ jsx108(Clock32, { "aria-hidden": "true" }),
+              formatShortDuration(t2.totalMs)
+            ]
+          }
+        ),
+        t2.priceEstimate && contentTier >= 5 && /* @__PURE__ */ jsxs94(
+          "span",
+          {
+            title: translate("workbench.threadMapCost", {
+              usd: formatCompactUsd(t2.priceEstimate.totalUsd)
+            }),
+            children: [
+              /* @__PURE__ */ jsx108(DollarSign3, { "aria-hidden": "true" }),
+              formatCompactUsd(t2.priceEstimate.totalUsd).replace(/^\$/, "")
+            ]
+          }
+        ),
+        !!t2.children?.length && contentTier >= 2 && /* @__PURE__ */ jsxs94(
+          "button",
+          {
+            type: "button",
+            onClick: () => navigate(node),
+            "aria-label": translate("workbench.threadMapShowChildren", {
+              count: t2.children.length,
+              title: t2.title
+            }),
+            children: [
+              /* @__PURE__ */ jsx108(Bot6, { "aria-hidden": "true" }),
+              t2.children.length
+            ]
+          }
+        )
+      ] }),
+      detailed && contentTier >= 4 && onQuickLook && /* @__PURE__ */ jsx108(
+        "button",
+        {
+          type: "button",
+          className: "thread-map-quick-look",
+          "aria-label": translate("workbench.threadMapQuickLook", {
+            title: t2.title
+          }),
+          onClick: () => onQuickLook(t2.key),
+          children: "\u24D8"
+        }
+      )
+    ] });
+  },
+  (a, b) => a.node.thread === b.node.thread && a.node.parent?.label === b.node.parent?.label && a.current === b.current && a.hours === b.hours && a.contentTier === b.contentTier && a.onQuickLook === b.onQuickLook
+);
+var DenseTile = memo12(
+  function DenseTile2(props) {
+    const { box, node, current, dimmed, ...content } = props, t2 = node.thread, mark = status2(node);
+    const contentTier = box.height < 72 ? 0 : box.width < 110 ? 1 : box.width < 140 ? 2 : box.width < 160 ? 3 : box.width < 200 ? 4 : 5;
+    return /* @__PURE__ */ jsx108(
+      "div",
+      {
+        className: "thread-map-tile thread-map-dense-tile",
+        "data-map-id": node.id,
+        "data-tier": box.height >= 72 ? "stats" : box.height >= 52 ? "two" : "one",
+        "data-heat": heatLevel(t2.activeMs),
+        "data-current": current || void 0,
+        "data-dimmed": dimmed || void 0,
+        "data-running": mark === "running" || void 0,
+        "data-waiting": mark === "waiting" || void 0,
+        style: {
+          left: box.x,
+          top: box.y,
+          width: box.width,
+          height: box.height
+        },
+        children: /* @__PURE__ */ jsx108(
+          DenseTileContent,
+          {
+            ...content,
+            node,
+            current,
+            contentTier
+          }
+        )
+      }
+    );
+  },
+  (a, b) => a.node.thread === b.node.thread && a.node.parent?.label === b.node.parent?.label && a.hours === b.hours && a.box.x === b.box.x && a.box.y === b.box.y && a.box.width === b.box.width && a.box.height === b.box.height && a.current === b.current && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook
+);
+function OverflowCell({
+  box,
+  current,
+  navigate,
+  hover
+}) {
+  const trigger = useRef59(null), menu = useRef59(null);
+  const [anchor, setAnchor] = useState79(
+    null
+  );
+  const close = (restore = false) => {
+    setAnchor(null);
+    if (restore) trigger.current?.focus();
+  };
+  useMenuKeyboard(menu, Boolean(anchor), close);
+  useEffect58(() => {
+    if (!anchor) return;
+    const outside = (e) => {
+      if (!menu.current?.contains(e.target) && !trigger.current?.contains(e.target))
+        setAnchor(null);
+    };
+    const moved = (e) => {
+      if (!(e.target instanceof Node && menu.current?.contains(e.target)))
+        setAnchor(null);
+    };
+    document.addEventListener("pointerdown", outside);
+    window.addEventListener("resize", moved);
+    window.addEventListener("scroll", moved, true);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      window.removeEventListener("resize", moved);
+      window.removeEventListener("scroll", moved, true);
+    };
+  }, [anchor]);
+  const { rect, node, overflow: items = [] } = box, groups = !node.thread;
+  const label = translate(
+    groups ? node.kind === "device" ? "workbench.threadMapOtherDevices" : "workbench.threadMapOtherWorkspaces" : "workbench.threadMapRemainingThreads",
+    { count: items.length }
+  );
+  return /* @__PURE__ */ jsxs94(Fragment41, { children: [
+    /* @__PURE__ */ jsxs94(
+      "button",
+      {
+        ref: trigger,
+        type: "button",
+        className: "thread-map-overflow thread-map-dense-overflow",
+        "data-map-id": `overflow:${node.parent?.id ?? current.id}`,
+        style: {
+          left: rect.x,
+          top: rect.y,
+          width: rect.width,
+          height: rect.height
+        },
+        "aria-label": label,
+        "aria-haspopup": groups ? "menu" : void 0,
+        "aria-expanded": groups ? Boolean(anchor) : void 0,
+        onClick: () => {
+          if (!groups) {
+            navigate(node.parent ?? current);
+            return;
+          }
+          if (anchor) {
+            close();
+            return;
+          }
+          const r = trigger.current.getBoundingClientRect();
+          setAnchor({
+            left: Math.max(8, Math.min(r.left, innerWidth - 268)),
+            top: Math.max(
+              8,
+              Math.min(
+                r.bottom + 4,
+                innerHeight - Math.min(360, items.length * 36 + 8) - 8
+              )
+            )
+          });
+        },
+        ...hover([label, ...items.slice(0, 5).map((n) => n.label)]),
+        children: [
+          /* @__PURE__ */ jsx108(Layers3, { "aria-hidden": "true" }),
+          /* @__PURE__ */ jsxs94("span", { children: [
+            "+",
+            items.length
+          ] })
+        ]
+      }
+    ),
+    anchor && createPortal12(
+      /* @__PURE__ */ jsx108(
+        "div",
+        {
+          ref: menu,
+          role: "menu",
+          "aria-label": label,
+          "data-theme-effective": document.documentElement.dataset.themeEffective,
+          className: "thread-graph-dialog thread-map-device-menu thread-map-group-menu",
+          style: {
+            position: "fixed",
+            ...anchor,
+            height: Math.min(360, items.length * 36 + 8)
+          },
+          children: /* @__PURE__ */ jsx108(MapScrollList, { label, children: items.map((item) => /* @__PURE__ */ jsxs94(
+            "button",
+            {
+              type: "button",
+              role: "menuitem",
+              onClick: () => {
+                close();
+                navigate(item);
+              },
+              children: [
+                /* @__PURE__ */ jsx108(Folder5, { "aria-hidden": "true" }),
+                item.label
+              ]
+            },
+            item.id
+          )) })
+        }
+      ),
+      document.body
+    )
+  ] });
+}
+function DenseMap(props) {
+  useI18n();
+  const cache = useRef59(new DenseLayout());
+  const {
+    current,
+    bounds,
+    frozen,
+    version,
+    navigate,
+    hover,
+    query,
+    matches,
+    extras
+  } = props;
+  const boxes = cache.current.layout(current, bounds, frozen, version);
+  if ((current.kind === "workspace" || current.kind === "thread") && boxes.some((b) => b.overflow))
+    return /* @__PURE__ */ jsx108(ReadableMap, { ...props });
+  const targets = [];
+  const render = (items) => items.map((box) => {
+    const { node, rect, overflow } = box;
+    if (overflow) {
+      const id = `overflow:${node.parent?.id ?? current.id}`;
+      targets.push({ id, rect });
+      return /* @__PURE__ */ jsx108(
+        OverflowCell,
+        {
+          box,
+          current,
+          navigate,
+          hover
+        },
+        id
+      );
+    }
+    if (node.thread) {
+      targets.push({ id: node.id, rect });
+      return /* @__PURE__ */ jsx108(
+        DenseTile,
+        {
+          box: rect,
+          node,
+          current: node.thread.key === props.currentKey,
+          dimmed: Boolean(query.trim()) && !matches(node),
+          onOpen: props.onOpen,
+          onQuickLook: props.onQuickLook,
+          hover,
+          hours: props.hours,
+          navigate
+        },
+        node.id
+      );
+    }
+    const device = node.kind === "device", extra = device ? extras?.[node.device.id] : void 0;
+    return /* @__PURE__ */ jsxs94(Fragment40, { children: [
+      /* @__PURE__ */ jsx108(
+        "section",
+        {
+          className: "thread-map-dense-section",
+          "data-map-id": node.id,
+          "data-kind": node.kind,
+          style: {
+            left: rect.x,
+            top: rect.y,
+            width: rect.width,
+            height: rect.height
+          },
+          children: /* @__PURE__ */ jsxs94(
+            "div",
+            {
+              className: "thread-map-dense-header",
+              style: {
+                left: 0,
+                top: 0,
+                width: "100%",
+                height: device ? 21 : 17
+              },
+              children: [
+                /* @__PURE__ */ jsxs94(
+                  "button",
+                  {
+                    type: "button",
+                    className: "thread-map-section-head",
+                    onClick: () => navigate(node),
+                    ...hover([
+                      node.label,
+                      translate("workbench.threadMapThreads", {
+                        count: node.threads
+                      }),
+                      ...extra?.runtimeVersion ? [`v${extra.runtimeVersion.replace(/^v/, "")}`] : [],
+                      ...extra?.metrics ? [extra.metrics] : []
+                    ]),
+                    children: [
+                      device ? /* @__PURE__ */ jsx108(DeviceStateMark, {}) : /* @__PURE__ */ jsx108(Folder5, { "aria-hidden": "true" }),
+                      /* @__PURE__ */ jsx108("span", { className: "thread-map-section-label", children: node.label }),
+                      device && extra?.latencyMs != null && rect.width > 180 && /* @__PURE__ */ jsxs94("small", { children: [
+                        Math.round(extra.latencyMs),
+                        " ms"
+                      ] })
+                    ]
+                  }
+                ),
+                device && extra?.updateAvailable && /* @__PURE__ */ jsx108(
+                  "span",
+                  {
+                    className: "thread-map-dense-update",
+                    role: "img",
+                    "aria-label": translate("workbench.threadMapUpdate"),
+                    title: translate("workbench.threadMapUpdate"),
+                    children: /* @__PURE__ */ jsx108(ArrowUpCircle, { "aria-hidden": "true" })
+                  }
+                ),
+                device && extra?.menuItems?.length ? /* @__PURE__ */ jsx108(DeviceMenu, { device: node.device, items: extra.menuItems }) : null
+              ]
+            }
+          )
+        }
+      ),
+      render(box.children ?? [])
+    ] }, node.id);
+  });
+  const content = render(boxes);
+  props.register(targets);
+  return /* @__PURE__ */ jsx108(Fragment41, { children: content });
 }
 
 // src/components/threadMap/useMapMotion.ts
-import { useLayoutEffect as useLayoutEffect22, useRef as useRef59 } from "react";
+import { useLayoutEffect as useLayoutEffect22, useRef as useRef60 } from "react";
 var reduced = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 function useMapMotion(stage, enabled, revision, tree, size, groups) {
-  const previous = useRef59(/* @__PURE__ */ new Map());
-  const level = useRef59(revision);
+  const previous = useRef60(/* @__PURE__ */ new Map());
+  const level = useRef60(revision);
   useLayoutEffect22(() => {
     if (!enabled || !stage.current) return;
     const next = /* @__PURE__ */ new Map();
@@ -29224,6 +30269,7 @@ var StableMapOrder = class {
   }
   apply(root, frozen) {
     const visit = (node) => {
+      if (node.kind === "thread" && node.children.length === 0) return;
       const old = this.levels.get(node.id);
       const changed = !old || node.children.some((child) => {
         const weight = old.weights.get(child.id);
@@ -29288,7 +30334,7 @@ function spatialNeighbor(items, from, direction) {
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { Fragment as Fragment39, jsx as jsx108, jsxs as jsxs93 } from "react/jsx-runtime";
+import { Fragment as Fragment42, jsx as jsx109, jsxs as jsxs95 } from "react/jsx-runtime";
 var HEADER = 26;
 function describe(node, hours) {
   if (node.thread) return threadDetails(node, hours);
@@ -29334,20 +30380,21 @@ function ThreadMap({
 }) {
   const { locale } = useI18n();
   const page = presentation === "page";
+  const stripped = (device) => device.state === "offline" || page && device.state !== "loading" && !device.workspaces.some((w) => w.threads.length);
   const enhanced = page || controlledScope !== void 0;
-  const [localScope, setLocalScope] = useState79(page ? "week" : "all");
-  const scope = controlledScope ?? localScope;
-  const [localFilter, setLocalFilter] = useState79("");
+  const [localScope, setLocalScope] = useState80("all");
+  const scope = page && controlledScope === "week" ? "all" : controlledScope ?? localScope;
+  const [localFilter, setLocalFilter] = useState80("");
   const query = filterText ?? localFilter;
-  const filter = useRef60(null);
-  const [expandedWorkspaces, setExpandedWorkspaces] = useState79(() => /* @__PURE__ */ new Set());
-  const [expandedDevices, setExpandedDevices] = useState79(() => /* @__PURE__ */ new Set());
-  const [cachedDevices, setCachedDevices] = useState79(() => /* @__PURE__ */ new Set());
-  const [focusId, setFocusId] = useState79(null);
-  const [layoutRevision, setLayoutRevision] = useState79(0);
-  const [frozen, setFrozen] = useState79(false);
-  const pointerInside = useRef60(false), focusInside = useRef60(false);
-  const freezeTimer = useRef60(void 0);
+  const filter = useRef61(null);
+  const [expandedWorkspaces, setExpandedWorkspaces] = useState80(() => /* @__PURE__ */ new Set());
+  const [expandedDevices, setExpandedDevices] = useState80(() => /* @__PURE__ */ new Set());
+  const [cachedDevices, setCachedDevices] = useState80(() => /* @__PURE__ */ new Set());
+  const [focusId, setFocusId] = useState80(null);
+  const [layoutRevision, setLayoutRevision] = useState80(0);
+  const [frozen, setFrozen] = useState80(false);
+  const pointerInside = useRef61(false), focusInside = useRef61(false);
+  const freezeTimer = useRef61(void 0);
   const freeze = () => {
     clearTimeout(freezeTimer.current);
     setFrozen(true);
@@ -29358,10 +30405,10 @@ function ThreadMap({
       if (!pointerInside.current && !focusInside.current) setFrozen(false);
     }, 800);
   };
-  useEffect57(() => () => clearTimeout(freezeTimer.current), []);
-  const orders = useRef60(new StableMapOrder()), layouts = useRef60(new MapLayoutCache());
-  const priorScope = useRef60(scope);
-  const priorLayoutRevision = useRef60(layoutRevision);
+  useEffect59(() => () => clearTimeout(freezeTimer.current), []);
+  const orders = useRef61(new StableMapOrder()), layouts = useRef61(new MapLayoutCache());
+  const priorScope = useRef61(scope);
+  const priorLayoutRevision = useRef61(layoutRevision);
   const allLabel = translate("workbench.threadMapAll");
   const root = useMemo23(() => {
     if (priorLayoutRevision.current !== layoutRevision) {
@@ -29372,12 +30419,13 @@ function ThreadMap({
       orders.current.clear();
       priorScope.current = scope;
     }
-    const list = enhanced ? devices.filter((d) => d.state !== "offline" || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`))).map((d) => d.state === "offline" ? { ...d, state: "ready" } : d) : devices;
-    const tree = buildThreadMap(list, allLabel, enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true } : {});
+    const list = enhanced ? devices.filter((d) => (!page || d.workspaces.some((w) => w.threads.length > 0) || focusId === `device:${d.id}`) && (d.state !== "offline" || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`)))).map((d) => d.state === "offline" ? { ...d, state: "ready" } : d) : devices;
+    const tree = buildThreadMap(list, allLabel, enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true, dense: page } : {});
+    if (page) tree.children = tree.children.filter((node) => node.threads > 0 || node.id === focusId);
     return stableLayout ? orders.current.apply(tree, frozen) : tree;
-  }, [devices, allLabel, enhanced, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId]);
+  }, [devices, allLabel, enhanced, page, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId]);
   const nodes = useMemo23(() => indexMap(root), [root]);
-  const latest = useRef60({ onOpen, onQuickLook });
+  const latest = useRef61({ onOpen, onQuickLook });
   latest.current = { onOpen, onQuickLook };
   const quickLook = useCallback27((key) => latest.current.onQuickLook?.(key), []);
   const setScope = (next) => {
@@ -29416,7 +30464,7 @@ function ThreadMap({
     if (node.compressed === "threads") setExpandedWorkspaces((previous) => /* @__PURE__ */ new Set([...previous, node.parent.id]));
     else setExpandedDevices((previous) => /* @__PURE__ */ new Set([...previous, node.parent.id]));
   };
-  const [openGroups, setOpenGroups] = useState79(() => /* @__PURE__ */ new Set());
+  const [openGroups, setOpenGroups] = useState80(() => /* @__PURE__ */ new Set());
   const toggleGroup = (key) => {
     setTip(null);
     setOpenGroups((current2) => {
@@ -29430,13 +30478,26 @@ function ThreadMap({
     const node = nodes.get(`thread:${child.key}`);
     return node ? [node] : [];
   }) } : focused;
-  const canvas = useRef60(null);
-  const stage = useRef60(null);
-  const crumbs = useRef60(null);
-  const zoomPlan = useRef60(null);
-  const [size, setSize] = useState79({ width: 0, height: 0 });
-  const [tip, setTip] = useState79(null);
-  useEffect57(() => {
+  const canvas = useRef61(null);
+  const stage = useRef61(null);
+  const crumbs = useRef61(null);
+  const zoomPlan = useRef61(null);
+  const [size, setSize] = useState80({ width: 0, height: 0 });
+  const [tip, setTip] = useState80(null);
+  const tipDismissed = useRef61(false);
+  const tipCloseTimer = useRef61(void 0);
+  const holdTip = useCallback27(() => clearTimeout(tipCloseTimer.current), []);
+  const dismissTip = useCallback27(() => {
+    holdTip();
+    tipDismissed.current = true;
+    setTip(null);
+  }, [holdTip]);
+  const leaveTip = useCallback27(() => {
+    clearTimeout(tipCloseTimer.current);
+    tipCloseTimer.current = setTimeout(() => setTip(null), 180);
+  }, []);
+  useEffect59(() => () => clearTimeout(tipCloseTimer.current), []);
+  useEffect59(() => {
     const node = canvas.current;
     if (!node) return;
     const measure = () => {
@@ -29461,13 +30522,13 @@ function ThreadMap({
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme-preset", "data-theme-effective"] });
     return () => observer.disconnect();
   }, [root, focusId, openGroups, size.width, size.height]);
-  useEffect57(() => {
+  useEffect59(() => {
     if (stableLayout && focusInside.current && !canvas.current?.contains(document.activeElement)) {
       focusInside.current = false;
       thaw();
     }
   }, [root, current.id, stableLayout]);
-  const spatial = useRef60([]);
+  const spatial = useRef61([]);
   const keyboard = (event) => {
     if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || event.nativeEvent.isComposing) return;
     const target = event.target;
@@ -29490,7 +30551,11 @@ function ThreadMap({
       filter.current?.focus();
     } else if (enhanced && ["1", "2", "3"].includes(event.key)) {
       event.preventDefault();
-      setScope(["active", "week", "all"][Number(event.key) - 1]);
+      setScope((page ? ["all", "active", "all"] : ["active", "week", "all"])[Number(event.key) - 1]);
+    } else if (event.key === "Escape" && tip) {
+      event.preventDefault();
+      event.stopPropagation();
+      dismissTip();
     } else if ((event.key === "Escape" || event.key === "Backspace") && current !== root) {
       event.preventDefault();
       event.stopPropagation();
@@ -29509,11 +30574,12 @@ function ThreadMap({
       const key = id?.startsWith("thread:") ? id.slice(7) : void 0;
       if (key) {
         event.preventDefault();
+        setTip(null);
         onQuickLook(key);
       }
     }
   };
-  const outsideKey = useRef60(() => {
+  const outsideKey = useRef61(() => {
   });
   outsideKey.current = (event) => {
     if (!page || event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || event.isComposing) return;
@@ -29525,26 +30591,26 @@ function ThreadMap({
       filter.current?.focus();
     } else if (["1", "2", "3"].includes(event.key)) {
       event.preventDefault();
-      setScope(["active", "week", "all"][Number(event.key) - 1]);
+      setScope((page ? ["all", "active", "all"] : ["active", "week", "all"])[Number(event.key) - 1]);
     }
   };
-  useEffect57(() => {
+  useEffect59(() => {
     const key = (event) => outsideKey.current(event);
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
   }, []);
   useMapMotion(stage, stableLayout, current.id, root, size, openGroups);
-  const pendingReveal = useRef60(null);
-  const pendingRevealTarget = useRef60(null);
-  const pendingPulses = useRef60(/* @__PURE__ */ new Set());
-  const previousPulses = useRef60(/* @__PURE__ */ new Set());
-  useEffect57(() => {
+  const pendingReveal = useRef61(null);
+  const pendingRevealTarget = useRef61(null);
+  const pendingPulses = useRef61(/* @__PURE__ */ new Set());
+  const previousPulses = useRef61(/* @__PURE__ */ new Set());
+  useEffect59(() => {
     const keys = new Set(pulseKeys ?? []);
     for (const key of keys) if (!previousPulses.current.has(key)) pendingPulses.current.add(key);
     previousPulses.current = keys;
   }, [pulseKeys]);
-  const lastRevealed = useRef60(null);
-  useEffect57(() => {
+  const lastRevealed = useRef61(null);
+  useEffect59(() => {
     if (!revealKey) {
       lastRevealed.current = null;
       return;
@@ -29585,7 +30651,7 @@ function ThreadMap({
       return;
     }
   }, [revealKey, devices]);
-  useEffect57(() => {
+  useEffect59(() => {
     if (document.visibilityState === "hidden" || canvas.current?.closest("[hidden], [inert]")) {
       for (const key of pendingPulses.current) if (key !== pendingReveal.current) pendingPulses.current.delete(key);
       return;
@@ -29627,6 +30693,7 @@ function ThreadMap({
       while (child && child.parent !== target) child = child.parent;
       zoomPlan.current = child ? { kind: "out", childId: child.id } : { kind: "fade" };
     }
+    if (page) setLayoutRevision((revision) => revision + 1);
     setFocusId(target === root ? null : target.id);
     setTip(null);
     crumbs.current?.focus({ preventScroll: true });
@@ -29654,9 +30721,9 @@ function ThreadMap({
       { duration: 280, easing: "cubic-bezier(0.2, 0.75, 0.25, 1)" }
     );
   }, [current.id]);
-  const gesture = useRef60({ navigate, current, root, nodes, onDismiss });
+  const gesture = useRef61({ navigate, current, root, nodes, onDismiss });
   gesture.current = { navigate, current, root, nodes, onDismiss: page ? void 0 : onDismiss };
-  useEffect57(() => {
+  useEffect59(() => {
     const node = canvas.current;
     if (!node) return;
     let pinch = null;
@@ -29767,25 +30834,37 @@ function ThreadMap({
     event.preventDefault();
     latest.current.onOpen(thread);
   };
-  const showTip = (lines, target) => {
-    const source = target.closest(".thread-map-tile, .thread-map-list-row, .thread-map-overflow-row, .thread-map-section, .thread-map-overflow") ?? target;
-    setTip({ lines, target: source });
+  const showTip = (lines, trigger) => {
+    holdTip();
+    const source = trigger.closest(".thread-map-section-header, .thread-map-dense-header, .thread-map-group-head") ?? trigger.closest(".thread-map-tile, .thread-map-list-row, .thread-map-overflow-row, .thread-map-section, .thread-map-overflow") ?? trigger;
+    const nodeId = trigger.dataset.mapTipId ?? trigger.closest("[data-map-id]")?.dataset.mapId;
+    setTip({ lines, target: source, trigger, nodeId });
   };
   const hover = (lines) => ({
     onPointerEnter: (event) => {
-      if (event.pointerType === "mouse") showTip(typeof lines === "function" ? lines() : lines, event.currentTarget);
+      if (event.pointerType === "mouse" && !tipDismissed.current) showTip(typeof lines === "function" ? lines() : lines, event.currentTarget);
     },
-    onPointerLeave: () => setTip(null),
-    onFocus: (event) => showTip(typeof lines === "function" ? lines() : lines, event.currentTarget),
-    onBlur: () => setTip(null)
+    onPointerMove: (event) => {
+      if (event.pointerType === "mouse" && tipDismissed.current) {
+        tipDismissed.current = false;
+        showTip(typeof lines === "function" ? lines() : lines, event.currentTarget);
+      }
+    },
+    onPointerLeave: leaveTip,
+    onClickCapture: dismissTip,
+    onFocus: (event) => {
+      tipDismissed.current = false;
+      showTip(typeof lines === "function" ? lines() : lines, event.currentTarget);
+    },
+    onBlur: leaveTip
   });
-  const fits = (node, inner, depth) => {
+  const fits2 = (node, inner, depth) => {
     if (depth > 2 || inner.width < 64 || inner.height < 40 || !node.children.length) return false;
     return node.children.length <= inner.width * inner.height / (node.children[0].kind === "thread" ? 90 : 900);
   };
   const group = (item, box, depth, offset) => {
     const thread = item.thread;
-    const children2 = thread.children.map((child) => ({
+    const children3 = thread.children.map((child) => ({
       id: `thread:${child.key}`,
       kind: "thread",
       label: child.title,
@@ -29803,7 +30882,7 @@ function ThreadMap({
       tokens: child.tokenUsage?.totalTokens ?? 0
     })).sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
     const inner = { x: 3, y: HEADER, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - HEADER - 3) };
-    return /* @__PURE__ */ jsxs93(
+    return /* @__PURE__ */ jsxs95(
       "section",
       {
         "data-map-id": item.id,
@@ -29813,8 +30892,8 @@ function ThreadMap({
         "aria-label": thread.title,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          /* @__PURE__ */ jsxs93("div", { className: "thread-map-group-head", children: [
-            /* @__PURE__ */ jsxs93(
+          /* @__PURE__ */ jsxs95("div", { className: "thread-map-group-head", children: [
+            /* @__PURE__ */ jsxs95(
               "button",
               {
                 type: "button",
@@ -29823,17 +30902,17 @@ function ThreadMap({
                 "aria-label": translate("workbench.threadMapHideChildren", { title: thread.title }),
                 onClick: () => toggleGroup(thread.key),
                 children: [
-                  /* @__PURE__ */ jsx108(AgentChip, { agent: thread.agent }),
-                  /* @__PURE__ */ jsx108("span", { className: "thread-map-section-label", children: thread.title }),
-                  box.width >= 110 && /* @__PURE__ */ jsxs93("span", { className: "thread-map-section-count", children: [
-                    /* @__PURE__ */ jsx108(Network2, { "aria-hidden": "true" }),
-                    children2.length
+                  /* @__PURE__ */ jsx109(AgentChip, { agent: thread.agent }),
+                  /* @__PURE__ */ jsx109("span", { className: "thread-map-section-label", children: thread.title }),
+                  box.width >= 110 && /* @__PURE__ */ jsxs95("span", { className: "thread-map-section-count", children: [
+                    /* @__PURE__ */ jsx109(Network2, { "aria-hidden": "true" }),
+                    children3.length
                   ] }),
-                  /* @__PURE__ */ jsx108(ChevronUp4, { "aria-hidden": "true" })
+                  /* @__PURE__ */ jsx109(ChevronUp4, { "aria-hidden": "true" })
                 ]
               }
             ),
-            box.width >= 80 && /* @__PURE__ */ jsx108(
+            box.width >= 80 && /* @__PURE__ */ jsx109(
               "a",
               {
                 className: "thread-map-group-open",
@@ -29841,11 +30920,11 @@ function ThreadMap({
                 onClick: open(thread),
                 "aria-label": translate("workbench.threadMapOpenThread", { title: thread.title }),
                 title: translate("workbench.threadMapOpenThread", { title: thread.title }),
-                children: /* @__PURE__ */ jsx108(ArrowUpRight2, { "aria-hidden": "true" })
+                children: /* @__PURE__ */ jsx109(ArrowUpRight2, { "aria-hidden": "true" })
               }
             )
           ] }),
-          render(children2, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y })
+          render(children3, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y })
         ]
       },
       item.id
@@ -29859,7 +30938,7 @@ function ThreadMap({
     const box = inset2(rect, depth ? 1.5 : 2.5);
     if (item.kind === "compressed") {
       spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
-      return /* @__PURE__ */ jsx108(
+      return /* @__PURE__ */ jsx109(
         "button",
         {
           type: "button",
@@ -29879,7 +30958,7 @@ function ThreadMap({
       spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
       const thread = item.thread;
       if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth, offset);
-      return /* @__PURE__ */ jsx108(
+      return /* @__PURE__ */ jsx109(
         ThreadTile,
         {
           node: item,
@@ -29900,27 +30979,27 @@ function ThreadMap({
     const state = item.device?.state;
     const unlisted = item.kind === "device" && state !== "ready" && !(enhanced && item.children.length > 0);
     const extra = item.kind === "device" ? deviceExtras?.[item.device.id] : void 0;
-    const header = extra ? 36 : HEADER;
-    const inner = { x: 3, y: header, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header - 3) };
-    const preview = !unlisted && rendered < 1600 && fits(item, inner, depth);
+    const header2 = extra ? 36 : HEADER;
+    const inner = { x: 3, y: header2, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header2 - 3) };
+    const preview = !unlisted && rendered < 1600 && fits2(item, inner, depth);
     const live = !preview && !unlisted && item.running > 0 && inner.width >= 44 && inner.height >= 34 ? runningLeaves(item).slice(0, 4) : [];
     const liveInner = { ...inner, height: Math.max(0, inner.height - (item.threads > live.length ? 15 : 0)) };
     const named = box.width >= 72;
-    const Icon = item.kind === "device" ? Monitor3 : Folder4;
+    const Icon = item.kind === "device" ? Monitor4 : Folder6;
     const zoomable = !unlisted;
-    const head = /* @__PURE__ */ jsxs93(Fragment39, { children: [
-      named && (extra ? /* @__PURE__ */ jsx108(DeviceStateMark, {}) : /* @__PURE__ */ jsx108(Icon, { "aria-hidden": "true" })),
-      /* @__PURE__ */ jsx108("span", { className: "thread-map-section-label", children: item.label }),
-      extra && box.width >= 280 && /* @__PURE__ */ jsx108(DeviceReadings, { extra }),
-      unlisted ? named && /* @__PURE__ */ jsx108("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx108(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs93("span", { className: "thread-map-section-count", children: [
-        item.running > 0 && /* @__PURE__ */ jsx108("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+    const head = /* @__PURE__ */ jsxs95(Fragment42, { children: [
+      named && (extra ? /* @__PURE__ */ jsx109(DeviceStateMark, {}) : /* @__PURE__ */ jsx109(Icon, { "aria-hidden": "true" })),
+      /* @__PURE__ */ jsx109("span", { className: "thread-map-section-label", children: item.label }),
+      extra && box.width >= 280 && /* @__PURE__ */ jsx109(DeviceReadings, { extra }),
+      unlisted ? named && /* @__PURE__ */ jsx109("span", { className: "thread-map-section-count", children: state === "error" ? /* @__PURE__ */ jsx109(RotateCw2, { "aria-hidden": "true" }) : translate(state === "offline" ? "workbench.threadMapOffline" : "workbench.threadMapLoading") }) : named && /* @__PURE__ */ jsxs95("span", { className: "thread-map-section-count", children: [
+        item.running > 0 && /* @__PURE__ */ jsx109("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
         item.threads,
-        item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx108("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
+        item.usd > 0 && box.width >= 150 && /* @__PURE__ */ jsx109("span", { className: "thread-map-section-usd", children: formatCompactUsd(item.usd) })
       ] })
     ] });
     if (!preview && !live.length && zoomable) spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
     const zoom = (event) => navigate(item, event.currentTarget.closest("section"));
-    return /* @__PURE__ */ jsxs93(
+    return /* @__PURE__ */ jsxs95(
       "section",
       {
         "data-map-id": item.id,
@@ -29938,8 +31017,8 @@ function ThreadMap({
         "aria-label": text,
         style: { left: box.x, top: box.y, width: box.width, height: box.height },
         children: [
-          /* @__PURE__ */ jsxs93("div", { className: "thread-map-section-header", style: { height: header }, title: extra?.metrics, children: [
-            (preview || live.length > 0) && zoomable ? /* @__PURE__ */ jsx108(
+          /* @__PURE__ */ jsxs95("div", { className: "thread-map-section-header", style: { height: header2 }, children: [
+            (preview || live.length > 0) && zoomable ? /* @__PURE__ */ jsx109(
               "button",
               {
                 type: "button",
@@ -29949,15 +31028,15 @@ function ThreadMap({
                 ...hover(lines),
                 children: head
               }
-            ) : /* @__PURE__ */ jsx108("div", { className: "thread-map-section-head", children: head }),
-            extra?.menuItems?.length ? /* @__PURE__ */ jsx108(DeviceMenu, { device: item.device, items: extra.menuItems }) : null,
-            extra?.metrics && /* @__PURE__ */ jsx108("span", { className: "thread-map-metrics", children: extra.metrics })
+            ) : /* @__PURE__ */ jsx109("div", { className: "thread-map-section-head", children: head }),
+            extra?.menuItems?.length ? /* @__PURE__ */ jsx109(DeviceMenu, { device: item.device, items: extra.menuItems }) : null,
+            extra?.metrics && /* @__PURE__ */ jsx109("span", { className: "thread-map-metrics", children: extra.metrics })
           ] }),
-          preview && /* @__PURE__ */ jsx108("div", { className: "thread-map-preview", children: render(item.children, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y }) }),
-          live.length > 0 && /* @__PURE__ */ jsx108("div", { className: "thread-map-preview", children: render(live, liveInner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y }) }),
-          live.length > 0 && item.threads > live.length && /* @__PURE__ */ jsx108("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapMoreThreads", { count: item.threads - live.length }) }),
-          !preview && !live.length && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx108("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) }),
-          !preview && !live.length && zoomable && /* @__PURE__ */ jsx108(
+          preview && /* @__PURE__ */ jsx109("div", { className: "thread-map-preview", children: render(item.children, inner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y }) }),
+          live.length > 0 && /* @__PURE__ */ jsx109("div", { className: "thread-map-preview", children: render(live, liveInner, depth + 1, { x: offset.x + box.x, y: offset.y + box.y }) }),
+          live.length > 0 && item.threads > live.length && /* @__PURE__ */ jsx109("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapMoreThreads", { count: item.threads - live.length }) }),
+          !preview && !live.length && !unlisted && box.height >= HEADER + 18 && /* @__PURE__ */ jsx109("span", { className: "thread-map-section-summary", "aria-hidden": "true", children: translate("workbench.threadMapThreads", { count: item.threads }) }),
+          !preview && !live.length && zoomable && /* @__PURE__ */ jsx109(
             "button",
             {
               type: "button",
@@ -29967,7 +31046,7 @@ function ThreadMap({
               ...hover(lines)
             }
           ),
-          unlisted && state === "error" && onRetry && /* @__PURE__ */ jsx108(
+          unlisted && state === "error" && onRetry && /* @__PURE__ */ jsx109(
             "button",
             {
               type: "button",
@@ -29982,25 +31061,78 @@ function ThreadMap({
       item.id
     );
   });
-  const children = current.children;
+  const children2 = current.children;
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
-  return /* @__PURE__ */ jsxs93("div", { className: "thread-map", "data-presentation": presentation, onKeyDown: keyboard, children: [
-    /* @__PURE__ */ jsxs93("div", { className: "thread-map-bar", children: [
+  const breadcrumb = /* @__PURE__ */ jsxs95(Fragment42, { children: [
+    /* @__PURE__ */ jsx109("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx109(ArrowLeft4, { "aria-hidden": "true" }) }),
+    /* @__PURE__ */ jsx109("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => {
+      const href = page && node.kind === "thread" ? void 0 : node.workspace ? node.workspace.href : node.device?.href;
+      const label = translate(node.workspace ? "workbench.threadMapOpenWorkspace" : "workbench.threadMapOpenDevice", { name: node.label });
+      return /* @__PURE__ */ jsxs95("span", { className: "thread-map-crumb", children: [
+        index > 0 && /* @__PURE__ */ jsx109(ChevronRight9, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsx109("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), "data-map-tip-id": node.id, ...hover(() => describe(node, hours)), children: node.label }),
+        href && /* @__PURE__ */ jsx109("a", { className: "thread-map-crumb-open", href, "aria-label": label, title: label, onClick: (event) => {
+          if (!onNavigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+          event.preventDefault();
+          onNavigate(href);
+        }, children: /* @__PURE__ */ jsx109(ArrowUpRight2, { "data-icon": "open", "aria-hidden": "true" }) })
+      ] }, node.id);
+    }) })
+  ] });
+  return /* @__PURE__ */ jsxs95("div", { className: "thread-map", "data-presentation": presentation, onKeyDown: keyboard, children: [
+    page && /* @__PURE__ */ jsxs95("div", { className: "thread-map-bar thread-map-dense-toolbar", children: [
+      breadcrumb,
+      /* @__PURE__ */ jsxs95("span", { className: "thread-map-dense-summary", children: [
+        /* @__PURE__ */ jsxs95("span", { title: translate("workbench.threadMapThreads", { count: root.threads }), children: [
+          /* @__PURE__ */ jsx109(Layers4, { "aria-hidden": "true" }),
+          root.threads
+        ] }),
+        root.running > 0 && /* @__PURE__ */ jsxs95("span", { title: translate("workbench.threadMapRunningCount", { count: root.running }), children: [
+          /* @__PURE__ */ jsx109(Activity2, { "aria-hidden": "true" }),
+          root.running
+        ] }),
+        root.usd > 0 && /* @__PURE__ */ jsxs95("span", { title: translate("workbench.threadMapCost", { usd: formatCompactUsd(root.usd) }), children: [
+          /* @__PURE__ */ jsx109(DollarSign4, { "aria-hidden": "true" }),
+          formatCompactUsd(root.usd).replace(/^\$/, "")
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs95("label", { className: "thread-map-filter", children: [
+        /* @__PURE__ */ jsx109("input", { ref: filter, type: "search", value: query, placeholder: translate("workbench.threadMapFilter"), "aria-label": translate("workbench.threadMapFilter"), onChange: (event) => setFilter(event.target.value) }),
+        query.trim() ? /* @__PURE__ */ jsx109("span", { role: "status", children: translate("workbench.threadMapMatches", { count: matches.size }) }) : /* @__PURE__ */ jsx109("kbd", { children: "/" })
+      ] }),
+      /* @__PURE__ */ jsx109("div", { className: "thread-map-scope", role: "group", "aria-label": translate("workbench.threadMapScope"), children: ["all", "active"].map((value, index) => /* @__PURE__ */ jsx109("button", { type: "button", "aria-pressed": scope === value, "aria-keyshortcuts": String(index + 1), "aria-label": translate(value === "all" ? "workbench.threadMapScopeAll" : "workbench.threadMapScopeActive"), title: translate(value === "all" ? "workbench.threadMapScopeAll" : "workbench.threadMapScopeActive"), onClick: () => setScope(value), children: value === "all" ? /* @__PURE__ */ jsx109(Layers4, { "aria-hidden": "true" }) : /* @__PURE__ */ jsx109(Activity2, { "aria-hidden": "true" }) }, value)) }),
+      /* @__PURE__ */ jsx109("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapRefreshLayout"), title: translate("workbench.threadMapRefreshLayout"), onClick: () => setLayoutRevision((n) => n + 1), children: /* @__PURE__ */ jsx109(RotateCw2, { "aria-hidden": "true" }) }),
+      current.device && cachedDevices.has(current.device.id) && /* @__PURE__ */ jsx109("span", { className: "thread-map-cached-label", children: translate("workbench.threadMapCached") }),
+      /* @__PURE__ */ jsxs95(MapLegend, { compact: true, inline: true, children: [
+        /* @__PURE__ */ jsx109("span", { children: translate("workbench.threadMapLegendSize") }),
+        /* @__PURE__ */ jsx109("span", { children: translate("workbench.threadMapLegendColor", { hours }) }),
+        /* @__PURE__ */ jsxs95("span", { children: [
+          /* @__PURE__ */ jsx109(StatusMark, { status: "waiting" }),
+          translate("workbench.waitingForYou")
+        ] }),
+        /* @__PURE__ */ jsxs95("span", { children: [
+          /* @__PURE__ */ jsx109(StatusMark, { status: "running" }),
+          translate("workbench.threadMapRunning")
+        ] })
+      ] }),
+      actions
+    ] }),
+    !page && /* @__PURE__ */ jsxs95("div", { className: "thread-map-bar", children: [
       heading,
-      /* @__PURE__ */ jsxs93("span", { className: "thread-map-summary", children: [
+      /* @__PURE__ */ jsxs95("span", { className: "thread-map-summary", children: [
         translate("workbench.threadMapThreads", { count: root.threads }),
-        root.running > 0 && /* @__PURE__ */ jsxs93(Fragment39, { children: [
+        root.running > 0 && /* @__PURE__ */ jsxs95(Fragment42, { children: [
           " \xB7 ",
-          /* @__PURE__ */ jsx108("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx109("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
           translate("workbench.threadMapRunningCount", { count: root.running })
         ] }),
-        root.usd > 0 && /* @__PURE__ */ jsxs93(Fragment39, { children: [
+        root.usd > 0 && /* @__PURE__ */ jsxs95(Fragment42, { children: [
           " \xB7 ",
           translate("workbench.threadMapCost", { usd: formatCompactUsd(root.usd) })
         ] })
       ] }),
-      (enhanced || onFilterChange) && /* @__PURE__ */ jsxs93("label", { className: "thread-map-filter", children: [
-        /* @__PURE__ */ jsx108(
+      (enhanced || onFilterChange) && /* @__PURE__ */ jsxs95("label", { className: "thread-map-filter", children: [
+        /* @__PURE__ */ jsx109(
           "input",
           {
             ref: filter,
@@ -30011,61 +31143,48 @@ function ThreadMap({
             onChange: (event) => setFilter(event.target.value)
           }
         ),
-        query.trim() ? /* @__PURE__ */ jsx108("span", { role: "status", children: translate("workbench.threadMapMatches", { count: matches.size }) }) : /* @__PURE__ */ jsx108("kbd", { children: "/" })
+        query.trim() ? /* @__PURE__ */ jsx109("span", { role: "status", children: translate("workbench.threadMapMatches", { count: matches.size }) }) : /* @__PURE__ */ jsx109("kbd", { children: "/" })
       ] }),
-      enhanced && /* @__PURE__ */ jsx108("div", { className: "thread-map-scope", role: "group", "aria-label": translate("workbench.threadMapScope"), children: ["active", "week", "all"].map((value, index) => /* @__PURE__ */ jsx108("button", { type: "button", "aria-pressed": scope === value, "aria-keyshortcuts": String(index + 1), onClick: () => setScope(value), children: translate(value === "active" ? "workbench.threadMapScopeActive" : value === "week" ? "workbench.threadMapScopeWeek" : "workbench.threadMapScopeAll") }, value)) }),
+      enhanced && /* @__PURE__ */ jsx109("div", { className: "thread-map-scope", role: "group", "aria-label": translate("workbench.threadMapScope"), children: ["active", "week", "all"].map((value, index) => /* @__PURE__ */ jsx109("button", { type: "button", "aria-pressed": scope === value, "aria-keyshortcuts": String(index + 1), onClick: () => setScope(value), children: translate(value === "active" ? "workbench.threadMapScopeActive" : value === "week" ? "workbench.threadMapScopeWeek" : "workbench.threadMapScopeAll") }, value)) }),
       actions
     ] }),
-    attention && /* @__PURE__ */ jsx108(AttentionStrip, { responsive: page, items: attention, onOpen: (key) => {
+    attention && /* @__PURE__ */ jsx109(AttentionStrip, { responsive: page, items: attention, onOpen: (key) => {
       const thread = nodes.get(`thread:${key}`)?.thread ?? devices.flatMap((device) => device.workspaces.flatMap((workspace) => workspace.threads)).find((thread2) => thread2.key === key);
       if (thread) latest.current.onOpen(thread);
       else onQuickLook?.(key);
     }, onRequestDecision }),
-    /* @__PURE__ */ jsxs93("div", { className: "thread-map-bar thread-map-path", children: [
-      /* @__PURE__ */ jsx108("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx108(ArrowLeft4, { "aria-hidden": "true" }) }),
-      /* @__PURE__ */ jsx108("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => {
-        const href = page && node.kind === "thread" ? void 0 : node.workspace ? node.workspace.href : node.device?.href;
-        const label = translate(node.workspace ? "workbench.threadMapOpenWorkspace" : "workbench.threadMapOpenDevice", { name: node.label });
-        return /* @__PURE__ */ jsxs93("span", { className: "thread-map-crumb", children: [
-          index > 0 && /* @__PURE__ */ jsx108(ChevronRight9, { "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx108("button", { type: "button", "aria-current": node === current ? "location" : void 0, onClick: () => navigate(node), title: node.label, children: node.label }),
-          href && /* @__PURE__ */ jsx108("a", { className: "thread-map-crumb-open", href, "aria-label": label, title: label, onClick: (event) => {
-            if (!onNavigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-            event.preventDefault();
-            onNavigate(href);
-          }, children: /* @__PURE__ */ jsx108(ArrowUpRight2, { "data-icon": "open", "aria-hidden": "true" }) })
-        ] }, node.id);
-      }) }),
-      stableLayout && /* @__PURE__ */ jsx108(
+    !page && /* @__PURE__ */ jsxs95("div", { className: "thread-map-bar thread-map-path", children: [
+      breadcrumb,
+      stableLayout && /* @__PURE__ */ jsx109(
         "button",
         {
           type: "button",
           className: "thread-map-icon-button",
           "aria-label": translate("workbench.threadMapRefreshLayout"),
           onClick: () => setLayoutRevision((revision) => revision + 1),
-          children: /* @__PURE__ */ jsx108(RotateCw2, { "data-icon": "refresh", "aria-hidden": "true" })
+          children: /* @__PURE__ */ jsx109(RotateCw2, { "data-icon": "refresh", "aria-hidden": "true" })
         }
       ),
-      children.length > 0 && /* @__PURE__ */ jsxs93("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
-        /* @__PURE__ */ jsx108(List, { "aria-hidden": "true" }),
-        /* @__PURE__ */ jsxs93("select", { "aria-label": translate("workbench.threadMapGoTo"), value: "", onChange: (event) => {
-          const node = nodes.get(event.target.value);
+      children2.length > 0 && /* @__PURE__ */ jsxs95("label", { className: "thread-map-goto", title: translate("workbench.threadMapGoTo"), children: [
+        /* @__PURE__ */ jsx109(List, { "aria-hidden": "true" }),
+        /* @__PURE__ */ jsxs95(Select, { "aria-label": translate("workbench.threadMapGoTo"), value: "", onValueChange: (value) => {
+          const node = nodes.get(value);
           if (node?.thread) onOpen(node.thread);
           else if (node) navigate(node);
         }, children: [
-          /* @__PURE__ */ jsx108("option", { value: "", children: translate("workbench.threadMapGoTo") }),
-          children.map((node) => /* @__PURE__ */ jsx108("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
+          /* @__PURE__ */ jsx109("option", { value: "", children: translate("workbench.threadMapGoTo") }),
+          children2.map((node) => /* @__PURE__ */ jsx109("option", { value: node.id, disabled: node.kind === "device" && node.device?.state !== "ready", children: describe(node, hours).join(" \xB7 ") }, node.id))
         ] })
       ] }),
-      current.device && cachedDevices.has(current.device.id) && /* @__PURE__ */ jsxs93("span", { className: "thread-map-cached-label", children: [
+      current.device && cachedDevices.has(current.device.id) && /* @__PURE__ */ jsxs95("span", { className: "thread-map-cached-label", children: [
         translate("workbench.threadMapCached"),
-        current.device.cachedAt && /* @__PURE__ */ jsxs93(Fragment39, { children: [
+        current.device.cachedAt && /* @__PURE__ */ jsxs95(Fragment42, { children: [
           " \xB7 ",
           relativeCache(current.device.cachedAt)
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs93(
+    /* @__PURE__ */ jsxs95(
       "div",
       {
         ref: canvas,
@@ -30092,8 +31211,8 @@ function ThreadMap({
           }
         },
         children: [
-          children.length ? /* @__PURE__ */ jsx108("div", { ref: stage, className: "thread-map-stage", children: page ? /* @__PURE__ */ jsx108(
-            ReadableMap,
+          children2.length ? /* @__PURE__ */ jsx109("div", { ref: stage, className: "thread-map-stage", children: page ? /* @__PURE__ */ jsx109(
+            DenseMap,
             {
               current,
               bounds,
@@ -30115,46 +31234,60 @@ function ThreadMap({
               },
               onRetry
             }
-          ) : size.width > 0 && render(children, bounds, 0) }) : /* @__PURE__ */ jsx108("p", { className: "thread-map-empty", role: "status", children: current.device && cachedDevices.has(current.device.id) ? translate("workbench.threadMapNoCache") : devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
-          tip && /* @__PURE__ */ jsx108(MapTooltip, { anchor: tip.target, lines: tip.lines, onClose: () => setTip(null) })
+          ) : size.width > 0 && render(children2, bounds, 0) }) : /* @__PURE__ */ jsx109("p", { className: "thread-map-empty", role: "status", children: current.device && cachedDevices.has(current.device.id) ? translate("workbench.threadMapNoCache") : devices.some((device) => device.state === "loading") ? translate("workbench.threadMapLoading") : translate("workbench.threadMapEmpty") }),
+          tip && /* @__PURE__ */ jsx109(
+            MapTooltip,
+            {
+              anchor: tip.target,
+              trigger: tip.trigger,
+              lines: tip.lines,
+              node: tip.nodeId ? nodes.get(tip.nodeId) : void 0,
+              hours,
+              extra: tip.nodeId && nodes.get(tip.nodeId)?.device ? deviceExtras?.[nodes.get(tip.nodeId).device.id] : void 0,
+              onHold: holdTip,
+              onLeave: leaveTip,
+              onClose: dismissTip
+            }
+          )
         ]
       }
     ),
-    enhanced && devices.some((device) => device.state === "offline") && /* @__PURE__ */ jsx108("div", { className: "thread-map-offline-strip", children: devices.filter((device) => device.state === "offline").map((device) => /* @__PURE__ */ jsxs93("button", { type: "button", onClick: () => {
-      setCachedDevices((previous) => /* @__PURE__ */ new Set([...previous, device.id]));
+    enhanced && devices.some(stripped) && /* @__PURE__ */ jsx109("div", { className: "thread-map-offline-strip", children: devices.filter(stripped).map((device) => /* @__PURE__ */ jsxs95("button", { type: "button", onClick: () => {
+      setLayoutRevision((revision) => revision + 1);
+      if (device.state === "offline") setCachedDevices((previous) => /* @__PURE__ */ new Set([...previous, device.id]));
       setFocusId(`device:${device.id}`);
-    }, children: [
-      /* @__PURE__ */ jsx108(DeviceStateMark, { offline: true }),
-      /* @__PURE__ */ jsx108("b", { children: device.name }),
-      /* @__PURE__ */ jsx108("span", { children: translate("workbench.threadMapOffline") }),
-      device.cachedAt && /* @__PURE__ */ jsx108("span", { children: relativeCache(device.cachedAt) }),
-      /* @__PURE__ */ jsx108("small", { children: translate(device.workspaces.length ? "workbench.threadMapCached" : "workbench.threadMapNoCache") })
+    }, title: [device.name, device.state === "offline" ? translate("workbench.threadMapOffline") : translate("workbench.threadMapEmpty"), device.cachedAt ? relativeCache(device.cachedAt) : ""].filter(Boolean).join(" \xB7 "), children: [
+      /* @__PURE__ */ jsx109(DeviceStateMark, { offline: device.state === "offline" }),
+      /* @__PURE__ */ jsx109("b", { children: device.name }),
+      /* @__PURE__ */ jsx109("span", { children: translate("workbench.threadMapOffline") }),
+      device.cachedAt && /* @__PURE__ */ jsx109("span", { children: relativeCache(device.cachedAt) }),
+      /* @__PURE__ */ jsx109("small", { children: translate(device.workspaces.length ? "workbench.threadMapCached" : "workbench.threadMapNoCache") })
     ] }, device.id)) }),
-    /* @__PURE__ */ jsxs93(MapLegend, { compact: page && size.width > 0 && size.width < 980, children: [
-      /* @__PURE__ */ jsx108("span", { children: translate("workbench.threadMapLegendSize") }),
-      /* @__PURE__ */ jsxs93("span", { className: "thread-map-scale", children: [
+    !page && /* @__PURE__ */ jsxs95(MapLegend, { compact: false, children: [
+      /* @__PURE__ */ jsx109("span", { children: translate("workbench.threadMapLegendSize") }),
+      /* @__PURE__ */ jsxs95("span", { className: "thread-map-scale", children: [
         translate("workbench.threadMapLegendColor", { hours }),
-        /* @__PURE__ */ jsx108("small", { children: translate("workbench.threadMapLess") }),
-        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx108("i", { "data-heat": level, "aria-hidden": "true" }, level)),
-        /* @__PURE__ */ jsx108("small", { children: translate("workbench.threadMapMore") })
+        /* @__PURE__ */ jsx109("small", { children: translate("workbench.threadMapLess") }),
+        [0, 1, 2, 3, 4].map((level) => /* @__PURE__ */ jsx109("i", { "data-heat": level, "aria-hidden": "true" }, level)),
+        /* @__PURE__ */ jsx109("small", { children: translate("workbench.threadMapMore") })
       ] }),
-      /* @__PURE__ */ jsxs93("span", { className: "thread-map-scale thread-map-ages", children: [
+      /* @__PURE__ */ jsxs95("span", { className: "thread-map-scale thread-map-ages", children: [
         translate("workbench.threadMapLegendAge"),
-        /* @__PURE__ */ jsx108("small", { children: translate("workbench.threadMapNewer") }),
-        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx108(AgeGlyph, { tier }, tier)),
-        /* @__PURE__ */ jsx108("small", { children: translate("workbench.threadMapOlder") })
+        /* @__PURE__ */ jsx109("small", { children: translate("workbench.threadMapNewer") }),
+        [0, 1, 2, 3, 4].map((tier) => /* @__PURE__ */ jsx109(AgeGlyph, { tier }, tier)),
+        /* @__PURE__ */ jsx109("small", { children: translate("workbench.threadMapOlder") })
       ] }),
-      /* @__PURE__ */ jsxs93("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsxs93("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
-          /* @__PURE__ */ jsx108("i", {}),
-          /* @__PURE__ */ jsx108("i", {}),
-          /* @__PURE__ */ jsx108("i", {}),
-          /* @__PURE__ */ jsx108("i", {})
+      /* @__PURE__ */ jsxs95("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsxs95("span", { className: "thread-map-legend-spark", "aria-hidden": "true", children: [
+          /* @__PURE__ */ jsx109("i", {}),
+          /* @__PURE__ */ jsx109("i", {}),
+          /* @__PURE__ */ jsx109("i", {}),
+          /* @__PURE__ */ jsx109("i", {})
         ] }),
         translate("workbench.threadMapLegendHourly")
       ] }),
-      /* @__PURE__ */ jsxs93("span", { className: "thread-map-legend-item", children: [
-        /* @__PURE__ */ jsx108("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxs95("span", { className: "thread-map-legend-item", children: [
+        /* @__PURE__ */ jsx109("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
         translate("workbench.threadMapLegendRunning")
       ] })
     ] })
@@ -30162,35 +31295,43 @@ function ThreadMap({
 }
 
 // src/components/threadMap/ThreadMapDialog.tsx
-import { X as X13 } from "lucide-react";
-import { jsx as jsx109 } from "react/jsx-runtime";
+import { X as X14 } from "lucide-react";
+import { jsx as jsx110, jsxs as jsxs96 } from "react/jsx-runtime";
 function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }) {
   useI18n();
-  return /* @__PURE__ */ jsx109(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx109(
+  return /* @__PURE__ */ jsx110(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxs96(
     DialogContent,
     {
       showCloseButton: false,
       "aria-describedby": void 0,
+      tabIndex: -1,
+      onOpenAutoFocus: (event) => {
+        event.preventDefault();
+        event.currentTarget.focus();
+      },
       "data-theme-effective": effectiveTheme,
       "data-theme-mode": themeMode,
       className: "thread-graph-dialog matter-settings-dialog thread-map-dialog",
       overlayClassName: "matter-settings-overlay",
-      children: /* @__PURE__ */ jsx109(
-        ThreadMap,
-        {
-          ...map,
-          onDismiss: () => onOpenChange(false),
-          heading: /* @__PURE__ */ jsx109(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
-          actions: /* @__PURE__ */ jsx109(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx109(X13, { "aria-hidden": "true" }) })
-        }
-      )
+      children: [
+        /* @__PURE__ */ jsx110(DialogTitle, { className: "sr-only", children: translate("workbench.threadMap") }),
+        /* @__PURE__ */ jsx110(
+          ThreadMap,
+          {
+            presentation: "page",
+            ...map,
+            onDismiss: () => onOpenChange(false),
+            actions: /* @__PURE__ */ jsx110(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx110(X14, { "aria-hidden": "true" }) })
+          }
+        )
+      ]
     }
   ) });
 }
 
 // src/components/PublicTranscript.tsx
 import { ChevronRight as ChevronRight10 } from "lucide-react";
-import { jsx as jsx110, jsxs as jsxs94 } from "react/jsx-runtime";
+import { jsx as jsx111, jsxs as jsxs97 } from "react/jsx-runtime";
 function transcriptSnapshot(title, turns, theme) {
   return {
     title,
@@ -30217,19 +31358,19 @@ function transcriptSnapshot(title, turns, theme) {
 }
 function PublicTranscript({ snapshot }) {
   useI18n();
-  const message = (item, index) => /* @__PURE__ */ jsx110(
+  const message = (item, index) => /* @__PURE__ */ jsx111(
     GraphChatMessageFrame,
     {
       kind: item.role === "user" ? "userMessage" : "agentMessage",
       timeLabel: item.createdAt ? formatMessageTimestamp(item.createdAt) : void 0,
-      children: item.role === "user" ? /* @__PURE__ */ jsx110(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx110("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx110(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
+      children: item.role === "user" ? /* @__PURE__ */ jsx111(GraphChatUserMessageBody, { text: item.text, attachmentPreviewUrls: snapshot.images }) : /* @__PURE__ */ jsx111("div", { className: "thread-graph-message-prose", children: /* @__PURE__ */ jsx111(GraphChatMessageContent, { readOnly: true, content: item.text, resolveHref: (href) => snapshot.images?.[href] ?? href }) })
     },
     index
   );
-  return /* @__PURE__ */ jsx110("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs94("div", { className: "public-transcript-content", children: [
-    /* @__PURE__ */ jsxs94("header", { className: "public-transcript-header", children: [
-      /* @__PURE__ */ jsx110("h1", { children: snapshot.title }),
-      /* @__PURE__ */ jsxs94("p", { children: [
+  return /* @__PURE__ */ jsx111("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs97("div", { className: "public-transcript-content", children: [
+    /* @__PURE__ */ jsxs97("header", { className: "public-transcript-header", children: [
+      /* @__PURE__ */ jsx111("h1", { children: snapshot.title }),
+      /* @__PURE__ */ jsxs97("p", { children: [
         snapshot.live ? translate("sharing.liveReadOnlyThread") : translate("sharing.readOnlySnapshot"),
         " \xB7 ",
         snapshot.turnCount,
@@ -30237,17 +31378,17 @@ function PublicTranscript({ snapshot }) {
         translate("sharing.turns_7cb1b2"),
         snapshot.live && snapshot.updatedAt ? translate("sharing.updated", { value1: new Date(snapshot.updatedAt).toLocaleString(getLocale()) }) : ""
       ] }),
-      snapshot.stale && /* @__PURE__ */ jsx110("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
+      snapshot.stale && /* @__PURE__ */ jsx111("p", { role: "status", children: translate("sharing.theDeviceIsUnavailableShowingTheLast") })
     ] }),
     snapshot.turns.map((turn, index) => {
       const displayTurn = { id: `snapshot-${index}`, status: "completed", error: null, items: [], startedAt: turn.startedAt ?? null, completedAt: turn.completedAt ?? null, model: turn.model ?? null, reasoningEffort: turn.reasoningEffort ?? null, tokenUsage: turn.tokenUsage ?? null, priceEstimate: turn.priceEstimate ?? null };
-      return /* @__PURE__ */ jsxs94("section", { className: "thread-graph-turn public-transcript-turn", children: [
+      return /* @__PURE__ */ jsxs97("section", { className: "thread-graph-turn public-transcript-turn", children: [
         turn.messages.filter((item) => item.role === "user").map(message),
-        /* @__PURE__ */ jsxs94("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
-          /* @__PURE__ */ jsx110("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
-          /* @__PURE__ */ jsx110(ChevronRight10, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
-          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx110(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
-          /* @__PURE__ */ jsx110("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+        /* @__PURE__ */ jsxs97("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
+          /* @__PURE__ */ jsx111("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
+          /* @__PURE__ */ jsx111(ChevronRight10, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
+          turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx111(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
+          /* @__PURE__ */ jsx111("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
         ] }),
         turn.messages.filter((item) => item.role === "assistant").map(message)
       ] }, index);
@@ -30256,21 +31397,21 @@ function PublicTranscript({ snapshot }) {
 }
 
 // src/components/ConversationSearchControls.tsx
-import { useEffect as useEffect58, useRef as useRef61, useState as useState80 } from "react";
-import { Check as Check6, ChevronDown as ChevronDown7 } from "lucide-react";
-import { jsx as jsx111, jsxs as jsxs95 } from "react/jsx-runtime";
+import { useEffect as useEffect60, useRef as useRef62, useState as useState81 } from "react";
+import { Check as Check7, ChevronDown as ChevronDown7 } from "lucide-react";
+import { jsx as jsx112, jsxs as jsxs98 } from "react/jsx-runtime";
 function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }) {
-  const [open, setOpen] = useState80(false);
-  const root = useRef61(null);
-  const trigger = useRef61(null);
-  const menu = useRef61(null);
+  const [open, setOpen] = useState81(false);
+  const root = useRef62(null);
+  const trigger = useRef62(null);
+  const menu = useRef62(null);
   const scopes = allowGlobal ? ["thread", "workspace", "device"] : ["thread"];
   const name = (scope) => labels[scope];
   useMenuKeyboard(menu, open, (restore) => {
     setOpen(false);
     if (restore) trigger.current?.focus();
   });
-  useEffect58(() => {
+  useEffect60(() => {
     if (!open) return;
     const outside = (event) => {
       if (!root.current?.contains(event.target)) setOpen(false);
@@ -30278,9 +31419,9 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
     document.addEventListener("pointerdown", outside, true);
     return () => document.removeEventListener("pointerdown", outside, true);
   }, [open]);
-  if (scopes.length < 2) return /* @__PURE__ */ jsx111("span", { className: "workbench-search-scope is-fixed", children: name(value) });
-  return /* @__PURE__ */ jsxs95("div", { ref: root, className: "workbench-search-scope-picker", children: [
-    /* @__PURE__ */ jsxs95(
+  if (scopes.length < 2) return /* @__PURE__ */ jsx112("span", { className: "workbench-search-scope is-fixed", children: name(value) });
+  return /* @__PURE__ */ jsxs98("div", { ref: root, className: "workbench-search-scope-picker", children: [
+    /* @__PURE__ */ jsxs98(
       "button",
       {
         ref: trigger,
@@ -30291,12 +31432,12 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
         "aria-expanded": open,
         onClick: () => setOpen((current) => !current),
         children: [
-          /* @__PURE__ */ jsx111("span", { children: name(value) }),
-          /* @__PURE__ */ jsx111(ChevronDown7, { "aria-hidden": "true" })
+          /* @__PURE__ */ jsx112("span", { children: name(value) }),
+          /* @__PURE__ */ jsx112(ChevronDown7, { "aria-hidden": "true" })
         ]
       }
     ),
-    open && /* @__PURE__ */ jsx111("div", { ref: menu, role: "menu", "aria-label": labels.scope, className: "workbench-search-scope-menu", children: scopes.map((scope) => /* @__PURE__ */ jsxs95(
+    open && /* @__PURE__ */ jsx112("div", { ref: menu, role: "menu", "aria-label": labels.scope, className: "workbench-search-scope-menu", children: scopes.map((scope) => /* @__PURE__ */ jsxs98(
       "button",
       {
         type: "button",
@@ -30307,8 +31448,8 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
           if (scope !== value) onChange(scope);
         },
         children: [
-          /* @__PURE__ */ jsx111(Check6, { "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx111("span", { children: name(scope) })
+          /* @__PURE__ */ jsx112(Check7, { "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx112("span", { children: name(scope) })
         ]
       },
       scope
@@ -30337,20 +31478,20 @@ function searchHighlightParts(text, query) {
 }
 function ConversationSearchExcerpt({ text, query }) {
   const parts = searchHighlightParts(text, query);
-  return /* @__PURE__ */ jsxs95("p", { children: [
+  return /* @__PURE__ */ jsxs98("p", { children: [
     parts.before,
-    parts.match && /* @__PURE__ */ jsx111("mark", { children: parts.match }),
+    parts.match && /* @__PURE__ */ jsx112("mark", { children: parts.match }),
     parts.after
   ] });
 }
 
 // src/components/timeline/TurnNotificationButton.tsx
 import { Bell as Bell2, Loader2 as Loader27 } from "lucide-react";
-import { jsx as jsx112, jsxs as jsxs96 } from "react/jsx-runtime";
+import { jsx as jsx113, jsxs as jsxs99 } from "react/jsx-runtime";
 function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onRetry }) {
   useI18n();
-  return /* @__PURE__ */ jsxs96("span", { className: "turn-notification-control", children: [
-    /* @__PURE__ */ jsx112(
+  return /* @__PURE__ */ jsxs99("span", { className: "turn-notification-control", children: [
+    /* @__PURE__ */ jsx113(
       "button",
       {
         type: "button",
@@ -30360,11 +31501,11 @@ function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onR
         title: translate(subscribed ? "chat.turnNotificationOn" : "chat.turnNotificationOff"),
         disabled: busy,
         onClick: onToggle,
-        children: busy ? /* @__PURE__ */ jsx112(Loader27, { size: 15, className: "is-spinning", "aria-hidden": "true" }) : /* @__PURE__ */ jsx112(Bell2, { size: 15, fill: subscribed ? "currentColor" : "none", "aria-hidden": "true" })
+        children: busy ? /* @__PURE__ */ jsx113(Loader27, { size: 15, className: "is-spinning", "aria-hidden": "true" }) : /* @__PURE__ */ jsx113(Bell2, { size: 15, fill: subscribed ? "currentColor" : "none", "aria-hidden": "true" })
       }
     ),
-    /* @__PURE__ */ jsx112("span", { className: "turn-notification-feedback", role: "status", children: subscribed ? translate("chat.turnNotificationOn") : "" }),
-    error && /* @__PURE__ */ jsx112(ErrorMark, { message: error, onRetry, retryLabel: translate("settings.retry") })
+    /* @__PURE__ */ jsx113("span", { className: "turn-notification-feedback", role: "status", children: subscribed ? translate("chat.turnNotificationOn") : "" }),
+    error && /* @__PURE__ */ jsx113(ErrorMark, { message: error, onRetry, retryLabel: translate("settings.retry") })
   ] });
 }
 
@@ -30406,6 +31547,7 @@ export {
   RenderErrorBoundary,
   RenderErrorFallback,
   SUPPORTED_LOCALES,
+  Select,
   SettingsDialog,
   SettingsPanels,
   StatusMark,

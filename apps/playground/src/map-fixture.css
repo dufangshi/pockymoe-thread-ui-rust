@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@source "../../../packages/thread-ui/src";
+
 html, body, #root { height: 100%; margin: 0; overflow: hidden; }
 * { box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
@@ -11,3 +14,5 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .map-fixture-toolbar a[aria-current] { background: var(--theme-surface); color: var(--theme-fg); }
 .map-fixture-notice { position: fixed; bottom: 40px; left: 50%; translate: -50% 0; z-index: 50; max-width: 80%; padding: 10px 16px; border: 1px solid var(--theme-border); border-radius: 10px; background: var(--theme-panel); color: var(--theme-fg); box-shadow: 0 8px 28px rgb(0 0 0 / .15); font-size: 12px; }
 @media (max-width: 639px) { .map-fixture-toolbar { gap: 8px; padding: 0 12px; } .map-fixture-toolbar > span, .map-fixture-toolbar > button { display: none; } }
+
+.map-fixture-toolbar[hidden] { display: none; }

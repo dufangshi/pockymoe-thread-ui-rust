@@ -723,6 +723,14 @@
   .thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:hover, [aria-expanded='true']) { background: var(--theme-hover); color: var(--theme-fg); }
 }
 .matter-thread-group > .matter-group-toggle.is-badge > svg { width: 11px; height: 11px; }
+/* Agents at work: the robot slowly brightens into the running colour and fades back. */
+.matter-thread-group > .matter-group-toggle.is-badge[data-running] > svg { animation: matter-tab-agents-glow 2.4s ease-in-out infinite; }
+@keyframes matter-tab-agents-glow {
+  50% { color: var(--matter-agents-glow, #20bc87); filter: drop-shadow(0 0 3px var(--matter-agents-glow, #20bc87)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .matter-thread-group > .matter-group-toggle.is-badge[data-running] > svg { animation: none; color: var(--matter-agents-glow, #20bc87); }
+}
 .matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot {
   position: absolute; left: var(--tab-icon-right); top: var(--tab-icon-bottom); translate: -70% -70%;
   width: 8px; height: 8px; margin: 0; box-shadow: 0 0 0 2px var(--theme-surface);

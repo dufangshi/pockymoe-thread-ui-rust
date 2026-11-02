@@ -1,3 +1,4 @@
+import { Select } from '../components/Select';
 import {
   useCallback,
   useEffect,
@@ -317,14 +318,14 @@ export function ContentQualitySettings({
           {field(
             'preset',
             t('quality.preset'),
-            <select
+            <Select
               id={`${scope}-preset`}
               aria-describedby={`${scope}-preset-hint`}
               value={values.preset}
-              onChange={(event) =>
+              onValueChange={(selectedValue) =>
                 update(
                   'preset',
-                  event.target.value as QualitySettings['preset'],
+                  selectedValue as QualitySettings['preset'],
                 )
               }
             >
@@ -333,19 +334,19 @@ export function ContentQualitySettings({
                   {t(`quality.preset.${preset}`)}
                 </option>
               ))}
-            </select>,
+            </Select>,
             t(`quality.preset.${values.preset}.description`),
           )}
           {field(
             'detail',
             t('quality.detail'),
-            <select
+            <Select
               id={`${scope}-detail`}
               value={values.detail}
-              onChange={(event) =>
+              onValueChange={(selectedValue) =>
                 update(
                   'detail',
-                  event.target.value as QualitySettings['detail'],
+                  selectedValue as QualitySettings['detail'],
                 )
               }
             >
@@ -354,7 +355,7 @@ export function ContentQualitySettings({
                   {t(`quality.detail.${detail}`)}
                 </option>
               ))}
-            </select>,
+            </Select>,
           )}
           {field(
             'readerBackground',
@@ -484,14 +485,14 @@ export function ContentQualitySettings({
           {field(
             'documentMode',
             t('quality.documentMode'),
-            <select
+            <Select
               id={`${scope}-documentMode`}
               aria-describedby={`${scope}-documentMode-hint`}
               value={values.documentMode}
-              onChange={(event) =>
+              onValueChange={(selectedValue) =>
                 update(
                   'documentMode',
-                  event.target.value as QualitySettings['documentMode'],
+                  selectedValue as QualitySettings['documentMode'],
                 )
               }
             >
@@ -499,7 +500,7 @@ export function ContentQualitySettings({
               <option value="rewrite">
                 {t('quality.documentMode.rewrite')}
               </option>
-            </select>,
+            </Select>,
             t('quality.documentModeHint'),
           )}
         </fieldset>

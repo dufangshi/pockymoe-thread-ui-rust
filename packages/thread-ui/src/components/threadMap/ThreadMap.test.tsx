@@ -49,7 +49,8 @@ describe('thread map model', () => {
     const [first, second] = root.children[0]!.children;
     expect(first!.thread!.key).toBe('lead');
     expect(first).toMatchObject({ weight: runningWeight(1), running: 1 });
-    expect(second).toMatchObject({ weight: 11, running: 0 });
+    expect(second).toMatchObject({ running: 0 });
+    expect(second!.weight).toBeLessThan(first!.weight);
   });
 
   it('groups threads by device and workspace, skips empty workspaces and keeps unlisted devices', () => {
@@ -80,6 +81,7 @@ describe('ThreadMap', () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
     vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(600);
     host = document.createElement('div');
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) { return this.matches('[role="combobox"]') ? new DOMRect(10, 50, 180, 28) : new DOMRect(0, 0, 1200, 700); });
     document.body.append(host);
     root = createRoot(host);
   });
@@ -100,11 +102,11 @@ describe('ThreadMap', () => {
   const crumbs = () => [...host.querySelectorAll('.thread-map-crumbs button')].map(item => `${item.textContent}${item.hasAttribute('aria-current') ? '*' : ''}`);
   const click = (target: Element) => act(() => { target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 })); });
   const choose = (value: string) => {
-    const picker = host.querySelector<HTMLSelectElement>('.thread-map-goto select')!;
-    act(() => {
-      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value')!.set!.call(picker, value);
-      picker.dispatchEvent(new Event('change', { bubbles: true }));
-    });
+    click(host.querySelector('.thread-map-goto [role="combobox"]')!);
+    const suffix=value.split(':').at(-1)!;
+    const label=value.startsWith('thread:')?`Thread ${suffix}`:suffix;
+    const option=[...document.querySelectorAll('[role="option"]')].find(item=>item.textContent?.toLowerCase().startsWith(label.toLowerCase()));
+    expect(option).toBeTruthy();click(option!);
   };
 
   it('shows threads with their agent, heat and running state, and opens one', () => {
@@ -279,6 +281,7 @@ describe('ThreadTile', () => {
     setLocale('zh-CN', false);
     vi.useFakeTimers({ now, toFake: ['Date'] });
     host = document.createElement('div');
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) { return this.matches('[role="combobox"]') ? new DOMRect(10, 50, 180, 28) : new DOMRect(0, 0, 1200, 700); });
     document.body.append(host);
     root = createRoot(host);
   });

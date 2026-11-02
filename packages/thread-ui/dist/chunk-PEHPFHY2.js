@@ -1,7 +1,4 @@
 import {
-  styleInject
-} from "./chunk-7O5E2ZHX.js";
-import {
   AbstractText,
   AccessibilitySupport,
   ApplyEditsResult,
@@ -313,6 +310,9 @@ import {
   writeUInt32BE,
   writeUInt8
 } from "./chunk-SSOM5P4O.js";
+import {
+  styleInject
+} from "./chunk-7O5E2ZHX.js";
 
 // ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/editor/common/config/editorZoom.js
 var EditorZoom = new class {

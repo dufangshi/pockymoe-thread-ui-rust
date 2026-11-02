@@ -1,8 +1,8 @@
 import {
   languages
-} from "./chunk-JXQIYSAV.js";
-import "./chunk-7O5E2ZHX.js";
+} from "./chunk-PEHPFHY2.js";
 import "./chunk-SSOM5P4O.js";
+import "./chunk-7O5E2ZHX.js";
 
 // ../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor/esm/vs/languages/definitions/html/html.js
 var EMPTY_ELEMENTS = [

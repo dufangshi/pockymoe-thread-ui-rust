@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { RefObject, TouchEvent, MouseEvent, Dispatch, SetStateAction, ReactNode, Component, ErrorInfo, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
+import { ButtonHTMLAttributes, ReactNode, RefObject, TouchEvent, MouseEvent, Dispatch, SetStateAction, Component, ErrorInfo, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
 import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-C0z5Gr1_.js';
 export { D as DescribeThread, i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as SendPromptInput, m as ShellSocketConnection, n as ShellSocketHandlers, o as ThreadImageAssetVariant, p as ThreadLinkInfo, W as WorkspaceDocumentSaveInput, q as WorkspaceDocumentSnapshot, r as WorkspaceSaveReceipt, s as WorkspaceTab, t as createDefaultPluginContextValue, u as mergePluginState } from './workspace-panel-C0z5Gr1_.js';
 import { ContextInspectionDetailDto, ThreadContextInspectionDto, ReasoningEffortDto, CollaborationModeDto, SandboxModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadPendingWakeDto, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
@@ -74,6 +74,28 @@ declare function ErrorMark({ message, detail, kind, label, onRetry, retryLabel, 
     announce?: boolean;
     tabIndex?: number | undefined;
 }): react.JSX.Element;
+
+interface SelectOption {
+    value: string | number;
+    label: ReactNode;
+    disabled?: boolean;
+    hidden?: boolean;
+    group?: string;
+}
+interface SelectProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value' | 'defaultValue' | 'onChange' | 'children' | 'name' | 'type' | 'role'> {
+    value?: string | number;
+    defaultValue?: string | number;
+    onValueChange?: (value: string) => void;
+    options?: readonly SelectOption[];
+    /** Existing option/optgroup JSX is accepted as data, never rendered as native controls. */
+    children?: ReactNode;
+    name?: string;
+    required?: boolean;
+    placeholder?: ReactNode;
+}
+/** Single-value app select. It retains form/label semantics while all option
+ * rendering, focus and keyboard behavior belong to the shared menu system. */
+declare function Select({ value, defaultValue, onValueChange, options, children, name, required, placeholder, className, disabled, form, onKeyDown, onClick, ...buttonProps }: SelectProps): react.JSX.Element;
 
 /**
  * The keyboard of every app menu (see docs/ui-principles.md §3): focus goes to
@@ -390,6 +412,8 @@ interface MatterWorkbenchOptions {
     /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
     subscriptionUsage?: AgentSubscriptionUsageDto | null;
     emptyWorkspace?: boolean;
+    /** False on host pages without a workspace; browser behavior defaults to enabled. */
+    workspaceControlsEnabled?: boolean;
     navigationReady?: boolean;
     harnessSessionId?: string | null;
     harnessSessionUrl?: string | null;
@@ -1041,6 +1065,8 @@ interface ThreadMapThread {
     /** When a turn last started or finished. */
     lastActiveAt?: string | undefined;
     model?: string | undefined;
+    /** Catalog display label, preferred over the model identifier in map details. */
+    modelDisplayName?: string | undefined;
     /** The person's latest prompt. */
     lastPrompt?: string | undefined;
     /** The last turn failed. */
@@ -1082,6 +1108,7 @@ interface ThreadMapDevice {
     workspaces: ThreadMapWorkspace[];
 }
 
+/** Page mode exposes all/active; week is retained for legacy dialog callers. */
 type MapScope = 'active' | 'week' | 'all';
 interface MapAttention {
     key: string;
@@ -1115,6 +1142,7 @@ interface ThreadMapProps {
     devices: ThreadMapDevice[];
     currentKey?: string | undefined;
     hours?: number;
+    /** Dialog heading. Page mode uses its breadcrumb in the single chrome row. */
     heading?: ReactNode;
     actions?: ReactNode;
     onOpen: (thread: ThreadMapThread) => void;
@@ -1146,7 +1174,7 @@ interface ThreadMapProps {
  */
 declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onNavigate, onRetry, onDismiss, presentation, scope: controlledScope, onScopeChange, attention, stableLayout, filterText, onFilterChange, deviceExtras, onQuickLook, onRequestDecision, revealKey, pulseKeys, }: ThreadMapProps): react.JSX.Element;
 
-/** The thread map in a dialog: full screen on a phone, a large panel elsewhere. */
+/** The same dense map as the desktop page, in a dialog: full screen on a phone, a large panel elsewhere. */
 declare function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }: Omit<ComponentProps<typeof ThreadMap>, 'heading' | 'actions'> & {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -1295,4 +1323,4 @@ declare function TurnNotificationButton({ subscribed, busy, error, onToggle, onR
     onRetry: () => void;
 }): react.JSX.Element;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, LongTextDialog, type MapAttention, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, LongTextDialog, type MapAttention, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };

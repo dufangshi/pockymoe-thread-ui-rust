@@ -29,6 +29,8 @@ export interface ThreadMapThread {
   /** When a turn last started or finished. */
   lastActiveAt?: string | undefined;
   model?: string | undefined;
+  /** Catalog display label, preferred over the model identifier in map details. */
+  modelDisplayName?: string | undefined;
   /** The person's latest prompt. */
   lastPrompt?: string | undefined;
   /** The last turn failed. */
@@ -74,6 +76,8 @@ export interface MapNode {
   parent?: MapNode | undefined;
   children: MapNode[];
   weight: number;
+  /** On a thread: its share of a group's area, from how recently it was used. */
+  room?: number;
   turns: number;
   activeMs: number;
   threads: number;
@@ -115,6 +119,8 @@ const byWeight = (a: MapNode, b: MapNode) => b.weight - a.weight || a.label.loca
  */
 export interface MapBuildOptions {
   scope?: MapScope | undefined;
+  /** Page v3 scope filters old unread history too; dialog keeps its old policy. */
+  dense?: boolean;
   now?: number;
   expandedWorkspaces?: ReadonlySet<string>;
   expandedDevices?: ReadonlySet<string>;
@@ -134,11 +140,29 @@ export function inScope(thread: ThreadMapThread, scope: MapScope, now: number): 
   const age = now - Date.parse(thread.lastActiveAt ?? '');
   return Number.isFinite(age) && age <= (scope === 'active' ? DAY : 7 * DAY);
 }
+/** A folded agent's recent activity belongs to its conversation in page scope. */
+function inDenseScope(thread: ThreadMapThread, now: number): boolean {
+  return isLive(thread) || isWaiting(thread) || now - Date.parse(thread.lastActiveAt ?? '') <= DAY
+    || Boolean(thread.children?.some(child => inDenseScope(child, now)));
+}
+/** Half a thread's standing goes every two days, so last week's long threads give way to today's short ones. */
+const RECENCY_HALF_LIFE = 2 * DAY;
+const RECENCY_FLOOR = 0.03;
+const lastActivity = (thread: ThreadMapThread): number => Math.max(Date.parse(thread.lastActiveAt ?? '') || 0, ...(thread.children ?? []).map(lastActivity));
+export function recencyFactor(thread: ThreadMapThread, now: number): number {
+  if (isLive(thread) || isWaiting(thread)) return 1;
+  const last = lastActivity(thread);
+  return last ? Math.max(RECENCY_FLOOR, 0.5 ** (Math.max(0, now - last) / RECENCY_HALF_LIFE)) : RECENCY_FLOOR;
+}
+/** Time spent running in the map's window: many turns today count for more than one touch today. */
+const activityBoost = (thread: ThreadMapThread): number => 1 + heatLevel(thread.activeMs) * 0.5;
 export function recencyWeight(thread: ThreadMapThread, now: number) {
-  const age = now - Date.parse(thread.lastActiveAt ?? '');
-  const factor = age <= DAY ? 1 : age <= 7 * DAY ? 0.7 : 0.45;
-  const weight = threadWeight(thread.turns) * factor;
+  const weight = threadWeight(thread.turns) * recencyFactor(thread, now) * activityBoost(thread);
   return isLive(thread) || isWaiting(thread) ? Math.max(weight, runningWeight(thread.turns)) : weight;
+}
+/** How much room a thread asks for when its group's area is shared out. A stale one asks for little, not none. */
+export function roomFor(thread: ThreadMapThread, now: number): number {
+  return (0.15 + 0.85 * recencyFactor(thread, now)) * activityBoost(thread);
 }
 
 export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: string, options: MapBuildOptions = {}): MapNode {
@@ -160,13 +184,14 @@ export function buildThreadMap(devices: readonly ThreadMapDevice[], rootLabel: s
         const live = isLive(thread);
         const leaf: MapNode = {
           id: `thread:${thread.key}`, kind: 'thread', label: thread.title, parent: space, children: [], thread, device, workspace,
-          weight: options.scope ? recencyWeight(thread, now) : live || isWaiting(thread) ? runningWeight(thread.turns) : threadWeight(thread.turns), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0, threads: 1, running: live ? 1 : 0,
+          weight: recencyWeight(thread, now), room: roomFor(thread, now), turns: thread.turns ?? 0, activeMs: thread.activeMs ?? 0, threads: 1, running: live ? 1 : 0,
           usd: thread.priceEstimate?.totalUsd ?? 0, tokens: thread.tokenUsage?.totalTokens ?? 0,
         };
-        if (options.scope && !expanded && !inScope(thread, options.scope, now)) hidden.push(leaf);
+        if (options.scope && !expanded && !(options.dense && options.scope === 'active' ? inDenseScope(thread, now) : inScope(thread, options.scope, now))) hidden.push(leaf);
         else space.children.push(leaf);
         add(space, leaf);
       }
+      if (options.dense) hidden.length = 0;
       if (!space.children.length && hidden.length) { space.hiddenNodes = hidden; hiddenSpaces.push(space); continue; }
       if (!space.children.length) continue;
       if (hidden.length) {

@@ -3,10 +3,12 @@ import {
   useTerminalPreferences
 } from "./chunk-5NGPD4NR.js";
 import {
+  Select,
   formatNumber,
   translate,
   useI18n
-} from "./chunk-EGGLYRNF.js";
+} from "./chunk-LH2CMXIT.js";
+import "./chunk-7O5E2ZHX.js";
 
 // src/plugins/builtin-plugin-modules.tsx
 import { terminalPluginManifest } from "@pockymoe/plugin-terminal";
@@ -266,14 +268,14 @@ function ContentQualitySettings({
             "preset",
             t("quality.preset"),
             /* @__PURE__ */ jsx(
-              "select",
+              Select,
               {
                 id: `${scope}-preset`,
                 "aria-describedby": `${scope}-preset-hint`,
                 value: values.preset,
-                onChange: (event) => update(
+                onValueChange: (selectedValue) => update(
                   "preset",
-                  event.target.value
+                  selectedValue
                 ),
                 children: presets.map((preset) => /* @__PURE__ */ jsx("option", { value: preset, children: t(`quality.preset.${preset}`) }, preset))
               }
@@ -284,13 +286,13 @@ function ContentQualitySettings({
             "detail",
             t("quality.detail"),
             /* @__PURE__ */ jsx(
-              "select",
+              Select,
               {
                 id: `${scope}-detail`,
                 value: values.detail,
-                onChange: (event) => update(
+                onValueChange: (selectedValue) => update(
                   "detail",
-                  event.target.value
+                  selectedValue
                 ),
                 children: details.map((detail) => /* @__PURE__ */ jsx("option", { value: detail, children: t(`quality.detail.${detail}`) }, detail))
               }
@@ -423,14 +425,14 @@ function ContentQualitySettings({
             "documentMode",
             t("quality.documentMode"),
             /* @__PURE__ */ jsxs(
-              "select",
+              Select,
               {
                 id: `${scope}-documentMode`,
                 "aria-describedby": `${scope}-documentMode-hint`,
                 value: values.documentMode,
-                onChange: (event) => update(
+                onValueChange: (selectedValue) => update(
                   "documentMode",
-                  event.target.value
+                  selectedValue
                 ),
                 children: [
                   /* @__PURE__ */ jsx("option", { value: "review", children: t("quality.documentMode.review") }),

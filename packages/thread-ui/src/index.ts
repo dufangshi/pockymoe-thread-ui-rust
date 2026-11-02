@@ -1,4 +1,5 @@
 import './styles/base.css';
+import './styles/form-controls.css';
 import './styles/timeline-shell.css';
 import './styles/layout-workspace.css';
 import './styles/history-markdown.css';
@@ -25,6 +26,7 @@ export { copyText } from './components/shell/terminalClipboard';
 export { PathChip } from './components/copy/PathChip';
 export { MiddleName } from './components/copy/MiddleName';
 export { ErrorMark } from './components/copy/ErrorMark';
+export { Select, type SelectProps, type SelectOption } from './components/Select';
 export { useMenuKeyboard } from './components/menu/useMenuKeyboard';
 export { useModalFocus } from './components/menu/useModalFocus';
 export { useLongPress } from './components/menu/useLongPress';

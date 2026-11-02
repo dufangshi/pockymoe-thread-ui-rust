@@ -78,11 +78,10 @@ function click(element: Element | null) {
   });
 }
 
-function changeSelect(select: HTMLSelectElement, value: string) {
-  act(() => {
-    select.value = value;
-    select.dispatchEvent(new Event('change', { bubbles: true }));
-  });
+function changeSelect(select: HTMLButtonElement, value: string) {
+  click(select);
+  const option = [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.dataset.value === value);
+  expect(option).toBeTruthy(); click(option!);
 }
 
 function changeInput(input: HTMLInputElement, value: string) {
@@ -108,6 +107,7 @@ function checkedInput(labelText: string) {
 
 describe('ThreadActionsDialog', () => {
   beforeEach(() => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ x: 20, y: 30, left: 20, top: 30, right: 220, bottom: 62, width: 200, height: 32, toJSON() {} });
     (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
@@ -144,7 +144,7 @@ describe('ThreadActionsDialog', () => {
     renderDialog({ onExport });
 
     click(exportButton('HTML'));
-    changeSelect(document.body.querySelector('select')!, 'latest-3');
+    changeSelect(document.body.querySelector<HTMLButtonElement>('[role=combobox]')!, 'latest-3');
     click(exportButton('Export HTML'));
 
     expect(onExport).toHaveBeenCalledWith({
@@ -165,7 +165,7 @@ describe('ThreadActionsDialog', () => {
     const onExport = vi.fn();
     renderDialog({ onExport });
 
-    changeSelect(document.body.querySelector('select')!, mode);
+    changeSelect(document.body.querySelector<HTMLButtonElement>('[role=combobox]')!, mode);
     expect(text(selectedLabel)).toBe(true);
     click(exportButton('Export HTML'));
 
@@ -184,7 +184,7 @@ describe('ThreadActionsDialog', () => {
     const onExport = vi.fn();
     renderDialog({ onExport });
 
-    changeSelect(document.body.querySelector('select')!, 'all-loaded');
+    changeSelect(document.body.querySelector<HTMLButtonElement>('[role=combobox]')!, 'all-loaded');
     expect(text('3 turns selected.')).toBe(true);
     click(exportButton('Export HTML'));
 
@@ -203,10 +203,9 @@ describe('ThreadActionsDialog', () => {
     const onExport = vi.fn();
     renderDialog({ onExport });
     // The option itself is named and carries the mode (an i18n pass once replaced it with its label).
-    const custom = [...document.body.querySelector('select')!.options].find(option => option.value === 'custom');
-    expect(custom?.textContent).toBe('Custom');
-
-    changeSelect(document.body.querySelector('select')!, 'custom');
+    click(document.body.querySelector('[role=combobox]'));
+    const custom = [...document.body.querySelectorAll<HTMLElement>('[role=option]')].find(option => option.dataset.value === 'custom');
+    expect(custom?.textContent).toBe('Custom'); click(custom!);
     click(exportButton('Clear'));
     click(checkedInput('Second prompt'));
     click(exportButton('Export HTML'));

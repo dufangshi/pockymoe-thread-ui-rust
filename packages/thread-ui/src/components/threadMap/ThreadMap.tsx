@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { ArrowLeft, ArrowUpRight, ChevronRight, ChevronUp, Folder, List, Monitor, Network, RotateCw } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, ChevronRight, ChevronUp, Folder, List, Monitor, Network, RotateCw, Layers, Activity, DollarSign } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
 import { buildThreadMap, heatLevel, indexMap, threadWeight, type MapNode, type ThreadMapThread } from './model';
 import { AgeGlyph, AgentChip, formatRunTime, threadDetails, ThreadTile } from './ThreadTile';
+import { Select } from '../Select';
+import { StatusMark } from '../StatusMark';
 import { formatCompactUsd } from '../timeline/tokenFormatting';
 import { type MapRect } from './squarify';
 
 import { MapTooltip } from './MapTooltip';
-import { ReadableMap } from './ReadableMap';
+import { DenseMap } from './DenseMap';
 import { useMapMotion } from './useMapMotion';
 import type { MapScope, ThreadMapProps } from './types';
 import { MapLayoutCache, spatialNeighbor, StableMapOrder, type SpatialTarget } from './stableLayout';
@@ -58,9 +60,11 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
 }: ThreadMapProps) {
   const { locale } = useI18n();
   const page = presentation === 'page';
+  // A device still being read has no threads yet, but saying so would flash it here and take it away.
+  const stripped = (device: ThreadMapProps['devices'][number]) => device.state === 'offline' || page && device.state !== 'loading' && !device.workspaces.some(w => w.threads.length);
   const enhanced = page || controlledScope !== undefined;
-  const [localScope, setLocalScope] = useState<MapScope>(page ? 'week' : 'all');
-  const scope = controlledScope ?? localScope;
+  const [localScope, setLocalScope] = useState<MapScope>('all');
+  const scope = page && controlledScope === 'week' ? 'all' : controlledScope ?? localScope;
   const [localFilter, setLocalFilter] = useState('');
   const query = filterText ?? localFilter;
   const filter = useRef<HTMLInputElement>(null);
@@ -85,11 +89,12 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const root = useMemo(() => {
     if (priorLayoutRevision.current !== layoutRevision) { orders.current.clear(); priorLayoutRevision.current = layoutRevision; }
     if (priorScope.current !== scope) { orders.current.clear(); priorScope.current = scope; }
-    const list = enhanced ? devices.filter(d => d.state !== 'offline' || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`)))
+    const list = enhanced ? devices.filter(d => (!page || d.workspaces.some(w => w.threads.length > 0) || focusId === `device:${d.id}`) && ( d.state !== 'offline' || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`))))
       .map(d => d.state === 'offline' ? { ...d, state: 'ready' as const } : d) : devices;
-    const tree = buildThreadMap(list, allLabel, enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true } : {});
+    const tree = buildThreadMap(list, allLabel, enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true, dense: page } : {});
+    if (page) tree.children = tree.children.filter(node => node.threads > 0 || node.id === focusId);
     return stableLayout ? orders.current.apply(tree, frozen) : tree;
-  }, [devices, allLabel, enhanced, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId]);
+  }, [devices, allLabel, enhanced, page, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId]);
   const nodes = useMemo(() => indexMap(root), [root]);
   const latest = useRef({ onOpen, onQuickLook });
   latest.current = { onOpen, onQuickLook };
@@ -130,7 +135,13 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const crumbs = useRef<HTMLElement>(null);
   const zoomPlan = useRef<ZoomPlan | null>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
-  const [tip, setTip] = useState<{ lines: string[]; target: HTMLElement } | null>(null);
+  const [tip, setTip] = useState<{ lines: string[]; target: HTMLElement; trigger: HTMLElement; nodeId?: string } | null>(null);
+  const tipDismissed = useRef(false);
+  const tipCloseTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const holdTip = useCallback(() => clearTimeout(tipCloseTimer.current), []);
+  const dismissTip = useCallback(() => { holdTip(); tipDismissed.current = true; setTip(null); }, [holdTip]);
+  const leaveTip = useCallback(() => { clearTimeout(tipCloseTimer.current); tipCloseTimer.current = setTimeout(() => setTip(null), 180); }, []);
+  useEffect(() => () => clearTimeout(tipCloseTimer.current), []);
   useEffect(() => {
     const node = canvas.current;
     if (!node) return;
@@ -175,7 +186,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       return;
     }
     if (event.key === '/' && (enhanced || onFilterChange)) { event.preventDefault(); filter.current?.focus(); }
-    else if (enhanced && ['1', '2', '3'].includes(event.key)) { event.preventDefault(); setScope((['active', 'week', 'all'] as const)[Number(event.key) - 1]!); }
+    else if (enhanced && ['1', '2', '3'].includes(event.key)) { event.preventDefault(); setScope((page ? ['all', 'active', 'all'] as const : ['active', 'week', 'all'] as const)[Number(event.key) - 1]!); }
+    else if (event.key === 'Escape' && tip) { event.preventDefault(); event.stopPropagation(); dismissTip(); }
     else if ((event.key === 'Escape' || event.key === 'Backspace') && current !== root) { event.preventDefault(); event.stopPropagation(); navigate(current.parent); }
     else if (event.key.startsWith('Arrow') && canvas.current?.contains(target)) {
       const from = target.closest<HTMLElement>('[data-map-id]')?.dataset.mapId ?? '';
@@ -186,7 +198,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     } else if (event.key === ' ' && onQuickLook) {
       const id = target.closest<HTMLElement>('[data-map-id]')?.dataset.mapId;
       const key = id?.startsWith('thread:') ? id.slice(7) : undefined;
-      if (key) { event.preventDefault(); onQuickLook(key); }
+      if (key) { event.preventDefault(); setTip(null); onQuickLook(key); }
     }
   };
 
@@ -197,7 +209,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     if (target.closest('input, textarea, select, [contenteditable="true"], [role="dialog"], [role="menu"]') || canvas.current?.closest('.thread-map')?.contains(target)) return;
     if (!canvas.current?.getClientRects().length) return; // Persistent maps can be hidden by the host.
     if (event.key === '/') { event.preventDefault(); filter.current?.focus(); }
-    else if (['1', '2', '3'].includes(event.key)) { event.preventDefault(); setScope((['active', 'week', 'all'] as const)[Number(event.key) - 1]!); }
+    else if (['1', '2', '3'].includes(event.key)) { event.preventDefault(); setScope((page ? ['all', 'active', 'all'] as const : ['active', 'week', 'all'] as const)[Number(event.key) - 1]!); }
   };
   useEffect(() => {
     const key = (event: KeyboardEvent) => outsideKey.current(event);
@@ -290,6 +302,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       while (child && child.parent !== target) child = child.parent;
       zoomPlan.current = child ? { kind: 'out', childId: child.id } : { kind: 'fade' };
     }
+    if (page) setLayoutRevision(revision => revision + 1);
     setFocusId(target === root ? null : target.id);
     setTip(null);
     crumbs.current?.focus({ preventScroll: true });
@@ -420,15 +433,20 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     event.preventDefault();
     latest.current.onOpen(thread);
   };
-  const showTip = (lines: string[], target: HTMLElement) => {
-    const source = target.closest<HTMLElement>('.thread-map-tile, .thread-map-list-row, .thread-map-overflow-row, .thread-map-section, .thread-map-overflow') ?? target;
-    setTip({ lines, target: source });
+  const showTip = (lines: string[], trigger: HTMLElement) => {
+    holdTip();
+    const source = trigger.closest<HTMLElement>('.thread-map-section-header, .thread-map-dense-header, .thread-map-group-head')
+      ?? trigger.closest<HTMLElement>('.thread-map-tile, .thread-map-list-row, .thread-map-overflow-row, .thread-map-section, .thread-map-overflow') ?? trigger;
+    const nodeId = trigger.dataset.mapTipId ?? trigger.closest<HTMLElement>('[data-map-id]')?.dataset.mapId;
+    setTip({ lines, target: source, trigger, nodeId });
   };
   const hover = (lines: string[] | (() => string[])) => ({
-    onPointerEnter: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse') showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); },
-    onPointerLeave: () => setTip(null),
-    onFocus: (event: { currentTarget: HTMLElement }) => showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget),
-    onBlur: () => setTip(null),
+    onPointerEnter: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse' && !tipDismissed.current) showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); },
+    onPointerMove: (event: { pointerType: string; currentTarget: HTMLElement }) => { if (event.pointerType === 'mouse' && tipDismissed.current) { tipDismissed.current = false; showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); } },
+    onPointerLeave: leaveTip,
+    onClickCapture: dismissTip,
+    onFocus: (event: { currentTarget: HTMLElement }) => { tipDismissed.current = false; showTip(typeof lines === 'function' ? lines() : lines, event.currentTarget); },
+    onBlur: leaveTip,
   });
 
   // A block shows what is inside it while each thread can be more than a speck
@@ -529,7 +547,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           data-collapsed={(!preview && !live.length) || undefined} data-live={item.running > 0 || undefined}
           data-heat={preview || live.length ? undefined : heatLevel(item.activeMs)} data-running={!preview && !live.length && item.running ? true : undefined}
           data-zoomable={zoomable || undefined} aria-label={text} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
-          <div className="thread-map-section-header" style={{ height: header }} title={extra?.metrics}>
+          <div className="thread-map-section-header" style={{ height: header }}>
           {(preview || live.length > 0) && zoomable
             ? <button type="button" className="thread-map-section-head" aria-label={translate('workbench.threadMapExplore', { name: text })}
               onClick={zoom} {...hover(lines)}>{head}</button>
@@ -555,9 +573,47 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
 
   const children = current.children;
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
+  const breadcrumb = <>
+        <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapBack')} disabled={current === root} onClick={() => navigate(current.parent)}>
+          <ArrowLeft aria-hidden="true" />
+        </button>
+        <nav ref={crumbs} tabIndex={-1} className="thread-map-crumbs" aria-label={translate('workbench.threadMapPath')}>
+          {chain.map((node, index) => {
+            const href = page && node.kind === 'thread' ? undefined : node.workspace ? node.workspace.href : node.device?.href;
+            const label = translate(node.workspace ? 'workbench.threadMapOpenWorkspace' : 'workbench.threadMapOpenDevice', { name: node.label });
+            return (
+              <span key={node.id} className="thread-map-crumb">
+                {index > 0 && <ChevronRight aria-hidden="true" />}
+                <button type="button" aria-current={node === current ? 'location' : undefined} onClick={() => navigate(node)} data-map-tip-id={node.id} {...hover(() => describe(node, hours))}>{node.label}</button>
+                {href && <a className="thread-map-crumb-open" href={href} aria-label={label} title={label} onClick={event => {
+                  if (!onNavigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+                  event.preventDefault();
+                  onNavigate(href);
+                }}><ArrowUpRight data-icon="open" aria-hidden="true" /></a>}
+              </span>
+            );
+          })}
+        </nav>
+  </>;
   return (
     <div className="thread-map" data-presentation={presentation} onKeyDown={keyboard}>
-      <div className="thread-map-bar">
+      {page && <div className="thread-map-bar thread-map-dense-toolbar">
+        {breadcrumb}
+        <span className="thread-map-dense-summary">
+          <span title={translate('workbench.threadMapThreads',{count:root.threads})}><Layers aria-hidden="true"/>{root.threads}</span>
+          {root.running>0&&<span title={translate('workbench.threadMapRunningCount',{count:root.running})}><Activity aria-hidden="true"/>{root.running}</span>}
+          {root.usd>0&&<span title={translate('workbench.threadMapCost',{usd:formatCompactUsd(root.usd)})}><DollarSign aria-hidden="true"/>{formatCompactUsd(root.usd).replace(/^\$/, '')}</span>}
+        </span>
+        <label className="thread-map-filter"><input ref={filter} type="search" value={query} placeholder={translate('workbench.threadMapFilter')} aria-label={translate('workbench.threadMapFilter')} onChange={event=>setFilter(event.target.value)}/>{query.trim()?<span role="status">{translate('workbench.threadMapMatches',{count:matches.size})}</span>:<kbd>/</kbd>}</label>
+        <div className="thread-map-scope" role="group" aria-label={translate('workbench.threadMapScope')}>
+          {(['all','active'] as const).map((value,index)=><button key={value} type="button" aria-pressed={scope===value} aria-keyshortcuts={String(index+1)} aria-label={translate(value==='all'?'workbench.threadMapScopeAll':'workbench.threadMapScopeActive')} title={translate(value==='all'?'workbench.threadMapScopeAll':'workbench.threadMapScopeActive')} onClick={()=>setScope(value)}>{value==='all'?<Layers aria-hidden="true"/>:<Activity aria-hidden="true"/>}</button>)}
+        </div>
+        <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapRefreshLayout')} title={translate('workbench.threadMapRefreshLayout')} onClick={()=>setLayoutRevision(n=>n+1)}><RotateCw aria-hidden="true"/></button>
+        {current.device && cachedDevices.has(current.device.id) && <span className="thread-map-cached-label">{translate('workbench.threadMapCached')}</span>}
+        <MapLegend compact inline><span>{translate('workbench.threadMapLegendSize')}</span><span>{translate('workbench.threadMapLegendColor',{hours})}</span><span><StatusMark status="waiting"/>{translate('workbench.waitingForYou')}</span><span><StatusMark status="running"/>{translate('workbench.threadMapRunning')}</span></MapLegend>
+        {actions}
+      </div>}
+      {!page && <div className="thread-map-bar">
         {heading}
         <span className="thread-map-summary">
           {translate('workbench.threadMapThreads', { count: root.threads })}
@@ -575,70 +631,55 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           </button>)}
         </div>}
         {actions}
-      </div>
+      </div>}
       {attention && <AttentionStrip responsive={page} items={attention} onOpen={key => {
         const thread = nodes.get(`thread:${key}`)?.thread ?? devices.flatMap(device => device.workspaces.flatMap(workspace => workspace.threads)).find(thread => thread.key === key);
         if (thread) latest.current.onOpen(thread); else onQuickLook?.(key);
       }} onRequestDecision={onRequestDecision} />}
-      <div className="thread-map-bar thread-map-path">
-        <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapBack')} disabled={current === root} onClick={() => navigate(current.parent)}>
-          <ArrowLeft aria-hidden="true" />
-        </button>
-        <nav ref={crumbs} tabIndex={-1} className="thread-map-crumbs" aria-label={translate('workbench.threadMapPath')}>
-          {chain.map((node, index) => {
-            const href = page && node.kind === 'thread' ? undefined : node.workspace ? node.workspace.href : node.device?.href;
-            const label = translate(node.workspace ? 'workbench.threadMapOpenWorkspace' : 'workbench.threadMapOpenDevice', { name: node.label });
-            return (
-              <span key={node.id} className="thread-map-crumb">
-                {index > 0 && <ChevronRight aria-hidden="true" />}
-                <button type="button" aria-current={node === current ? 'location' : undefined} onClick={() => navigate(node)} title={node.label}>{node.label}</button>
-                {href && <a className="thread-map-crumb-open" href={href} aria-label={label} title={label} onClick={event => {
-                  if (!onNavigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-                  event.preventDefault();
-                  onNavigate(href);
-                }}><ArrowUpRight data-icon="open" aria-hidden="true" /></a>}
-              </span>
-            );
-          })}
-        </nav>
+      {!page && <div className="thread-map-bar thread-map-path">
+        {breadcrumb}
         {stableLayout && <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapRefreshLayout')}
           onClick={() => setLayoutRevision(revision => revision + 1)}><RotateCw data-icon="refresh" aria-hidden="true" /></button>}
         {children.length > 0 && <label className="thread-map-goto" title={translate('workbench.threadMapGoTo')}>
           <List aria-hidden="true" />
-          <select aria-label={translate('workbench.threadMapGoTo')} value="" onChange={event => {
-            const node = nodes.get(event.target.value);
+          <Select aria-label={translate('workbench.threadMapGoTo')} value="" onValueChange={value => {
+            const node = nodes.get(value);
             if (node?.thread) onOpen(node.thread);
             else if (node) navigate(node);
           }}>
             <option value="">{translate('workbench.threadMapGoTo')}</option>
             {children.map(node => <option key={node.id} value={node.id} disabled={node.kind === 'device' && node.device?.state !== 'ready'}>{describe(node, hours).join(' · ')}</option>)}
-          </select>
+          </Select>
         </label>}
         {current.device && cachedDevices.has(current.device.id) && <span className="thread-map-cached-label">{translate('workbench.threadMapCached')}
           {current.device.cachedAt && <> · {relativeCache(current.device.cachedAt)}</>}</span>}
-      </div>
+      </div>}
       <div ref={canvas} className="thread-map-canvas" role="group" tabIndex={-1} aria-label={current.label}
         onPointerEnter={() => { pointerInside.current = true; if (stableLayout) freeze(); }}
         onPointerLeave={() => { pointerInside.current = false; if (stableLayout) thaw(); }}
         onFocusCapture={() => { focusInside.current = true; if (stableLayout) freeze(); }}
         onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) { focusInside.current = false; if (stableLayout) thaw(); } }}>
         {children.length
-          ? <div ref={stage} className="thread-map-stage">{page ? <ReadableMap current={current} bounds={bounds} hours={hours} currentKey={currentKey} frozen={stableLayout && frozen}
+          ? <div ref={stage} className="thread-map-stage">{page ? <DenseMap current={current} bounds={bounds} hours={hours} currentKey={currentKey} frozen={stableLayout && frozen}
             version={`${scope}:${layoutRevision}`} query={query} matches={hasMatch} extras={deviceExtras} cached={cachedDevices}
             navigate={navigate} expand={expand} onOpen={open} onQuickLook={onQuickLook ? quickLook : undefined} hover={hover}
             register={items => { spatial.current = items; }} onRetry={onRetry} /> : size.width > 0 && render(children, bounds, 0)}</div>
           : <p className="thread-map-empty" role="status">{current.device && cachedDevices.has(current.device.id) ? translate('workbench.threadMapNoCache') : devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
-        {tip && <MapTooltip anchor={tip.target} lines={tip.lines} onClose={() => setTip(null)} />}
+        {tip && <MapTooltip anchor={tip.target} trigger={tip.trigger} lines={tip.lines} node={tip.nodeId ? nodes.get(tip.nodeId) : undefined} hours={hours}
+          extra={tip.nodeId && nodes.get(tip.nodeId)?.device ? deviceExtras?.[nodes.get(tip.nodeId)!.device!.id] : undefined}
+          onHold={holdTip} onLeave={leaveTip} onClose={dismissTip} />}
       </div>
-      {enhanced && devices.some(device => device.state === 'offline') && <div className="thread-map-offline-strip">
-        {devices.filter(device => device.state === 'offline').map(device => <button type="button" key={device.id} onClick={() => {
-          setCachedDevices(previous => new Set([...previous, device.id])); setFocusId(`device:${device.id}`);
-        }}><DeviceStateMark offline /><b>{device.name}</b><span>{translate('workbench.threadMapOffline')}</span>
+      {enhanced && devices.some(stripped) && <div className="thread-map-offline-strip">
+        {devices.filter(stripped).map(device => <button type="button" key={device.id} onClick={() => {
+          setLayoutRevision(revision => revision + 1);
+          if (device.state === 'offline') setCachedDevices(previous => new Set([...previous, device.id]));
+          setFocusId(`device:${device.id}`);
+        }} title={[device.name,device.state==='offline'?translate('workbench.threadMapOffline'):translate('workbench.threadMapEmpty'),device.cachedAt?relativeCache(device.cachedAt):''].filter(Boolean).join(' · ')}><DeviceStateMark offline={device.state==='offline'} /><b>{device.name}</b><span>{translate('workbench.threadMapOffline')}</span>
           {device.cachedAt && <span>{relativeCache(device.cachedAt)}</span>}
           <small>{translate(device.workspaces.length ? 'workbench.threadMapCached' : 'workbench.threadMapNoCache')}</small>
         </button>)}
       </div>}
-      <MapLegend compact={page && size.width > 0 && size.width < 980}>
+      {!page && <MapLegend compact={false}>
         <span>{translate('workbench.threadMapLegendSize')}</span>
         <span className="thread-map-scale">
           {translate('workbench.threadMapLegendColor', { hours })}
@@ -654,7 +695,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         </span>
         <span className="thread-map-legend-item"><span className="thread-map-legend-spark" aria-hidden="true"><i /><i /><i /><i /></span>{translate('workbench.threadMapLegendHourly')}</span>
         <span className="thread-map-legend-item"><i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapLegendRunning')}</span>
-      </MapLegend>
+      </MapLegend>}
     </div>
   );
 }

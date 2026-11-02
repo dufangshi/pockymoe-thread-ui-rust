@@ -1162,7 +1162,7 @@ interface ThreadMapProps {
  */
 declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onNavigate, onRetry, onDismiss, presentation, scope: controlledScope, onScopeChange, attention, stableLayout, filterText, onFilterChange, deviceExtras, onQuickLook, onRequestDecision, revealKey, pulseKeys, }: ThreadMapProps): react.JSX.Element;
 
-/** The thread map in a dialog: full screen on a phone, a large panel elsewhere. */
+/** The same dense map as the desktop page, in a dialog: full screen on a phone, a large panel elsewhere. */
 declare function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }: Omit<ComponentProps<typeof ThreadMap>, 'heading' | 'actions'> & {
     open: boolean;
     onOpenChange: (open: boolean) => void;

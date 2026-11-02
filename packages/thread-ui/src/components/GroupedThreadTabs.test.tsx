@@ -77,7 +77,7 @@ it('counts only open agents, lists closed agents last and retains an icon-only h
     expect(links.map(link => link.textContent)).toEqual(['root', 'open', 'closed']);
     expect(links[2].style.color).toBe('var(--theme-fg-muted)');
     flushSync(() => root.render(<GroupedThreadTabs threads={[parent, closed]} currentKey="root" onNavigate={vi.fn()} />));
-    expect(button.textContent).toBe(''); expect(button.classList.contains('is-badge')).toBe(false);
+    expect(button.textContent).toBe(''); expect(button.classList.contains('is-badge')).toBe(true); expect(button.hasAttribute('data-closed-only')).toBe(true);
     expect(container.querySelector('[role="img"]')?.getAttribute('data-status')).toBe('idle');
     expect(document.querySelector('#matter-agent-threads a[href="/threads/closed"]')).not.toBeNull();
   } finally { flushSync(() => root.unmount()); container.remove(); }

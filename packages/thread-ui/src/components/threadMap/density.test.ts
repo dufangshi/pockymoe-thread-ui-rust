@@ -7,6 +7,7 @@ import {
 } from './model';
 import { threadLeaves, mapPriority } from './readability';
 import { DenseLayout, type DenseBox } from './density';
+import { recencyFactor } from './model';
 const now = Date.now();
 const thread = (i: number): ThreadMapThread => ({
   key: String(i),
@@ -355,4 +356,37 @@ it('rebinds fresh content in a cached workspace when a sibling priority changes'
   expect(
     plan.find((b) => b.node.id === 'thread:10')!.node.thread!.needsInput?.kind,
   ).toBe('input');
+});
+describe('recently used groups come first', () => {
+  const stale = (i: number): ThreadMapThread => ({ ...thread(1000 + i), running: false, needsInput: undefined, unread: false, failed: false, interrupted: false, turns: 200, activeMs: 0, lastActiveAt: new Date(now - 10 * 86_400_000).toISOString() });
+  const today = (i: number): ThreadMapThread => ({ ...thread(2000 + i), running: false, needsInput: undefined, unread: false, failed: false, interrupted: false, turns: 12, activeMs: 2 * 3_600_000, lastActiveAt: new Date(now - 3_600_000).toISOString() });
+  const device = (old: number, fresh: number): ThreadMapDevice[] => [{ id: 'd', name: 'Device', state: 'ready', workspaces: [
+    { id: 'old', label: 'old', threads: Array.from({ length: old }, (_, i) => stale(i)) },
+    { id: 'fresh', label: 'fresh', threads: Array.from({ length: fresh }, (_, i) => today(i)) },
+  ] }];
+  const place = (devices: ThreadMapDevice[], width: number, height: number) => {
+    const boxes = flat(new DenseLayout().layout(root(devices), { x: 0, y: 0, width, height }, false, 'all'));
+    return { boxes, of: (id: string) => boxes.find((b) => b.node.id === `workspace:d:${id}`)! };
+  };
+  it('ranks a small workspace used today above a big one idle for over a week', () => {
+    const tree = root(device(20, 2));
+    const workspaces = tree.children[0]!.children;
+    expect(workspaces[0]!.workspace!.id).toBe('fresh');
+    expect(workspaces[0]!.weight).toBeGreaterThan(workspaces[1]!.weight);
+  });
+  it('gives it the larger block when everything fits', () => {
+    const { of } = place(device(6, 2), 1200, 700);
+    expect(of('fresh').rect.width * of('fresh').rect.height).toBeGreaterThan(of('old').rect.width * of('old').rect.height);
+  });
+  it('folds old threads rather than recent ones when room runs out', () => {
+    const { boxes } = place(device(40, 4), 420, 300);
+    const shown = boxes.filter((b) => b.node.thread && !b.overflow).map((b) => b.node.thread!.key);
+    for (let i = 0; i < 4; i++) expect(shown).toContain(today(i).key);
+    expect(boxes.filter((b) => b.overflow).flatMap((b) => b.overflow!).every((n) => n.workspace?.id !== 'fresh')).toBe(true);
+  });
+  it('still shows a long thread well when nothing else is recent', () => {
+    expect(root(device(1, 0)).threads).toBe(1);
+    expect(recencyFactor(stale(0), now)).toBeLessThan(0.1);
+    expect(recencyFactor(today(0), now)).toBeGreaterThan(0.9);
+  });
 });

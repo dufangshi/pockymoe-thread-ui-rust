@@ -10,9 +10,12 @@ export interface DenseBox {
   children?: DenseBox[];
   overflow?: MapNode[];
 }
+const roomOf = (nodes: readonly MapNode[]): number => nodes.reduce((sum, n) => sum + shape(n).room, 0);
 interface Result {
   boxes: DenseBox[];
   missing: number;
+  /** The room of the hidden threads: hiding a week-old thread costs less than hiding today's. */
+  lost: number;
   important: number;
   invalid: number;
 }
@@ -36,6 +39,8 @@ interface Shape {
   devices: number;
   rank: number;
   loss: number;
+  /** Room its threads ask for, which follows how recently they were used. */
+  room: number;
   fingerprint: string;
 }
 const shapes = new WeakMap<MapNode, Shape>();
@@ -50,6 +55,7 @@ function shape(node: MapNode): Shape {
     workspaces: node.kind === 'workspace' ? 1 : 0,
     devices: node.kind === 'device' ? 1 : 0,
     rank,
+    room: node.thread ? (node.room ?? 1) : 0,
     loss: node.thread ? ([1e12, 1e9, 1e6, 1e3, 0, 0][rank] ?? 0) : 0,
     fingerprint: `${node.id}:${node.parent?.id}:${node.weight}:${rank}`,
   };
@@ -61,6 +67,7 @@ function shape(node: MapNode): Shape {
       value.devices += nested.devices;
       value.rank = Math.min(value.rank, nested.rank);
       value.loss += nested.loss;
+      value.room += nested.room;
       value.fingerprint += `[${nested.fingerprint}]`;
     }
   shapes.set(node, value);
@@ -159,7 +166,7 @@ function threadPlan(items: MapNode[], bounds: MapRect): Result {
       visible = ordered.slice(0, count);
     const cells = visible.map((node) => ({ node }));
     if (!cells.length && !hidden.length)
-      return { boxes: [], missing: 0, important: 0, invalid: 0 };
+      return { boxes: [], missing: 0, lost: 0, important: 0, invalid: 0 };
     const area = hidden.length ? aboveStrip(bounds) : bounds;
     const median =
       [...visible].sort((a, b) => a.weight - b.weight)[
@@ -192,11 +199,12 @@ function threadPlan(items: MapNode[], bounds: MapRect): Result {
     return {
       boxes,
       missing: hidden.length,
+      lost: roomOf(hidden),
       important: priorityLoss(hidden),
       invalid: fits(inside(bounds)) ? 0 : 1,
     };
   }
-  return { boxes: [], missing: items.length, important: 0, invalid: 1 };
+  return { boxes: [], missing: items.length, lost: roomOf(items), important: 0, invalid: 1 };
 }
 // Variable-height strips account for workspace headers and the *actual* leaf
 // packing at this width. Equal-height grids unnecessarily fold a three-thread
@@ -290,7 +298,7 @@ function layoutLevel(
     levels.set(key, result);
     return result;
   };
-  if (!items.length) return { boxes: [], missing: 0, important: 0, invalid: 0 };
+  if (!items.length) return { boxes: [], missing: 0, lost: 0, important: 0, invalid: 0 };
   if (items.every((n) => n.thread)) return save(threadPlan(items, bounds));
   const ranked = [...items].sort(byPriority);
   let best: Result | undefined;
@@ -309,7 +317,14 @@ function layoutLevel(
     const cells = visible;
     const area = overflow ? aboveStrip(bounds) : bounds;
     const cost = (n: MapNode, overhead = 0.6) => footprint(n, overhead);
+    // Recently used groups get the room first; the plans after these only make everything fit.
+    const recent = (n: MapNode) => {
+      const value = shape(n);
+      return value.room + value.workspaces * 0.6 + value.devices;
+    };
     const planned = [
+      squarify(cells, recent, area),
+      squarify(cells, (n) => (recent(n) + footprint(n)) / 2, area),
       squarify(cells, footprint, area),
       squarify(cells, (n) => Math.max(n.kind === 'device' ? 5 : 1, cost(n)), area),
       squarify(cells, (n) => Math.max(n.kind === 'device' ? 8 : 1, cost(n)), area),
@@ -326,6 +341,7 @@ function layoutLevel(
     for (const candidate of candidates) {
       const boxes: DenseBox[] = [];
       let missing = 0,
+        lost = 0,
         important = 0,
         invalid = 0;
       for (const { item: node, rect: r } of candidate) {
@@ -342,23 +358,25 @@ function layoutLevel(
         const nested = layoutLevel(children(node), area, levels);
         boxes.push({ node, rect, children: nested.boxes });
         missing += nested.missing;
+        lost += nested.lost;
         important += nested.important;
         invalid += nested.invalid;
       }
       if (overflow) {
         const leaves = threadLeaves(hidden);
         missing += leaves.length;
+        lost += roomOf(leaves);
         important += priorityLoss(leaves);
         if (!fits(inside(bounds))) invalid++;
         boxes.push({ node: hidden[0]!, rect: overflowStrip(bounds), overflow: hidden });
       }
-      const result = { boxes, missing, important, invalid };
+      const result = { boxes, missing, lost, important, invalid };
       if (
         !best ||
         invalid < best.invalid ||
         (invalid === best.invalid &&
           (important < best.important ||
-            (important === best.important && missing < best.missing)))
+            (important === best.important && lost < best.lost)))
       )
         best = result;
       if (!missing && !invalid) return save(result);

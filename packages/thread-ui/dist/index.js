@@ -27375,11 +27375,21 @@ function inScope(thread, scope, now) {
 function inDenseScope(thread, now) {
   return isLive(thread) || isWaiting(thread) || now - Date.parse(thread.lastActiveAt ?? "") <= DAY || Boolean(thread.children?.some((child) => inDenseScope(child, now)));
 }
+var RECENCY_HALF_LIFE = 2 * DAY;
+var RECENCY_FLOOR = 0.03;
+var lastActivity = (thread) => Math.max(Date.parse(thread.lastActiveAt ?? "") || 0, ...(thread.children ?? []).map(lastActivity));
+function recencyFactor(thread, now) {
+  if (isLive(thread) || isWaiting(thread)) return 1;
+  const last = lastActivity(thread);
+  return last ? Math.max(RECENCY_FLOOR, 0.5 ** (Math.max(0, now - last) / RECENCY_HALF_LIFE)) : RECENCY_FLOOR;
+}
+var activityBoost = (thread) => 1 + heatLevel(thread.activeMs) * 0.5;
 function recencyWeight(thread, now) {
-  const age = now - Date.parse(thread.lastActiveAt ?? "");
-  const factor = age <= DAY ? 1 : age <= 7 * DAY ? 0.7 : 0.45;
-  const weight = threadWeight(thread.turns) * factor;
+  const weight = threadWeight(thread.turns) * recencyFactor(thread, now) * activityBoost(thread);
   return isLive(thread) || isWaiting(thread) ? Math.max(weight, runningWeight(thread.turns)) : weight;
+}
+function roomFor(thread, now) {
+  return (0.15 + 0.85 * recencyFactor(thread, now)) * activityBoost(thread);
 }
 function buildThreadMap(devices, rootLabel, options = {}) {
   const blank = { children: [], weight: 0, turns: 0, activeMs: 0, threads: 0, running: 0, usd: 0, tokens: 0 };
@@ -27412,7 +27422,8 @@ function buildThreadMap(devices, rootLabel, options = {}) {
           thread,
           device,
           workspace,
-          weight: options.scope ? recencyWeight(thread, now) : live || isWaiting(thread) ? runningWeight(thread.turns) : threadWeight(thread.turns),
+          weight: recencyWeight(thread, now),
+          room: roomFor(thread, now),
           turns: thread.turns ?? 0,
           activeMs: thread.activeMs ?? 0,
           threads: 1,
@@ -28699,6 +28710,7 @@ import {
 // src/components/threadMap/density.ts
 var DENSE_MIN = { width: 88, height: 34 };
 var GAP2 = 2;
+var roomOf = (nodes) => nodes.reduce((sum, n) => sum + shape(n).room, 0);
 var fits = (r) => r.width >= DENSE_MIN.width - 0.01 && r.height >= DENSE_MIN.height - 0.01;
 var gapOf = (n) => n.kind === "device" ? 4 : n.kind === "workspace" ? 3 : GAP2;
 var paddingOf = (n) => n.kind === "device" ? 3 : 2;
@@ -28719,6 +28731,7 @@ function shape(node) {
     workspaces: node.kind === "workspace" ? 1 : 0,
     devices: node.kind === "device" ? 1 : 0,
     rank,
+    room: node.thread ? node.room ?? 1 : 0,
     loss: node.thread ? [1e12, 1e9, 1e6, 1e3, 0, 0][rank] ?? 0 : 0,
     fingerprint: `${node.id}:${node.parent?.id}:${node.weight}:${rank}`
   };
@@ -28730,6 +28743,7 @@ function shape(node) {
       value.devices += nested.devices;
       value.rank = Math.min(value.rank, nested.rank);
       value.loss += nested.loss;
+      value.room += nested.room;
       value.fingerprint += `[${nested.fingerprint}]`;
     }
   shapes.set(node, value);
@@ -28800,7 +28814,7 @@ function threadPlan(items, bounds) {
     const hidden = ordered.slice(count), visible = ordered.slice(0, count);
     const cells = visible.map((node) => ({ node }));
     if (!cells.length && !hidden.length)
-      return { boxes: [], missing: 0, important: 0, invalid: 0 };
+      return { boxes: [], missing: 0, lost: 0, important: 0, invalid: 0 };
     const area = hidden.length ? aboveStrip(bounds) : bounds;
     const median = [...visible].sort((a, b) => a.weight - b.weight)[Math.floor(visible.length / 2)]?.weight || 1;
     const candidates = [
@@ -28829,11 +28843,12 @@ function threadPlan(items, bounds) {
     return {
       boxes,
       missing: hidden.length,
+      lost: roomOf(hidden),
       important: priorityLoss(hidden),
       invalid: fits(inside(bounds)) ? 0 : 1
     };
   }
-  return { boxes: [], missing: items.length, important: 0, invalid: 1 };
+  return { boxes: [], missing: items.length, lost: roomOf(items), important: 0, invalid: 1 };
 }
 var minimumHeights = /* @__PURE__ */ new WeakMap();
 function minimumHeight(node, cell) {
@@ -28906,7 +28921,7 @@ function layoutLevel(items, bounds, levels) {
     levels.set(key, result);
     return result;
   };
-  if (!items.length) return { boxes: [], missing: 0, important: 0, invalid: 0 };
+  if (!items.length) return { boxes: [], missing: 0, lost: 0, important: 0, invalid: 0 };
   if (items.every((n) => n.thread)) return save(threadPlan(items, bounds));
   const ranked = [...items].sort(byPriority2);
   let best;
@@ -28922,7 +28937,13 @@ function layoutLevel(items, bounds, levels) {
     const cells = visible;
     const area = overflow ? aboveStrip(bounds) : bounds;
     const cost = (n, overhead = 0.6) => footprint(n, overhead);
+    const recent = (n) => {
+      const value = shape(n);
+      return value.room + value.workspaces * 0.6 + value.devices;
+    };
     const planned = [
+      squarify(cells, recent, area),
+      squarify(cells, (n) => (recent(n) + footprint(n)) / 2, area),
       squarify(cells, footprint, area),
       squarify(cells, (n) => Math.max(n.kind === "device" ? 5 : 1, cost(n)), area),
       squarify(cells, (n) => Math.max(n.kind === "device" ? 8 : 1, cost(n)), area),
@@ -28937,7 +28958,7 @@ function layoutLevel(items, bounds, levels) {
     const candidates = cells.length ? planned : [[]];
     for (const candidate of candidates) {
       const boxes = [];
-      let missing = 0, important = 0, invalid = 0;
+      let missing = 0, lost = 0, important = 0, invalid = 0;
       for (const { item: node, rect: r } of candidate) {
         const rect = inside(r, gapOf(node));
         const h = header(node), pad = paddingOf(node), childGap = childGapOf(node), area2 = {
@@ -28949,18 +28970,20 @@ function layoutLevel(items, bounds, levels) {
         const nested = layoutLevel(children(node), area2, levels);
         boxes.push({ node, rect, children: nested.boxes });
         missing += nested.missing;
+        lost += nested.lost;
         important += nested.important;
         invalid += nested.invalid;
       }
       if (overflow) {
         const leaves = threadLeaves(hidden);
         missing += leaves.length;
+        lost += roomOf(leaves);
         important += priorityLoss(leaves);
         if (!fits(inside(bounds))) invalid++;
         boxes.push({ node: hidden[0], rect: overflowStrip(bounds), overflow: hidden });
       }
-      const result = { boxes, missing, important, invalid };
-      if (!best || invalid < best.invalid || invalid === best.invalid && (important < best.important || important === best.important && missing < best.missing))
+      const result = { boxes, missing, lost, important, invalid };
+      if (!best || invalid < best.invalid || invalid === best.invalid && (important < best.important || important === best.important && lost < best.lost))
         best = result;
       if (!missing && !invalid) return save(result);
     }
@@ -30754,10 +30777,10 @@ function ThreadMap({
 
 // src/components/threadMap/ThreadMapDialog.tsx
 import { X as X13 } from "lucide-react";
-import { jsx as jsx109 } from "react/jsx-runtime";
+import { jsx as jsx109, jsxs as jsxs95 } from "react/jsx-runtime";
 function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }) {
   useI18n();
-  return /* @__PURE__ */ jsx109(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsx109(
+  return /* @__PURE__ */ jsx109(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxs95(
     DialogContent,
     {
       showCloseButton: false,
@@ -30766,22 +30789,25 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
       "data-theme-mode": themeMode,
       className: "thread-graph-dialog matter-settings-dialog thread-map-dialog",
       overlayClassName: "matter-settings-overlay",
-      children: /* @__PURE__ */ jsx109(
-        ThreadMap,
-        {
-          ...map,
-          onDismiss: () => onOpenChange(false),
-          heading: /* @__PURE__ */ jsx109(DialogTitle, { className: "thread-map-title", children: translate("workbench.threadMap") }),
-          actions: /* @__PURE__ */ jsx109(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx109(X13, { "aria-hidden": "true" }) })
-        }
-      )
+      children: [
+        /* @__PURE__ */ jsx109(DialogTitle, { className: "sr-only", children: translate("workbench.threadMap") }),
+        /* @__PURE__ */ jsx109(
+          ThreadMap,
+          {
+            presentation: "page",
+            ...map,
+            onDismiss: () => onOpenChange(false),
+            actions: /* @__PURE__ */ jsx109(DialogClose, { className: "thread-map-icon-button thread-map-close", "aria-label": translate("workbench.close"), children: /* @__PURE__ */ jsx109(X13, { "aria-hidden": "true" }) })
+          }
+        )
+      ]
     }
   ) });
 }
 
 // src/components/PublicTranscript.tsx
 import { ChevronRight as ChevronRight9 } from "lucide-react";
-import { jsx as jsx110, jsxs as jsxs95 } from "react/jsx-runtime";
+import { jsx as jsx110, jsxs as jsxs96 } from "react/jsx-runtime";
 function transcriptSnapshot(title, turns, theme) {
   return {
     title,
@@ -30817,10 +30843,10 @@ function PublicTranscript({ snapshot }) {
     },
     index
   );
-  return /* @__PURE__ */ jsx110("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs95("div", { className: "public-transcript-content", children: [
-    /* @__PURE__ */ jsxs95("header", { className: "public-transcript-header", children: [
+  return /* @__PURE__ */ jsx110("main", { className: "public-transcript thread-ui-shell", "data-theme-effective": snapshot.theme ?? "dark", children: /* @__PURE__ */ jsxs96("div", { className: "public-transcript-content", children: [
+    /* @__PURE__ */ jsxs96("header", { className: "public-transcript-header", children: [
       /* @__PURE__ */ jsx110("h1", { children: snapshot.title }),
-      /* @__PURE__ */ jsxs95("p", { children: [
+      /* @__PURE__ */ jsxs96("p", { children: [
         snapshot.live ? translate("sharing.liveReadOnlyThread") : translate("sharing.readOnlySnapshot"),
         " \xB7 ",
         snapshot.turnCount,
@@ -30832,9 +30858,9 @@ function PublicTranscript({ snapshot }) {
     ] }),
     snapshot.turns.map((turn, index) => {
       const displayTurn = { id: `snapshot-${index}`, status: "completed", error: null, items: [], startedAt: turn.startedAt ?? null, completedAt: turn.completedAt ?? null, model: turn.model ?? null, reasoningEffort: turn.reasoningEffort ?? null, tokenUsage: turn.tokenUsage ?? null, priceEstimate: turn.priceEstimate ?? null };
-      return /* @__PURE__ */ jsxs95("section", { className: "thread-graph-turn public-transcript-turn", children: [
+      return /* @__PURE__ */ jsxs96("section", { className: "thread-graph-turn public-transcript-turn", children: [
         turn.messages.filter((item) => item.role === "user").map(message),
-        /* @__PURE__ */ jsxs95("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
+        /* @__PURE__ */ jsxs96("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", "aria-label": translate("sharing.turnSummary"), children: [
           /* @__PURE__ */ jsx110("span", { className: "thread-graph-worked-label shrink-0", children: formatWorkedDuration(turn.startedAt, turn.completedAt, []) }),
           /* @__PURE__ */ jsx110(ChevronRight9, { className: "h-4 w-4 shrink-0", "aria-hidden": "true" }),
           turn.model || turn.tokenUsage ? /* @__PURE__ */ jsx110(TurnUsageInline, { turn: displayTurn, readOnly: true }) : null,
@@ -30849,7 +30875,7 @@ function PublicTranscript({ snapshot }) {
 // src/components/ConversationSearchControls.tsx
 import { useEffect as useEffect59, useRef as useRef61, useState as useState80 } from "react";
 import { Check as Check7, ChevronDown as ChevronDown7 } from "lucide-react";
-import { jsx as jsx111, jsxs as jsxs96 } from "react/jsx-runtime";
+import { jsx as jsx111, jsxs as jsxs97 } from "react/jsx-runtime";
 function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }) {
   const [open, setOpen] = useState80(false);
   const root = useRef61(null);
@@ -30870,8 +30896,8 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
     return () => document.removeEventListener("pointerdown", outside, true);
   }, [open]);
   if (scopes.length < 2) return /* @__PURE__ */ jsx111("span", { className: "workbench-search-scope is-fixed", children: name(value) });
-  return /* @__PURE__ */ jsxs96("div", { ref: root, className: "workbench-search-scope-picker", children: [
-    /* @__PURE__ */ jsxs96(
+  return /* @__PURE__ */ jsxs97("div", { ref: root, className: "workbench-search-scope-picker", children: [
+    /* @__PURE__ */ jsxs97(
       "button",
       {
         ref: trigger,
@@ -30887,7 +30913,7 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
         ]
       }
     ),
-    open && /* @__PURE__ */ jsx111("div", { ref: menu, role: "menu", "aria-label": labels.scope, className: "workbench-search-scope-menu", children: scopes.map((scope) => /* @__PURE__ */ jsxs96(
+    open && /* @__PURE__ */ jsx111("div", { ref: menu, role: "menu", "aria-label": labels.scope, className: "workbench-search-scope-menu", children: scopes.map((scope) => /* @__PURE__ */ jsxs97(
       "button",
       {
         type: "button",
@@ -30928,7 +30954,7 @@ function searchHighlightParts(text, query) {
 }
 function ConversationSearchExcerpt({ text, query }) {
   const parts = searchHighlightParts(text, query);
-  return /* @__PURE__ */ jsxs96("p", { children: [
+  return /* @__PURE__ */ jsxs97("p", { children: [
     parts.before,
     parts.match && /* @__PURE__ */ jsx111("mark", { children: parts.match }),
     parts.after
@@ -30937,10 +30963,10 @@ function ConversationSearchExcerpt({ text, query }) {
 
 // src/components/timeline/TurnNotificationButton.tsx
 import { Bell as Bell2, Loader2 as Loader26 } from "lucide-react";
-import { jsx as jsx112, jsxs as jsxs97 } from "react/jsx-runtime";
+import { jsx as jsx112, jsxs as jsxs98 } from "react/jsx-runtime";
 function TurnNotificationButton({ subscribed, busy = false, error, onToggle, onRetry }) {
   useI18n();
-  return /* @__PURE__ */ jsxs97("span", { className: "turn-notification-control", children: [
+  return /* @__PURE__ */ jsxs98("span", { className: "turn-notification-control", children: [
     /* @__PURE__ */ jsx112(
       "button",
       {

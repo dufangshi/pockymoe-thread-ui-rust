@@ -49,7 +49,8 @@ describe('thread map model', () => {
     const [first, second] = root.children[0]!.children;
     expect(first!.thread!.key).toBe('lead');
     expect(first).toMatchObject({ weight: runningWeight(1), running: 1 });
-    expect(second).toMatchObject({ weight: 11, running: 0 });
+    expect(second).toMatchObject({ running: 0 });
+    expect(second!.weight).toBeLessThan(first!.weight);
   });
 
   it('groups threads by device and workspace, skips empty workspaces and keeps unlisted devices', () => {

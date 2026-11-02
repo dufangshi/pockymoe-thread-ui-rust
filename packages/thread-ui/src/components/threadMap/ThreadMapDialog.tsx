@@ -14,7 +14,9 @@ export function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme,
   useI18n();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false} aria-describedby={undefined}
+      {/* Focus the panel, not its first button, whose tooltip would otherwise cover the map on opening. */}
+      <DialogContent showCloseButton={false} aria-describedby={undefined} tabIndex={-1}
+        onOpenAutoFocus={event => { event.preventDefault(); (event.currentTarget as HTMLElement).focus(); }}
         data-theme-effective={effectiveTheme} data-theme-mode={themeMode}
         className="thread-graph-dialog matter-settings-dialog thread-map-dialog" overlayClassName="matter-settings-overlay">
         <DialogTitle className="sr-only">{translate('workbench.threadMap')}</DialogTitle>

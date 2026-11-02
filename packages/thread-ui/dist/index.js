@@ -47,7 +47,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-5IYEVTBJ.js";
+} from "./chunk-ID4OLJDH.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -76,7 +76,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-LH2CMXIT.js";
+} from "./chunk-L3TP4EKY.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -4457,6 +4457,8 @@ import { createPortal as createPortal2 } from "react-dom";
 var USED_CATEGORIES = {
   system_prompt: { slot: 1, label: "chat.contextCategorySystemPrompt", rank: 1 },
   system_tools: { slot: 2, label: "chat.contextCategorySystemTools", rank: 2 },
+  tools: { slot: 2, label: "chat.contextCategoryTools", rank: 2 },
+  runtime_context: { slot: 6, label: "chat.contextCategoryRuntime", rank: 7 },
   mcp_instructions: { slot: 3, label: "chat.contextCategoryMcpInstructions", rank: 3 },
   mcp_tools: { slot: 3, label: "chat.contextCategoryMcpTools", rank: 4 },
   memory_files: { slot: 4, label: "chat.contextCategoryMemory", rank: 5 },
@@ -4684,7 +4686,7 @@ function ContextBreakdown({ snapshot }) {
         id: entry.id,
         label: segment.label,
         tokens: segment.tokens,
-        share: entry.kind === "deferred" ? void 0 : formatContextShare(segment.tokens, window2),
+        share: entry.kind === "deferred" ? void 0 : formatContextShare(segment.tokens, entry.kind === "used" ? snapshot.compositionTokens ?? window2 : window2),
         swatch: { slot: segment.slot, kind: entry.kind },
         estimated: (entry.kind === "used" || entry.kind === "deferred") && (entry.precision ?? snapshot.precision) === "estimated",
         items: items.get(entry.id)
@@ -4693,6 +4695,14 @@ function ContextBreakdown({ snapshot }) {
     );
   };
   return /* @__PURE__ */ jsxs19(Fragment10, { children: [
+    snapshot.compositionTokens != null ? /* @__PURE__ */ jsxs19("p", { className: "thread-context-footnote", "data-context-composition": "true", children: [
+      translate("chat.contextCompositionNote", {
+        total: formatContextTokens(snapshot.compositionTokens),
+        delta: `${(snapshot.attributionDeltaTokens ?? 0) >= 0 ? "+" : "\u2212"}${formatContextTokens(Math.abs(snapshot.attributionDeltaTokens ?? 0))}`
+      }),
+      " ",
+      translate("chat.contextDshHeuristicNote")
+    ] }) : null,
     /* @__PURE__ */ jsxs19("ul", { className: "thread-context-rows", children: [
       used.map(row),
       buffer.map(row),
@@ -4724,6 +4734,7 @@ function sourceLabel(snapshot) {
   if (snapshot?.source === "claudeFull") return translate("chat.contextSourceClaudeFull");
   if (snapshot?.source === "claudeSummary") return translate("chat.contextSourceClaudeSummary");
   if (snapshot?.source === "codexTrace") return translate("chat.contextSourceCodexTrace");
+  if (snapshot?.source === "dshProjection") return translate("chat.contextSourceDsh");
   return translate("chat.contextSourceReported");
 }
 function ContextNote({ state, inspector, hasSnapshot, onRetry }) {
@@ -4879,7 +4890,9 @@ function ComposerContextControl({
   const tone = reading ? contextTone(reading.used, reading.window) : "normal";
   const usage = reading ? translate("chat.contextMeterLabel", { percent: percentText, used: formatContextTokens(reading.used), total: formatContextTokens(reading.window) }) : translate("chat.contextMeterEmpty");
   const miniTotal = usedSegments.reduce((sum, segment) => sum + segment.tokens, 0);
-  const estimatedTotal = snapshot?.source === "codexTrace" && !movedOn;
+  const separateComposition = snapshot?.compositionTokens != null;
+  const showCategoryOccupancy = arranged && !movedOn && !separateComposition;
+  const estimatedTotal = (snapshot?.source === "codexTrace" || snapshot?.source === "dshProjection") && !movedOn;
   const age = contextAge(reading?.updatedAt, now);
   const stale = Boolean(snapshot?.stale) || movedOn;
   const loading = state.status === "loading";
@@ -4966,19 +4979,19 @@ function ComposerContextControl({
               /* @__PURE__ */ jsx24(
                 ContextBar,
                 {
-                  segments: arranged && !movedOn ? usedSegments : [{ id: "used", label: "", slot: -1, tokens: reading.used }],
-                  reservedEnd: arranged && !movedOn ? arranged.buffer.map(segmentOf) : [],
+                  segments: showCategoryOccupancy ? usedSegments : [{ id: "used", label: "", slot: -1, tokens: reading.used }],
+                  reservedEnd: showCategoryOccupancy ? arranged.buffer.map(segmentOf) : [],
                   window: reading.window,
                   tick: threshold,
                   label: translate("chat.contextBarLabel", {
                     percent: percentText,
-                    parts: (arranged && !movedOn ? usedSegments : []).map((segment) => `${segment.label} ${formatContextTokens(segment.tokens)}`).join(translate("chat.listSeparator"))
+                    parts: (showCategoryOccupancy ? usedSegments : []).map((segment) => `${segment.label} ${formatContextTokens(segment.tokens)}`).join(translate("chat.listSeparator"))
                   })
                 }
               )
             ) : null,
-            arranged && !movedOn && usedSegments.length > 1 && analyzed && contextPercent(analyzed.used, analyzed.window) < 25 ? /* @__PURE__ */ jsxs19("div", { className: "thread-context-makeup", children: [
-              /* @__PURE__ */ jsx24("span", { className: "thread-context-makeup-label", children: translate("chat.contextMakeup") }),
+            arranged && !movedOn && usedSegments.length > 1 && analyzed && (separateComposition || contextPercent(analyzed.used, analyzed.window) < 25) ? /* @__PURE__ */ jsxs19("div", { className: "thread-context-makeup", children: [
+              /* @__PURE__ */ jsx24("span", { className: "thread-context-makeup-label", children: translate(separateComposition ? "chat.contextCompositionMakeup" : "chat.contextMakeup") }),
               /* @__PURE__ */ jsx24(ContextBar, { segments: usedSegments, window: Math.max(1, miniTotal) })
             ] }) : null,
             reading ? /* @__PURE__ */ jsxs19("p", { className: "thread-context-meta", "data-stale": stale || void 0, children: [

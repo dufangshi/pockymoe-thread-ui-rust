@@ -626,7 +626,7 @@ export const settingsEn = {
   'settings.resourcesMemoryRange': 'Enter at least 0.25 GiB.',
   'settings.resourcesSaved': 'Saved.',
   "settings.contextInspection": "Detailed context analysis (preview)",
-  "settings.contextInspectionHint": "Collects context categories for Codex and Claude threads, shown in the composer's context panel. When off, no details are served and nothing new is counted; a session that is already loaded fully follows the setting the next time it loads, so a running turn is not interrupted. Other harnesses and the basic total are unaffected.",
+  "settings.contextInspectionHint": "Collects context categories for Codex, Claude and DSH threads, shown in the composer's context panel. When off, no details are served and nothing new is counted; a session that is already loaded fully follows the setting the next time it loads, so a running turn is not interrupted. Other harnesses and the basic total are unaffected.",
   "settings.contextInspectionHeading": "Diagnostics",
   "settings.contextInspectionUnavailable": "Update this device's Supervisor to use detailed context analysis.",
   "settings.contextInspectionSaveFailed": "Couldn't save. Try again.",

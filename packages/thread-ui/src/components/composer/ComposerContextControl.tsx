@@ -160,7 +160,7 @@ function ContextBreakdown({ snapshot }: { snapshot: ContextInspectionSnapshotDto
     const segment = segmentOf(entry);
     return (
       <ContextRow key={entry.id} id={entry.id} label={segment.label} tokens={segment.tokens}
-        share={entry.kind === 'deferred' ? undefined : formatContextShare(segment.tokens, window)}
+        share={entry.kind === 'deferred' ? undefined : formatContextShare(segment.tokens, entry.kind === 'used' ? snapshot.compositionTokens ?? window : window)}
         swatch={{ slot: segment.slot, kind: entry.kind }}
         // The free space and the reserve are not counted, whatever the categories' precision.
         estimated={(entry.kind === 'used' || entry.kind === 'deferred') && (entry.precision ?? snapshot.precision) === 'estimated'}
@@ -169,6 +169,15 @@ function ContextBreakdown({ snapshot }: { snapshot: ContextInspectionSnapshotDto
   };
   return (
     <>
+      {snapshot.compositionTokens != null ? (
+        <p className="thread-context-footnote" data-context-composition="true">
+          {translate('chat.contextCompositionNote', {
+            total: formatContextTokens(snapshot.compositionTokens),
+            delta: `${(snapshot.attributionDeltaTokens ?? 0) >= 0 ? '+' : '−'}${formatContextTokens(Math.abs(snapshot.attributionDeltaTokens ?? 0))}`,
+          })}
+          {' '}{translate('chat.contextDshHeuristicNote')}
+        </p>
+      ) : null}
       <ul className="thread-context-rows">
         {used.map(row)}
         {buffer.map(row)}
@@ -202,6 +211,7 @@ function sourceLabel(snapshot: ContextInspectionSnapshotDto | null) {
   if (snapshot?.source === 'claudeFull') return translate('chat.contextSourceClaudeFull');
   if (snapshot?.source === 'claudeSummary') return translate('chat.contextSourceClaudeSummary');
   if (snapshot?.source === 'codexTrace') return translate('chat.contextSourceCodexTrace');
+  if (snapshot?.source === 'dshProjection') return translate('chat.contextSourceDsh');
   return translate('chat.contextSourceReported');
 }
 
@@ -417,7 +427,9 @@ export function ComposerContextControl({
     : translate('chat.contextMeterEmpty');
   const miniTotal = usedSegments.reduce((sum, segment) => sum + segment.tokens, 0);
 
-  const estimatedTotal = snapshot?.source === 'codexTrace' && !movedOn;
+  const separateComposition = snapshot?.compositionTokens != null;
+  const showCategoryOccupancy = arranged && !movedOn && !separateComposition;
+  const estimatedTotal = (snapshot?.source === 'codexTrace' || snapshot?.source === 'dshProjection') && !movedOn;
   const age = contextAge(reading?.updatedAt, now);
   const stale = Boolean(snapshot?.stale) || movedOn;
   const loading = state.status === 'loading';
@@ -489,19 +501,19 @@ export function ComposerContextControl({
               // Categories only at the total they were counted at: once it moved on,
               // the bar is the plain total and the rows below say how old they are.
               <ContextBar
-                segments={arranged && !movedOn ? usedSegments : [{ id: 'used', label: '', slot: -1, tokens: reading.used }]}
-                reservedEnd={arranged && !movedOn ? arranged.buffer.map(segmentOf) : []}
+                segments={showCategoryOccupancy ? usedSegments : [{ id: 'used', label: '', slot: -1, tokens: reading.used }]}
+                reservedEnd={showCategoryOccupancy ? arranged.buffer.map(segmentOf) : []}
                 window={reading.window}
                 tick={threshold}
                 label={translate('chat.contextBarLabel', {
                   percent: percentText,
-                  parts: (arranged && !movedOn ? usedSegments : []).map((segment) => `${segment.label} ${formatContextTokens(segment.tokens)}`).join(translate('chat.listSeparator')),
+                  parts: (showCategoryOccupancy ? usedSegments : []).map((segment) => `${segment.label} ${formatContextTokens(segment.tokens)}`).join(translate('chat.listSeparator')),
                 })}
               />
             ) : null}
-            {arranged && !movedOn && usedSegments.length > 1 && analyzed && contextPercent(analyzed.used, analyzed.window) < 25 ? (
+            {arranged && !movedOn && usedSegments.length > 1 && analyzed && (separateComposition || contextPercent(analyzed.used, analyzed.window) < 25) ? (
               <div className="thread-context-makeup">
-                <span className="thread-context-makeup-label">{translate('chat.contextMakeup')}</span>
+                <span className="thread-context-makeup-label">{translate(separateComposition ? 'chat.contextCompositionMakeup' : 'chat.contextMakeup')}</span>
                 <ContextBar segments={usedSegments} window={Math.max(1, miniTotal)} />
               </div>
             ) : null}

@@ -1925,7 +1925,7 @@ declare const en: {
     readonly 'settings.resourcesMemoryRange': "Enter at least 0.25 GiB.";
     readonly 'settings.resourcesSaved': "Saved.";
     readonly "settings.contextInspection": "Detailed context analysis (preview)";
-    readonly "settings.contextInspectionHint": "Collects context categories for Codex and Claude threads, shown in the composer's context panel. When off, no details are served and nothing new is counted; a session that is already loaded fully follows the setting the next time it loads, so a running turn is not interrupted. Other harnesses and the basic total are unaffected.";
+    readonly "settings.contextInspectionHint": "Collects context categories for Codex, Claude and DSH threads, shown in the composer's context panel. When off, no details are served and nothing new is counted; a session that is already loaded fully follows the setting the next time it loads, so a running turn is not interrupted. Other harnesses and the basic total are unaffected.";
     readonly "settings.contextInspectionHeading": "Diagnostics";
     readonly "settings.contextInspectionUnavailable": "Update this device's Supervisor to use detailed context analysis.";
     readonly "settings.contextInspectionSaveFailed": "Couldn't save. Try again.";
@@ -3582,6 +3582,12 @@ declare const en: {
     readonly "chat.contextSourceClaudeFull": "Claude full count";
     readonly "chat.contextSourceClaudeSummary": "Claude summary · categories estimated";
     readonly "chat.contextSourceCodexTrace": "Local estimate";
+    readonly "chat.contextCategoryTools": "Tool definitions";
+    readonly "chat.contextCategoryRuntime": "Runtime context";
+    readonly "chat.contextSourceDsh": "DSH next-prompt estimate";
+    readonly "chat.contextCompositionMakeup": "Estimated composition";
+    readonly "chat.contextCompositionNote": "Category total ≈{{total}}; projected occupancy minus categories: {{delta}}. Category shares use the category total; free space uses the window.";
+    readonly "chat.contextDshHeuristicNote": "DSH estimates categories at roughly 4 characters per token. Individual tool estimates may have rounding differences.";
     readonly "chat.contextSourceReported": "Reported by the harness";
     readonly "chat.contextStale": "May be out of date";
     readonly "chat.contextCategoriesOlder": "Categories below are from {{value1}}";
@@ -7097,7 +7103,7 @@ declare const zhCN: {
     'settings.resourcesMemoryRange': "请输入至少 0.25 GiB。";
     'settings.resourcesSaved': "已保存。";
     "settings.contextInspection": "详细上下文分析（预览）";
-    "settings.contextInspectionHint": "为 Codex 和 Claude 线程采集上下文分类，在输入区的上下文面板里查看。关闭后不再提供详情，也不新增计数；已加载的会话要到下次加载时才完全生效，不会打断正在运行的轮次。其他 Harness 和基本占用不受影响。";
+    "settings.contextInspectionHint": "为 Codex、Claude 和 DSH 线程采集上下文分类，在输入区的上下文面板里查看。关闭后不再提供详情，也不新增计数；已加载的会话要到下次加载时才完全生效，不会打断正在运行的轮次。其他 Harness 和基本占用不受影响。";
     "settings.contextInspectionHeading": "诊断";
     "settings.contextInspectionUnavailable": "请更新此设备的 Supervisor 以使用详细上下文分析。";
     "settings.contextInspectionSaveFailed": "无法保存，请重试。";
@@ -8754,6 +8760,12 @@ declare const zhCN: {
     "chat.contextSourceClaudeFull": "Claude 完整计数";
     "chat.contextSourceClaudeSummary": "Claude 摘要 · 分类为估算";
     "chat.contextSourceCodexTrace": "本地估算";
+    "chat.contextCategoryTools": "工具定义";
+    "chat.contextCategoryRuntime": "运行环境";
+    "chat.contextSourceDsh": "DSH 下次请求预计占用";
+    "chat.contextCompositionMakeup": "分类构成（估算）";
+    "chat.contextCompositionNote": "分类合计 ≈{{total}}；预计占用与分类之差为 {{delta}}。分类占比按分类合计计算，剩余空间按窗口计算。";
+    "chat.contextDshHeuristicNote": "DSH 按约每 4 字符 1 token 估算分类，工具明细可能有取整差异。";
     "chat.contextSourceReported": "Harness 上报";
     "chat.contextStale": "可能已过期";
     "chat.contextCategoriesOlder": "下面的分类来自 {{value1}}";
@@ -12294,7 +12306,7 @@ declare const resources: {
         readonly 'settings.resourcesMemoryRange': "Enter at least 0.25 GiB.";
         readonly 'settings.resourcesSaved': "Saved.";
         readonly "settings.contextInspection": "Detailed context analysis (preview)";
-        readonly "settings.contextInspectionHint": "Collects context categories for Codex and Claude threads, shown in the composer's context panel. When off, no details are served and nothing new is counted; a session that is already loaded fully follows the setting the next time it loads, so a running turn is not interrupted. Other harnesses and the basic total are unaffected.";
+        readonly "settings.contextInspectionHint": "Collects context categories for Codex, Claude and DSH threads, shown in the composer's context panel. When off, no details are served and nothing new is counted; a session that is already loaded fully follows the setting the next time it loads, so a running turn is not interrupted. Other harnesses and the basic total are unaffected.";
         readonly "settings.contextInspectionHeading": "Diagnostics";
         readonly "settings.contextInspectionUnavailable": "Update this device's Supervisor to use detailed context analysis.";
         readonly "settings.contextInspectionSaveFailed": "Couldn't save. Try again.";
@@ -13951,6 +13963,12 @@ declare const resources: {
         readonly "chat.contextSourceClaudeFull": "Claude full count";
         readonly "chat.contextSourceClaudeSummary": "Claude summary · categories estimated";
         readonly "chat.contextSourceCodexTrace": "Local estimate";
+        readonly "chat.contextCategoryTools": "Tool definitions";
+        readonly "chat.contextCategoryRuntime": "Runtime context";
+        readonly "chat.contextSourceDsh": "DSH next-prompt estimate";
+        readonly "chat.contextCompositionMakeup": "Estimated composition";
+        readonly "chat.contextCompositionNote": "Category total ≈{{total}}; projected occupancy minus categories: {{delta}}. Category shares use the category total; free space uses the window.";
+        readonly "chat.contextDshHeuristicNote": "DSH estimates categories at roughly 4 characters per token. Individual tool estimates may have rounding differences.";
         readonly "chat.contextSourceReported": "Reported by the harness";
         readonly "chat.contextStale": "May be out of date";
         readonly "chat.contextCategoriesOlder": "Categories below are from {{value1}}";
@@ -17465,7 +17483,7 @@ declare const resources: {
         'settings.resourcesMemoryRange': "请输入至少 0.25 GiB。";
         'settings.resourcesSaved': "已保存。";
         "settings.contextInspection": "详细上下文分析（预览）";
-        "settings.contextInspectionHint": "为 Codex 和 Claude 线程采集上下文分类，在输入区的上下文面板里查看。关闭后不再提供详情，也不新增计数；已加载的会话要到下次加载时才完全生效，不会打断正在运行的轮次。其他 Harness 和基本占用不受影响。";
+        "settings.contextInspectionHint": "为 Codex、Claude 和 DSH 线程采集上下文分类，在输入区的上下文面板里查看。关闭后不再提供详情，也不新增计数；已加载的会话要到下次加载时才完全生效，不会打断正在运行的轮次。其他 Harness 和基本占用不受影响。";
         "settings.contextInspectionHeading": "诊断";
         "settings.contextInspectionUnavailable": "请更新此设备的 Supervisor 以使用详细上下文分析。";
         "settings.contextInspectionSaveFailed": "无法保存，请重试。";
@@ -19122,6 +19140,12 @@ declare const resources: {
         "chat.contextSourceClaudeFull": "Claude 完整计数";
         "chat.contextSourceClaudeSummary": "Claude 摘要 · 分类为估算";
         "chat.contextSourceCodexTrace": "本地估算";
+        "chat.contextCategoryTools": "工具定义";
+        "chat.contextCategoryRuntime": "运行环境";
+        "chat.contextSourceDsh": "DSH 下次请求预计占用";
+        "chat.contextCompositionMakeup": "分类构成（估算）";
+        "chat.contextCompositionNote": "分类合计 ≈{{total}}；预计占用与分类之差为 {{delta}}。分类占比按分类合计计算，剩余空间按窗口计算。";
+        "chat.contextDshHeuristicNote": "DSH 按约每 4 字符 1 token 估算分类，工具明细可能有取整差异。";
         "chat.contextSourceReported": "Harness 上报";
         "chat.contextStale": "可能已过期";
         "chat.contextCategoriesOlder": "下面的分类来自 {{value1}}";

@@ -82,6 +82,33 @@ afterEach(() => {
 });
 
 describe('ComposerContextControl', () => {
+  it('keeps DSH occupancy separate from heuristic composition including a negative difference', async () => {
+    const dsh: ContextInspectionSnapshotDto = {
+      provider: 'deepseek', source: 'dshProjection', precision: 'estimated',
+      usedTokens: 8000, windowTokens: 100000, compositionTokens: 10000, attributionDeltaTokens: -2000,
+      updatedAt: new Date().toISOString(),
+      categories: [
+        { id: 'tools', kind: 'used', tokens: 4000 },
+        { id: 'messages', kind: 'used', tokens: 6000 },
+        { id: 'free_space', kind: 'free', tokens: 92000 },
+      ],
+      groups: [{ id: 'tools', items: [{ name: 'mcp__docs__read', tokens: 4001 }] }],
+    };
+    const load = vi.fn().mockResolvedValue(available(dsh));
+    await render({ inspector: { load }, agent: 'deepseek', contextUsage: { ...usage, tokensInContextWindow: 8000, details: dsh } });
+    await openPanel();
+    expect(load).toHaveBeenCalledWith({ detail: 'summary' });
+    expect(document.querySelector('.thread-context-percent')?.textContent).toBe('8%');
+    const occupancy = document.querySelectorAll<HTMLElement>('.thread-context-summary > .thread-context-bar .thread-context-segment');
+    expect(occupancy).toHaveLength(1);
+    expect(occupancy[0]!.style.width).toBe('8%');
+    expect(row('tools')?.querySelector('.thread-context-share')?.textContent).toBe('40%');
+    expect(row('free_space')?.querySelector('.thread-context-share')?.textContent).toBe('92%');
+    expect(document.querySelector('[data-context-composition]')?.textContent).toContain('−2k');
+    expect(document.querySelector('.thread-context-meta')?.textContent).toContain('DSH next-prompt estimate');
+    await act(async () => { row('tools')!.querySelector('button')!.click(); });
+    expect(row('tools')?.textContent).toContain('mcp__docs__read');
+  });
   it('shows the total on a closed key without asking anything', async () => {
     const load = vi.fn();
     await render({ inspector: { load } });

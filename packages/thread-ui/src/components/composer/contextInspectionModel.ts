@@ -26,6 +26,8 @@ export interface ContextSegment {
 const USED_CATEGORIES: Record<string, { slot: number; label: TranslationKey; rank: number }> = {
   system_prompt: { slot: 1, label: 'chat.contextCategorySystemPrompt', rank: 1 },
   system_tools: { slot: 2, label: 'chat.contextCategorySystemTools', rank: 2 },
+  tools: { slot: 2, label: 'chat.contextCategoryTools', rank: 2 },
+  runtime_context: { slot: 6, label: 'chat.contextCategoryRuntime', rank: 7 },
   mcp_instructions: { slot: 3, label: 'chat.contextCategoryMcpInstructions', rank: 3 },
   mcp_tools: { slot: 3, label: 'chat.contextCategoryMcpTools', rank: 4 },
   memory_files: { slot: 4, label: 'chat.contextCategoryMemory', rank: 5 },

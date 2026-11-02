@@ -3651,7 +3651,9 @@ var filesEn = {
   "files.propertiesClose": "Close",
   "files.propertiesOlderDevice": "This device's Supervisor does not report file times yet; they show after it updates.",
   "files.terminalOpenLinkTitle": "Open terminal link?",
-  "files.terminalOpenLink": "Open link"
+  "files.terminalOpenLink": "Open link",
+  "files.terminalProgramClipboard": "Allow terminal programs to write to the clipboard",
+  "files.terminalProgramClipboardHint": "Live programs may replace the clipboard. Clipboard reads and recorded output are always ignored."
 };
 
 // src/i18n/settings.en.ts
@@ -8749,7 +8751,9 @@ var filesZhCN = {
   "files.propertiesClose": "\u5173\u95ED",
   "files.propertiesOlderDevice": "\u8FD9\u53F0\u8BBE\u5907\u7684 Supervisor \u8FD8\u4E0D\u63D0\u4F9B\u6587\u4EF6\u65F6\u95F4\uFF0C\u66F4\u65B0\u540E\u53EF\u89C1\u3002",
   "files.terminalOpenLinkTitle": "\u6253\u5F00\u7EC8\u7AEF\u94FE\u63A5\uFF1F",
-  "files.terminalOpenLink": "\u6253\u5F00\u94FE\u63A5"
+  "files.terminalOpenLink": "\u6253\u5F00\u94FE\u63A5",
+  "files.terminalProgramClipboard": "\u5141\u8BB8\u7EC8\u7AEF\u7A0B\u5E8F\u5199\u5165\u526A\u8D34\u677F",
+  "files.terminalProgramClipboardHint": "\u8FD0\u884C\u4E2D\u7684\u7A0B\u5E8F\u53EF\u4EE5\u66FF\u6362\u526A\u8D34\u677F\u5185\u5BB9\uFF1B\u59CB\u7EC8\u5FFD\u7565\u8BFB\u53D6\u8BF7\u6C42\u4E0E\u5386\u53F2\u56DE\u653E\u3002"
 };
 
 // src/i18n/settings.zh-CN.ts

@@ -4,6 +4,8 @@ import { useSyncExternalStore } from 'react';
 export interface TerminalPreferences {
   /** Copy a mouse selection as soon as it is made. */
   copyOnSelect: boolean;
+  /** Allow live terminal programs to write the clipboard through OSC 52. */
+  allowProgramClipboard: boolean;
   /** `smart`: Ctrl+V pastes at a shell prompt and stays a key in full-screen
       programs (vim, less); `paste`: Ctrl+V always pastes. */
   ctrlV: 'smart' | 'paste';
@@ -16,6 +18,7 @@ export interface TerminalPreferences {
 
 export const DEFAULT_TERMINAL_PREFERENCES: TerminalPreferences = {
   copyOnSelect: true,
+  allowProgramClipboard: true,
   ctrlV: 'smart',
   rightClick: 'menu',
   pasteWarning: true,
@@ -32,6 +35,7 @@ function read(): TerminalPreferences {
     stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as Partial<TerminalPreferences>;
   } catch { /* Private browsing or a damaged value: defaults. */ }
   const value = { ...DEFAULT_TERMINAL_PREFERENCES };
+  if (typeof stored.allowProgramClipboard === 'boolean') value.allowProgramClipboard = stored.allowProgramClipboard;
   if (typeof stored.copyOnSelect === 'boolean') value.copyOnSelect = stored.copyOnSelect;
   if (stored.ctrlV === 'smart' || stored.ctrlV === 'paste') value.ctrlV = stored.ctrlV;
   if (stored.rightClick === 'menu' || stored.rightClick === 'copyPaste') value.rightClick = stored.rightClick;

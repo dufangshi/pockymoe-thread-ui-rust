@@ -55,7 +55,9 @@ import { useShellSocketLifecycle } from './useShellSocketLifecycle';
 import { useDocumentThemeRevision } from '../themeHooks';
 import { TerminalMenu } from './TerminalMenu';
 import { TerminalSelection } from './TerminalSelection';
-import { terminalPreferences } from './terminalPreferences';
+import { installOsc52Clipboard } from './osc52Clipboard';
+import { installViewportLinkTaps } from './viewportLinkTaps';
+import { terminalPreferences, useTerminalPreferences } from './terminalPreferences';
 import { activateTerminalLink } from './terminalLinks';
 import { copyText, isRiskyPaste, pastedLineCount, readClipboardText } from './terminalClipboard';
 
@@ -144,6 +146,9 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
     const touchInputRef = useRef<ReturnType<typeof installTouchTextInput> | null>(null);
     transformRef.current = inputTransform;
     const terminalRef = useRef<Terminal | null>(null);
+    const oscClipboardRef = useRef<ReturnType<typeof installOsc52Clipboard> | null>(null);
+    const preferences = useTerminalPreferences();
+    useEffect(() => { if (!preferences.allowProgramClipboard) oscClipboardRef.current?.clear(); }, [preferences.allowProgramClipboard]);
     const fitAddonRef = useRef<FitAddon | null>(null);
     const socketRef = useRef<ShellSocketConnection | null>(null);
     const viewerIdRef = useRef<string | null>(null);
@@ -249,6 +254,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
     const promptLabel = runtimePromptLabel ?? fallbackPromptLabel;
 
     const setViewerId = useCallback((nextViewerId: string | null) => {
+      if (!nextViewerId) oscClipboardRef.current?.clear();
       viewerIdRef.current = nextViewerId;
       setViewerIdState(nextViewerId);
     }, []);
@@ -504,6 +510,12 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
         terminal.loadAddon(fitAddon);
         terminal.open(terminalHostNode);
         terminalRef.current = terminal;
+        oscClipboardRef.current = installOsc52Clipboard(terminal, terminalHostNode, {
+          enabled: () => terminalPreferences().allowProgramClipboard,
+          interactive: () => terminalRef.current === terminal && isVisibleRef.current && !terminal.options.disableStdin && socketRef.current?.socket.readyState === WebSocket.OPEN,
+          connection: () => viewerIdRef.current,
+          feedback: copied => onFeedbackRef.current?.(copied ? 'done' : 'failed', translate(copied ? 'files.copied' : 'files.copyFailed')),
+        });
         fitAddonRef.current = fitAddon;
         syncTerminalSizeRef.current();
         terminal.attachCustomKeyEventHandler((event) => {
@@ -583,6 +595,8 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
         terminalInitializingRef.current = false;
         terminalInputSubscriptionRef.current?.dispose();
         terminalInputSubscriptionRef.current = null;
+        oscClipboardRef.current?.dispose();
+        oscClipboardRef.current = null;
         touchInputRef.current?.dispose();
         touchInputRef.current = null;
         resizeObserverRef.current?.disconnect();
@@ -744,7 +758,8 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
 
     useEffect(() => {
       if (!isMobileShell || !terminalReady || !terminalHostNode) return;
-      const viewport = terminalHostNode.querySelector('.xterm-viewport');
+      const viewport = terminalHostNode.querySelector<HTMLElement>('.xterm-viewport');
+      const screen = terminalHostNode.querySelector<HTMLElement>('.xterm-screen');
       if (!viewport) return;
       // xterm 5's ancestor touchmove handler prevents the browser's default
       // scroll and only moves one delta at a time. Let the native viewport own
@@ -752,9 +767,11 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
       const nativeScroll = (event: Event) => {
         if (terminalRef.current?.buffer.active.type === 'normal') event.stopPropagation();
       };
+      const removeLinkTaps = screen ? installViewportLinkTaps(viewport, screen) : undefined;
       viewport.addEventListener('touchstart', nativeScroll, {passive: true});
       viewport.addEventListener('touchmove', nativeScroll, {passive: true});
       return () => {
+        removeLinkTaps?.();
         viewport.removeEventListener('touchstart', nativeScroll);
         viewport.removeEventListener('touchmove', nativeScroll);
       };

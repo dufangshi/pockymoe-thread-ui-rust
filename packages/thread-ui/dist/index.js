@@ -1,6 +1,7 @@
 import {
-  terminalPreferences
-} from "./chunk-5NGPD4NR.js";
+  terminalPreferences,
+  useTerminalPreferences
+} from "./chunk-BXVFLUI2.js";
 import {
   Button,
   ConfirmDialog,
@@ -47,7 +48,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-DMSBFIWE.js";
+} from "./chunk-JCW3ZKYC.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -76,7 +77,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-VI2US2KY.js";
+} from "./chunk-ICHX52X2.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -22791,6 +22792,122 @@ function TerminalSelection({ terminal, host, point, onCopy, onClose }) {
   );
 }
 
+// src/components/shell/osc52Clipboard.ts
+var MAX_OSC52_BYTES = 1024 * 1024;
+function decodeOsc52(data) {
+  const separator = data.indexOf(";");
+  if (separator < 0 || !["", "c", "p"].includes(data.slice(0, separator))) return null;
+  const payload = data.slice(separator + 1);
+  if (!payload || payload === "?" || payload.length > Math.ceil(MAX_OSC52_BYTES / 3) * 4 || !/^[A-Za-z0-9+/]*={0,2}$/.test(payload)) return null;
+  try {
+    const binary = atob(payload);
+    if (!binary.length || binary.length > MAX_OSC52_BYTES || btoa(binary).replace(/=+$/, "") !== payload.replace(/=+$/, "")) return null;
+    return new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(binary, (character) => character.charCodeAt(0)));
+  } catch {
+    return null;
+  }
+}
+function installOsc52Clipboard(terminal, host, options) {
+  let pending = null;
+  let generation = 0;
+  let disposed = false;
+  const clear = () => {
+    pending = null;
+    generation += 1;
+  };
+  const eligible = () => !disposed && options.enabled() && options.interactive();
+  const write2 = async (text, connection, retry2) => {
+    const version = ++generation;
+    pending = { text, connection };
+    let copied = false;
+    try {
+      copied = document.hasFocus() && await copyText(text);
+    } catch {
+    }
+    if (disposed || version !== generation) return;
+    if (!eligible() || options.connection() !== connection) {
+      clear();
+      return;
+    }
+    if (copied) {
+      pending = null;
+      options.feedback(true);
+    } else if (retry2) options.feedback(false);
+  };
+  const handler = terminal.parser.registerOscHandler(52, (data) => {
+    if (!eligible() || isReplayingShellSnapshot(terminal)) return true;
+    const connection = options.connection();
+    const text = decodeOsc52(data);
+    if (connection && text !== null) void write2(text, connection, false);
+    return true;
+  });
+  const retry = () => {
+    const next = pending;
+    if (!next) return;
+    if (!eligible() || options.connection() !== next.connection) {
+      clear();
+      return;
+    }
+    if (!isReplayingShellSnapshot(terminal)) void write2(next.text, next.connection, true);
+  };
+  host.addEventListener("pointerdown", retry, true);
+  host.addEventListener("keydown", retry, true);
+  return {
+    clear,
+    dispose() {
+      disposed = true;
+      clear();
+      handler.dispose();
+      host.removeEventListener("pointerdown", retry, true);
+      host.removeEventListener("keydown", retry, true);
+    }
+  };
+}
+
+// src/components/shell/viewportLinkTaps.ts
+function installViewportLinkTaps(viewport, screen) {
+  let press = null;
+  let tap = false;
+  const down = (event) => {
+    tap = false;
+    press = { id: event.pointerId, x: event.clientX, y: event.clientY, at: performance.now(), moved: false };
+  };
+  const move = (event) => {
+    if (press?.id === event.pointerId && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 8) press.moved = true;
+  };
+  const up = (event) => {
+    move(event);
+    tap = !!press && press.id === event.pointerId && !press.moved && performance.now() - press.at < 550;
+    press = null;
+  };
+  const cancel = () => {
+    press = null;
+    tap = false;
+  };
+  const click = (event) => {
+    if (!tap) return;
+    tap = false;
+    const dispatch = (type, x = event.clientX) => screen.dispatchEvent(new MouseEvent(type, { clientX: x, clientY: event.clientY, button: 0 }));
+    const bounds = screen.getBoundingClientRect();
+    dispatch("mousemove", event.clientX < bounds.left + bounds.width / 2 ? bounds.right - 1 : bounds.left + 1);
+    dispatch("mousemove");
+    dispatch("mousedown");
+    dispatch("mouseup");
+  };
+  viewport.addEventListener("pointerdown", down);
+  viewport.addEventListener("pointermove", move);
+  viewport.addEventListener("pointerup", up);
+  viewport.addEventListener("pointercancel", cancel);
+  viewport.addEventListener("click", click);
+  return () => {
+    viewport.removeEventListener("pointerdown", down);
+    viewport.removeEventListener("pointermove", move);
+    viewport.removeEventListener("pointerup", up);
+    viewport.removeEventListener("pointercancel", cancel);
+    viewport.removeEventListener("click", click);
+  };
+}
+
 // src/components/shell/terminalLinks.ts
 async function activateTerminalLink(_event, uri) {
   try {
@@ -22839,6 +22956,11 @@ var ShellPane = forwardRef(
     const touchInputRef = useRef42(null);
     transformRef.current = inputTransform;
     const terminalRef = useRef42(null);
+    const oscClipboardRef = useRef42(null);
+    const preferences = useTerminalPreferences();
+    useEffect45(() => {
+      if (!preferences.allowProgramClipboard) oscClipboardRef.current?.clear();
+    }, [preferences.allowProgramClipboard]);
     const fitAddonRef = useRef42(null);
     const socketRef = useRef42(null);
     const viewerIdRef = useRef42(null);
@@ -22929,6 +23051,7 @@ var ShellPane = forwardRef(
     );
     const promptLabel = runtimePromptLabel ?? fallbackPromptLabel;
     const setViewerId = useCallback21((nextViewerId) => {
+      if (!nextViewerId) oscClipboardRef.current?.clear();
       viewerIdRef.current = nextViewerId;
       setViewerIdState(nextViewerId);
     }, []);
@@ -23134,6 +23257,12 @@ var ShellPane = forwardRef(
         terminal.loadAddon(fitAddon);
         terminal.open(terminalHostNode);
         terminalRef.current = terminal;
+        oscClipboardRef.current = installOsc52Clipboard(terminal, terminalHostNode, {
+          enabled: () => terminalPreferences().allowProgramClipboard,
+          interactive: () => terminalRef.current === terminal && isVisibleRef.current && !terminal.options.disableStdin && socketRef.current?.socket.readyState === WebSocket.OPEN,
+          connection: () => viewerIdRef.current,
+          feedback: (copied) => onFeedbackRef.current?.(copied ? "done" : "failed", translate(copied ? "files.copied" : "files.copyFailed"))
+        });
         fitAddonRef.current = fitAddon;
         syncTerminalSizeRef.current();
         terminal.attachCustomKeyEventHandler((event) => {
@@ -23193,6 +23322,8 @@ var ShellPane = forwardRef(
         terminalInitializingRef.current = false;
         terminalInputSubscriptionRef.current?.dispose();
         terminalInputSubscriptionRef.current = null;
+        oscClipboardRef.current?.dispose();
+        oscClipboardRef.current = null;
         touchInputRef.current?.dispose();
         touchInputRef.current = null;
         resizeObserverRef.current?.disconnect();
@@ -23345,13 +23476,16 @@ var ShellPane = forwardRef(
     useEffect45(() => {
       if (!isMobileShell || !terminalReady || !terminalHostNode) return;
       const viewport = terminalHostNode.querySelector(".xterm-viewport");
+      const screen = terminalHostNode.querySelector(".xterm-screen");
       if (!viewport) return;
       const nativeScroll = (event) => {
         if (terminalRef.current?.buffer.active.type === "normal") event.stopPropagation();
       };
+      const removeLinkTaps = screen ? installViewportLinkTaps(viewport, screen) : void 0;
       viewport.addEventListener("touchstart", nativeScroll, { passive: true });
       viewport.addEventListener("touchmove", nativeScroll, { passive: true });
       return () => {
+        removeLinkTaps?.();
         viewport.removeEventListener("touchstart", nativeScroll);
         viewport.removeEventListener("touchmove", nativeScroll);
       };

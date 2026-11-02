@@ -405,6 +405,7 @@ interface WorkbenchToolPanel {
 }
 interface MatterWorkbenchOptions {
     /** Optional host surface additions; absent in the browser workbench. */
+    sidebarHeader?: ReactNode;
     sidebarLeading?: ReactNode;
     railLeading?: ReactNode;
     panels?: WorkbenchPanelsOptions;

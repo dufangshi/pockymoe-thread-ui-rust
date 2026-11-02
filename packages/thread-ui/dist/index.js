@@ -12737,13 +12737,13 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               !mobile && !sidebarHidden && navStrip,
               /* @__PURE__ */ jsxs44("div", { className: `matter-sidebar-upper ${recentThreads.length && recentsOpen ? "" : "is-alone"}`, children: [
                 /* @__PURE__ */ jsxs44("div", { className: "matter-sidebar-heading", children: [
-                  dock ? /* @__PURE__ */ jsxs44("span", { className: "matter-drawer-brand", children: [
+                  o.sidebarHeader ?? (dock ? /* @__PURE__ */ jsxs44("span", { className: "matter-drawer-brand", children: [
                     /* @__PURE__ */ jsxs44("b", { "aria-hidden": "true", children: [
                       "p",
                       /* @__PURE__ */ jsx51("i", { children: "m" })
                     ] }),
                     "Pockymoe"
-                  ] }) : /* @__PURE__ */ jsx51("span", { children: translate("workbench.workspace") }),
+                  ] }) : /* @__PURE__ */ jsx51("span", { children: translate("workbench.workspace") })),
                   /* @__PURE__ */ jsx51(
                     "button",
                     {

@@ -30785,6 +30785,11 @@ function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map
     {
       showCloseButton: false,
       "aria-describedby": void 0,
+      tabIndex: -1,
+      onOpenAutoFocus: (event) => {
+        event.preventDefault();
+        event.currentTarget.focus();
+      },
       "data-theme-effective": effectiveTheme,
       "data-theme-mode": themeMode,
       className: "thread-graph-dialog matter-settings-dialog thread-map-dialog",

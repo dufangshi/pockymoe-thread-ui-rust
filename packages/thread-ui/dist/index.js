@@ -13527,6 +13527,7 @@ function ThreadWorkspaceLayout({
   onThemeModeChange,
   showMobileNewThreadShortcut = true,
   hideRoomsRail = false,
+  renderRailSettings,
   settingsDialogOpen,
   onSettingsDialogOpenChange,
   mobileHeaderAction,
@@ -13859,68 +13860,72 @@ function ThreadWorkspaceLayout({
       ] }) }] : [],
       ...settingsSections ?? (globalSettingsContent ? [{ id: "preferences", label: translate("files.preferences"), content: globalSettingsContent }] : [])
     ];
-    return /* @__PURE__ */ jsx53(
-      SettingsDialog,
-      {
-        open: settingsOpen,
-        onOpenChange: changeSettingsOpen,
-        section: settingsSection,
-        onSectionChange: setSettingsSection,
-        panelScroll: settingsScroll,
-        themeMode,
-        effectiveTheme,
-        contentProps: { "data-testid": "settings-dialog" },
-        sections,
-        trigger: /* @__PURE__ */ jsx53(
-          "button",
-          {
-            type: "button",
-            "aria-label": translate("files.openSettings"),
-            title: translate("files.settings"),
-            className: "thread-icon-button inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
-            children: /* @__PURE__ */ jsx53(Settings, { "data-icon": "settings", className: "h-4 w-4" })
-          }
-        ),
-        extraContent: canUpdateThemeMode && !settingsSections ? /* @__PURE__ */ jsx53("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs45("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
-          /* @__PURE__ */ jsxs45("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ jsx53("p", { className: "font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
-            /* @__PURE__ */ jsxs45("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
-              translate("files.currentTheme"),
-              " ",
-              effectiveTheme
-            ] })
-          ] }),
-          /* @__PURE__ */ jsx53(
-            "div",
+    const railAccount = renderRailSettings && !isShellMobileViewport;
+    return /* @__PURE__ */ jsxs45(Fragment19, { children: [
+      railAccount ? renderRailSettings(() => changeSettingsOpen(true)) : null,
+      /* @__PURE__ */ jsx53(
+        SettingsDialog,
+        {
+          open: settingsOpen,
+          onOpenChange: changeSettingsOpen,
+          section: settingsSection,
+          onSectionChange: setSettingsSection,
+          panelScroll: settingsScroll,
+          themeMode,
+          effectiveTheme,
+          contentProps: { "data-testid": "settings-dialog" },
+          sections,
+          trigger: railAccount ? void 0 : /* @__PURE__ */ jsx53(
+            "button",
             {
-              className: "thread-graph-theme-mode-group grid grid-cols-3 gap-1 rounded-lg border p-1",
-              role: "group",
-              "aria-label": translate("files.themeMode"),
-              children: THEME_MODE_OPTIONS.map((option) => {
-                const Icon = option.icon;
-                const isSelected = themeMode === option.value;
-                return /* @__PURE__ */ jsxs45(
-                  "button",
-                  {
-                    type: "button",
-                    "data-testid": `theme-mode-${option.value}`,
-                    "aria-pressed": isSelected,
-                    disabled: !canUpdateThemeMode,
-                    onClick: () => setThemeMode?.(option.value),
-                    className: `thread-graph-theme-mode-button inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium transition ${isSelected ? "is-selected" : ""}`,
-                    children: [
-                      /* @__PURE__ */ jsx53(Icon, { className: "h-3.5 w-3.5" }),
-                      /* @__PURE__ */ jsx53("span", { className: "truncate", children: option.label })
-                    ]
-                  },
-                  option.value
-                );
-              })
+              type: "button",
+              "aria-label": translate("files.openSettings"),
+              title: translate("files.settings"),
+              className: "thread-icon-button inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
+              children: /* @__PURE__ */ jsx53(Settings, { "data-icon": "settings", className: "h-4 w-4" })
             }
-          )
-        ] }) }) : null
-      }
-    );
+          ),
+          extraContent: canUpdateThemeMode && !settingsSections ? /* @__PURE__ */ jsx53("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs45("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
+            /* @__PURE__ */ jsxs45("div", { className: "min-w-0", children: [
+              /* @__PURE__ */ jsx53("p", { className: "font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
+              /* @__PURE__ */ jsxs45("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
+                translate("files.currentTheme"),
+                " ",
+                effectiveTheme
+              ] })
+            ] }),
+            /* @__PURE__ */ jsx53(
+              "div",
+              {
+                className: "thread-graph-theme-mode-group grid grid-cols-3 gap-1 rounded-lg border p-1",
+                role: "group",
+                "aria-label": translate("files.themeMode"),
+                children: THEME_MODE_OPTIONS.map((option) => {
+                  const Icon = option.icon;
+                  const isSelected = themeMode === option.value;
+                  return /* @__PURE__ */ jsxs45(
+                    "button",
+                    {
+                      type: "button",
+                      "data-testid": `theme-mode-${option.value}`,
+                      "aria-pressed": isSelected,
+                      disabled: !canUpdateThemeMode,
+                      onClick: () => setThemeMode?.(option.value),
+                      className: `thread-graph-theme-mode-button inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium transition ${isSelected ? "is-selected" : ""}`,
+                      children: [
+                        /* @__PURE__ */ jsx53(Icon, { className: "h-3.5 w-3.5" }),
+                        /* @__PURE__ */ jsx53("span", { className: "truncate", children: option.label })
+                      ]
+                    },
+                    option.value
+                  );
+                })
+              }
+            )
+          ] }) }) : null
+        }
+      )
+    ] });
   }
   function renderRoomsRailContent(collapsed = false) {
     return /* @__PURE__ */ jsx53("div", { className: "flex min-h-0 flex-1 flex-col", children: /* @__PURE__ */ jsxs45("section", { className: "flex min-h-0 flex-1 flex-col", children: [

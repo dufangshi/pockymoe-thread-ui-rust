@@ -85,6 +85,8 @@ interface ThreadWorkspaceLayoutProps {
   showMobileThreadNavToggle?: boolean;
   showMobileNewThreadShortcut?: boolean;
   hideRoomsRail?: boolean;
+  /** Account menu at the wide rail footer; the settings dialog stays mounted. */
+  renderRailSettings?: (openSettings: () => void) => ReactNode;
   settingsDialogOpen?: boolean;
   onSettingsDialogOpenChange?: (open: boolean) => void;
   mobileHeaderAction?: ReactNode;
@@ -422,6 +424,7 @@ export function ThreadWorkspaceLayout({
   onThemeModeChange,
   showMobileNewThreadShortcut = true,
   hideRoomsRail = false,
+  renderRailSettings,
   settingsDialogOpen,
   onSettingsDialogOpenChange,
   mobileHeaderAction,
@@ -810,7 +813,10 @@ export function ThreadWorkspaceLayout({
       ...(settingsSections ?? (globalSettingsContent ? [{ id: "preferences", label: translate("files.preferences"), content: globalSettingsContent }] : [])),
     ];
 
+    const railAccount = renderRailSettings && !isShellMobileViewport;
     return (
+      <>
+      {railAccount ? renderRailSettings(() => changeSettingsOpen(true)) : null}
       <SettingsDialog
         open={settingsOpen}
         onOpenChange={changeSettingsOpen}
@@ -820,7 +826,7 @@ export function ThreadWorkspaceLayout({
         themeMode={themeMode} effectiveTheme={effectiveTheme}
         contentProps={{ 'data-testid': 'settings-dialog' }}
         sections={sections}
-        trigger={<button type="button" aria-label={translate("files.openSettings")} title={translate("files.settings")}
+        trigger={railAccount ? undefined : <button type="button" aria-label={translate("files.openSettings")} title={translate("files.settings")}
           className="thread-icon-button inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full">
           <Settings data-icon="settings" className="h-4 w-4" />
         </button>}
@@ -865,6 +871,7 @@ export function ThreadWorkspaceLayout({
             </div>
           ) : null}
       />
+      </>
     );
   }
 

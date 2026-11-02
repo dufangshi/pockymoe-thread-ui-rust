@@ -24,6 +24,7 @@ class FakeTerminal {
   cols = 100;
   rows = 30;
   options: Record<string, unknown>;
+  parser = { registerOscHandler: vi.fn(() => ({ dispose() {} })) };
   writes: string[] = [];
   disposed = false;
   private dataHandler: ((data: string) => void) | null = null;

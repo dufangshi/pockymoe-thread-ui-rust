@@ -17,7 +17,7 @@ export function TerminalSettings() {
       ))}
     </fieldset>
   );
-  const toggle = (key: 'copyOnSelect' | 'pasteWarning', label: string, hint: string) => (
+  const toggle = (key: 'copyOnSelect' | 'pasteWarning' | 'allowProgramClipboard', label: string, hint: string) => (
     <label className="terminal-settings-toggle">
       <span><b>{label}</b><small>{hint}</small></span>
       <input type="checkbox" checked={preferences[key]} onChange={event => setTerminalPreferences({ [key]: event.target.checked })} />
@@ -26,6 +26,7 @@ export function TerminalSettings() {
   return (
     <div className="terminal-settings">
       {toggle('copyOnSelect', translate('files.terminalCopyOnSelect'), translate('files.terminalCopyOnSelectHint'))}
+      {toggle('allowProgramClipboard', translate('files.terminalProgramClipboard'), translate('files.terminalProgramClipboardHint'))}
       {choice('ctrlV', 'Ctrl+V', [
         ['smart', translate('files.terminalCtrlVSmart')],
         ['paste', translate('files.terminalCtrlVPaste')],

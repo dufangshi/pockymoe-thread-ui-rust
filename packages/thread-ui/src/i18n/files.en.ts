@@ -681,4 +681,8 @@ export const filesEn = {
   "files.propertiesLinkYes": "Yes, listed as what it points to",
   "files.propertiesClose": "Close",
   "files.propertiesOlderDevice": "This device's Supervisor does not report file times yet; they show after it updates.",
+  "files.terminalOpenLinkTitle": "Open terminal link?",
+  "files.terminalOpenLink": "Open link",
+  "files.terminalProgramClipboard": "Allow terminal programs to write to the clipboard",
+  "files.terminalProgramClipboardHint": "Live programs may replace the clipboard. Clipboard reads and recorded output are always ignored.",
 } as const;

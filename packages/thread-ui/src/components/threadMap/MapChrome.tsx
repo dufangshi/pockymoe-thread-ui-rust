@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { MoreVertical, Check, X, Info } from 'lucide-react';
 import { getLocale, translate } from '../../i18n';
 import { MapScrollList } from './MapScrollList';
+import { ErrorMark } from '../copy/ErrorMark';
 import { StatusMark } from '../StatusMark';
 import { useModalFocus } from '../menu/useModalFocus';
 import { useMenuKeyboard } from '../menu/useMenuKeyboard';
@@ -142,8 +143,12 @@ export function DeviceMenu({ device, items }: { device: ThreadMapDevice; items: 
     }}><MoreVertical aria-hidden="true" /></button>
     {anchor && createPortal(<div ref={menu} data-theme-effective={document.documentElement.dataset.themeEffective} className="thread-graph-dialog thread-map-device-menu" role="menu"
       aria-label={device.name} style={{ position: 'fixed', ...anchor }}>
-      {items.map(item => <button key={item.id} role="menuitem" type="button" disabled={item.disabled}
-        onClick={() => { close(true); item.onSelect(); }}>{item.label}</button>)}
+      {items.map(item => <div key={item.id} className="thread-map-device-menu-row" data-separated={item.separator || undefined}>
+        {item.separator ? <span role="separator" className="sr-only" /> : null}
+        <button role="menuitem" type="button" disabled={item.disabled} data-tone={item.tone}
+          onClick={() => { close(true); item.onSelect(); }}>{item.label}</button>
+        {item.disabledReason ? <ErrorMark kind="unavailable" message={item.disabledReason} /> : null}
+      </div>)}
     </div>, document.body)}
   </>;
 }

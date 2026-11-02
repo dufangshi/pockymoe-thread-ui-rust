@@ -114,6 +114,7 @@ export interface WorkbenchToolPanel {
 }
 export interface MatterWorkbenchOptions {
   /** Optional host surface additions; absent in the browser workbench. */
+  sidebarHeader?: ReactNode;
   sidebarLeading?: ReactNode;
   railLeading?: ReactNode;
   panels?: WorkbenchPanelsOptions;
@@ -942,9 +943,9 @@ export function MatterWorkbench({
             everywhere start halfway down, so the two read apart. Each scrolls on its own. */}
         <div className={`matter-sidebar-upper ${recentThreads.length && recentsOpen ? '' : 'is-alone'}`}>
         <div className="matter-sidebar-heading">
-          {dock
+          {o.sidebarHeader ?? (dock
             ? <span className="matter-drawer-brand"><b aria-hidden="true">p<i>m</i></b>Pockymoe</span>
-            : <span>{translate("workbench.workspace")}</span>}
+            : <span>{translate("workbench.workspace")}</span>)}
           <button
             className="matter-mobile-close"
             aria-label={translate("workbench.closeSidebar")}

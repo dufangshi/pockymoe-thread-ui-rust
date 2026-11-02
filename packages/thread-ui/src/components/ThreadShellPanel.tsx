@@ -14,6 +14,7 @@ import {
   SquareSplitVertical,
   SquareTerminal,
   Trash2,
+  TriangleAlert,
   Unplug,
   X,
 } from 'lucide-react';
@@ -38,7 +39,7 @@ import type {
 } from '@pockymoe/shared';
 import type { ThreadShellAdapter } from '../adapters';
 import type { WorkbenchToolPanelControls } from './workbench/toolPanel';
-import { ShellPane, type ShellPaneHandle } from './shell/ShellPane';
+import { ShellPane, type ShellPaneHandle, type ToolboxFeedbackState } from './shell/ShellPane';
 import {
   EMPTY_SHELL_PANE_RUNTIME_STATE,
   buildConnectionButtonState,
@@ -208,7 +209,7 @@ export const ThreadShellPanel = forwardRef<
   const [groupsSize, setGroupsSize] = useState({ width: 0, height: 0 });
   const [focusArmed, setFocusArmed] = useState(false);
   const [isMobileShell, setIsMobileShell] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ tone: ToolboxFeedbackState; text: string } | null>(null);
   const groupsRef = useRef<HTMLDivElement | null>(null);
   const paneRefs = useRef(new Map<string, ShellPaneHandle>());
   const createInFlight = useRef(false);
@@ -276,10 +277,10 @@ export const ThreadShellPanel = forwardRef<
     if (shellState) saveTerminalLayout(layoutKey, layout);
   }, [layout, layoutKey, shellState]);
 
-  const showFeedback = useCallback((_tone: unknown, text: string) => {
-    setFeedback(text);
+  const showFeedback = useCallback((tone: ToolboxFeedbackState, text: string) => {
+    setFeedback({ tone, text });
     if (feedbackTimer.current !== null) window.clearTimeout(feedbackTimer.current);
-    feedbackTimer.current = window.setTimeout(() => { setFeedback(null); feedbackTimer.current = null; }, 1800);
+    feedbackTimer.current = window.setTimeout(() => { setFeedback(null); feedbackTimer.current = null; }, tone === 'failed' ? 3000 : 1500);
   }, []);
   useEffect(() => () => { if (feedbackTimer.current !== null) window.clearTimeout(feedbackTimer.current); }, []);
 
@@ -721,7 +722,10 @@ export const ThreadShellPanel = forwardRef<
           {targetLabel}
         </span>
       )}
-      <span className="terminal-feedback" aria-live="polite">{feedback}</span>
+      <span className="terminal-feedback" role="status" data-tone={feedback?.tone}>
+        {feedback?.tone === 'failed' ? <TriangleAlert aria-hidden="true" size={14} /> : feedback?.tone === 'done' ? <Check aria-hidden="true" size={14} /> : null}
+        {feedback?.text}
+      </span>
       {errorMark}
       <div className="terminal-actions" role="toolbar" aria-label={t('workbench.terminal')}>
         <IconButton label={t('workbench.terminalNew')} disabled={busy || loading || workspacePathMissing} onClick={() => void createTerminal('group')} testId="terminal-new">

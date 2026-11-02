@@ -1,12 +1,12 @@
 import {
   editorThemeFor
-} from "./chunk-PSRWHVIQ.js";
+} from "./chunk-PIONVBM2.js";
 import {
   useDocumentThemeRevision
 } from "./chunk-JIPNJR2N.js";
 import {
   translate
-} from "./chunk-6GDOADIB.js";
+} from "./chunk-S5HMUO2V.js";
 import {
   editor
 } from "./chunk-PEHPFHY2.js";

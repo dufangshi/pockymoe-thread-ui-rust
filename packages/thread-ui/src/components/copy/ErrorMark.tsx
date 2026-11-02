@@ -18,6 +18,7 @@ export function ErrorMark({
   label,
   onRetry,
   retryLabel,
+  secondaryAction,
   className = '',
   announce = true,
   tabIndex,
@@ -30,6 +31,8 @@ export function ErrorMark({
   label?: string | undefined;
   onRetry?: (() => void) | undefined;
   retryLabel?: string | undefined;
+  /** An alternative recovery, such as opening the verified release's download page. */
+  secondaryAction?: { label: string; onClick(): void } | undefined;
   className?: string | undefined;
   /** Say the reason aloud when it appears (an action that just failed). A
       record of an earlier failure (a past turn) is not announced. */
@@ -64,7 +67,8 @@ export function ErrorMark({
     setPlace((current) => ({
       ...current,
       ...(ink ? { color: ink, borderColor: `color-mix(in srgb, ${ink} 22%, transparent)` } : {}),
-      background: surfaceBehind(trigger.current),
+      // The mark's hover tint may be translucent; the popup needs its parent surface.
+      background: surfaceBehind(trigger.current?.parentElement),
     }));
     placeBubble();
   }, [open, message, detail, placeBubble]);
@@ -150,6 +154,7 @@ export function ErrorMark({
               {retryLabel ?? translate('common.retry')}
             </button>
           ) : null}
+          {secondaryAction ? <button type="button" className="error-mark-retry" onClick={() => { setOpen(false); secondaryAction.onClick(); }}>{secondaryAction.label}</button> : null}
         </div>,
         // Inside a menu on the browser's top layer, the page's body would paint under it.
         trigger.current?.closest('[popover]') ?? document.body,

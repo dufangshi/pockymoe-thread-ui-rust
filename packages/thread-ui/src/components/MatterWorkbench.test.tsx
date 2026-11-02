@@ -570,12 +570,13 @@ describe('desktop tabs', () => {
 
 it('renders optional host slots before the existing sidebar and rail controls', () => {
   vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
-  options = { ...baseOptions, sidebarLeading: <section data-testid="host-activity">Activity</section>, railLeading: <button aria-label="Host map" /> };
+  options = { ...baseOptions, sidebarLeading: <section data-testid="host-activity">Activity</section>, railLeading: <button aria-label="Host map" />, railBottomLeading: <button aria-label="Host update" /> };
   render();
   expect(drawer().querySelector('.matter-sidebar-scroll')?.firstElementChild?.getAttribute('data-testid')).toBe('host-activity');
   const rail = host.querySelector('.matter-rail')!;
   expect(rail.querySelector('.matter-brand')?.nextElementSibling?.getAttribute('aria-label')).toBe('Host map');
   expect(rail.querySelector('button[aria-label="Chat"]')).not.toBeNull();
+  expect(rail.querySelector('.matter-rail-bottom')?.firstElementChild?.getAttribute('aria-label')).toBe('Host update');
   expect(drawer().querySelector('[data-testid="shortcuts"]')).not.toBeNull();
 });
 

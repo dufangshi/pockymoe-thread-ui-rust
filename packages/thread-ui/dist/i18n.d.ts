@@ -2,6 +2,9 @@ import * as react from 'react';
 import { ReactNode } from 'react';
 
 declare const en: {
+    readonly "desktopShell.updateTo": "Update to {{version}}";
+    readonly "desktopShell.updateFailed": "The update could not be installed.";
+    readonly "desktopShell.downloadUpdate": "Go to download";
     readonly "desktopShell.activity": "Activity";
     readonly "desktopShell.needsYou": "Needs you";
     readonly "desktopShell.running": "Running";
@@ -5196,6 +5199,9 @@ declare const en: {
 };
 
 declare const zhCN: {
+    "desktopShell.updateTo": string;
+    "desktopShell.updateFailed": string;
+    "desktopShell.downloadUpdate": string;
     "desktopShell.activity": string;
     "desktopShell.needsYou": string;
     "desktopShell.running": string;
@@ -10412,6 +10418,9 @@ type Message = string | {
 };
 declare const resources: {
     en: {
+        readonly "desktopShell.updateTo": "Update to {{version}}";
+        readonly "desktopShell.updateFailed": "The update could not be installed.";
+        readonly "desktopShell.downloadUpdate": "Go to download";
         readonly "desktopShell.activity": "Activity";
         readonly "desktopShell.needsYou": "Needs you";
         readonly "desktopShell.running": "Running";
@@ -15605,6 +15614,9 @@ declare const resources: {
         readonly "admin.afterNextSample": "Shown after the next sample (once a minute).";
     };
     'zh-CN': {
+        "desktopShell.updateTo": string;
+        "desktopShell.updateFailed": string;
+        "desktopShell.downloadUpdate": string;
         "desktopShell.activity": string;
         "desktopShell.needsYou": string;
         "desktopShell.running": string;

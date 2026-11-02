@@ -6,7 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-6GDOADIB.js";
+} from "./chunk-S5HMUO2V.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -146,6 +146,7 @@ function ErrorMark({
   label,
   onRetry,
   retryLabel,
+  secondaryAction,
   className = "",
   announce = true,
   tabIndex
@@ -173,7 +174,8 @@ function ErrorMark({
     setPlace((current) => ({
       ...current,
       ...ink ? { color: ink, borderColor: `color-mix(in srgb, ${ink} 22%, transparent)` } : {},
-      background: surfaceBehind(trigger.current)
+      // The mark's hover tint may be translucent; the popup needs its parent surface.
+      background: surfaceBehind(trigger.current?.parentElement)
     }));
     placeBubble();
   }, [open, message, detail, placeBubble]);
@@ -256,7 +258,11 @@ function ErrorMark({
             }, children: [
               /* @__PURE__ */ jsx4(RotateCw, { "aria-hidden": "true" }),
               retryLabel ?? translate("common.retry")
-            ] }) : null
+            ] }) : null,
+            secondaryAction ? /* @__PURE__ */ jsx4("button", { type: "button", className: "error-mark-retry", onClick: () => {
+              setOpen(false);
+              secondaryAction.onClick();
+            }, children: secondaryAction.label }) : null
           ]
         }
       ),

@@ -27,6 +27,9 @@ export const zhCN = {
   ...searchZhCN,
   ...tourZhCN,
 
+  "desktopShell.updateTo": "更新到 {{version}}",
+  "desktopShell.updateFailed": "无法安装更新。",
+  "desktopShell.downloadUpdate": "前往下载",
   "desktopShell.activity": "活动",
   "desktopShell.needsYou": "需要你",
   "desktopShell.running": "进行中",

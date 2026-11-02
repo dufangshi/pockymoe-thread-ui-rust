@@ -59,7 +59,7 @@ declare function MiddleName({ name, className }: {
  * still hear the reason when it appears. Put it after the control it explains;
  * a control that cannot be used stays in place, greyed and disabled.
  */
-declare function ErrorMark({ message, detail, kind, label, onRetry, retryLabel, className, announce, tabIndex, }: {
+declare function ErrorMark({ message, detail, kind, label, onRetry, retryLabel, secondaryAction, className, announce, tabIndex, }: {
     message: string;
     /** The raw error under a readable message, in small type. */
     detail?: string | undefined;
@@ -68,6 +68,11 @@ declare function ErrorMark({ message, detail, kind, label, onRetry, retryLabel, 
     label?: string | undefined;
     onRetry?: (() => void) | undefined;
     retryLabel?: string | undefined;
+    /** An alternative recovery, such as opening the verified release's download page. */
+    secondaryAction?: {
+        label: string;
+        onClick(): void;
+    } | undefined;
     className?: string | undefined;
     /** Say the reason aloud when it appears (an action that just failed). A
         record of an earlier failure (a past turn) is not announced. */
@@ -409,6 +414,8 @@ interface MatterWorkbenchOptions {
     sidebarHeader?: ReactNode;
     sidebarLeading?: ReactNode;
     railLeading?: ReactNode;
+    /** Host actions immediately above the existing bottom rail controls. */
+    railBottomLeading?: ReactNode;
     panels?: WorkbenchPanelsOptions;
     statusActions?: ReactNode;
     /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */

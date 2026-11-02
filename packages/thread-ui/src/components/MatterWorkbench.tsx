@@ -117,6 +117,8 @@ export interface MatterWorkbenchOptions {
   sidebarHeader?: ReactNode;
   sidebarLeading?: ReactNode;
   railLeading?: ReactNode;
+  /** Host actions immediately above the existing bottom rail controls. */
+  railBottomLeading?: ReactNode;
   panels?: WorkbenchPanelsOptions;
   statusActions?: ReactNode;
   /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
@@ -855,7 +857,7 @@ export function MatterWorkbench({
         <button disabled={!workspaceControlsEnabled} aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen}
           title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
         {openThreadMap && <button aria-label={translate('workbench.threadMap')} title={translate('workbench.threadMap')} onClick={openThreadMap}><LayoutDashboard data-icon="thread-map" /></button>}
-        <div className="matter-rail-bottom">{deviceMonitor}{settings}</div>
+        <div className="matter-rail-bottom">{o.railBottomLeading}{deviceMonitor}{settings}</div>
       </nav>}
       {dock ? <header className={`matter-topbar is-status-only ${o.searchOpen ? 'is-search-open' : ''}`}>
         <div className="matter-topbar-status">{deviceMonitor}</div>
@@ -1030,6 +1032,7 @@ export function MatterWorkbench({
             </div>
           )}
         </div>}
+        {mobile && o.railBottomLeading ? <div className="matter-sidebar-host-actions">{o.railBottomLeading}</div> : null}
         {!dock && <div className="matter-sidebar-footer">
           {translate("workbench.yourConversationsTogether")}</div>}
       </aside>

@@ -26,6 +26,9 @@ export const en = {
   ...searchEn,
   ...tourEn,
 
+  "desktopShell.updateTo": "Update to {{version}}",
+  "desktopShell.updateFailed": "The update could not be installed.",
+  "desktopShell.downloadUpdate": "Go to download",
   "desktopShell.activity": "Activity",
   "desktopShell.needsYou": "Needs you",
   "desktopShell.running": "Running",

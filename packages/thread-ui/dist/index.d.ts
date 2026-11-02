@@ -373,6 +373,7 @@ interface WorkbenchThread {
     href: string;
     status: string;
     favorite: boolean;
+    closedAt?: string | null;
     parentKey?: string;
     rootKey?: string;
     /** Harness id such as `codex` or `claude`; themes may show it as an avatar. */

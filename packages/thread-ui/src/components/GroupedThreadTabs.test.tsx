@@ -63,3 +63,22 @@ describe('agent thread groups', () => {
     } finally { flushSync(() => root.unmount()); container.remove(); }
   });
 });
+
+it('counts only open agents, lists closed agents last and retains an icon-only history entry', () => {
+  const container = document.createElement('nav'); document.body.append(container);
+  const root = createRoot(container), parent = { ...thread('root'), status: 'idle' };
+  const closed = { ...thread('closed', 'root'), closedAt: '2026-11-01T00:00:00Z' };
+  try {
+    flushSync(() => root.render(<GroupedThreadTabs threads={[parent, closed, thread('open', 'root')]} currentKey="root" onNavigate={vi.fn()} />));
+    const button = container.querySelector<HTMLButtonElement>('.matter-group-toggle')!;
+    expect(button.textContent).toBe('1'); expect(button.getAttribute('aria-label')).toBe('root: 1 agent threads');
+    flushSync(() => button.click());
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('#matter-agent-threads a')];
+    expect(links.map(link => link.textContent)).toEqual(['root', 'open', 'closed']);
+    expect(links[2].style.color).toBe('var(--theme-fg-muted)');
+    flushSync(() => root.render(<GroupedThreadTabs threads={[parent, closed]} currentKey="root" onNavigate={vi.fn()} />));
+    expect(button.textContent).toBe(''); expect(button.classList.contains('is-badge')).toBe(false);
+    expect(container.querySelector('[role="img"]')?.getAttribute('data-status')).toBe('idle');
+    expect(document.querySelector('#matter-agent-threads a[href="/threads/closed"]')).not.toBeNull();
+  } finally { flushSync(() => root.unmount()); container.remove(); }
+});

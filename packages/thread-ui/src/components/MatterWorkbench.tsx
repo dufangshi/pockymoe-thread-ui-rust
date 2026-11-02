@@ -66,6 +66,7 @@ export interface WorkbenchThread {
   href: string;
   status: string;
   favorite: boolean;
+  closedAt?: string | null;
   parentKey?: string;
   rootKey?: string;
   /** Harness id such as `codex` or `claude`; themes may show it as an avatar. */
@@ -754,7 +755,7 @@ export function MatterWorkbench({
       onMouseEnter={() => o.onPrefetchThread?.(thread.href)}
       onContextMenu={event => openThreadMenuFrom(event, thread)}
       onKeyDown={event => openThreadMenuFromKey(event, thread)}
-      className="matter-thread-row"
+      className="matter-thread-row" style={thread.closedAt ? { color: 'var(--theme-fg-muted)' } : undefined}
       aria-current={thread.key === o.currentKey ? 'page' : undefined}
       title={`${thread.title}\n${thread.subtitle} · ${activity.label}`}
     >
@@ -779,7 +780,7 @@ export function MatterWorkbench({
         if (row) agentToggle.current = { row, top: row.getBoundingClientRect().top };
         setAgentsOpen(open => ({ ...open, [thread.key]: !agents.open }));
       }}>
-      <Bot aria-hidden="true" /><span>{agents.count}</span><ChevronRight className="matter-agent-toggle-chevron" aria-hidden="true" />
+      <Bot aria-hidden="true" />{agents.count > 0 && <span>{agents.count}</span>}<ChevronRight className="matter-agent-toggle-chevron" aria-hidden="true" />
     </button>}
     {o.renderThreadMenu?.(thread)}
     </div>
@@ -787,7 +788,7 @@ export function MatterWorkbench({
   const renderThreadGroups = (threads: WorkbenchThread[], reorder = false) => groupThreads(threads).map(({ root, children }) => {
     const open = agentsOpen[root.key] ?? children.some(child => child.key === o.currentKey);
     return <div key={root.key} className="matter-thread-group-entry" data-reorder-key={reorder ? root.key : undefined}>
-      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.length, running: children.filter(child => child.status === 'running').length, open } : undefined)}
+      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.filter(child => !child.closedAt).length, running: children.filter(child => !child.closedAt && child.status === 'running').length, open } : undefined)}
       {children.length > 0 && open && <div className="matter-agent-children" role="group" aria-label={translate('workbench.agentThreads_187f89', { value1: root.title })}>
         {children.map(child => renderThread(child))}
       </div>}

@@ -9,7 +9,7 @@ const statusLabels: Record<string, string> = new Proxy({}, { get: (_, status) =>
 
 // This is a navigation indicator. The parent's own execution state stays intact.
 export function threadGroupActivity(root: WorkbenchThread, children: WorkbenchThread[] = []) {
-  const running = children.filter(child => child.status === 'running').length;
+  const running = children.filter(child => !child.closedAt && child.status === 'running').length;
   const label = statusLabels[root.status] ?? root.status;
   if (running && (root.status === 'idle' || root.status === 'unread')) {
     return {
@@ -23,7 +23,7 @@ export function threadGroupActivity(root: WorkbenchThread, children: WorkbenchTh
 export function groupThreads(threads: WorkbenchThread[]) {
   const keys = new Set(threads.map(t => t.key));
   const groups = threads.filter(t => !t.rootKey || t.rootKey === t.key || !keys.has(t.rootKey))
-    .map(root => ({ root, children: threads.filter(t => t.key !== root.key && t.rootKey === root.key) }));
+    .map(root => ({ root, children: threads.filter(t => t.key !== root.key && t.rootKey === root.key).sort((a, b) => Number(!!a.closedAt) - Number(!!b.closedAt)) }));
   return groups;
 }
 
@@ -90,6 +90,7 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
   });
   return <>
     {groups.map(({ root, children }) => {
+      const openChildren = children.filter(child => !child.closedAt);
       const selected = children.find(child => child.key === currentKey);
       const active = root.key === currentKey || !!selected;
       const activity = threadGroupActivity(root, children);
@@ -113,11 +114,11 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
           {children.length > 0 && <span className="matter-tab-agents-slot" aria-hidden="true" />}
           <span>{root.title}{selected ? ` · ${selected.title}` : ''}</span>
         </a>
-        {children.length > 0 && <button className="matter-group-toggle is-badge" aria-label={translate("workbench.agentThreads", { value1: root.title, value2: children.length })}
-          aria-expanded={menu?.key === root.key} aria-controls="matter-agent-threads" data-running={children.some(child => child.status === 'running') || undefined} onClick={event => {
+        {children.length > 0 && <button className={`matter-group-toggle${openChildren.length ? ' is-badge' : ''}`} aria-label={translate("workbench.agentThreads", { value1: root.title, value2: openChildren.length })}
+          aria-expanded={menu?.key === root.key} aria-controls="matter-agent-threads" data-running={openChildren.some(child => child.status === 'running') || undefined} onClick={event => {
             const bounds = event.currentTarget.getBoundingClientRect(); trigger.current = event.currentTarget;
             setMenu(menu?.key === root.key ? null : { key: root.key, left: Math.max(8, Math.min(bounds.left, window.innerWidth - 296)), top: bounds.bottom + 4 });
-          }}><Bot aria-hidden="true" />{children.length}</button>}
+          }}><Bot aria-hidden="true" />{openChildren.length || null}</button>}
         {onClose && <button type="button" className="matter-tab-close" aria-label={translate('workbench.closeTab', { title: root.title })}
           title={translate('workbench.closeTab', { title: root.title })} onClick={() => onClose(root.key)}><X aria-hidden="true" /></button>}
       </div>;
@@ -128,7 +129,7 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
         const activity = threadGroupActivity(thread, thread.key === activeMenu.root.key ? activeMenu.children : []);
         return <a key={thread.key} href={thread.href} className="matter-agent-threads-item"
         aria-current={thread.key === currentKey ? 'page' : undefined}
-        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 4, background: thread.key === currentKey ? 'var(--theme-hover)' : undefined, color: 'inherit' }}
+        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 4, background: thread.key === currentKey ? 'var(--theme-hover)' : undefined, color: thread.closedAt ? 'var(--theme-fg-muted)' : 'inherit' }}
         onClick={event => { event.preventDefault(); setMenu(null); onNavigate(thread.href); }}>
         {thread.agent && <span className="matter-thread-avatar" data-agent={thread.agent} aria-hidden="true" />}
         <span className="matter-status-dot" role="img" aria-label={activity.label} data-status={activity.status} />

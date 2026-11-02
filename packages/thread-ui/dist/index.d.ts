@@ -1125,6 +1125,9 @@ interface MapDeviceMenuItem {
     label: string;
     onSelect: () => void;
     disabled?: boolean;
+    disabledReason?: string;
+    separator?: boolean;
+    tone?: 'danger';
 }
 interface MapDeviceExtras {
     latencyMs?: number;

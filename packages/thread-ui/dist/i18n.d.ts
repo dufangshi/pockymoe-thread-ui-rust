@@ -18,7 +18,6 @@ declare const en: {
     readonly "desktopShell.deviceDetails": "Device details";
     readonly "desktopShell.checkUpdates": "Check for updates";
     readonly "desktopShell.rename": "Rename";
-    readonly "desktopShell.manageInBrowser": "Manage in browser";
     readonly "desktopShell.memory": "Memory";
     readonly "desktopShell.settings": "Settings";
     readonly "desktopShell.newThread": "New thread";
@@ -93,6 +92,11 @@ declare const en: {
     readonly "desktopDevices.usageDefinition": "Default turns include every origin. A turn can touch several models; model row counts can overlap. Token totals include cache use; reasoning is part of output. Costs sum known model prices. Undated turns are included in All time totals, without a daily bucket.";
     readonly "desktopDevices.workspaceUsage": "Workspace usage";
     readonly "desktopDevices.total": "Total";
+    readonly "desktopDevices.access": "Access";
+    readonly "desktopDevices.openWorkspaces": "Open workspaces";
+    readonly "desktopDevices.shareAction": "Share…";
+    readonly "desktopDevices.isolate": "Isolate…";
+    readonly "desktopDevices.remove": "Remove device…";
     readonly "desktopDevices.devices": "Devices";
     readonly "desktopDevices.device": "Device";
     readonly "desktopDevices.allDevices": "All devices";
@@ -136,7 +140,6 @@ declare const en: {
     readonly "desktopDevices.newThread": "New thread";
     readonly "desktopDevices.checkUpdates": "Check for updates";
     readonly "desktopDevices.rename": "Rename";
-    readonly "desktopDevices.manageInBrowser": "Manage in browser";
     readonly "desktopDevices.renameDevice": "Rename device";
     readonly "desktopDevices.deviceName": "Device name";
     readonly "desktopDevices.invalidName": "Use 1–64 characters without control characters.";
@@ -5203,7 +5206,6 @@ declare const zhCN: {
     "desktopShell.deviceDetails": string;
     "desktopShell.checkUpdates": string;
     "desktopShell.rename": string;
-    "desktopShell.manageInBrowser": string;
     "desktopShell.memory": string;
     "desktopShell.settings": string;
     "desktopShell.newThread": string;
@@ -5278,6 +5280,11 @@ declare const zhCN: {
     "desktopDevices.usageDefinition": string;
     "desktopDevices.workspaceUsage": string;
     "desktopDevices.total": string;
+    "desktopDevices.access": string;
+    "desktopDevices.openWorkspaces": string;
+    "desktopDevices.shareAction": string;
+    "desktopDevices.isolate": string;
+    "desktopDevices.remove": string;
     "desktopDevices.devices": string;
     "desktopDevices.device": string;
     "desktopDevices.allDevices": string;
@@ -5321,7 +5328,6 @@ declare const zhCN: {
     "desktopDevices.newThread": string;
     "desktopDevices.checkUpdates": string;
     "desktopDevices.rename": string;
-    "desktopDevices.manageInBrowser": string;
     "desktopDevices.renameDevice": string;
     "desktopDevices.deviceName": string;
     "desktopDevices.invalidName": string;
@@ -10410,7 +10416,6 @@ declare const resources: {
         readonly "desktopShell.deviceDetails": "Device details";
         readonly "desktopShell.checkUpdates": "Check for updates";
         readonly "desktopShell.rename": "Rename";
-        readonly "desktopShell.manageInBrowser": "Manage in browser";
         readonly "desktopShell.memory": "Memory";
         readonly "desktopShell.settings": "Settings";
         readonly "desktopShell.newThread": "New thread";
@@ -10485,6 +10490,11 @@ declare const resources: {
         readonly "desktopDevices.usageDefinition": "Default turns include every origin. A turn can touch several models; model row counts can overlap. Token totals include cache use; reasoning is part of output. Costs sum known model prices. Undated turns are included in All time totals, without a daily bucket.";
         readonly "desktopDevices.workspaceUsage": "Workspace usage";
         readonly "desktopDevices.total": "Total";
+        readonly "desktopDevices.access": "Access";
+        readonly "desktopDevices.openWorkspaces": "Open workspaces";
+        readonly "desktopDevices.shareAction": "Share…";
+        readonly "desktopDevices.isolate": "Isolate…";
+        readonly "desktopDevices.remove": "Remove device…";
         readonly "desktopDevices.devices": "Devices";
         readonly "desktopDevices.device": "Device";
         readonly "desktopDevices.allDevices": "All devices";
@@ -10528,7 +10538,6 @@ declare const resources: {
         readonly "desktopDevices.newThread": "New thread";
         readonly "desktopDevices.checkUpdates": "Check for updates";
         readonly "desktopDevices.rename": "Rename";
-        readonly "desktopDevices.manageInBrowser": "Manage in browser";
         readonly "desktopDevices.renameDevice": "Rename device";
         readonly "desktopDevices.deviceName": "Device name";
         readonly "desktopDevices.invalidName": "Use 1–64 characters without control characters.";
@@ -15594,7 +15603,6 @@ declare const resources: {
         "desktopShell.deviceDetails": string;
         "desktopShell.checkUpdates": string;
         "desktopShell.rename": string;
-        "desktopShell.manageInBrowser": string;
         "desktopShell.memory": string;
         "desktopShell.settings": string;
         "desktopShell.newThread": string;
@@ -15669,6 +15677,11 @@ declare const resources: {
         "desktopDevices.usageDefinition": string;
         "desktopDevices.workspaceUsage": string;
         "desktopDevices.total": string;
+        "desktopDevices.access": string;
+        "desktopDevices.openWorkspaces": string;
+        "desktopDevices.shareAction": string;
+        "desktopDevices.isolate": string;
+        "desktopDevices.remove": string;
         "desktopDevices.devices": string;
         "desktopDevices.device": string;
         "desktopDevices.allDevices": string;
@@ -15712,7 +15725,6 @@ declare const resources: {
         "desktopDevices.newThread": string;
         "desktopDevices.checkUpdates": string;
         "desktopDevices.rename": string;
-        "desktopDevices.manageInBrowser": string;
         "desktopDevices.renameDevice": string;
         "desktopDevices.deviceName": string;
         "desktopDevices.invalidName": string;

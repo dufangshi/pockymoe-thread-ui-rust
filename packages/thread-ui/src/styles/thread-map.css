@@ -1022,3 +1022,8 @@
 .thread-map-goto:has(> .pm-select) { width:132px; height:28px; padding:0; }
 .thread-map-goto:has(> .pm-select) > svg { display:none; }
 .thread-map-goto > .pm-select { width:100%; }
+
+.thread-map-device-menu-row { display: flex; align-items: center; }
+.thread-map-device-menu-row > button { flex: 1; }
+.thread-map-device-menu-row[data-separated] { border-top: 1px solid var(--theme-border); margin-top: 8px; padding-top: 8px; }
+.thread-map-device-menu-row > button[data-tone="danger"] { color: var(--status-danger-fg); }

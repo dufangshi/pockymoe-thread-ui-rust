@@ -13,7 +13,7 @@ export interface MapAttention {
   requestId?: string;
   since: string;
 }
-export interface MapDeviceMenuItem { id: string; label: string; onSelect: () => void; disabled?: boolean }
+export interface MapDeviceMenuItem { id: string; label: string; onSelect: () => void; disabled?: boolean; disabledReason?: string; separator?: boolean; tone?: 'danger' }
 export interface MapDeviceExtras {
   latencyMs?: number;
   runtimeVersion?: string;

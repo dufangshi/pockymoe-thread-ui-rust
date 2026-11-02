@@ -67,6 +67,17 @@ declare const en: {
     readonly "desktopDevices.priceCoverage": "{{tokens}} tokens have no known price. Cost is a lower bound.";
     readonly "desktopDevices.priceUnknown": "No known pricing is available.";
     readonly "desktopDevices.model": "Model";
+    readonly "desktopDevices.usageMissingDevices": {
+        readonly one: "{{count}} device has no statistics for this range";
+        readonly other: "{{count}} devices have no statistics for this range";
+    };
+    readonly "desktopDevices.usageMissingHint": "They are offline, or their Supervisor is too old to count usage by time. They appear here once updated.";
+    readonly "desktopDevices.usageNeedsUpdate": "Your Supervisors are too old to count usage by time. It appears here once they are updated";
+    readonly "desktopDevices.usageShowAll": "Show all time";
+    readonly "desktopDevices.usageNoneInRange": "No usage in this range";
+    readonly "desktopDevices.usagePrevious": "Previous page";
+    readonly "desktopDevices.usageNext": "Next page";
+    readonly "desktopDevices.usagePage": "{{page}} / {{pages}}";
     readonly "desktopDevices.usageByDevice": "Usage by device";
     readonly "desktopDevices.origin": "Turn origin";
     readonly "desktopDevices.allOrigins": "All origins";
@@ -5181,6 +5192,14 @@ declare const zhCN: {
     "desktopDevices.priceCoverage": string;
     "desktopDevices.priceUnknown": string;
     "desktopDevices.model": string;
+    "desktopDevices.usageMissingDevices": string;
+    "desktopDevices.usageMissingHint": string;
+    "desktopDevices.usageNeedsUpdate": string;
+    "desktopDevices.usageShowAll": string;
+    "desktopDevices.usageNoneInRange": string;
+    "desktopDevices.usagePrevious": string;
+    "desktopDevices.usageNext": string;
+    "desktopDevices.usagePage": string;
     "desktopDevices.usageByDevice": string;
     "desktopDevices.origin": string;
     "desktopDevices.allOrigins": string;
@@ -10317,6 +10336,17 @@ declare const resources: {
         readonly "desktopDevices.priceCoverage": "{{tokens}} tokens have no known price. Cost is a lower bound.";
         readonly "desktopDevices.priceUnknown": "No known pricing is available.";
         readonly "desktopDevices.model": "Model";
+        readonly "desktopDevices.usageMissingDevices": {
+            readonly one: "{{count}} device has no statistics for this range";
+            readonly other: "{{count}} devices have no statistics for this range";
+        };
+        readonly "desktopDevices.usageMissingHint": "They are offline, or their Supervisor is too old to count usage by time. They appear here once updated.";
+        readonly "desktopDevices.usageNeedsUpdate": "Your Supervisors are too old to count usage by time. It appears here once they are updated";
+        readonly "desktopDevices.usageShowAll": "Show all time";
+        readonly "desktopDevices.usageNoneInRange": "No usage in this range";
+        readonly "desktopDevices.usagePrevious": "Previous page";
+        readonly "desktopDevices.usageNext": "Next page";
+        readonly "desktopDevices.usagePage": "{{page}} / {{pages}}";
         readonly "desktopDevices.usageByDevice": "Usage by device";
         readonly "desktopDevices.origin": "Turn origin";
         readonly "desktopDevices.allOrigins": "All origins";
@@ -15430,6 +15460,14 @@ declare const resources: {
         "desktopDevices.priceCoverage": string;
         "desktopDevices.priceUnknown": string;
         "desktopDevices.model": string;
+        "desktopDevices.usageMissingDevices": string;
+        "desktopDevices.usageMissingHint": string;
+        "desktopDevices.usageNeedsUpdate": string;
+        "desktopDevices.usageShowAll": string;
+        "desktopDevices.usageNoneInRange": string;
+        "desktopDevices.usagePrevious": string;
+        "desktopDevices.usageNext": string;
+        "desktopDevices.usagePage": string;
         "desktopDevices.usageByDevice": string;
         "desktopDevices.origin": string;
         "desktopDevices.allOrigins": string;

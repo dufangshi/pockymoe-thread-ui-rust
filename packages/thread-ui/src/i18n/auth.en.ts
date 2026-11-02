@@ -358,4 +358,11 @@ export const authEn = {
   "auth.ui.accountPendingApproval": "Your account is waiting for an administrator's approval.",
   "auth.ui.registrationRejected": "Your registration was not approved. Contact the relay administrator.",
   "auth.ui.accountDisabled": "This account is disabled. Contact the relay administrator.",
+  "auth.loginSecurity": "Sign-in and security",
+  "auth.accountKeys": "Account keys",
+  "auth.accountKeysHelp": "Use these to verify your sharing identity across devices.",
+  "auth.accountBrowsersHelp": "These browsers hold device access certificates. Removed browsers must be authorized again.",
+  "auth.dangerZone": "Danger zone",
+  "auth.oauthUnlockPasswordHelp": "OAuth accounts have no sign-in password. This changes the password that unlocks your account key; it does not enable password sign-in.",
+  "auth.dangerZoneHelp": "Reset your account key and authorize devices again.",
 } as const;

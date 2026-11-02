@@ -2553,6 +2553,9 @@ var commonEn = {
 
 // src/i18n/devices.en.ts
 var devicesEn = {
+  "devices.discardChangesTitle": "Discard unsaved changes?",
+  "devices.discardChangesDescription": "Your unsaved changes will be discarded.",
+  "devices.discardChanges": "Discard changes",
   "devices.reasonUnmanaged": "This is a source or unmanaged executable. Run the GitHub setup command to install a managed native runtime.",
   "devices.reasonHostManaged": "Host-managed updates require a native installation and a stable native launch command. Run the GitHub setup command first.",
   "devices.reasonRetiredNpmWindows": "This Windows Device Manager device runs the retired npm package. Run the Windows setup command from the Devices page to move it to the native GitHub runtime.",
@@ -7659,6 +7662,9 @@ var commonZhCN = {
 
 // src/i18n/devices.zh-CN.ts
 var devicesZhCN = {
+  "devices.discardChangesTitle": "\u653E\u5F03\u672A\u4FDD\u5B58\u7684\u66F4\u6539\uFF1F",
+  "devices.discardChangesDescription": "\u672A\u4FDD\u5B58\u7684\u66F4\u6539\u5C06\u88AB\u4E22\u5F03\u3002",
+  "devices.discardChanges": "\u653E\u5F03\u66F4\u6539",
   "devices.reasonUnmanaged": "\u8FD9\u662F\u6E90\u7801\u8FD0\u884C\u6216\u975E\u6258\u7BA1\u7684\u53EF\u6267\u884C\u6587\u4EF6\u3002\u8FD0\u884C GitHub \u5B89\u88C5\u547D\u4EE4\uFF0C\u5B89\u88C5\u6258\u7BA1\u7684\u539F\u751F\u8FD0\u884C\u65F6\u3002",
   "devices.reasonHostManaged": "\u7531\u4E3B\u673A\u7BA1\u7406\u7684\u66F4\u65B0\u9700\u8981\u539F\u751F\u5B89\u88C5\u548C\u7A33\u5B9A\u7684\u539F\u751F\u542F\u52A8\u547D\u4EE4\u3002\u8BF7\u5148\u8FD0\u884C GitHub \u5B89\u88C5\u547D\u4EE4\u3002",
   "devices.reasonRetiredNpmWindows": "\u8FD9\u53F0 Windows \u8BBE\u5907\u7BA1\u7406\u5668\u8BBE\u5907\u8FD0\u884C\u7684\u662F\u5DF2\u505C\u7528\u7684 npm \u5305\u3002\u8BF7\u5728\u201C\u8BBE\u5907\u201D\u9875\u8FD0\u884C Windows \u5B89\u88C5\u547D\u4EE4\uFF0C\u8FC1\u79FB\u5230\u539F\u751F GitHub \u8FD0\u884C\u65F6\u3002",

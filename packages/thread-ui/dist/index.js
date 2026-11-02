@@ -48,7 +48,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-IHU4FSBV.js";
+} from "./chunk-3BPMSJCM.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -77,7 +77,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-DV2AMYIX.js";
+} from "./chunk-6GDOADIB.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -28773,6 +28773,7 @@ function DeviceMenu({ device, items }) {
         "aria-label": device.name,
         style: { position: "fixed", ...anchor },
         children: items.map((item) => /* @__PURE__ */ jsxs91("div", { className: "thread-map-device-menu-row", "data-separated": item.separator || void 0, children: [
+          item.separator ? /* @__PURE__ */ jsx105("span", { role: "separator", className: "sr-only" }) : null,
           /* @__PURE__ */ jsx105(
             "button",
             {

@@ -151,7 +151,8 @@ export function ErrorMark({
             </button>
           ) : null}
         </div>,
-        document.body,
+        // Inside a menu on the browser's top layer, the page's body would paint under it.
+        trigger.current?.closest('[popover]') ?? document.body,
       ) : null}
     </>
   );

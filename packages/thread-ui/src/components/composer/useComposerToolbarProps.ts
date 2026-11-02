@@ -14,6 +14,7 @@ import type {
 } from '@pockymoe/shared';
 
 import type { ThreadShellControlState } from '../../types';
+import type { ThreadContextInspector } from './ComposerContextControl';
 import {
   toolboxItemClassName,
   toolboxItemDisabled,
@@ -36,6 +37,7 @@ import type {
 } from './types';
 
 export interface ComposerToolbarCapabilities {
+  compact?: boolean;
   hostConfigFiles: boolean;
   hookTrust: boolean;
   mcpConfigEditing: boolean;
@@ -77,8 +79,9 @@ export interface UseComposerToolbarPropsInput {
   model: string | null | undefined;
   agent?: string | undefined;
   modelOptions: ModelOptionDto[];
-  modelContextTitle: string;
   contextUsage: ThreadContextUsageDto | null | undefined;
+  contextInspector?: ThreadContextInspector | null | undefined;
+  onCompact?: (() => Promise<void> | void) | undefined;
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
   displayedCollaborationMode: CollaborationModeDto;
@@ -192,8 +195,9 @@ export function useComposerToolbarProps({
   model,
   agent,
   modelOptions,
-  modelContextTitle,
   contextUsage,
+  contextInspector,
+  onCompact,
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
@@ -405,8 +409,12 @@ export function useComposerToolbarProps({
         model,
         agent,
         modelOptions,
-        modelContextTitle,
         contextUsage,
+        contextInspector,
+        // Native capability or the current session's advertised command enables it.
+        ...(onCompact && (capabilities.compact || availableToolboxItems.some((item) => item.action === 'compact')) ? { onCompact } : {}),
+        compactBusy,
+        compactDisabled: busy || settingsBusy || disabled,
         reasoningEffort,
         supportedEfforts,
         sandboxMode,

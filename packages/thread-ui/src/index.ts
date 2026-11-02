@@ -9,6 +9,7 @@ import './styles/matter-workbench.css';
 import './styles/phone-dock.css';
 import './styles/composer-compact.css';
 import './styles/composer-reasoning.css';
+import './styles/composer-context.css';
 import './styles/mermaid-diagrams.css';
 import './styles/plugin-reports.css';
 import './styles/terminal-panel.css';
@@ -54,6 +55,7 @@ export {
   type ThreadComposerProps,
   type ComposerSendShortcut,
 } from './components/ThreadComposer';
+export type { ThreadContextInspector } from './components/composer/ComposerContextControl';
 export { TokenUsageCost, type TokenUsageCostProps } from './components/timeline/TokenUsageCost';
 export {
   ThreadCards,

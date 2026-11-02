@@ -116,7 +116,6 @@ function renderToolbar({
           queueing={queueing}
           liveModelSwitch={liveModelSwitch}
           modelOptions={availableModels}
-          modelContextTitle="1k / 8k tokens"
           contextUsage={contextUsage}
           reasoningEffort={reasoningEffort}
           supportedEfforts={supportedEfforts}
@@ -165,16 +164,24 @@ describe('ComposerSettingsToolbar', () => {
   });
 
 
-  it.each([
-    [{ availability: 'available', tokensInContextWindow: 64400, modelContextWindow: 200000 }, '64.4K / 200K'],
-    [{ availability: 'available', tokensInContextWindow: 0, modelContextWindow: 128000 }, '0K / 128K'],
-    [null, '— / —'],
-  ] as const)('shows actual context use and capacity in the model menu (%j)', (usage, expected) => {
-    const element = renderToolbar({ initialOpenMenu: 'model', contextUsage: usage as ThreadContextUsageDto | null });
-    expect(document.querySelector('.composer-context-value')?.textContent).toBe(expected);
-    expect(document.querySelector('.composer-context-summary')?.textContent).toContain('Context');
-    act(() => element.querySelector<HTMLButtonElement>('[data-testid="composer-model-label"]')!.click());
-    expect(document.querySelector('.composer-context-summary')).toBeNull();
+  it('opens the strip below the model independently, with no context in the model menu or its title', () => {
+    const element = renderToolbar({
+      contextUsage: { availability: 'available', remainingPercent: 68, tokensInContextWindow: 64400, modelContextWindow: 200000, updatedAt: null },
+    });
+    const context = element.querySelector<HTMLButtonElement>('[data-testid="composer-context-meter"]')!;
+    const model = element.querySelector<HTMLButtonElement>('[data-testid="composer-model-label"]')!;
+    expect(model.parentElement).toBe(context.closest('.composer-model-control'));
+    expect(context.textContent).toBe('');
+    expect(model.getAttribute('title')).toBe('GPT-5 · medium');
+    act(() => model.click());
+    expect(model.getAttribute('aria-expanded')).toBe('true');
+    expect(context.getAttribute('aria-expanded')).toBe('false');
+    expect(document.querySelector('.composer-model-menu')?.textContent).not.toContain('Context');
+    act(() => context.click());
+    expect(model.getAttribute('aria-expanded')).toBe('false');
+    expect(context.getAttribute('aria-expanded')).toBe('true');
+    expect(document.querySelector('.composer-model-menu')).toBeNull();
+    expect(document.querySelector('.thread-context-amount')?.textContent).toContain('64.4k');
   });
 
   it.each([
@@ -255,7 +262,7 @@ describe('ComposerSettingsToolbar', () => {
     vi.unstubAllGlobals();
   });
 
-  it('preserves the full model name in a clickable label with effort and context in its title', () => {
+  it('preserves the full model name in a clickable label with effort in its title', () => {
     const view = renderToolbar({
       model: 'opus[1m]',
       availableModels: [
@@ -274,7 +281,6 @@ describe('ComposerSettingsToolbar', () => {
       'medium',
     );
     expect(label?.getAttribute('title')).toContain('medium');
-    expect(label?.getAttribute('title')).toContain('1k / 8k tokens');
     expect(label?.closest('button')?.getAttribute('type')).toBe('button');
     expect(label?.getAttribute('tabindex')).toBeNull();
   });

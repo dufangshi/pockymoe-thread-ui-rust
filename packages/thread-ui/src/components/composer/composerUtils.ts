@@ -4,7 +4,6 @@ import type {
   ModelOptionDto,
   PromptAttachmentKindDto,
   ReasoningEffortDto,
-  ThreadContextUsageDto,
 } from '@pockymoe/shared';
 import { themeAgentKey } from '../themeAgent';
 import { clipQuote, composeQuotedPrompt, QUOTE_TOKEN, quotePlaceholder, type PromptQuote } from './promptQuotes';
@@ -553,34 +552,6 @@ export function formatContextTokenKilocount(value: number) {
   return Number.isInteger(thousands)
     ? `${thousands}k`
     : `${Number(thousands.toFixed(1))}k`;
-}
-
-export function formatModelContextTitle(
-  model: string | null | undefined,
-  contextUsage: ThreadContextUsageDto | null | undefined,
-) {
-  if (!model) {
-    return translate("chat.selectModel");
-  }
-
-  if (
-    contextUsage?.availability !== 'available' ||
-    typeof contextUsage.tokensInContextWindow !== 'number' ||
-    typeof contextUsage.modelContextWindow !== 'number'
-  ) {
-    return translate("chat.contextUnavailable", { value1: model });
-  }
-
-  const usedTokens = Math.max(contextUsage.tokensInContextWindow, 0);
-  const contextTokens = Math.max(contextUsage.modelContextWindow, 0);
-  const remainingTokens = Math.max(contextTokens - usedTokens, 0);
-
-  return [
-    model,
-    translate("chat.contextUsedSummary", { used: formatContextTokenKilocount(usedTokens), total: formatContextTokenKilocount(contextTokens) }),
-    translate("chat.contextRemainingSummary", { remaining: formatContextTokenKilocount(remainingTokens) }),
-    translate("chat.contextLeft", { value1: clampPercent(contextUsage.remainingPercent) }),
-  ].join(' · ');
 }
 
 export function normalizedAttachmentFileName(

@@ -155,23 +155,8 @@
 }
 
 .composer-model-menu-heading { line-height: 16px; }
-.composer-context-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  border-top: 1px solid var(--theme-border);
-  margin-top: 4px;
-  padding: 7px 10px 3px;
-  color: var(--theme-fg-muted);
-  font-size: 11px;
-  line-height: 16px;
-}
-.composer-context-value { color: var(--theme-fg); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.composer-context-separator { color: var(--theme-fg-muted); }
-
 /* Dense controls need an opaque surface so conversation text and navigation
-   cannot show through the model choices and context readout. */
+   cannot show through the model choices. */
 .thread-ui-shell .composer-model-menu[data-composer-menu-surface] {
   --composer-menu-surface-bg: var(--theme-panel);
 }

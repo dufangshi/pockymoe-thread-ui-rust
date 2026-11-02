@@ -10,8 +10,8 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import { InputGroupButton } from '../graph-ui/InputGroup';
 import type { SettingsMenu } from './types';
-import { formatContextTokenKilocount, formatReasoningEffortLabel, reasoningEffortColor } from './composerUtils';
-import { ContextProgressBar } from './composerPresentation';
+import { formatReasoningEffortLabel, reasoningEffortColor } from './composerUtils';
+import { ComposerContextControl, type ThreadContextInspector } from './ComposerContextControl';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
 import { Check, ChevronDown, Loader2, Send, Target } from 'lucide-react';
 import { useThemeFeature } from '../themeHooks';
@@ -36,8 +36,11 @@ export function ComposerSettingsToolbar({
   queueing = false,
   liveModelSwitch = false,
   modelOptions,
-  modelContextTitle,
   contextUsage,
+  contextInspector,
+  onCompact,
+  compactBusy = false,
+  compactDisabled = false,
   reasoningEffort,
   supportedEfforts,
   modelControlsDisabled,
@@ -66,8 +69,12 @@ export function ComposerSettingsToolbar({
       call; otherwise from the next turn. */
   liveModelSwitch?: boolean;
   modelOptions: ModelOptionDto[];
-  modelContextTitle: string;
   contextUsage: ThreadContextUsageDto | null | undefined;
+  contextInspector?: ThreadContextInspector | null | undefined;
+  /** Present where this thread can be compacted. */
+  onCompact?: (() => Promise<void> | void) | undefined;
+  compactBusy?: boolean;
+  compactDisabled?: boolean;
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
   sandboxMode: SandboxModeDto | null | undefined;
@@ -116,7 +123,7 @@ export function ComposerSettingsToolbar({
 
   return (
     <>
-      <div className="composer-model-control relative min-w-0">
+      <div className="composer-model-control relative min-w-0" data-with-context={model ? 'true' : undefined}>
         <button
           type="button"
           data-composer-menu-trigger="true"
@@ -137,7 +144,7 @@ export function ComposerSettingsToolbar({
             onSetOpenMenu((current) => (current === 'model' ? null : 'model'))
           }
           data-testid="composer-model-label"
-          title={`${selectedModelLabel}${supportsEffort ? ` · ${effortLabel}` : ''}\n${modelContextTitle}`}
+          title={`${selectedModelLabel}${supportsEffort ? ` · ${effortLabel}` : ''}`}
           className="composer-model-label flex flex-col items-center justify-center whitespace-nowrap px-1 text-xs text-stone-400"
         >
           {modelAvatar && agent ? (
@@ -150,7 +157,20 @@ export function ComposerSettingsToolbar({
           )}
           {modelAvatar ? <ChevronDown aria-hidden="true" className="composer-model-chevron" /> : null}
         </button>
-        {model ? <ContextProgressBar contextUsage={contextUsage} /> : null}
+        {model ? (
+          <ComposerContextControl
+            open={openMenu === 'context'}
+            contextUsage={contextUsage}
+            inspector={contextInspector}
+            modelLabel={selectedModelLabel}
+            agent={agent}
+            onCompact={onCompact}
+            compactBusy={compactBusy}
+            compactDisabled={compactDisabled}
+            onToggle={() => onSetOpenMenu((current) => (current === 'context' ? null : 'context'))}
+            onClose={() => onSetOpenMenu(() => null)}
+          />
+        ) : null}
         {openMenu === 'model' && (
           <ComposerMenuSurface
             align="end"
@@ -199,16 +219,6 @@ export function ComposerSettingsToolbar({
                 onCommit={(next) => onUpdateSettings({ reasoningEffort: next })}
               />
             )}
-            <div className="composer-context-summary" title={modelContextTitle}>
-              <span>{translate('chat.context')}</span>
-              <span className="composer-context-value">
-                {contextUsage?.availability === 'available' && contextUsage.tokensInContextWindow != null && Number.isFinite(contextUsage.tokensInContextWindow)
-                  ? formatContextTokenKilocount(Math.max(0, contextUsage.tokensInContextWindow)).toUpperCase() : '—'}
-                <span className="composer-context-separator"> / </span>
-                {contextUsage?.modelContextWindow != null && Number.isFinite(contextUsage.modelContextWindow) && contextUsage.modelContextWindow > 0
-                  ? formatContextTokenKilocount(contextUsage.modelContextWindow).toUpperCase() : '—'}
-              </span>
-            </div>
           </ComposerMenuSurface>
         )}
       </div>

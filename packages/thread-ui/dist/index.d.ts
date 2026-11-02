@@ -414,7 +414,7 @@ interface MatterWorkbenchOptions {
     sidebarHeader?: ReactNode;
     sidebarLeading?: ReactNode;
     railLeading?: ReactNode;
-    /** Host actions immediately above the existing bottom rail controls. */
+    /** Host actions immediately above the final bottom rail control. */
     railBottomLeading?: ReactNode;
     panels?: WorkbenchPanelsOptions;
     statusActions?: ReactNode;

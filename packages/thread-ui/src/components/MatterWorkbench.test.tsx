@@ -576,7 +576,7 @@ it('renders optional host slots before the existing sidebar and rail controls', 
   const rail = host.querySelector('.matter-rail')!;
   expect(rail.querySelector('.matter-brand')?.nextElementSibling?.getAttribute('aria-label')).toBe('Host map');
   expect(rail.querySelector('button[aria-label="Chat"]')).not.toBeNull();
-  expect(rail.querySelector('.matter-rail-bottom')?.firstElementChild?.getAttribute('aria-label')).toBe('Host update');
+  expect([...rail.querySelectorAll('.matter-rail-bottom > button')].map(button => button.getAttribute('aria-label'))).toEqual(['Device monitor', 'Host update', 'Open settings']);
   expect(drawer().querySelector('[data-testid="shortcuts"]')).not.toBeNull();
 });
 

@@ -117,7 +117,7 @@ export interface MatterWorkbenchOptions {
   sidebarHeader?: ReactNode;
   sidebarLeading?: ReactNode;
   railLeading?: ReactNode;
-  /** Host actions immediately above the existing bottom rail controls. */
+  /** Host actions immediately above the final bottom rail control. */
   railBottomLeading?: ReactNode;
   panels?: WorkbenchPanelsOptions;
   statusActions?: ReactNode;
@@ -857,7 +857,7 @@ export function MatterWorkbench({
         <button disabled={!workspaceControlsEnabled} aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen}
           title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
         {openThreadMap && <button aria-label={translate('workbench.threadMap')} title={translate('workbench.threadMap')} onClick={openThreadMap}><LayoutDashboard data-icon="thread-map" /></button>}
-        <div className="matter-rail-bottom">{o.railBottomLeading}{deviceMonitor}{settings}</div>
+        <div className="matter-rail-bottom">{deviceMonitor}{o.railBottomLeading}{settings}</div>
       </nav>}
       {dock ? <header className={`matter-topbar is-status-only ${o.searchOpen ? 'is-search-open' : ''}`}>
         <div className="matter-topbar-status">{deviceMonitor}</div>

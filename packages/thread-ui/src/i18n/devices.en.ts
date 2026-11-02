@@ -1,4 +1,8 @@
 export const devicesEn = {
+  "devices.discardChangesTitle": "Discard unsaved changes?",
+  "devices.discardChangesDescription": "Your unsaved changes will be discarded.",
+  "devices.discardChanges": "Discard changes",
+
   "devices.reasonUnmanaged": "This is a source or unmanaged executable. Run the GitHub setup command to install a managed native runtime.",
   "devices.reasonHostManaged": "Host-managed updates require a native installation and a stable native launch command. Run the GitHub setup command first.",
   "devices.reasonRetiredNpmWindows": "This Windows Device Manager device runs the retired npm package. Run the Windows setup command from the Devices page to move it to the native GitHub runtime.",

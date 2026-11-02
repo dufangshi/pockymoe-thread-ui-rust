@@ -405,6 +405,7 @@ interface WorkbenchToolPanel {
 }
 interface MatterWorkbenchOptions {
     /** Optional host surface additions; absent in the browser workbench. */
+    sidebarHeader?: ReactNode;
     sidebarLeading?: ReactNode;
     railLeading?: ReactNode;
     panels?: WorkbenchPanelsOptions;
@@ -1125,6 +1126,9 @@ interface MapDeviceMenuItem {
     label: string;
     onSelect: () => void;
     disabled?: boolean;
+    disabledReason?: string;
+    separator?: boolean;
+    tone?: 'danger';
 }
 interface MapDeviceExtras {
     latencyMs?: number;

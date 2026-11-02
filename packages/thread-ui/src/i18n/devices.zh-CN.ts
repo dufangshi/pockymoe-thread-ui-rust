@@ -1,4 +1,8 @@
 export const devicesZhCN = {
+  "devices.discardChangesTitle": "放弃未保存的更改？",
+  "devices.discardChangesDescription": "未保存的更改将被丢弃。",
+  "devices.discardChanges": "放弃更改",
+
   "devices.reasonUnmanaged": "这是源码运行或非托管的可执行文件。运行 GitHub 安装命令，安装托管的原生运行时。",
   "devices.reasonHostManaged": "由主机管理的更新需要原生安装和稳定的原生启动命令。请先运行 GitHub 安装命令。",
   "devices.reasonRetiredNpmWindows": "这台 Windows 设备管理器设备运行的是已停用的 npm 包。请在“设备”页运行 Windows 安装命令，迁移到原生 GitHub 运行时。",

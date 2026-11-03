@@ -72,6 +72,13 @@ declare const en: {
     readonly "desktopDevices.updateRequired": "Update required for full statistics";
     readonly "desktopDevices.priceCoverage": "{{tokens}} tokens have no known price. Cost is a lower bound.";
     readonly "desktopDevices.priceUnknown": "No known pricing is available.";
+    readonly "desktopDevices.hourlyExcluded": {
+        readonly one: "{{count}} device is running an older version and is not included";
+        readonly other: "{{count}} devices are running older versions and are not included";
+    };
+    readonly "desktopDevices.systemGenerated": "System generated";
+    readonly "desktopDevices.noDeviceModels": "This device has no model breakdown";
+    readonly "desktopDevices.fullModelName": "Full model name";
     readonly "desktopDevices.model": "Model";
     readonly "desktopDevices.usageMissingDevices": {
         readonly one: "{{count}} device has no statistics for this range";
@@ -197,9 +204,7 @@ declare const en: {
     readonly "desktopDevices.modelUsageLabel": "{{model}}: {{turns}}, {{tokens}} tokens";
     readonly "desktopDevices.noModels": "No model usage in this range";
     readonly "desktopDevices.busyWorkspaces": "Busiest workspaces";
-    readonly "desktopDevices.topFive": "Top 5";
     readonly "desktopDevices.noWorkspaces": "No workspace activity in this range";
-    readonly "desktopDevices.longestThreads": "Longest average turn time";
     readonly "desktopDevices.noDurations": "No terminal-turn duration data";
     readonly "desktopDevices.lifetimeFallback": "Lifetime activity fallback";
     readonly "desktopDevices.lifetimeUsage": "Recorded lifetime usage";
@@ -5280,6 +5285,10 @@ declare const zhCN: {
     "desktopDevices.updateRequired": string;
     "desktopDevices.priceCoverage": string;
     "desktopDevices.priceUnknown": string;
+    "desktopDevices.hourlyExcluded": string;
+    "desktopDevices.systemGenerated": string;
+    "desktopDevices.noDeviceModels": string;
+    "desktopDevices.fullModelName": string;
     "desktopDevices.model": string;
     "desktopDevices.usageMissingDevices": {
         one: string;
@@ -5405,9 +5414,7 @@ declare const zhCN: {
     "desktopDevices.modelUsageLabel": string;
     "desktopDevices.noModels": string;
     "desktopDevices.busyWorkspaces": string;
-    "desktopDevices.topFive": string;
     "desktopDevices.noWorkspaces": string;
-    "desktopDevices.longestThreads": string;
     "desktopDevices.noDurations": string;
     "desktopDevices.lifetimeFallback": string;
     "desktopDevices.lifetimeUsage": string;
@@ -10510,6 +10517,13 @@ declare const resources: {
         readonly "desktopDevices.updateRequired": "Update required for full statistics";
         readonly "desktopDevices.priceCoverage": "{{tokens}} tokens have no known price. Cost is a lower bound.";
         readonly "desktopDevices.priceUnknown": "No known pricing is available.";
+        readonly "desktopDevices.hourlyExcluded": {
+            readonly one: "{{count}} device is running an older version and is not included";
+            readonly other: "{{count}} devices are running older versions and are not included";
+        };
+        readonly "desktopDevices.systemGenerated": "System generated";
+        readonly "desktopDevices.noDeviceModels": "This device has no model breakdown";
+        readonly "desktopDevices.fullModelName": "Full model name";
         readonly "desktopDevices.model": "Model";
         readonly "desktopDevices.usageMissingDevices": {
             readonly one: "{{count}} device has no statistics for this range";
@@ -10635,9 +10649,7 @@ declare const resources: {
         readonly "desktopDevices.modelUsageLabel": "{{model}}: {{turns}}, {{tokens}} tokens";
         readonly "desktopDevices.noModels": "No model usage in this range";
         readonly "desktopDevices.busyWorkspaces": "Busiest workspaces";
-        readonly "desktopDevices.topFive": "Top 5";
         readonly "desktopDevices.noWorkspaces": "No workspace activity in this range";
-        readonly "desktopDevices.longestThreads": "Longest average turn time";
         readonly "desktopDevices.noDurations": "No terminal-turn duration data";
         readonly "desktopDevices.lifetimeFallback": "Lifetime activity fallback";
         readonly "desktopDevices.lifetimeUsage": "Recorded lifetime usage";
@@ -15717,6 +15729,10 @@ declare const resources: {
         "desktopDevices.updateRequired": string;
         "desktopDevices.priceCoverage": string;
         "desktopDevices.priceUnknown": string;
+        "desktopDevices.hourlyExcluded": string;
+        "desktopDevices.systemGenerated": string;
+        "desktopDevices.noDeviceModels": string;
+        "desktopDevices.fullModelName": string;
         "desktopDevices.model": string;
         "desktopDevices.usageMissingDevices": {
             one: string;
@@ -15842,9 +15858,7 @@ declare const resources: {
         "desktopDevices.modelUsageLabel": string;
         "desktopDevices.noModels": string;
         "desktopDevices.busyWorkspaces": string;
-        "desktopDevices.topFive": string;
         "desktopDevices.noWorkspaces": string;
-        "desktopDevices.longestThreads": string;
         "desktopDevices.noDurations": string;
         "desktopDevices.lifetimeFallback": string;
         "desktopDevices.lifetimeUsage": string;

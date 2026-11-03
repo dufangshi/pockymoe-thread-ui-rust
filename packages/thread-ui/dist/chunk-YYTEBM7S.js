@@ -6,7 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-JJS4TL3U.js";
+} from "./chunk-2B3A73FP.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -126,7 +126,8 @@ function PathChip({ path, display, copyValue, label, className }) {
 // src/components/copy/MiddleName.tsx
 import { jsx as jsx3, jsxs as jsxs3 } from "react/jsx-runtime";
 function MiddleName({ name, className }) {
-  const keep = Math.min(name.length, Math.max(8, name.length - name.lastIndexOf(".") + 5));
+  const dot = name.lastIndexOf(".");
+  const keep = Math.min(name.length, dot > 0 && name.length - dot <= 12 ? Math.max(8, name.length - dot + 5) : 8);
   if (name.length <= keep + 2) return /* @__PURE__ */ jsx3("span", { className: `middle-name${className ? ` ${className}` : ""}`, children: /* @__PURE__ */ jsx3("span", { className: "middle-name-head", children: name }) });
   return /* @__PURE__ */ jsxs3("span", { className: `middle-name${className ? ` ${className}` : ""}`, children: [
     /* @__PURE__ */ jsx3("span", { className: "middle-name-head", children: name.slice(0, -keep) }),

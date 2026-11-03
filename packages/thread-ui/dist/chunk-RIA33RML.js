@@ -17,7 +17,7 @@ function useMenuKeyboard(menuRef, open, onClose, itemSelector = '[role^="menuite
     const menu = menuRef.current;
     if (!menu) return;
     const items = () => [...menu.querySelectorAll(itemSelector)];
-    items()[0]?.focus();
+    items()[0]?.focus({ preventScroll: true });
     const key = (event) => {
       const list = items();
       const index = list.indexOf(document.activeElement);
@@ -3883,6 +3883,7 @@ var settingsEn = {
   "settings.signInThroughRelayToChangeYour": "Sign in through Relay to change your account shortcuts.",
   "settings.steerDeliversToTheRunningTurnImmediately": "Steer delivers to the running turn immediately. When idle, it starts a new turn.",
   "settings.retry": "Retry",
+  "settings.noHostFiles": "This Harness has no editable host files.",
   "settings.workspacePermissions": "Workspace permissions",
   "settings.fullAccess": "Full access",
   "settings.harnessSettings": "Harness settings",
@@ -4093,7 +4094,7 @@ var settingsEn = {
   "settings.upstreamsEditConflictHint": "Another edit or the harness changed this configuration. Reload the current values before saving; your unsaved edits will be discarded when you reload.",
   "settings.upstreamsReloadEditor": "Reload current configuration",
   "settings.upstreamsKeepEditing": "Keep editing",
-  "settings.harnessMaintenanceDescription": "Install and update harnesses and their ACP adapters. Manage providers in Upstreams.",
+  "settings.harnessMaintenanceDescription": "Install and update harnesses and their ACP adapters; edit the selected harness\u2019s host files and create or restore configuration backups. Manage providers in Upstreams.",
   "settings.upstreamsDeepSeekOfficial": "DeepSeek API",
   "settings.upstreamsResponses": "Responses",
   "settings.dshRunModeBroken": "{{value1}} (unavailable: {{value2}})",
@@ -5243,6 +5244,7 @@ var en = {
   "desktopShell.updatePendingDescription": "Unsent content will be lost: {{titles}}",
   "desktopShell.updateDiscardConfirm": "Update",
   "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.",
+  "desktopShell.updateAvailable": "Update available: {{version}}",
   "desktopShell.updateTo": "Update to {{version}}",
   "desktopShell.updateFailed": "The update could not be installed.",
   "desktopShell.downloadUpdate": "Go to download",
@@ -9010,6 +9012,7 @@ var settingsZhCN = {
   "settings.signInThroughRelayToChangeYour": "\u901A\u8FC7 Relay \u767B\u5F55\u540E\u53EF\u4FEE\u6539\u8D26\u53F7\u5FEB\u6377\u952E\u3002",
   "settings.steerDeliversToTheRunningTurnImmediately": "\u63D2\u8BDD\u7ACB\u5373\u9001\u8FBE\u6B63\u5728\u8FD0\u884C\u7684\u8F6E\u6B21\uFF1B\u7A7A\u95F2\u65F6\u5F00\u59CB\u65B0\u4E00\u8F6E\u3002",
   "settings.retry": "\u91CD\u8BD5",
+  "settings.noHostFiles": "\u6B64 Harness \u6CA1\u6709\u53EF\u7F16\u8F91\u7684\u5BBF\u4E3B\u6587\u4EF6\u3002",
   "settings.workspacePermissions": "\u5DE5\u4F5C\u533A\u6743\u9650",
   "settings.fullAccess": "\u5B8C\u5168\u8BBF\u95EE",
   "settings.harnessSettings": "Harness \u8BBE\u7F6E",
@@ -9220,7 +9223,7 @@ var settingsZhCN = {
   "settings.upstreamsEditConflictHint": "\u5176\u4ED6\u7F16\u8F91\u6216 harness \u5DF2\u4FEE\u6539\u6B64\u914D\u7F6E\u3002\u8BF7\u91CD\u65B0\u52A0\u8F7D\u5F53\u524D\u503C\u540E\u518D\u4FDD\u5B58\uFF1B\u91CD\u65B0\u52A0\u8F7D\u4F1A\u653E\u5F03\u672C\u6B21\u672A\u4FDD\u5B58\u7684\u4FEE\u6539\u3002",
   "settings.upstreamsReloadEditor": "\u91CD\u65B0\u52A0\u8F7D\u5F53\u524D\u914D\u7F6E",
   "settings.upstreamsKeepEditing": "\u7EE7\u7EED\u7F16\u8F91",
-  "settings.harnessMaintenanceDescription": "\u5B89\u88C5\u548C\u66F4\u65B0 harness \u53CA\u5176 ACP \u9002\u914D\u5668\u3002\u8BF7\u5728\u300C\u4E0A\u6E38\u300D\u4E2D\u7BA1\u7406 provider\u3002",
+  "settings.harnessMaintenanceDescription": "\u5B89\u88C5\u548C\u66F4\u65B0 Harness \u53CA\u5176 ACP \u9002\u914D\u5668\uFF1B\u7F16\u8F91\u6240\u9009 Harness \u7684\u5BBF\u4E3B\u6587\u4EF6\uFF0C\u521B\u5EFA\u548C\u6062\u590D\u914D\u7F6E\u5907\u4EFD\u3002\u8BF7\u5728\u300C\u4E0A\u6E38\u300D\u4E2D\u7BA1\u7406 provider\u3002",
   "settings.upstreamsDeepSeekOfficial": "DeepSeek \u5B98\u65B9 API",
   "settings.upstreamsResponses": "Responses",
   "settings.dshRunModeBroken": "{{value1}}\uFF08\u4E0D\u53EF\u7528\uFF1A{{value2}}\uFF09",
@@ -10370,6 +10373,7 @@ var zhCN = {
   "desktopShell.updatePendingDescription": "\u672A\u53D1\u9001\u7684\u5185\u5BB9\u4F1A\u4E22\u5931\uFF1A{{titles}}",
   "desktopShell.updateDiscardConfirm": "\u66F4\u65B0",
   "desktopShell.updateCancelled": "\u6709\u672A\u4FDD\u5B58\u7684\u6587\u4EF6\uFF0C\u5DF2\u53D6\u6D88\u66F4\u65B0",
+  "desktopShell.updateAvailable": "\u53EF\u66F4\u65B0\u5230 {{version}}",
   "desktopShell.updateTo": "\u66F4\u65B0\u5230 {{version}}",
   "desktopShell.updateFailed": "\u65E0\u6CD5\u5B89\u88C5\u66F4\u65B0\u3002",
   "desktopShell.downloadUpdate": "\u524D\u5F80\u4E0B\u8F7D",

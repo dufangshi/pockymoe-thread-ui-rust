@@ -33,6 +33,7 @@ export const zhCN = {
   "desktopShell.updatePendingDescription": "未发送的内容会丢失：{{titles}}",
   "desktopShell.updateDiscardConfirm": "更新",
   "desktopShell.updateCancelled": "有未保存的文件，已取消更新",
+  "desktopShell.updateAvailable": "可更新到 {{version}}",
   "desktopShell.updateTo": "更新到 {{version}}",
   "desktopShell.updateFailed": "无法安装更新。",
   "desktopShell.downloadUpdate": "前往下载",

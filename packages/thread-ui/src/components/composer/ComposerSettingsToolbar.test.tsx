@@ -69,6 +69,7 @@ function renderToolbar({
   sandboxModeAvailable = true,
   supportedEfforts = modelOptions[0]?.supportedReasoningEfforts ?? [],
   effortControlsDisabled = false,
+  modelControlsDisabled = false,
   effortControlTitle = 'Select reasoning effort',
   onUpdateSettings = vi.fn(),
   model = 'gpt-5',
@@ -79,6 +80,7 @@ function renderToolbar({
   promptEmpty = false,
   contextUsage = null,
   sending = false,
+  onOpenHarness,
 }: {
   initialOpenMenu?: SettingsMenu;
   reasoningEffort?: ReasoningEffortDto | null;
@@ -89,6 +91,7 @@ function renderToolbar({
   sandboxModeAvailable?: boolean;
   supportedEfforts?: ModelOptionDto['supportedReasoningEfforts'];
   effortControlsDisabled?: boolean;
+  modelControlsDisabled?: boolean;
   effortControlTitle?: string;
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => void;
   model?: string;
@@ -99,6 +102,7 @@ function renderToolbar({
   promptEmpty?: boolean;
   contextUsage?: ThreadContextUsageDto | null;
   sending?: boolean;
+  onOpenHarness?: () => void;
 } = {}) {
   function Harness() {
     const [openMenu, setOpenMenu] = useState<SettingsMenu>(initialOpenMenu);
@@ -131,7 +135,7 @@ function renderToolbar({
           sendButtonLabel="Send"
           sending={sending}
           sendButtonClassName="send-state"
-          modelControlsDisabled={false}
+          modelControlsDisabled={modelControlsDisabled}
           effortControlsDisabled={effortControlsDisabled}
           effortControlTitle={effortControlTitle}
           inlineToggleClassName="inline-toggle"
@@ -139,6 +143,7 @@ function renderToolbar({
           sendButtonBaseClassName="send-base"
           onSetOpenMenu={setOpenMenu}
           onUpdateSettings={onUpdateSettings}
+          onOpenHarness={onOpenHarness}
         />
       </form>
     );
@@ -320,4 +325,17 @@ describe('ComposerSettingsToolbar', () => {
         ?.disabled,
     ).toBe(false);
   });
+it.each([false, true])('keeps harness settings reachable without models or model control (disabled=%s)', modelControlsDisabled => {
+  const open = vi.fn();
+  const view = renderToolbar({ availableModels: [], modelControlsDisabled, onOpenHarness: open });
+  const key = view.querySelector<HTMLButtonElement>('[data-testid="composer-model-label"]')!;
+  expect(key.disabled).toBe(false);
+  act(() => key.click());
+  const item = document.querySelector<HTMLButtonElement>('.composer-model-menu [role="menuitem"]')!;
+  expect(item.textContent).toBe('Harness settings');
+  act(() => item.click());
+  expect(open).toHaveBeenCalledOnce();
+  expect(document.querySelector('.composer-model-menu')).toBeNull();
+});
+
 });

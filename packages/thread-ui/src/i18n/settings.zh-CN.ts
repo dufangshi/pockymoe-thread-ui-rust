@@ -242,6 +242,7 @@ export const settingsZhCN = {
   'settings.steerDeliversToTheRunningTurnImmediately':
     '插话立即送达正在运行的轮次；空闲时开始新一轮。',
   'settings.retry': '重试',
+  'settings.noHostFiles': '此 Harness 没有可编辑的宿主文件。',
   'settings.workspacePermissions': '工作区权限',
   'settings.fullAccess': '完全访问',
   'settings.harnessSettings': 'Harness 设置',
@@ -488,7 +489,7 @@ export const settingsZhCN = {
   'settings.upstreamsReloadEditor': '重新加载当前配置',
   'settings.upstreamsKeepEditing': '继续编辑',
   'settings.harnessMaintenanceDescription':
-    '安装和更新 harness 及其 ACP 适配器。请在「上游」中管理 provider。',
+    '安装和更新 Harness 及其 ACP 适配器；编辑所选 Harness 的宿主文件，创建和恢复配置备份。请在「上游」中管理 provider。',
   'settings.upstreamsDeepSeekOfficial': 'DeepSeek 官方 API',
   'settings.upstreamsResponses': 'Responses',
   'settings.dshRunModeBroken': '{{value1}}（不可用：{{value2}}）',

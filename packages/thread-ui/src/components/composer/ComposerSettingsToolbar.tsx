@@ -39,6 +39,7 @@ export function ComposerSettingsToolbar({
   contextUsage,
   contextInspector,
   onCompact,
+  onOpenHarness,
   compactBusy = false,
   compactDisabled = false,
   reasoningEffort,
@@ -73,6 +74,7 @@ export function ComposerSettingsToolbar({
   contextInspector?: ThreadContextInspector | null | undefined;
   /** Present where this thread can be compacted. */
   onCompact?: (() => Promise<void> | void) | undefined;
+  onOpenHarness?: (() => void) | undefined;
   compactBusy?: boolean;
   compactDisabled?: boolean;
   reasoningEffort: ReasoningEffortDto | null | undefined;
@@ -138,7 +140,7 @@ export function ComposerSettingsToolbar({
           aria-haspopup="menu"
           aria-expanded={openMenu === 'model'}
           disabled={
-            modelControlsDisabled || settingsBusy || modelOptions.length === 0
+            settingsBusy || (!onOpenHarness && (modelControlsDisabled || modelOptions.length === 0))
           }
           onClick={() =>
             onSetOpenMenu((current) => (current === 'model' ? null : 'model'))
@@ -219,6 +221,11 @@ export function ComposerSettingsToolbar({
                 onCommit={(next) => onUpdateSettings({ reasoningEffort: next })}
               />
             )}
+            {onOpenHarness && <button type="button" role="menuitem"
+              className="mt-1 flex min-h-10 w-full items-center rounded-lg border-t border-[var(--theme-border)] px-2 py-2 text-left text-xs"
+              onClick={() => { onSetOpenMenu(() => null); onOpenHarness(); }}>
+              {translate('settings.harnessSettings')}
+            </button>}
           </ComposerMenuSurface>
         )}
       </div>

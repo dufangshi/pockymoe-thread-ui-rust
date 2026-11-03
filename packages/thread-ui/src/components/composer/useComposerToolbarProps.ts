@@ -82,6 +82,7 @@ export interface UseComposerToolbarPropsInput {
   contextUsage: ThreadContextUsageDto | null | undefined;
   contextInspector?: ThreadContextInspector | null | undefined;
   onCompact?: (() => Promise<void> | void) | undefined;
+  onOpenHarness?: (() => void) | undefined;
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
   displayedCollaborationMode: CollaborationModeDto;
@@ -198,6 +199,7 @@ export function useComposerToolbarProps({
   contextUsage,
   contextInspector,
   onCompact,
+  onOpenHarness,
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
@@ -411,6 +413,7 @@ export function useComposerToolbarProps({
         modelOptions,
         contextUsage,
         contextInspector,
+        onOpenHarness,
         // Native capability or the current session's advertised command enables it.
         ...(onCompact && (capabilities.compact || availableToolboxItems.some((item) => item.action === 'compact')) ? { onCompact } : {}),
         compactBusy,

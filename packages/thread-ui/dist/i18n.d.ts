@@ -8,6 +8,7 @@ declare const en: {
     readonly "desktopShell.updatePendingDescription": "Unsent content will be lost: {{titles}}";
     readonly "desktopShell.updateDiscardConfirm": "Update";
     readonly "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.";
+    readonly "desktopShell.updateAvailable": "Update available: {{version}}";
     readonly "desktopShell.updateTo": "Update to {{version}}";
     readonly "desktopShell.updateFailed": "The update could not be installed.";
     readonly "desktopShell.downloadUpdate": "Go to download";
@@ -1642,6 +1643,7 @@ declare const en: {
     readonly 'settings.signInThroughRelayToChangeYour': "Sign in through Relay to change your account shortcuts.";
     readonly 'settings.steerDeliversToTheRunningTurnImmediately': "Steer delivers to the running turn immediately. When idle, it starts a new turn.";
     readonly 'settings.retry': "Retry";
+    readonly 'settings.noHostFiles': "This Harness has no editable host files.";
     readonly 'settings.workspacePermissions': "Workspace permissions";
     readonly 'settings.fullAccess': "Full access";
     readonly 'settings.harnessSettings': "Harness settings";
@@ -1852,7 +1854,7 @@ declare const en: {
     readonly 'settings.upstreamsEditConflictHint': "Another edit or the harness changed this configuration. Reload the current values before saving; your unsaved edits will be discarded when you reload.";
     readonly 'settings.upstreamsReloadEditor': "Reload current configuration";
     readonly 'settings.upstreamsKeepEditing': "Keep editing";
-    readonly 'settings.harnessMaintenanceDescription': "Install and update harnesses and their ACP adapters. Manage providers in Upstreams.";
+    readonly 'settings.harnessMaintenanceDescription': "Install and update harnesses and their ACP adapters; edit the selected harness’s host files and create or restore configuration backups. Manage providers in Upstreams.";
     readonly 'settings.upstreamsDeepSeekOfficial': "DeepSeek API";
     readonly 'settings.upstreamsResponses': "Responses";
     readonly 'settings.dshRunModeBroken': "{{value1}} (unavailable: {{value2}})";
@@ -5223,6 +5225,7 @@ declare const zhCN: {
     "desktopShell.updatePendingDescription": string;
     "desktopShell.updateDiscardConfirm": string;
     "desktopShell.updateCancelled": string;
+    "desktopShell.updateAvailable": string;
     "desktopShell.updateTo": string;
     "desktopShell.updateFailed": string;
     "desktopShell.downloadUpdate": string;
@@ -6857,6 +6860,7 @@ declare const zhCN: {
     'settings.signInThroughRelayToChangeYour': "通过 Relay 登录后可修改账号快捷键。";
     'settings.steerDeliversToTheRunningTurnImmediately': "插话立即送达正在运行的轮次；空闲时开始新一轮。";
     'settings.retry': "重试";
+    'settings.noHostFiles': "此 Harness 没有可编辑的宿主文件。";
     'settings.workspacePermissions': "工作区权限";
     'settings.fullAccess': "完全访问";
     'settings.harnessSettings': "Harness 设置";
@@ -7067,7 +7071,7 @@ declare const zhCN: {
     'settings.upstreamsEditConflictHint': "其他编辑或 harness 已修改此配置。请重新加载当前值后再保存；重新加载会放弃本次未保存的修改。";
     'settings.upstreamsReloadEditor': "重新加载当前配置";
     'settings.upstreamsKeepEditing': "继续编辑";
-    'settings.harnessMaintenanceDescription': "安装和更新 harness 及其 ACP 适配器。请在「上游」中管理 provider。";
+    'settings.harnessMaintenanceDescription': "安装和更新 Harness 及其 ACP 适配器；编辑所选 Harness 的宿主文件，创建和恢复配置备份。请在「上游」中管理 provider。";
     'settings.upstreamsDeepSeekOfficial': "DeepSeek 官方 API";
     'settings.upstreamsResponses': "Responses";
     'settings.dshRunModeBroken': "{{value1}}（不可用：{{value2}}）";
@@ -10460,6 +10464,7 @@ declare const resources: {
         readonly "desktopShell.updatePendingDescription": "Unsent content will be lost: {{titles}}";
         readonly "desktopShell.updateDiscardConfirm": "Update";
         readonly "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.";
+        readonly "desktopShell.updateAvailable": "Update available: {{version}}";
         readonly "desktopShell.updateTo": "Update to {{version}}";
         readonly "desktopShell.updateFailed": "The update could not be installed.";
         readonly "desktopShell.downloadUpdate": "Go to download";
@@ -12094,6 +12099,7 @@ declare const resources: {
         readonly 'settings.signInThroughRelayToChangeYour': "Sign in through Relay to change your account shortcuts.";
         readonly 'settings.steerDeliversToTheRunningTurnImmediately': "Steer delivers to the running turn immediately. When idle, it starts a new turn.";
         readonly 'settings.retry': "Retry";
+        readonly 'settings.noHostFiles': "This Harness has no editable host files.";
         readonly 'settings.workspacePermissions': "Workspace permissions";
         readonly 'settings.fullAccess': "Full access";
         readonly 'settings.harnessSettings': "Harness settings";
@@ -12304,7 +12310,7 @@ declare const resources: {
         readonly 'settings.upstreamsEditConflictHint': "Another edit or the harness changed this configuration. Reload the current values before saving; your unsaved edits will be discarded when you reload.";
         readonly 'settings.upstreamsReloadEditor': "Reload current configuration";
         readonly 'settings.upstreamsKeepEditing': "Keep editing";
-        readonly 'settings.harnessMaintenanceDescription': "Install and update harnesses and their ACP adapters. Manage providers in Upstreams.";
+        readonly 'settings.harnessMaintenanceDescription': "Install and update harnesses and their ACP adapters; edit the selected harness’s host files and create or restore configuration backups. Manage providers in Upstreams.";
         readonly 'settings.upstreamsDeepSeekOfficial': "DeepSeek API";
         readonly 'settings.upstreamsResponses': "Responses";
         readonly 'settings.dshRunModeBroken': "{{value1}} (unavailable: {{value2}})";
@@ -15674,6 +15680,7 @@ declare const resources: {
         "desktopShell.updatePendingDescription": string;
         "desktopShell.updateDiscardConfirm": string;
         "desktopShell.updateCancelled": string;
+        "desktopShell.updateAvailable": string;
         "desktopShell.updateTo": string;
         "desktopShell.updateFailed": string;
         "desktopShell.downloadUpdate": string;
@@ -17308,6 +17315,7 @@ declare const resources: {
         'settings.signInThroughRelayToChangeYour': "通过 Relay 登录后可修改账号快捷键。";
         'settings.steerDeliversToTheRunningTurnImmediately': "插话立即送达正在运行的轮次；空闲时开始新一轮。";
         'settings.retry': "重试";
+        'settings.noHostFiles': "此 Harness 没有可编辑的宿主文件。";
         'settings.workspacePermissions': "工作区权限";
         'settings.fullAccess': "完全访问";
         'settings.harnessSettings': "Harness 设置";
@@ -17518,7 +17526,7 @@ declare const resources: {
         'settings.upstreamsEditConflictHint': "其他编辑或 harness 已修改此配置。请重新加载当前值后再保存；重新加载会放弃本次未保存的修改。";
         'settings.upstreamsReloadEditor': "重新加载当前配置";
         'settings.upstreamsKeepEditing': "继续编辑";
-        'settings.harnessMaintenanceDescription': "安装和更新 harness 及其 ACP 适配器。请在「上游」中管理 provider。";
+        'settings.harnessMaintenanceDescription': "安装和更新 Harness 及其 ACP 适配器；编辑所选 Harness 的宿主文件，创建和恢复配置备份。请在「上游」中管理 provider。";
         'settings.upstreamsDeepSeekOfficial': "DeepSeek 官方 API";
         'settings.upstreamsResponses': "Responses";
         'settings.dshRunModeBroken': "{{value1}}（不可用：{{value2}}）";

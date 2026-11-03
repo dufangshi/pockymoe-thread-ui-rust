@@ -13,7 +13,7 @@ export function useMenuKeyboard(menuRef: RefObject<HTMLElement | null>, open: bo
     const menu = menuRef.current;
     if (!menu) return;
     const items = () => [...menu.querySelectorAll<HTMLElement>(itemSelector)];
-    items()[0]?.focus();
+    items()[0]?.focus({ preventScroll: true });
     const key = (event: KeyboardEvent) => {
       const list = items();
       const index = list.indexOf(document.activeElement as HTMLElement);

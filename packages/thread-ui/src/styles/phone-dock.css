@@ -447,9 +447,11 @@
   .matter-phone-sheet-all svg { width: 17px; height: 17px; color: var(--theme-fg-muted); }
   .matter-phone-sheet-apps svg { width: 20px; height: 20px; color: var(--theme-fg-muted); }
   .matter-phone-sheet-settings { position: relative; }
-  /* The settings trigger is the host's own dialog button; stretch it over the row. */
-  .thread-ui-shell .matter-workbench .matter-phone-sheet-settings > :first-child { position: static; width: 20px; min-width: 20px; height: 20px; }
-  .matter-phone-sheet-settings > :first-child::after { content: ''; position: absolute; inset: 0; }
+  /* Both the dialog trigger and a host account-menu button own the full row. */
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-settings > button,
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-settings > div > button { position: static; width: 20px; min-width: 20px; height: 20px; }
+  .matter-phone-sheet-settings > button::after,
+  .matter-phone-sheet-settings > div > button::after { content: ''; position: absolute; inset: 0; }
 }
 
 @keyframes matter-phone-spin { to { transform: rotate(360deg); } }

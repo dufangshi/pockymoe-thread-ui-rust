@@ -266,6 +266,7 @@ export const settingsEn = {
   'settings.steerDeliversToTheRunningTurnImmediately':
     'Steer delivers to the running turn immediately. When idle, it starts a new turn.',
   'settings.retry': 'Retry',
+  'settings.noHostFiles': 'This Harness has no editable host files.',
   'settings.workspacePermissions': 'Workspace permissions',
   'settings.fullAccess': 'Full access',
   'settings.harnessSettings': 'Harness settings',
@@ -529,7 +530,7 @@ export const settingsEn = {
   'settings.upstreamsReloadEditor': 'Reload current configuration',
   'settings.upstreamsKeepEditing': 'Keep editing',
   'settings.harnessMaintenanceDescription':
-    'Install and update harnesses and their ACP adapters. Manage providers in Upstreams.',
+    'Install and update harnesses and their ACP adapters; edit the selected harness’s host files and create or restore configuration backups. Manage providers in Upstreams.',
   'settings.upstreamsDeepSeekOfficial': 'DeepSeek API',
   'settings.upstreamsResponses': 'Responses',
   'settings.dshRunModeBroken': '{{value1}} (unavailable: {{value2}})',

@@ -32,6 +32,7 @@ export const en = {
   "desktopShell.updatePendingDescription": "Unsent content will be lost: {{titles}}",
   "desktopShell.updateDiscardConfirm": "Update",
   "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.",
+  "desktopShell.updateAvailable": "Update available: {{version}}",
   "desktopShell.updateTo": "Update to {{version}}",
   "desktopShell.updateFailed": "The update could not be installed.",
   "desktopShell.downloadUpdate": "Go to download",

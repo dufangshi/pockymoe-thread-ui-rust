@@ -266,9 +266,6 @@ export const settingsEn = {
   'settings.steerDeliversToTheRunningTurnImmediately':
     'Steer delivers to the running turn immediately. When idle, it starts a new turn.',
   'settings.retry': 'Retry',
-  'settings.noHostFiles': 'This Harness has no editable host files.',
-  'settings.workspacePermissions': 'Workspace permissions',
-  'settings.fullAccess': 'Full access',
   'settings.harnessSettings': 'Harness settings',
   'settings.model': 'Model',
   'settings.harnessModel': 'Harness model',
@@ -428,7 +425,6 @@ export const settingsEn = {
     'DSH is working outside a turn (goal rounds or background work).',
   'settings.dshStop': 'Stop',
   'settings.dshSession': 'Session state',
-  'settings.dshPermissionPreset': 'Permission preset',
   'settings.dshPlanMode': 'Plan mode',
   'settings.dshOn': 'On',
   'settings.dshOff': 'Off',
@@ -471,7 +467,7 @@ export const settingsEn = {
     'This DSH install offers no run modes or native console here (plain ACP profile).',
   'settings.dshCommands': 'Commands',
   'settings.dshCommandsNotice':
-    "Runs in this thread's DSH session, including commands added by DSH plugins. Plan mode, permissions, goals and compaction stay on the thread's own controls.",
+    "Runs in this thread's DSH session, including commands added by DSH plugins. Plan mode, goals and compaction stay on the thread's own controls.",
   'settings.dshCommandArguments': 'Arguments for /{{value1}}',
   'settings.dshRunCommand': 'Run /{{value1}}',
   'settings.dshRun': 'Run',
@@ -530,7 +526,7 @@ export const settingsEn = {
   'settings.upstreamsReloadEditor': 'Reload current configuration',
   'settings.upstreamsKeepEditing': 'Keep editing',
   'settings.harnessMaintenanceDescription':
-    'Install and update harnesses and their ACP adapters; edit the selected harness’s host files and create or restore configuration backups. Manage providers in Upstreams.',
+    'Install and update harnesses and their ACP adapters. Manage providers in Upstreams.',
   'settings.upstreamsDeepSeekOfficial': 'DeepSeek API',
   'settings.upstreamsResponses': 'Responses',
   'settings.dshRunModeBroken': '{{value1}} (unavailable: {{value2}})',

@@ -8,7 +8,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
   ModelOptionDto,
   ReasoningEffortDto,
-  SandboxModeDto,
   ThreadContextUsageDto,
   UpdateThreadSettingsInput,
 } from '@pockymoe/shared';
@@ -65,8 +64,6 @@ function renderToolbar({
   disabled = false,
   goalBusy = false,
   activeView = 'chat',
-  sandboxMode = 'workspace-write',
-  sandboxModeAvailable = true,
   supportedEfforts = modelOptions[0]?.supportedReasoningEfforts ?? [],
   effortControlsDisabled = false,
   modelControlsDisabled = false,
@@ -87,8 +84,6 @@ function renderToolbar({
   disabled?: boolean;
   goalBusy?: boolean;
   activeView?: 'chat' | 'shell';
-  sandboxMode?: SandboxModeDto | null;
-  sandboxModeAvailable?: boolean;
   supportedEfforts?: ModelOptionDto['supportedReasoningEfforts'];
   effortControlsDisabled?: boolean;
   modelControlsDisabled?: boolean;
@@ -123,8 +118,6 @@ function renderToolbar({
           contextUsage={contextUsage}
           reasoningEffort={reasoningEffort}
           supportedEfforts={supportedEfforts}
-          sandboxMode={sandboxMode}
-          sandboxModeAvailable={sandboxModeAvailable}
           settingsBusy={false}
           goalComposeMode={false}
           goalBusy={goalBusy}

@@ -33,7 +33,6 @@ import type {
   ModelOptionDto,
   ThreadContextUsageDto,
   ReasoningEffortDto,
-  SandboxModeDto,
   UpdateThreadHookInput,
   UpdateThreadSettingsInput,
 } from '@pockymoe/shared';
@@ -118,8 +117,6 @@ export interface ThreadComposerProps {
   reasoningEffort?: ReasoningEffortDto | null;
   fastMode?: boolean;
   collaborationMode?: CollaborationModeDto;
-  sandboxMode?: SandboxModeDto | null;
-  hideSandboxModeControl?: boolean;
   modelOptions?: ModelOptionDto[];
   contextUsage?: ThreadContextUsageDto | null | undefined;
   /** Reads the thread's context analysis for the context panel. Without it the panel shows the total alone. */
@@ -232,8 +229,6 @@ export function ThreadComposer({
   reasoningEffort = null,
   fastMode = false,
   collaborationMode = 'default',
-  sandboxMode = null,
-  hideSandboxModeControl = false,
   modelOptions = [],
   contextUsage = null,
   contextInspector,
@@ -348,7 +343,6 @@ export function ThreadComposer({
         Boolean(onWriteProviderConfig),
       hookTrust: capabilities?.management.hookTrust ?? false,
       planMode: capabilities?.controls.planMode ?? false,
-      sandboxMode: capabilities?.controls.sandboxMode ?? false,
       liveModelSwitch: capabilities?.controls.liveModelSwitch ?? false,
     }),
     [
@@ -1063,7 +1057,6 @@ export function ThreadComposer({
     reasoningEffort,
     supportedEfforts,
     displayedCollaborationMode,
-    sandboxMode,
     sendButtonLabel,
     sendButtonClassName,
     modelControlsDisabled,
@@ -1102,7 +1095,6 @@ export function ThreadComposer({
       mcpConfigEditing: slashCapabilities.mcpConfigEditing,
       planMode: slashCapabilities.planMode,
       forkFromTurn: slashCapabilities.forkFromTurn,
-      sandboxMode: hideSandboxModeControl ? false : slashCapabilities.sandboxMode,
       liveModelSwitch: slashCapabilities.liveModelSwitch,
     },
     shellControlState,

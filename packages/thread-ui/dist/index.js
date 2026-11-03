@@ -52,7 +52,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-POV74LWE.js";
+} from "./chunk-44UAJ2IV.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -79,9 +79,10 @@ import {
   setLocale,
   t,
   translate,
+  useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-RIA33RML.js";
+} from "./chunk-GY5X7H6T.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -11530,6 +11531,7 @@ function PhoneSheet({ open, label, onClose, children: children2, footer }) {
   const sheet = useRef24(null);
   const close = useRef24(onClose);
   close.current = onClose;
+  useExclusiveSecondary(sheet, open, () => close.current(), "sheet");
   useEffect26(() => {
     if (!open) return;
     sheet.current?.querySelector("[data-sheet-autofocus], button, a")?.focus({ preventScroll: true });

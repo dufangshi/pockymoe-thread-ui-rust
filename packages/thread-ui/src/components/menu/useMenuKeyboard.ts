@@ -1,3 +1,4 @@
+import { useExclusiveSecondary } from './useExclusiveSecondary';
 import { useEffect, useRef, type RefObject } from 'react';
 
 /**
@@ -5,9 +6,10 @@ import { useEffect, useRef, type RefObject } from 'react';
  * the first item when it opens; ↑/↓ move and wrap, Home/End jump; Esc closes it
  * and returns focus to the trigger; Tab closes it and moves on.
  */
-export function useMenuKeyboard(menuRef: RefObject<HTMLElement | null>, open: boolean, onClose: (restoreFocus: boolean) => void, itemSelector = '[role^="menuitem"]:not([disabled])') {
+export function useMenuKeyboard(menuRef: RefObject<HTMLElement | null>, open: boolean, onClose: (restoreFocus: boolean) => void, itemSelector = '[role^="menuitem"]:not([disabled])', replaceSheets = false) {
   const close = useRef(onClose);
   close.current = onClose;
+  useExclusiveSecondary(menuRef, open, () => close.current(false), 'menu', replaceSheets);
   useEffect(() => {
     if (!open) return;
     const menu = menuRef.current;

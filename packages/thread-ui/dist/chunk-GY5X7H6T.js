@@ -3,15 +3,35 @@ import {
 } from "./chunk-7O5E2ZHX.js";
 
 // src/components/Select.tsx
-import { Children, Fragment, isValidElement, useCallback, useEffect as useEffect2, useId, useLayoutEffect, useMemo, useRef as useRef2, useState } from "react";
+import { Children, Fragment, isValidElement, useCallback, useEffect as useEffect2, useId, useLayoutEffect as useLayoutEffect2, useMemo, useRef as useRef3, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Check, ChevronDown } from "lucide-react";
 
-// src/components/menu/useMenuKeyboard.ts
-import { useEffect, useRef } from "react";
-function useMenuKeyboard(menuRef, open, onClose, itemSelector = '[role^="menuitem"]:not([disabled])') {
+// src/components/menu/useExclusiveSecondary.ts
+import { useLayoutEffect, useRef } from "react";
+var opened = "pockymoe:secondary-open";
+function useExclusiveSecondary(root, open, onClose, kind = "menu", replaceSheets = false) {
   const close = useRef(onClose);
   close.current = onClose;
+  useLayoutEffect(() => {
+    if (!open || !root.current) return;
+    const owner = root.current;
+    const replace = (event) => {
+      const next = event.detail;
+      if (next.owner !== owner && (kind !== "sheet" || next.replaceSheets)) close.current();
+    };
+    window.dispatchEvent(new CustomEvent(opened, { detail: { owner, replaceSheets: kind === "sheet" || replaceSheets } }));
+    window.addEventListener(opened, replace);
+    return () => window.removeEventListener(opened, replace);
+  }, [root, open, kind, replaceSheets]);
+}
+
+// src/components/menu/useMenuKeyboard.ts
+import { useEffect, useRef as useRef2 } from "react";
+function useMenuKeyboard(menuRef, open, onClose, itemSelector = '[role^="menuitem"]:not([disabled])', replaceSheets = false) {
+  const close = useRef2(onClose);
+  close.current = onClose;
+  useExclusiveSecondary(menuRef, open, () => close.current(false), "menu", replaceSheets);
   useEffect(() => {
     if (!open) return;
     const menu = menuRef.current;
@@ -72,8 +92,8 @@ function Select({ value, defaultValue, onValueChange, options, children, name, r
   const [internal, setInternal] = useState(firstValue), [open, setOpen] = useState(false), [menuReady, setMenuReady] = useState(false), [invalid, setInvalid] = useState(false);
   const selected = String(value ?? internal);
   const current = rows.find((row) => String(row.value) === selected);
-  const trigger = useRef2(null), menu = useRef2(null), viewport = useRef2(null), field = useRef2(null);
-  const popupId = useId(), typeahead = useRef2({ text: "", at: 0 });
+  const trigger = useRef3(null), menu = useRef3(null), viewport = useRef3(null), field = useRef3(null);
+  const popupId = useId(), typeahead = useRef3({ text: "", at: 0 });
   const [position, setPosition] = useState({ left: 8, top: 8, minWidth: 120, maxWidth: 320, maxHeight: 320 });
   const [thumb, setThumb] = useState({ size: 0, top: 0 });
   const close = useCallback((restore) => {
@@ -113,7 +133,7 @@ function Select({ value, defaultValue, onValueChange, options, children, name, r
     selectedOption?.focus({ preventScroll: true });
     selectedOption?.scrollIntoView?.({ block: "nearest" });
   }, [open, menuReady]);
-  useLayoutEffect(() => {
+  useLayoutEffect2(() => {
     if (!open || !menuReady) return;
     const place = () => {
       const rect = trigger.current?.getBoundingClientRect();
@@ -10727,6 +10747,7 @@ function LanguageSwitcher({ className }) {
 }
 
 export {
+  useExclusiveSecondary,
   useMenuKeyboard,
   Select,
   en,

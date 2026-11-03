@@ -231,6 +231,8 @@
   gap: 8px;
 }
 
+.matter-sidebar-host-actions { display: flex; align-items: center; justify-content: center; padding: 8px; }
+
 .matter-watches-toggle { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 0 8px; flex-shrink: 0; height: 34px; color: var(--theme-fg-muted); border-left: 1px solid var(--theme-border); }
 .matter-watches-toggle:active { background: var(--theme-hover); color: var(--theme-fg); }
 @media (hover: hover) {

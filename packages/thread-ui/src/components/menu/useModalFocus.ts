@@ -19,7 +19,8 @@ export function useModalFocus(windowRef: RefObject<HTMLElement | null>, open: bo
     const focusables = () => [...root.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(visible);
     const frame = requestAnimationFrame(() => {
       if (root.contains(document.activeElement)) return;
-      (initial ? root.querySelector<HTMLElement>(initial) : null)?.focus() ?? focusables()[0]?.focus() ?? root.focus();
+      const target = (initial ? root.querySelector<HTMLElement>(initial) : null) ?? focusables()[0] ?? root;
+      target.focus();
     });
     const key = (event: KeyboardEvent) => {
       // A window stacked above this one (another dialog with focus) handles its own keys.

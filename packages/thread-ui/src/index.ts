@@ -176,7 +176,7 @@ export {
 } from './components/ConversationSearchControls';
 
 export type { WorkspaceDocumentSnapshot, WorkspaceDocumentSaveInput, WorkspaceSaveReceipt } from "./adapters";
-export { confirmWorkspaceDocumentLeave } from "./components/graph-workspace/explorer/workspaceDocuments";
+export { confirmWorkspaceDocumentLeave, getDirtyWorkspaceDocumentCount, approveWorkspaceDocumentUnloadOnce, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval } from "./components/graph-workspace/explorer/workspaceDocuments";
 export { closeFilesPatch, openFilesPatch, splitShown, useWorkbenchPresentation } from "./components/workbench/presentation";
 export type { WorkbenchPresentation, ReferenceMode } from "./components/workbench/presentation";
 export type { WorkbenchPanelsOptions } from "./components/workbench/WorkbenchPanels";

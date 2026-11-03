@@ -1,9 +1,10 @@
-import { describe, expect, it } from 'vitest';
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
   editDraft,
   newDraft,
   settleSave,
-  isProtected,
+  isProtected, documentStores, getDirtyWorkspaceDocumentCount, approveWorkspaceDocumentUnloadOnce, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval,
 } from './workspaceDocuments';
 import type { WorkspaceDocumentSnapshot } from '../../../adapters';
 const snapshot: WorkspaceDocumentSnapshot = {
@@ -111,4 +112,24 @@ describe('workspace document revision settlement', () => {
     expect(failed.phase).toBe('error');
     expect(failed.submitted).toBeUndefined();
   });
+});
+
+
+beforeEach(() => { documentStores.clear(); revokeWorkspaceDocumentUnloadApproval(); });
+const unload = () => { const event = new Event('beforeunload', { cancelable: true }); window.dispatchEvent(event); return event.defaultPrevented; };
+it('counts retained dirty and uncertain documents and keeps synthetic preflight approval for real unload', () => {
+  const dirty = editDraft(newDraft('dirty', snapshot), 'unsaved');
+  documentStores.set('workspace', new Map([['dirty', dirty], ['clean', newDraft('clean', snapshot)], ['uncertain', { ...newDraft('uncertain', snapshot), phase: 'unknown' }]]));
+  expect(getDirtyWorkspaceDocumentCount()).toBe(2); expect(unload()).toBe(true);
+  approveWorkspaceDocumentUnloadOnce(); expect(unload()).toBe(false); expect(unload()).toBe(false);
+  revokeWorkspaceDocumentUnloadApproval(); expect(unload()).toBe(true);
+});
+it('refuses consent for revisions that changed during the dialog or after consent', () => {
+  const store = new Map([['a', editDraft(newDraft('a', snapshot), 'first')]]); documentStores.set('workspace', store);
+  const approve = prepareWorkspaceDocumentUnloadApproval();
+  store.set('a', editDraft(store.get('a')!, 'later'));
+  expect(approve()).toBe(false); expect(unload()).toBe(true);
+  approveWorkspaceDocumentUnloadOnce(); expect(unload()).toBe(false);
+  store.set('b', editDraft(newDraft('b', snapshot), 'new document'));
+  expect(unload()).toBe(true);
 });

@@ -110,8 +110,10 @@ button.error-mark.error-mark.error-mark[data-kind='unavailable'] { color: var(--
   font-size: 11px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text;
 }
 .error-mark-retry {
-  display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; padding: 4px 8px;
-  border: 1px solid var(--theme-border); border-radius: 6px; background: transparent; color: var(--theme-fg); font-size: 12px;
+  display: inline-flex; align-items: center; gap: 5px; min-height: 32px; margin-top: 6px; padding: 4px 8px;
+  border: 1px solid var(--theme-border); border-radius: 6px; background: transparent; color: inherit; font-size: 12px;
 }
 .error-mark-retry svg { width: 12px; height: 12px; }
 @media (hover: hover) { .error-mark-retry:hover { background: var(--theme-hover); } }
+
+@media (max-width: 639px) { .error-mark-retry { min-height: 40px; } }

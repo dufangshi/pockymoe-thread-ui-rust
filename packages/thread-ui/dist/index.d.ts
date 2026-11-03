@@ -59,7 +59,7 @@ declare function MiddleName({ name, className }: {
  * still hear the reason when it appears. Put it after the control it explains;
  * a control that cannot be used stays in place, greyed and disabled.
  */
-declare function ErrorMark({ message, detail, kind, label, onRetry, retryLabel, className, announce, tabIndex, }: {
+declare function ErrorMark({ message, detail, kind, label, onRetry, retryLabel, retryDisabled, secondaryAction, className, announce, tabIndex, }: {
     message: string;
     /** The raw error under a readable message, in small type. */
     detail?: string | undefined;
@@ -68,6 +68,12 @@ declare function ErrorMark({ message, detail, kind, label, onRetry, retryLabel, 
     label?: string | undefined;
     onRetry?: (() => void) | undefined;
     retryLabel?: string | undefined;
+    retryDisabled?: boolean | undefined;
+    /** An alternative recovery, such as opening the verified release's download page. */
+    secondaryAction?: {
+        label: string;
+        onClick(): void;
+    } | undefined;
     className?: string | undefined;
     /** Say the reason aloud when it appears (an action that just failed). A
         record of an earlier failure (a past turn) is not announced. */
@@ -126,12 +132,14 @@ declare function useLongPress(onLongPress: (point: {
 
 /** The app's own confirmation in place of `window.confirm` (see
     docs/ui-principles.md §11): resolves true when confirmed. */
-declare function confirmAsync({ title, description, confirmLabel, cancelLabel, tone }: {
+declare function confirmAsync({ title, description, confirmLabel, cancelLabel, tone, signal }: {
     title: string;
     description: string;
     confirmLabel: string;
     cancelLabel?: string;
     tone?: 'danger' | 'primary';
+    /** Cancel a native preflight that was aborted in another window. */
+    signal?: AbortSignal;
 }): Promise<boolean>;
 
 /** What each navigation status is called (see docs/ui-principles.md §6). */
@@ -409,6 +417,8 @@ interface MatterWorkbenchOptions {
     sidebarHeader?: ReactNode;
     sidebarLeading?: ReactNode;
     railLeading?: ReactNode;
+    /** Host actions immediately above the final bottom rail control. */
+    railBottomLeading?: ReactNode;
     /** Host navigation keeps this control in place when no terminal is available. */
     showTerminal?: boolean;
     panels?: WorkbenchPanelsOptions;
@@ -1250,6 +1260,12 @@ declare function ConversationSearchExcerpt({ text, query }: {
     query: string;
 }): react.JSX.Element;
 
+/** Count retained dirty/uncertain documents, including panels no longer visible. */
+declare function getDirtyWorkspaceDocumentCount(): number;
+declare function approveWorkspaceDocumentUnloadOnce(): void;
+/** Capture before showing the dialog; edits arriving while it is open need new consent. */
+declare function prepareWorkspaceDocumentUnloadApproval(): () => boolean;
+declare function revokeWorkspaceDocumentUnloadApproval(): void;
 /** Drafts are only in memory; confirm before intentional app/source navigation. */
 declare function confirmWorkspaceDocumentLeave(): boolean;
 
@@ -1333,4 +1349,4 @@ declare function TurnNotificationButton({ subscribed, busy, error, onToggle, onR
     onRetry: () => void;
 }): react.JSX.Element;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, LongTextDialog, type MapAttention, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, LongTextDialog, type MapAttention, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, approveWorkspaceDocumentUnloadOnce, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatShortTimestamp, getDirtyWorkspaceDocumentCount, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useWorkbenchPresentation };

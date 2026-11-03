@@ -66,14 +66,14 @@ export function ConfirmDialog({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium">{title}</p>
-            <p className="mt-2 text-sm leading-6 text-[var(--theme-fg-muted)]">{description}</p>
+            <p tabIndex={0} className="mt-2 max-h-[min(45dvh,20rem)] overflow-y-auto whitespace-pre-line text-sm leading-6 text-[var(--theme-fg-muted)]" style={{ overflowWrap: 'anywhere' }}>{description}</p>
           </div>
           <button
             type="button"
             aria-label={translate("workbench.closeDialog")}
             onClick={onCancel}
             disabled={busy}
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4 fill-current">
               <path d="M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" />

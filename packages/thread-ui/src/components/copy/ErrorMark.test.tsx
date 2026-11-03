@@ -82,3 +82,36 @@ it('follows its mark while the page settles, and closes once the mark scrolls aw
   act(() => { window.dispatchEvent(new Event('scroll')); });
   expect(bubble()).toBeNull();
 });
+
+
+it('keeps retry and an alternative recovery inside the same error bubble', () => {
+  const retry = vi.fn(), download = vi.fn();
+  act(() => root.render(<ErrorMark message="Update failed." onRetry={retry} secondaryAction={{ label: 'Go to download', onClick: download }} />));
+  act(() => host.querySelector<HTMLButtonElement>('button.error-mark')!.click());
+  const actions = bubble()!.querySelectorAll<HTMLButtonElement>('button');
+  expect(actions).toHaveLength(2);
+  expect(actions[1].textContent).toBe('Go to download');
+  act(() => actions[1].click());
+  expect(download).toHaveBeenCalledOnce(); expect(retry).not.toHaveBeenCalled();
+  expect(bubble()).toBeNull();
+});
+
+
+it('uses the surface behind the mark rather than its translucent hover tint', () => {
+  host.style.backgroundColor = 'rgb(20, 30, 40)';
+  act(() => root.render(<ErrorMark message="Update failed." />));
+  const mark = host.querySelector<HTMLButtonElement>('button.error-mark')!;
+  mark.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+  act(() => mark.click());
+  expect(bubble()!.style.backgroundColor).toBe('rgb(20, 30, 40)');
+});
+
+
+it('disables Retry after an attempt limit while preserving alternative recovery', () => {
+  const retry = vi.fn(), download = vi.fn();
+  act(() => root.render(<ErrorMark message="Retry limit reached." onRetry={retry} retryDisabled secondaryAction={{ label: 'Go to download', onClick: download }} />));
+  act(() => host.querySelector<HTMLButtonElement>('button.error-mark')!.click());
+  const actions = bubble()!.querySelectorAll<HTMLButtonElement>('button');
+  expect(actions[0].disabled).toBe(true); act(() => actions[0].click()); expect(retry).not.toHaveBeenCalled();
+  act(() => actions[1].click()); expect(download).toHaveBeenCalledOnce();
+});

@@ -6,7 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-VHZHZ37Z.js";
+} from "./chunk-GCYLBJJH.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -147,6 +147,8 @@ function ErrorMark({
   label,
   onRetry,
   retryLabel,
+  retryDisabled = false,
+  secondaryAction,
   className = "",
   announce = true,
   tabIndex
@@ -174,7 +176,8 @@ function ErrorMark({
     setPlace((current) => ({
       ...current,
       ...ink ? { color: ink, borderColor: `color-mix(in srgb, ${ink} 22%, transparent)` } : {},
-      background: surfaceBehind(trigger.current)
+      // The mark's hover tint may be translucent; the popup needs its parent surface.
+      background: surfaceBehind(trigger.current?.parentElement)
     }));
     placeBubble();
   }, [open, message, detail, placeBubble]);
@@ -251,13 +254,17 @@ function ErrorMark({
           children: [
             /* @__PURE__ */ jsx4("p", { className: "error-mark-message", children: message }),
             detail ? /* @__PURE__ */ jsx4("pre", { className: "error-mark-detail", children: detail }) : null,
-            onRetry ? /* @__PURE__ */ jsxs4("button", { type: "button", className: "error-mark-retry", onClick: () => {
+            onRetry ? /* @__PURE__ */ jsxs4("button", { type: "button", className: "error-mark-retry", disabled: retryDisabled, onClick: () => {
               setOpen(false);
               onRetry();
             }, children: [
               /* @__PURE__ */ jsx4(RotateCw, { "aria-hidden": "true" }),
               retryLabel ?? translate("common.retry")
-            ] }) : null
+            ] }) : null,
+            secondaryAction ? /* @__PURE__ */ jsx4("button", { type: "button", className: "error-mark-retry", onClick: () => {
+              setOpen(false);
+              secondaryAction.onClick();
+            }, children: secondaryAction.label }) : null
           ]
         }
       ),
@@ -282,7 +289,8 @@ function useModalFocus(windowRef, open, onClose, initial) {
     const focusables = () => [...root.querySelectorAll(FOCUSABLE)].filter(visible);
     const frame = requestAnimationFrame(() => {
       if (root.contains(document.activeElement)) return;
-      (initial ? root.querySelector(initial) : null)?.focus() ?? focusables()[0]?.focus() ?? root.focus();
+      const target = (initial ? root.querySelector(initial) : null) ?? focusables()[0] ?? root;
+      target.focus();
     });
     const key = (event) => {
       const active = document.activeElement;
@@ -406,7 +414,7 @@ function ConfirmDialog({
             /* @__PURE__ */ jsxs5("div", { className: "flex items-start justify-between gap-3", children: [
               /* @__PURE__ */ jsxs5("div", { className: "min-w-0 flex-1", children: [
                 /* @__PURE__ */ jsx5("p", { className: "text-sm font-medium", children: title }),
-                /* @__PURE__ */ jsx5("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-muted)]", children: description })
+                /* @__PURE__ */ jsx5("p", { tabIndex: 0, className: "mt-2 max-h-[min(45dvh,20rem)] overflow-y-auto whitespace-pre-line text-sm leading-6 text-[var(--theme-fg-muted)]", style: { overflowWrap: "anywhere" }, children: description })
               ] }),
               /* @__PURE__ */ jsx5(
                 "button",
@@ -415,7 +423,7 @@ function ConfirmDialog({
                   "aria-label": translate("workbench.closeDialog"),
                   onClick: onCancel,
                   disabled: busy,
-                  className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  className: "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
                   children: /* @__PURE__ */ jsx5("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx5("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
                 }
               )
@@ -465,16 +473,26 @@ function ConfirmDialog({
 // src/components/menu/confirmAsync.tsx
 import { createRoot } from "react-dom/client";
 import { jsx as jsx6 } from "react/jsx-runtime";
-function confirmAsync({ title, description, confirmLabel, cancelLabel, tone }) {
+function confirmAsync({ title, description, confirmLabel, cancelLabel, tone, signal }) {
   return new Promise((resolve) => {
+    if (signal?.aborted) {
+      resolve(false);
+      return;
+    }
+    let settled = false;
     const host = document.createElement("div");
     document.body.append(host);
     const root = createRoot(host);
     const finish = (value) => {
+      if (settled) return;
+      settled = true;
+      signal?.removeEventListener("abort", abort);
       root.unmount();
       host.remove();
       resolve(value);
     };
+    const abort = () => finish(false);
+    signal?.addEventListener("abort", abort, { once: true });
     root.render(
       /* @__PURE__ */ jsx6(
         ConfirmDialog,
@@ -634,13 +652,44 @@ var documentListeners = memory.listeners;
 if (typeof window !== "undefined" && !memory.unloadInstalled) {
   memory.unloadInstalled = true;
   window.addEventListener("beforeunload", (event) => {
-    if ([...documentStores.values()].some(
-      (store) => [...store.values()].some(isProtected)
-    )) {
+    const protectedDocs = protectedWorkspaceDocuments();
+    const approval = memory.unloadApproval;
+    const approved = approval && approvalMatches(approval, protectedDocs);
+    if (approved) {
+      if (event.isTrusted) delete memory.unloadApproval;
+      return;
+    }
+    if (protectedDocs.length) {
       event.preventDefault();
       event.returnValue = "";
     }
   });
+}
+function protectedWorkspaceDocuments() {
+  return [...documentStores.values()].flatMap((store) => [...store.values()]).filter(isProtected);
+}
+function getDirtyWorkspaceDocumentCount() {
+  return protectedWorkspaceDocuments().length;
+}
+function snapshotProtectedDocuments() {
+  return protectedWorkspaceDocuments().map((doc) => ({ doc, revision: doc.revision, content: doc.content, baseContent: doc.baseContent, phase: doc.phase }));
+}
+function approvalMatches(approval, documents = protectedWorkspaceDocuments()) {
+  return approval.length === documents.length && documents.every((doc) => approval.some((saved) => saved.doc === doc && saved.revision === doc.revision && saved.content === doc.content && saved.baseContent === doc.baseContent && saved.phase === doc.phase));
+}
+function approveWorkspaceDocumentUnloadOnce() {
+  memory.unloadApproval = snapshotProtectedDocuments();
+}
+function prepareWorkspaceDocumentUnloadApproval() {
+  const snapshot = snapshotProtectedDocuments();
+  return () => {
+    if (!approvalMatches(snapshot)) return false;
+    memory.unloadApproval = snapshot;
+    return true;
+  };
+}
+function revokeWorkspaceDocumentUnloadApproval() {
+  delete memory.unloadApproval;
 }
 function isProtected(doc) {
   return doc.content !== doc.baseContent || ["saving", "unknown", "conflict"].includes(doc.phase);
@@ -2027,6 +2076,10 @@ export {
   collectAncestorPaths,
   documentStores,
   documentListeners,
+  getDirtyWorkspaceDocumentCount,
+  approveWorkspaceDocumentUnloadOnce,
+  prepareWorkspaceDocumentUnloadApproval,
+  revokeWorkspaceDocumentUnloadApproval,
   isProtected,
   newDraft,
   editDraft,

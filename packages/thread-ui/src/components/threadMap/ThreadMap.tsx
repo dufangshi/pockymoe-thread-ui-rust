@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { ArrowLeft, ArrowUpRight, ChevronRight, ChevronUp, Folder, List, Monitor, Network, RotateCw, Layers, Activity, DollarSign } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, ChevronRight, ChevronUp, Folder, List, Monitor, Network, RotateCw, Layers, Activity, DollarSign, X } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
-import { buildThreadMap, heatLevel, indexMap, threadWeight, type MapNode, type ThreadMapThread } from './model';
+import { buildThreadMap, inScope, heatLevel, indexMap, threadWeight, type MapNode, type ThreadMapThread } from './model';
 import { AgeGlyph, AgentChip, formatRunTime, threadDetails, ThreadTile } from './ThreadTile';
 import { Select } from '../Select';
 import { StatusMark } from '../StatusMark';
 import { formatCompactUsd } from '../timeline/tokenFormatting';
 import { type MapRect } from './squarify';
 
+import { filterPhoneDevices, phoneLayout } from './phone';
+import { MapScrollList } from './MapScrollList';
+import { PhoneMapMenu } from './PhoneMapMenu';
 import { MapTooltip } from './MapTooltip';
 import { DenseMap } from './DenseMap';
 import { useMapMotion } from './useMapMotion';
@@ -55,7 +58,7 @@ const reducedMotion = () => typeof window !== 'undefined' && typeof window.match
  * spreading opens the block under the fingers and dragging down dismisses.
  */
 export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, onNavigate, onRetry, onDismiss,
-  presentation = 'dialog', scope: controlledScope, onScopeChange, attention, stableLayout = false,
+  presentation = 'dialog', phone = false, scope: controlledScope, onScopeChange, attention, stableLayout = false,
   filterText, onFilterChange, deviceExtras, onQuickLook, onRequestDecision, revealKey, pulseKeys,
 }: ThreadMapProps) {
   const { locale } = useI18n();
@@ -85,16 +88,24 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   const orders = useRef(new StableMapOrder()), layouts = useRef(new MapLayoutCache());
   const priorScope = useRef(scope);
   const priorLayoutRevision = useRef(layoutRevision);
+  const phoneQuery = phone ? query : '';
   const allLabel = translate('workbench.threadMapAll');
   const root = useMemo(() => {
     if (priorLayoutRevision.current !== layoutRevision) { orders.current.clear(); priorLayoutRevision.current = layoutRevision; }
     if (priorScope.current !== scope) { orders.current.clear(); priorScope.current = scope; }
     const list = enhanced ? devices.filter(d => (!page || d.workspaces.some(w => w.threads.length > 0) || focusId === `device:${d.id}`) && ( d.state !== 'offline' || cachedDevices.has(d.id) && (focusId === `device:${d.id}` || focusId?.startsWith(`workspace:${d.id}:`))))
       .map(d => d.state === 'offline' ? { ...d, state: 'ready' as const } : d) : devices;
-    const tree = buildThreadMap(list, allLabel, enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true, dense: page } : {});
+    // Searching spans scopes; otherwise retain the old dialog's scope policy.
+    const scoped = phone && !phoneQuery.trim() && scope !== 'all' ? list.map(device => ({
+      ...device, workspaces: device.workspaces.map(workspace => ({
+        ...workspace, threads: workspace.threads.filter(thread => inScope(thread, scope, Date.now())),
+      })),
+    })) : list;
+    const source = phone ? filterPhoneDevices(scoped, phoneQuery) : list;
+    const tree = buildThreadMap(source, allLabel, phone ? { keepDeviceRoot: true } : enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true, dense: page } : {});
     if (page) tree.children = tree.children.filter(node => node.threads > 0 || node.id === focusId);
     return stableLayout ? orders.current.apply(tree, frozen) : tree;
-  }, [devices, allLabel, enhanced, page, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId]);
+  }, [devices, allLabel, enhanced, page, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId, phone, phoneQuery]);
   const nodes = useMemo(() => indexMap(root), [root]);
   const latest = useRef({ onOpen, onQuickLook });
   latest.current = { onOpen, onQuickLook };
@@ -103,7 +114,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     orders.current.clear(); setExpandedWorkspaces(new Set()); setExpandedDevices(new Set());
     setLocalScope(next); onScopeChange?.(next);
   };
-  const setFilter = (text: string) => { setLocalFilter(text); onFilterChange?.(text); };
+  const setFilter = (text: string) => { setSearchFocus(null); setLocalFilter(text); onFilterChange?.(text); };
   const matches = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase(locale);
     const result = new Set<string>();
@@ -128,7 +139,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       return next;
     });
   };
-  const focused = (focusId ? nodes.get(focusId) : undefined) ?? root;
+  const [searchFocus, setSearchFocus] = useState<string | null>(null);
+  const focused = (phone && query.trim() ? nodes.get(searchFocus ?? 'root') ?? root : focusId ? nodes.get(focusId) : undefined) ?? root;
   const current = page && focused.thread?.children?.length ? { ...focused, children: focused.thread.children.flatMap(child => { const node = nodes.get(`thread:${child.key}`); return node ? [node] : []; }) } : focused;
   const canvas = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -303,7 +315,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       zoomPlan.current = child ? { kind: 'out', childId: child.id } : { kind: 'fade' };
     }
     if (page) setLayoutRevision(revision => revision + 1);
-    setFocusId(target === root ? null : target.id);
+    if (phone && query.trim()) setSearchFocus(target === root ? null : target.id);
+    else setFocusId(target === root ? null : target.id);
     setTip(null);
     crumbs.current?.focus({ preventScroll: true });
   };
@@ -349,6 +362,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       window.setTimeout(() => { dialog.style.transition = ''; }, 200);
     };
     const start = (event: TouchEvent) => {
+      const scroller = (event.target as Element).closest<HTMLElement>('.thread-map-list-scroll');
       if (event.touches.length === 2) {
         if (drag?.active) settleSheet();
         drag = null;
@@ -358,7 +372,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           x: (event.touches[0]!.clientX + event.touches[1]!.clientX) / 2 - box.left,
           y: (event.touches[0]!.clientY + event.touches[1]!.clientY) / 2 - box.top,
         };
-      } else if (event.touches.length === 1 && !pinch) {
+      } else if (event.touches.length === 1 && !pinch && (!scroller || scroller.scrollHeight <= scroller.clientHeight)) {
         drag = { x: event.touches[0]!.clientX, y: event.touches[0]!.clientY, t: event.timeStamp, dy: 0, active: false };
       }
     };
@@ -571,8 +585,27 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       );
     });
 
+  const renderPhone = (items: MapNode[], bounds: MapRect, parent: MapNode, depth = 0): ReactNode[] =>
+    phoneLayout(items, bounds, parent).map(({ item, rect: box }) => {
+      if (item.kind === 'compressed') return <button key={item.id} type="button" className="thread-map-compressed" data-phone-fold aria-label={`${parent.label} ${item.label}`}
+        style={{ left: box.x, top: box.y, width: box.width, height: box.height }} onClick={() => navigate(parent)}>{item.label}</button>;
+      if (item.thread) return <ThreadTile key={item.id} node={item} box={box} hours={hours} current={item.thread.key === currentKey} onOpen={open(item.thread)} hover={{}} readable />;
+      const inner = { x: 3, y: 44, width: box.width - 6, height: box.height - 47 };
+      const preview = depth < 2 && inner.width >= 96 && inner.height >= (item.children[0]?.thread ? 44 : 94);
+      return <section key={item.id} className="thread-map-section" data-map-id={item.id} data-kind={item.kind} data-zoomable
+        aria-label={item.label} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
+        <button type="button" className="thread-map-section-head" onClick={event => navigate(item, event.currentTarget.closest('section'))} aria-label={translate('workbench.threadMapExplore', { name: item.label })}>
+          {item.kind === 'device' ? <Monitor aria-hidden="true" /> : <Folder aria-hidden="true" />}<span className="thread-map-section-label">{item.label}</span><span>{item.threads}</span>
+        </button>
+        {preview ? renderPhone(item.children, inner, item, depth + 1) : item.children.length > 0 ? <button type="button" className="thread-map-phone-fold" data-phone-fold onClick={() => navigate(item)} aria-label={translate('workbench.threadMapExplore', { name: item.label }) + ` +${item.threads}`}>+{item.threads}</button> : null}
+      </section>;
+    });
+
   const children = current.children;
+  const phoneColumns = size.width >= 197 ? 2 : 1;
+  const phoneHeight = Math.max(size.height, Math.ceil(children.length / phoneColumns) * (children.some(item => item.kind !== 'thread') ? 99 : 49) - 5);
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
+  const phoneStage = size.width > 0 && <div ref={stage} className="thread-map-stage" style={{ position: 'relative', height: phoneHeight }}>{renderPhone(children, { ...bounds, height: phoneHeight }, current)}</div>;
   const breadcrumb = <>
         <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapBack')} disabled={current === root} onClick={() => navigate(current.parent)}>
           <ArrowLeft aria-hidden="true" />
@@ -596,7 +629,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         </nav>
   </>;
   return (
-    <div className="thread-map" data-presentation={presentation} onKeyDown={keyboard}>
+    <div className="thread-map" data-presentation={presentation} data-phone={phone || undefined} onKeyDown={keyboard}>
       {page && <div className="thread-map-bar thread-map-dense-toolbar">
         {breadcrumb}
         <span className="thread-map-dense-summary">
@@ -613,7 +646,17 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         <MapLegend compact inline><span>{translate('workbench.threadMapLegendSize')}</span><span>{translate('workbench.threadMapLegendColor',{hours})}</span><span><StatusMark status="waiting"/>{translate('workbench.waitingForYou')}</span><span><StatusMark status="running"/>{translate('workbench.threadMapRunning')}</span></MapLegend>
         {actions}
       </div>}
-      {!page && <div className="thread-map-bar">
+      {phone && <>
+        <div className="thread-map-phone-header">
+          {current !== root ? <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapBack')} onClick={() => navigate(current.parent)}><ArrowLeft aria-hidden="true" /></button> : actions}
+          <span className="thread-map-phone-title">{current === root ? heading : current.label}</span>
+          <PhoneMapMenu scope={scope} setScope={setScope} onRefresh={() => setLayoutRevision(n => n + 1)} hours={hours} />
+        </div>
+        <label className="thread-map-filter thread-map-phone-search"><input ref={filter} type="search" value={query} placeholder={translate('workbench.threadMapFilter')} aria-label={translate('workbench.threadMapFilter')} onChange={event => setFilter(event.target.value)} />
+          {query.trim() && <><span role="status">{translate('workbench.threadMapMatches', { count: matches.size })}</span><button type="button" aria-label={translate('workbench.threadMapClearSearch')} onClick={() => setFilter('')}><X aria-hidden="true" /></button></>}
+        </label>
+      </>}
+      {!page && !phone && <div className="thread-map-bar">
         {heading}
         <span className="thread-map-summary">
           {translate('workbench.threadMapThreads', { count: root.threads })}
@@ -636,7 +679,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         const thread = nodes.get(`thread:${key}`)?.thread ?? devices.flatMap(device => device.workspaces.flatMap(workspace => workspace.threads)).find(thread => thread.key === key);
         if (thread) latest.current.onOpen(thread); else onQuickLook?.(key);
       }} onRequestDecision={onRequestDecision} />}
-      {!page && <div className="thread-map-bar thread-map-path">
+      {!page && !phone && <div className="thread-map-bar thread-map-path">
         {breadcrumb}
         {stableLayout && <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapRefreshLayout')}
           onClick={() => setLayoutRevision(revision => revision + 1)}><RotateCw data-icon="refresh" aria-hidden="true" /></button>}
@@ -660,11 +703,11 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         onFocusCapture={() => { focusInside.current = true; if (stableLayout) freeze(); }}
         onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) { focusInside.current = false; if (stableLayout) thaw(); } }}>
         {children.length
-          ? <div ref={stage} className="thread-map-stage">{page ? <DenseMap current={current} bounds={bounds} hours={hours} currentKey={currentKey} frozen={stableLayout && frozen}
+          ? phone ? <MapScrollList label={current.label}>{phoneStage}</MapScrollList> : <div ref={stage} className="thread-map-stage">{page ? <DenseMap current={current} bounds={bounds} hours={hours} currentKey={currentKey} frozen={stableLayout && frozen}
             version={`${scope}:${layoutRevision}`} query={query} matches={hasMatch} extras={deviceExtras} cached={cachedDevices}
             navigate={navigate} expand={expand} onOpen={open} onQuickLook={onQuickLook ? quickLook : undefined} hover={hover}
             register={items => { spatial.current = items; }} onRetry={onRetry} /> : size.width > 0 && render(children, bounds, 0)}</div>
-          : <p className="thread-map-empty" role="status">{current.device && cachedDevices.has(current.device.id) ? translate('workbench.threadMapNoCache') : devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
+          : phone && query.trim() ? <div className="thread-map-empty" role="status">{translate('workbench.threadMapNoMatches', { query })}<button type="button" onClick={() => setFilter('')}>{translate('workbench.threadMapClearSearch')}</button></div> : <p className="thread-map-empty" role="status">{current.device && cachedDevices.has(current.device.id) ? translate('workbench.threadMapNoCache') : devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
         {tip && <MapTooltip anchor={tip.target} trigger={tip.trigger} lines={tip.lines} node={tip.nodeId ? nodes.get(tip.nodeId) : undefined} hours={hours}
           extra={tip.nodeId && nodes.get(tip.nodeId)?.device ? deviceExtras?.[nodes.get(tip.nodeId)!.device!.id] : undefined}
           onHold={holdTip} onLeave={leaveTip} onClose={dismissTip} />}
@@ -679,7 +722,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           <small>{translate(device.workspaces.length ? 'workbench.threadMapCached' : 'workbench.threadMapNoCache')}</small>
         </button>)}
       </div>}
-      {!page && <MapLegend compact={false}>
+      {!page && !phone && <MapLegend compact={false}>
         <span>{translate('workbench.threadMapLegendSize')}</span>
         <span className="thread-map-scale">
           {translate('workbench.threadMapLegendColor', { hours })}

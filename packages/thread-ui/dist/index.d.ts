@@ -1170,6 +1170,8 @@ interface ThreadMapProps {
     onRetry?: ((deviceId: string) => void) | undefined;
     onDismiss?: (() => void) | undefined;
     presentation?: 'dialog' | 'page';
+    /** Readable phone chrome/layout on the legacy non-page renderer. */
+    phone?: boolean;
     scope?: MapScope;
     onScopeChange?: (scope: MapScope) => void;
     attention?: readonly MapAttention[];
@@ -1192,10 +1194,11 @@ interface ThreadMapProps {
  * then), tapping a thread opens it. On touch, pinching in goes up a level,
  * spreading opens the block under the fingers and dragging down dismisses.
  */
-declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onNavigate, onRetry, onDismiss, presentation, scope: controlledScope, onScopeChange, attention, stableLayout, filterText, onFilterChange, deviceExtras, onQuickLook, onRequestDecision, revealKey, pulseKeys, }: ThreadMapProps): react.JSX.Element;
+declare function ThreadMap({ devices, currentKey, hours, heading, actions, onOpen, onNavigate, onRetry, onDismiss, presentation, phone, scope: controlledScope, onScopeChange, attention, stableLayout, filterText, onFilterChange, deviceExtras, onQuickLook, onRequestDecision, revealKey, pulseKeys, }: ThreadMapProps): react.JSX.Element;
 
-/** The same dense map as the desktop page, in a dialog: full screen on a phone, a large panel elsewhere. */
-declare function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, ...map }: Omit<ComponentProps<typeof ThreadMap>, 'heading' | 'actions'> & {
+/** Phones retain the zoomable tile map; desktops retain the dense page map. */
+declare function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, hostSurface, ...map }: Omit<ComponentProps<typeof ThreadMap>, 'heading' | 'actions'> & {
+    hostSurface?: 'mobile' | 'desktop' | 'browser';
     open: boolean;
     onOpenChange: (open: boolean) => void;
     themeMode?: string | undefined;

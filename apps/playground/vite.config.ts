@@ -67,5 +67,6 @@ export default defineConfig({
   },
   server: {
     port: 5174,
+    proxy: process.env.MAP_THEME_ORIGIN ? { '/themes': process.env.MAP_THEME_ORIGIN } : undefined,
   },
 });

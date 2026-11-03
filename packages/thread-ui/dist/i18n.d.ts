@@ -438,6 +438,9 @@ declare const en: {
     readonly "workbench.threadMapScopeActive": "Active";
     readonly "workbench.threadMapScopeWeek": "7 days";
     readonly "workbench.threadMapScopeAll": "All";
+    readonly "workbench.threadMapActions": "Map actions";
+    readonly "workbench.threadMapClearSearch": "Clear search";
+    readonly "workbench.threadMapNoMatches": "No matches for “{{query}}”";
     readonly "workbench.threadMapFilter": "Filter threads";
     readonly "workbench.threadMapMatches": "{{count}} matches";
     readonly "workbench.threadMapAttention": "Needs attention";
@@ -5655,6 +5658,9 @@ declare const zhCN: {
     "workbench.threadMapScopeActive": "活跃";
     "workbench.threadMapScopeWeek": "7 天";
     "workbench.threadMapScopeAll": "全部";
+    "workbench.threadMapActions": "地图操作";
+    "workbench.threadMapClearSearch": "清除搜索";
+    "workbench.threadMapNoMatches": "没有匹配“{{query}}”的线程";
     "workbench.threadMapFilter": "过滤线程";
     "workbench.threadMapMatches": "{{count}} 个匹配";
     "workbench.threadMapAttention": "关注";
@@ -10894,6 +10900,9 @@ declare const resources: {
         readonly "workbench.threadMapScopeActive": "Active";
         readonly "workbench.threadMapScopeWeek": "7 days";
         readonly "workbench.threadMapScopeAll": "All";
+        readonly "workbench.threadMapActions": "Map actions";
+        readonly "workbench.threadMapClearSearch": "Clear search";
+        readonly "workbench.threadMapNoMatches": "No matches for “{{query}}”";
         readonly "workbench.threadMapFilter": "Filter threads";
         readonly "workbench.threadMapMatches": "{{count}} matches";
         readonly "workbench.threadMapAttention": "Needs attention";
@@ -16110,6 +16119,9 @@ declare const resources: {
         "workbench.threadMapScopeActive": "活跃";
         "workbench.threadMapScopeWeek": "7 天";
         "workbench.threadMapScopeAll": "全部";
+        "workbench.threadMapActions": "地图操作";
+        "workbench.threadMapClearSearch": "清除搜索";
+        "workbench.threadMapNoMatches": "没有匹配“{{query}}”的线程";
         "workbench.threadMapFilter": "过滤线程";
         "workbench.threadMapMatches": "{{count}} 个匹配";
         "workbench.threadMapAttention": "关注";

@@ -6,7 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-S5HMUO2V.js";
+} from "./chunk-JJS4TL3U.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -146,6 +146,7 @@ function ErrorMark({
   label,
   onRetry,
   retryLabel,
+  retryDisabled = false,
   secondaryAction,
   className = "",
   announce = true,
@@ -252,7 +253,7 @@ function ErrorMark({
           children: [
             /* @__PURE__ */ jsx4("p", { className: "error-mark-message", children: message }),
             detail ? /* @__PURE__ */ jsx4("pre", { className: "error-mark-detail", children: detail }) : null,
-            onRetry ? /* @__PURE__ */ jsxs4("button", { type: "button", className: "error-mark-retry", onClick: () => {
+            onRetry ? /* @__PURE__ */ jsxs4("button", { type: "button", className: "error-mark-retry", disabled: retryDisabled, onClick: () => {
               setOpen(false);
               onRetry();
             }, children: [
@@ -470,16 +471,26 @@ function ConfirmDialog({
 // src/components/menu/confirmAsync.tsx
 import { createRoot } from "react-dom/client";
 import { jsx as jsx6 } from "react/jsx-runtime";
-function confirmAsync({ title, description, confirmLabel, cancelLabel, tone }) {
+function confirmAsync({ title, description, confirmLabel, cancelLabel, tone, signal }) {
   return new Promise((resolve) => {
+    if (signal?.aborted) {
+      resolve(false);
+      return;
+    }
+    let settled = false;
     const host = document.createElement("div");
     document.body.append(host);
     const root = createRoot(host);
     const finish = (value) => {
+      if (settled) return;
+      settled = true;
+      signal?.removeEventListener("abort", abort);
       root.unmount();
       host.remove();
       resolve(value);
     };
+    const abort = () => finish(false);
+    signal?.addEventListener("abort", abort, { once: true });
     root.render(
       /* @__PURE__ */ jsx6(
         ConfirmDialog,
@@ -639,13 +650,44 @@ var documentListeners = memory.listeners;
 if (typeof window !== "undefined" && !memory.unloadInstalled) {
   memory.unloadInstalled = true;
   window.addEventListener("beforeunload", (event) => {
-    if ([...documentStores.values()].some(
-      (store) => [...store.values()].some(isProtected)
-    )) {
+    const protectedDocs = protectedWorkspaceDocuments();
+    const approval = memory.unloadApproval;
+    const approved = approval && approvalMatches(approval, protectedDocs);
+    if (approved) {
+      if (event.isTrusted) delete memory.unloadApproval;
+      return;
+    }
+    if (protectedDocs.length) {
       event.preventDefault();
       event.returnValue = "";
     }
   });
+}
+function protectedWorkspaceDocuments() {
+  return [...documentStores.values()].flatMap((store) => [...store.values()]).filter(isProtected);
+}
+function getDirtyWorkspaceDocumentCount() {
+  return protectedWorkspaceDocuments().length;
+}
+function snapshotProtectedDocuments() {
+  return protectedWorkspaceDocuments().map((doc) => ({ doc, revision: doc.revision, content: doc.content, baseContent: doc.baseContent, phase: doc.phase }));
+}
+function approvalMatches(approval, documents = protectedWorkspaceDocuments()) {
+  return approval.length === documents.length && documents.every((doc) => approval.some((saved) => saved.doc === doc && saved.revision === doc.revision && saved.content === doc.content && saved.baseContent === doc.baseContent && saved.phase === doc.phase));
+}
+function approveWorkspaceDocumentUnloadOnce() {
+  memory.unloadApproval = snapshotProtectedDocuments();
+}
+function prepareWorkspaceDocumentUnloadApproval() {
+  const snapshot = snapshotProtectedDocuments();
+  return () => {
+    if (!approvalMatches(snapshot)) return false;
+    memory.unloadApproval = snapshot;
+    return true;
+  };
+}
+function revokeWorkspaceDocumentUnloadApproval() {
+  delete memory.unloadApproval;
 }
 function isProtected(doc) {
   return doc.content !== doc.baseContent || ["saving", "unknown", "conflict"].includes(doc.phase);
@@ -2032,6 +2074,10 @@ export {
   collectAncestorPaths,
   documentStores,
   documentListeners,
+  getDirtyWorkspaceDocumentCount,
+  approveWorkspaceDocumentUnloadOnce,
+  prepareWorkspaceDocumentUnloadApproval,
+  revokeWorkspaceDocumentUnloadApproval,
   isProtected,
   newDraft,
   editDraft,

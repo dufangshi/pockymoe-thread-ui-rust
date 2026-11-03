@@ -18,6 +18,7 @@ export function ErrorMark({
   label,
   onRetry,
   retryLabel,
+  retryDisabled = false,
   secondaryAction,
   className = '',
   announce = true,
@@ -31,6 +32,7 @@ export function ErrorMark({
   label?: string | undefined;
   onRetry?: (() => void) | undefined;
   retryLabel?: string | undefined;
+  retryDisabled?: boolean | undefined;
   /** An alternative recovery, such as opening the verified release's download page. */
   secondaryAction?: { label: string; onClick(): void } | undefined;
   className?: string | undefined;
@@ -149,7 +151,7 @@ export function ErrorMark({
           <p className="error-mark-message">{message}</p>
           {detail ? <pre className="error-mark-detail">{detail}</pre> : null}
           {onRetry ? (
-            <button type="button" className="error-mark-retry" onClick={() => { setOpen(false); onRetry(); }}>
+            <button type="button" className="error-mark-retry" disabled={retryDisabled} onClick={() => { setOpen(false); onRetry(); }}>
               <RotateCw aria-hidden="true" />
               {retryLabel ?? translate('common.retry')}
             </button>

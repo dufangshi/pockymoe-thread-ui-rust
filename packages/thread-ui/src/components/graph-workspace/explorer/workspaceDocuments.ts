@@ -27,6 +27,7 @@ interface DocumentMemory {
   stores: Map<string, Map<string, WorkspaceDraft>>;
   listeners: Set<() => void>;
   unloadInstalled?: boolean;
+  unloadApproval?: { doc: WorkspaceDraft; revision: number; content: string; baseContent: string; phase: WorkspaceDraft['phase'] }[];
 }
 const documentGlobal = globalThis as typeof globalThis & {
   [storeKey]?: DocumentMemory;
@@ -41,16 +42,45 @@ export const documentListeners = memory.listeners;
 if (typeof window !== 'undefined' && !memory.unloadInstalled) {
   memory.unloadInstalled = true;
   window.addEventListener('beforeunload', (event) => {
-    if (
-      [...documentStores.values()].some((store) =>
-        [...store.values()].some(isProtected),
-      )
-    ) {
+    const protectedDocs = protectedWorkspaceDocuments();
+    const approval = memory.unloadApproval;
+    const approved = approval && approvalMatches(approval, protectedDocs);
+    if (approved) {
+      // Native update preflight dispatches an untrusted synthetic event. Keep
+      // approval for the actual browser unload, or revoke it when native aborts.
+      if (event.isTrusted) delete memory.unloadApproval;
+      return;
+    }
+    if (protectedDocs.length) {
       event.preventDefault();
       event.returnValue = '';
     }
   });
 }
+function protectedWorkspaceDocuments(): WorkspaceDraft[] {
+  return [...documentStores.values()].flatMap(store => [...store.values()]).filter(isProtected);
+}
+/** Count retained dirty/uncertain documents, including panels no longer visible. */
+export function getDirtyWorkspaceDocumentCount(): number { return protectedWorkspaceDocuments().length; }
+/** Consent applies only to these exact revisions, never to subsequent edits. */
+function snapshotProtectedDocuments() {
+  return protectedWorkspaceDocuments().map(doc => ({ doc, revision: doc.revision, content: doc.content, baseContent: doc.baseContent, phase: doc.phase }));
+}
+function approvalMatches(approval: NonNullable<DocumentMemory['unloadApproval']>, documents = protectedWorkspaceDocuments()): boolean {
+  return approval.length === documents.length && documents.every(doc => approval.some(saved => saved.doc === doc && saved.revision === doc.revision && saved.content === doc.content && saved.baseContent === doc.baseContent && saved.phase === doc.phase));
+}
+export function approveWorkspaceDocumentUnloadOnce(): void { memory.unloadApproval = snapshotProtectedDocuments(); }
+/** Capture before showing the dialog; edits arriving while it is open need new consent. */
+export function prepareWorkspaceDocumentUnloadApproval(): () => boolean {
+  const snapshot = snapshotProtectedDocuments();
+  return () => {
+    if (!approvalMatches(snapshot)) return false;
+    memory.unloadApproval = snapshot;
+    return true;
+  };
+}
+export function revokeWorkspaceDocumentUnloadApproval(): void { delete memory.unloadApproval; }
+
 export function isProtected(doc: WorkspaceDraft) {
   return (
     doc.content !== doc.baseContent ||

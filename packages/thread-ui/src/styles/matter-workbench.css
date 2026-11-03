@@ -725,6 +725,8 @@
   .thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:hover, [aria-expanded='true']) { background: var(--theme-hover); color: var(--theme-fg); }
 }
 .matter-thread-group > .matter-group-toggle.is-badge > svg { width: 11px; height: 11px; }
+/* Every agent thread closed: the way back to them stays, and counts for nothing. */
+.matter-thread-group > .matter-group-toggle.is-badge[data-closed-only] > svg { opacity: .6; }
 /* Agents at work: the robot slowly brightens into the running colour and fades back. */
 .matter-thread-group > .matter-group-toggle.is-badge[data-running] > svg { animation: matter-tab-agents-glow 2.4s ease-in-out infinite; }
 @keyframes matter-tab-agents-glow {

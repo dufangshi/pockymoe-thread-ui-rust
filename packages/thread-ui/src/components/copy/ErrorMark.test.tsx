@@ -105,3 +105,13 @@ it('uses the surface behind the mark rather than its translucent hover tint', ()
   act(() => mark.click());
   expect(bubble()!.style.backgroundColor).toBe('rgb(20, 30, 40)');
 });
+
+
+it('disables Retry after an attempt limit while preserving alternative recovery', () => {
+  const retry = vi.fn(), download = vi.fn();
+  act(() => root.render(<ErrorMark message="Retry limit reached." onRetry={retry} retryDisabled secondaryAction={{ label: 'Go to download', onClick: download }} />));
+  act(() => host.querySelector<HTMLButtonElement>('button.error-mark')!.click());
+  const actions = bubble()!.querySelectorAll<HTMLButtonElement>('button');
+  expect(actions[0].disabled).toBe(true); act(() => actions[0].click()); expect(retry).not.toHaveBeenCalled();
+  act(() => actions[1].click()); expect(download).toHaveBeenCalledOnce();
+});

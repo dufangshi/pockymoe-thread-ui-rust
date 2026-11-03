@@ -170,6 +170,7 @@ export interface ThreadDetailSurfaceProps {
   settingsContent?: ReactNode;
   globalSettingsContent?: ReactNode;
   settingsSections?: import("./components/SettingsPanels").SettingsSection[];
+  renderRailSettings?: ((openSettings: () => void) => ReactNode) | undefined;
   settingsDialogOpen?: boolean;
   onSettingsDialogOpenChange?: (open: boolean) => void;
   mobileHeaderAction?: ReactNode;
@@ -252,6 +253,7 @@ export function ThreadDetailSurface({
   settingsContent,
   globalSettingsContent,
   settingsSections,
+  renderRailSettings,
   settingsDialogOpen,
   onSettingsDialogOpenChange,
   mobileHeaderAction,
@@ -548,6 +550,7 @@ export function ThreadDetailSurface({
       settingsContent={settingsContent}
       globalSettingsContent={globalSettingsContent}
       settingsSections={settingsSections}
+      renderRailSettings={renderRailSettings}
       {...(settingsDialogOpen !== undefined ? { settingsDialogOpen } : {})}
       {...(onSettingsDialogOpenChange ? { onSettingsDialogOpenChange } : {})}
       mobileHeaderAction={mobileHeaderAction}

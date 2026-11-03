@@ -2,6 +2,10 @@ import * as react from 'react';
 import { ReactNode } from 'react';
 
 declare const en: {
+    readonly "desktopShell.updatePendingTitle": "Restart to update Pockymoe?";
+    readonly "desktopShell.updatePendingDescription": "Unsent conversation drafts: {{drafts}} (attachments: {{attachments}}). Unsaved workspace documents: {{documents}}. Updating closes all windows and discards these changes.";
+    readonly "desktopShell.updateDiscardConfirm": "Discard and update";
+    readonly "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.";
     readonly "desktopShell.updateTo": "Update to {{version}}";
     readonly "desktopShell.updateFailed": "The update could not be installed.";
     readonly "desktopShell.downloadUpdate": "Go to download";
@@ -4208,6 +4212,13 @@ declare const en: {
     readonly "auth.ui.accountPendingApproval": "Your account is waiting for an administrator's approval.";
     readonly "auth.ui.registrationRejected": "Your registration was not approved. Contact the relay administrator.";
     readonly "auth.ui.accountDisabled": "This account is disabled. Contact the relay administrator.";
+    readonly "auth.loginSecurity": "Sign-in and security";
+    readonly "auth.accountKeys": "Account keys";
+    readonly "auth.accountKeysHelp": "Use these to verify your sharing identity across devices.";
+    readonly "auth.accountBrowsersHelp": "These browsers hold device access certificates. Removed browsers must be authorized again.";
+    readonly "auth.dangerZone": "Danger zone";
+    readonly "auth.oauthUnlockPasswordHelp": "OAuth accounts have no sign-in password. This changes the password that unlocks your account key; it does not enable password sign-in.";
+    readonly "auth.dangerZoneHelp": "Reset your account key and authorize devices again.";
     readonly 'quality.report.reviewed': "Reviewed";
     readonly 'quality.report.connected': "Connection succeeded";
     readonly 'quality.report.repliesDisabled': "Automatic reply polishing is disabled";
@@ -5199,6 +5210,10 @@ declare const en: {
 };
 
 declare const zhCN: {
+    "desktopShell.updatePendingTitle": string;
+    "desktopShell.updatePendingDescription": string;
+    "desktopShell.updateDiscardConfirm": string;
+    "desktopShell.updateCancelled": string;
     "desktopShell.updateTo": string;
     "desktopShell.updateFailed": string;
     "desktopShell.downloadUpdate": string;
@@ -9405,6 +9420,13 @@ declare const zhCN: {
     "auth.ui.accountPendingApproval": "你的账号正在等待管理员批准。";
     "auth.ui.registrationRejected": "你的注册没有通过审批。请联系 Relay 管理员。";
     "auth.ui.accountDisabled": "这个账号已被停用。请联系 Relay 管理员。";
+    "auth.loginSecurity": "登录与安全";
+    "auth.accountKeys": "账户密钥";
+    "auth.accountKeysHelp": "核对分享身份时使用，所有设备通用。";
+    "auth.accountBrowsersHelp": "这些浏览器持有可访问设备的证书。移除后需重新授权。";
+    "auth.dangerZone": "危险操作";
+    "auth.oauthUnlockPasswordHelp": "第三方登录账号没有登录密码。此处修改的是用于解锁账户密钥的密码，不会新增密码登录。";
+    "auth.dangerZoneHelp": "重置账户密钥并重新授权所有设备。";
     'quality.report.reviewed': "已审阅";
     'quality.report.connected': "连接成功";
     'quality.report.repliesDisabled': "自动回复润色已关闭";
@@ -10418,6 +10440,10 @@ type Message = string | {
 };
 declare const resources: {
     en: {
+        readonly "desktopShell.updatePendingTitle": "Restart to update Pockymoe?";
+        readonly "desktopShell.updatePendingDescription": "Unsent conversation drafts: {{drafts}} (attachments: {{attachments}}). Unsaved workspace documents: {{documents}}. Updating closes all windows and discards these changes.";
+        readonly "desktopShell.updateDiscardConfirm": "Discard and update";
+        readonly "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.";
         readonly "desktopShell.updateTo": "Update to {{version}}";
         readonly "desktopShell.updateFailed": "The update could not be installed.";
         readonly "desktopShell.downloadUpdate": "Go to download";
@@ -14624,6 +14650,13 @@ declare const resources: {
         readonly "auth.ui.accountPendingApproval": "Your account is waiting for an administrator's approval.";
         readonly "auth.ui.registrationRejected": "Your registration was not approved. Contact the relay administrator.";
         readonly "auth.ui.accountDisabled": "This account is disabled. Contact the relay administrator.";
+        readonly "auth.loginSecurity": "Sign-in and security";
+        readonly "auth.accountKeys": "Account keys";
+        readonly "auth.accountKeysHelp": "Use these to verify your sharing identity across devices.";
+        readonly "auth.accountBrowsersHelp": "These browsers hold device access certificates. Removed browsers must be authorized again.";
+        readonly "auth.dangerZone": "Danger zone";
+        readonly "auth.oauthUnlockPasswordHelp": "OAuth accounts have no sign-in password. This changes the password that unlocks your account key; it does not enable password sign-in.";
+        readonly "auth.dangerZoneHelp": "Reset your account key and authorize devices again.";
         readonly 'quality.report.reviewed': "Reviewed";
         readonly 'quality.report.connected': "Connection succeeded";
         readonly 'quality.report.repliesDisabled': "Automatic reply polishing is disabled";
@@ -15614,6 +15647,10 @@ declare const resources: {
         readonly "admin.afterNextSample": "Shown after the next sample (once a minute).";
     };
     'zh-CN': {
+        "desktopShell.updatePendingTitle": string;
+        "desktopShell.updatePendingDescription": string;
+        "desktopShell.updateDiscardConfirm": string;
+        "desktopShell.updateCancelled": string;
         "desktopShell.updateTo": string;
         "desktopShell.updateFailed": string;
         "desktopShell.downloadUpdate": string;
@@ -19820,6 +19857,13 @@ declare const resources: {
         "auth.ui.accountPendingApproval": "你的账号正在等待管理员批准。";
         "auth.ui.registrationRejected": "你的注册没有通过审批。请联系 Relay 管理员。";
         "auth.ui.accountDisabled": "这个账号已被停用。请联系 Relay 管理员。";
+        "auth.loginSecurity": "登录与安全";
+        "auth.accountKeys": "账户密钥";
+        "auth.accountKeysHelp": "核对分享身份时使用，所有设备通用。";
+        "auth.accountBrowsersHelp": "这些浏览器持有可访问设备的证书。移除后需重新授权。";
+        "auth.dangerZone": "危险操作";
+        "auth.oauthUnlockPasswordHelp": "第三方登录账号没有登录密码。此处修改的是用于解锁账户密钥的密码，不会新增密码登录。";
+        "auth.dangerZoneHelp": "重置账户密钥并重新授权所有设备。";
         'quality.report.reviewed': "已审阅";
         'quality.report.connected': "连接成功";
         'quality.report.repliesDisabled': "自动回复润色已关闭";

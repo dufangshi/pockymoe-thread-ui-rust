@@ -27,6 +27,10 @@ export const zhCN = {
   ...searchZhCN,
   ...tourZhCN,
 
+  "desktopShell.updatePendingTitle": "重启以更新 Pockymoe？",
+  "desktopShell.updatePendingDescription": "此窗口有 {{drafts}} 个未发送的对话草稿（{{attachments}} 个附件）和 {{documents}} 个未保存的工作区文档。更新会关闭全部窗口并丢弃这些更改。",
+  "desktopShell.updateDiscardConfirm": "丢弃并更新",
+  "desktopShell.updateCancelled": "有未保存的文件，已取消更新",
   "desktopShell.updateTo": "更新到 {{version}}",
   "desktopShell.updateFailed": "无法安装更新。",
   "desktopShell.downloadUpdate": "前往下载",

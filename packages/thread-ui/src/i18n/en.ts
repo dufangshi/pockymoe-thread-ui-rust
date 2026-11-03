@@ -26,6 +26,10 @@ export const en = {
   ...searchEn,
   ...tourEn,
 
+  "desktopShell.updatePendingTitle": "Restart to update Pockymoe?",
+  "desktopShell.updatePendingDescription": "Unsent conversation drafts: {{drafts}} (attachments: {{attachments}}). Unsaved workspace documents: {{documents}}. Updating closes all windows and discards these changes.",
+  "desktopShell.updateDiscardConfirm": "Discard and update",
+  "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.",
   "desktopShell.updateTo": "Update to {{version}}",
   "desktopShell.updateFailed": "The update could not be installed.",
   "desktopShell.downloadUpdate": "Go to download",

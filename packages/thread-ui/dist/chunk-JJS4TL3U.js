@@ -1850,7 +1850,14 @@ var authEn = {
   "auth.ui.oauthProviderFallback": "Google or GitHub",
   "auth.ui.accountPendingApproval": "Your account is waiting for an administrator's approval.",
   "auth.ui.registrationRejected": "Your registration was not approved. Contact the relay administrator.",
-  "auth.ui.accountDisabled": "This account is disabled. Contact the relay administrator."
+  "auth.ui.accountDisabled": "This account is disabled. Contact the relay administrator.",
+  "auth.loginSecurity": "Sign-in and security",
+  "auth.accountKeys": "Account keys",
+  "auth.accountKeysHelp": "Use these to verify your sharing identity across devices.",
+  "auth.accountBrowsersHelp": "These browsers hold device access certificates. Removed browsers must be authorized again.",
+  "auth.dangerZone": "Danger zone",
+  "auth.oauthUnlockPasswordHelp": "OAuth accounts have no sign-in password. This changes the password that unlocks your account key; it does not enable password sign-in.",
+  "auth.dangerZoneHelp": "Reset your account key and authorize devices again."
 };
 
 // src/i18n/chat.en.ts
@@ -5230,6 +5237,10 @@ var en = {
   ...workbenchEn,
   ...searchEn,
   ...tourEn,
+  "desktopShell.updatePendingTitle": "Restart to update Pockymoe?",
+  "desktopShell.updatePendingDescription": "Unsent conversation drafts: {{drafts}} (attachments: {{attachments}}). Unsaved workspace documents: {{documents}}. Updating closes all windows and discards these changes.",
+  "desktopShell.updateDiscardConfirm": "Discard and update",
+  "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.",
   "desktopShell.updateTo": "Update to {{version}}",
   "desktopShell.updateFailed": "The update could not be installed.",
   "desktopShell.downloadUpdate": "Go to download",
@@ -6962,7 +6973,14 @@ var authZhCN = {
   "auth.ui.oauthProviderFallback": "Google \u6216 GitHub",
   "auth.ui.accountPendingApproval": "\u4F60\u7684\u8D26\u53F7\u6B63\u5728\u7B49\u5F85\u7BA1\u7406\u5458\u6279\u51C6\u3002",
   "auth.ui.registrationRejected": "\u4F60\u7684\u6CE8\u518C\u6CA1\u6709\u901A\u8FC7\u5BA1\u6279\u3002\u8BF7\u8054\u7CFB Relay \u7BA1\u7406\u5458\u3002",
-  "auth.ui.accountDisabled": "\u8FD9\u4E2A\u8D26\u53F7\u5DF2\u88AB\u505C\u7528\u3002\u8BF7\u8054\u7CFB Relay \u7BA1\u7406\u5458\u3002"
+  "auth.ui.accountDisabled": "\u8FD9\u4E2A\u8D26\u53F7\u5DF2\u88AB\u505C\u7528\u3002\u8BF7\u8054\u7CFB Relay \u7BA1\u7406\u5458\u3002",
+  "auth.loginSecurity": "\u767B\u5F55\u4E0E\u5B89\u5168",
+  "auth.accountKeys": "\u8D26\u6237\u5BC6\u94A5",
+  "auth.accountKeysHelp": "\u6838\u5BF9\u5206\u4EAB\u8EAB\u4EFD\u65F6\u4F7F\u7528\uFF0C\u6240\u6709\u8BBE\u5907\u901A\u7528\u3002",
+  "auth.accountBrowsersHelp": "\u8FD9\u4E9B\u6D4F\u89C8\u5668\u6301\u6709\u53EF\u8BBF\u95EE\u8BBE\u5907\u7684\u8BC1\u4E66\u3002\u79FB\u9664\u540E\u9700\u91CD\u65B0\u6388\u6743\u3002",
+  "auth.dangerZone": "\u5371\u9669\u64CD\u4F5C",
+  "auth.oauthUnlockPasswordHelp": "\u7B2C\u4E09\u65B9\u767B\u5F55\u8D26\u53F7\u6CA1\u6709\u767B\u5F55\u5BC6\u7801\u3002\u6B64\u5904\u4FEE\u6539\u7684\u662F\u7528\u4E8E\u89E3\u9501\u8D26\u6237\u5BC6\u94A5\u7684\u5BC6\u7801\uFF0C\u4E0D\u4F1A\u65B0\u589E\u5BC6\u7801\u767B\u5F55\u3002",
+  "auth.dangerZoneHelp": "\u91CD\u7F6E\u8D26\u6237\u5BC6\u94A5\u5E76\u91CD\u65B0\u6388\u6743\u6240\u6709\u8BBE\u5907\u3002"
 };
 
 // src/i18n/chat.zh-CN.ts
@@ -10342,6 +10360,10 @@ var zhCN = {
   ...workbenchZhCN,
   ...searchZhCN,
   ...tourZhCN,
+  "desktopShell.updatePendingTitle": "\u91CD\u542F\u4EE5\u66F4\u65B0 Pockymoe\uFF1F",
+  "desktopShell.updatePendingDescription": "\u6B64\u7A97\u53E3\u6709 {{drafts}} \u4E2A\u672A\u53D1\u9001\u7684\u5BF9\u8BDD\u8349\u7A3F\uFF08{{attachments}} \u4E2A\u9644\u4EF6\uFF09\u548C {{documents}} \u4E2A\u672A\u4FDD\u5B58\u7684\u5DE5\u4F5C\u533A\u6587\u6863\u3002\u66F4\u65B0\u4F1A\u5173\u95ED\u5168\u90E8\u7A97\u53E3\u5E76\u4E22\u5F03\u8FD9\u4E9B\u66F4\u6539\u3002",
+  "desktopShell.updateDiscardConfirm": "\u4E22\u5F03\u5E76\u66F4\u65B0",
+  "desktopShell.updateCancelled": "\u6709\u672A\u4FDD\u5B58\u7684\u6587\u4EF6\uFF0C\u5DF2\u53D6\u6D88\u66F4\u65B0",
   "desktopShell.updateTo": "\u66F4\u65B0\u5230 {{version}}",
   "desktopShell.updateFailed": "\u65E0\u6CD5\u5B89\u88C5\u66F4\u65B0\u3002",
   "desktopShell.downloadUpdate": "\u524D\u5F80\u4E0B\u8F7D",

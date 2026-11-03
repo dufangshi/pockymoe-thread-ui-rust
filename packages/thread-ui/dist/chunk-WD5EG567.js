@@ -511,6 +511,82 @@ function confirmAsync({ title, description, confirmLabel, cancelLabel, tone, sig
   });
 }
 
+// src/components/RecoverableImage.tsx
+import { createContext, useContext, useEffect as useEffect4, useRef as useRef6, useState as useState4 } from "react";
+import { ImageOff } from "lucide-react";
+import { jsx as jsx7, jsxs as jsxs6 } from "react/jsx-runtime";
+import { createElement } from "react";
+var ImageRecoveryContext = createContext((src) => src);
+var ImageRecoveryProvider = ImageRecoveryContext.Provider;
+function RecoverableImage(props) {
+  return /* @__PURE__ */ jsx7(ImageAttempt, { ...props }, props.src);
+}
+function ImageAttempt({ src, resolveSrc, renderImage = (image) => image, ...props }) {
+  useI18n();
+  const refresh = useContext(ImageRecoveryContext);
+  const latest = useRef6({ resolveSrc, refresh });
+  latest.current = { resolveSrc, refresh };
+  const [state, setState] = useState4({ url: src, attempt: 0, phase: "loading" });
+  const [cycle, setCycle] = useState4(0);
+  const failed = useRef6(false);
+  failed.current = state.phase === "waiting" || state.phase === "failed";
+  const retry = () => {
+    if (!failed.current) return;
+    setCycle((value) => value + 1);
+    setState((current) => ({ ...current, attempt: 0, phase: "waiting" }));
+  };
+  useEffect4(() => {
+    window.addEventListener("online", retry);
+    window.addEventListener("pockymoe-images-reconnected", retry);
+    return () => {
+      window.removeEventListener("online", retry);
+      window.removeEventListener("pockymoe-images-reconnected", retry);
+    };
+  }, []);
+  useEffect4(() => {
+    if (state.phase !== "waiting") return;
+    if (state.attempt >= 2) {
+      setState((current) => ({ ...current, phase: "failed" }));
+      return;
+    }
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      try {
+        const resolved = await (latest.current.resolveSrc?.(src) ?? src);
+        const fresh = await latest.current.refresh(resolved);
+        let url = fresh;
+        const parsed = new URL(fresh, window.location.href);
+        if (["http:", "https:"].includes(parsed.protocol)) {
+          parsed.searchParams.set("_imageRetry", `${Date.now()}-${cycle}-${state.attempt + 1}`);
+          url = parsed.href;
+        }
+        if (!cancelled) setState({ url, attempt: state.attempt + 1, phase: "loading" });
+      } catch {
+        if (!cancelled) setState((current) => ({ ...current, attempt: current.attempt + 1 }));
+      }
+    }, [300, 900][state.attempt]);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [src, state.phase, state.attempt, cycle]);
+  const unavailable = state.phase === "failed";
+  return /* @__PURE__ */ jsxs6("span", { className: "recoverable-image", "data-image-state": state.phase, children: [
+    renderImage(unavailable ? /* @__PURE__ */ jsx7("span", { className: "image-unavailable", role: "img", "aria-label": props.alt || translate("chat.imageUnavailable"), children: /* @__PURE__ */ jsx7(ImageOff, { "aria-hidden": "true" }) }) : /* @__PURE__ */ createElement(
+      "img",
+      {
+        ...props,
+        key: `${cycle}-${state.attempt}`,
+        src: state.url,
+        style: { ...props.style, visibility: state.phase === "ready" ? props.style?.visibility : "hidden" },
+        onLoad: () => setState((current) => ({ ...current, phase: "ready" })),
+        onError: () => setState((current) => current.phase === "waiting" || current.phase === "failed" ? current : { ...current, phase: "waiting" })
+      }
+    )),
+    unavailable ? /* @__PURE__ */ jsx7("span", { className: "image-recovery-error", onPointerDown: (event) => event.stopPropagation(), children: /* @__PURE__ */ jsx7(ErrorMark, { message: translate("chat.imageUnavailable"), onRetry: retry }) }) : null
+  ] });
+}
+
 // src/components/graph-ui/Dialog.tsx
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
@@ -523,35 +599,35 @@ function cn(...inputs) {
 }
 
 // src/components/graph-ui/Dialog.tsx
-import { jsx as jsx7, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx8, jsxs as jsxs7 } from "react/jsx-runtime";
 function Dialog({ ...props }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx7(DialogPrimitive.Root, { "data-slot": "dialog", ...props });
+  return /* @__PURE__ */ jsx8(DialogPrimitive.Root, { "data-slot": "dialog", ...props });
 }
 function DialogTrigger({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx7(DialogPrimitive.Trigger, { "data-slot": "dialog-trigger", ...props });
+  return /* @__PURE__ */ jsx8(DialogPrimitive.Trigger, { "data-slot": "dialog-trigger", ...props });
 }
 function DialogPortal({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx7(DialogPrimitive.Portal, { "data-slot": "dialog-portal", ...props });
+  return /* @__PURE__ */ jsx8(DialogPrimitive.Portal, { "data-slot": "dialog-portal", ...props });
 }
 function DialogClose({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx7(DialogPrimitive.Close, { "data-slot": "dialog-close", ...props });
+  return /* @__PURE__ */ jsx8(DialogPrimitive.Close, { "data-slot": "dialog-close", ...props });
 }
 function DialogOverlay({
   className,
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx8(
     DialogPrimitive.Overlay,
     {
       "data-slot": "dialog-overlay",
@@ -571,9 +647,9 @@ function DialogContent({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsxs6(DialogPortal, { "data-slot": "dialog-portal", children: [
-    /* @__PURE__ */ jsx7(DialogOverlay, { className: overlayClassName }),
-    /* @__PURE__ */ jsxs6(
+  return /* @__PURE__ */ jsxs7(DialogPortal, { "data-slot": "dialog-portal", children: [
+    /* @__PURE__ */ jsx8(DialogOverlay, { className: overlayClassName }),
+    /* @__PURE__ */ jsxs7(
       DialogPrimitive.Content,
       {
         "data-slot": "dialog-content",
@@ -584,14 +660,14 @@ function DialogContent({
         ...props,
         children: [
           children,
-          showCloseButton ? /* @__PURE__ */ jsxs6(
+          showCloseButton ? /* @__PURE__ */ jsxs7(
             DialogPrimitive.Close,
             {
               "data-slot": "dialog-close",
               className: "absolute right-4 top-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
               children: [
-                /* @__PURE__ */ jsx7(XIcon, { "data-icon": "close" }),
-                /* @__PURE__ */ jsx7("span", { className: "sr-only", children: translate("workbench.close") })
+                /* @__PURE__ */ jsx8(XIcon, { "data-icon": "close" }),
+                /* @__PURE__ */ jsx8("span", { className: "sr-only", children: translate("workbench.close") })
               ]
             }
           ) : null
@@ -602,7 +678,7 @@ function DialogContent({
 }
 function DialogHeader({ className, ...props }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx8(
     "div",
     {
       "data-slot": "dialog-header",
@@ -616,7 +692,7 @@ function DialogTitle({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx8(
     DialogPrimitive.Title,
     {
       "data-slot": "dialog-title",
@@ -630,7 +706,7 @@ function DialogDescription({
   ...props
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx8(
     DialogPrimitive.Description,
     {
       "data-slot": "dialog-description",
@@ -866,12 +942,12 @@ function relativeWorkspacePath(value, workspaceRoot) {
 
 // src/components/graph-ui/Tooltip.tsx
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
-import { jsx as jsx8, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx9, jsxs as jsxs8 } from "react/jsx-runtime";
 function TooltipProvider({
   delayDuration = 0,
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(
     TooltipPrimitive.Provider,
     {
       "data-slot": "tooltip-provider",
@@ -881,12 +957,12 @@ function TooltipProvider({
   );
 }
 function Tooltip({ ...props }) {
-  return /* @__PURE__ */ jsx8(TooltipProvider, { children: /* @__PURE__ */ jsx8(TooltipPrimitive.Root, { "data-slot": "tooltip", ...props }) });
+  return /* @__PURE__ */ jsx9(TooltipProvider, { children: /* @__PURE__ */ jsx9(TooltipPrimitive.Root, { "data-slot": "tooltip", ...props }) });
 }
 function TooltipTrigger({
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(TooltipPrimitive.Trigger, { "data-slot": "tooltip-trigger", ...props });
+  return /* @__PURE__ */ jsx9(TooltipPrimitive.Trigger, { "data-slot": "tooltip-trigger", ...props });
 }
 function TooltipContent({
   children,
@@ -895,7 +971,7 @@ function TooltipContent({
   arrowStyle,
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(TooltipPrimitive.Portal, { children: /* @__PURE__ */ jsxs7(
+  return /* @__PURE__ */ jsx9(TooltipPrimitive.Portal, { children: /* @__PURE__ */ jsxs8(
     TooltipPrimitive.Content,
     {
       "data-slot": "tooltip-content",
@@ -907,16 +983,16 @@ function TooltipContent({
       ...props,
       children: [
         children,
-        /* @__PURE__ */ jsx8(TooltipPrimitive.Arrow, { "data-slot": "tooltip-arrow", width: 10, height: 5, className: "fill-foreground", style: arrowStyle })
+        /* @__PURE__ */ jsx9(TooltipPrimitive.Arrow, { "data-slot": "tooltip-arrow", width: 10, height: 5, className: "fill-foreground", style: arrowStyle })
       ]
     }
   ) });
 }
 
 // src/components/RenameDialog.tsx
-import { useRef as useRef6 } from "react";
+import { useRef as useRef7 } from "react";
 import { createPortal as createPortal3 } from "react-dom";
-import { jsx as jsx9, jsxs as jsxs8 } from "react/jsx-runtime";
+import { jsx as jsx10, jsxs as jsxs9 } from "react/jsx-runtime";
 function RenameDialog({
   open,
   title,
@@ -931,7 +1007,7 @@ function RenameDialog({
   onSubmit
 }) {
   useI18n();
-  const windowRef = useRef6(null);
+  const windowRef = useRef7(null);
   useModalFocus(windowRef, open, busy ? void 0 : onCancel, "input");
   if (!open) {
     return null;
@@ -941,8 +1017,8 @@ function RenameDialog({
     void onSubmit();
   }
   return createPortal3(
-    /* @__PURE__ */ jsxs8("div", { className: "fixed inset-0 z-[95] flex items-end justify-center p-0 sm:items-center sm:p-6", children: [
-      /* @__PURE__ */ jsx9(
+    /* @__PURE__ */ jsxs9("div", { className: "fixed inset-0 z-[95] flex items-end justify-center p-0 sm:items-center sm:p-6", children: [
+      /* @__PURE__ */ jsx10(
         "button",
         {
           type: "button",
@@ -952,7 +1028,7 @@ function RenameDialog({
           className: "absolute inset-0 bg-[var(--overlay-scrim)] backdrop-blur-sm disabled:cursor-not-allowed"
         }
       ),
-      /* @__PURE__ */ jsxs8(
+      /* @__PURE__ */ jsxs9(
         "form",
         {
           ref: windowRef,
@@ -968,12 +1044,12 @@ function RenameDialog({
           },
           className: "relative z-[1] w-full max-w-md rounded-t-2xl border border-b-0 border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:rounded-xl sm:border-b sm:p-6",
           children: [
-            /* @__PURE__ */ jsxs8("div", { className: "flex items-start justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs8("div", { className: "min-w-0 flex-1", children: [
-                /* @__PURE__ */ jsx9("p", { className: "text-sm font-medium", children: title }),
-                /* @__PURE__ */ jsx9("p", { className: "mt-1 text-sm text-[var(--theme-fg-muted)]", children: description ?? translate("workbench.changesAreSavedOnlyAfterConfirmation") })
+            /* @__PURE__ */ jsxs9("div", { className: "flex items-start justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs9("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsx10("p", { className: "text-sm font-medium", children: title }),
+                /* @__PURE__ */ jsx10("p", { className: "mt-1 text-sm text-[var(--theme-fg-muted)]", children: description ?? translate("workbench.changesAreSavedOnlyAfterConfirmation") })
               ] }),
-              /* @__PURE__ */ jsx9(
+              /* @__PURE__ */ jsx10(
                 "button",
                 {
                   type: "button",
@@ -981,13 +1057,13 @@ function RenameDialog({
                   onClick: onCancel,
                   disabled: busy,
                   className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
-                  children: /* @__PURE__ */ jsx9("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx9("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                  children: /* @__PURE__ */ jsx10("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx10("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxs8("div", { className: "mt-5", children: [
-              /* @__PURE__ */ jsx9("label", { htmlFor: "rename-dialog-input", className: "text-sm font-medium", children: label }),
-              /* @__PURE__ */ jsx9(
+            /* @__PURE__ */ jsxs9("div", { className: "mt-5", children: [
+              /* @__PURE__ */ jsx10("label", { htmlFor: "rename-dialog-input", className: "text-sm font-medium", children: label }),
+              /* @__PURE__ */ jsx10(
                 "input",
                 {
                   id: "rename-dialog-input",
@@ -999,8 +1075,8 @@ function RenameDialog({
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxs8("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
-              /* @__PURE__ */ jsx9(
+            /* @__PURE__ */ jsxs9("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
+              /* @__PURE__ */ jsx10(
                 "button",
                 {
                   type: "button",
@@ -1010,7 +1086,7 @@ function RenameDialog({
                   children: translate("workbench.cancel")
                 }
               ),
-              /* @__PURE__ */ jsx9(
+              /* @__PURE__ */ jsx10(
                 "button",
                 {
                   type: "submit",
@@ -1019,7 +1095,7 @@ function RenameDialog({
                   children: submitLabel ?? translate("workbench.save")
                 }
               ),
-              error ? /* @__PURE__ */ jsx9(ErrorMark, { message: error }) : null
+              error ? /* @__PURE__ */ jsx10(ErrorMark, { message: error }) : null
             ] })
           ]
         }
@@ -1030,9 +1106,9 @@ function RenameDialog({
 }
 
 // src/components/useTabScrollEdges.ts
-import { useLayoutEffect as useLayoutEffect2, useState as useState4 } from "react";
+import { useLayoutEffect as useLayoutEffect2, useState as useState5 } from "react";
 function useTabScrollEdges(ref) {
-  const [edges, setEdges] = useState4({ start: false, end: false });
+  const [edges, setEdges] = useState5({ start: false, end: false });
   useLayoutEffect2(() => {
     const element = ref.current;
     if (!element) return;
@@ -1060,7 +1136,7 @@ function useTabScrollEdges(ref) {
 
 // src/components/TabScrollButtons.tsx
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Fragment as Fragment2, jsx as jsx10, jsxs as jsxs9 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx11, jsxs as jsxs10 } from "react/jsx-runtime";
 function TabScrollButtons({ targetRef, edges }) {
   useI18n();
   const page = (direction) => {
@@ -1069,8 +1145,8 @@ function TabScrollButtons({ targetRef, edges }) {
     const smooth = !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     strip.scrollBy({ left: direction * Math.max(80, strip.clientWidth * 0.8), behavior: smooth ? "smooth" : "auto" });
   };
-  return /* @__PURE__ */ jsxs9(Fragment2, { children: [
-    edges["data-overflow-start"] ? /* @__PURE__ */ jsx10(
+  return /* @__PURE__ */ jsxs10(Fragment2, { children: [
+    edges["data-overflow-start"] ? /* @__PURE__ */ jsx11(
       "button",
       {
         type: "button",
@@ -1080,10 +1156,10 @@ function TabScrollButtons({ targetRef, edges }) {
         "aria-label": translate("workbench.scrollTabsBack"),
         title: translate("workbench.scrollTabsBack"),
         onClick: () => page(-1),
-        children: /* @__PURE__ */ jsx10(ChevronLeft, { "aria-hidden": "true" })
+        children: /* @__PURE__ */ jsx11(ChevronLeft, { "aria-hidden": "true" })
       }
     ) : null,
-    edges["data-overflow-end"] ? /* @__PURE__ */ jsx10(
+    edges["data-overflow-end"] ? /* @__PURE__ */ jsx11(
       "button",
       {
         type: "button",
@@ -1093,7 +1169,7 @@ function TabScrollButtons({ targetRef, edges }) {
         "aria-label": translate("workbench.scrollTabsForward"),
         title: translate("workbench.scrollTabsForward"),
         onClick: () => page(1),
-        children: /* @__PURE__ */ jsx10(ChevronRight, { "aria-hidden": "true" })
+        children: /* @__PURE__ */ jsx11(ChevronRight, { "aria-hidden": "true" })
       }
     ) : null
   ] });
@@ -1102,7 +1178,7 @@ function TabScrollButtons({ targetRef, edges }) {
 // src/components/graph-workspace/GraphResizablePanels.tsx
 import { GripVerticalIcon } from "lucide-react";
 import * as ResizablePrimitive from "react-resizable-panels";
-import { jsx as jsx11 } from "react/jsx-runtime";
+import { jsx as jsx12 } from "react/jsx-runtime";
 function classNames(...values) {
   return values.filter(Boolean).join(" ");
 }
@@ -1110,7 +1186,7 @@ function ResizablePanelGroup({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx11(
+  return /* @__PURE__ */ jsx12(
     ResizablePrimitive.PanelGroup,
     {
       "data-slot": "resizable-panel-group",
@@ -1125,14 +1201,14 @@ function ResizablePanelGroup({
 function ResizablePanel({
   ...props
 }) {
-  return /* @__PURE__ */ jsx11(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
+  return /* @__PURE__ */ jsx12(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
 }
 function ResizableHandle({
   withHandle,
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx11(
+  return /* @__PURE__ */ jsx12(
     ResizablePrimitive.PanelResizeHandle,
     {
       "data-slot": "resizable-handle",
@@ -1141,7 +1217,7 @@ function ResizableHandle({
         className
       ),
       ...props,
-      children: withHandle ? /* @__PURE__ */ jsx11("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx11(GripVerticalIcon, { className: "size-2.5" }) }) : null
+      children: withHandle ? /* @__PURE__ */ jsx12("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx12(GripVerticalIcon, { className: "size-2.5" }) }) : null
     }
   );
 }
@@ -1439,22 +1515,22 @@ function collectAncestorPaths(path) {
 }
 
 // src/components/ZoomableImage.tsx
-import { createContext, useContext, useEffect as useEffect4, useRef as useRef8, useState as useState6 } from "react";
+import { createContext as createContext2, useContext as useContext2, useEffect as useEffect5, useRef as useRef9, useState as useState7 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
 
 // src/components/useImageViewport.ts
-import { useRef as useRef7, useState as useState5 } from "react";
+import { useRef as useRef8, useState as useState6 } from "react";
 var MIN_SCALE = 0.5;
 var MAX_SCALE = 5;
 var clamp = (scale) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
 function useImageViewport() {
-  const viewportRef = useRef7(null);
-  const [view, setView] = useState5({ x: 0, y: 0, scale: 1 });
-  const current = useRef7(view);
-  const pointers = useRef7(/* @__PURE__ */ new Map());
-  const baseline = useRef7(null);
-  const moved = useRef7(false);
-  const [dragging, setDragging] = useState5(false);
+  const viewportRef = useRef8(null);
+  const [view, setView] = useState6({ x: 0, y: 0, scale: 1 });
+  const current = useRef8(view);
+  const pointers = useRef8(/* @__PURE__ */ new Map());
+  const baseline = useRef8(null);
+  const moved = useRef8(false);
+  const [dragging, setDragging] = useState6(false);
   const commit = (next) => {
     current.current = next;
     setView(next);
@@ -1545,8 +1621,8 @@ function useImageViewport() {
 
 // src/components/ZoomableImage.tsx
 import { Maximize2, Minus, Plus, RotateCcw, X } from "lucide-react";
-import { Fragment as Fragment3, jsx as jsx12, jsxs as jsxs10 } from "react/jsx-runtime";
-var MarkdownImageLinkContext = createContext(false);
+import { Fragment as Fragment3, jsx as jsx13, jsxs as jsxs11 } from "react/jsx-runtime";
+var MarkdownImageLinkContext = createContext2(false);
 var IMAGE_LIGHTBOX_MIN_SCALE = 0.5;
 var IMAGE_LIGHTBOX_MAX_SCALE = 5;
 var IMAGE_LIGHTBOX_SCALE_STEP = 0.25;
@@ -1554,15 +1630,16 @@ function GraphWorkspaceImageLightbox({
   alt,
   backgroundColor,
   onClose,
-  src
+  src,
+  resolveSrc
 }) {
   const { locale: i18nLocale } = useI18n();
   const { viewportRef, scale, dragging, transform, reset: resetView, updateScale, handlers, moved } = useImageViewport();
-  const closeButtonRef = useRef8(null);
-  const backdropPointer = useRef8(true);
-  const windowRef = useRef8(null);
+  const closeButtonRef = useRef9(null);
+  const backdropPointer = useRef9(true);
+  const windowRef = useRef9(null);
   useModalFocus(windowRef, true, onClose, ".thread-graph-image-lightbox-close");
-  useEffect4(() => {
+  useEffect5(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -1570,7 +1647,7 @@ function GraphWorkspaceImageLightbox({
     };
   }, []);
   return createPortal4(
-    /* @__PURE__ */ jsxs10(
+    /* @__PURE__ */ jsxs11(
       "div",
       {
         ref: windowRef,
@@ -1580,14 +1657,14 @@ function GraphWorkspaceImageLightbox({
         "aria-modal": "true",
         "aria-label": translate("files.imagePreview", { value1: alt || translate("files.workspaceImage") }),
         children: [
-          /* @__PURE__ */ jsxs10(
+          /* @__PURE__ */ jsxs11(
             "div",
             {
               className: "thread-graph-image-lightbox-toolbar",
               role: "toolbar",
               "aria-label": translate("files.imageZoomControls"),
               children: [
-                /* @__PURE__ */ jsx12(
+                /* @__PURE__ */ jsx13(
                   "button",
                   {
                     type: "button",
@@ -1595,10 +1672,10 @@ function GraphWorkspaceImageLightbox({
                     disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE,
                     title: translate("files.zoomOut"),
                     "aria-label": translate("files.zoomOut"),
-                    children: /* @__PURE__ */ jsx12(Minus, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx13(Minus, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsxs10(
+                /* @__PURE__ */ jsxs11(
                   "button",
                   {
                     type: "button",
@@ -1607,15 +1684,15 @@ function GraphWorkspaceImageLightbox({
                     title: translate("files.resetZoom"),
                     "aria-label": translate("files.resetZoomCurrently", { value1: Math.round(scale * 100) }),
                     children: [
-                      /* @__PURE__ */ jsx12(RotateCcw, { className: "h-3.5 w-3.5" }),
-                      /* @__PURE__ */ jsxs10("span", { children: [
+                      /* @__PURE__ */ jsx13(RotateCcw, { className: "h-3.5 w-3.5" }),
+                      /* @__PURE__ */ jsxs11("span", { children: [
                         Math.round(scale * 100),
                         "%"
                       ] })
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsx12(
+                /* @__PURE__ */ jsx13(
                   "button",
                   {
                     type: "button",
@@ -1623,17 +1700,17 @@ function GraphWorkspaceImageLightbox({
                     disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE,
                     title: translate("files.zoomIn"),
                     "aria-label": translate("files.zoomIn"),
-                    children: /* @__PURE__ */ jsx12(Plus, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx13(Plus, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsx12(
+                /* @__PURE__ */ jsx13(
                   "span",
                   {
                     className: "thread-graph-image-lightbox-divider",
                     "aria-hidden": "true"
                   }
                 ),
-                /* @__PURE__ */ jsx12(
+                /* @__PURE__ */ jsx13(
                   "button",
                   {
                     ref: closeButtonRef,
@@ -1641,13 +1718,13 @@ function GraphWorkspaceImageLightbox({
                     onClick: onClose,
                     title: translate("files.closeImagePreview"),
                     "aria-label": translate("files.closeImagePreview"),
-                    children: /* @__PURE__ */ jsx12(X, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx13(X, { className: "h-4 w-4" })
                   }
                 )
               ]
             }
           ),
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx13(
             "div",
             {
               ref: viewportRef,
@@ -1662,9 +1739,10 @@ function GraphWorkspaceImageLightbox({
                 backdropPointer.current = event.target === event.currentTarget;
                 handlers.onPointerDown(event);
               },
-              children: /* @__PURE__ */ jsx12(
-                "img",
+              children: /* @__PURE__ */ jsx13(
+                RecoverableImage,
                 {
+                  resolveSrc,
                   src,
                   alt,
                   draggable: false,
@@ -1692,19 +1770,19 @@ function ZoomableImage({
   height
 }) {
   const { locale: i18nLocale } = useI18n();
-  const triggerRef = useRef8(null);
-  const [open, setOpen] = useState6(false);
-  const insideLink = useContext(MarkdownImageLinkContext);
+  const triggerRef = useRef9(null);
+  const [open, setOpen] = useState7(false);
+  const insideLink = useContext2(MarkdownImageLinkContext);
   const dimension = (value) => typeof value === "number" ? value : value && /^\d+(?:\.\d+)?%?$/.test(value) ? value.endsWith("%") ? value : Number(value) : void 0;
   const imageStyle = { width: dimension(width), height: dimension(height) };
-  const image = /* @__PURE__ */ jsx12("img", { src, alt, className, loading, style: imageStyle });
+  const imageProps = { src, alt, className, loading, style: imageStyle };
   function closeLightbox() {
     setOpen(false);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   }
-  if (insideLink) return image;
-  return /* @__PURE__ */ jsxs10(Fragment3, { children: [
-    /* @__PURE__ */ jsx12(
+  if (insideLink) return /* @__PURE__ */ jsx13(RecoverableImage, { ...imageProps });
+  return /* @__PURE__ */ jsxs11(Fragment3, { children: [
+    /* @__PURE__ */ jsx13(RecoverableImage, { ...imageProps, renderImage: (image) => /* @__PURE__ */ jsx13(
       "button",
       {
         ref: triggerRef,
@@ -1716,8 +1794,8 @@ function ZoomableImage({
         "aria-label": translate("files.openImagePreview_bdac35", { value1: alt || translate("files.workspaceImage") }),
         children: image
       }
-    ),
-    open ? /* @__PURE__ */ jsx12(
+    ) }),
+    open ? /* @__PURE__ */ jsx13(
       GraphWorkspaceImageLightbox,
       {
         src: fullSrc || src,
@@ -1730,19 +1808,19 @@ function ZoomableImage({
 function WorkspaceImagePreview({ src, alt }) {
   useI18n();
   const { viewportRef, scale, dragging, transform, reset, updateScale, handlers } = useImageViewport();
-  const [open, setOpen] = useState6(false);
-  return /* @__PURE__ */ jsxs10("div", { className: "workspace-image-preview", children: [
-    /* @__PURE__ */ jsxs10("div", { className: "workspace-image-controls", role: "toolbar", "aria-label": translate("files.imageZoomControls"), children: [
-      /* @__PURE__ */ jsx12("button", { type: "button", onClick: () => updateScale(scale - 0.25), disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE, "aria-label": translate("files.zoomOut"), children: /* @__PURE__ */ jsx12(Minus, { size: 14 }) }),
-      /* @__PURE__ */ jsx12("button", { type: "button", onClick: reset, "aria-label": translate("files.resetZoom"), children: /* @__PURE__ */ jsxs10("span", { children: [
+  const [open, setOpen] = useState7(false);
+  return /* @__PURE__ */ jsxs11("div", { className: "workspace-image-preview", children: [
+    /* @__PURE__ */ jsxs11("div", { className: "workspace-image-controls", role: "toolbar", "aria-label": translate("files.imageZoomControls"), children: [
+      /* @__PURE__ */ jsx13("button", { type: "button", onClick: () => updateScale(scale - 0.25), disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE, "aria-label": translate("files.zoomOut"), children: /* @__PURE__ */ jsx13(Minus, { size: 14 }) }),
+      /* @__PURE__ */ jsx13("button", { type: "button", onClick: reset, "aria-label": translate("files.resetZoom"), children: /* @__PURE__ */ jsxs11("span", { children: [
         Math.round(scale * 100),
         "%"
       ] }) }),
-      /* @__PURE__ */ jsx12("button", { type: "button", onClick: () => updateScale(scale + 0.25), disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE, "aria-label": translate("files.zoomIn"), children: /* @__PURE__ */ jsx12(Plus, { size: 14 }) }),
-      /* @__PURE__ */ jsx12("button", { type: "button", onClick: () => setOpen(true), "aria-label": translate("files.openImagePreview"), children: /* @__PURE__ */ jsx12(Maximize2, { size: 14 }) })
+      /* @__PURE__ */ jsx13("button", { type: "button", onClick: () => updateScale(scale + 0.25), disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE, "aria-label": translate("files.zoomIn"), children: /* @__PURE__ */ jsx13(Plus, { size: 14 }) }),
+      /* @__PURE__ */ jsx13("button", { type: "button", onClick: () => setOpen(true), "aria-label": translate("files.openImagePreview"), children: /* @__PURE__ */ jsx13(Maximize2, { size: 14 }) })
     ] }),
-    /* @__PURE__ */ jsx12("div", { ref: viewportRef, className: "workspace-image-viewport", ...handlers, children: /* @__PURE__ */ jsx12("img", { src, alt, draggable: false, className: dragging ? "is-dragging" : "", style: { transform } }) }),
-    open && /* @__PURE__ */ jsx12(GraphWorkspaceImageLightbox, { src, alt, onClose: () => setOpen(false) })
+    /* @__PURE__ */ jsx13("div", { ref: viewportRef, className: "workspace-image-viewport", ...handlers, children: /* @__PURE__ */ jsx13(RecoverableImage, { src, alt, draggable: false, className: dragging ? "is-dragging" : "", style: { transform } }) }),
+    open && /* @__PURE__ */ jsx13(GraphWorkspaceImageLightbox, { src, alt, onClose: () => setOpen(false) })
   ] });
 }
 
@@ -1782,16 +1860,16 @@ var schema = {
 var markdownHtmlPlugins = [rehypeRaw, [rehypeSanitize, schema]];
 
 // src/components/WorkspaceFileLink.tsx
-import { useEffect as useEffect5, useRef as useRef9, useState as useState7 } from "react";
+import { useEffect as useEffect6, useRef as useRef10, useState as useState8 } from "react";
 import { createPortal as createPortal5 } from "react-dom";
 import { Check as Check2, TriangleAlert as TriangleAlert2 } from "lucide-react";
-import { Fragment as Fragment4, jsx as jsx13, jsxs as jsxs11 } from "react/jsx-runtime";
+import { Fragment as Fragment4, jsx as jsx14, jsxs as jsxs12 } from "react/jsx-runtime";
 function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-inline-link" }) {
   useI18n();
-  const [menu, setMenu] = useState7(null);
-  const [copy, setCopy] = useState7(null);
-  const menuRef = useRef9(null);
-  const linkRef = useRef9(null);
+  const [menu, setMenu] = useState8(null);
+  const [copy, setCopy] = useState8(null);
+  const menuRef = useRef10(null);
+  const linkRef = useRef10(null);
   const displayPath = path.startsWith("/") || /^[a-z]:/i.test(path) ? path : `./${path.replace(/^\.\//, "")}`;
   const copyValue = path.replace(/^\.\//, "") + (line ? `:${line}` : "");
   const close = (restoreFocus) => {
@@ -1800,7 +1878,7 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
     if (restoreFocus) linkRef.current?.focus();
   };
   useMenuKeyboard(menuRef, Boolean(menu), close);
-  useEffect5(() => {
+  useEffect6(() => {
     if (!menu) return;
     const dismiss = (event) => {
       if (!menuRef.current?.contains(event.target)) close(false);
@@ -1821,8 +1899,8 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
     setMenu(null);
     onOpen({ path, ...line ? { line } : {} });
   };
-  return /* @__PURE__ */ jsxs11(Fragment4, { children: [
-    /* @__PURE__ */ jsx13(
+  return /* @__PURE__ */ jsxs12(Fragment4, { children: [
+    /* @__PURE__ */ jsx14(
       "a",
       {
         ref: linkRef,
@@ -1842,17 +1920,17 @@ function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-i
         children
       }
     ),
-    menu && createPortal5(/* @__PURE__ */ jsxs11("div", { ref: menuRef, role: "menu", "aria-label": translate("files.fileLink"), className: "thread-workspace-link-menu", style: { left: Math.max(8, menu.x), top: Math.max(8, menu.y) }, children: [
-      /* @__PURE__ */ jsx13("button", { type: "button", role: "menuitem", onClick: open, children: translate("files.openFile") }),
-      /* @__PURE__ */ jsxs11("button", { type: "button", role: "menuitem", "data-copy-state": copy ?? void 0, onClick: async () => {
+    menu && createPortal5(/* @__PURE__ */ jsxs12("div", { ref: menuRef, role: "menu", "aria-label": translate("files.fileLink"), className: "thread-workspace-link-menu", style: { left: Math.max(8, menu.x), top: Math.max(8, menu.y) }, children: [
+      /* @__PURE__ */ jsx14("button", { type: "button", role: "menuitem", onClick: open, children: translate("files.openFile") }),
+      /* @__PURE__ */ jsxs12("button", { type: "button", role: "menuitem", "data-copy-state": copy ?? void 0, onClick: async () => {
         const ok = await copyText(copyValue);
         setCopy(ok ? "copied" : "failed");
         if (ok) window.setTimeout(() => close(true), 700);
       }, children: [
-        copy === "copied" ? /* @__PURE__ */ jsx13(Check2, { "aria-hidden": "true" }) : copy === "failed" ? /* @__PURE__ */ jsx13(TriangleAlert2, { "aria-hidden": "true" }) : null,
+        copy === "copied" ? /* @__PURE__ */ jsx14(Check2, { "aria-hidden": "true" }) : copy === "failed" ? /* @__PURE__ */ jsx14(TriangleAlert2, { "aria-hidden": "true" }) : null,
         copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : translate("common.copyPath")
       ] }),
-      /* @__PURE__ */ jsx13("span", { className: "copy-button-status", role: "status", children: copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : "" })
+      /* @__PURE__ */ jsx14("span", { className: "copy-button-status", role: "status", children: copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : "" })
     ] }), linkRef.current?.closest(".thread-ui-shell") ?? document.body)
   ] });
 }
@@ -1902,7 +1980,7 @@ function getGraphChatHighlighter() {
       javascript,
       typescript,
       tsx,
-      jsx15,
+      jsx16,
       python,
       json,
       bash,
@@ -1933,7 +2011,7 @@ function getGraphChatHighlighter() {
         javascript.default,
         typescript.default,
         tsx.default,
-        jsx15.default,
+        jsx16.default,
         python.default,
         json.default,
         bash.default,
@@ -1960,14 +2038,14 @@ function getGraphChatHighlighter() {
 }
 
 // src/components/workbench/FilePanelContext.tsx
-import { createContext as createContext2, useContext as useContext2 } from "react";
-var FilePanelContext = createContext2(null);
-var useFilePanel = () => useContext2(FilePanelContext);
+import { createContext as createContext3, useContext as useContext3 } from "react";
+var FilePanelContext = createContext3(null);
+var useFilePanel = () => useContext3(FilePanelContext);
 
 // src/components/graph-ui/Button.tsx
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { jsx as jsx14 } from "react/jsx-runtime";
+import { jsx as jsx15 } from "react/jsx-runtime";
 var buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
   {
@@ -2001,7 +2079,7 @@ function Button({
   ...props
 }) {
   const Comp = asChild ? Slot : "button";
-  return /* @__PURE__ */ jsx14(
+  return /* @__PURE__ */ jsx15(
     Comp,
     {
       "data-slot": "button",
@@ -2031,6 +2109,8 @@ export {
   normalizeFileSystemPath,
   localFileHref,
   relativeWorkspacePath,
+  ImageRecoveryProvider,
+  RecoverableImage,
   MarkdownImageLinkContext,
   GraphWorkspaceImageLightbox,
   ZoomableImage,

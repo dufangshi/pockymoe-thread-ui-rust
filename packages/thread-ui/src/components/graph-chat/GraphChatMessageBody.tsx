@@ -459,7 +459,9 @@ export const GraphChatUserMessageBody = memo(
                 : undefined);
             const label = basenameFromAssetPath(segment.path) || translate("chat.attachedImage");
             return <MessageAttachment key={segment.key} kind="photo" path={segment.path} name={label}
-              thumbnailUrl={imageUrl} fullUrl={fullImageUrl} />;
+              thumbnailUrl={imageUrl} fullUrl={fullImageUrl}
+              resolveThumbnail={threadId && getImageAssetUrl ? () => getImageAssetUrl({ threadId, path: segment.path, variant: 'thumbnail' }) ?? imageUrl ?? '' : undefined}
+              resolveFull={threadId && getImageAssetUrl ? () => getImageAssetUrl({ threadId, path: segment.path }) ?? fullImageUrl ?? '' : undefined} />;
           }
 
           const fileName = basenameFromAssetPath(segment.path) || translate("chat.attachedFile");

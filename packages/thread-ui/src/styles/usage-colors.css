@@ -1,0 +1,29 @@
+/* Shared categorical usage palette. Theme packs may override each token. */
+:root {
+  --usage-category-1: oklch(50% 0.15 255);
+  --usage-category-2: oklch(50% 0.15 25);
+  --usage-category-3: oklch(50% 0.15 145);
+  --usage-category-4: oklch(50% 0.15 310);
+  --usage-category-5: oklch(50% 0.15 75);
+  --usage-category-6: oklch(50% 0.15 195);
+  --usage-category-7: oklch(50% 0.15 280);
+  --usage-category-8: oklch(50% 0.15 45);
+  --usage-category-9: oklch(50% 0.15 170);
+  --usage-category-10: oklch(50% 0.15 340);
+  --usage-category-11: oklch(50% 0.15 110);
+  --usage-category-12: oklch(50% 0.15 225);
+}
+:root[data-theme-effective="dark"], :root[data-theme="dark"], :root.dark {
+  --usage-category-1: oklch(76% 0.14 255);
+  --usage-category-2: oklch(76% 0.14 25);
+  --usage-category-3: oklch(76% 0.14 145);
+  --usage-category-4: oklch(76% 0.14 310);
+  --usage-category-5: oklch(76% 0.14 75);
+  --usage-category-6: oklch(76% 0.14 195);
+  --usage-category-7: oklch(76% 0.14 280);
+  --usage-category-8: oklch(76% 0.14 45);
+  --usage-category-9: oklch(76% 0.14 170);
+  --usage-category-10: oklch(76% 0.14 340);
+  --usage-category-11: oklch(76% 0.14 110);
+  --usage-category-12: oklch(76% 0.14 225);
+}

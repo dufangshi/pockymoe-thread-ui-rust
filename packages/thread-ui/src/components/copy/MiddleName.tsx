@@ -2,7 +2,8 @@
     and extension: `very-long-report-na…draft-3.md`. Used by the tree, the file
     tabs and attachments (docs/ui-principles.md §14). */
 export function MiddleName({ name, className }: { name: string; className?: string }) {
-  const keep = Math.min(name.length, Math.max(8, name.length - name.lastIndexOf('.') + 5));
+  const dot = name.lastIndexOf('.');
+  const keep = Math.min(name.length, dot > 0 && name.length - dot <= 12 ? Math.max(8, name.length - dot + 5) : 8);
   if (name.length <= keep + 2) return <span className={`middle-name${className ? ` ${className}` : ''}`}><span className="middle-name-head">{name}</span></span>;
   return (
     <span className={`middle-name${className ? ` ${className}` : ''}`}>

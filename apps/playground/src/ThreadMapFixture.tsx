@@ -23,6 +23,7 @@ if (params.get('measureLayout') === '1') {
   };
 }
 const realShape = params.get('dataset') === 'real';
+const phoneShape = params.get('dataset') === 'phone';
 const count = realShape ? 117 : Math.max(12, Math.min(1200, Number(params.get('count')) || 12));
 const theme = params.get('theme') ?? 'classic';
 const mode = params.get('mode') ?? 'light';
@@ -70,6 +71,8 @@ function Fixture() {
   const devices = useMemo(() => {
     const threads = [...baseThreads];
     if (revision) threads[3] = { ...threads[3]!, lastPrompt: `最近一次刷新 · ${revision}` };
+    if (phoneShape) return Array.from({ length: 11 }, (_, d) => ({ id: `phone-${d}`, name: `Device ${String(d + 1).padStart(2, '0')}`, state: 'ready' as const,
+      workspaces: Array.from({ length: d % 3 + 1 }, (_, w) => ({ id: `w${w}`, label: ['app', '工具', 'research'][w]!, threads: Array.from({ length: Math.ceil((1 + d * 7 % 20) / (d % 3 + 1)) }, (_, t) => ({ ...makeThread(d * 10 + w * 4 + t), key: `phone-${d}:${w}:${t}` })) })) }));
     if (realShape) {
       let serial = 0;
       const shape = [['wsl', 21, 58], ['ubuntu', 4, 21], ['zzq docker', 2, 5], ['mac', 7, 17], ['LuisMini2', 0, 0], ['Ubuntu Docker', 1, 4], ['Titoliember', 2, 4], ['gm wsl', 1, 7], ['LuisMini1', 1, 1]] as const;
@@ -113,7 +116,7 @@ function Fixture() {
       const readings = (window as Window & { mapRenderTimes?: number[] }).mapRenderTimes ??= [];
       if (phase !== 'mount') readings.push(duration);
     }}>
-      {params.get('presentation') === 'dialog' ? <ThreadMapDialog open onOpenChange={() => undefined} effectiveTheme={mode === 'dark' ? 'dark' : 'light'} devices={devices} onOpen={thread => setNotice(`打开 · ${thread.title}`)} /> : <ThreadMap presentation="page" devices={devices} stableLayout scope={scope} onScopeChange={setScope} attention={attention}
+      {params.get('presentation') === 'dialog' ? <ThreadMapDialog hostSurface={params.get('host') === 'desktop' ? 'desktop' : params.get('host') === 'mobile' ? 'mobile' : 'browser'} open onOpenChange={() => undefined} effectiveTheme={mode === 'dark' ? 'dark' : 'light'} devices={devices} onOpen={thread => setNotice(`打开 · ${thread.title}`)} /> : <ThreadMap presentation="page" devices={devices} stableLayout scope={scope} onScopeChange={setScope} attention={attention}
         heading={<h1 className="thread-map-title">线程地图</h1>} filterText={query} onFilterChange={setQuery}
         deviceExtras={{ studio: { latencyMs: 8, runtimeVersion: '0.13.41', updateAvailable: true, runningCount: 3, waitingCount: 2, todayCostUsd: 4.27, metrics: 'CPU 12% · 内存 18.2 / 64 GB · GPU 4%', menuItems: menu('Mac Studio') }, server: { latencyMs: 31, runtimeVersion: '0.13.41', runningCount: 1, waitingCount: 0, todayCostUsd: 1.36, metrics: 'CPU 8% · 内存 5.1 / 16 GB', menuItems: menu('Build Server') } }}
         onOpen={thread => setNotice(`打开 · ${thread.title}`)} onQuickLook={key => setNotice(`快速查看 · ${key}`)} revealKey={revealKey}

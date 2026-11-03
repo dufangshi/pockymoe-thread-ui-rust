@@ -38,6 +38,8 @@ export interface ThreadMapProps {
   onRetry?: ((deviceId: string) => void) | undefined;
   onDismiss?: (() => void) | undefined;
   presentation?: 'dialog' | 'page';
+  /** Readable phone chrome/layout on the legacy non-page renderer. */
+  phone?: boolean;
   scope?: MapScope;
   onScopeChange?: (scope: MapScope) => void;
   attention?: readonly MapAttention[];

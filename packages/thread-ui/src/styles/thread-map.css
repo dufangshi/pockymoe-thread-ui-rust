@@ -1027,3 +1027,41 @@
 .thread-map-device-menu-row > button { flex: 1; }
 .thread-map-device-menu-row[data-separated] { border-top: 1px solid var(--theme-border); margin-top: 8px; padding-top: 8px; }
 .thread-map-device-menu-row > button[data-tone="danger"] { color: var(--status-danger-fg); }
+
+/* Phone chrome belongs to the legacy zoomable map, never to the dense page. */
+.thread-map[data-phone] .thread-map-phone-header { display: flex; align-items: center; height: 44px; flex: none; gap: 4px; padding: 0 8px; }
+.thread-map[data-phone] .thread-map-icon-button { width: 44px; height: 44px; }
+.thread-map-phone-title { display: flex; flex: 1; flex-direction: column; min-width: 0; overflow: hidden; font-weight: 650; }
+.thread-map-phone-title > span, .thread-map-phone-title small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.thread-map-phone-title small { font-size: 10px; font-weight: 400; line-height: 13px; color: var(--theme-fg-muted); }
+.thread-map-phone-title small .thread-map-running-dot { margin-right: 3px; }
+.thread-map[data-phone] .thread-map-phone-search { display: flex; flex: none; align-items: center; margin: 4px 8px 8px; height: 36px; min-height: 36px; width: auto; }
+.thread-map-phone-search input { flex: 1; min-width: 0; width: 0; height: 36px; }
+.thread-map-phone-search input::-webkit-search-cancel-button { display: none; }
+.thread-map-phone-search button { display: grid; place-items: center; position: relative; width: 44px; height: 44px; flex: none; border: 0; background: transparent; color: inherit; }
+.thread-map-phone-search button svg { width: 16px; }
+.thread-map-phone-menu-backdrop { position: fixed; inset: 0; z-index: 200; background: #0005; backdrop-filter: blur(4px); display: flex; align-items: flex-end; }
+.thread-map-phone-menu { width: 100%; padding: 8px 12px max(12px, env(safe-area-inset-bottom)); border-radius: 16px 16px 0 0; background: var(--theme-surface); color: var(--theme-fg); box-shadow: 0 -8px 32px #0002; }
+.thread-map-phone-menu button { display: block; width: 100%; min-height: 44px; padding: 8px 12px; text-align: start; background: transparent; border: 0; color: inherit; }
+.thread-map-phone-menu button[aria-checked='true'] { color: var(--theme-accent-solid); font-weight: 650; }
+.thread-map-phone-info { padding: 12px; color: var(--theme-fg-muted); font-size: 12px; }
+.thread-map-phone-menu-backdrop { pointer-events: auto; z-index: 1000; }
+.thread-map[data-phone] .thread-map-phone-search input { height: 44px; }
+.thread-map[data-phone] .thread-map-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; overflow-wrap: anywhere; }
+.thread-map[data-phone] .thread-map-empty button { flex: none; margin: 0; border: 1px solid var(--theme-border); border-radius: 6px; background: var(--theme-surface); color: var(--theme-fg); }
+
+/* Text labels need room for a full line. Icon previews retain the old treemap
+   geometry; the sheet's list/Go to entries offer full-size touch alternatives. */
+.thread-map[data-phone] .thread-map-tile-title { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
+.thread-map[data-phone] .thread-map-tile > :not(.thread-map-tile-link) { flex-shrink: 0; }
+.thread-map[data-phone] .thread-map-tile-head { flex-wrap: nowrap; }
+.thread-map[data-phone] .thread-map-tile-meta { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 14px; }
+.thread-map-phone-legend-toggle { flex: none; min-height: 44px; padding: 5px 10px; border: 0; border-top: 1px solid var(--theme-border); background: transparent; color: var(--theme-fg-muted); font-size: 10px; text-align: start; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.thread-map[data-phone] > .thread-map-legend { max-height: 25vh; overflow: auto; }
+.thread-map-phone-menu { max-height: 80dvh; overflow-y: auto; }
+.thread-map-phone-menu button { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.thread-map-phone-list { position: relative; }
+.thread-map[data-phone] .thread-map-scroll-list { height: 100%; }
+.thread-map[data-phone] .thread-map-canvas:has(.thread-map-phone-list) { touch-action: pan-y; }
+.thread-map-phone-list button { display: block; width: 100%; min-height: 44px; padding: 8px; border: 0; border-bottom: 1px solid var(--theme-border); background: var(--theme-panel); color: var(--theme-fg); text-align: start; }
+.thread-map[data-phone] .thread-map-empty button { min-height: 44px; padding: 0 16px; }

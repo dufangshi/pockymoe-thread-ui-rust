@@ -1,4 +1,10 @@
 export const settingsEn = {
+  "settings.referencePricesAccount": "Official reference prices from LiteLLM. Your overrides apply to all your devices; historical estimates update with prices.",
+  "settings.referencePricesLocal": "Reference prices saved on this device. Historical estimates update with prices.",
+  "settings.pricesSyncedAt": "Prices last synced: {{value1}}",
+  "settings.importDevicePrices": "Import this device’s prices · keep existing account overrides",
+  "settings.pricePending": "Awaiting price",
+  "settings.pricingSource": "Pricing source",
   "settings.accountScope": "Account settings, shared across devices",
   "settings.notificationsTab": "Notifications",
   "settings.notificationsDescription": "Choose which turns notify you when they finish.",

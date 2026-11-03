@@ -3658,6 +3658,12 @@ var filesEn = {
 
 // src/i18n/settings.en.ts
 var settingsEn = {
+  "settings.referencePricesAccount": "Official reference prices from LiteLLM. Your overrides apply to all your devices; historical estimates update with prices.",
+  "settings.referencePricesLocal": "Reference prices saved on this device. Historical estimates update with prices.",
+  "settings.pricesSyncedAt": "Prices last synced: {{value1}}",
+  "settings.importDevicePrices": "Import this device\u2019s prices \xB7 keep existing account overrides",
+  "settings.pricePending": "Awaiting price",
+  "settings.pricingSource": "Pricing source",
   "settings.accountScope": "Account settings, shared across devices",
   "settings.notificationsTab": "Notifications",
   "settings.notificationsDescription": "Choose which turns notify you when they finish.",
@@ -8744,6 +8750,12 @@ var filesZhCN = {
 
 // src/i18n/settings.zh-CN.ts
 var settingsZhCN = {
+  "settings.referencePricesAccount": "\u4F7F\u7528 LiteLLM \u5B98\u65B9\u53C2\u8003\u4EF7\u3002\u81EA\u5B9A\u4E49\u4EF7\u683C\u9002\u7528\u4E8E\u8D26\u53F7\u4E0B\u6240\u6709\u8BBE\u5907\uFF0C\u5386\u53F2\u4F30\u7B97\u968F\u4EF7\u683C\u66F4\u65B0\u3002",
+  "settings.referencePricesLocal": "\u53C2\u8003\u4EF7\u683C\u4FDD\u5B58\u5728\u5F53\u524D\u8BBE\u5907\uFF0C\u5386\u53F2\u4F30\u7B97\u968F\u4EF7\u683C\u66F4\u65B0\u3002",
+  "settings.pricesSyncedAt": "\u4EF7\u683C\u4E0A\u6B21\u540C\u6B65\uFF1A{{value1}}",
+  "settings.importDevicePrices": "\u5BFC\u5165\u5F53\u524D\u8BBE\u5907\u4EF7\u683C \xB7 \u4FDD\u7559\u5DF2\u6709\u8D26\u53F7\u8986\u76D6",
+  "settings.pricePending": "\u6682\u672A\u5B9A\u4EF7",
+  "settings.pricingSource": "\u4EF7\u683C\u6765\u6E90",
   "settings.accountScope": "\u8D26\u53F7\u8BBE\u7F6E\uFF0C\u6240\u6709\u8BBE\u5907\u901A\u7528",
   "settings.notificationsTab": "\u901A\u77E5",
   "settings.notificationsDescription": "\u9009\u62E9\u54EA\u4E9B\u8F6E\u6B21\u7ED3\u675F\u65F6\u901A\u77E5\u4F60\u3002",

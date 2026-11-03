@@ -1,4 +1,10 @@
 export const settingsZhCN = {
+  "settings.referencePricesAccount": "使用 LiteLLM 官方参考价。自定义价格适用于账号下所有设备，历史估算随价格更新。",
+  "settings.referencePricesLocal": "参考价格保存在当前设备，历史估算随价格更新。",
+  "settings.pricesSyncedAt": "价格上次同步：{{value1}}",
+  "settings.importDevicePrices": "导入当前设备价格 · 保留已有账号覆盖",
+  "settings.pricePending": "暂未定价",
+  "settings.pricingSource": "价格来源",
   "settings.accountScope": "账号设置，所有设备通用",
   "settings.notificationsTab": "通知",
   "settings.notificationsDescription": "选择哪些轮次结束时通知你。",

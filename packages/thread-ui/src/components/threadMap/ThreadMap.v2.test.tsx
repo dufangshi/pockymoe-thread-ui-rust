@@ -136,21 +136,6 @@ describe('ThreadMap page', () => {
     expect(tile('late')).toBeTruthy(); expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Late workspace');
   });
 
-  it('fits attention cards by width, preserves priority and opens overflow as a keyboard menu', () => {
-    const decision = vi.fn();
-    const attention = ['unread', 'failed', 'input', 'approval', 'unread', 'unread', 'input'].map((kind, i) => ({ key: String(i), kind: kind as 'approval' | 'input' | 'failed' | 'unread', title: `Attention ${i}`, device: 'Mac', workspace: 'Product', since: '', summary: 'Review changes', requestId: 'r' }));
-    show({ attention, onRequestDecision: decision });
-    expect([...host.querySelectorAll('.thread-map-attention-card b')].map(n => n.textContent)).toEqual(['Attention 2', 'Attention 3', 'Attention 6', 'Attention 1', 'Attention 0', 'Attention 4']);
-    click(host.querySelector('[aria-label="Approve"]')!);
-    expect(decision).toHaveBeenCalledWith('3', 'r', 'approve');
-    click(host.querySelector('.thread-map-attention-more')!);
-    expect(host.querySelectorAll('.thread-map-attention-card')).toHaveLength(6);
-    expect(document.querySelectorAll('[role="menuitem"]')).toHaveLength(1);
-    expect(document.activeElement?.textContent).toContain('Attention 5');
-    key(document.activeElement!, 'End'); expect(document.activeElement?.textContent).toContain('Attention 5');
-    key(document.activeElement!, 'Escape'); expect(document.querySelector('[role="menu"]')).toBeNull();
-    show({ attention: [] }); expect(host.querySelector('.thread-map-attention-wrap')?.hasAttribute('data-visible')).toBe(false);
-  });
 
   it('puts zero-thread devices in the same bottom strip without a canvas rectangle', () => {
     show({ devices: [...makeDevices(), { id: 'empty', name: 'LuisMini2', state: 'ready', workspaces: [] }] });

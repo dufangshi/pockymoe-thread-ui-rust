@@ -444,10 +444,6 @@ declare const en: {
     readonly "workbench.threadMapNoMatches": "No matches for “{{query}}”";
     readonly "workbench.threadMapFilter": "Filter threads";
     readonly "workbench.threadMapMatches": "{{count}} matches";
-    readonly "workbench.threadMapAttention": "Needs attention";
-    readonly "workbench.threadMapMoreAttention": "{{count}} more";
-    readonly "workbench.threadMapApprove": "Approve";
-    readonly "workbench.threadMapDeny": "Deny";
     readonly "workbench.threadMapCached": "Cached";
     readonly "workbench.threadMapCacheAt": "Cached {{ago}}";
     readonly "workbench.threadMapNoCache": "No cached threads";
@@ -5622,10 +5618,6 @@ declare const zhCN: {
     "workbench.threadMapNoMatches": "没有匹配“{{query}}”的线程";
     "workbench.threadMapFilter": "过滤线程";
     "workbench.threadMapMatches": "{{count}} 个匹配";
-    "workbench.threadMapAttention": "关注";
-    "workbench.threadMapMoreAttention": "另外 {{count}} 个";
-    "workbench.threadMapApprove": "批准";
-    "workbench.threadMapDeny": "拒绝";
     "workbench.threadMapCached": "缓存";
     "workbench.threadMapCacheAt": "缓存于{{ago}}";
     "workbench.threadMapNoCache": "暂无缓存线程";
@@ -10822,10 +10814,6 @@ declare const resources: {
         readonly "workbench.threadMapNoMatches": "No matches for “{{query}}”";
         readonly "workbench.threadMapFilter": "Filter threads";
         readonly "workbench.threadMapMatches": "{{count}} matches";
-        readonly "workbench.threadMapAttention": "Needs attention";
-        readonly "workbench.threadMapMoreAttention": "{{count}} more";
-        readonly "workbench.threadMapApprove": "Approve";
-        readonly "workbench.threadMapDeny": "Deny";
         readonly "workbench.threadMapCached": "Cached";
         readonly "workbench.threadMapCacheAt": "Cached {{ago}}";
         readonly "workbench.threadMapNoCache": "No cached threads";
@@ -15999,10 +15987,6 @@ declare const resources: {
         "workbench.threadMapNoMatches": "没有匹配“{{query}}”的线程";
         "workbench.threadMapFilter": "过滤线程";
         "workbench.threadMapMatches": "{{count}} 个匹配";
-        "workbench.threadMapAttention": "关注";
-        "workbench.threadMapMoreAttention": "另外 {{count}} 个";
-        "workbench.threadMapApprove": "批准";
-        "workbench.threadMapDeny": "拒绝";
         "workbench.threadMapCached": "缓存";
         "workbench.threadMapCacheAt": "缓存于{{ago}}";
         "workbench.threadMapNoCache": "暂无缓存线程";

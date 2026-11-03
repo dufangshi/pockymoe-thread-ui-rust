@@ -16,7 +16,7 @@ import { DenseMap } from './DenseMap';
 import { useMapMotion } from './useMapMotion';
 import type { MapScope, ThreadMapProps } from './types';
 import { MapLayoutCache, spatialNeighbor, StableMapOrder, type SpatialTarget } from './stableLayout';
-import { AttentionStrip, DeviceMenu, DeviceReadings, DeviceStateMark, MapLegend, relativeCache } from './MapChrome';
+import { DeviceMenu, DeviceReadings, DeviceStateMark, MapLegend, relativeCache } from './MapChrome';
 
 /** Height of a device or workspace title bar. */
 const HEADER = 26;
@@ -58,8 +58,8 @@ const reducedMotion = () => typeof window !== 'undefined' && typeof window.match
  * spreading opens the block under the fingers and dragging down dismisses.
  */
 export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, onOpen, onNavigate, onRetry, onDismiss,
-  presentation = 'dialog', phone = false, scope: controlledScope, onScopeChange, attention, stableLayout = false,
-  filterText, onFilterChange, deviceExtras, onQuickLook, onRequestDecision, revealKey, pulseKeys,
+  presentation = 'dialog', phone = false, scope: controlledScope, onScopeChange, stableLayout = false,
+  filterText, onFilterChange, deviceExtras, onQuickLook, revealKey, pulseKeys,
 }: ThreadMapProps) {
   const { locale } = useI18n();
   const page = presentation === 'page';
@@ -666,10 +666,6 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         </div>}
         {actions}
       </div>}
-      {attention && <AttentionStrip responsive={page} items={attention} onOpen={key => {
-        const thread = nodes.get(`thread:${key}`)?.thread ?? devices.flatMap(device => device.workspaces.flatMap(workspace => workspace.threads)).find(thread => thread.key === key);
-        if (thread) latest.current.onOpen(thread); else onQuickLook?.(key);
-      }} onRequestDecision={onRequestDecision} />}
       {!page && !phone && <div className="thread-map-bar thread-map-path">
         {breadcrumb}
         {stableLayout && <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapRefreshLayout')}

@@ -8,7 +8,7 @@ import { StatusMark } from '../StatusMark';
 import { formatCompactUsd } from '../timeline/tokenFormatting';
 import { type MapRect } from './squarify';
 
-import { filterPhoneDevices, phoneLayout } from './phone';
+import { filterPhoneDevices, restorePhoneWeights } from './phone';
 import { MapScrollList } from './MapScrollList';
 import { PhoneMapMenu } from './PhoneMapMenu';
 import { MapTooltip } from './MapTooltip';
@@ -103,6 +103,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     })) : list;
     const source = phone ? filterPhoneDevices(scoped, phoneQuery) : list;
     const tree = buildThreadMap(source, allLabel, phone ? { keepDeviceRoot: true } : enhanced ? { scope, expandedWorkspaces, expandedDevices, keepDeviceRoot: true, dense: page } : {});
+    if (phone) restorePhoneWeights(tree);
     if (page) tree.children = tree.children.filter(node => node.threads > 0 || node.id === focusId);
     return stableLayout ? orders.current.apply(tree, frozen) : tree;
   }, [devices, allLabel, enhanced, page, scope, expandedWorkspaces, expandedDevices, cachedDevices, stableLayout, frozen, layoutRevision, focusId, phone, phoneQuery]);
@@ -516,14 +517,14 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       if (item.kind === 'compressed') {
         spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
         return <button type="button" key={item.id} data-map-id={item.id} className="thread-map-compressed" data-dimmed={Boolean(query.trim()) || undefined}
-          style={{ left: box.x, top: box.y, width: box.width, height: box.height }} onClick={() => expand(item)} aria-label={item.label} {...hover([item.label])}>{item.label}</button>;
+          style={{ left: box.x, top: box.y, width: box.width, height: box.height }} onClick={() => phone ? navigate(item.parent) : expand(item)} aria-label={item.label} {...hover([item.label])}>{item.label}</button>;
       }
       if (item.kind === 'thread') {
         spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
         const thread = item.thread!;
         if (thread.children?.length && openGroups.has(thread.key)) return group(item, box, depth, offset);
         return <ThreadTile key={item.id} node={item} box={box} hours={hours} current={thread.key === currentKey}
-          onOpen={open(thread)} hover={hover(() => describe(item, hours))} dimmed={Boolean(query.trim()) && !hasMatch(item)}
+          phone={phone} onOpen={open(thread)} hover={hover(() => describe(item, hours))} dimmed={Boolean(query.trim()) && !hasMatch(item)}
           onQuickLook={onQuickLook ? quickLook : undefined} onShowChildren={thread.children?.length ? () => toggleGroup(thread.key) : undefined} />;
       }
       const lines = describe(item, hours);
@@ -556,7 +557,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       if (!preview && !live.length && zoomable) spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
       const zoom = (event: ReactMouseEvent<HTMLElement>) => navigate(item, event.currentTarget.closest('section'));
       return (
-        <section key={item.id} data-map-id={item.id} className="thread-map-section" data-kind={item.kind} data-depth={depth} data-state={unlisted ? state : undefined}
+        <section key={item.id} data-map-id={item.id} data-phone-fold={phone && !preview && !unlisted || undefined} className="thread-map-section" data-kind={item.kind} data-depth={depth} data-state={unlisted ? state : undefined}
           data-dimmed={Boolean(query.trim()) && !hasMatch(item) || undefined} data-cached={cachedDevices.has(item.device?.id ?? '') || undefined}
           data-collapsed={(!preview && !live.length) || undefined} data-live={item.running > 0 || undefined}
           data-heat={preview || live.length ? undefined : heatLevel(item.activeMs)} data-running={!preview && !live.length && item.running ? true : undefined}
@@ -575,7 +576,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             <span className="thread-map-section-summary" aria-hidden="true">{translate('workbench.threadMapMoreThreads', { count: item.threads - live.length })}</span>
           )}
           {!preview && !live.length && !unlisted && box.height >= HEADER + 18 && (
-            <span className="thread-map-section-summary" aria-hidden="true">{translate('workbench.threadMapThreads', { count: item.threads })}</span>
+            <span className="thread-map-section-summary" aria-hidden="true">{phone ? `+${item.threads}` : translate('workbench.threadMapThreads', { count: item.threads })}</span>
           )}
           {!preview && !live.length && zoomable && <button type="button" className="thread-map-zoom" aria-label={translate('workbench.threadMapExplore', { name: text })}
             onClick={zoom} {...hover(lines)} />}
@@ -585,27 +586,10 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       );
     });
 
-  const renderPhone = (items: MapNode[], bounds: MapRect, parent: MapNode, depth = 0): ReactNode[] =>
-    phoneLayout(items, bounds, parent).map(({ item, rect: box }) => {
-      if (item.kind === 'compressed') return <button key={item.id} type="button" className="thread-map-compressed" data-phone-fold aria-label={`${parent.label} ${item.label}`}
-        style={{ left: box.x, top: box.y, width: box.width, height: box.height }} onClick={() => navigate(parent)}>{item.label}</button>;
-      if (item.thread) return <ThreadTile key={item.id} node={item} box={box} hours={hours} current={item.thread.key === currentKey} onOpen={open(item.thread)} hover={{}} readable />;
-      const inner = { x: 3, y: 44, width: box.width - 6, height: box.height - 47 };
-      const preview = depth < 2 && inner.width >= 96 && inner.height >= (item.children[0]?.thread ? 44 : 94);
-      return <section key={item.id} className="thread-map-section" data-map-id={item.id} data-kind={item.kind} data-zoomable
-        aria-label={item.label} style={{ left: box.x, top: box.y, width: box.width, height: box.height }}>
-        <button type="button" className="thread-map-section-head" onClick={event => navigate(item, event.currentTarget.closest('section'))} aria-label={translate('workbench.threadMapExplore', { name: item.label })}>
-          {item.kind === 'device' ? <Monitor aria-hidden="true" /> : <Folder aria-hidden="true" />}<span className="thread-map-section-label">{item.label}</span><span>{item.threads}</span>
-        </button>
-        {preview ? renderPhone(item.children, inner, item, depth + 1) : item.children.length > 0 ? <button type="button" className="thread-map-phone-fold" data-phone-fold onClick={() => navigate(item)} aria-label={translate('workbench.threadMapExplore', { name: item.label }) + ` +${item.threads}`}>+{item.threads}</button> : null}
-      </section>;
-    });
-
   const children = current.children;
-  const phoneColumns = size.width >= 197 ? 2 : 1;
-  const phoneHeight = Math.max(size.height, Math.ceil(children.length / phoneColumns) * (children.some(item => item.kind !== 'thread') ? 99 : 49) - 5);
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
-  const phoneStage = size.width > 0 && <div ref={stage} className="thread-map-stage" style={{ position: 'relative', height: phoneHeight }}>{renderPhone(children, { ...bounds, height: phoneHeight }, current)}</div>;
+  const [phoneList, setPhoneList] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(false);
   const breadcrumb = <>
         <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapBack')} disabled={current === root} onClick={() => navigate(current.parent)}>
           <ArrowLeft aria-hidden="true" />
@@ -649,8 +633,15 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       {phone && <>
         <div className="thread-map-phone-header">
           {current !== root ? <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapBack')} onClick={() => navigate(current.parent)}><ArrowLeft aria-hidden="true" /></button> : actions}
-          <span className="thread-map-phone-title">{current === root ? heading : current.label}</span>
-          <PhoneMapMenu scope={scope} setScope={setScope} onRefresh={() => setLayoutRevision(n => n + 1)} hours={hours} />
+          <span className="thread-map-phone-title"><span>{current === root ? heading : current.label}</span><small>
+            {translate('workbench.threadMapThreads', { count: root.threads })}
+            {root.running > 0 && <> · <i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapRunningCount', { count: root.running })}</>}
+            {root.usd > 0 && <> · {translate('workbench.threadMapCost', { usd: formatCompactUsd(root.usd) })}</>}
+          </small></span>
+          <PhoneMapMenu scope={scope} setScope={setScope} onRefresh={() => setLayoutRevision(n => n + 1)} list={phoneList} onToggleList={() => setPhoneList(value => !value)}
+            destinations={children.map(node => ({ id: node.id, label: describe(node, hours).join(' · ') }))} onGoTo={id => {
+              const node = nodes.get(id); if (node?.thread) onOpen(node.thread); else if (node) navigate(node);
+            }} />
         </div>
         <label className="thread-map-filter thread-map-phone-search"><input ref={filter} type="search" value={query} placeholder={translate('workbench.threadMapFilter')} aria-label={translate('workbench.threadMapFilter')} onChange={event => setFilter(event.target.value)} />
           {query.trim() && <><span role="status">{translate('workbench.threadMapMatches', { count: matches.size })}</span><button type="button" aria-label={translate('workbench.threadMapClearSearch')} onClick={() => setFilter('')}><X aria-hidden="true" /></button></>}
@@ -703,10 +694,10 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         onFocusCapture={() => { focusInside.current = true; if (stableLayout) freeze(); }}
         onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) { focusInside.current = false; if (stableLayout) thaw(); } }}>
         {children.length
-          ? phone ? <MapScrollList label={current.label}>{phoneStage}</MapScrollList> : <div ref={stage} className="thread-map-stage">{page ? <DenseMap current={current} bounds={bounds} hours={hours} currentKey={currentKey} frozen={stableLayout && frozen}
+          ? <div ref={stage} className="thread-map-stage">{page ? <DenseMap current={current} bounds={bounds} hours={hours} currentKey={currentKey} frozen={stableLayout && frozen}
             version={`${scope}:${layoutRevision}`} query={query} matches={hasMatch} extras={deviceExtras} cached={cachedDevices}
             navigate={navigate} expand={expand} onOpen={open} onQuickLook={onQuickLook ? quickLook : undefined} hover={hover}
-            register={items => { spatial.current = items; }} onRetry={onRetry} /> : size.width > 0 && render(children, bounds, 0)}</div>
+            register={items => { spatial.current = items; }} onRetry={onRetry} /> : phone && phoneList ? <MapScrollList label={current.label}><div className="thread-map-phone-list">{children.map(node => <button type="button" key={node.id} onClick={() => node.thread ? onOpen(node.thread) : navigate(node)}>{describe(node, hours).join(' · ')}</button>)}</div></MapScrollList> : size.width > 0 && render(children, bounds, 0)}</div>
           : phone && query.trim() ? <div className="thread-map-empty" role="status">{translate('workbench.threadMapNoMatches', { query })}<button type="button" onClick={() => setFilter('')}>{translate('workbench.threadMapClearSearch')}</button></div> : <p className="thread-map-empty" role="status">{current.device && cachedDevices.has(current.device.id) ? translate('workbench.threadMapNoCache') : devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
         {tip && <MapTooltip anchor={tip.target} trigger={tip.trigger} lines={tip.lines} node={tip.nodeId ? nodes.get(tip.nodeId) : undefined} hours={hours}
           extra={tip.nodeId && nodes.get(tip.nodeId)?.device ? deviceExtras?.[nodes.get(tip.nodeId)!.device!.id] : undefined}
@@ -722,7 +713,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
           <small>{translate(device.workspaces.length ? 'workbench.threadMapCached' : 'workbench.threadMapNoCache')}</small>
         </button>)}
       </div>}
-      {!page && !phone && <MapLegend compact={false}>
+      {phone && <button type="button" className="thread-map-phone-legend-toggle" aria-expanded={legendOpen} onClick={() => setLegendOpen(value => !value)}>{translate('workbench.threadMapLegend')} · {translate('workbench.threadMapLegendSize')} · {translate('workbench.threadMapLegendColor', { hours })}</button>}
+      {!page && (!phone || legendOpen) && <MapLegend compact={false}>
         <span>{translate('workbench.threadMapLegendSize')}</span>
         <span className="thread-map-scale">
           {translate('workbench.threadMapLegendColor', { hours })}

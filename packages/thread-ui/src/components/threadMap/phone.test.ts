@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildThreadMap } from './model';
 import type { ThreadMapDevice } from './model';
-import { filterPhoneDevices, mapPresentation, phoneLayout } from './phone';
+import { filterPhoneDevices, mapPresentation, phoneTileTier, restorePhoneWeights } from './phone';
 const devices: ThreadMapDevice[] = [{ id: 'd', name: 'Studio', state: 'ready', workspaces: [{ id: 'w', label: '工程', threads: Array.from({ length: 30 }, (_, i) => ({ key: String(i), title: i === 0 ? '修复地图 Search' : `Other ${i}`, href: '#', turns: i, activeMs: 0, running: false })) }] }];
 describe('phone map', () => {
   it('chooses the existing phone breakpoint and explicit host surface', () => {
@@ -27,18 +27,18 @@ describe('phone map', () => {
     expect(result[0]!.workspaces[0]!.threads[0]!.children?.map(child => child.key)).toEqual(['agent']);
     expect(filterPhoneDevices(source, 'hidden')).toEqual([]);
   });
-  it('has only one fold entry and it points at its container without nested folds', () => {
+  it('restores turn-proportional weights independently of recency', () => {
     const root = buildThreadMap(devices, 'All', { keepDeviceRoot: true });
+    restorePhoneWeights(root);
     const space = root.children[0]!.children[0]!;
-    const cells = phoneLayout(space.children, { x: 0, y: 0, width: 180, height: 200 }, space);
-    const folds = cells.filter(cell => cell.item.kind === 'compressed');
-    expect(folds).toHaveLength(1); expect(folds[0]!.item.parent).toBe(space); expect(folds[0]!.item.children).toEqual([]);
+    expect(space.children.find(node => node.thread?.key === '0')!.weight).toBe(1);
+    expect(space.children.find(node => node.thread?.key === '9')!.weight).toBe(4);
+    expect(space.weight).toBe(space.children.reduce((sum, node) => sum + node.weight, 0));
   });
-  it.each([360, 390])('keeps every cell at least 96 by 44 at %ipx', width => {
-    const root = buildThreadMap(devices, 'All', { keepDeviceRoot: true });
-    const space = root.children[0]!.children[0]!;
-    for (const { rect } of phoneLayout(space.children, { x: 0, y: 0, width, height: 550 }, space)) {
-      expect(rect.width).toBeGreaterThanOrEqual(96); expect(rect.height).toBeGreaterThanOrEqual(44);
-    }
+  it('requires 96×44 only for text labels, and keeps smaller icon previews', () => {
+    expect(phoneTileTier({ x: 0, y: 0, width: 95, height: 80 })).toBe('icon');
+    expect(phoneTileTier({ x: 0, y: 0, width: 150, height: 43 })).toBe('icon');
+    expect(phoneTileTier({ x: 0, y: 0, width: 96, height: 44 })).toBe('label');
+    expect(phoneTileTier({ x: 0, y: 0, width: 20, height: 18 })).toBe('dot');
   });
 });

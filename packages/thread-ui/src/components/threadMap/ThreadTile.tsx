@@ -7,6 +7,7 @@ import { TokenMetricIcon } from '../timeline/TokenMetricIcon';
 import { TokenUsageCost } from '../timeline/TokenUsageCost';
 import { formatCompactTokenCount, formatCompactUsd } from '../timeline/tokenFormatting';
 import { heatLevel, isWaiting, type MapNode, type ThreadMapThread } from './model';
+import { phoneTileTier } from './phone';
 import type { MapRect } from './squarify';
 
 const MINUTE = 60_000;
@@ -166,7 +167,8 @@ function Usage({ thread }: { thread: ThreadMapThread }) {
  * colored speck. The tile is one link; the price and the agent-thread button sit
  * above it.
  */
-function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChildren, dimmed, onQuickLook, readable = false }: {
+function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChildren, dimmed, onQuickLook, readable = false, phone = false }: {
+  phone?: boolean;
   readable?: boolean;
   dimmed?: boolean;
   onQuickLook?: (key: string) => void;
@@ -183,14 +185,15 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   const thread = node.thread!;
   const waiting = isWaiting(thread);
   const { width: w, height: h } = box;
-  const tier = tileTier(box);
+  const phoneTier = phoneTileTier(box);
+  const tier = phone && phoneTier !== 'label' ? phoneTier : tileTier(box);
   const details = threadDetails(node, hours);
   const age = ageTier(thread.createdAt);
-  const chip = <AgentChip agent={thread.agent} />;
+  const chip = phone && phoneTier === 'icon' && (waiting || thread.unread || thread.failed || thread.interrupted) ? null : <AgentChip agent={thread.agent} />;
   const titled = tier !== 'icon' && tier !== 'dot';
   const lineHeight = tier === 'card' ? 19 : tier === 'large' ? 17 : 16;
   const childCount = thread.children?.length ?? 0;
-  const canShowChildren = Boolean(onShowChildren && childCount) && w >= 60 && h >= 40;
+  const canShowChildren = (!phone || phoneTier === 'label' && w >= 150 && h >= 64) && Boolean(onShowChildren && childCount) && w >= 60 && h >= 40;
   // The title keeps room for a few characters: the age goes first, then the count beside the agent-thread icon;
   // a narrow tall tile has the button on a line of its own under the title.
   const headRoom = w - (tier === 'card' ? 22 : 14) - (thread.agent ? (tier === 'card' ? 25 : 22) : 0);
@@ -198,27 +201,27 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
   const childrenRow = canShowChildren && !showChildren && h >= 80;
   const childrenWidth = !showChildren ? 0 : headRoom - 36 >= 44 ? 36 : 24;
   // From the top: title, who; from the bottom: strip, figures; the prompt takes what is left.
-  const showAge = (!readable || w >= 220 && h >= 110) && age !== null && w >= 110 && h >= 44 && headRoom - childrenWidth - 19 >= 52;
+  const showAge = (!phone || phoneTier === 'label' && h >= 96) && (!readable || w >= 220 && h >= 110) && age !== null && w >= 110 && h >= 44 && headRoom - childrenWidth - 19 >= 52;
   const showAgeText = showAge && headRoom - childrenWidth - 52 >= 80;
-  const showWho = w >= 100 && h >= (readable ? 110 : 80);
+  const showWho = !phone && w >= 100 && h >= (readable ? 110 : 80);
   const known = thread.turns !== null;
   const priced = Boolean(thread.tokenUsage || thread.priceEstimate);
   // Figures side by side on a wide tile, stacked on a tall narrow one, else one line.
-  const figures = known && w >= 176 && h >= 120 ? 'grid' : known && w >= 96 && h >= 170 ? 'column' : known && w >= 64 && h >= 46 ? 'line' : null;
+  const figures = phone ? phoneTier === 'label' && known && h >= 64 ? 'line' : null : known && w >= 176 && h >= 120 ? 'grid' : known && w >= 96 && h >= 170 ? 'column' : known && w >= 64 && h >= 46 ? 'line' : null;
   // Price and tokens: a fourth figure on a wide grid, else a row of their own where it fits.
   const usage = !priced ? null : figures === 'grid' && w >= 270 ? 'cell' : (figures === 'grid' || figures === 'column') && w >= 110 ? 'row' : null;
-  const showSpark = Boolean(thread.hourlyMs?.some(ms => ms > 0)) && w >= 96 && h >= 100;
+  const showSpark = (!phone || phoneTier === 'label' && h >= 160) && Boolean(thread.hourlyMs?.some(ms => ms > 0)) && w >= 96 && h >= 100;
   const fixed = FIT.padding + (childrenRow ? 19 + FIT.gap : 0) + (showWho ? FIT.who + FIT.gap : 0) + (figures ? FIT[figures === 'line' ? 'meta' : figures] + FIT.gap : 0)
     + (usage === 'row' ? FIT.usage + FIT.gap : 0) + (showSpark ? FIT.spark + FIT.gap : 0);
   const titleLines = Math.max(1, Math.min(3, Math.floor((h - fixed) / lineHeight), h >= 56 ? 3 : 1));
   const promptRoom = h - fixed - Math.min(2, titleLines) * lineHeight - FIT.gap;
   const promptLines = w >= 100 && thread.lastPrompt ? Math.min(6, Math.floor(promptRoom / FIT.promptLine)) : 0;
-  const prompt = promptLines >= 2 ? promptLine(thread.lastPrompt!) : '';
+  const prompt = !phone && promptLines >= 2 ? promptLine(thread.lastPrompt!) : '';
   // A Latin word wider than the title's line would be split mid-word; one line with an ellipsis reads better.
   const titleWidth = headRoom - (showAge ? (showAgeText ? 52 : 19) : 0) - childrenWidth;
   const longest = Math.max(0, ...thread.title.split(/\s+/).map(word => (/^[\x21-\x7e]+$/.test(word) ? word.length : 0)));
   const wraps = longest * lineHeight * 0.42 <= titleWidth;
-  const lines = readable && h < 110 ? 2 : !wraps ? 1 : prompt ? Math.min(2, titleLines) : titleLines;
+  const lines = phone ? 1 : readable && h < 110 ? 2 : !wraps ? 1 : prompt ? Math.min(2, titleLines) : titleLines;
   // Room still left grows the hourly strip, up to three times its height.
   const left = h - fixed - lines * lineHeight - (prompt ? promptLines * FIT.promptLine + FIT.gap : 0);
   const sparkHeight = FIT.spark + Math.max(0, Math.min(28, Math.floor(left * 0.4)));
@@ -242,7 +245,7 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
     </button>
   );
   return (
-    <div className="thread-map-tile" data-map-id={node.id} data-readable={readable || undefined} data-size={tier} data-heat={heatLevel(thread.activeMs)}
+    <div className="thread-map-tile" data-map-id={node.id} data-readable={readable || undefined} data-phone-tile={phone || undefined} data-size={tier} data-heat={heatLevel(thread.activeMs)}
       data-dimmed={dimmed || undefined} data-waiting={waiting || undefined} data-unread={thread.unread || undefined}
       data-running={!waiting && (thread.running || node.running > 0) || undefined} data-failed={thread.failed || undefined} data-current={current || undefined}
       style={{ left: box.x, top: box.y, width: w, height: h, '--lines': lines, '--prompt-lines': promptLines, '--spark-h': `${sparkHeight}px` } as CSSProperties}>
@@ -296,5 +299,5 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
 export const ThreadTile = memo(ThreadTileContent, (a, b) =>
   a.node.thread === b.node.thread && a.node.parent?.label === b.node.parent?.label && a.node.running === b.node.running
   && a.box.x === b.box.x && a.box.y === b.box.y && a.box.width === b.box.width && a.box.height === b.box.height
-  && a.readable === b.readable && a.hours === b.hours && a.current === b.current && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook
+  && a.phone === b.phone && a.readable === b.readable && a.hours === b.hours && a.current === b.current && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook
   && Boolean(a.onShowChildren) === Boolean(b.onShowChildren));

@@ -1,4 +1,4 @@
-import type { MapNode, ThreadMapDevice, ThreadMapThread } from './model';
+import { runningWeight, threadWeight, type MapNode, type ThreadMapDevice, type ThreadMapThread } from './model';
 import type { MapRect } from './squarify';
 
 /** The Web's phone breakpoint. Native desktop chrome always keeps the dense map. */
@@ -25,32 +25,17 @@ export function filterPhoneDevices(devices: ThreadMapDevice[], query: string): T
   });
 }
 
-/** Phone +N entries zoom into their container instead of expanding in place
- * (ui-principles §5): never nest one fold entry inside another.
- * Readability wins over exact area. Rows share height by thread count, bounded
- * to prevent a large device leaving its neighbour as an unreadable strip. */
-export function phoneLayout(items: MapNode[], bounds: MapRect, container: MapNode) {
-  const gap = 5;
-  const columns = Math.max(1, Math.min(2, Math.floor((bounds.width + gap) / (96 + gap)), items.length));
-  const minHeight = items.some(item => item.kind !== 'thread') ? 94 : 44;
-  const rows = Math.max(0, Math.floor((bounds.height + gap) / (minHeight + gap)));
-  const capacity = rows * columns;
-  if (!capacity || bounds.width < 96) return [];
-  const shown = items.slice(0, items.length > capacity ? Math.max(0, capacity - 1) : capacity);
-  if (shown.length < items.length) shown.push({ ...container, id: `phone-fold:${container.id}`, kind: 'compressed',
-    label: `+${items.slice(shown.length).reduce((sum, item) => sum + item.threads, 0)}`, parent: container, children: [] });
-  const rowCount = Math.ceil(shown.length / columns);
-  const weights = Array.from({ length: rowCount }, (_, row) => Math.min(2, Math.sqrt(Math.max(1, ...shown.slice(row * columns, (row + 1) * columns).map(item => item.threads)))));
-  const available = bounds.height - Math.max(0, rowCount - 1) * gap;
-  const spare = Math.max(0, available - rowCount * minHeight);
-  let y = bounds.y;
-  return weights.flatMap((weight, row) => {
-    const height = minHeight + spare * weight / weights.reduce((a, b) => a + b, 0);
-    const cells = shown.slice(row * columns, (row + 1) * columns);
-    // Keep a lone last device the same width as its peers, rather than a huge empty row.
-    const width = (bounds.width - (columns - 1) * gap) / columns;
-    const result = cells.map((item, col) => ({ item, rect: { x: bounds.x + col * (width + gap), y, width, height } }));
-    y += height + gap;
-    return result;
-  });
+/** Restore the old phone geometry: area follows turns, with extra room for
+ * running conversations. Recency-based dense geometry stays on the page. */
+export function restorePhoneWeights(node: MapNode): MapNode {
+  for (const child of node.children) restorePhoneWeights(child);
+  node.weight = node.thread ? (node.running ? runningWeight(node.thread.turns) : threadWeight(node.thread.turns))
+    : node.children.length ? node.children.reduce((sum, child) => sum + child.weight, 0) : node.weight;
+  node.children.sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
+  return node;
+}
+
+/** Icon-only previews may be small; only text-labelled tiles require 96×44. */
+export function phoneTileTier(box: MapRect) {
+  return box.width >= 96 && box.height >= 44 ? 'label' : box.width >= 22 && box.height >= 20 ? 'icon' : 'dot';
 }

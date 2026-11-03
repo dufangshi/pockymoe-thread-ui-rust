@@ -13,6 +13,7 @@ export const workbenchZhCN = {
   "workbench.threadMapScopeActive": "活跃",
   "workbench.threadMapScopeWeek": "7 天",
   "workbench.threadMapScopeAll": "全部",
+  "workbench.threadMapListView": "列表视图",
   "workbench.threadMapActions": "地图操作",
   "workbench.threadMapClearSearch": "清除搜索",
   "workbench.threadMapNoMatches": "没有匹配“{{query}}”的线程",

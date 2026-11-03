@@ -13,6 +13,7 @@ export const workbenchEn = {
   "workbench.threadMapScopeActive": "Active",
   "workbench.threadMapScopeWeek": "7 days",
   "workbench.threadMapScopeAll": "All",
+  "workbench.threadMapListView": "List view",
   "workbench.threadMapActions": "Map actions",
   "workbench.threadMapClearSearch": "Clear search",
   "workbench.threadMapNoMatches": "No matches for “{{query}}”",

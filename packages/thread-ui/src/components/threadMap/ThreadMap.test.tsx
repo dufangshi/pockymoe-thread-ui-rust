@@ -160,6 +160,38 @@ describe('ThreadMap', () => {
     expect(host.querySelector('section[data-map-id="device:wsl"]')!.hasAttribute('data-live')).toBe(true);
   });
 
+  it('phone keeps one folded +N zoom tile inside a crowded workspace', () => {
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(240);
+    vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(160);
+    const crowd = [{ id: 'd', name: 'Device', state: 'ready' as const, workspaces: [{ id: 'w', label: 'Workspace', threads: Array.from({ length: 300 }, (_, i) => thread(`q${i}`)) }] }];
+    act(() => root.render(<ThreadMap phone devices={crowd} onOpen={vi.fn()} />));
+    const folded = host.querySelector('[data-phone-fold]')!;
+    expect(folded).not.toBeNull();
+    expect(folded.querySelectorAll('.thread-map-section-summary')).toHaveLength(1);
+    expect(folded.querySelector('.thread-map-section-summary')!.textContent).toBe('+300');
+    expect(folded.querySelector('[data-phone-fold]')).toBeNull();
+    click(folded.querySelector('button.thread-map-zoom')!);
+    expect(host.querySelector('.thread-map-phone-title')!.textContent).toContain('Workspace');
+  });
+
+  it('phone labelled tiles have a full line and omit metrics below 64px height', () => {
+    const node = buildThreadMap([devices[0]!], 'All').children[0]!.children[0]!;
+    for (const [width, height, title, meta] of [[95, 80, false, true], [96, 44, true, false], [180, 63, true, false], [180, 64, true, true]] as const) {
+      act(() => root.render(<ThreadTile phone node={node} box={{ x: 0, y: 0, width, height }} hours={24} current={false} onOpen={vi.fn()} hover={{}} />));
+      expect(Boolean(host.querySelector('.thread-map-tile-title'))).toBe(title);
+      expect(Boolean(host.querySelector('.thread-map-tile-meta'))).toBe(meta && title);
+      expect(host.querySelector('.thread-map-tile-sub, .thread-map-tile-prompt')).toBeNull();
+    }
+  });
+
+  it('keeps agent counts and expansion on roomy phone tiles', () => {
+    const node = buildThreadMap([{ ...devices[0]!, workspaces: [{ id: 'w', label: 'w', threads: [thread('parent', { children: [thread('child')] })] }] }], 'All').children[0]!.children[0]!;
+    const expand = vi.fn();
+    act(() => root.render(<ThreadTile phone node={node} box={{ x: 0, y: 0, width: 190, height: 100 }} hours={24} current={false} onOpen={vi.fn()} onShowChildren={expand} hover={{}} />));
+    const childButton = host.querySelector('.thread-map-children')!;
+    expect(childButton.textContent).toBe('1'); click(childButton); expect(expand).toHaveBeenCalledOnce();
+  });
+
   it('drills into a device and a workspace and back', () => {
     show(devices);
     click(button(/^Open Laptop/));

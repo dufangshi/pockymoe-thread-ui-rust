@@ -97,11 +97,6 @@ function renderLayoutWithActions() {
   );
 }
 
-describe('ThreadWorkspaceLayout', () => {
-  beforeEach(() => {
-    mockViewport(false);
-  });
-
   afterEach(() => {
     if (root) {
       flushSync(() => {
@@ -113,6 +108,13 @@ describe('ThreadWorkspaceLayout', () => {
     container = null;
     vi.restoreAllMocks();
   });
+
+describe('ThreadWorkspaceLayout', () => {
+  beforeEach(() => {
+    mockViewport(false);
+  });
+
+
 
   it('defaults desktop thread entry to chat with workspace collapsed', () => {
     const element = renderLayout();
@@ -391,16 +393,32 @@ describe('host-restricted navigation', () => {
   });
 });
 
-it('replaces only the wide settings trigger and keeps its settings dialog functional', async () => {
-  mockViewport(false);
+it.each([false, true])('uses the account settings trigger at both widths (mobile=%s)', async mobile => {
+  mockViewport(mobile);
   Element.prototype.scrollIntoView = vi.fn();
   const host = render(<ThreadWorkspaceLayout threads={[]} status={null}
     settingsSections={[{ id: 'preferences', label: 'Preferences', content: <p>Account rail preferences</p> }]}
     renderRailSettings={open => <button aria-label="Account rail" onClick={open}>AC</button>}
     workbench={{ threads: [], currentKey: '', activeView: 'chat', terminalEnabled: false, onViewChange: () => {}, onSearch: () => {}, workspacePath: '', favorite: false, onToggleFavorite: () => {}, onNavigate: () => {}, notifications: [], unreadCount: 0, onReadNotifications: () => {} }}><p>Conversation</p></ThreadWorkspaceLayout>);
-  const trigger = host.querySelector<HTMLButtonElement>('.matter-rail-bottom [aria-label="Account rail"]');
+  const trigger = host.querySelector<HTMLButtonElement>('[aria-label="Account rail"]');
   expect(trigger).not.toBeNull();
   expect(host.querySelector('.matter-rail-bottom [data-icon="settings"]')).toBeNull();
   await act(async () => trigger!.click());
   expect(document.body.querySelector('[data-testid="settings-dialog"]')?.textContent).toContain('Account rail preferences');
+});
+
+it.each([false, true])('omits Session settings even when thread content is supplied (mobile=%s)', async mobile => {
+  await act(async () => { root?.unmount(); });
+  container?.remove();
+  mockViewport(mobile);
+  await act(async () => { render(<ThreadWorkspaceLayout threads={[]} status={null} settingsDialogOpen
+    metaContent={<p>Thread IDs</p>} settingsContent={<p>Thread controls</p>}
+    settingsSections={[{ id: 'preferences', label: 'Preferences', content: <p>Saved preferences</p> }]}>
+    <p>Conversation</p>
+  </ThreadWorkspaceLayout>); });
+  const dialog = document.body.querySelector('[data-testid="settings-dialog"]')!;
+  expect([...dialog.querySelectorAll('[role="tab"]')].map(tab => tab.textContent)).toEqual(['Preferences']);
+  expect(dialog.querySelector('[role="tabpanel"]')?.textContent).toContain('Saved preferences');
+  await act(async () => { root?.unmount(); });
+  root = null; container?.remove(); container = null;
 });

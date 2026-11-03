@@ -19,7 +19,7 @@ afterEach(() => {
 });
 
 const sections = [
-  { id: 'session', label: 'Session', content: <p>Session body</p> },
+  { id: 'harnesses', label: 'Harness', content: <p>Harness body</p> },
   { id: 'preferences', label: 'Preferences', content: <p>Preferences body</p> },
 ];
 
@@ -29,7 +29,7 @@ it('keeps an owner-held section when the dialog remounts elsewhere', () => {
     const [section, setSection] = useState<string | undefined>();
     const [where, setWhere] = useState<'sheet' | 'bar'>('sheet');
     move = () => setWhere('bar');
-    const dialog = <SettingsDialog open sections={sections} initialId="session" section={section} onSectionChange={setSection} />;
+    const dialog = <SettingsDialog open sections={sections} initialId="harnesses" section={section} onSectionChange={setSection} />;
     return where === 'sheet' ? <section>{dialog}</section> : <header>{dialog}</header>;
   }
   act(() => root.render(<Owner />));
@@ -39,4 +39,10 @@ it('keeps an owner-held section when the dialog remounts elsewhere', () => {
   act(() => move());
   expect(tab().getAttribute('aria-selected')).toBe('true');
   expect(document.body.textContent).toContain('Preferences body');
+});
+
+it.each(['session', 'advanced'])('renders the first panel for an obsolete link: %s', initialId => {
+  act(() => root.render(<SettingsDialog open sections={sections} initialId={initialId} />));
+  expect(document.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toBe('Harness');
+  expect(document.querySelector('[role="tabpanel"]')?.textContent).toContain('Harness body');
 });

@@ -1059,6 +1059,7 @@ export function ThreadComposer({
     contextUsage,
     contextInspector,
     onCompact,
+    ...(onOpenHarness ? { onOpenHarness: () => { void onOpenHarness(menuRef.current?.dataset.composerFocusOwner); } } : {}),
     reasoningEffort,
     supportedEfforts,
     displayedCollaborationMode,

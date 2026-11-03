@@ -108,7 +108,7 @@ declare function Select({ value, defaultValue, onValueChange, options, children,
  * the first item when it opens; ↑/↓ move and wrap, Home/End jump; Esc closes it
  * and returns focus to the trigger; Tab closes it and moves on.
  */
-declare function useMenuKeyboard(menuRef: RefObject<HTMLElement | null>, open: boolean, onClose: (restoreFocus: boolean) => void, itemSelector?: string): void;
+declare function useMenuKeyboard(menuRef: RefObject<HTMLElement | null>, open: boolean, onClose: (restoreFocus: boolean) => void, itemSelector?: string, replaceSheets?: boolean): void;
 
 /**
  * A modal window's focus (see docs/ui-principles.md §4): it moves in when the

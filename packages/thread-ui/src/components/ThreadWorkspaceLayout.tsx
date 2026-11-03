@@ -809,14 +809,13 @@ export function ThreadWorkspaceLayout({
     }
 
     const sections = [
-      ...(settingsContent || metaContent ? [{ id: "session", label: translate("files.session"), description: translate("files.controlsAndDetailsForThisConversation"), content: <div className="space-y-5">{settingsContent}{metaContent && <details className="settings-detail"><summary>{translate("files.sessionDetails")}</summary><div>{metaContent}</div></details>}</div> }] : []),
       ...(settingsSections ?? (globalSettingsContent ? [{ id: "preferences", label: translate("files.preferences"), content: globalSettingsContent }] : [])),
     ];
 
-    const railAccount = renderRailSettings && !isShellMobileViewport;
+    const railAccount = Boolean(renderRailSettings);
     return (
       <>
-      {railAccount ? renderRailSettings(() => changeSettingsOpen(true)) : null}
+      {railAccount ? renderRailSettings?.(() => changeSettingsOpen(true)) : null}
       <SettingsDialog
         open={settingsOpen}
         onOpenChange={changeSettingsOpen}

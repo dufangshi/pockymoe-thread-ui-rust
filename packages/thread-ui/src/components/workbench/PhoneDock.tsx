@@ -1,3 +1,4 @@
+import { useExclusiveSecondary } from '../menu/useExclusiveSecondary';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ChevronsUpDown, Ellipsis, FolderOpen, MessageSquare, Terminal } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
@@ -104,6 +105,7 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
   const sheet = useRef<HTMLElement>(null);
   const close = useRef(onClose);
   close.current = onClose;
+  useExclusiveSecondary(sheet, open, () => close.current(), 'sheet');
   useEffect(() => {
     if (!open) return;
     sheet.current?.querySelector<HTMLElement>('[data-sheet-autofocus], button, a')?.focus({ preventScroll: true });

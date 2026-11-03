@@ -409,6 +409,8 @@ interface MatterWorkbenchOptions {
     sidebarHeader?: ReactNode;
     sidebarLeading?: ReactNode;
     railLeading?: ReactNode;
+    /** Host navigation keeps this control in place when no terminal is available. */
+    showTerminal?: boolean;
     panels?: WorkbenchPanelsOptions;
     statusActions?: ReactNode;
     /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
@@ -532,6 +534,8 @@ interface ThreadWorkspaceLayoutProps {
     showMobileThreadNavToggle?: boolean;
     showMobileNewThreadShortcut?: boolean;
     hideRoomsRail?: boolean;
+    /** Account menu at the wide rail footer; the settings dialog stays mounted. */
+    renderRailSettings?: (openSettings: () => void) => ReactNode;
     settingsDialogOpen?: boolean;
     onSettingsDialogOpenChange?: (open: boolean) => void;
     mobileHeaderAction?: ReactNode;
@@ -602,7 +606,7 @@ interface ThreadCardsProps {
     collapsed?: boolean;
 }
 declare function ThreadCards({ threads, currentThreadId, currentWorkspaceId, workspaceLabels, onOpenThread, getThreadHref, renderThreadLink, onBeginRenameThread, onDeleteThread, scrollable, maxHeightClassName, showDeleteButton, showSessionCopyButton, collapsed, }: ThreadCardsProps): react.JSX.Element;
-declare function ThreadWorkspaceLayout({ workbench, threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, hideRoomsRail, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, harnessLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, deviceMonitor, metaContent, settingsContent, globalSettingsContent, settingsSections, restrictedNavigation, scopedSettings, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, workspaceRevealRequestKey, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
+declare function ThreadWorkspaceLayout({ workbench, threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, hideRoomsRail, renderRailSettings, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, harnessLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, deviceMonitor, metaContent, settingsContent, globalSettingsContent, settingsSections, restrictedNavigation, scopedSettings, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, workspaceRevealRequestKey, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
 
 type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
     status: ThreadTurnDto["status"] | "sending";
@@ -898,6 +902,7 @@ interface ThreadDetailSurfaceProps {
     settingsContent?: ReactNode;
     globalSettingsContent?: ReactNode;
     settingsSections?: SettingsSection[];
+    renderRailSettings?: ((openSettings: () => void) => ReactNode) | undefined;
     settingsDialogOpen?: boolean;
     onSettingsDialogOpenChange?: (open: boolean) => void;
     mobileHeaderAction?: ReactNode;
@@ -963,7 +968,7 @@ interface ThreadDetailSurfaceProps {
     loadingContent?: ReactNode;
     emptyContent?: ReactNode;
 }
-declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsSections, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, restrictedNavigation, scopedSettings, onWorkspaceReturn, threadActionsButton, surfaceActions, workbench, deviceMonitor, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, presentation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
+declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsSections, renderRailSettings, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, restrictedNavigation, scopedSettings, onWorkspaceReturn, threadActionsButton, surfaceActions, workbench, deviceMonitor, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, presentation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
 
 declare function usePlugins(): PluginContextValue;
 

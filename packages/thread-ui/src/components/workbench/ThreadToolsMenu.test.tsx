@@ -12,12 +12,12 @@ let host: HTMLDivElement;
 const onFavorite = vi.fn();
 const onDownload = vi.fn();
 
-function Fixture() {
+function Fixture({ noToggle = false }: { noToggle?: boolean }) {
   const [open, setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
   return (
     <div className="thread-ui-shell">
-      <button ref={toggle} aria-label="Thread tools" aria-expanded={open} onClick={() => setOpen((value) => !value)}>tools</button>
+      {!noToggle && <button ref={toggle} aria-label="Thread tools" aria-expanded={open} onClick={() => setOpen((value) => !value)}>tools</button>}
       <ThreadToolsMenu id="tools" open={open} anchorRef={toggle} path="/home/ubuntu/dev/remoteCodex" title="thread ui"
         favorite={false} onToggleFavorite={onFavorite} onClose={(restore) => { setOpen(false); if (restore) toggle.current?.focus(); }}>
         <div><button aria-label="Download transcript" onClick={onDownload}>D</button></div>
@@ -73,4 +73,13 @@ it('closes on Escape and on a press outside', () => {
   act(() => toggle().click());
   act(() => { document.body.dispatchEvent(new Event('pointerdown', { bubbles: true })); });
   expect(menu()).toBeNull();
+});
+
+it('keeps a closed menu scoped and hidden when its empty page has no toggle', () => {
+  act(() => root.render(<Fixture key="empty-page" noToggle />));
+  const closed = document.querySelector<HTMLElement>('#tools')!;
+  expect(closed.closest('.thread-ui-shell')).not.toBeNull();
+  expect(closed.style.visibility).toBe('hidden');
+  expect(closed.getAttribute('aria-hidden')).toBe('true');
+  expect(closed.querySelector('.copy-button')).not.toBeNull();
 });

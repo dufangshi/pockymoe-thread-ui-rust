@@ -390,3 +390,17 @@ describe('host-restricted navigation', () => {
     expect(host.querySelector('button[aria-label="Open settings"]')).not.toBeNull();
   });
 });
+
+it('replaces only the wide settings trigger and keeps its settings dialog functional', async () => {
+  mockViewport(false);
+  Element.prototype.scrollIntoView = vi.fn();
+  const host = render(<ThreadWorkspaceLayout threads={[]} status={null}
+    settingsSections={[{ id: 'preferences', label: 'Preferences', content: <p>Account rail preferences</p> }]}
+    renderRailSettings={open => <button aria-label="Account rail" onClick={open}>AC</button>}
+    workbench={{ threads: [], currentKey: '', activeView: 'chat', terminalEnabled: false, onViewChange: () => {}, onSearch: () => {}, workspacePath: '', favorite: false, onToggleFavorite: () => {}, onNavigate: () => {}, notifications: [], unreadCount: 0, onReadNotifications: () => {} }}><p>Conversation</p></ThreadWorkspaceLayout>);
+  const trigger = host.querySelector<HTMLButtonElement>('.matter-rail-bottom [aria-label="Account rail"]');
+  expect(trigger).not.toBeNull();
+  expect(host.querySelector('.matter-rail-bottom [data-icon="settings"]')).toBeNull();
+  await act(async () => trigger!.click());
+  expect(document.body.querySelector('[data-testid="settings-dialog"]')?.textContent).toContain('Account rail preferences');
+});

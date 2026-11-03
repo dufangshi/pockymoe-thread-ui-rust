@@ -358,4 +358,11 @@ export const authZhCN = {
   "auth.ui.accountPendingApproval": "你的账号正在等待管理员批准。",
   "auth.ui.registrationRejected": "你的注册没有通过审批。请联系 Relay 管理员。",
   "auth.ui.accountDisabled": "这个账号已被停用。请联系 Relay 管理员。",
+  "auth.loginSecurity": "登录与安全",
+  "auth.accountKeys": "账户密钥",
+  "auth.accountKeysHelp": "核对分享身份时使用，所有设备通用。",
+  "auth.accountBrowsersHelp": "这些浏览器持有可访问设备的证书。移除后需重新授权。",
+  "auth.dangerZone": "危险操作",
+  "auth.oauthUnlockPasswordHelp": "第三方登录账号没有登录密码。此处修改的是用于解锁账户密钥的密码，不会新增密码登录。",
+  "auth.dangerZoneHelp": "重置账户密钥并重新授权所有设备。",
 } as const;

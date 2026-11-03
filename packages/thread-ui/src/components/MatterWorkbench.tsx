@@ -49,6 +49,10 @@ const SIDEBAR_SECTIONS_KEY = 'pockymoe.sidebar-sections.v1';
 const SIDEBAR_WIDTH_KEY = 'pockymoe.sidebar-width';
 const SIDEBAR_MIN = 200, SIDEBAR_MAX = 420;
 const clampSidebar = (width: number) => Math.round(Math.max(SIDEBAR_MIN, Math.min(SIDEBAR_MAX, width)));
+export const PHONE_SYSTEM_EDGE_GUARD = 28;
+export function canStartPhoneSidebarSwipe(clientX: number) {
+  return clientX > PHONE_SYSTEM_EDGE_GUARD;
+}
 
 /** Where a right-click opened a thread's menu, and how to end it. */
 export interface ThreadMenuContext {
@@ -376,6 +380,9 @@ export function MatterWorkbench({
       if (sidebarOpen) {
         if (!target.closest('.matter-sidebar, .matter-sidebar-scrim')) return;
       } else {
+        // The left edge belongs to the browser/system back gesture. Returning
+        // before recording a start also leaves the touch passive and untouched.
+        if (!canStartPhoneSidebarSwipe(x)) return;
         if (x > window.innerWidth * 0.4 || !target.closest('.matter-main')) return;
         if (target.closest('.thread-graph-composer-host, .file-ask-bar, .matter-phone-dock, .xterm, .terminal-panel, input, textarea, [contenteditable="true"], [contenteditable="plaintext-only"], [role="dialog"], [data-no-swipe]')) return;
         // A row that can still scroll back to its start keeps the swipe.

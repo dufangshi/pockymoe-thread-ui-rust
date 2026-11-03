@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildThreadMap, inScope, recencyWeight, runningWeight, type MapNode, type ThreadMapDevice, type ThreadMapThread } from './model';
 import { MapLayoutCache, spatialNeighbor, StableMapOrder } from './stableLayout';
-import { orderAttention, type MapAttention } from './types';
 
 const now = Date.parse('2026-11-01T12:00:00Z');
 const day = 86_400_000;
@@ -91,11 +90,6 @@ describe('map v2 model', () => {
     expect(spatialNeighbor(items, 'c', 'ArrowUp')).toBe('a');
     expect(spatialNeighbor(items, 'b', 'ArrowLeft')).toBe('a');
     expect(spatialNeighbor(items, 'a', 'ArrowLeft')).toBeUndefined();
-  });
-
-  it('keeps activity-source ordering inside attention categories', () => {
-    const items = ['unread', 'input', 'failed', 'approval', 'input'].map((kind, i) => ({ key: String(i), kind, title: '', device: '', workspace: '', since: '' } as MapAttention));
-    expect(orderAttention(items).map(n => n.key)).toEqual(['1', '3', '4', '2', '0']);
   });
 
   it('lays out 650 threads inside one frame, including cache reuse after content changes', () => {

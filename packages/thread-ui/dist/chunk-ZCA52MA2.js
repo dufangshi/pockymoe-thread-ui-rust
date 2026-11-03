@@ -289,7 +289,8 @@ function useModalFocus(windowRef, open, onClose, initial) {
     const focusables = () => [...root.querySelectorAll(FOCUSABLE)].filter(visible);
     const frame = requestAnimationFrame(() => {
       if (root.contains(document.activeElement)) return;
-      (initial ? root.querySelector(initial) : null)?.focus() ?? focusables()[0]?.focus() ?? root.focus();
+      const target = (initial ? root.querySelector(initial) : null) ?? focusables()[0] ?? root;
+      target.focus();
     });
     const key = (event) => {
       const active = document.activeElement;
@@ -422,7 +423,7 @@ function ConfirmDialog({
                   "aria-label": translate("workbench.closeDialog"),
                   onClick: onCancel,
                   disabled: busy,
-                  className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  className: "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
                   children: /* @__PURE__ */ jsx5("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx5("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
                 }
               )

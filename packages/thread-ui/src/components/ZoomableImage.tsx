@@ -1,3 +1,4 @@
+import { RecoverableImage, type ImageResolver } from './RecoverableImage';
 import { translate, useI18n } from '../i18n';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -16,11 +17,13 @@ export function GraphWorkspaceImageLightbox({
   backgroundColor,
   onClose,
   src,
+  resolveSrc,
 }: {
   alt: string;
   backgroundColor?: string;
   onClose: () => void;
   src: string;
+  resolveSrc?: ImageResolver | undefined;
 }) {
   const { locale: i18nLocale } = useI18n();
   const { viewportRef, scale, dragging, transform, reset: resetView, updateScale, handlers, moved } = useImageViewport();
@@ -108,7 +111,7 @@ export function GraphWorkspaceImageLightbox({
           handlers.onPointerDown(event);
         }}
       >
-        <img
+        <RecoverableImage resolveSrc={resolveSrc}
           src={src}
           alt={alt}
           draggable={false}
@@ -150,18 +153,18 @@ export function ZoomableImage({
   const dimension = (value?: string | number) => typeof value === 'number' ? value
     : value && /^\d+(?:\.\d+)?%?$/.test(value) ? value.endsWith('%') ? value : Number(value) : undefined;
   const imageStyle = { width: dimension(width), height: dimension(height) };
-  const image = <img src={src} alt={alt} className={className} loading={loading} style={imageStyle} />;
+  const imageProps = { src, alt, className, loading, style: imageStyle };
 
   function closeLightbox() {
     setOpen(false);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   }
 
-  if (insideLink) return image;
+  if (insideLink) return <RecoverableImage {...imageProps} />;
 
   return (
     <>
-      <button
+      <RecoverableImage {...imageProps} renderImage={image => <button
         ref={triggerRef}
         type="button"
         className="thread-graph-zoomable-image-trigger"
@@ -171,7 +174,7 @@ export function ZoomableImage({
         aria-label={translate("files.openImagePreview_bdac35", { value1: alt || translate("files.workspaceImage") })}
       >
         {image}
-      </button>
+      </button>} />
       {open ? (
         <GraphWorkspaceImageLightbox
           src={fullSrc || src}
@@ -196,7 +199,7 @@ export function WorkspaceImagePreview({ src, alt }: { src: string; alt: string }
       <button type="button" onClick={() => setOpen(true)} aria-label={translate('files.openImagePreview')}><Maximize2 size={14} /></button>
     </div>
     <div ref={viewportRef} className="workspace-image-viewport" {...handlers}>
-      <img src={src} alt={alt} draggable={false} className={dragging ? 'is-dragging' : ''} style={{ transform }} />
+      <RecoverableImage src={src} alt={alt} draggable={false} className={dragging ? 'is-dragging' : ''} style={{ transform }} />
     </div>
     {open && <GraphWorkspaceImageLightbox src={src} alt={alt} onClose={() => setOpen(false)} />}
   </div>;

@@ -1,3 +1,4 @@
+import { RecoverableImage } from '../RecoverableImage';
 import { translate, useI18n } from '../../i18n';
 import {
   memo,
@@ -896,25 +897,17 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
       tone="image"
     >
       {imageUrl ? (
-        <button
-          type="button"
-          onClick={() => setLightboxOpen(true)}
-          className="block w-full text-left"
-          title={translate("files.openImagePreview")}
-        >
-          <img
-            src={imageUrl}
-            alt={item.text || translate("chat.imagePreview")}
-            className="thread-graph-history-event-image"
-            loading="lazy"
-          />
-        </button>
+        <RecoverableImage src={imageUrl} alt={item.text || translate('chat.imagePreview')}
+          className="thread-graph-history-event-image" loading="lazy"
+          resolveSrc={threadId && assetPath && getImageAssetUrl ? () => getImageAssetUrl({ threadId, path: assetPath, variant: 'thumbnail' }) ?? imageUrl : undefined}
+          renderImage={image => <button type="button" onClick={() => setLightboxOpen(true)} className="block w-full text-left" title={translate('files.openImagePreview')}>{image}</button>} />
       ) : (
         <div className="thread-graph-history-event-summary">{item.text}</div>
       )}
       {fullImageUrl ? (
         <GraphWorkspaceImageLightbox
           src={fullImageUrl}
+          resolveSrc={threadId && assetPath && getImageAssetUrl ? () => getImageAssetUrl({ threadId, path: assetPath }) ?? fullImageUrl : undefined}
           alt={item.text || translate("chat.imagePreview")}
           onClose={() => setLightboxOpen(false)}
         />

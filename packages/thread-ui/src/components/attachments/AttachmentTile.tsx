@@ -1,3 +1,4 @@
+import { RecoverableImage, type ImageResolver } from '../RecoverableImage';
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { translate, useI18n } from '../../i18n';
@@ -9,13 +10,13 @@ import { FILE_GLYPH_SVG, fileBadge, fileFamily, fileKindLabel, formatFileSize, s
 
 /** The face of an attachment: a file glyph in its family's color with its
     extension (or a photo's thumbnail) over its shortened name. */
-export function AttachmentFace({ name, family, thumbnail }: { name: string; family: FileFamily; thumbnail?: string | null | undefined }) {
+export function AttachmentFace({ name, family, thumbnail, image }: { name: string; family: FileFamily; thumbnail?: string | null | undefined; image?: ReactNode }) {
   const badge = fileBadge(name);
   return <>
     <span className="attachment-tile-icon">
-      {thumbnail
+      {image ?? (thumbnail
         ? <img src={thumbnail} alt="" draggable={false} loading="lazy" />
-        : <><span className="attachment-tile-glyph" dangerouslySetInnerHTML={{ __html: FILE_GLYPH_SVG }} />{badge ? <b>{badge}</b> : null}</>}
+        : <><span className="attachment-tile-glyph" dangerouslySetInnerHTML={{ __html: FILE_GLYPH_SVG }} />{badge ? <b>{badge}</b> : null}</>)}
     </span>
     <span className="attachment-tile-name">{shortFileName(name)}</span>
   </>;
@@ -23,12 +24,13 @@ export function AttachmentFace({ name, family, thumbnail }: { name: string; fami
 
 /** What a tapped attachment says about itself, with what can be done with it: a
     photo leads with its preview (tap it for full size), a file with its glyph. */
-export function AttachmentCard({ name, family, size, path, thumbnail, onView, actions }: {
+export function AttachmentCard({ name, family, size, path, thumbnail, resolveSrc, onView, actions }: {
   name: string;
   family: FileFamily;
   size?: number | undefined;
   path?: string | undefined;
   thumbnail?: string | null | undefined;
+  resolveSrc?: ImageResolver | undefined;
   onView?: (() => void) | undefined;
   actions?: ReactNode;
 }) {
@@ -43,9 +45,9 @@ export function AttachmentCard({ name, family, size, path, thumbnail, onView, ac
   return (
     <div className="attachment-card" data-family={family}>
       {thumbnail ? <>
-        {onView
-          ? <button type="button" className="attachment-card-preview" aria-label={translate('chat.attachmentView')} onClick={onView}><img src={thumbnail} alt="" draggable={false} /></button>
-          : <span className="attachment-card-preview"><img src={thumbnail} alt="" draggable={false} /></span>}
+        <RecoverableImage src={thumbnail} alt="" draggable={false} resolveSrc={resolveSrc} renderImage={image => onView
+          ? <button type="button" className="attachment-card-preview" aria-label={translate('chat.attachmentView')} onClick={onView}>{image}</button>
+          : <span className="attachment-card-preview">{image}</span>} />
         {info}
       </> : (
         <div className="attachment-card-head">
@@ -128,12 +130,14 @@ export function FloatingCard({ anchor, onClose, children }: { anchor: HTMLElemen
 }
 
 /** A photo or file in a sent prompt: a tile that opens its card. */
-export function MessageAttachment({ kind, path, name, thumbnailUrl, fullUrl, onOpenFile }: {
+export function MessageAttachment({ kind, path, name, thumbnailUrl, fullUrl, resolveThumbnail, resolveFull, onOpenFile }: {
   kind: 'photo' | 'file';
   path: string;
   name: string;
   thumbnailUrl?: string | null | undefined;
   fullUrl?: string | undefined;
+  resolveThumbnail?: ImageResolver | undefined;
+  resolveFull?: ImageResolver | undefined;
   onOpenFile?: ((input: { path: string }) => void) | undefined;
 }) {
   useI18n();
@@ -143,22 +147,27 @@ export function MessageAttachment({ kind, path, name, thumbnailUrl, fullUrl, onO
   const family = fileFamily(name, kind);
   const full = kind === 'photo' ? fullUrl ?? thumbnailUrl : null;
   const view = full ? () => { setOpen(false); setViewing(true); } : undefined;
-  return (
-    <>
+  const face = (image?: ReactNode) => (
       <button ref={tile} type="button" className="attachment-tile" data-family={family} data-kind={kind} aria-expanded={open}
         aria-label={translate('chat.attachmentDetails', { name })} title={name} onClick={() => setOpen(value => !value)}>
-        <AttachmentFace name={name} family={family} thumbnail={kind === 'photo' ? thumbnailUrl : null} />
+        <AttachmentFace name={name} family={family} image={image} />
       </button>
+  );
+  return (
+    <>
+      {kind === 'photo' && thumbnailUrl
+        ? <RecoverableImage src={thumbnailUrl} alt="" draggable={false} loading="lazy" resolveSrc={resolveThumbnail} renderImage={face} />
+        : face()}
       {open && tile.current ? (
         <FloatingCard anchor={tile.current} onClose={() => setOpen(false)}>
-          <AttachmentCard name={name} family={family} path={path} thumbnail={kind === 'photo' ? thumbnailUrl : null} onView={view}
+          <AttachmentCard name={name} family={family} path={path} thumbnail={kind === 'photo' ? thumbnailUrl : null} resolveSrc={resolveThumbnail} onView={view}
             actions={view || onOpenFile ? <>
               {view ? <ViewAction onClick={view} /> : null}
               {onOpenFile ? <button type="button" onClick={() => { setOpen(false); onOpenFile({ path }); }}><FolderOpen aria-hidden="true" />{translate('chat.attachmentOpenInFiles')}</button> : null}
             </> : null} />
         </FloatingCard>
       ) : null}
-      {viewing && full ? <GraphWorkspaceImageLightbox src={full} alt={name} onClose={() => { setViewing(false); tile.current?.focus({ preventScroll: true }); }} /> : null}
+      {viewing && full ? <GraphWorkspaceImageLightbox src={full} resolveSrc={resolveFull} alt={name} onClose={() => { setViewing(false); tile.current?.focus({ preventScroll: true }); }} /> : null}
     </>
   );
 }

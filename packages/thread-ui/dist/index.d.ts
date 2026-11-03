@@ -409,6 +409,8 @@ interface MatterWorkbenchOptions {
     sidebarHeader?: ReactNode;
     sidebarLeading?: ReactNode;
     railLeading?: ReactNode;
+    /** Host navigation keeps this control in place when no terminal is available. */
+    showTerminal?: boolean;
     panels?: WorkbenchPanelsOptions;
     statusActions?: ReactNode;
     /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
@@ -900,6 +902,7 @@ interface ThreadDetailSurfaceProps {
     settingsContent?: ReactNode;
     globalSettingsContent?: ReactNode;
     settingsSections?: SettingsSection[];
+    renderRailSettings?: ((openSettings: () => void) => ReactNode) | undefined;
     settingsDialogOpen?: boolean;
     onSettingsDialogOpenChange?: (open: boolean) => void;
     mobileHeaderAction?: ReactNode;
@@ -965,7 +968,7 @@ interface ThreadDetailSurfaceProps {
     loadingContent?: ReactNode;
     emptyContent?: ReactNode;
 }
-declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsSections, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, restrictedNavigation, scopedSettings, onWorkspaceReturn, threadActionsButton, surfaceActions, workbench, deviceMonitor, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, presentation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
+declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsSections, renderRailSettings, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, restrictedNavigation, scopedSettings, onWorkspaceReturn, threadActionsButton, surfaceActions, workbench, deviceMonitor, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, presentation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
 
 declare function usePlugins(): PluginContextValue;
 

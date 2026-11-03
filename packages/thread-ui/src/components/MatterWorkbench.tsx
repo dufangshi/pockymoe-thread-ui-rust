@@ -117,6 +117,8 @@ export interface MatterWorkbenchOptions {
   sidebarHeader?: ReactNode;
   sidebarLeading?: ReactNode;
   railLeading?: ReactNode;
+  /** Host navigation keeps this control in place when no terminal is available. */
+  showTerminal?: boolean;
   panels?: WorkbenchPanelsOptions;
   statusActions?: ReactNode;
   /** Subscription usage windows (5-hour, weekly); the phone dock shows them in its status bar. */
@@ -838,8 +840,9 @@ export function MatterWorkbench({
         >
           <MessageSquare data-icon="chat" />
         </button>
-        {o.terminalEnabled && (
+        {(o.terminalEnabled || o.showTerminal) && (
           <button
+            disabled={!o.terminalEnabled}
             aria-label={translate("workbench.terminal")}
             aria-pressed={o.activeView === 'shell'}
             title={`${translate("workbench.terminal")} (Ctrl+\`)`}

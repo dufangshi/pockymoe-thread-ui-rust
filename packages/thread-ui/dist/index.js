@@ -11083,7 +11083,7 @@ function WorkbenchPanels({
 }
 
 // src/components/MatterWorkbench.tsx
-import { Fragment as Fragment17, useEffect as useEffect28, useLayoutEffect as useLayoutEffect13, useMemo as useMemo7, useState as useState39, useRef as useRef27 } from "react";
+import { Fragment as Fragment18, useEffect as useEffect28, useLayoutEffect as useLayoutEffect13, useMemo as useMemo7, useState as useState39, useRef as useRef27 } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -11121,14 +11121,15 @@ function homeRelativePath(path) {
 import { useLayoutEffect as useLayoutEffect11, useRef as useRef22, useState as useState34 } from "react";
 import { createPortal as createPortal3 } from "react-dom";
 import { Folder, Star } from "lucide-react";
-import { jsx as jsx47, jsxs as jsxs40 } from "react/jsx-runtime";
+import { Fragment as Fragment15, jsx as jsx47, jsxs as jsxs40 } from "react/jsx-runtime";
 function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteBusy, onToggleFavorite, onClose, children: children2, panels }) {
   useI18n();
   const menuRef = useRef22(null);
+  const scopeRef = useRef22(null);
   const [place, setPlace] = useState34(null);
   const [host, setHost] = useState34(null);
   useLayoutEffect11(() => {
-    setHost(anchorRef.current?.closest(".thread-ui-shell") ?? document.body);
+    setHost(scopeRef.current?.closest(".thread-ui-shell") ?? document.body);
   }, [anchorRef]);
   const close = useRef22(onClose);
   close.current = onClose;
@@ -11156,62 +11157,64 @@ function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteB
       document.removeEventListener("pointerdown", outside, true);
     };
   }, [open, anchorRef]);
-  if (!host) return null;
   const shown = open && place !== null;
-  return createPortal3(
-    /* @__PURE__ */ jsxs40(
-      "div",
-      {
-        ref: menuRef,
-        id,
-        role: "menu",
-        "aria-label": translate("workbench.threadTools"),
-        className: "matter-thread-tools-menu",
-        "data-open": shown || void 0,
-        "aria-hidden": !shown,
-        inert: !shown,
-        style: { top: place?.top ?? 0, left: place?.left ?? 0 },
-        onClick: (event) => {
-          const target = event.target instanceof Element ? event.target : null;
-          if (target?.closest(".matter-thread-tools-items, .matter-thread-tools-panels") && target.closest("button, a")) window.setTimeout(() => close.current(false), 0);
-        },
-        children: [
-          /* @__PURE__ */ jsxs40("div", { className: "matter-thread-tools-head", children: [
-            /* @__PURE__ */ jsxs40("div", { className: "matter-thread-tools-path", title: path, children: [
-              /* @__PURE__ */ jsx47(Folder, { "aria-hidden": "true" }),
-              /* @__PURE__ */ jsx47("span", { className: "matter-thread-tools-path-head", children: splitPath(homeRelativePath(path)).head }),
-              /* @__PURE__ */ jsx47("span", { className: "matter-thread-tools-path-tail", children: splitPath(homeRelativePath(path)).tail }),
-              /* @__PURE__ */ jsx47(CopyButton, { value: path, label: translate("common.copyPath"), className: "matter-thread-tools-copy" })
+  return /* @__PURE__ */ jsxs40(Fragment15, { children: [
+    /* @__PURE__ */ jsx47("span", { ref: scopeRef, hidden: true }),
+    host ? createPortal3(
+      /* @__PURE__ */ jsxs40(
+        "div",
+        {
+          ref: menuRef,
+          id,
+          role: "menu",
+          "aria-label": translate("workbench.threadTools"),
+          className: "matter-thread-tools-menu",
+          "data-open": shown || void 0,
+          "aria-hidden": !shown,
+          inert: !shown,
+          style: { top: place?.top ?? 0, left: place?.left ?? 0, visibility: shown ? void 0 : "hidden" },
+          onClick: (event) => {
+            const target = event.target instanceof Element ? event.target : null;
+            if (target?.closest(".matter-thread-tools-items, .matter-thread-tools-panels") && target.closest("button, a")) window.setTimeout(() => close.current(false), 0);
+          },
+          children: [
+            /* @__PURE__ */ jsxs40("div", { className: "matter-thread-tools-head", children: [
+              /* @__PURE__ */ jsxs40("div", { className: "matter-thread-tools-path", title: path, children: [
+                /* @__PURE__ */ jsx47(Folder, { "aria-hidden": "true" }),
+                /* @__PURE__ */ jsx47("span", { className: "matter-thread-tools-path-head", children: splitPath(homeRelativePath(path)).head }),
+                /* @__PURE__ */ jsx47("span", { className: "matter-thread-tools-path-tail", children: splitPath(homeRelativePath(path)).tail }),
+                /* @__PURE__ */ jsx47(CopyButton, { value: path, label: translate("common.copyPath"), className: "matter-thread-tools-copy" })
+              ] }),
+              /* @__PURE__ */ jsx47(
+                "button",
+                {
+                  type: "button",
+                  className: "matter-thread-tools-star",
+                  "aria-pressed": favorite,
+                  disabled: favoriteBusy,
+                  "aria-label": favorite ? translate("workbench.removeShortcut") : translate("workbench.addShortcut"),
+                  title: favorite ? translate("workbench.removeShortcut") : translate("workbench.addShortcut"),
+                  onClick: onToggleFavorite,
+                  children: /* @__PURE__ */ jsx47(Star, { "data-icon": "shortcut", fill: favorite ? "currentColor" : "none" })
+                }
+              ),
+              /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-title", title, children: title })
             ] }),
-            /* @__PURE__ */ jsx47(
-              "button",
-              {
-                type: "button",
-                className: "matter-thread-tools-star",
-                "aria-pressed": favorite,
-                disabled: favoriteBusy,
-                "aria-label": favorite ? translate("workbench.removeShortcut") : translate("workbench.addShortcut"),
-                title: favorite ? translate("workbench.removeShortcut") : translate("workbench.addShortcut"),
-                onClick: onToggleFavorite,
-                children: /* @__PURE__ */ jsx47(Star, { "data-icon": "shortcut", fill: favorite ? "currentColor" : "none" })
-              }
-            ),
-            /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-title", title, children: title })
-          ] }),
-          /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-items", children: children2 }),
-          panels ? /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-panels", children: panels }) : null
-        ]
-      }
-    ),
-    host
-  );
+            /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-items", children: children2 }),
+            panels ? /* @__PURE__ */ jsx47("div", { className: "matter-thread-tools-panels", children: panels }) : null
+          ]
+        }
+      ),
+      host
+    ) : null
+  ] });
 }
 
 // src/components/GroupedThreadTabs.tsx
 import { useEffect as useEffect25, useLayoutEffect as useLayoutEffect12, useRef as useRef23, useState as useState35 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
 import { Bot, X as X6 } from "lucide-react";
-import { Fragment as Fragment15, jsx as jsx48, jsxs as jsxs41 } from "react/jsx-runtime";
+import { Fragment as Fragment16, jsx as jsx48, jsxs as jsxs41 } from "react/jsx-runtime";
 var statusLabels = new Proxy({}, { get: (_, status3) => navigationStatusLabel(String(status3)) });
 function threadGroupActivity(root, children2 = []) {
   const running = children2.filter((child) => !child.closedAt && child.status === "running").length;
@@ -11288,7 +11291,7 @@ function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, onThreadM
     for (const group of groupNodes.current.values()) observer?.observe(group);
     return () => observer?.disconnect();
   });
-  return /* @__PURE__ */ jsxs41(Fragment15, { children: [
+  return /* @__PURE__ */ jsxs41(Fragment16, { children: [
     groups.map(({ root, children: children2 }) => {
       const openChildren = children2.filter((child) => !child.closedAt);
       const selected = children2.find((child) => child.key === currentKey);
@@ -11423,7 +11426,7 @@ ${activity.label}`,
 // src/components/workbench/PhoneDock.tsx
 import { useEffect as useEffect26, useRef as useRef24 } from "react";
 import { ChevronsUpDown, Ellipsis, FolderOpen as FolderOpen3, MessageSquare, Terminal } from "lucide-react";
-import { Fragment as Fragment16, jsx as jsx49, jsxs as jsxs42 } from "react/jsx-runtime";
+import { Fragment as Fragment17, jsx as jsx49, jsxs as jsxs42 } from "react/jsx-runtime";
 function PhoneDock({
   title,
   thread,
@@ -11566,7 +11569,7 @@ function PhoneSheet({ open, label, onClose, children: children2, footer }) {
     };
   }, [open]);
   useModalFocus(sheet, open, onClose);
-  return /* @__PURE__ */ jsxs42(Fragment16, { children: [
+  return /* @__PURE__ */ jsxs42(Fragment17, { children: [
     open && /* @__PURE__ */ jsx49("button", { type: "button", className: "matter-phone-sheet-scrim", "aria-label": translate("workbench.closeSheet"), onClick: onClose }),
     /* @__PURE__ */ jsxs42(
       "section",
@@ -11885,7 +11888,7 @@ function ShortcutList({ threads, renderRow, onReorder }) {
 }
 
 // src/components/MatterWorkbench.tsx
-import { Fragment as Fragment18, jsx as jsx51, jsxs as jsxs44 } from "react/jsx-runtime";
+import { Fragment as Fragment19, jsx as jsx51, jsxs as jsxs44 } from "react/jsx-runtime";
 var SIDEBAR_SECTIONS_KEY = "pockymoe.sidebar-sections.v1";
 var SIDEBAR_WIDTH_KEY = "pockymoe.sidebar-width";
 var SIDEBAR_MIN = 200;
@@ -12601,9 +12604,10 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               children: /* @__PURE__ */ jsx51(MessageSquare2, { "data-icon": "chat" })
             }
           ),
-          o.terminalEnabled && /* @__PURE__ */ jsx51(
+          (o.terminalEnabled || o.showTerminal) && /* @__PURE__ */ jsx51(
             "button",
             {
+              disabled: !o.terminalEnabled,
               "aria-label": translate("workbench.terminal"),
               "aria-pressed": o.activeView === "shell",
               title: `${translate("workbench.terminal")} (Ctrl+\`)`,
@@ -12702,7 +12706,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
           ) }),
           /* @__PURE__ */ jsxs44("div", { className: "matter-topbar-end", children: [
             mobile && deviceMonitor,
-            mobile && /* @__PURE__ */ jsxs44(Fragment18, { children: [
+            mobile && /* @__PURE__ */ jsxs44(Fragment19, { children: [
               !drawerTools && /* @__PURE__ */ jsx51("button", { "aria-label": translate("workbench.chat"), "aria-pressed": !explorerOpen && (o.panels ? !chatCovered : o.activeView === "chat"), onClick: showChat, children: /* @__PURE__ */ jsx51(MessageSquare2, { "data-icon": "chat" }) }),
               o.terminalEnabled && /* @__PURE__ */ jsx51("button", { "aria-label": translate("workbench.terminal"), "aria-pressed": !explorerOpen && o.activeView === "shell", onClick: () => {
                 if (explorerOpen) {
@@ -12804,7 +12808,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                       translate("workbench.acrossWorkspacesAndDevices")
                     ] })
                   ] }),
-                  workspaceThreads.length > 0 && /* @__PURE__ */ jsxs44(Fragment18, { children: [
+                  workspaceThreads.length > 0 && /* @__PURE__ */ jsxs44(Fragment19, { children: [
                     /* @__PURE__ */ jsxs44("div", { className: "matter-section-heading-row", children: [
                       /* @__PURE__ */ jsxs44(
                         "button",
@@ -13016,7 +13020,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
             }
           )
         ] }),
-        dock && /* @__PURE__ */ jsxs44(Fragment18, { children: [
+        dock && /* @__PURE__ */ jsxs44(Fragment19, { children: [
           /* @__PURE__ */ jsx51(
             PhoneDock,
             {
@@ -13052,7 +13056,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                   /* @__PURE__ */ jsx51("span", { className: "matter-section-count", children: groupThreads(tabs).length })
                 ] }),
                 workspaceOpen && /* @__PURE__ */ jsx51("div", { ref: sheetListRef, className: "matter-thread-section", "data-testid": "sheet-workspace-threads", children: renderThreadGroups(reorderable ? tabs : [...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)), reorderable) }),
-                o.threads.some((thread) => !tabs.some((tab) => tab.key === thread.key)) && /* @__PURE__ */ jsxs44(Fragment18, { children: [
+                o.threads.some((thread) => !tabs.some((tab) => tab.key === thread.key)) && /* @__PURE__ */ jsxs44(Fragment19, { children: [
                   /* @__PURE__ */ jsxs44("button", { type: "button", className: "matter-section-heading matter-sheet-section-heading", "aria-expanded": sheetRecentsOpen, onClick: () => setSheetRecentsOpen(!sheetRecentsOpen), children: [
                     sheetRecentsOpen ? /* @__PURE__ */ jsx51(ChevronDown4, {}) : /* @__PURE__ */ jsx51(ChevronRight3, {}),
                     /* @__PURE__ */ jsx51("span", { children: translate("workbench.recentChats") }),
@@ -13083,7 +13087,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                   /* @__PURE__ */ jsx51("span", { className: "matter-section-count", children: runningCount })
                 ] }),
                 runningCount ? /* @__PURE__ */ jsx51("div", { className: "matter-thread-section", children: renderThreadGroups(runningConversations) }) : /* @__PURE__ */ jsx51("p", { className: "matter-sidebar-hint", children: translate("workbench.noRunningThreads") }),
-                unreadCount > 0 && /* @__PURE__ */ jsxs44(Fragment18, { children: [
+                unreadCount > 0 && /* @__PURE__ */ jsxs44(Fragment19, { children: [
                   /* @__PURE__ */ jsxs44("h3", { children: [
                     translate("workbench.finishedUnread"),
                     " ",
@@ -13157,13 +13161,13 @@ ${thread.subtitle} \xB7 ${activity.label}`,
             }
           )
         ] }),
-        contextMenu && o.renderThreadMenu && /* @__PURE__ */ jsx51(Fragment17, { children: o.renderThreadMenu(contextMenu.thread, {
+        contextMenu && o.renderThreadMenu && /* @__PURE__ */ jsx51(Fragment18, { children: o.renderThreadMenu(contextMenu.thread, {
           x: contextMenu.x,
           y: contextMenu.y,
           returnFocus: contextMenu.returnFocus,
           onClose: () => setContextMenu((current) => current?.id === contextMenu.id ? null : current)
         }) }, contextMenu.id),
-        bellOpen && /* @__PURE__ */ jsxs44(Fragment18, { children: [
+        bellOpen && /* @__PURE__ */ jsxs44(Fragment19, { children: [
           /* @__PURE__ */ jsx51(
             "button",
             {
@@ -13287,7 +13291,7 @@ function GraphChatSplitRegion({ children: children2 }) {
 }
 
 // src/components/ThreadWorkspaceLayout.tsx
-import { Fragment as Fragment19, jsx as jsx53, jsxs as jsxs45 } from "react/jsx-runtime";
+import { Fragment as Fragment20, jsx as jsx53, jsxs as jsxs45 } from "react/jsx-runtime";
 var THEME_MODE_OPTIONS = [
   { value: "system", get label() {
     return translate("files.followSystem");
@@ -13356,7 +13360,7 @@ function ThreadCard({
   }
   const openThread = () => onOpenThread(thread.id);
   const cardClassName = `thread-graph-room-card group flex w-full items-center gap-3 rounded-xl border text-left transition ${isCurrentThread ? "is-active" : ""} ${collapsed ? "justify-center px-2 py-2" : "px-3 py-2.5"}`;
-  const cardContent = /* @__PURE__ */ jsxs45(Fragment19, { children: [
+  const cardContent = /* @__PURE__ */ jsxs45(Fragment20, { children: [
     /* @__PURE__ */ jsx53(
       "div",
       {
@@ -13764,10 +13768,10 @@ function ThreadWorkspaceLayout({
     }
   }
   function renderNewThreadDialogButton(className, compact = false) {
-    const content = compact ? /* @__PURE__ */ jsxs45(Fragment19, { children: [
+    const content = compact ? /* @__PURE__ */ jsxs45(Fragment20, { children: [
       /* @__PURE__ */ jsx53(Plus, { "data-icon": "new-thread", className: "h-4 w-4" }),
       /* @__PURE__ */ jsx53("span", { className: "sr-only", children: newThreadLabel })
-    ] }) : /* @__PURE__ */ jsxs45(Fragment19, { children: [
+    ] }) : /* @__PURE__ */ jsxs45(Fragment20, { children: [
       /* @__PURE__ */ jsx53(Plus, { "data-icon": "new-thread", className: "h-4 w-4" }),
       /* @__PURE__ */ jsx53("span", { children: newThreadLabel })
     ] });
@@ -13802,7 +13806,7 @@ function ThreadWorkspaceLayout({
                 close: closeCreateThreadDialog,
                 closeNavigation: closeNavigationSurfaces,
                 currentWorkspaceId
-              }) : /* @__PURE__ */ jsxs45(Fragment19, { children: [
+              }) : /* @__PURE__ */ jsxs45(Fragment20, { children: [
                 /* @__PURE__ */ jsxs45(DialogHeader, { children: [
                   /* @__PURE__ */ jsx53(DialogTitle, { children: translate("files.createNewChat") }),
                   /* @__PURE__ */ jsx53(DialogDescription, { children: translate("files.nameTheRoomSoItIsEasy") })
@@ -13861,7 +13865,7 @@ function ThreadWorkspaceLayout({
       ...settingsSections ?? (globalSettingsContent ? [{ id: "preferences", label: translate("files.preferences"), content: globalSettingsContent }] : [])
     ];
     const railAccount = renderRailSettings && !isShellMobileViewport;
-    return /* @__PURE__ */ jsxs45(Fragment19, { children: [
+    return /* @__PURE__ */ jsxs45(Fragment20, { children: [
       railAccount ? renderRailSettings(() => changeSettingsOpen(true)) : null,
       /* @__PURE__ */ jsx53(
         SettingsDialog,
@@ -14058,7 +14062,7 @@ function ThreadWorkspaceLayout({
       /* @__PURE__ */ jsx53(RenameDialog, { open: editingThreadId !== null, title: translate("files.renameThread_c51d25"), label: translate("files.threadTitle"), value: draftTitle, busy: renamingThreadId !== null, onChange: setDraftTitle, onCancel: cancelRenameThread, onSubmit: () => editingThreadId ? handleRenameThread(editingThreadId) : void 0 })
     ] });
   }
-  return /* @__PURE__ */ jsxs45(Fragment19, { children: [
+  return /* @__PURE__ */ jsxs45(Fragment20, { children: [
     /* @__PURE__ */ jsxs45(
       GraphChatShellRoot,
       {
@@ -14698,7 +14702,7 @@ function echoesFailure(error, text) {
 // src/components/graph-chat/MessageSenderMark.tsx
 import { useEffect as useEffect32, useLayoutEffect as useLayoutEffect14, useRef as useRef29, useState as useState44 } from "react";
 import { createPortal as createPortal5 } from "react-dom";
-import { Fragment as Fragment20, jsx as jsx58, jsxs as jsxs50 } from "react/jsx-runtime";
+import { Fragment as Fragment21, jsx as jsx58, jsxs as jsxs50 } from "react/jsx-runtime";
 function displayName(sender) {
   return sender.name?.trim() || sender.userId;
 }
@@ -14750,7 +14754,7 @@ function MessageSenderMark({ sender }) {
     };
   }, [open]);
   const label = translate("chat.sentBy", { name });
-  return /* @__PURE__ */ jsxs50(Fragment20, { children: [
+  return /* @__PURE__ */ jsxs50(Fragment21, { children: [
     /* @__PURE__ */ jsx58(
       "button",
       {
@@ -14979,7 +14983,7 @@ function AddedPromptIcon({ className = "" }) {
 }
 
 // src/components/graph-chat/GraphChatCompactMessageItem.tsx
-import { Fragment as Fragment21, jsx as jsx61, jsxs as jsxs53 } from "react/jsx-runtime";
+import { Fragment as Fragment22, jsx as jsx61, jsxs as jsxs53 } from "react/jsx-runtime";
 function isGraphChatRunningStatus(status3) {
   if (!status3) {
     return false;
@@ -15026,7 +15030,7 @@ var GraphChatCompactMessageItem = memo4(
       setReasoningOpen((value) => !value);
     }
     const copyLabel = item.kind === "agentMessage" ? translate("chat.agentReply") : "prompt";
-    const copyButton = /* @__PURE__ */ jsxs53(Fragment21, { children: [
+    const copyButton = /* @__PURE__ */ jsxs53(Fragment22, { children: [
       onForkTurn && forkTurnId ? /* @__PURE__ */ jsx61(ForkTurnButton, { onFork: () => onForkTurn(forkTurnId) }) : null,
       /* @__PURE__ */ jsx61(CopyButton, { value: text, label: translate("chat.copy_6b0f10", { value1: copyLabel }), className: "thread-graph-message-copy" })
     ] });
@@ -15078,7 +15082,7 @@ var GraphChatCompactMessageItem = memo4(
         variant: envelope ? "envelope" : variant,
         status: queuedLikeStatus ? item.status : null,
         copyButton,
-        metaControl: reasoningToggle || presentation ? /* @__PURE__ */ jsxs53(Fragment21, { children: [
+        metaControl: reasoningToggle || presentation ? /* @__PURE__ */ jsxs53(Fragment22, { children: [
           reasoningToggle,
           presentation && /* @__PURE__ */ jsx61("span", { className: "thread-message-presentation", role: "group", "aria-label": translate("chat.replyVersion"), children: [false, true].map((original) => /* @__PURE__ */ jsx61(
             "button",
@@ -15126,7 +15130,7 @@ var GraphChatCompactMessageItem = memo4(
             ...adapter?.onOpenWorkspaceFile ? { onOpenWorkspaceFile: adapter.onOpenWorkspaceFile } : {},
             ...adapter?.resolveHref ? { resolveHref: adapter.resolveHref } : {}
           }
-        ) : /* @__PURE__ */ jsxs53(Fragment21, { children: [
+        ) : /* @__PURE__ */ jsxs53(Fragment22, { children: [
           envelope?.type === "peer" ? /* @__PURE__ */ jsx61(PromptEnvelopeHeader, { envelope }) : null,
           /* @__PURE__ */ jsx61(
             GraphChatUserMessageBody,
@@ -15671,7 +15675,7 @@ function buildActivityNoteAnchors({
 
 // src/components/timeline/TimelineRequestCards.tsx
 import { useState as useState47 } from "react";
-import { Fragment as Fragment22, jsx as jsx62, jsxs as jsxs54 } from "react/jsx-runtime";
+import { Fragment as Fragment23, jsx as jsx62, jsxs as jsxs54 } from "react/jsx-runtime";
 function PendingRequestCard({
   request,
   busy = false,
@@ -15786,7 +15790,7 @@ function PendingRequestCard({
               },
               option.label
             );
-          }) }) : question.options && question.options.length > 0 ? /* @__PURE__ */ jsxs54(Fragment22, { children: [
+          }) }) : question.options && question.options.length > 0 ? /* @__PURE__ */ jsxs54(Fragment23, { children: [
             /* @__PURE__ */ jsxs54("div", { className: "mt-3 flex flex-wrap gap-2", children: [
               question.options.map((option) => {
                 const presentation = getOptionPresentation(option.label);
@@ -16057,7 +16061,7 @@ function ActivityRequestEntrySection({
 
 // src/components/timeline/TimelineTurnRows.tsx
 import {
-  Fragment as Fragment28,
+  Fragment as Fragment29,
   memo as memo7,
   useCallback as useCallback17,
   useEffect as useEffect38,
@@ -16133,7 +16137,7 @@ function Badge({
 }
 
 // src/components/graph-chat/GraphChatHistoryItems.tsx
-import { Fragment as Fragment23, jsx as jsx64, jsxs as jsxs55 } from "react/jsx-runtime";
+import { Fragment as Fragment24, jsx as jsx64, jsxs as jsxs55 } from "react/jsx-runtime";
 function isRunningHistoryStatus2(status3) {
   if (!status3) return false;
   const normalized = status3.trim().toLowerCase();
@@ -16927,7 +16931,7 @@ var GraphChatHookItem = memo5(function GraphChatHookItem2({
       title: translate("chat.ranHook"),
       tone: "hook",
       children: /* @__PURE__ */ jsxs55("div", { className: "thread-graph-history-event-line", children: [
-        /* @__PURE__ */ jsx64("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: outputText ? /* @__PURE__ */ jsxs55(Fragment23, { children: [
+        /* @__PURE__ */ jsx64("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: outputText ? /* @__PURE__ */ jsxs55(Fragment24, { children: [
           /* @__PURE__ */ jsx64("span", { className: "thread-graph-history-event-secondary mr-2 font-sans text-[11px] uppercase", children: hookLabel }),
           /* @__PURE__ */ jsx64(GraphChatLinkifiedPlainText, { text: summary2.firstLine })
         ] }) : /* @__PURE__ */ jsx64(
@@ -16943,7 +16947,7 @@ var GraphChatHookItem = memo5(function GraphChatHookItem2({
 });
 
 // src/components/graph-chat/GraphChatTurnBody.tsx
-import { Fragment as Fragment24, jsx as jsx65, jsxs as jsxs56 } from "react/jsx-runtime";
+import { Fragment as Fragment25, jsx as jsx65, jsxs as jsxs56 } from "react/jsx-runtime";
 function normalizeGraphChatPlanStepStatus(status3) {
   const normalized = status3.trim().toLowerCase();
   if (normalized === "completed" || normalized === "done" || normalized === "complete") {
@@ -16983,7 +16987,7 @@ function GraphChatLivePlanCard({ livePlan }) {
 }
 function GraphChatPlanStepStatusLabel({ status: status3 }) {
   const normalized = normalizeGraphChatPlanStepStatus(status3);
-  return /* @__PURE__ */ jsx65(Fragment24, { children: normalized === "completed" ? translate("chat.planStepStatusCompleted") : normalized === "in_progress" ? translate("chat.planStepStatusInProgress") : normalized === "pending" ? translate("chat.planStepStatusPending") : normalized === "failed" ? translate("chat.planStepStatusFailed") : translate("chat.planStepStatus", { value1: status3 }) });
+  return /* @__PURE__ */ jsx65(Fragment25, { children: normalized === "completed" ? translate("chat.planStepStatusCompleted") : normalized === "in_progress" ? translate("chat.planStepStatusInProgress") : normalized === "pending" ? translate("chat.planStepStatusPending") : normalized === "failed" ? translate("chat.planStepStatusFailed") : translate("chat.planStepStatus", { value1: status3 }) });
 }
 function GraphChatTurnBody({
   footer,
@@ -16993,7 +16997,7 @@ function GraphChatTurnBody({
   livePlan
 }) {
   const { locale: i18nLocale } = useI18n();
-  return /* @__PURE__ */ jsxs56(Fragment24, { children: [
+  return /* @__PURE__ */ jsxs56(Fragment25, { children: [
     history2,
     livePlan ? /* @__PURE__ */ jsx65(GraphChatLivePlanCard, { livePlan }) : null,
     liveHookPrompt ?? liveOutput ?? null,
@@ -17210,13 +17214,13 @@ import { Bot as Bot4, Hourglass as Hourglass2 } from "lucide-react";
 import { useEffect as useEffect35, useRef as useRef33, useState as useState51 } from "react";
 
 // src/components/timeline/TokenMetricIcon.tsx
-import { Fragment as Fragment25, jsx as jsx69, jsxs as jsxs59 } from "react/jsx-runtime";
+import { Fragment as Fragment26, jsx as jsx69, jsxs as jsxs59 } from "react/jsx-runtime";
 function TokenMetricIcon({ speed = false }) {
-  return /* @__PURE__ */ jsx69("svg", { viewBox: "0 0 20 20", width: "14", height: "14", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", className: "thread-token-metric-icon", children: speed ? /* @__PURE__ */ jsxs59(Fragment25, { children: [
+  return /* @__PURE__ */ jsx69("svg", { viewBox: "0 0 20 20", width: "14", height: "14", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", className: "thread-token-metric-icon", children: speed ? /* @__PURE__ */ jsxs59(Fragment26, { children: [
     /* @__PURE__ */ jsx69("path", { d: "M1.5 6h4m-4 4h3m-2 4h3" }),
     /* @__PURE__ */ jsx69("path", { d: "m12 3.5 5.5 3.25v6.5L12 16.5l-5.5-3.25v-6.5Z" }),
     /* @__PURE__ */ jsx69("path", { d: "m13 7.5-2 3h3l-2 3" })
-  ] }) : /* @__PURE__ */ jsxs59(Fragment25, { children: [
+  ] }) : /* @__PURE__ */ jsxs59(Fragment26, { children: [
     /* @__PURE__ */ jsx69("path", { d: "m10 2.5 7 4-7 4-7-4Z" }),
     /* @__PURE__ */ jsx69("path", { d: "m3 10 7 4 7-4M3 13.5l7 4 7-4" })
   ] }) });
@@ -17632,7 +17636,7 @@ function TurnModels({ turn }) {
 }
 
 // src/components/timeline/TurnHead.tsx
-import { Fragment as Fragment26, jsx as jsx74, jsxs as jsxs64 } from "react/jsx-runtime";
+import { Fragment as Fragment27, jsx as jsx74, jsxs as jsxs64 } from "react/jsx-runtime";
 var wideQuery = "(min-width: 640px)";
 var subscribeWide = (change) => {
   if (typeof window === "undefined" || typeof window.matchMedia !== "function") return () => {
@@ -17668,12 +17672,12 @@ function TurnHead({ turn, active, added, onBeforeResize }) {
     setOpen((value) => !value);
   };
   const worked = took ? translate(active ? "chat.turnHeadRunning" : "chat.turnHeadWorked", { elapsed: took }) : null;
-  const dot = /* @__PURE__ */ jsxs64(Fragment26, { children: [
+  const dot = /* @__PURE__ */ jsxs64(Fragment27, { children: [
     /* @__PURE__ */ jsx74("i", { className: "thread-turn-head-dot", "aria-hidden": "true" }),
     took ? /* @__PURE__ */ jsx74("span", { className: "thread-turn-head-took", children: took }) : null
   ] });
   const cost = usage || turn.priceEstimate ? /* @__PURE__ */ jsx74(TokenUsageCost, { usage, price: turn.priceEstimate }) : null;
-  const more = /* @__PURE__ */ jsxs64(Fragment26, { children: [
+  const more = /* @__PURE__ */ jsxs64(Fragment27, { children: [
     started ? /* @__PURE__ */ jsx74(
       "button",
       {
@@ -18045,7 +18049,7 @@ function ActivityCount({ part }) {
 }
 
 // src/components/timeline/TranscriptLog.tsx
-import { Fragment as Fragment27, jsx as jsx76, jsxs as jsxs66 } from "react/jsx-runtime";
+import { Fragment as Fragment28, jsx as jsx76, jsxs as jsxs66 } from "react/jsx-runtime";
 var TranscriptLogContext = createContext14(null);
 var LOG_KINDS = /* @__PURE__ */ new Set([
   "commandExecution",
@@ -18405,7 +18409,7 @@ function rowBlocks(items) {
   return blocks;
 }
 function Parts({ parts }) {
-  return /* @__PURE__ */ jsx76(Fragment27, { children: parts.map((part, index) => {
+  return /* @__PURE__ */ jsx76(Fragment28, { children: parts.map((part, index) => {
     const previous = parts[index - 1];
     if (countedPart(part)) {
       return /* @__PURE__ */ jsxs66("span", { className: "tlog-part is-count", children: [
@@ -18588,7 +18592,7 @@ function TimelineTimeToggle({
 }
 
 // src/components/timeline/TimelineTurnRows.tsx
-import { Fragment as Fragment29, jsx as jsx78, jsxs as jsxs67 } from "react/jsx-runtime";
+import { Fragment as Fragment30, jsx as jsx78, jsxs as jsxs67 } from "react/jsx-runtime";
 var FILE_PARTS = /* @__PURE__ */ new Set(["edits", "added", "removed"]);
 var NARRATION_PREVIEW_CHARS = 240;
 var EARLIER_ANSWERS_AFTER = 3;
@@ -19110,7 +19114,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
   );
   const recordedNothing = isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems && !groupedItems.some((entry) => entry.kind !== "item" || entry.item.kind !== "userMessage");
   const [emptyOpen, setEmptyOpen] = useState57(false);
-  const terminalWorkedNode = isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems ? recordedNothing ? /* @__PURE__ */ jsxs67(Fragment29, { children: [
+  const terminalWorkedNode = isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems ? recordedNothing ? /* @__PURE__ */ jsxs67(Fragment30, { children: [
     /* @__PURE__ */ jsxs67("div", { className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm", children: [
       /* @__PURE__ */ jsx78(TranscriptAgentByline, {}),
       /* @__PURE__ */ jsxs67(
@@ -19262,7 +19266,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
           }
         },
         `run:${block.segment.before ?? "end"}`
-      ) : /* @__PURE__ */ jsx78(Fragment28, { children: renderHistoryEntries([block.entry]) }, block.entry.key)),
+      ) : /* @__PURE__ */ jsx78(Fragment29, { children: renderHistoryEntries([block.entry]) }, block.entry.key)),
       peerWorkChildren
     ] }) : /* @__PURE__ */ jsxs67("div", { className: "thread-execution-timeline", children: [
       renderHistoryEntries(processEntries),
@@ -19274,7 +19278,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
       const cut = !activeForRendering && answers.length > EARLIER_ANSWERS_AFTER ? answers[answers.length - KEPT_ANSWERS] : 0;
       const earlier = blocks.slice(0, cut);
       const earlierCount = earlier.filter((block) => block.kind === "answer").length;
-      return /* @__PURE__ */ jsxs67(Fragment29, { children: [
+      return /* @__PURE__ */ jsxs67(Fragment30, { children: [
         cut > 0 ? /* @__PURE__ */ jsxs67(
           "button",
           {
@@ -19343,11 +19347,11 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
       }
     ) })
   ] }) : null;
-  const terminalHistoryNode = terminalWorkedNode && leadingUserCount > 0 ? /* @__PURE__ */ jsxs67(Fragment29, { children: [
+  const terminalHistoryNode = terminalWorkedNode && leadingUserCount > 0 ? /* @__PURE__ */ jsxs67(Fragment30, { children: [
     renderHistoryEntries(groupedItems.slice(0, leadingUserCount)),
     terminalWorkedNode,
     renderHistoryEntries(groupedItems.slice(leadingUserCount))
-  ] }) : /* @__PURE__ */ jsxs67(Fragment29, { children: [
+  ] }) : /* @__PURE__ */ jsxs67(Fragment30, { children: [
     historyNode,
     terminalWorkedNode
   ] });
@@ -19453,7 +19457,7 @@ function TimelineHistoryEntries({
   const lastKey = blocks.at(-1)?.key;
   const lastRunKey = blocks.findLast((block) => block.kind === "run")?.key;
   const soleRun = openSoleRun && blocks.length === 1 && blocks[0].kind === "run";
-  return /* @__PURE__ */ jsx78(Fragment29, { children: blocks.map((block, index) => {
+  return /* @__PURE__ */ jsx78(Fragment30, { children: blocks.map((block, index) => {
     if (block.kind === "item") {
       return isLogItem(block.item) ? /* @__PURE__ */ jsx78("div", { className: "tlog-single", children: /* @__PURE__ */ jsx78(LogRow, { item: block.item, defaultOpen: autoOpenLatestToolDetails && block.key === lastKey && opensDiff(block.item) }) }, block.key) : renderItem(block.item, block.key);
     }
@@ -20230,7 +20234,7 @@ function useTimelineScroll({
 }
 
 // src/components/ThreadTimeline.tsx
-import { Fragment as Fragment30, jsx as jsx79, jsxs as jsxs68 } from "react/jsx-runtime";
+import { Fragment as Fragment31, jsx as jsx79, jsxs as jsxs68 } from "react/jsx-runtime";
 function isTerminalTurnStatus2(status3) {
   return status3 === "completed" || status3 === "failed" || status3 === "interrupted";
 }
@@ -21034,7 +21038,7 @@ function ThreadTimelineComponent({
                 }
               ) : null
             ] }, turn.id)),
-            optimisticTurn && visibleTurns.every((turn) => turn.id !== optimisticTurn.id) && /* @__PURE__ */ jsxs68(Fragment30, { children: [
+            optimisticTurn && visibleTurns.every((turn) => turn.id !== optimisticTurn.id) && /* @__PURE__ */ jsxs68(Fragment31, { children: [
               (activityNoteAnchors.beforeTurnId.get(optimisticTurn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx79(
                 ActivityNoteSection,
                 {
@@ -24100,7 +24104,7 @@ function saveTerminalLayout(key, layout) {
 }
 
 // src/components/ThreadShellPanel.tsx
-import { Fragment as Fragment31, jsx as jsx85, jsxs as jsxs73 } from "react/jsx-runtime";
+import { Fragment as Fragment32, jsx as jsx85, jsxs as jsxs73 } from "react/jsx-runtime";
 var TABS_WIDTH_KEY = "remote-codex.terminal-tabs-width";
 var SASH_SIZE = 1;
 function readTabsWidth() {
@@ -24604,7 +24608,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
         }, children: [
           /* @__PURE__ */ jsx85("input", { "aria-label": translate("workbench.terminalName"), value: renameDraft, autoFocus: true, onChange: (event) => setRenameDraft(event.currentTarget.value) }),
           /* @__PURE__ */ jsx85("button", { type: "submit", className: "terminal-icon-button", "aria-label": translate("files.save"), title: translate("files.save"), children: /* @__PURE__ */ jsx85(Check5, { size: 15 }) })
-        ] }) : /* @__PURE__ */ jsxs73(Fragment31, { children: [
+        ] }) : /* @__PURE__ */ jsxs73(Fragment32, { children: [
           /* @__PURE__ */ jsxs73(
             "button",
             {
@@ -24663,7 +24667,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
           /* @__PURE__ */ jsx85(ChevronDown6, { size: 14, "aria-hidden": "true" })
         ]
       }
-    ) : /* @__PURE__ */ jsxs73(Fragment31, { children: [
+    ) : /* @__PURE__ */ jsxs73(Fragment32, { children: [
       /* @__PURE__ */ jsx85("h2", { className: "terminal-title", children: translate("workbench.terminal") }),
       !showTabs && activeShell && /* @__PURE__ */ jsxs73("span", { className: "terminal-header-active", title: entries.get(activeShell.id)?.detail, children: [
         /* @__PURE__ */ jsx85(TerminalStatusDot, { status: terminalStatus(activeShell) }),
@@ -24682,7 +24686,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       !compact && /* @__PURE__ */ jsx85(IconButton, { label: translate("workbench.terminalSplit"), disabled: busy || !activeShell || !canSplit(activeShell.id), onClick: () => void createTerminal("split", activeShell?.id), testId: "terminal-split", children: /* @__PURE__ */ jsx85(SplitIcon, { size: 16 }) }),
       !compact && /* @__PURE__ */ jsx85(IconButton, { label: translate("workbench.terminalKill"), disabled: busy || !activeShell, onClick: () => void killTerminal(activeShell?.id), testId: "terminal-kill", danger: true, children: /* @__PURE__ */ jsx85(Trash23, { size: 16 }) }),
       (compact || !showTabs) && activeShell && /* @__PURE__ */ jsx85(IconButton, { label: translate("workbench.terminalMore"), expanded: menu?.kind === "actions", onClick: (event) => openActions(activeShell.id, event), testId: "terminal-more", children: /* @__PURE__ */ jsx85(Ellipsis2, { size: 16 }) }),
-      panelControls && /* @__PURE__ */ jsxs73(Fragment31, { children: [
+      panelControls && /* @__PURE__ */ jsxs73(Fragment32, { children: [
         /* @__PURE__ */ jsx85("span", { className: "terminal-actions-separator", "aria-hidden": "true" }),
         !compact && /* @__PURE__ */ jsx85(IconButton, { label: panelControls.collapsed ? translate("workbench.terminalExpand") : translate("workbench.terminalCollapse"), pressed: panelControls.collapsed, onClick: panelControls.toggleCollapsed, testId: "terminal-collapse", children: panelControls.collapsed ? /* @__PURE__ */ jsx85(PanelBottomOpen, { size: 16 }) : /* @__PURE__ */ jsx85(PanelBottomClose, { size: 16 }) }),
         (!compact || !panelControls.collapsed) && /* @__PURE__ */ jsx85(IconButton, { label: panelControls.maximized ? translate("workbench.terminalRestore") : translate("workbench.terminalMaximize"), pressed: panelControls.maximized, onClick: panelControls.toggleMaximized, testId: "terminal-maximize", keepFocus: true, children: panelControls.maximized ? /* @__PURE__ */ jsx85(ChevronDown6, { size: 16 }) : /* @__PURE__ */ jsx85(ChevronUp3, { size: 16 }) }),
@@ -24770,7 +24774,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                   );
                 }),
                 paneSashes,
-                !liveShells.length && /* @__PURE__ */ jsx85("div", { className: "terminal-empty", children: loading || busy ? /* @__PURE__ */ jsx85("span", { children: loading ? translate("files.loadingShellState") : translate("chat.creating") }) : /* @__PURE__ */ jsxs73(Fragment31, { children: [
+                !liveShells.length && /* @__PURE__ */ jsx85("div", { className: "terminal-empty", children: loading || busy ? /* @__PURE__ */ jsx85("span", { children: loading ? translate("files.loadingShellState") : translate("chat.creating") }) : /* @__PURE__ */ jsxs73(Fragment32, { children: [
                   /* @__PURE__ */ jsx85("span", { children: translate("workbench.terminalEmpty") }),
                   !workspacePathMissing && /* @__PURE__ */ jsxs73("button", { type: "button", onClick: () => void createTerminal("group"), children: [
                     /* @__PURE__ */ jsx85(Plus2, { size: 15, "aria-hidden": "true" }),
@@ -24780,7 +24784,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
               ]
             }
           ),
-          showTabs && /* @__PURE__ */ jsxs73(Fragment31, { children: [
+          showTabs && /* @__PURE__ */ jsxs73(Fragment32, { children: [
             /* @__PURE__ */ jsx85(
               "div",
               {
@@ -24935,7 +24939,7 @@ var MemoizedThreadGraphWorkspacePanel = memo9(
 import { Users, Link2, FileCode, Pencil as Pencil4 } from "lucide-react";
 import { useEffect as useEffect47, useMemo as useMemo17, useRef as useRef45, useState as useState65 } from "react";
 import { createPortal as createPortal7 } from "react-dom";
-import { Fragment as Fragment32, jsx as jsx88, jsxs as jsxs76 } from "react/jsx-runtime";
+import { Fragment as Fragment33, jsx as jsx88, jsxs as jsxs76 } from "react/jsx-runtime";
 function shareScopePrefix(share) {
   if (share.scope === "device") {
     return translate("sharing.wholeDevice");
@@ -25362,7 +25366,7 @@ function ThreadActionsDialog({
                         }
                       )
                     ] })
-                  ] }) : /* @__PURE__ */ jsxs76(Fragment32, { children: [
+                  ] }) : /* @__PURE__ */ jsxs76(Fragment33, { children: [
                     /* @__PURE__ */ jsxs76("label", { className: "thread-export-dialog-body-text mt-4 block text-sm", children: [
                       translate("sharing.turns_3037e1"),
                       /* @__PURE__ */ jsx88(
@@ -25467,7 +25471,7 @@ function ThreadActionsDialog({
                         children: matter ? translate("sharing.close") : translate("sharing.cancel")
                       }
                     ),
-                    actionMode === "link" || matter && actionMode === "share" && !shareAvailable ? null : actionMode === "share" ? /* @__PURE__ */ jsxs76(Fragment32, { children: [
+                    actionMode === "link" || matter && actionMode === "share" && !shareAvailable ? null : actionMode === "share" ? /* @__PURE__ */ jsxs76(Fragment33, { children: [
                       /* @__PURE__ */ jsx88(
                         "button",
                         {
@@ -25537,7 +25541,7 @@ import {
 
 // src/components/graph-chat/ThreadRelationBar.tsx
 import { CornerUpLeft, GitBranch } from "lucide-react";
-import { Fragment as Fragment33, jsx as jsx90, jsxs as jsxs78 } from "react/jsx-runtime";
+import { Fragment as Fragment34, jsx as jsx90, jsxs as jsxs78 } from "react/jsx-runtime";
 function ThreadRelationBar({ parentThreadId, parent, currentWorkspaceId, href, onOpen }) {
   useI18n();
   const back = translate("chat.relationBack");
@@ -25572,7 +25576,7 @@ function ThreadRelationBar({ parentThreadId, parent, currentWorkspaceId, href, o
       "\xB7 ",
       place
     ] }) : null,
-    link("thread-relation-back", /* @__PURE__ */ jsxs78(Fragment33, { children: [
+    link("thread-relation-back", /* @__PURE__ */ jsxs78(Fragment34, { children: [
       /* @__PURE__ */ jsx90(CornerUpLeft, { "aria-hidden": "true" }),
       /* @__PURE__ */ jsx90("span", { className: "thread-relation-back-text", children: back })
     ] }), back)
@@ -26262,6 +26266,7 @@ function ThreadDetailSurface({
   settingsContent,
   globalSettingsContent,
   settingsSections,
+  renderRailSettings,
   settingsDialogOpen,
   onSettingsDialogOpenChange,
   mobileHeaderAction,
@@ -26496,6 +26501,7 @@ ${pageMark}` : pageMark } : composerProps,
       settingsContent,
       globalSettingsContent,
       settingsSections,
+      renderRailSettings,
       ...settingsDialogOpen !== void 0 ? { settingsDialogOpen } : {},
       ...onSettingsDialogOpenChange ? { onSettingsDialogOpenChange } : {},
       mobileHeaderAction,
@@ -26751,7 +26757,7 @@ function PluginProvider({
 }
 
 // src/plugins/PluginActionOutput.tsx
-import { Fragment as Fragment34, jsx as jsx96, jsxs as jsxs83 } from "react/jsx-runtime";
+import { Fragment as Fragment35, jsx as jsx96, jsxs as jsxs83 } from "react/jsx-runtime";
 var OUTPUT_LIMIT = 24e3;
 function PluginActionOutput({
   pluginId,
@@ -26767,7 +26773,7 @@ function PluginActionOutput({
   } catch {
     json = String(output);
   }
-  const raw = /* @__PURE__ */ jsxs83(Fragment34, { children: [
+  const raw = /* @__PURE__ */ jsxs83(Fragment35, { children: [
     /* @__PURE__ */ jsx96("pre", { className: "plugin-report-pre", children: json.slice(0, OUTPUT_LIMIT) }),
     json.length > OUTPUT_LIMIT && /* @__PURE__ */ jsx96("p", { className: "plugin-report-note", children: t2("automation.outputTruncated") })
   ] });
@@ -27015,7 +27021,7 @@ function ThreadPluginScope({
 // src/plugins/InstalledPluginPanel.tsx
 import { CircleAlert as CircleAlert2, CircleCheck, CircleDashed, RefreshCw, TriangleAlert as TriangleAlert4 } from "lucide-react";
 import { useCallback as useCallback26, useEffect as useEffect52, useState as useState71 } from "react";
-import { Fragment as Fragment35, jsx as jsx98, jsxs as jsxs84 } from "react/jsx-runtime";
+import { Fragment as Fragment36, jsx as jsx98, jsxs as jsxs84 } from "react/jsx-runtime";
 var HEALTH = {
   ok: { icon: CircleCheck, label: "settings.healthOk" },
   needs_reauth: { icon: TriangleAlert4, label: "settings.healthNeedsReauth" },
@@ -27120,21 +27126,21 @@ function InstalledPluginPanel({ plugin }) {
         /* @__PURE__ */ jsx98("dd", { children: plugin.version }),
         /* @__PURE__ */ jsx98("dt", { children: t2("settings.installedPermissions") }),
         /* @__PURE__ */ jsx98("dd", { children: permissions.length ? permissions.map((p) => /* @__PURE__ */ jsx98("span", { className: "installed-plugin-permission", children: p === "pockymoeCli" ? t2("settings.permissionPockymoeCli") : p }, p)) : t2("settings.installedNoPermissions") }),
-        install?.source && /* @__PURE__ */ jsxs84(Fragment35, { children: [
+        install?.source && /* @__PURE__ */ jsxs84(Fragment36, { children: [
           /* @__PURE__ */ jsx98("dt", { children: t2("settings.installedSource") }),
           /* @__PURE__ */ jsxs84("dd", { className: "installed-plugin-source", children: [
             /* @__PURE__ */ jsx98("span", { children: install.source }),
             /* @__PURE__ */ jsx98(CopyButton, { value: install.source, label: t2("settings.installedCopySource") })
           ] })
         ] }),
-        install?.commit && /* @__PURE__ */ jsxs84(Fragment35, { children: [
+        install?.commit && /* @__PURE__ */ jsxs84(Fragment36, { children: [
           /* @__PURE__ */ jsx98("dt", { children: t2("settings.installedCommit") }),
           /* @__PURE__ */ jsxs84("dd", { className: "installed-plugin-source", children: [
             /* @__PURE__ */ jsx98("code", { children: install.commit.slice(0, 12) }),
             /* @__PURE__ */ jsx98(CopyButton, { value: install.commit, label: t2("settings.installedCopyCommit") })
           ] })
         ] }),
-        install?.updatedAt && /* @__PURE__ */ jsxs84(Fragment35, { children: [
+        install?.updatedAt && /* @__PURE__ */ jsxs84(Fragment36, { children: [
           /* @__PURE__ */ jsx98("dt", { children: t2("settings.installedUpdated") }),
           /* @__PURE__ */ jsx98("dd", { children: time(install.updatedAt, locale) })
         ] })
@@ -27204,7 +27210,7 @@ function PluginSettingsButton({ plugin, className }) {
 // src/plugins/ThreadPluginsControl.tsx
 import { Puzzle, RotateCcw, Settings as Settings3 } from "lucide-react";
 import { useEffect as useEffect53, useId as useId6, useMemo as useMemo22, useRef as useRef53, useState as useState73 } from "react";
-import { Fragment as Fragment36, jsx as jsx100, jsxs as jsxs86 } from "react/jsx-runtime";
+import { Fragment as Fragment37, jsx as jsx100, jsxs as jsxs86 } from "react/jsx-runtime";
 var choiceOf = (plugin) => plugin.enabledOverride === null ? "inherit" : plugin.enabledOverride ? "on" : "off";
 var overrideOf = (choice) => choice === "inherit" ? null : choice === "on";
 function threadScoped(plugin) {
@@ -27237,7 +27243,7 @@ function ThreadPluginsControl({
     (plugin) => plugin.enabledOverride !== null || plugin.settingsOverridden
   );
   const label = t2("settings.threadPluginsTitle");
-  return /* @__PURE__ */ jsxs86(Fragment36, { children: [
+  return /* @__PURE__ */ jsxs86(Fragment37, { children: [
     /* @__PURE__ */ jsxs86(
       "button",
       {
@@ -27457,7 +27463,7 @@ function PluginRow({
         /* @__PURE__ */ jsx100(Settings3, { size: 13, "aria-hidden": true }),
         t2("settings.threadPluginsSettings")
       ] }),
-      plugin.settingsOverridden && /* @__PURE__ */ jsxs86(Fragment36, { children: [
+      plugin.settingsOverridden && /* @__PURE__ */ jsxs86(Fragment37, { children: [
         /* @__PURE__ */ jsx100("span", { className: "thread-plugins-tag", children: t2("settings.threadPluginsCustom") }),
         !readOnly && /* @__PURE__ */ jsxs86(
           "button",
@@ -28588,7 +28594,7 @@ function orderAttention(items) {
 }
 
 // src/components/threadMap/MapChrome.tsx
-import { Fragment as Fragment37, jsx as jsx105, jsxs as jsxs91 } from "react/jsx-runtime";
+import { Fragment as Fragment38, jsx as jsx105, jsxs as jsxs91 } from "react/jsx-runtime";
 function DeviceStateMark({ offline = false }) {
   return /* @__PURE__ */ jsx105(
     "span",
@@ -28750,7 +28756,7 @@ function DeviceMenu({ device, items }) {
       window.visualViewport?.removeEventListener("scroll", moved);
     };
   }, [anchor]);
-  return /* @__PURE__ */ jsxs91(Fragment37, { children: [
+  return /* @__PURE__ */ jsxs91(Fragment38, { children: [
     /* @__PURE__ */ jsx105(
       "button",
       {
@@ -29150,7 +29156,7 @@ function mapTipData(node, hours = 24, extra) {
 }
 
 // src/components/threadMap/MapTooltip.tsx
-import { Fragment as Fragment38, jsx as jsx106, jsxs as jsxs92 } from "react/jsx-runtime";
+import { Fragment as Fragment39, jsx as jsx106, jsxs as jsxs92 } from "react/jsx-runtime";
 function placeMapTooltip(anchor, tip, viewport) {
   const gap = 8, left = viewport.x + gap, top = viewport.y + gap;
   const right = viewport.x + viewport.width - gap, bottom = viewport.y + viewport.height - gap;
@@ -29195,7 +29201,7 @@ function MapTipContent({ data }) {
   const count = data.metrics.find((metric) => metric.kind === "threads");
   const metrics = data.metrics.filter((metric) => metric.kind !== "threads");
   const peak = Math.max(1, ...data.hourly ?? []);
-  return /* @__PURE__ */ jsxs92(Fragment38, { children: [
+  return /* @__PURE__ */ jsxs92(Fragment39, { children: [
     /* @__PURE__ */ jsxs92("div", { className: "thread-map-tip-header", children: [
       data.status && /* @__PURE__ */ jsx106(StatusMark, { status: data.status }),
       data.agent ? /* @__PURE__ */ jsx106(
@@ -29379,7 +29385,7 @@ function MapTooltip({
           visibility: position ? "visible" : "hidden",
           width: Math.max(0, Math.min(300, viewportWidth - 16))
         },
-        children: data ? /* @__PURE__ */ jsx106(MapTipContent, { data }) : /* @__PURE__ */ jsxs92(Fragment38, { children: [
+        children: data ? /* @__PURE__ */ jsx106(MapTipContent, { data }) : /* @__PURE__ */ jsxs92(Fragment39, { children: [
           /* @__PURE__ */ jsx106("div", { className: "thread-map-tip-header", children: /* @__PURE__ */ jsx106("b", { children: lines[0] }) }),
           lines.slice(1).map((line, i) => /* @__PURE__ */ jsx106("p", { className: "thread-map-tip-subtitle", children: line }, i))
         ] })
@@ -29392,7 +29398,7 @@ function MapTooltip({
 // src/components/threadMap/DenseMap.tsx
 import { createPortal as createPortal12 } from "react-dom";
 import {
-  Fragment as Fragment40,
+  Fragment as Fragment41,
   memo as memo12,
   useRef as useRef59,
   useState as useState79,
@@ -29732,7 +29738,7 @@ var DenseLayout = class {
 // src/components/threadMap/ReadableMap.tsx
 import { memo as memo11, useRef as useRef58, useState as useState78 } from "react";
 import { ArrowUpRight, ChevronRight as ChevronRight8, Folder as Folder4, Layers as Layers2, Monitor as Monitor3 } from "lucide-react";
-import { Fragment as Fragment39, jsx as jsx107, jsxs as jsxs93 } from "react/jsx-runtime";
+import { Fragment as Fragment40, jsx as jsx107, jsxs as jsxs93 } from "react/jsx-runtime";
 var inset = (r) => ({ x: r.x + 3, y: r.y + 3, width: Math.max(0, r.width - 6), height: Math.max(0, r.height - 6) });
 var kindFor = (node) => node.kind === "workspace" || node.kind === "thread" ? "threads" : node.kind === "device" ? "workspaces" : "devices";
 var status = (node) => isWaiting(node.thread) ? "waiting" : isLive(node.thread) ? "running" : node.thread.failed ? "failed" : node.thread.interrupted ? "interrupted" : node.thread.unread ? "unread" : "idle";
@@ -29931,7 +29937,7 @@ function ReadableMap(props) {
           setListFor(parent.id);
         }
       };
-      const header2 = /* @__PURE__ */ jsxs93(Fragment39, { children: [
+      const header2 = /* @__PURE__ */ jsxs93(Fragment40, { children: [
         /* @__PURE__ */ jsxs93("span", { className: "thread-map-overflow-title", children: [
           /* @__PURE__ */ jsx107(Layers2, { "aria-hidden": "true" }),
           /* @__PURE__ */ jsx107("b", { children: label }),
@@ -30003,11 +30009,11 @@ function ReadableMap(props) {
   };
   const content = bounds.width > 0 && bounds.height > 0 ? render(current, bounds, 0, { x: 0, y: 0 }) : null;
   props.register(targets);
-  return /* @__PURE__ */ jsx107(Fragment39, { children: content });
+  return /* @__PURE__ */ jsx107(Fragment40, { children: content });
 }
 
 // src/components/threadMap/DenseMap.tsx
-import { Fragment as Fragment41, jsx as jsx108, jsxs as jsxs94 } from "react/jsx-runtime";
+import { Fragment as Fragment42, jsx as jsx108, jsxs as jsxs94 } from "react/jsx-runtime";
 function status2(n) {
   const t2 = n.thread;
   return isWaiting(t2) ? "waiting" : isLive(t2) ? "running" : t2.failed ? "failed" : t2.interrupted ? "interrupted" : t2.unread ? "unread" : "idle";
@@ -30025,7 +30031,7 @@ var DenseTileContent = memo12(
   }) {
     useI18n();
     const t2 = node.thread, mark = status2(node), detailed = contentTier > 0;
-    return /* @__PURE__ */ jsxs94(Fragment41, { children: [
+    return /* @__PURE__ */ jsxs94(Fragment42, { children: [
       /* @__PURE__ */ jsx108(
         "a",
         {
@@ -30186,7 +30192,7 @@ function OverflowCell({
     groups ? node.kind === "device" ? "workbench.threadMapOtherDevices" : "workbench.threadMapOtherWorkspaces" : "workbench.threadMapRemainingThreads",
     { count: items.length }
   );
-  return /* @__PURE__ */ jsxs94(Fragment41, { children: [
+  return /* @__PURE__ */ jsxs94(Fragment42, { children: [
     /* @__PURE__ */ jsxs94(
       "button",
       {
@@ -30323,7 +30329,7 @@ function DenseMap(props) {
       );
     }
     const device = node.kind === "device", extra = device ? extras?.[node.device.id] : void 0;
-    return /* @__PURE__ */ jsxs94(Fragment40, { children: [
+    return /* @__PURE__ */ jsxs94(Fragment41, { children: [
       /* @__PURE__ */ jsx108(
         "section",
         {
@@ -30392,7 +30398,7 @@ function DenseMap(props) {
   });
   const content = render(boxes);
   props.register(targets);
-  return /* @__PURE__ */ jsx108(Fragment41, { children: content });
+  return /* @__PURE__ */ jsx108(Fragment42, { children: content });
 }
 
 // src/components/threadMap/useMapMotion.ts
@@ -30517,7 +30523,7 @@ function spatialNeighbor(items, from, direction) {
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { Fragment as Fragment42, jsx as jsx109, jsxs as jsxs95 } from "react/jsx-runtime";
+import { Fragment as Fragment43, jsx as jsx109, jsxs as jsxs95 } from "react/jsx-runtime";
 var HEADER = 26;
 function describe(node, hours) {
   if (node.thread) return threadDetails(node, hours);
@@ -31170,7 +31176,7 @@ function ThreadMap({
     const named = box.width >= 72;
     const Icon = item.kind === "device" ? Monitor4 : Folder6;
     const zoomable = !unlisted;
-    const head = /* @__PURE__ */ jsxs95(Fragment42, { children: [
+    const head = /* @__PURE__ */ jsxs95(Fragment43, { children: [
       named && (extra ? /* @__PURE__ */ jsx109(DeviceStateMark, {}) : /* @__PURE__ */ jsx109(Icon, { "aria-hidden": "true" })),
       /* @__PURE__ */ jsx109("span", { className: "thread-map-section-label", children: item.label }),
       extra && box.width >= 280 && /* @__PURE__ */ jsx109(DeviceReadings, { extra }),
@@ -31246,7 +31252,7 @@ function ThreadMap({
   });
   const children2 = current.children;
   const bounds = { x: 0, y: 0, width: size.width, height: size.height };
-  const breadcrumb = /* @__PURE__ */ jsxs95(Fragment42, { children: [
+  const breadcrumb = /* @__PURE__ */ jsxs95(Fragment43, { children: [
     /* @__PURE__ */ jsx109("button", { type: "button", className: "thread-map-icon-button", "aria-label": translate("workbench.threadMapBack"), disabled: current === root, onClick: () => navigate(current.parent), children: /* @__PURE__ */ jsx109(ArrowLeft4, { "aria-hidden": "true" }) }),
     /* @__PURE__ */ jsx109("nav", { ref: crumbs, tabIndex: -1, className: "thread-map-crumbs", "aria-label": translate("workbench.threadMapPath"), children: chain.map((node, index) => {
       const href = page && node.kind === "thread" ? void 0 : node.workspace ? node.workspace.href : node.device?.href;
@@ -31304,12 +31310,12 @@ function ThreadMap({
       heading,
       /* @__PURE__ */ jsxs95("span", { className: "thread-map-summary", children: [
         translate("workbench.threadMapThreads", { count: root.threads }),
-        root.running > 0 && /* @__PURE__ */ jsxs95(Fragment42, { children: [
+        root.running > 0 && /* @__PURE__ */ jsxs95(Fragment43, { children: [
           " \xB7 ",
           /* @__PURE__ */ jsx109("i", { className: "thread-map-running-dot", "aria-hidden": "true" }),
           translate("workbench.threadMapRunningCount", { count: root.running })
         ] }),
-        root.usd > 0 && /* @__PURE__ */ jsxs95(Fragment42, { children: [
+        root.usd > 0 && /* @__PURE__ */ jsxs95(Fragment43, { children: [
           " \xB7 ",
           translate("workbench.threadMapCost", { usd: formatCompactUsd(root.usd) })
         ] })
@@ -31361,7 +31367,7 @@ function ThreadMap({
       ] }),
       current.device && cachedDevices.has(current.device.id) && /* @__PURE__ */ jsxs95("span", { className: "thread-map-cached-label", children: [
         translate("workbench.threadMapCached"),
-        current.device.cachedAt && /* @__PURE__ */ jsxs95(Fragment42, { children: [
+        current.device.cachedAt && /* @__PURE__ */ jsxs95(Fragment43, { children: [
           " \xB7 ",
           relativeCache(current.device.cachedAt)
         ] })

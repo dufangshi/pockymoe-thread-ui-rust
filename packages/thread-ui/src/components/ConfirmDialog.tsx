@@ -66,7 +66,7 @@ export function ConfirmDialog({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium">{title}</p>
-            <p className="mt-2 text-sm leading-6 text-[var(--theme-fg-muted)]">{description}</p>
+            <p tabIndex={0} className="mt-2 max-h-[min(45dvh,20rem)] overflow-y-auto whitespace-pre-line text-sm leading-6 text-[var(--theme-fg-muted)]" style={{ overflowWrap: 'anywhere' }}>{description}</p>
           </div>
           <button
             type="button"

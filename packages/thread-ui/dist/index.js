@@ -52,7 +52,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-ZCA52MA2.js";
+} from "./chunk-ODZPMKSH.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -81,7 +81,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-2B3A73FP.js";
+} from "./chunk-GCYLBJJH.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";

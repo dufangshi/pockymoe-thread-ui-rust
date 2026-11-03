@@ -6,7 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-2B3A73FP.js";
+} from "./chunk-GCYLBJJH.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -414,7 +414,7 @@ function ConfirmDialog({
             /* @__PURE__ */ jsxs5("div", { className: "flex items-start justify-between gap-3", children: [
               /* @__PURE__ */ jsxs5("div", { className: "min-w-0 flex-1", children: [
                 /* @__PURE__ */ jsx5("p", { className: "text-sm font-medium", children: title }),
-                /* @__PURE__ */ jsx5("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-muted)]", children: description })
+                /* @__PURE__ */ jsx5("p", { tabIndex: 0, className: "mt-2 max-h-[min(45dvh,20rem)] overflow-y-auto whitespace-pre-line text-sm leading-6 text-[var(--theme-fg-muted)]", style: { overflowWrap: "anywhere" }, children: description })
               ] }),
               /* @__PURE__ */ jsx5(
                 "button",

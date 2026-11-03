@@ -2,9 +2,11 @@ import * as react from 'react';
 import { ReactNode } from 'react';
 
 declare const en: {
-    readonly "desktopShell.updatePendingTitle": "Restart to update Pockymoe?";
-    readonly "desktopShell.updatePendingDescription": "Unsent conversation drafts: {{drafts}} (attachments: {{attachments}}). Unsaved workspace documents: {{documents}}. Updating closes all windows and discards these changes.";
-    readonly "desktopShell.updateDiscardConfirm": "Discard and update";
+    readonly "desktopShell.updatePendingTitle": "Update and restart?";
+    readonly "desktopShell.updatePendingDocuments": "Unsaved workspace documents: {{documents}}. These changes will be lost after updating.";
+    readonly "desktopShell.updatePendingCounts": "Drafts: {{drafts}}. Attachments: {{attachments}}. Unsaved workspace documents: {{documents}}.";
+    readonly "desktopShell.updatePendingDescription": "Unsent content will be lost: {{titles}}";
+    readonly "desktopShell.updateDiscardConfirm": "Update";
     readonly "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.";
     readonly "desktopShell.updateTo": "Update to {{version}}";
     readonly "desktopShell.updateFailed": "The update could not be installed.";
@@ -5216,6 +5218,8 @@ declare const en: {
 
 declare const zhCN: {
     "desktopShell.updatePendingTitle": string;
+    "desktopShell.updatePendingDocuments": string;
+    "desktopShell.updatePendingCounts": string;
     "desktopShell.updatePendingDescription": string;
     "desktopShell.updateDiscardConfirm": string;
     "desktopShell.updateCancelled": string;
@@ -5285,7 +5289,10 @@ declare const zhCN: {
     "desktopDevices.updateRequired": string;
     "desktopDevices.priceCoverage": string;
     "desktopDevices.priceUnknown": string;
-    "desktopDevices.hourlyExcluded": string;
+    "desktopDevices.hourlyExcluded": {
+        one: string;
+        other: string;
+    };
     "desktopDevices.systemGenerated": string;
     "desktopDevices.noDeviceModels": string;
     "desktopDevices.fullModelName": string;
@@ -10447,9 +10454,11 @@ type Message = string | {
 };
 declare const resources: {
     en: {
-        readonly "desktopShell.updatePendingTitle": "Restart to update Pockymoe?";
-        readonly "desktopShell.updatePendingDescription": "Unsent conversation drafts: {{drafts}} (attachments: {{attachments}}). Unsaved workspace documents: {{documents}}. Updating closes all windows and discards these changes.";
-        readonly "desktopShell.updateDiscardConfirm": "Discard and update";
+        readonly "desktopShell.updatePendingTitle": "Update and restart?";
+        readonly "desktopShell.updatePendingDocuments": "Unsaved workspace documents: {{documents}}. These changes will be lost after updating.";
+        readonly "desktopShell.updatePendingCounts": "Drafts: {{drafts}}. Attachments: {{attachments}}. Unsaved workspace documents: {{documents}}.";
+        readonly "desktopShell.updatePendingDescription": "Unsent content will be lost: {{titles}}";
+        readonly "desktopShell.updateDiscardConfirm": "Update";
         readonly "desktopShell.updateCancelled": "Unsaved changes; the update was cancelled.";
         readonly "desktopShell.updateTo": "Update to {{version}}";
         readonly "desktopShell.updateFailed": "The update could not be installed.";
@@ -15660,6 +15669,8 @@ declare const resources: {
     };
     'zh-CN': {
         "desktopShell.updatePendingTitle": string;
+        "desktopShell.updatePendingDocuments": string;
+        "desktopShell.updatePendingCounts": string;
         "desktopShell.updatePendingDescription": string;
         "desktopShell.updateDiscardConfirm": string;
         "desktopShell.updateCancelled": string;
@@ -15729,7 +15740,10 @@ declare const resources: {
         "desktopDevices.updateRequired": string;
         "desktopDevices.priceCoverage": string;
         "desktopDevices.priceUnknown": string;
-        "desktopDevices.hourlyExcluded": string;
+        "desktopDevices.hourlyExcluded": {
+            one: string;
+            other: string;
+        };
         "desktopDevices.systemGenerated": string;
         "desktopDevices.noDeviceModels": string;
         "desktopDevices.fullModelName": string;

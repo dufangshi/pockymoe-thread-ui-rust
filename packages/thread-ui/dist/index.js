@@ -52,7 +52,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-44UAJ2IV.js";
+} from "./chunk-CP3V5TWK.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -82,7 +82,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-GY5X7H6T.js";
+} from "./chunk-KHHYHZOX.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -8319,7 +8319,6 @@ function useComposerToolbarProps({
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
-  sandboxMode,
   sendButtonLabel,
   sendButtonClassName,
   modelControlsDisabled,
@@ -8523,8 +8522,6 @@ function useComposerToolbarProps({
     compactDisabled: busy || settingsBusy || disabled,
     reasoningEffort,
     supportedEfforts,
-    sandboxMode,
-    sandboxModeAvailable: capabilities.sandboxMode,
     liveModelSwitch: capabilities.liveModelSwitch ?? false,
     settingsBusy,
     goalComposeMode,
@@ -8587,8 +8584,6 @@ function ThreadComposer({
   reasoningEffort = null,
   fastMode = false,
   collaborationMode = "default",
-  sandboxMode = null,
-  hideSandboxModeControl = false,
   modelOptions = [],
   contextUsage = null,
   contextInspector,
@@ -8697,7 +8692,6 @@ function ThreadComposer({
       mcpConfigEditing: mcpConfigFormat === "codex-toml" && Boolean(capabilities?.management.hostConfigFiles) && Boolean(onReadProviderConfig) && Boolean(onWriteProviderConfig),
       hookTrust: capabilities?.management.hookTrust ?? false,
       planMode: capabilities?.controls.planMode ?? false,
-      sandboxMode: capabilities?.controls.sandboxMode ?? false,
       liveModelSwitch: capabilities?.controls.liveModelSwitch ?? false
     }),
     [
@@ -9330,7 +9324,6 @@ ${current.prompt}` : text,
     reasoningEffort,
     supportedEfforts,
     displayedCollaborationMode,
-    sandboxMode,
     sendButtonLabel,
     sendButtonClassName,
     modelControlsDisabled,
@@ -9369,7 +9362,6 @@ ${current.prompt}` : text,
       mcpConfigEditing: slashCapabilities.mcpConfigEditing,
       planMode: slashCapabilities.planMode,
       forkFromTurn: slashCapabilities.forkFromTurn,
-      sandboxMode: hideSandboxModeControl ? false : slashCapabilities.sandboxMode,
       liveModelSwitch: slashCapabilities.liveModelSwitch
     },
     shellControlState,

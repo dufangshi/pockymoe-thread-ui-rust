@@ -242,9 +242,6 @@ export const settingsZhCN = {
   'settings.steerDeliversToTheRunningTurnImmediately':
     '插话立即送达正在运行的轮次；空闲时开始新一轮。',
   'settings.retry': '重试',
-  'settings.noHostFiles': '此 Harness 没有可编辑的宿主文件。',
-  'settings.workspacePermissions': '工作区权限',
-  'settings.fullAccess': '完全访问',
   'settings.harnessSettings': 'Harness 设置',
   'settings.model': '模型',
   'settings.harnessModel': 'Harness 模型',
@@ -391,7 +388,6 @@ export const settingsZhCN = {
   'settings.dshAutonomous': 'DSH 正在回合之外工作（目标轮次或后台任务）。',
   'settings.dshStop': '停止',
   'settings.dshSession': '会话状态',
-  'settings.dshPermissionPreset': '权限预设',
   'settings.dshPlanMode': '计划模式',
   'settings.dshOn': '开启',
   'settings.dshOff': '关闭',
@@ -433,7 +429,7 @@ export const settingsZhCN = {
     '当前 DSH 在这里不提供运行模式和原生控制台（纯 ACP 配置）。',
   'settings.dshCommands': '命令',
   'settings.dshCommandsNotice':
-    '在本线程的 DSH 会话中运行，包括 DSH 插件添加的命令。计划模式、权限、目标和压缩仍由线程自己的控件管理。',
+    '在本线程的 DSH 会话中运行，包括 DSH 插件添加的命令。计划模式、目标和压缩仍由线程自己的控件管理。',
   'settings.dshCommandArguments': '/{{value1}} 的参数',
   'settings.dshRunCommand': '运行 /{{value1}}',
   'settings.dshRun': '运行',
@@ -489,7 +485,7 @@ export const settingsZhCN = {
   'settings.upstreamsReloadEditor': '重新加载当前配置',
   'settings.upstreamsKeepEditing': '继续编辑',
   'settings.harnessMaintenanceDescription':
-    '安装和更新 Harness 及其 ACP 适配器；编辑所选 Harness 的宿主文件，创建和恢复配置备份。请在「上游」中管理 provider。',
+    '安装和更新 Harness 及其 ACP 适配器。请在「上游」中管理 provider。',
   'settings.upstreamsDeepSeekOfficial': 'DeepSeek 官方 API',
   'settings.upstreamsResponses': 'Responses',
   'settings.dshRunModeBroken': '{{value1}}（不可用：{{value2}}）',

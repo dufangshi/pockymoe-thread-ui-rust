@@ -150,8 +150,6 @@ export const chatZhCN = {
   "chat.removeQueuedPrompt": "移除排队提示词",
   "chat.removeFromQueue": "从队列移除",
   "chat.prompt": "提示词",
-  "chat.readOnly": "只读",
-  "chat.workspaceWrite": "写入工作区",
   "chat.danger": "危险",
   "chat.modelAndEffort": "模型和推理强度：{{value1}}，{{value2}}",
   "chat.fastModeIsOnTurnItOff": "快速模式已开启。请从斜杠工具箱关闭后编辑模型。{{value1}}",

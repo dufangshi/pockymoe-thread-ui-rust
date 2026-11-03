@@ -43,7 +43,7 @@
 [data-composer-layout]:not([data-composer-layout='expanded']) .thread-graph-composer-input .attachment-tile-icon > b { display: none; }
 [data-composer-layout]:not([data-composer-layout='expanded']) .thread-graph-composer-input .attachment-tile-icon > img { border-radius: 3px; }
 [data-composer-layout] .composer-model-label {
-  /* Use the space freed by moving model/permission controls into Settings.
+  /* Use the space freed by consolidating model controls.
      Reserve room for the prompt and action buttons in narrow split panes. */
   max-width: min(24rem, max(4rem, calc(100cqi - 14rem)));
   cursor: pointer; min-height: 28px; border-radius: 6px;

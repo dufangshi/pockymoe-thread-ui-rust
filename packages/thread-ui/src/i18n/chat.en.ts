@@ -150,8 +150,6 @@ export const chatEn = {
   "chat.removeQueuedPrompt": "Remove queued prompt",
   "chat.removeFromQueue": "Remove from queue",
   "chat.prompt": "Prompt",
-  "chat.readOnly": "Read only",
-  "chat.workspaceWrite": "Workspace write",
   "chat.danger": "Danger",
   "chat.modelAndEffort": "Model and effort: {{value1}}, {{value2}}",
   "chat.fastModeIsOnTurnItOff": "Fast mode is on. Turn it off from the slash toolbox to edit model. {{value1}}",

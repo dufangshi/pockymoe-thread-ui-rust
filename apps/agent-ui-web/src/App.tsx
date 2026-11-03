@@ -448,7 +448,6 @@ export function App() {
               onUpdateSettings: updateSettings,
               followTail,
               onToggleFollow: () => setFollowTail(true),
-              hideSandboxModeControl: true,
             }}
           />
         </PluginProvider>

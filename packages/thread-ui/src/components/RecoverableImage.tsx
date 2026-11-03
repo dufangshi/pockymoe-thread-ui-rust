@@ -71,6 +71,6 @@ function ImageAttempt({ src, resolveSrc, renderImage = image => image, ...props 
           style={{ ...props.style, visibility: state.phase === 'ready' ? props.style?.visibility : 'hidden' }}
           onLoad={() => setState(current => ({ ...current, phase: 'ready' }))}
           onError={() => setState(current => current.phase === 'waiting' || current.phase === 'failed' ? current : { ...current, phase: 'waiting' })} />)}
-    {unavailable ? <span className="image-recovery-error"><ErrorMark message={translate('chat.imageUnavailable')} onRetry={retry} /></span> : null}
+    {unavailable ? <span className="image-recovery-error" onPointerDown={event => event.stopPropagation()}><ErrorMark message={translate('chat.imageUnavailable')} onRetry={retry} /></span> : null}
   </span>;
 }

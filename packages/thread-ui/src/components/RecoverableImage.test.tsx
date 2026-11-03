@@ -23,6 +23,9 @@ it('resolves afresh twice with backoff, stops, and exposes themed retry outside 
   expect(host.querySelector('.image-unavailable')).not.toBeNull();
   expect(refresh).toHaveBeenCalledTimes(2);
   const mark = host.querySelector<HTMLButtonElement>('.error-mark')!;
+  const pan = vi.fn(); document.body.addEventListener('pointerdown', pan);
+  act(() => mark.dispatchEvent(new Event('pointerdown', { bubbles: true })));
+  expect(pan).not.toHaveBeenCalled(); document.body.removeEventListener('pointerdown', pan);
   expect(mark.parentElement!.tagName).toBe('SPAN');
   act(() => mark.click());
   act(() => document.querySelector<HTMLButtonElement>('.error-mark-retry')!.click());

@@ -583,7 +583,7 @@ function ImageAttempt({ src, resolveSrc, renderImage = (image) => image, ...prop
         onError: () => setState((current) => current.phase === "waiting" || current.phase === "failed" ? current : { ...current, phase: "waiting" })
       }
     )),
-    unavailable ? /* @__PURE__ */ jsx7("span", { className: "image-recovery-error", children: /* @__PURE__ */ jsx7(ErrorMark, { message: translate("chat.imageUnavailable"), onRetry: retry }) }) : null
+    unavailable ? /* @__PURE__ */ jsx7("span", { className: "image-recovery-error", onPointerDown: (event) => event.stopPropagation(), children: /* @__PURE__ */ jsx7(ErrorMark, { message: translate("chat.imageUnavailable"), onRetry: retry }) }) : null
   ] });
 }
 

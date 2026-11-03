@@ -12749,10 +12749,11 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               }, children: /* @__PURE__ */ jsx51(Terminal2, { "data-icon": "terminal" }) }),
               o.toolPanels?.map((panel) => /* @__PURE__ */ jsx51("button", { "aria-label": panel.label, title: panel.label, "aria-pressed": panel.active, onClick: panel.onToggle, children: panel.icon }, panel.id)),
               /* @__PURE__ */ jsx51("button", { disabled: !workspaceControlsEnabled, "aria-label": translate("workbench.toggleExplorer"), "aria-pressed": explorerOpen, "aria-expanded": explorerOpen, title: translate("workbench.explorer"), onClick: () => setExplorerOpen((open) => !open), children: /* @__PURE__ */ jsx51(FolderOpen4, { "data-icon": "explorer" }) }),
-              settings
+              !mobile && settings
             ] }),
             /* @__PURE__ */ jsx51("div", { className: "matter-connection", children: connection }),
-            bell
+            bell,
+            mobile && settings
           ] })
         ] }),
         (sidebarOpen || mobile) && /* @__PURE__ */ jsx51(

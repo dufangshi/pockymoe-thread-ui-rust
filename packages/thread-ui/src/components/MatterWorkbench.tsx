@@ -928,10 +928,11 @@ export function MatterWorkbench({
             }}><Terminal data-icon="terminal" /></button>}
             {o.toolPanels?.map(panel => <button key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
             <button disabled={!workspaceControlsEnabled} aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
-            {settings}
+            {!mobile && settings}
           </>}
           <div className="matter-connection">{connection}</div>
           {bell}
+          {mobile && settings}
         </div>
       </header>}
       {/* On a phone the scrim stays mounted so a drag can fade it in. */}

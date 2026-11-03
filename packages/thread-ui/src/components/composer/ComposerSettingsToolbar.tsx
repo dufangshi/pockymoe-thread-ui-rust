@@ -2,7 +2,6 @@ import { translate, useI18n } from '../../i18n';
 import type {
   ModelOptionDto,
   ReasoningEffortDto,
-  SandboxModeDto,
   ThreadContextUsageDto,
   UpdateThreadSettingsInput,
 } from '@pockymoe/shared';
@@ -79,8 +78,6 @@ export function ComposerSettingsToolbar({
   compactDisabled?: boolean;
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
-  sandboxMode: SandboxModeDto | null | undefined;
-  sandboxModeAvailable: boolean;
   settingsBusy: boolean;
   goalComposeMode: boolean;
   goalBusy: boolean;

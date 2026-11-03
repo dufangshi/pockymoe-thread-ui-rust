@@ -40,7 +40,6 @@ function input(
     reasoningEffort: null,
     supportedEfforts: [],
     displayedCollaborationMode: 'default',
-    sandboxMode: 'workspace-write',
     sendButtonLabel: 'Send',
     sendButtonClassName: 'send-class',
     modelControlsDisabled: false,
@@ -77,7 +76,6 @@ function input(
       hookTrust: true,
       mcpConfigEditing: true,
       planMode: true,
-      sandboxMode: true,
       forkFromTurn: false,
     },
     shellControlState: null,
@@ -142,7 +140,6 @@ describe('useComposerToolbarProps', () => {
     expect(props.slashToolboxProps?.open).toBe(true);
     expect(props.attachmentMenuProps?.open).toBe(false);
     expect(props.slashToolboxProps?.planModeAvailable).toBe(true);
-    expect(props.settingsToolbarProps?.sandboxModeAvailable).toBe(true);
     expect(props.shellToolsPanelProps).toBeNull();
     expect(props.slashToolboxProps?.onToggle()).toBeUndefined();
   });

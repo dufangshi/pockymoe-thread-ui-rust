@@ -3,7 +3,6 @@ import type {
   CollaborationModeDto,
   ModelOptionDto,
   ReasoningEffortDto,
-  SandboxModeDto,
   ThreadContextUsageDto,
   ThreadForkTurnOptionDto,
   ThreadGoalDto,
@@ -42,7 +41,6 @@ export interface ComposerToolbarCapabilities {
   hookTrust: boolean;
   mcpConfigEditing: boolean;
   planMode: boolean;
-  sandboxMode: boolean;
   forkFromTurn: boolean;
   /** A model chosen mid-turn applies from the turn's next model call. */
   liveModelSwitch?: boolean;
@@ -86,7 +84,6 @@ export interface UseComposerToolbarPropsInput {
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
   displayedCollaborationMode: CollaborationModeDto;
-  sandboxMode: SandboxModeDto | null | undefined;
   sendButtonLabel: string;
   sendButtonClassName: string;
   modelControlsDisabled: boolean;
@@ -203,7 +200,6 @@ export function useComposerToolbarProps({
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
-  sandboxMode,
   sendButtonLabel,
   sendButtonClassName,
   modelControlsDisabled,
@@ -420,8 +416,6 @@ export function useComposerToolbarProps({
         compactDisabled: busy || settingsBusy || disabled,
         reasoningEffort,
         supportedEfforts,
-        sandboxMode,
-        sandboxModeAvailable: capabilities.sandboxMode,
         liveModelSwitch: capabilities.liveModelSwitch ?? false,
         settingsBusy,
         goalComposeMode,

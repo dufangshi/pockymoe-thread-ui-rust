@@ -175,7 +175,7 @@ function ContextBreakdown({ snapshot }: { snapshot: ContextInspectionSnapshotDto
             total: formatContextTokens(snapshot.compositionTokens),
             delta: `${(snapshot.attributionDeltaTokens ?? 0) >= 0 ? '+' : '−'}${formatContextTokens(Math.abs(snapshot.attributionDeltaTokens ?? 0))}`,
           })}
-          {' '}{translate('chat.contextDshHeuristicNote')}
+          {' '}{translate(snapshot.provider === 'deepseek' ? 'chat.contextDshHeuristicNote' : 'chat.contextCodexTokenizerNote')}
         </p>
       ) : null}
       <ul className="thread-context-rows">
@@ -429,7 +429,7 @@ export function ComposerContextControl({
 
   const separateComposition = snapshot?.compositionTokens != null;
   const showCategoryOccupancy = arranged && !movedOn && !separateComposition;
-  const estimatedTotal = (snapshot?.source === 'codexTrace' || snapshot?.source === 'dshProjection') && !movedOn;
+  const estimatedTotal = snapshot?.source === 'dshProjection' && !movedOn;
   const age = contextAge(reading?.updatedAt, now);
   const stale = Boolean(snapshot?.stale) || movedOn;
   const loading = state.status === 'loading';

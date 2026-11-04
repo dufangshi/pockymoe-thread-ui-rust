@@ -1,3 +1,4 @@
+import { usePhoneDock } from '../workbench/phoneDockContext';
 import { translate, useI18n } from '../../i18n';
 import {
   useCallback,
@@ -345,9 +346,12 @@ export function GraphChatThreadChatPanel({
 
   // A workbench pane switch briefly changes focus while the IME is still
   // visible. Both panes must keep avoiding that viewport, including the strip.
+  const phoneDock = usePhoneDock();
+  // The dock itself rises with the keyboard, so its reserved row must rise
+  // with the composer too. Subtract only fixed panels which stay in place.
   const mobileComposerBottomOffset =
     isMobileViewport && (mobilePromptFocused || floatingDesktopComposer)
-      ? Math.max(0, mobileKeyboardInset - (useFloatingMobileComposer ? floatingMobileComposerBottomOffset : 0) - panelBottomGap)
+      ? Math.max(0, mobileKeyboardInset - (useFloatingMobileComposer ? floatingMobileComposerBottomOffset : 0) - (phoneDock ? 0 : panelBottomGap))
       : 0;
   // Above a bottom panel the chat is short; reserve the composer's real height.
   const effectiveMobileComposerHeight = panelBottomGap > 0

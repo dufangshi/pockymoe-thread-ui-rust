@@ -4,7 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppShellNavContext, type AppShellNavContextValue } from '../app-shell/AppShellNavContext';
 import { setLocale } from '../i18n';
-import { MatterWorkbench, type MatterWorkbenchOptions, type WorkbenchThread } from './MatterWorkbench';
+import { canStartPhoneSidebarSwipe, MatterWorkbench, PHONE_SYSTEM_EDGE_GUARD, type MatterWorkbenchOptions, type WorkbenchThread } from './MatterWorkbench';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 let host: HTMLDivElement, root: Root;
@@ -127,6 +127,12 @@ function pointer(target: Element, type: string, clientX: number, clientY = 10) {
 }
 
 describe('one-handed phone dock', () => {
+  it('leaves the system edge region untouched and opens from the interior', () => {
+    expect(canStartPhoneSidebarSwipe(0)).toBe(false);
+    expect(canStartPhoneSidebarSwipe(PHONE_SYSTEM_EDGE_GUARD)).toBe(false);
+    expect(canStartPhoneSidebarSwipe(PHONE_SYSTEM_EDGE_GUARD + 1)).toBe(true);
+  });
+
   it('keeps only status in the top bar and moves navigation to the bottom', () => {
     options = { ...baseOptions, threads: [thread('a'), thread('b', 'running'), thread('c', 'running')], unreadCount: 2 };
     render();
@@ -413,6 +419,10 @@ describe('one-handed phone dock', () => {
     touch(page, 'touchstart', 300, 700);
     touch(page, 'touchmove', 302, 800);
     touch(page, 'touchend', 302, 800);
+    expect(drawer.classList.contains('is-open')).toBe(false);
+    touch(page, 'touchstart', 300, PHONE_SYSTEM_EDGE_GUARD);
+    touch(page, 'touchmove', 302, PHONE_SYSTEM_EDGE_GUARD + 80);
+    touch(page, 'touchend', 302, PHONE_SYSTEM_EDGE_GUARD + 80);
     expect(drawer.classList.contains('is-open')).toBe(false);
     touch(page, 'touchstart', 300, 40);
     touch(page, 'touchmove', 302, 70);

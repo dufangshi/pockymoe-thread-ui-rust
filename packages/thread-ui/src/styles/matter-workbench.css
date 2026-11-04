@@ -1456,17 +1456,21 @@
     gap: 0;
   }
   .thread-ui-shell .matter-workbench .thread-graph-composer-host {
+    /* The composer is an overlay. Its only reserved space is the safe-area
+       inset plus the same 9px edge margin used by its horizontal padding. */
     bottom: max(
-      22px,
-      calc(env(safe-area-inset-bottom) + 14px),
-      calc(var(--thread-composer-keyboard-inset, 0px) + 14px)
+      9px,
+      calc(max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px)) + 9px),
+      calc(var(--thread-composer-keyboard-inset, 0px) + 9px)
     );
   }
   .thread-ui-shell .matter-workbench .thread-graph-composer-layer {
     padding: 0 9px;
   }
   .thread-ui-shell .matter-workbench .thread-graph-composer-form {
-    padding-top: 0 !important;
+    /* composer-plan's standalone mobile form includes the safe area with
+       !important. In a workbench the outer anchor/dock owns that inset. */
+    padding: 0 !important;
   }
   .thread-ui-shell .matter-workbench .thread-graph-message-list {
     padding-inline: 9px;

@@ -49,6 +49,10 @@ const SIDEBAR_SECTIONS_KEY = 'pockymoe.sidebar-sections.v1';
 const SIDEBAR_WIDTH_KEY = 'pockymoe.sidebar-width';
 const SIDEBAR_MIN = 200, SIDEBAR_MAX = 420;
 const clampSidebar = (width: number) => Math.round(Math.max(SIDEBAR_MIN, Math.min(SIDEBAR_MAX, width)));
+export const PHONE_SYSTEM_EDGE_GUARD = 28;
+export function canStartPhoneSidebarSwipe(clientX: number) {
+  return clientX > PHONE_SYSTEM_EDGE_GUARD;
+}
 
 /** Where a right-click opened a thread's menu, and how to end it. */
 export interface ThreadMenuContext {
@@ -293,7 +297,13 @@ export function MatterWorkbench({
   }, []);
   // A theme with phone drawer tools keeps the phone top bar to touch-sized
   // essentials and moves Home and Chat into the drawer; the device monitor stays.
-  const drawerTools = useThemeFeature('workbench.phoneDrawerTools') && mobile;
+  const [narrowPhone, setNarrowPhone] = useState(() => typeof window !== 'undefined' && window.innerWidth < 420);
+  useEffect(() => {
+    const update = () => setNarrowPhone(window.innerWidth < 420);
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  const drawerTools = (useThemeFeature('workbench.phoneDrawerTools') || narrowPhone) && mobile;
   // One-handed phone layout: status-only top bar, navigation at the bottom.
   // A setting (Settings → Preferences), on by default; off keeps the classic phone bars.
   const shellNav = useAppShellNav();
@@ -376,6 +386,9 @@ export function MatterWorkbench({
       if (sidebarOpen) {
         if (!target.closest('.matter-sidebar, .matter-sidebar-scrim')) return;
       } else {
+        // The left edge belongs to the browser/system back gesture. Returning
+        // before recording a start also leaves the touch passive and untouched.
+        if (!canStartPhoneSidebarSwipe(x)) return;
         if (x > window.innerWidth * 0.4 || !target.closest('.matter-main')) return;
         if (target.closest('.thread-graph-composer-host, .file-ask-bar, .matter-phone-dock, .xterm, .terminal-panel, input, textarea, [contenteditable="true"], [contenteditable="plaintext-only"], [role="dialog"], [data-no-swipe]')) return;
         // A row that can still scroll back to its start keeps the swipe.
@@ -921,10 +934,11 @@ export function MatterWorkbench({
             }}><Terminal data-icon="terminal" /></button>}
             {o.toolPanels?.map(panel => <button key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
             <button disabled={!workspaceControlsEnabled} aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
-            {settings}
+            {!mobile && settings}
           </>}
           <div className="matter-connection">{connection}</div>
           {bell}
+          {mobile && settings}
         </div>
       </header>}
       {/* On a phone the scrim stays mounted so a drag can fade it in. */}

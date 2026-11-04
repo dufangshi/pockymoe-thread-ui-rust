@@ -571,7 +571,7 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) 
         const resolved = await (resolver?.(src) ?? src);
         let fresh = resolved;
         if (latest.current.readBlob) {
-          void Promise.resolve(latest.current.refresh(resolved)).catch(() => {
+          void Promise.resolve().then(() => latest.current.refresh(resolved)).catch(() => {
           });
           const blob = await latest.current.readBlob(resolved, abort.signal);
           if (cancelled) return;

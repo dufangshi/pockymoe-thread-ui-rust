@@ -95,7 +95,7 @@ it('owns one fallback blob, retries via page reads and releases it on unmount', 
   const revoke = vi.fn();
   Object.defineProperties(URL, { createObjectURL: { configurable: true, value: create }, revokeObjectURL: { configurable: true, value: revoke } });
   const read = vi.fn(async (_src: string, _signal: AbortSignal) => new Blob(['image']));
-  const refresh = vi.fn(async () => { throw Error('worker unavailable'); });
+  const refresh = vi.fn(() => { throw Error('worker unavailable'); });
   act(() => root.render(<ImageRecoveryProvider value={refresh}><ImageFallbackProvider value={read}><RecoverableImage src="/thumbnail.png" resolveFallback={() => '/original.png'} alt="Photo" /></ImageFallbackProvider></ImageRecoveryProvider>));
   error(); await tick(300);
   expect(host.querySelector('img')!.getAttribute('src')).toBe('blob:owned-1');

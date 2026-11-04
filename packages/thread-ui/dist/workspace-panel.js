@@ -56,7 +56,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-2JTH4WQY.js";
+} from "./chunk-D4FU4LB3.js";
 import {
   shellThemeProps,
   surfaceBehind,

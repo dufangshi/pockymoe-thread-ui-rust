@@ -84,18 +84,30 @@ export function preferredSnapshot(
   current: ContextInspectionSnapshotDto | null | undefined,
   next: ContextInspectionSnapshotDto | null | undefined,
 ) {
+  current = usableSnapshot(current);
+  next = usableSnapshot(next);
   if (!current || !next) return current ?? next ?? null;
   const [full, summary] = current.source === 'claudeFull' ? [current, next] : [next, current];
   if (full.source === 'claudeFull' && summary.source === 'claudeSummary' && full.usedTokens === summary.usedTokens) return full;
   return timeOf(next.updatedAt) >= timeOf(current.updatedAt) ? next : current;
 }
 
-/** The harness's plain total moved on from the analysis: a later reading that
-    differs by more than a rounding step (a compaction, a new request). The
-    categories then describe an earlier moment, and the panel says so. */
+/** Older Codex collectors tokenized inline media and could persist categories
+    far above native occupancy. Keep the native meter during a rolling upgrade,
+    without presenting that corrupted cache as a valid composition. */
+function usableSnapshot(snapshot: ContextInspectionSnapshotDto | null | undefined) {
+  if (snapshot?.source !== 'codexTrace') return snapshot;
+  if (snapshot.compositionTokens != null) return snapshot;
+  const sum = snapshot.categories.filter(entry => entry.kind === 'used')
+    .reduce((sum, entry) => sum + entry.tokens, 0);
+  return sum > snapshot.usedTokens ? null : snapshot;
+}
+
+/** These are integer token counts, not rounded display values. A newer native
+    total or window always takes precedence over an older analysis. */
 export function totalMovedOn(snapshot: ContextReading | null, base: ContextReading | null) {
   if (!snapshot || !base || timeOf(base.updatedAt) <= timeOf(snapshot.updatedAt)) return false;
-  return Math.abs(base.used - snapshot.used) > base.window * 0.01;
+  return base.used !== snapshot.used || base.window !== snapshot.window;
 }
 
 export function currentReading(snapshot: ContextReading | null, base: ContextReading | null) {

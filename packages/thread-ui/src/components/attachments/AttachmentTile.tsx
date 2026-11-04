@@ -24,13 +24,14 @@ export function AttachmentFace({ name, family, thumbnail, image }: { name: strin
 
 /** What a tapped attachment says about itself, with what can be done with it: a
     photo leads with its preview (tap it for full size), a file with its glyph. */
-export function AttachmentCard({ name, family, size, path, thumbnail, resolveSrc, onView, actions }: {
+export function AttachmentCard({ name, family, size, path, thumbnail, resolveSrc, resolveFallback, onView, actions }: {
   name: string;
   family: FileFamily;
   size?: number | undefined;
   path?: string | undefined;
   thumbnail?: string | null | undefined;
   resolveSrc?: ImageResolver | undefined;
+  resolveFallback?: ImageResolver | undefined;
   onView?: (() => void) | undefined;
   actions?: ReactNode;
 }) {
@@ -45,7 +46,7 @@ export function AttachmentCard({ name, family, size, path, thumbnail, resolveSrc
   return (
     <div className="attachment-card" data-family={family}>
       {thumbnail ? <>
-        <RecoverableImage src={thumbnail} alt="" draggable={false} resolveSrc={resolveSrc} renderImage={image => onView
+        <RecoverableImage src={thumbnail} alt="" draggable={false} resolveSrc={resolveSrc} resolveFallback={resolveFallback} renderImage={image => onView
           ? <button type="button" className="attachment-card-preview" aria-label={translate('chat.attachmentView')} onClick={onView}>{image}</button>
           : <span className="attachment-card-preview">{image}</span>} />
         {info}
@@ -156,11 +157,11 @@ export function MessageAttachment({ kind, path, name, thumbnailUrl, fullUrl, res
   return (
     <>
       {kind === 'photo' && thumbnailUrl
-        ? <RecoverableImage src={thumbnailUrl} alt="" draggable={false} loading="lazy" resolveSrc={resolveThumbnail} renderImage={face} />
+        ? <RecoverableImage src={thumbnailUrl} alt="" draggable={false} loading="lazy" resolveSrc={resolveThumbnail} resolveFallback={resolveFull} renderImage={face} />
         : face()}
       {open && tile.current ? (
         <FloatingCard anchor={tile.current} onClose={() => setOpen(false)}>
-          <AttachmentCard name={name} family={family} path={path} thumbnail={kind === 'photo' ? thumbnailUrl : null} resolveSrc={resolveThumbnail} onView={view}
+          <AttachmentCard name={name} family={family} path={path} thumbnail={kind === 'photo' ? thumbnailUrl : null} resolveSrc={resolveThumbnail} resolveFallback={resolveFull} onView={view}
             actions={view || onOpenFile ? <>
               {view ? <ViewAction onClick={view} /> : null}
               {onOpenFile ? <button type="button" onClick={() => { setOpen(false); onOpenFile({ path }); }}><FolderOpen aria-hidden="true" />{translate('chat.attachmentOpenInFiles')}</button> : null}

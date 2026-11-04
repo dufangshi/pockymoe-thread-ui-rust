@@ -446,7 +446,10 @@ export const GraphChatUserMessageBody = memo(
 
           if (segment.type === 'photo') {
             // Local previews of just-sent photos are already in memory.
-            const localPreviewUrl = attachmentPreviewUrls?.[segment.path];
+            // Persistence replaces the composer placeholder with this namespace.
+            // A retained preview map must never override a settled attachment.
+            const persisted = threadId && segment.path.replaceAll('\\', '/').includes(`.temp/threads/${threadId}/`);
+            const localPreviewUrl = persisted ? undefined : attachmentPreviewUrls?.[segment.path];
             const imageUrl =
               localPreviewUrl ??
               (threadId

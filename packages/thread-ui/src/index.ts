@@ -196,3 +196,5 @@ export { TurnNotificationButton } from './components/timeline/TurnNotificationBu
 import './styles/notifications.css';
 
 export { ImageRecoveryProvider, ImageDiagnosisProvider } from './components/RecoverableImage';
+
+export { PersistentWorkbenchNavigation } from "./components/MatterWorkbench";

@@ -1872,3 +1872,13 @@
 }
 :root[data-theme-effective='dark'] .matter-status-dot[data-status='waiting'] { --status-waiting: #edb75d; }
 .matter-thread-group[data-avatar] > .matter-group-tab > .matter-thread-avatar + .matter-status-dot[data-status='waiting'] { width: 12px; height: 11px; border: 0; box-shadow: none; }
+
+/* Routed workbenches retain one navigation owner. The inner workbench keeps
+   its tabs, panels and shortcuts; it occupies only the frame's content cell. */
+@media (min-width: 640px) {
+  :root:root:root .thread-ui-shell .matter-workbench.is-navigation-hosted { grid-template-columns: minmax(0, 1fr); }
+  :root:root:root .matter-workbench.is-navigation-hosted > .matter-main { grid-column: 1; }
+  .matter-workbench.is-navigation-frame > .matter-main { min-width: 0; min-height: 0; position: relative; }
+  .matter-workbench.is-navigation-frame > .matter-main > .matter-frame-nav { flex: none; }
+  .matter-workbench.is-navigation-frame > .matter-main > .matter-frame-nav .matter-nav-strip { height: 36px; }
+}

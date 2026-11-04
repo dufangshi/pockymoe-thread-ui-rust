@@ -175,7 +175,7 @@ function ContextBreakdown({ snapshot }: { snapshot: ContextInspectionSnapshotDto
             total: formatContextTokens(snapshot.compositionTokens),
             delta: `${(snapshot.attributionDeltaTokens ?? 0) >= 0 ? '+' : '−'}${formatContextTokens(Math.abs(snapshot.attributionDeltaTokens ?? 0))}`,
           })}
-          {' '}{translate('chat.contextDshHeuristicNote')}
+          {' '}{translate(snapshot.provider === 'deepseek' ? 'chat.contextDshHeuristicNote' : 'chat.contextCodexTokenizerNote')}
         </p>
       ) : null}
       <ul className="thread-context-rows">
@@ -210,7 +210,6 @@ function ContextBreakdown({ snapshot }: { snapshot: ContextInspectionSnapshotDto
 function sourceLabel(snapshot: ContextInspectionSnapshotDto | null) {
   if (snapshot?.source === 'claudeFull') return translate('chat.contextSourceClaudeFull');
   if (snapshot?.source === 'claudeSummary') return translate('chat.contextSourceClaudeSummary');
-  if (snapshot?.source === 'codexTrace' && snapshot.categoriesClamped) return translate('chat.contextSourceCodexAdjusted');
   if (snapshot?.source === 'codexTrace') return translate('chat.contextSourceCodexTrace');
   if (snapshot?.source === 'dshProjection') return translate('chat.contextSourceDsh');
   return translate('chat.contextSourceReported');
@@ -395,11 +394,7 @@ export function ComposerContextControl({
   useEffect(() => {
     if (!open) return;
     const full = inspectionProvider === 'claude';
-    // Codex details are correlated to a completed trace response. Refresh on
-    // open so a cached pre-response estimate from the current thread cannot
-    // survive after the native total has moved on.
-    const refresh = full || inspectionProvider === 'codex';
-    load(full ? 'full' : 'summary', refresh);
+    load(full ? 'full' : 'summary', full);
   }, [open, load, inspectionProvider]);
 
   useEffect(() => {
@@ -434,7 +429,7 @@ export function ComposerContextControl({
 
   const separateComposition = snapshot?.compositionTokens != null;
   const showCategoryOccupancy = arranged && !movedOn && !separateComposition;
-  const estimatedTotal = (snapshot?.source === 'codexTrace' || snapshot?.source === 'dshProjection') && !movedOn;
+  const estimatedTotal = snapshot?.source === 'dshProjection' && !movedOn;
   const age = contextAge(reading?.updatedAt, now);
   const stale = Boolean(snapshot?.stale) || movedOn;
   const loading = state.status === 'loading';

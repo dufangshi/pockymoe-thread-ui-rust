@@ -110,21 +110,26 @@ describe('ComposerContextControl', () => {
     expect(row('tools')?.textContent).toContain('mcp__docs__read');
   });
 
-  it('refreshes Codex on open and labels categories bounded by the native total', async () => {
+  it('keeps native Codex occupancy separate when the local tokenizer estimates more', async () => {
     const codex: ContextInspectionSnapshotDto = {
-      provider: 'codex', source: 'codexTrace', precision: 'estimated', categoriesClamped: true,
+      provider: 'codex', source: 'codexTrace', precision: 'estimated',
       usedTokens: 20_000, windowTokens: 100_000, updatedAt: new Date().toISOString(),
+      compositionTokens: 25_000, attributionDeltaTokens: -5_000,
       categories: [
         { id: 'system_prompt', kind: 'used', tokens: 1_000 },
-        { id: 'messages', kind: 'used', tokens: 19_000 },
+        { id: 'messages', kind: 'used', tokens: 24_000 },
         { id: 'free_space', kind: 'free', tokens: 80_000 },
       ],
     };
     const load = vi.fn().mockResolvedValue(available(codex));
     await render({ inspector: { load }, agent: 'codex', contextUsage: { ...usage, tokensInContextWindow: 20_000, details: codex } });
     await openPanel();
-    expect(load).toHaveBeenCalledWith({ detail: 'summary', refresh: true });
-    expect(document.querySelector('.thread-context-meta')?.textContent).toContain('bounded by Codex total');
+    expect(document.querySelector('.thread-context-percent')?.textContent).toBe('20%');
+    expect(document.querySelector('.thread-context-meta')?.textContent).toContain('Codex total');
+    expect(document.querySelector('[data-context-composition]')?.textContent).toContain('−5k');
+    expect(document.querySelector('[data-context-composition]')?.textContent).not.toContain('4 characters');
+    expect(row('messages')?.querySelector('.thread-context-share')?.textContent).toBe('96%');
+    expect(document.querySelectorAll<HTMLElement>('.thread-context-summary > .thread-context-bar .thread-context-segment')[0]?.style.width).toBe('20%');
   });
   it('shows the total on a closed key without asking anything', async () => {
     const load = vi.fn();
@@ -134,6 +139,20 @@ describe('ComposerContextControl', () => {
     expect(meter().getAttribute('aria-expanded')).toBe('false');
     expect(meter().hasAttribute('title')).toBe(false);
     expect(load).not.toHaveBeenCalled();
+  });
+
+  it('discards old Codex categories inflated by media while keeping native occupancy', async () => {
+    const corrupt: ContextInspectionSnapshotDto = {
+      provider: 'codex', source: 'codexTrace', precision: 'estimated',
+      usedTokens: 520_300, windowTokens: 828_400, updatedAt: new Date().toISOString(),
+      categories: [{ id: 'messages', kind: 'used', tokens: 4_730_000 }],
+    };
+    await render({ inspector: { load: vi.fn().mockResolvedValue(available(corrupt)) }, agent: 'codex',
+      contextUsage: { ...usage, tokensInContextWindow: 520_300, modelContextWindow: 828_400, details: corrupt } });
+    await openPanel();
+    expect(document.querySelector('.thread-context-percent')?.textContent).toBe('62.8%');
+    expect(row('messages')).toBeNull();
+    expect(document.querySelector('.thread-context-amount')?.textContent).not.toContain('4.73M');
   });
 
   it('uses one proportional fill for a small occupancy even with many categories', async () => {
@@ -261,9 +280,10 @@ describe('contextInspectionModel', () => {
     expect(preferredSnapshot(full, later)).toBe(later);
   });
 
-  it('notices a total that moved on from the categories only past rounding', () => {
+  it('prefers newer native counts even when the change is under one percent', () => {
     const analysis = { used: 30_000, window: 100_000, updatedAt: '2026-11-01T00:00:00Z' };
-    expect(totalMovedOn(analysis, { ...analysis, used: 30_500, updatedAt: '2026-11-01T00:01:00Z' })).toBe(false);
+    expect(totalMovedOn(analysis, { ...analysis, used: 30_500, updatedAt: '2026-11-01T00:01:00Z' })).toBe(true);
+    expect(totalMovedOn(analysis, { ...analysis, window: 200_000, updatedAt: '2026-11-01T00:01:00Z' })).toBe(true);
     expect(totalMovedOn(analysis, { ...analysis, used: 12_000, updatedAt: '2026-11-01T00:01:00Z' })).toBe(true);
     expect(totalMovedOn(analysis, { ...analysis, used: 12_000, updatedAt: '2026-10-31T00:00:00Z' })).toBe(false);
   });

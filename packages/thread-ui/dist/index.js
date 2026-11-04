@@ -54,7 +54,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-YLAU5UP7.js";
+} from "./chunk-JXRI7KWN.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -84,7 +84,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-IWD36PVI.js";
+} from "./chunk-HZULGXNF.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -4517,14 +4517,22 @@ var timeOf = (value) => {
   return Number.isFinite(time2) ? time2 : 0;
 };
 function preferredSnapshot(current, next) {
+  current = usableSnapshot(current);
+  next = usableSnapshot(next);
   if (!current || !next) return current ?? next ?? null;
   const [full, summary2] = current.source === "claudeFull" ? [current, next] : [next, current];
   if (full.source === "claudeFull" && summary2.source === "claudeSummary" && full.usedTokens === summary2.usedTokens) return full;
   return timeOf(next.updatedAt) >= timeOf(current.updatedAt) ? next : current;
 }
+function usableSnapshot(snapshot) {
+  if (snapshot?.source !== "codexTrace") return snapshot;
+  if (snapshot.compositionTokens != null) return snapshot;
+  const sum = snapshot.categories.filter((entry) => entry.kind === "used").reduce((sum2, entry) => sum2 + entry.tokens, 0);
+  return sum > snapshot.usedTokens ? null : snapshot;
+}
 function totalMovedOn(snapshot, base) {
   if (!snapshot || !base || timeOf(base.updatedAt) <= timeOf(snapshot.updatedAt)) return false;
-  return Math.abs(base.used - snapshot.used) > base.window * 0.01;
+  return base.used !== snapshot.used || base.window !== snapshot.window;
 }
 function currentReading(snapshot, base) {
   return totalMovedOn(snapshot, base) ? base : snapshot ?? base;
@@ -4716,7 +4724,7 @@ function ContextBreakdown({ snapshot }) {
         delta: `${(snapshot.attributionDeltaTokens ?? 0) >= 0 ? "+" : "\u2212"}${formatContextTokens(Math.abs(snapshot.attributionDeltaTokens ?? 0))}`
       }),
       " ",
-      translate("chat.contextDshHeuristicNote")
+      translate(snapshot.provider === "deepseek" ? "chat.contextDshHeuristicNote" : "chat.contextCodexTokenizerNote")
     ] }) : null,
     /* @__PURE__ */ jsxs19("ul", { className: "thread-context-rows", children: [
       used.map(row),
@@ -4748,7 +4756,6 @@ function ContextBreakdown({ snapshot }) {
 function sourceLabel(snapshot) {
   if (snapshot?.source === "claudeFull") return translate("chat.contextSourceClaudeFull");
   if (snapshot?.source === "claudeSummary") return translate("chat.contextSourceClaudeSummary");
-  if (snapshot?.source === "codexTrace" && snapshot.categoriesClamped) return translate("chat.contextSourceCodexAdjusted");
   if (snapshot?.source === "codexTrace") return translate("chat.contextSourceCodexTrace");
   if (snapshot?.source === "dshProjection") return translate("chat.contextSourceDsh");
   return translate("chat.contextSourceReported");
@@ -4881,8 +4888,7 @@ function ComposerContextControl({
   useEffect12(() => {
     if (!open) return;
     const full = inspectionProvider === "claude";
-    const refresh = full || inspectionProvider === "codex";
-    load(full ? "full" : "summary", refresh);
+    load(full ? "full" : "summary", full);
   }, [open, load, inspectionProvider]);
   useEffect12(() => {
     if (!open) return;
@@ -4909,7 +4915,7 @@ function ComposerContextControl({
   const miniTotal = usedSegments.reduce((sum, segment) => sum + segment.tokens, 0);
   const separateComposition = snapshot?.compositionTokens != null;
   const showCategoryOccupancy = arranged && !movedOn && !separateComposition;
-  const estimatedTotal = (snapshot?.source === "codexTrace" || snapshot?.source === "dshProjection") && !movedOn;
+  const estimatedTotal = snapshot?.source === "dshProjection" && !movedOn;
   const age = contextAge(reading?.updatedAt, now);
   const stale = Boolean(snapshot?.stale) || movedOn;
   const loading = state.status === "loading";

@@ -277,7 +277,7 @@ export const chatEn = {
   "chat.imageFileMissing": "File not found",
   "chat.imageDeviceOffline": "Device offline",
   "chat.imageAccessDenied": "Image access denied",
-  "chat.imageDecodeFailed": "Image could not be decoded",
+  "chat.imageCannotDisplay": "Image could not be displayed",
   "chat.turn_b09c73": "turn",
   "chat.item": "item",
   "chat.empty": "(empty)",

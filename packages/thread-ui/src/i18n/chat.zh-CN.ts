@@ -277,7 +277,7 @@ export const chatZhCN = {
   "chat.imageFileMissing": "文件不存在",
   "chat.imageDeviceOffline": "设备离线",
   "chat.imageAccessDenied": "无权读取图片",
-  "chat.imageDecodeFailed": "图片无法解码",
+  "chat.imageCannotDisplay": "图片无法显示",
   "chat.turn_b09c73": "轮次",
   "chat.item": "项",
   "chat.empty": "（空）",

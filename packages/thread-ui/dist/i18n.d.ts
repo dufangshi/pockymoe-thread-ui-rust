@@ -3378,7 +3378,7 @@ declare const en: {
     readonly "chat.imageFileMissing": "File not found";
     readonly "chat.imageDeviceOffline": "Device offline";
     readonly "chat.imageAccessDenied": "Image access denied";
-    readonly "chat.imageDecodeFailed": "Image could not be decoded";
+    readonly "chat.imageCannotDisplay": "Image could not be displayed";
     readonly "chat.turn_b09c73": "turn";
     readonly "chat.item": "item";
     readonly "chat.empty": "(empty)";
@@ -8563,7 +8563,7 @@ declare const zhCN: {
     "chat.imageFileMissing": "文件不存在";
     "chat.imageDeviceOffline": "设备离线";
     "chat.imageAccessDenied": "无权读取图片";
-    "chat.imageDecodeFailed": "图片无法解码";
+    "chat.imageCannotDisplay": "图片无法显示";
     "chat.turn_b09c73": "轮次";
     "chat.item": "项";
     "chat.empty": "（空）";
@@ -13770,7 +13770,7 @@ declare const resources: {
         readonly "chat.imageFileMissing": "File not found";
         readonly "chat.imageDeviceOffline": "Device offline";
         readonly "chat.imageAccessDenied": "Image access denied";
-        readonly "chat.imageDecodeFailed": "Image could not be decoded";
+        readonly "chat.imageCannotDisplay": "Image could not be displayed";
         readonly "chat.turn_b09c73": "turn";
         readonly "chat.item": "item";
         readonly "chat.empty": "(empty)";
@@ -18954,7 +18954,7 @@ declare const resources: {
         "chat.imageFileMissing": "文件不存在";
         "chat.imageDeviceOffline": "设备离线";
         "chat.imageAccessDenied": "无权读取图片";
-        "chat.imageDecodeFailed": "图片无法解码";
+        "chat.imageCannotDisplay": "图片无法显示";
         "chat.turn_b09c73": "轮次";
         "chat.item": "项";
         "chat.empty": "（空）";

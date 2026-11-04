@@ -868,7 +868,7 @@ export function MatterWorkbench({
   return (
     <div
       ref={rootRef}
-      style={!mobile && sidebarWidth ? { '--matter-sidebar-width': `${sidebarWidth}px` } as CSSProperties : undefined}
+      style={!mobile ? { ...(sidebarWidth ? { '--matter-sidebar-width': `${sidebarWidth}px` } : {}), ...(navigationFrame ? { '--matter-frame-nav-width': homeHref ? '142px' : '110px' } : {}) } as CSSProperties : undefined}
       className={`matter-workbench ${navigationFrame ? 'is-navigation-frame' : ''} ${hostedNavigation ? 'is-navigation-hosted' : ''} ${sidebarHidden ? 'is-sidebar-hidden' : ''} ${dock ? 'has-phone-dock' : ''} ${leftHanded ? 'is-left-handed' : ''} ${dock && typing ? 'is-typing' : ''}`}
       onClick={(e) => {
         if (

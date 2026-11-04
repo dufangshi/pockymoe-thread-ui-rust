@@ -54,3 +54,13 @@ Keep the shared packages UI-only:
 - Keep backend-specific behavior in adapters outside the core thread UI.
 - Prefer typed DTO/event inputs over direct runtime coupling.
 - Keep the ACP/AIS process in `apps/agent-ui-server`; do not move provider lifecycle into React components.
+
+### Retained workbench navigation
+
+`PersistentWorkbenchNavigation` can surround routed `MatterWorkbench` instances
+on wide browser surfaces. The active page publishes its navigation before paint;
+one retained workbench owns the rail/sidebar DOM, scroll, folding and width.
+Thread tabs, panels and keyboard handling stay with the routed workbench, and
+rail actions delegate to that page. Below 640px the wrapper leaves each page's
+normal phone workbench in charge. It owns no network connections or native host
+behavior; the embedding application owns its account index and lifetime.

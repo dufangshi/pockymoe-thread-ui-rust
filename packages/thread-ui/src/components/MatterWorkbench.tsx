@@ -3,7 +3,7 @@ import { closeFilesPatch, openFilesPatch } from './workbench/presentation';
 import { useWorkbenchToolPanel } from './workbench/toolPanel';
 import { getLocale } from '../i18n';
 import { translate, useI18n } from '../i18n';
-import { Fragment, useEffect, useLayoutEffect, useMemo, useState, useRef, type ReactNode, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent } from 'react';
+import { Fragment, createContext, useContext, useSyncExternalStore, useEffect, useLayoutEffect, useMemo, useState, useRef, type ReactNode, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -177,20 +177,7 @@ export interface MatterWorkbenchOptions {
   renderThreadMenu?: (thread: WorkbenchThread, context?: ThreadMenuContext) => ReactNode;
 }
 
-export function MatterWorkbench({
-  options: o,
-  title,
-  homeHref,
-  settings,
-  newThread,
-  actions,
-  threadMenu,
-  connection,
-  deviceMonitor,
-  explorer,
-  revealExplorer,
-  children,
-}: {
+export interface MatterWorkbenchProps {
   options: MatterWorkbenchOptions;
   title: string;
   homeHref?: string | undefined;
@@ -203,8 +190,69 @@ export function MatterWorkbench({
   explorer: ReactNode;
   revealExplorer: number;
   children: ReactNode;
-}) {
+
+  /** Internal frame mode used by PersistentWorkbenchNavigation. */
+  navigationFrame?: boolean;
+  navigationActions?: { showChat(): void; toggleExplorer(): void; explorerOpen: boolean; chatPressed: boolean };
+}
+
+type NavigationRegistration = Omit<MatterWorkbenchProps, 'children'>;
+const PersistentNavigationContext = createContext<{
+  publish(props: NavigationRegistration): void;
+  subscribe(listener: () => void): () => void;
+  getSnapshot(): NavigationRegistration | null;
+} | null>(null);
+
+/** Own one rail/sidebar for routed workbenches. Pages publish their navigation
+ * before paint; folding, resizing and scroll DOM belong to this retained frame. */
+export function PersistentWorkbenchNavigation({ children }: { children: ReactNode }) {
+  const [mobile, setMobile] = useState(() => window.matchMedia('(max-width: 639px)').matches);
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 639px)');
+    const update = () => setMobile(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+  const store = useMemo(() => {
+    let snapshot: NavigationRegistration | null = null;
+    const listeners = new Set<() => void>();
+    return {
+      publish(props: NavigationRegistration) { snapshot = props; listeners.forEach(listener => listener()); },
+      subscribe(listener: () => void) { listeners.add(listener); return () => { listeners.delete(listener); }; },
+      getSnapshot: () => snapshot,
+    };
+  }, []);
+  return <PersistentNavigationContext.Provider value={mobile ? null : store}>
+    {mobile ? children : <PersistentNavigationFrame>{children}</PersistentNavigationFrame>}
+  </PersistentNavigationContext.Provider>;
+}
+function PersistentNavigationFrame({ children }: { children: ReactNode }) {
+  const store = useContext(PersistentNavigationContext)!;
+  const props = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+  // Keep the same workbench mounted even before the first route registers.
+  const framed = props ? { ...props, options: { ...props.options, panels: undefined } } : null;
+  return <MatterWorkbench {...(framed ?? { title: '', options: { threads: [], currentKey: '', favorite: false, workspacePath: '', activeView: 'chat', terminalEnabled: false, onViewChange() {}, onToggleFavorite() {}, onNavigate() {}, onSearch() {}, notifications: [], unreadCount: 0, onReadNotifications() {} }, settings: null, newThread: null, actions: null, threadMenu: null, connection: null, explorer: null, revealExplorer: 0 })} navigationFrame>{children}</MatterWorkbench>;
+}
+
+export function MatterWorkbench({
+  options: o,
+  navigationFrame = false,
+  navigationActions,
+  title,
+  homeHref,
+  settings,
+  newThread,
+  actions,
+  threadMenu,
+  connection,
+  deviceMonitor,
+  explorer,
+  revealExplorer,
+  children,
+}: MatterWorkbenchProps) {
   useI18n();
+  const navigationHost = useContext(PersistentNavigationContext);
+  const hostedNavigation = Boolean(navigationHost) && !navigationFrame;
   const listedTabs = o.workspaceThreads ?? o.threads.filter(thread => thread.key === o.currentKey);
   // Conversations keep the order the reader dragged them into, shown at once
   // while the host stores it. An agent thread stays with its root.
@@ -488,7 +536,7 @@ export function MatterWorkbench({
   const viewChange = useRef(o.onViewChange);
   viewChange.current = o.onViewChange;
   useEffect(() => {
-    if (!o.terminalEnabled) return;
+    if (navigationFrame || !o.terminalEnabled) return;
     // VS Code's Ctrl+` toggles the terminal, even while xterm has focus.
     const toggle = (event: KeyboardEvent) => {
       if (event.key !== '`' || !event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
@@ -498,12 +546,13 @@ export function MatterWorkbench({
     };
     window.addEventListener('keydown', toggle, true);
     return () => window.removeEventListener('keydown', toggle, true);
-  }, [o.terminalEnabled]);
+  }, [o.terminalEnabled, navigationFrame]);
   // Ctrl/⌘+F opens the conversation search instead of the browser's find; a
   // terminal or code editor keeps its own find.
   const searchKey = useRef({ open: o.onSearch, available: !o.emptyWorkspace, searchOpen: Boolean(o.searchOpen) });
   searchKey.current = { open: o.onSearch, available: !o.emptyWorkspace, searchOpen: Boolean(o.searchOpen) };
   useEffect(() => {
+    if (navigationFrame) return;
     const find = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || event.key.toLowerCase() !== 'f') return;
       const target = event.target instanceof Element ? event.target : null;
@@ -811,11 +860,16 @@ export function MatterWorkbench({
       </div>}
     </div>;
   });
+  useLayoutEffect(() => {
+    if (!hostedNavigation) return;
+    navigationHost!.publish({ options: o, title, homeHref, settings, newThread, actions, threadMenu, connection, deviceMonitor, explorer: null, revealExplorer: 0,
+      navigationActions: { showChat, toggleExplorer: () => setExplorerOpen(open => !open), explorerOpen, chatPressed: o.panels ? !chatCovered : o.activeView === 'chat' } });
+  });
   return (
     <div
       ref={rootRef}
-      style={!mobile && sidebarWidth ? { '--matter-sidebar-width': `${sidebarWidth}px` } as CSSProperties : undefined}
-      className={`matter-workbench ${sidebarHidden ? 'is-sidebar-hidden' : ''} ${dock ? 'has-phone-dock' : ''} ${leftHanded ? 'is-left-handed' : ''} ${dock && typing ? 'is-typing' : ''}`}
+      style={!mobile ? { ...(sidebarWidth ? { '--matter-sidebar-width': `${sidebarWidth}px` } : {}), ...(navigationFrame ? { '--matter-frame-nav-width': homeHref ? '142px' : '110px' } : {}) } as CSSProperties : undefined}
+      className={`matter-workbench ${navigationFrame ? 'is-navigation-frame' : ''} ${hostedNavigation ? 'is-navigation-hosted' : ''} ${sidebarHidden ? 'is-sidebar-hidden' : ''} ${dock ? 'has-phone-dock' : ''} ${leftHanded ? 'is-left-handed' : ''} ${dock && typing ? 'is-typing' : ''}`}
       onClick={(e) => {
         if (
           e.target instanceof Element &&
@@ -839,7 +893,7 @@ export function MatterWorkbench({
         }
       }}
     >
-      {!mobile && <nav className="matter-rail" aria-label={translate("workbench.workspaceTools")}>
+      {!hostedNavigation && !mobile && <nav className="matter-rail" aria-label={translate("workbench.workspaceTools")}>
         {homeHref && <a
           className="matter-brand"
           href={homeHref} onClick={goHome}
@@ -850,8 +904,8 @@ export function MatterWorkbench({
         {o.railLeading}
         <button
           aria-label={translate("workbench.chat")}
-          aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'}
-          onClick={showChat}
+          aria-pressed={workspaceControlsEnabled && (navigationActions?.chatPressed ?? (o.panels ? !chatCovered : o.activeView === 'chat'))}
+          onClick={navigationActions?.showChat ?? showChat}
         >
           <MessageSquare data-icon="chat" />
         </button>
@@ -870,8 +924,8 @@ export function MatterWorkbench({
           <button key={panel.id} aria-label={panel.label} title={panel.label}
             aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>
         ))}
-        <button disabled={!workspaceControlsEnabled} aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen}
-          title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
+        <button disabled={!workspaceControlsEnabled} aria-label={translate("workbench.toggleExplorer")} aria-pressed={navigationActions?.explorerOpen ?? explorerOpen} aria-expanded={navigationActions?.explorerOpen ?? explorerOpen}
+          title={translate("workbench.explorer")} onClick={navigationActions?.toggleExplorer ?? (() => setExplorerOpen(open => !open))}><FolderOpen data-icon="explorer" /></button>
         {openThreadMap && <button aria-label={translate('workbench.threadMap')} title={translate('workbench.threadMap')} onClick={openThreadMap}><LayoutDashboard data-icon="thread-map" /></button>}
         <div className="matter-rail-bottom">{deviceMonitor}{o.railBottomLeading}{settings}</div>
       </nav>}
@@ -952,7 +1006,7 @@ export function MatterWorkbench({
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      <aside
+      {!hostedNavigation && <aside
         ref={sidebarRef}
         className={`matter-sidebar ${sidebarOpen ? 'is-open' : ''}`}
         aria-label={translate("workbench.threadNavigation")}
@@ -1052,9 +1106,9 @@ export function MatterWorkbench({
         {mobile && o.railBottomLeading ? <div className="matter-sidebar-host-actions">{o.railBottomLeading}</div> : null}
         {!dock && <div className="matter-sidebar-footer">
           {translate("workbench.yourConversationsTogether")}</div>}
-      </aside>
+      </aside>}
       <main className="matter-main">
-        {!mobile && !sidebarHidden && <div role="separator" aria-orientation="vertical" tabIndex={0} className="matter-sidebar-resize"
+        {!hostedNavigation && !mobile && !sidebarHidden && <div role="separator" aria-orientation="vertical" tabIndex={0} className="matter-sidebar-resize"
           aria-label={translate('workbench.resizeSidebar')} aria-valuemin={SIDEBAR_MIN} aria-valuemax={SIDEBAR_MAX}
           aria-valuenow={Math.round(sidebarWidth ?? sidebarRef.current?.offsetWidth ?? 236)} title={translate('workbench.resizeSidebarHint')}
           onPointerDown={event => { event.preventDefault(); event.currentTarget.setPointerCapture(event.pointerId); sidebarDrag.current = { x: event.clientX, width: sidebarRef.current?.offsetWidth ?? 236 }; }}
@@ -1063,7 +1117,7 @@ export function MatterWorkbench({
           onLostPointerCapture={() => { sidebarDrag.current = null; }}
           onDoubleClick={() => resizeSidebar(null)}
           onKeyDown={event => { if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); resizeSidebar((sidebarWidth ?? sidebarRef.current?.offsetWidth ?? 236) + (event.key === 'ArrowLeft' ? -16 : 16)); } }} />}
-        {!dock && <div className="matter-tabs-row">
+        {!navigationFrame && !dock && <div className="matter-tabs-row">
         {!mobile && sidebarHidden && navStrip}
         <div className="matter-tabs-main">
         {/* Desktop: search opens over the tabs rather than pushing them aside. */}
@@ -1101,8 +1155,9 @@ export function MatterWorkbench({
           {bell}
         </div>}
         </div>}
+        {navigationFrame && sidebarHidden && <div className="matter-frame-nav">{navStrip}</div>}
         <PhoneDockContext.Provider value={dock}>
-        {panelOptions ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={dock ? { ...panelOptions, onPaneSwitchChange: setPaneSwitch } : panelOptions} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (
+        {navigationFrame ? children : panelOptions ? <WorkbenchContext.Provider value={true}><WorkbenchPanels options={dock ? { ...panelOptions, onPaneSwitchChange: setPaneSwitch } : panelOptions} explorer={explorer} revealExplorer={revealExplorer} toolPanel={toolPanel}>{children}</WorkbenchPanels></WorkbenchContext.Provider> : (
         <div ref={contentRef} style={{ '--explorer-width': `${explorerWidth}px` } as CSSProperties} className={`matter-content ${explorerOpen ? 'has-explorer' : ''}`}>
           <div className="matter-chat">
             <WorkbenchContext.Provider value={true}>

@@ -4,7 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppShellNavContext, type AppShellNavContextValue } from '../app-shell/AppShellNavContext';
 import { setLocale } from '../i18n';
-import { canStartPhoneSidebarSwipe, MatterWorkbench, PHONE_SYSTEM_EDGE_GUARD, type MatterWorkbenchOptions, type WorkbenchThread } from './MatterWorkbench';
+import { canStartPhoneSidebarSwipe, MatterWorkbench, PersistentWorkbenchNavigation, PHONE_SYSTEM_EDGE_GUARD, type MatterWorkbenchOptions, type WorkbenchThread } from './MatterWorkbench';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 let host: HTMLDivElement, root: Root;
@@ -599,4 +599,45 @@ it('disables workspace tools and closes an existing explorer when the host leave
   expect(explorer().disabled).toBe(true); expect(host.querySelector('.matter-explorer')).toBeNull();
   expect(host.querySelector<HTMLButtonElement>('.matter-toolbar-toggle')?.disabled).toBe(true);
   options = baseOptions; render(); expect(explorer().disabled).toBe(false);
+});
+
+
+describe('persistent routed navigation', () => {
+  it('retains sidebar DOM, scroll, width and folding while replacing a route workbench', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+    const page = (key: string) => <PersistentWorkbenchNavigation><MatterWorkbench key={key}
+      options={{ ...baseOptions, sidebarLeading: <p>{key} activity</p> }} title={key} homeHref="/workspaces"
+      settings={<button>Account</button>} newThread={null} actions={null} threadMenu={null} connection={null} explorer={null} revealExplorer={0}>
+      <p>{key} content</p>
+    </MatterWorkbench></PersistentWorkbenchNavigation>;
+    act(() => root.render(page('devices')));
+    const sidebar = host.querySelector<HTMLElement>('.matter-sidebar')!;
+    const scroll = sidebar.querySelector<HTMLElement>('.matter-sidebar-scroll')!;
+    scroll.scrollTop = 70;
+    const resize = host.querySelector<HTMLElement>('.matter-sidebar-resize')!;
+    act(() => resize.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowRight' })));
+    const frame = host.querySelector<HTMLElement>('.is-navigation-frame')!;
+    const width = frame.style.getPropertyValue('--matter-sidebar-width');
+    act(() => root.render(page('thread')));
+    expect(host.querySelector('.matter-sidebar')).toBe(sidebar);
+    expect(scroll.scrollTop).toBe(70);
+    expect(frame.style.getPropertyValue('--matter-sidebar-width')).toBe(width);
+    expect(sidebar.textContent).toContain('thread activity');
+    expect(host.querySelectorAll('.matter-rail')).toHaveLength(1);
+    const fold = sidebar.querySelector<HTMLButtonElement>('.matter-nav-strip button')!;
+    act(() => fold.click());
+    act(() => root.render(page('workspaces')));
+    expect(frame.classList.contains('is-sidebar-hidden')).toBe(true);
+    expect(host.querySelector('.matter-sidebar')).toBe(sidebar);
+    expect(host.textContent).toContain('workspaces content');
+  });
+  it('delegates the retained Explorer control to the active routed workbench', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+    act(() => root.render(<PersistentWorkbenchNavigation><MatterWorkbench options={baseOptions} title="Thread" homeHref="/workspaces"
+      settings={null} newThread={null} actions={null} threadMenu={null} connection={null} explorer={<p>File tree</p>} revealExplorer={0}>Conversation</MatterWorkbench></PersistentWorkbenchNavigation>));
+    const explorer = host.querySelector<HTMLButtonElement>('.matter-rail button:has([data-icon="explorer"])')!;
+    act(() => explorer.click());
+    expect(host.querySelector('.is-navigation-hosted .matter-explorer')?.textContent).toContain('File tree');
+    expect(explorer.getAttribute('aria-pressed')).toBe('true');
+  });
 });

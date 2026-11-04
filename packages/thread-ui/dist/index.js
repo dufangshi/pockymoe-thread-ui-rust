@@ -12045,7 +12045,13 @@ function MatterWorkbench({
     query.addEventListener("change", change);
     return () => query.removeEventListener("change", change);
   }, []);
-  const drawerTools = useThemeFeature("workbench.phoneDrawerTools") && mobile;
+  const [narrowPhone, setNarrowPhone] = useState39(() => typeof window !== "undefined" && window.innerWidth < 420);
+  useEffect28(() => {
+    const update = () => setNarrowPhone(window.innerWidth < 420);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  const drawerTools = (useThemeFeature("workbench.phoneDrawerTools") || narrowPhone) && mobile;
   const shellNav = useAppShellNav();
   const dock = mobile && (shellNav?.phoneDock ?? true);
   const leftHanded = dock && shellNav?.phoneHand === "left";
@@ -26041,7 +26047,8 @@ function GraphChatThreadChatPanel({
     },
     [composerHostRef]
   );
-  const mobileComposerBottomOffset = isMobileViewport && (mobilePromptFocused || floatingDesktopComposer) ? Math.max(0, mobileKeyboardInset - (useFloatingMobileComposer ? floatingMobileComposerBottomOffset : 0) - panelBottomGap) : 0;
+  const phoneDock = usePhoneDock();
+  const mobileComposerBottomOffset = isMobileViewport && (mobilePromptFocused || floatingDesktopComposer) ? Math.max(0, mobileKeyboardInset - (useFloatingMobileComposer ? floatingMobileComposerBottomOffset : 0) - (phoneDock ? 0 : panelBottomGap)) : 0;
   const effectiveMobileComposerHeight = panelBottomGap > 0 ? mobileComposerHeight : Math.max(mobileComposerHeight, 144);
   const effectiveMobileComposerOverlap = Math.max(
     mobileComposerOverlap,

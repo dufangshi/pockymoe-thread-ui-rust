@@ -297,7 +297,13 @@ export function MatterWorkbench({
   }, []);
   // A theme with phone drawer tools keeps the phone top bar to touch-sized
   // essentials and moves Home and Chat into the drawer; the device monitor stays.
-  const drawerTools = useThemeFeature('workbench.phoneDrawerTools') && mobile;
+  const [narrowPhone, setNarrowPhone] = useState(() => typeof window !== 'undefined' && window.innerWidth < 420);
+  useEffect(() => {
+    const update = () => setNarrowPhone(window.innerWidth < 420);
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  const drawerTools = (useThemeFeature('workbench.phoneDrawerTools') || narrowPhone) && mobile;
   // One-handed phone layout: status-only top bar, navigation at the bottom.
   // A setting (Settings → Preferences), on by default; off keeps the classic phone bars.
   const shellNav = useAppShellNav();

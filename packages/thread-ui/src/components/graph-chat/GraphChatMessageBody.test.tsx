@@ -149,3 +149,15 @@ it.each(['user', 'markdown'])('anchors the %s message top on expansion and its t
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
   } finally { act(() => root.unmount()); container.remove(); }
 });
+
+it('uses the persisted attachment even when a preview map still contains its path', () => {
+  const container = document.createElement('div'); document.body.append(container);
+  const root = createRoot(container);
+  const path = './.temp/threads/t1/photo.png';
+  try {
+    act(() => root.render(<GraphChatUserMessageBody threadId="t1" text={`[PHOTO ${path}]`} attachmentPreviewUrls={{ [path]: 'blob:stale' }} getImageAssetUrl={imageUrl} />));
+    expect(container.querySelector('img')!.getAttribute('src')).toBe(`/image?path=${path}&variant=thumbnail`);
+    view(container, 'photo.png');
+    expect(document.querySelector('[aria-label="Image preview: photo.png"] img')!.getAttribute('src')).toBe(`/image?path=${path}`);
+  } finally { act(() => root.unmount()); container.remove(); }
+});

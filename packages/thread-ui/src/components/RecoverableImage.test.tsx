@@ -2,7 +2,7 @@
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, expect, it, vi } from 'vitest';
-import { RecoverableImage, ImageRecoveryProvider } from './RecoverableImage';
+import { RecoverableImage, ImageRecoveryProvider, ImageDiagnosisProvider } from './RecoverableImage';
 
 const host = document.createElement('div');
 document.body.append(host);
@@ -54,5 +54,37 @@ it('bounds resolver failures too', async () => {
   act(() => root.render(<RecoverableImage src="/old.png" resolveSrc={resolve} alt="Photo" />));
   error(); await tick(300); await tick(900); await tick(10000);
   expect(resolve).toHaveBeenCalledTimes(2);
+  expect(host.querySelector('.error-mark')).not.toBeNull();
+});
+
+it('falls back to a freshly resolved original after thumbnail decoding fails', async () => {
+  vi.useFakeTimers();
+  const full = vi.fn(() => '/original.png');
+  act(() => root.render(<RecoverableImage src="/thumbnail.png" resolveSrc={() => '/thumbnail.png'} resolveFallback={full} alt="Photo" />));
+  error(); await tick(300); error(); await tick(900);
+  expect(full).toHaveBeenCalledOnce();
+  expect(host.querySelector('img')!.src).toContain('/original.png?_imageRetry=');
+  act(() => host.querySelector('img')!.dispatchEvent(new Event('load')));
+  expect(host.querySelector('[data-image-state]')!.getAttribute('data-image-state')).toBe('ready');
+});
+it('diagnoses the actual final URL once per failure and shows the short reason', async () => {
+  vi.useFakeTimers();
+  const diagnose = vi.fn(async (_src: string) => 'File not found');
+  act(() => root.render(<ImageDiagnosisProvider value={diagnose}><RecoverableImage src="/missing.png" alt="Photo" /></ImageDiagnosisProvider>));
+  error(); await tick(300); error(); await tick(900); error(); await tick(0);
+  expect(diagnose).toHaveBeenCalledOnce();
+  expect(diagnose.mock.calls[0]![0]).toContain('/missing.png?_imageRetry=');
+  act(() => host.querySelector<HTMLButtonElement>('.error-mark')!.click());
+  expect(document.querySelector('.error-mark-message')!.textContent).toBe('File not found');
+  await tick(10000); expect(diagnose).toHaveBeenCalledOnce();
+});
+it('never assigns an unresolved blob to a retry image', async () => {
+  vi.useFakeTimers();
+  act(() => root.render(<RecoverableImage src="blob:expired" alt="Photo" />));
+  const first = host.querySelector('img');
+  error(); await tick(300);
+  expect(host.querySelector('img')).toBe(first);
+  await tick(900);
+  expect(host.querySelector('img')).toBeNull();
   expect(host.querySelector('.error-mark')).not.toBeNull();
 });

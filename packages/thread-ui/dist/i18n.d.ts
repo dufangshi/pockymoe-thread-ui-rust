@@ -3374,6 +3374,11 @@ declare const en: {
     readonly "chat.fILE": "FILE";
     readonly "chat.copyCode": "Copy code";
     readonly "chat.imageUnavailable": "Image unavailable";
+    readonly "chat.imageSessionExpired": "Session expired";
+    readonly "chat.imageFileMissing": "File not found";
+    readonly "chat.imageDeviceOffline": "Device offline";
+    readonly "chat.imageAccessDenied": "Image access denied";
+    readonly "chat.imageCannotDisplay": "Image could not be displayed";
     readonly "chat.turn_b09c73": "turn";
     readonly "chat.item": "item";
     readonly "chat.empty": "(empty)";
@@ -8555,6 +8560,11 @@ declare const zhCN: {
     "chat.fILE": "文件";
     "chat.copyCode": "复制代码";
     "chat.imageUnavailable": "图片不可用";
+    "chat.imageSessionExpired": "会话已过期";
+    "chat.imageFileMissing": "文件不存在";
+    "chat.imageDeviceOffline": "设备离线";
+    "chat.imageAccessDenied": "无权读取图片";
+    "chat.imageCannotDisplay": "图片无法显示";
     "chat.turn_b09c73": "轮次";
     "chat.item": "项";
     "chat.empty": "（空）";
@@ -13758,6 +13768,11 @@ declare const resources: {
         readonly "chat.fILE": "FILE";
         readonly "chat.copyCode": "Copy code";
         readonly "chat.imageUnavailable": "Image unavailable";
+        readonly "chat.imageSessionExpired": "Session expired";
+        readonly "chat.imageFileMissing": "File not found";
+        readonly "chat.imageDeviceOffline": "Device offline";
+        readonly "chat.imageAccessDenied": "Image access denied";
+        readonly "chat.imageCannotDisplay": "Image could not be displayed";
         readonly "chat.turn_b09c73": "turn";
         readonly "chat.item": "item";
         readonly "chat.empty": "(empty)";
@@ -18938,6 +18953,11 @@ declare const resources: {
         "chat.fILE": "文件";
         "chat.copyCode": "复制代码";
         "chat.imageUnavailable": "图片不可用";
+        "chat.imageSessionExpired": "会话已过期";
+        "chat.imageFileMissing": "文件不存在";
+        "chat.imageDeviceOffline": "设备离线";
+        "chat.imageAccessDenied": "无权读取图片";
+        "chat.imageCannotDisplay": "图片无法显示";
         "chat.turn_b09c73": "轮次";
         "chat.item": "项";
         "chat.empty": "（空）";

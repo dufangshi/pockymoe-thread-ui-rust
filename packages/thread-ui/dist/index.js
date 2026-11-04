@@ -16,6 +16,7 @@ import {
   ErrorMark,
   FilePanelContext,
   GraphWorkspaceImageLightbox,
+  ImageDiagnosisProvider,
   ImageRecoveryProvider,
   MarkdownImageLinkContext,
   MiddleName,
@@ -54,7 +55,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-JXRI7KWN.js";
+} from "./chunk-SG4AXFJJ.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -84,7 +85,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-HZULGXNF.js";
+} from "./chunk-XGUDFUC5.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -2304,7 +2305,7 @@ function AttachmentFace({ name, family, thumbnail, image }) {
     /* @__PURE__ */ jsx11("span", { className: "attachment-tile-name", children: shortFileName(name) })
   ] });
 }
-function AttachmentCard({ name, family, size, path, thumbnail, resolveSrc, onView, actions }) {
+function AttachmentCard({ name, family, size, path, thumbnail, resolveSrc, resolveFallback, onView, actions }) {
   useI18n();
   const info = /* @__PURE__ */ jsxs7("div", { className: "attachment-card-info", children: [
     /* @__PURE__ */ jsx11("strong", { title: name, children: name }),
@@ -2313,7 +2314,7 @@ function AttachmentCard({ name, family, size, path, thumbnail, resolveSrc, onVie
   ] });
   return /* @__PURE__ */ jsxs7("div", { className: "attachment-card", "data-family": family, children: [
     thumbnail ? /* @__PURE__ */ jsxs7(Fragment3, { children: [
-      /* @__PURE__ */ jsx11(RecoverableImage, { src: thumbnail, alt: "", draggable: false, resolveSrc, renderImage: (image) => onView ? /* @__PURE__ */ jsx11("button", { type: "button", className: "attachment-card-preview", "aria-label": translate("chat.attachmentView"), onClick: onView, children: image }) : /* @__PURE__ */ jsx11("span", { className: "attachment-card-preview", children: image }) }),
+      /* @__PURE__ */ jsx11(RecoverableImage, { src: thumbnail, alt: "", draggable: false, resolveSrc, resolveFallback, renderImage: (image) => onView ? /* @__PURE__ */ jsx11("button", { type: "button", className: "attachment-card-preview", "aria-label": translate("chat.attachmentView"), onClick: onView, children: image }) : /* @__PURE__ */ jsx11("span", { className: "attachment-card-preview", children: image }) }),
       info
     ] }) : /* @__PURE__ */ jsxs7("div", { className: "attachment-card-head", children: [
       /* @__PURE__ */ jsxs7("span", { className: "attachment-tile-icon", children: [
@@ -2435,7 +2436,7 @@ function MessageAttachment({ kind, path, name, thumbnailUrl, fullUrl, resolveThu
     }
   );
   return /* @__PURE__ */ jsxs7(Fragment3, { children: [
-    kind === "photo" && thumbnailUrl ? /* @__PURE__ */ jsx11(RecoverableImage, { src: thumbnailUrl, alt: "", draggable: false, loading: "lazy", resolveSrc: resolveThumbnail, renderImage: face }) : face(),
+    kind === "photo" && thumbnailUrl ? /* @__PURE__ */ jsx11(RecoverableImage, { src: thumbnailUrl, alt: "", draggable: false, loading: "lazy", resolveSrc: resolveThumbnail, resolveFallback: resolveFull, renderImage: face }) : face(),
     open && tile.current ? /* @__PURE__ */ jsx11(FloatingCard, { anchor: tile.current, onClose: () => setOpen(false), children: /* @__PURE__ */ jsx11(
       AttachmentCard,
       {
@@ -2444,6 +2445,7 @@ function MessageAttachment({ kind, path, name, thumbnailUrl, fullUrl, resolveThu
         path,
         thumbnail: kind === "photo" ? thumbnailUrl : null,
         resolveSrc: resolveThumbnail,
+        resolveFallback: resolveFull,
         onView: view,
         actions: view || onOpenFile ? /* @__PURE__ */ jsxs7(Fragment3, { children: [
           view ? /* @__PURE__ */ jsx11(ViewAction, { onClick: view }) : null,
@@ -3959,7 +3961,8 @@ var GraphChatUserMessageBody = memo3(
           return /* @__PURE__ */ jsx19(SentQuoteMark, { n: segment.n, quote: segment.quote }, segment.key);
         }
         if (segment.type === "photo") {
-          const localPreviewUrl = attachmentPreviewUrls?.[segment.path];
+          const persisted = threadId && segment.path.replaceAll("\\", "/").includes(`.temp/threads/${threadId}/`);
+          const localPreviewUrl = persisted ? void 0 : attachmentPreviewUrls?.[segment.path];
           const imageUrl = localPreviewUrl ?? (threadId ? getImageAssetUrl?.({ threadId, path: segment.path, variant: "thumbnail" }) ?? null : null);
           const fullImageUrl = localPreviewUrl ?? (threadId ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? void 0 : void 0);
           const label = basenameFromAssetPath(segment.path) || translate("chat.attachedImage");
@@ -31797,6 +31800,7 @@ export {
   ExportTranscriptDialog,
   GraphChatThreadChatPanel,
   I18nProvider,
+  ImageDiagnosisProvider,
   ImageRecoveryProvider,
   LOCALE_OPTIONS,
   LOCALE_STORAGE_KEY,

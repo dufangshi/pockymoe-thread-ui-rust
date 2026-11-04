@@ -195,6 +195,6 @@ export { ThreadLoadingIndicator } from './components/ThreadLoadingIndicator';
 export { TurnNotificationButton } from './components/timeline/TurnNotificationButton';
 import './styles/notifications.css';
 
-export { ImageRecoveryProvider, ImageDiagnosisProvider } from './components/RecoverableImage';
+export { ImageFallbackProvider, ImageRecoveryProvider, ImageDiagnosisProvider } from './components/RecoverableImage';
 
 export { PersistentWorkbenchNavigation } from "./components/MatterWorkbench";

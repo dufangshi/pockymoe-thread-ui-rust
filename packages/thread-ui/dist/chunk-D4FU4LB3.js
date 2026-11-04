@@ -518,6 +518,8 @@ import { jsx as jsx7, jsxs as jsxs6 } from "react/jsx-runtime";
 import { createElement } from "react";
 var ImageRecoveryContext = createContext((src) => src);
 var ImageRecoveryProvider = ImageRecoveryContext.Provider;
+var ImageBlobContext = createContext(void 0);
+var ImageFallbackProvider = ImageBlobContext.Provider;
 var ImageDiagnosisContext = createContext(void 0);
 var ImageDiagnosisProvider = ImageDiagnosisContext.Provider;
 function RecoverableImage(props) {
@@ -527,11 +529,18 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) 
   useI18n();
   const refresh = useContext(ImageRecoveryContext);
   const diagnose = useContext(ImageDiagnosisContext);
-  const latest = useRef6({ resolveSrc, resolveFallback, refresh, diagnose });
-  latest.current = { resolveSrc, resolveFallback, refresh, diagnose };
+  const readBlob = useContext(ImageBlobContext);
+  const latest = useRef6({ resolveSrc, resolveFallback, refresh, diagnose, readBlob });
+  latest.current = { resolveSrc, resolveFallback, refresh, diagnose, readBlob };
   const [state, setState] = useState4({ url: src, attempt: 0, generation: 0, phase: "loading" });
   const [cycle, setCycle] = useState4(0);
   const [reason, setReason] = useState4(null);
+  const ownedUrl = useRef6(null);
+  const releaseBlob = () => {
+    if (ownedUrl.current) URL.revokeObjectURL(ownedUrl.current);
+    ownedUrl.current = null;
+  };
+  useEffect4(() => releaseBlob, []);
   const failed = useRef6(false);
   failed.current = state.phase === "waiting" || state.phase === "failed";
   const retry = () => {
@@ -555,12 +564,24 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) 
       return;
     }
     let cancelled = false;
+    const abort = new AbortController();
     const timer = window.setTimeout(async () => {
       try {
         const resolver = state.attempt > 0 ? latest.current.resolveFallback ?? latest.current.resolveSrc : latest.current.resolveSrc;
         const resolved = await (resolver?.(src) ?? src);
-        const fresh = await latest.current.refresh(resolved);
-        if (fresh.startsWith("blob:")) throw new Error("Attachment URL is not available yet");
+        let fresh = resolved;
+        if (latest.current.readBlob) {
+          void Promise.resolve().then(() => latest.current.refresh(resolved)).catch(() => {
+          });
+          const blob = await latest.current.readBlob(resolved, abort.signal);
+          if (cancelled) return;
+          if (blob) {
+            releaseBlob();
+            ownedUrl.current = URL.createObjectURL(blob);
+            fresh = ownedUrl.current;
+          } else fresh = await latest.current.refresh(resolved);
+        } else fresh = await latest.current.refresh(resolved);
+        if (fresh.startsWith("blob:") && fresh !== ownedUrl.current) throw new Error("Attachment URL is not available yet");
         let url = fresh;
         const parsed = new URL(fresh, window.location.href);
         if (["http:", "https:"].includes(parsed.protocol)) {
@@ -574,6 +595,7 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) 
     }, [300, 900][state.attempt]);
     return () => {
       cancelled = true;
+      abort.abort();
       clearTimeout(timer);
     };
   }, [src, state.phase, state.attempt, cycle]);
@@ -2128,6 +2150,7 @@ export {
   localFileHref,
   relativeWorkspacePath,
   ImageRecoveryProvider,
+  ImageFallbackProvider,
   ImageDiagnosisProvider,
   RecoverableImage,
   MarkdownImageLinkContext,

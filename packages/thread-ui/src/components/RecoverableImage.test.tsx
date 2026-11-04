@@ -2,7 +2,7 @@
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, expect, it, vi } from 'vitest';
-import { RecoverableImage, ImageRecoveryProvider, ImageDiagnosisProvider } from './RecoverableImage';
+import { RecoverableImage, ImageFallbackProvider, ImageRecoveryProvider, ImageDiagnosisProvider } from './RecoverableImage';
 
 const host = document.createElement('div');
 document.body.append(host);
@@ -87,4 +87,41 @@ it('never assigns an unresolved blob to a retry image', async () => {
   await tick(900);
   expect(host.querySelector('img')).toBeNull();
   expect(host.querySelector('.error-mark')).not.toBeNull();
+});
+
+it('owns one fallback blob, retries via page reads and releases it on unmount', async () => {
+  vi.useFakeTimers();
+  const create = vi.fn().mockReturnValueOnce('blob:owned-1').mockReturnValueOnce('blob:owned-2').mockReturnValueOnce('blob:owned-3');
+  const revoke = vi.fn();
+  Object.defineProperties(URL, { createObjectURL: { configurable: true, value: create }, revokeObjectURL: { configurable: true, value: revoke } });
+  const read = vi.fn(async (_src: string, _signal: AbortSignal) => new Blob(['image']));
+  const refresh = vi.fn(async () => { throw Error('worker unavailable'); });
+  act(() => root.render(<ImageRecoveryProvider value={refresh}><ImageFallbackProvider value={read}><RecoverableImage src="/thumbnail.png" resolveFallback={() => '/original.png'} alt="Photo" /></ImageFallbackProvider></ImageRecoveryProvider>));
+  error(); await tick(300);
+  expect(host.querySelector('img')!.getAttribute('src')).toBe('blob:owned-1');
+  error(); await tick(900);
+  expect(read.mock.calls[1]![0]).toBe('/original.png');
+  expect(revoke).toHaveBeenCalledExactlyOnceWith('blob:owned-1');
+  error(); await tick(0);
+  act(() => host.querySelector<HTMLButtonElement>('.error-mark')!.click());
+  act(() => document.querySelector<HTMLButtonElement>('.error-mark-retry')!.click());
+  await tick(300);
+  expect(read).toHaveBeenCalledTimes(3);
+  expect(refresh).toHaveBeenCalledTimes(3);
+  act(() => root.render(<span />));
+  expect(revoke.mock.calls.map(([url]) => url)).toEqual(['blob:owned-1', 'blob:owned-2', 'blob:owned-3']);
+});
+it('aborts a stale page read and never creates a blob after unmount', async () => {
+  vi.useFakeTimers();
+  const create = vi.fn();
+  Object.defineProperty(URL, 'createObjectURL', { configurable: true, value: create });
+  let finish!: (blob: Blob) => void;
+  let signal!: AbortSignal;
+  const read = vi.fn((_src: string, nextSignal: AbortSignal) => { signal = nextSignal; return new Promise<Blob>(resolve => { finish = resolve; }); });
+  act(() => root.render(<ImageFallbackProvider value={read}><RecoverableImage src="/photo.png" alt="Photo" /></ImageFallbackProvider>));
+  error(); await tick(300);
+  act(() => root.render(<span />));
+  expect(signal.aborted).toBe(true);
+  await act(async () => finish(new Blob(['image'])));
+  expect(create).not.toHaveBeenCalled();
 });

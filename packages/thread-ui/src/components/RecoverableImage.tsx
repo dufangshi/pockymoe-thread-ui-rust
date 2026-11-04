@@ -6,6 +6,11 @@ import { ErrorMark } from './copy/ErrorMark';
 export type ImageResolver = (src: string) => string | Promise<string>;
 const ImageRecoveryContext = createContext<ImageResolver>(src => src);
 export const ImageRecoveryProvider = ImageRecoveryContext.Provider;
+/** The host reads bytes through its own transport; each mounted image owns
+ * at most one resulting object URL. Returning null leaves external images alone. */
+export type ImageBlobReader = (src: string, signal: AbortSignal) => Promise<Blob | null>;
+const ImageBlobContext = createContext<ImageBlobReader | undefined>(undefined);
+export const ImageFallbackProvider = ImageBlobContext.Provider;
 export type ImageFailureDiagnoser = (src: string) => Promise<string | null>;
 const ImageDiagnosisContext = createContext<ImageFailureDiagnoser | undefined>(undefined);
 export const ImageDiagnosisProvider = ImageDiagnosisContext.Provider;
@@ -24,11 +29,18 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = image =>
   useI18n();
   const refresh = useContext(ImageRecoveryContext);
   const diagnose = useContext(ImageDiagnosisContext);
-  const latest = useRef({ resolveSrc, resolveFallback, refresh, diagnose });
-  latest.current = { resolveSrc, resolveFallback, refresh, diagnose };
+  const readBlob = useContext(ImageBlobContext);
+  const latest = useRef({ resolveSrc, resolveFallback, refresh, diagnose, readBlob });
+  latest.current = { resolveSrc, resolveFallback, refresh, diagnose, readBlob };
   const [state, setState] = useState({ url: src, attempt: 0, generation: 0, phase: 'loading' });
   const [cycle, setCycle] = useState(0);
   const [reason, setReason] = useState<string | null>(null);
+  const ownedUrl = useRef<string | null>(null);
+  const releaseBlob = () => {
+    if (ownedUrl.current) URL.revokeObjectURL(ownedUrl.current);
+    ownedUrl.current = null;
+  };
+  useEffect(() => releaseBlob, []);
   const failed = useRef(false);
   failed.current = state.phase === 'waiting' || state.phase === 'failed';
   const retry = () => {
@@ -52,15 +64,28 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = image =>
       return;
     }
     let cancelled = false;
+    const abort = new AbortController();
     const timer = window.setTimeout(async () => {
       try {
         // Resolve again, never retain a failed blob or an old authorization URL.
         const resolver = state.attempt > 0 ? latest.current.resolveFallback ?? latest.current.resolveSrc : latest.current.resolveSrc;
         const resolved = await (resolver?.(src) ?? src);
-        const fresh = await latest.current.refresh(resolved);
-        // Blobs belong only to the optimistic preview. A retry must resolve an
-        // attachment URL, even if its preview lease has already been released.
-        if (fresh.startsWith('blob:')) throw new Error('Attachment URL is not available yet');
+        // Registration repair is independent of the byte read: a worker that
+        // cannot start must not prevent recovery through the page transport.
+        let fresh = resolved;
+        if (latest.current.readBlob) {
+          void Promise.resolve(latest.current.refresh(resolved)).catch(() => {});
+          const blob = await latest.current.readBlob(resolved, abort.signal);
+          if (cancelled) return;
+          if (blob) {
+            releaseBlob();
+            ownedUrl.current = URL.createObjectURL(blob);
+            fresh = ownedUrl.current;
+          } else fresh = await latest.current.refresh(resolved);
+        } else fresh = await latest.current.refresh(resolved);
+        // Only a blob created by this mounted image may be reused here.
+        // An optimistic preview's lease may already have been released.
+        if (fresh.startsWith('blob:') && fresh !== ownedUrl.current) throw new Error('Attachment URL is not available yet');
         let url = fresh;
         const parsed = new URL(fresh, window.location.href);
         if (['http:', 'https:'].includes(parsed.protocol)) {
@@ -72,7 +97,7 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = image =>
         if (!cancelled) setState(current => ({ ...current, attempt: current.attempt + 1 }));
       }
     }, [300, 900][state.attempt]);
-    return () => { cancelled = true; clearTimeout(timer); };
+    return () => { cancelled = true; abort.abort(); clearTimeout(timer); };
   }, [src, state.phase, state.attempt, cycle]);
   useEffect(() => {
     if (state.phase !== 'failed' || !latest.current.diagnose) return;

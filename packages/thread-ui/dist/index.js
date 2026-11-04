@@ -17,6 +17,7 @@ import {
   FilePanelContext,
   GraphWorkspaceImageLightbox,
   ImageDiagnosisProvider,
+  ImageFallbackProvider,
   ImageRecoveryProvider,
   MarkdownImageLinkContext,
   MiddleName,
@@ -55,7 +56,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-SG4AXFJJ.js";
+} from "./chunk-2JTH4WQY.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -31863,6 +31864,7 @@ export {
   GraphChatThreadChatPanel,
   I18nProvider,
   ImageDiagnosisProvider,
+  ImageFallbackProvider,
   ImageRecoveryProvider,
   LOCALE_OPTIONS,
   LOCALE_STORAGE_KEY,

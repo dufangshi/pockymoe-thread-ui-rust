@@ -353,6 +353,8 @@
   /* Rows of the drawer's own destinations sit together. */
   .thread-ui-shell .matter-workbench .matter-drawer-home + .matter-drawer-home { margin-top: -4px; }
   .matter-drawer-home svg { width: 18px; height: 18px; flex: none; color: var(--theme-fg-muted); }
+  /* The thread map at the drawer's foot, under the thumb. */
+  .thread-ui-shell .matter-workbench .matter-drawer-home.matter-drawer-map { flex: none; margin: 8px 0 0; }
   /* Sideways drags are the drawer's; the browser's own swipe-back stays out. */
   .thread-ui-shell .matter-workbench.has-phone-dock .matter-main { overscroll-behavior-x: none; }
 

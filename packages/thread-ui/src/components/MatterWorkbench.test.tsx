@@ -56,19 +56,20 @@ describe('phone top bar without the dock', () => {
     expect(topbar().querySelector('a[href="/workspaces"]')).not.toBeNull();
     expect(topbar().querySelector('button[aria-label="Chat"]')).not.toBeNull();
     expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
-    expect(drawer().querySelector('.matter-drawer-tools')).toBeNull();
+    expect(drawer().querySelector('.matter-drawer-home')).toBeNull();
   });
 
-  it('moves Home and Chat into the drawer for themes with phone drawer tools and keeps the device monitor in the top bar', () => {
+  it('moves Home into the drawer for themes with phone drawer tools and keeps the device monitor in the top bar', () => {
     document.documentElement.dataset.themeFeatures = 'workbench.phoneDrawerTools';
     render();
     expect(topbar().querySelector('a[href="/workspaces"]')).toBeNull();
     expect(host.querySelectorAll('a[href="/workspaces"]')).toHaveLength(1);
     expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
     expect(host.querySelectorAll('button[aria-label="Device monitor"]')).toHaveLength(1);
-    const tools = drawer().querySelector('[role="group"].matter-drawer-tools')!;
-    expect(tools.querySelector('a[href="/workspaces"]')?.textContent).toBe('Workspaces');
-    expect(tools.querySelector('button[aria-pressed="true"]')?.textContent).toBe('Chat');
+    expect(drawer().querySelector('a.matter-drawer-home[href="/workspaces"]')?.textContent).toBe('All workspaces');
+    // No Chat button anywhere: Terminal and Files toggle back to the conversation.
+    expect(host.querySelector('button[aria-label="Chat"]')).toBeNull();
+    expect([...drawer().querySelectorAll('button')].some(button => button.textContent === 'Chat')).toBe(false);
     expect(topbar().querySelector('button[aria-label="Terminal"]')).not.toBeNull();
     expect(topbar().querySelector('button[aria-label="Open settings"]')).not.toBeNull();
   });
@@ -76,9 +77,9 @@ describe('phone top bar without the dock', () => {
   it('follows a live theme feature switch', async () => {
     render();
     await act(async () => { document.documentElement.dataset.themeFeatures = 'composer.richMenus workbench.phoneDrawerTools'; await Promise.resolve(); });
-    expect(drawer().querySelector('.matter-drawer-tools')).not.toBeNull();
+    expect(drawer().querySelector('.matter-drawer-home')).not.toBeNull();
     await act(async () => { document.documentElement.dataset.themeFeatures = ''; await Promise.resolve(); });
-    expect(drawer().querySelector('.matter-drawer-tools')).toBeNull();
+    expect(drawer().querySelector('.matter-drawer-home')).toBeNull();
     expect(topbar().querySelector('button[aria-label="Chat"]')).not.toBeNull();
   });
 });
@@ -383,7 +384,10 @@ describe('one-handed phone dock', () => {
     act(() => [...more.querySelectorAll('button')].find(item => item.textContent === 'Thread map')!.click());
     expect(openThreadMap).toHaveBeenCalledTimes(1);
     expect(more.hasAttribute('data-open')).toBe(false);
-    act(() => [...drawer().querySelectorAll('button')].find(item => item.textContent === 'Thread map')!.click());
+    // The drawer's thread map is its last item, under the thumb.
+    const map = [...drawer().querySelectorAll('button')].find(item => item.textContent === 'Thread map')!;
+    expect(drawer().lastElementChild).toBe(map);
+    act(() => map.click());
     expect(openThreadMap).toHaveBeenCalledTimes(2);
     nav = {};
     render();

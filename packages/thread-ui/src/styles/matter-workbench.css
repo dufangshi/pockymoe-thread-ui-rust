@@ -320,16 +320,19 @@
   padding: 0 8px;
   font-weight: 600;
 }
-/* The sidebar splits in two: this workspace above, recent chats from halfway
-   down, a blank strip between. Each half scrolls on its own. */
+/* This workspace takes what it needs, at most half the height; recent chats
+   follow right after it. Each scrolls on its own. */
 .matter-sidebar-upper {
   display: flex;
-  flex: 0 0 50%;
+  flex: 0 1 auto;
   flex-direction: column;
   min-height: 0;
-  padding-bottom: 18px;
+  max-height: 50%;
+  padding-bottom: 4px;
 }
-.matter-sidebar-upper.is-alone { flex: 1 1 auto; }
+/* Alone (recent chats folded or empty), it may run the full height; a folded
+   recent chats heading still follows right after it. */
+.matter-sidebar-upper.is-alone { max-height: none; }
 /* A list cut by the split fades out rather than ending in half a row. */
 .matter-sidebar-upper:not(.is-alone) > .matter-sidebar-scroll {
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
@@ -341,7 +344,7 @@
   flex-direction: column;
   min-height: 0;
 }
-/* Folded, recent chats are just their heading; this workspace takes the room. */
+/* Folded, recent chats are just their heading. */
 .matter-sidebar-recents.is-folded { flex: none; }
 /* The sidebar's edge: drag to resize (200–420px), double-click for the default. */
 .matter-sidebar-resize { position: absolute; top: 0; bottom: 0; left: -4px; z-index: 30; width: 7px; cursor: col-resize; touch-action: none; }

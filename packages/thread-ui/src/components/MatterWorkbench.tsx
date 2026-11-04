@@ -1012,8 +1012,8 @@ export function MatterWorkbench({
         aria-label={translate("workbench.threadNavigation")}
       >
         {!mobile && !sidebarHidden && navStrip}
-        {/* The upper half holds this workspace's threads; recent chats from
-            everywhere start halfway down, so the two read apart. Each scrolls on its own. */}
+        {/* This workspace's threads come first and take at most half the height;
+            recent chats from everywhere follow right after. Each scrolls on its own. */}
         <div className={`matter-sidebar-upper ${recentThreads.length && recentsOpen ? '' : 'is-alone'}`}>
         <div className="matter-sidebar-heading">
           {o.sidebarHeader ?? (dock
@@ -1027,22 +1027,12 @@ export function MatterWorkbench({
             <X data-icon="close" />
           </button>
         </div>
-        {/* Under the dock, Chat lives in the dock and Home in the row below. */}
-        {drawerTools && !dock && (
-          <div className="matter-drawer-tools" role="group" aria-label={translate("workbench.workspaceTools")}>
-            {homeHref && <a href={homeHref} onClick={goHome}><Home data-icon="home" /><span>{translate("workbench.workspaces")}</span></a>}
-            <button aria-pressed={o.panels ? !chatCovered : o.activeView === 'chat'} onClick={() => { showChat(); setSidebarOpen(false); }}><MessageSquare data-icon="chat" /><span>{translate("workbench.chat")}</span></button>
-          </div>
-        )}
-        {dock && homeHref && (
+        {/* The drawer's one way out, when the top bar has no Home. Chat needs no
+            button here: the top bar's Terminal and Files buttons toggle back to it. */}
+        {(dock || drawerTools) && homeHref && (
           <a className="matter-drawer-home" href={homeHref} onClick={goHome}>
             <Home data-icon="home" /><span>{translate("workbench.allWorkspaces")}</span><ChevronRight aria-hidden="true" />
           </a>
-        )}
-        {mobile && openThreadMap && (
-          <button type="button" className="matter-drawer-home" onClick={() => { setSidebarOpen(false); openThreadMap(); }}>
-            <LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span><ChevronRight aria-hidden="true" />
-          </button>
         )}
         <div className="matter-sidebar-scroll">
         {o.sidebarLeading}
@@ -1104,7 +1094,12 @@ export function MatterWorkbench({
           )}
         </div>}
         {mobile && o.railBottomLeading ? <div className="matter-sidebar-host-actions">{o.railBottomLeading}</div> : null}
-        {!dock && <div className="matter-sidebar-footer">
+        {/* On a phone the thread map sits at the drawer's foot, under the thumb. */}
+        {mobile && openThreadMap ? (
+          <button type="button" className="matter-drawer-home matter-drawer-map" onClick={() => { setSidebarOpen(false); openThreadMap(); }}>
+            <LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span><ChevronRight aria-hidden="true" />
+          </button>
+        ) : !dock && <div className="matter-sidebar-footer">
           {translate("workbench.yourConversationsTogether")}</div>}
       </aside>}
       <main className="matter-main">

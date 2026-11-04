@@ -109,6 +109,23 @@ describe('ComposerContextControl', () => {
     await act(async () => { row('tools')!.querySelector('button')!.click(); });
     expect(row('tools')?.textContent).toContain('mcp__docs__read');
   });
+
+  it('refreshes Codex on open and labels categories bounded by the native total', async () => {
+    const codex: ContextInspectionSnapshotDto = {
+      provider: 'codex', source: 'codexTrace', precision: 'estimated', categoriesClamped: true,
+      usedTokens: 20_000, windowTokens: 100_000, updatedAt: new Date().toISOString(),
+      categories: [
+        { id: 'system_prompt', kind: 'used', tokens: 1_000 },
+        { id: 'messages', kind: 'used', tokens: 19_000 },
+        { id: 'free_space', kind: 'free', tokens: 80_000 },
+      ],
+    };
+    const load = vi.fn().mockResolvedValue(available(codex));
+    await render({ inspector: { load }, agent: 'codex', contextUsage: { ...usage, tokensInContextWindow: 20_000, details: codex } });
+    await openPanel();
+    expect(load).toHaveBeenCalledWith({ detail: 'summary', refresh: true });
+    expect(document.querySelector('.thread-context-meta')?.textContent).toContain('bounded by Codex total');
+  });
   it('shows the total on a closed key without asking anything', async () => {
     const load = vi.fn();
     await render({ inspector: { load } });

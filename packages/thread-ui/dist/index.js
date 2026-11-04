@@ -54,7 +54,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-WBSYT3AR.js";
+} from "./chunk-YLAU5UP7.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -84,7 +84,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-ZBI7GAKH.js";
+} from "./chunk-IWD36PVI.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -4748,6 +4748,7 @@ function ContextBreakdown({ snapshot }) {
 function sourceLabel(snapshot) {
   if (snapshot?.source === "claudeFull") return translate("chat.contextSourceClaudeFull");
   if (snapshot?.source === "claudeSummary") return translate("chat.contextSourceClaudeSummary");
+  if (snapshot?.source === "codexTrace" && snapshot.categoriesClamped) return translate("chat.contextSourceCodexAdjusted");
   if (snapshot?.source === "codexTrace") return translate("chat.contextSourceCodexTrace");
   if (snapshot?.source === "dshProjection") return translate("chat.contextSourceDsh");
   return translate("chat.contextSourceReported");
@@ -4880,7 +4881,8 @@ function ComposerContextControl({
   useEffect12(() => {
     if (!open) return;
     const full = inspectionProvider === "claude";
-    load(full ? "full" : "summary", full);
+    const refresh = full || inspectionProvider === "codex";
+    load(full ? "full" : "summary", refresh);
   }, [open, load, inspectionProvider]);
   useEffect12(() => {
     if (!open) return;

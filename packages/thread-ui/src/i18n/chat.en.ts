@@ -473,6 +473,7 @@ export const chatEn = {
   "chat.contextSourceClaudeFull": "Claude full count",
   "chat.contextSourceClaudeSummary": "Claude summary · categories estimated",
   "chat.contextSourceCodexTrace": "Local estimate",
+  "chat.contextSourceCodexAdjusted": "Local estimate bounded by Codex total",
   "chat.contextCategoryTools": "Tool definitions",
   "chat.contextCategoryRuntime": "Runtime context",
   "chat.contextSourceDsh": "DSH next-prompt estimate",

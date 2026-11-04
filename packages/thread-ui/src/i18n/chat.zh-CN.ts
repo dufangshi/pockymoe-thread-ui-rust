@@ -473,6 +473,7 @@ export const chatZhCN = {
   "chat.contextSourceClaudeFull": "Claude 完整计数",
   "chat.contextSourceClaudeSummary": "Claude 摘要 · 分类为估算",
   "chat.contextSourceCodexTrace": "本地估算",
+  "chat.contextSourceCodexAdjusted": "本地估算已按 Codex 总量封顶",
   "chat.contextCategoryTools": "工具定义",
   "chat.contextCategoryRuntime": "运行环境",
   "chat.contextSourceDsh": "DSH 下次请求预计占用",

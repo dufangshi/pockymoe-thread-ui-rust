@@ -3574,6 +3574,7 @@ declare const en: {
     readonly "chat.contextSourceClaudeFull": "Claude full count";
     readonly "chat.contextSourceClaudeSummary": "Claude summary · categories estimated";
     readonly "chat.contextSourceCodexTrace": "Local estimate";
+    readonly "chat.contextSourceCodexAdjusted": "Local estimate bounded by Codex total";
     readonly "chat.contextCategoryTools": "Tool definitions";
     readonly "chat.contextCategoryRuntime": "Runtime context";
     readonly "chat.contextSourceDsh": "DSH next-prompt estimate";
@@ -8754,6 +8755,7 @@ declare const zhCN: {
     "chat.contextSourceClaudeFull": "Claude 完整计数";
     "chat.contextSourceClaudeSummary": "Claude 摘要 · 分类为估算";
     "chat.contextSourceCodexTrace": "本地估算";
+    "chat.contextSourceCodexAdjusted": "本地估算已按 Codex 总量封顶";
     "chat.contextCategoryTools": "工具定义";
     "chat.contextCategoryRuntime": "运行环境";
     "chat.contextSourceDsh": "DSH 下次请求预计占用";
@@ -13956,6 +13958,7 @@ declare const resources: {
         readonly "chat.contextSourceClaudeFull": "Claude full count";
         readonly "chat.contextSourceClaudeSummary": "Claude summary · categories estimated";
         readonly "chat.contextSourceCodexTrace": "Local estimate";
+        readonly "chat.contextSourceCodexAdjusted": "Local estimate bounded by Codex total";
         readonly "chat.contextCategoryTools": "Tool definitions";
         readonly "chat.contextCategoryRuntime": "Runtime context";
         readonly "chat.contextSourceDsh": "DSH next-prompt estimate";
@@ -19135,6 +19138,7 @@ declare const resources: {
         "chat.contextSourceClaudeFull": "Claude 完整计数";
         "chat.contextSourceClaudeSummary": "Claude 摘要 · 分类为估算";
         "chat.contextSourceCodexTrace": "本地估算";
+        "chat.contextSourceCodexAdjusted": "本地估算已按 Codex 总量封顶";
         "chat.contextCategoryTools": "工具定义";
         "chat.contextCategoryRuntime": "运行环境";
         "chat.contextSourceDsh": "DSH 下次请求预计占用";

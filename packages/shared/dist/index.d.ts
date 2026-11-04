@@ -283,6 +283,7 @@ interface ContextInspectionSnapshotDto {
     /** Native heuristic composition can differ from projected occupancy (DSH). */
     compositionTokens?: number | null;
     attributionDeltaTokens?: number | null;
+    categoriesClamped?: boolean | null;
     asOfSeq?: number | null;
     route?: {
         provider: string;

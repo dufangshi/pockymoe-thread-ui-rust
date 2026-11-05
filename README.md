@@ -55,6 +55,15 @@ Keep the shared packages UI-only:
 - Prefer typed DTO/event inputs over direct runtime coupling.
 - Keep the ACP/AIS process in `apps/agent-ui-server`; do not move provider lifecycle into React components.
 
+### Message math
+
+Chat Markdown supports `$...$` and `\(...\)` inline math, and `$$...$$`
+and `\[...\]` display math through KaTeX. Display delimiters may touch the
+formula, including multiline `aligned` or matrix environments. Parsing happens
+before Markdown block structure so a closing `\end{aligned}$$` does not consume
+later prose. Code and escaped delimiters stay literal. Completed streamed math
+is parsed again as text arrives; invalid TeX stays within its own math block.
+
 ### Retained workbench navigation
 
 `PersistentWorkbenchNavigation` can surround routed `MatterWorkbench` instances

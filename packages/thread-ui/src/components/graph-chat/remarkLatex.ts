@@ -11,8 +11,9 @@ declare module 'micromark-util-types' {
 }
 
 // Parse before Markdown's character escapes, rather than replacing strings:
-// code, links, escaped backslashes and existing dollar math retain their syntax.
-function tokenizer(flow: boolean): Tokenizer {
+// code, links and escaped delimiters retain their syntax. Unlike remark-math's
+// line fences, chat display math may close with $$ attached to the TeX body.
+function tokenizer(flow: boolean, dollar = false): Tokenizer {
   return function (effects, ok, nok) {
     const self = this;
     const tokenType = flow ? 'latexMathFlow' : 'latexMath';
@@ -23,11 +24,20 @@ function tokenizer(flow: boolean): Tokenizer {
       return open;
     };
     const open: State = (code) => {
+      if (dollar) {
+        if (code !== 36) return nok(code);
+        effects.consume(code);
+        return afterDollarOpen;
+      }
       if (code !== 40 && code !== 91) return nok(code);
       if (flow && code !== 91) return nok(code);
       closing = code === 40 ? 41 : 93;
       effects.consume(code);
       return body;
+    };
+    const afterDollarOpen: State = (code) => {
+      // Preserve remark-math's longer fences and their matching rules.
+      return code === 36 ? nok(code) : body(code);
     };
     const body: State = (code) => {
       if (code === null || (flow && self.parser.lazy[self.now().line]))
@@ -48,9 +58,22 @@ function tokenizer(flow: boolean): Tokenizer {
         return body(code);
       }
       effects.consume(code);
-      return code === 92 ? slash : data;
+      return code === 92 ? slash : dollar && code === 36 ? dollarClose : data;
+    };
+    const dollarClose: State = (code) => {
+      if (code !== 36) return data(code);
+      effects.consume(code);
+      effects.exit('latexMathData');
+      return afterClose;
     };
     const slash: State = (code) => {
+      if (dollar) {
+        if (code === 36 || code === 92) {
+          effects.consume(code);
+          return data;
+        }
+        return data(code);
+      }
       if (code === closing) {
         effects.consume(code);
         effects.exit('latexMathData');
@@ -85,6 +108,11 @@ const syntax: Extension = {
   text: { 92: { name: 'latexMath', tokenize: tokenizer(false) } },
   // Block parsing must precede setext headings, lists and blank paragraphs.
   flow: {
+    36: {
+      name: 'latexMathFlow',
+      tokenize: tokenizer(true, true),
+      concrete: true,
+    },
     92: { name: 'latexMathFlow', tokenize: tokenizer(true), concrete: true },
   },
 };
@@ -101,7 +129,9 @@ const enterMath: NonNullable<FromMarkdownExtension['enter']>[string] =
           hProperties: {
             className: [
               'language-math',
-              raw[1] === '[' ? 'math-display' : 'math-inline',
+              token.type === 'latexMathFlow' || raw[1] === '['
+                ? 'math-display'
+                : 'math-inline',
             ],
           },
         },

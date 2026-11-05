@@ -94,6 +94,19 @@ describe('GraphChatMessageContent', () => {
     expect(element.querySelector('.katex-display')).not.toBeNull();
   });
 
+  it('closes multiline dollar math attached to aligned instead of swallowing later Markdown', () => {
+    const formula = String.raw`\begin{aligned}
+I_{\text{pix}} &= \sum_n g_n^2 e(\mathbf{x}_n) \\
+Q_{\text{pix}} &= \sum_n \Pi_0 e(\mathbf{x}_n) \cos(2\chi_n)
+\end{aligned}`;
+    const element = render(<GraphChatMessageContent content={`说明：\n$$${formula}$$\n\n## 后续正文\n\n偏振为 $Q$，**继续说明**。`} />);
+    expect(element.querySelector('.katex-display annotation')?.textContent).toBe(formula);
+    expect(element.querySelector('.katex-error')).toBeNull();
+    expect(element.querySelector('h2')?.textContent).toBe('后续正文');
+    expect(element.querySelector('strong')?.textContent).toBe('继续说明');
+    expect(element.querySelectorAll('.katex')).toHaveLength(2);
+  });
+
   it('renders backslash-delimited Chinese formulas without changing code or escaped delimiters', () => {
     const formula = String.raw`(x,y)\longmapsto\text{这个位置的像素颜色}`;
     const element = render(<GraphChatMessageContent content={[
@@ -113,6 +126,45 @@ describe('GraphChatMessageContent', () => {
     expect(element.textContent).toContain('\\[literal\\]');
     expect(element.textContent).toContain('\\(escaped\\)');
     expect(element.textContent).toContain('不完整 (x');
+  });
+
+  it('preserves code, escaped dollars, inline math and longer dollar fences', () => {
+    const element = render(<GraphChatMessageContent content={[
+      '`$$literal$$`',
+      '```tex\n$$\\begin{aligned}\nx &= y\n\\end{aligned}$$\n```',
+      String.raw`\$\$escaped\$\$ and $x^2$ and $$y^2$$ inline.`,
+      '$$$\nz^2\n$$$',
+      String.raw`$$\text{cost: \$5}$$`,
+    ].join('\n\n')} />);
+    expect(element.querySelector('pre code')?.textContent).toContain('\\end{aligned}$$');
+    expect(element.textContent).toContain('$$literal$$');
+    expect(element.textContent).toContain('$$escaped$$');
+    expect(Array.from(element.querySelectorAll('annotation')).map(node => node.textContent))
+      .toEqual(['x^2', 'y^2', 'z^2', String.raw`\text{cost: \$5}`]);
+    expect(element.querySelectorAll('.katex-display')).toHaveLength(2);
+    expect(element.querySelector('.katex-error')).toBeNull();
+  });
+
+  it('completes streamed attached dollar math inside quotes and lists', () => {
+    const element = render(<GraphChatMessageContent content={'> $$\\begin{aligned}\n> x &= y \\\\'} />);
+    act(() => root!.render(<GraphChatMessageContent content={[
+      '> $$\\begin{aligned}\n> x &= y \\\\\n> z &= w\n> \\end{aligned}$$',
+      '- $$a\n  =\n\n  b$$\n\n  **列表后续**',
+      '## 后续标题',
+    ].join('\n\n')} />));
+    expect(element.querySelector('blockquote .katex-display annotation')?.textContent)
+      .toBe('\\begin{aligned}\nx &= y \\\\\nz &= w\n\\end{aligned}');
+    expect(element.querySelector('li .katex-display annotation')?.textContent).toBe('a\n=\n\nb');
+    expect(element.querySelector('li strong')?.textContent).toBe('列表后续');
+    expect(element.querySelector('h2')?.textContent).toBe('后续标题');
+    expect(element.querySelector('.katex-error')).toBeNull();
+  });
+
+  it('contains invalid TeX to its dollar block and continues rendering later Markdown', () => {
+    const element = render(<GraphChatMessageContent content={'$$\\notARealCommand{\nx$$\n\n## 正常标题\n\n正文 $y$'} />);
+    expect(element.querySelector('.katex-error')).not.toBeNull();
+    expect(element.querySelector('h2')?.textContent).toBe('正常标题');
+    expect(element.querySelector('.katex annotation')?.textContent).toBe('y');
   });
 
   it('renders completed streamed math inside Markdown containers', () => {

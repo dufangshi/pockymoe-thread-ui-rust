@@ -2518,7 +2518,7 @@ import remarkCjkFriendly from "remark-cjk-friendly";
 import remarkMath from "remark-math";
 
 // src/components/graph-chat/remarkLatex.ts
-function tokenizer(flow) {
+function tokenizer(flow, dollar = false) {
   return function(effects, ok, nok) {
     const self = this;
     const tokenType = flow ? "latexMathFlow" : "latexMath";
@@ -2529,11 +2529,19 @@ function tokenizer(flow) {
       return open;
     };
     const open = (code) => {
+      if (dollar) {
+        if (code !== 36) return nok(code);
+        effects.consume(code);
+        return afterDollarOpen;
+      }
       if (code !== 40 && code !== 91) return nok(code);
       if (flow && code !== 91) return nok(code);
       closing = code === 40 ? 41 : 93;
       effects.consume(code);
       return body;
+    };
+    const afterDollarOpen = (code) => {
+      return code === 36 ? nok(code) : body(code);
     };
     const body = (code) => {
       if (code === null || flow && self.parser.lazy[self.now().line])
@@ -2554,9 +2562,22 @@ function tokenizer(flow) {
         return body(code);
       }
       effects.consume(code);
-      return code === 92 ? slash : data;
+      return code === 92 ? slash : dollar && code === 36 ? dollarClose : data;
+    };
+    const dollarClose = (code) => {
+      if (code !== 36) return data(code);
+      effects.consume(code);
+      effects.exit("latexMathData");
+      return afterClose;
     };
     const slash = (code) => {
+      if (dollar) {
+        if (code === 36 || code === 92) {
+          effects.consume(code);
+          return data;
+        }
+        return data(code);
+      }
       if (code === closing) {
         effects.consume(code);
         effects.exit("latexMathData");
@@ -2587,6 +2608,7 @@ var syntax = {
   text: { 92: { name: "latexMath", tokenize: tokenizer(false) } },
   // Block parsing must precede setext headings, lists and blank paragraphs.
   flow: {
+    36: { name: "latexMathFlow", tokenize: tokenizer(true, true), concrete: true },
     92: { name: "latexMathFlow", tokenize: tokenizer(true), concrete: true }
   }
 };
@@ -2602,7 +2624,7 @@ var enterMath = function(token) {
         hProperties: {
           className: [
             "language-math",
-            raw[1] === "[" ? "math-display" : "math-inline"
+            token.type === "latexMathFlow" || raw[1] === "[" ? "math-display" : "math-inline"
           ]
         }
       }

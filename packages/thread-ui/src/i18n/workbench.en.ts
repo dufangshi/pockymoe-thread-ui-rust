@@ -531,6 +531,7 @@ export const workbenchEn = {
   "workbench.closeSplit": "Close split",
   "workbench.closeSplitContinues": "Close split; both conversations keep running",
   "workbench.closeFiles": "Close files",
+  "workbench.closeInspector": "Close {{name}}",
   "workbench.closeTools": "Close tools",
   "workbench.splitBack": "Back",
   "workbench.splitClosePicker": "Close conversation picker",

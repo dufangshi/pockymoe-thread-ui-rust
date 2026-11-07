@@ -531,6 +531,7 @@ export const workbenchZhCN = {
   "workbench.closeSplit": "关闭分屏",
   "workbench.closeSplitContinues": "关闭分屏，两个会话继续运行",
   "workbench.closeFiles": "关闭文件",
+  "workbench.closeInspector": "关闭{{name}}",
   "workbench.closeTools": "关闭工具",
   "workbench.splitBack": "返回上一级",
   "workbench.splitClosePicker": "关闭会话选择器",

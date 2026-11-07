@@ -530,6 +530,8 @@ export function MatterWorkbench({
   const filesCoverChat = () => explorerOpen && (mobile || Boolean(rootRef.current?.querySelector('.workbench-panels.is-compact')));
   const showChat = () => {
     if (filesCoverChat()) setExplorerOpen(false);
+    // On a phone (or a narrow window) an open inspector covers the conversation too.
+    if (o.panels?.inspector && (mobile || Boolean(rootRef.current?.querySelector('[data-inspector-covers]')))) o.panels.inspector.onClose();
     if (o.panels) {
       if (chatCovered) toolPanel.update({ maximized: false });
     } else o.onViewChange('chat');
@@ -1281,7 +1283,7 @@ export function MatterWorkbench({
           <div className="matter-phone-sheet-tools">
             {!o.emptyWorkspace && <button type="button" onClick={o.onSearch}><Search data-icon="search" /><span>{translate('workbench.searchConversation')}</span></button>}
             {!o.emptyWorkspace && <button type="button" aria-pressed={o.favorite} disabled={o.favoriteBusy} onClick={o.onToggleFavorite}><Star data-icon="shortcut" fill={o.favorite ? 'currentColor' : 'none'} /><span>{o.favorite ? translate('workbench.removeShortcut') : translate('workbench.addShortcut')}</span></button>}
-            {o.toolPanels?.map(panel => <button type="button" key={panel.id} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}<span>{panel.label}</span></button>)}
+            {o.toolPanels?.map(panel => <button type="button" key={panel.id} aria-pressed={panel.active} onClick={() => { setMoreOpen(false); panel.onToggle(); }}>{panel.icon}<span>{panel.label}</span></button>)}
             {shellNav?.setPhoneHand && <button type="button" aria-pressed={leftHanded} onClick={() => shellNav.setPhoneHand?.(leftHanded ? 'right' : 'left')}><Hand className="matter-phone-hand-icon" /><span>{translate('workbench.leftHanded')}</span></button>}
             <div className="matter-phone-sheet-host">{actions}{threadMenu}{o.statusActions}</div>
           </div>

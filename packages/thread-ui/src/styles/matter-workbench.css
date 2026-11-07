@@ -1910,3 +1910,14 @@
   :root:root:root .matter-workbench.is-navigation-frame.is-sidebar-hidden .matter-workbench.is-navigation-hosted .matter-tabs-row { padding-left: var(--matter-frame-nav-width); }
   .matter-workbench.is-navigation-frame > .matter-main > .matter-frame-nav .matter-nav-strip { height: 36px; }
 }
+
+/* A host inspector (Git, isolation) docked at the right like the files drawer:
+   a sibling of the conversation, never a modal layer over it. */
+.workbench-inspector:focus { outline: none; }
+.workbench-inspector:focus-visible { box-shadow: inset 0 0 0 2px var(--theme-accent-soft, var(--theme-accent-solid)); }
+.workbench-inspector > header { gap: 8px; padding-right: 8px; }
+.workbench-inspector > header strong { font-size: 13px; }
+.workbench-inspector-body { overflow: hidden; }
+/* A narrow workbench still docks the inspector while a usable conversation
+   fits beside it; below that it covers the conversation like Files. */
+.workbench-panels.is-compact .workbench-inspector[data-docked] { position: relative; inset: auto; z-index: auto; width: min(var(--workbench-tool-width, 560px), calc(100% - 280px)); }

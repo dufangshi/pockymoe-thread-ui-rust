@@ -352,6 +352,7 @@ export const workbenchZhCN = {
   "workbench.starAThreadToKeepItClose": "把线程加入快捷方式，以便快速访问。",
   "workbench.acrossWorkspacesAndDevices": "跨工作区和设备。",
   "workbench.recentChats": "最近对话",
+  "workbench.openConversations": "打开的对话",
   "workbench.conversationsGroups": "{{value1}} 个对话，{{value2}} 个分组",
   "workbench.yourConversationsTogether": "所有对话，汇聚一处。",
   "workbench.workspaceThreads": "工作区线程",

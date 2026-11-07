@@ -352,6 +352,7 @@ export const workbenchEn = {
   "workbench.starAThreadToKeepItClose": "Star a thread to keep it close.",
   "workbench.acrossWorkspacesAndDevices": "Across workspaces and devices.",
   "workbench.recentChats": "Recent chats",
+  "workbench.openConversations": "Open conversations",
   "workbench.conversationsGroups": "{{value1}} conversations, {{value2}} groups",
   "workbench.yourConversationsTogether": "Your conversations, together.",
   "workbench.workspaceThreads": "Workspace threads",

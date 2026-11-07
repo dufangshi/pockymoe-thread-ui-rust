@@ -66,7 +66,7 @@ describe('phone top bar without the dock', () => {
     expect(host.querySelectorAll('a[href="/workspaces"]')).toHaveLength(1);
     expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
     expect(host.querySelectorAll('button[aria-label="Device monitor"]')).toHaveLength(1);
-    expect(drawer().querySelector('a.matter-drawer-home[href="/workspaces"]')?.textContent).toBe('All workspaces');
+    expect(drawer().querySelector('.matter-drawer-foot a[href="/workspaces"]')?.getAttribute('aria-label')).toBe('All workspaces');
     // No Chat button anywhere: Terminal and Files toggle back to the conversation.
     expect(host.querySelector('button[aria-label="Chat"]')).toBeNull();
     expect([...drawer().querySelectorAll('button')].some(button => button.textContent === 'Chat')).toBe(false);
@@ -74,12 +74,31 @@ describe('phone top bar without the dock', () => {
     expect(topbar().querySelector('button[aria-label="Open settings"]')).not.toBeNull();
   });
 
+  it('opens the drawer with the open conversations, each closable, and folds the other lists', () => {
+    localStorage.clear();
+    const onCloseTab = vi.fn(), onNavigate = vi.fn();
+    const open = [thread('a'), { ...thread('b'), key: 'local:b' }];
+    options = { ...baseOptions, onNavigate, onCloseTab, openTabs: open, threads: [thread('x')], workspaceThreads: [thread('a'), thread('c')] };
+    render();
+    expect(drawer().querySelector('.matter-sidebar-heading')).toBeNull();
+    const list = drawer().querySelector('[data-testid="open-conversations"]')!;
+    expect([...list.querySelectorAll('.matter-thread-row')].map(row => row.getAttribute('href'))).toEqual(['/threads/a', '/threads/b']);
+    // This workspace and recent chats wait folded, one line each.
+    expect(drawer().querySelector('[data-testid="workspace-threads"]')).toBeNull();
+    expect(drawer().querySelector('[data-testid="recent-chats"]')).toBeNull();
+    expect(drawer().querySelector('.matter-sidebar-recents.is-folded')).not.toBeNull();
+    // ✕ takes a conversation off the list without leaving the current one.
+    act(() => list.querySelector<HTMLButtonElement>('button.matter-thread-close[aria-label="Close B"]')!.click());
+    expect(onCloseTab).toHaveBeenCalledWith('local:b');
+    expect(onNavigate).not.toHaveBeenCalled();
+  });
+
   it('follows a live theme feature switch', async () => {
     render();
     await act(async () => { document.documentElement.dataset.themeFeatures = 'composer.richMenus workbench.phoneDrawerTools'; await Promise.resolve(); });
-    expect(drawer().querySelector('.matter-drawer-home')).not.toBeNull();
+    expect(drawer().querySelector('.matter-drawer-foot a[href="/workspaces"]')).not.toBeNull();
     await act(async () => { document.documentElement.dataset.themeFeatures = ''; await Promise.resolve(); });
-    expect(drawer().querySelector('.matter-drawer-home')).toBeNull();
+    expect(drawer().querySelector('.matter-drawer-foot a[href="/workspaces"]')).toBeNull();
     expect(topbar().querySelector('button[aria-label="Chat"]')).not.toBeNull();
   });
 });
@@ -208,16 +227,16 @@ describe('one-handed phone dock', () => {
     expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['Cws', 'Bws', 'Aws']);
   });
 
-  it('opens a drawer with the app mark, all workspaces and ordered shortcuts, without a Files button', () => {
+  it('opens a drawer with no heading row, all workspaces at its foot and ordered shortcuts, without a Files button', () => {
     const onReorderShortcuts = vi.fn();
     options = { ...baseOptions, onReorderShortcuts, threads: [
       { ...thread('a'), favorite: true }, { ...thread('b'), favorite: true, shortcutOrder: 0 }, thread('c'),
     ] };
     render();
     const drawer = host.querySelector('aside.matter-sidebar')!;
-    expect(drawer.querySelector('.matter-drawer-brand')?.textContent).toContain('Pockymoe');
+    expect(drawer.querySelector('.matter-sidebar-heading')).toBeNull();
     expect(drawer.querySelector('button[aria-label="Open Explorer"]')).toBeNull();
-    expect(drawer.querySelector('a.matter-drawer-home')?.getAttribute('href')).toBe('/workspaces');
+    expect(drawer.querySelector('.matter-drawer-foot a[aria-label="All workspaces"]')?.getAttribute('href')).toBe('/workspaces');
     // Shortcuts start folded and need no reorder hint.
     const shortcuts = drawer.querySelector<HTMLButtonElement>('button.matter-section-heading')!;
     expect(shortcuts.getAttribute('aria-expanded')).toBe('false');
@@ -384,9 +403,9 @@ describe('one-handed phone dock', () => {
     act(() => [...more.querySelectorAll('button')].find(item => item.textContent === 'Thread map')!.click());
     expect(openThreadMap).toHaveBeenCalledTimes(1);
     expect(more.hasAttribute('data-open')).toBe(false);
-    // The drawer's thread map is its last item, under the thumb.
-    const map = [...drawer().querySelectorAll('button')].find(item => item.textContent === 'Thread map')!;
-    expect(drawer().lastElementChild).toBe(map);
+    // The drawer's thread map is in its foot row, under the thumb.
+    const map = drawer().querySelector<HTMLButtonElement>('.matter-drawer-foot button[aria-label="Thread map"]')!;
+    expect(drawer().lastElementChild).toBe(map.parentElement);
     act(() => map.click());
     expect(openThreadMap).toHaveBeenCalledTimes(2);
     nav = {};

@@ -285,6 +285,7 @@ export function MatterWorkbench({
   // On the desktop the tabs are the open conversations, like an editor's files.
   const desktopTabs = typeof window !== 'undefined' && !window.matchMedia('(max-width: 639px)').matches;
   const editorTabs = desktopTabs && o.openTabs?.length ? o.openTabs : null;
+  const phoneOpenTabs = !desktopTabs && o.openTabs?.length && o.onCloseTab ? o.openTabs : null;
   const rootOfOpen = (thread: WorkbenchThread) => thread.rootKey && thread.rootKey !== thread.key && (o.openTabs ?? []).some(tab => tab.key === thread.rootKey) ? thread.rootKey : thread.key;
   const [openOrder, setPendingOpenOrder] = usePendingOrder(groupThreads(o.openTabs ?? []).map(group => group.root.key));
   const tabStrip = editorTabs ? inOrder(editorTabs, rootOfOpen, openOrder) : tabs;
@@ -568,15 +569,18 @@ export function MatterWorkbench({
   }, []);
   // On the desktop the sidebar opens with shortcuts and this workspace; recent
   // chats wait folded, since the tabs hold the recently opened ones. A phone's
-  // drawer keeps its own defaults (shortcuts folded, recent chats open). Each
-  // fold is remembered per form factor.
-  const sectionsKey = `${SIDEBAR_SECTIONS_KEY}:${mobile ? 'phone' : 'desktop'}`;
-  const sectionDefaults = mobile ? { shortcuts: false, workspace: true, recents: true } : { shortcuts: true, workspace: true, recents: false };
+  // drawer opens with its open conversations (the desktop's tabs) and keeps the
+  // other lists folded to one line each; without open ones it lists this
+  // workspace and recent chats. Each fold is remembered per form factor.
+  const sectionsKey = `${SIDEBAR_SECTIONS_KEY}:${mobile ? (phoneOpenTabs ? 'phone-open' : 'phone') : 'desktop'}`;
+  const sectionDefaults = !mobile ? { open: true, shortcuts: true, workspace: true, recents: false }
+    : phoneOpenTabs ? { open: true, shortcuts: false, workspace: false, recents: false }
+    : { open: true, shortcuts: false, workspace: true, recents: true };
   const readSections = () => { try { return { ...sectionDefaults, ...JSON.parse(localStorage.getItem(sectionsKey) ?? '{}') }; } catch { return sectionDefaults; } };
-  const [sections, setSections] = useState<{ shortcuts: boolean; workspace: boolean; recents: boolean }>(readSections);
+  const [sections, setSections] = useState<{ open: boolean; shortcuts: boolean; workspace: boolean; recents: boolean }>(readSections);
   const [sectionsFor, setSectionsFor] = useState(sectionsKey);
   if (sectionsFor !== sectionsKey) { setSectionsFor(sectionsKey); setSections(readSections()); }
-  const fold = (section: 'shortcuts' | 'workspace' | 'recents', open: boolean) => setSections(current => {
+  const fold = (section: 'open' | 'shortcuts' | 'workspace' | 'recents', open: boolean) => setSections(current => {
     const next = { ...current, [section]: open };
     try { localStorage.setItem(sectionsKey, JSON.stringify(next)); } catch { /* Folds still hold for this visit. */ }
     return next;
@@ -585,7 +589,10 @@ export function MatterWorkbench({
   const setShortcutsOpen = (open: boolean) => fold('shortcuts', open);
   const setWorkspaceOpen = (open: boolean) => fold('workspace', open);
   const setRecentsOpen = (open: boolean) => fold('recents', open);
+  const openTabsOpen = sections.open;
   const [sheetRecentsOpen, setSheetRecentsOpen] = useState(true);
+  // The dock's thread sheet keeps its own folds: it is this workspace's list.
+  const [sheetWorkspaceOpen, setSheetWorkspaceOpen] = useState(true);
   // The desktop sidebar's width follows a drag on its edge, within bounds.
   const [sidebarWidth, setSidebarWidth] = useState<number | null>(() => {
     try { const stored = Number(localStorage.getItem(SIDEBAR_WIDTH_KEY)); return stored ? clampSidebar(stored) : null; } catch { return null; }
@@ -601,7 +608,7 @@ export function MatterWorkbench({
   const workspaceScroll = useMemo(() => ({ get current() { return workspaceListRef.current?.closest<HTMLElement>('.matter-sidebar-scroll') ?? null; } }), []);
   const sheetScroll = useMemo(() => ({ get current() { return sheetListRef.current?.closest<HTMLElement>('.matter-phone-sheet-body') ?? null; } }), []);
   useDragReorder(workspaceListRef, { axis: 'y', itemSelector: '.matter-thread-group-entry', enabled: reorderable && workspaceOpen && tabs.length > 1, onCommit: commitWorkspaceOrder, scrollRef: workspaceScroll });
-  useDragReorder(sheetListRef, { axis: 'y', itemSelector: '.matter-thread-group-entry', enabled: reorderable && workspaceOpen && threadsOpen && tabs.length > 1, onCommit: commitWorkspaceOrder, scrollRef: sheetScroll });
+  useDragReorder(sheetListRef, { axis: 'y', itemSelector: '.matter-thread-group-entry', enabled: reorderable && sheetWorkspaceOpen && threadsOpen && tabs.length > 1, onCommit: commitWorkspaceOrder, scrollRef: sheetScroll });
   const [bellOpen, setBellOpen] = useState(false);
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const toolbarToggleRef = useRef<HTMLButtonElement>(null);
@@ -809,8 +816,8 @@ export function MatterWorkbench({
     while (scroller && !(scroller.scrollHeight > scroller.clientHeight && /auto|scroll/.test(getComputedStyle(scroller).overflowY))) scroller = scroller.parentElement;
     if (scroller) scroller.scrollTop += drift;
   }, [agentsOpen]);
-  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { count: number; running: number; open: boolean }) => (
-    <div key={thread.key} className="matter-thread-entry">
+  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { count: number; running: number; open: boolean }, onClose?: () => void) => (
+    <div key={thread.key} className={`matter-thread-entry ${onClose ? 'is-closable' : ''}`}>
     <a
       href={thread.href}
       onClick={(e) => {
@@ -849,12 +856,14 @@ export function MatterWorkbench({
       <Bot aria-hidden="true" />{agents.count > 0 && <span>{agents.count}</span>}<ChevronRight className="matter-agent-toggle-chevron" aria-hidden="true" />
     </button>}
     {o.renderThreadMenu?.(thread)}
+    {onClose && <button type="button" className="matter-thread-close" aria-label={translate('workbench.closeTab', { title: thread.title })}
+      title={translate('workbench.closeTab', { title: thread.title })} onClick={onClose}><X aria-hidden="true" /></button>}
     </div>
   );
-  const renderThreadGroups = (threads: WorkbenchThread[], reorder = false) => groupThreads(threads).map(({ root, children }) => {
+  const renderThreadGroups = (threads: WorkbenchThread[], reorder = false, onClose?: (rootKey: string) => void) => groupThreads(threads).map(({ root, children }) => {
     const open = agentsOpen[root.key] ?? children.some(child => child.key === o.currentKey);
     return <div key={root.key} className="matter-thread-group-entry" data-reorder-key={reorder ? root.key : undefined}>
-      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.filter(child => !child.closedAt).length, running: children.filter(child => !child.closedAt && child.status === 'running').length, open } : undefined)}
+      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.filter(child => !child.closedAt).length, running: children.filter(child => !child.closedAt && child.status === 'running').length, open } : undefined, onClose ? () => onClose(root.key) : undefined)}
       {children.length > 0 && open && <div className="matter-agent-children" role="group" aria-label={translate('workbench.agentThreads_187f89', { value1: root.title })}>
         {children.map(child => renderThread(child))}
       </div>}
@@ -1015,7 +1024,8 @@ export function MatterWorkbench({
         {/* This workspace's threads come first and take at most half the height;
             recent chats from everywhere follow right after. Each scrolls on its own. */}
         <div className={`matter-sidebar-upper ${recentThreads.length && recentsOpen ? '' : 'is-alone'}`}>
-        <div className="matter-sidebar-heading">
+        {/* A phone's drawer closes from its scrim or a swipe: no heading row. */}
+        {(!mobile || o.sidebarHeader) && <div className="matter-sidebar-heading">
           {o.sidebarHeader ?? (dock
             ? <span className="matter-drawer-brand"><b aria-hidden="true">p<i>m</i></b>Pockymoe</span>
             : <span>{translate("workbench.workspace")}</span>)}
@@ -1026,16 +1036,31 @@ export function MatterWorkbench({
           >
             <X data-icon="close" />
           </button>
-        </div>
+        </div>}
         {/* The drawer's one way out, when the top bar has no Home. Chat needs no
-            button here: the top bar's Terminal and Files buttons toggle back to it. */}
-        {(dock || drawerTools) && homeHref && (
+            button here: the top bar's Terminal and Files buttons toggle back to it.
+            A phone has it at the foot, with the thread map. */}
+        {!mobile && (dock || drawerTools) && homeHref && (
           <a className="matter-drawer-home" href={homeHref} onClick={goHome}>
             <Home data-icon="home" /><span>{translate("workbench.allWorkspaces")}</span><ChevronRight aria-hidden="true" />
           </a>
         )}
         <div className="matter-sidebar-scroll">
         {o.sidebarLeading}
+        {/* A phone's drawer starts with the conversations opened in this
+            browser, like the desktop's tabs: ✕ takes one off the list. */}
+        {phoneOpenTabs && <>
+          <button className="matter-section-heading" aria-expanded={openTabsOpen} onClick={() => fold('open', !openTabsOpen)}>
+            {openTabsOpen ? <ChevronDown /> : <ChevronRight />}
+            <span>{translate('workbench.openConversations')}</span>
+            <span className="matter-section-count">{groupThreads(phoneOpenTabs).length}</span>
+          </button>
+          {openTabsOpen && (
+            <div className="matter-thread-section" data-testid="open-conversations">
+              {renderThreadGroups(phoneOpenTabs, false, o.onCloseTab)}
+            </div>
+          )}
+        </>}
         {/* Saving or reading the conversation lists failed: a mark after the
             first heading; the lists keep what they last showed. */}
         {o.error ? (
@@ -1093,13 +1118,15 @@ export function MatterWorkbench({
             </div>
           )}
         </div>}
-        {mobile && o.railBottomLeading ? <div className="matter-sidebar-host-actions">{o.railBottomLeading}</div> : null}
-        {/* On a phone the thread map sits at the drawer's foot, under the thumb. */}
-        {mobile && openThreadMap ? (
-          <button type="button" className="matter-drawer-home matter-drawer-map" onClick={() => { setSidebarOpen(false); openThreadMap(); }}>
-            <LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span><ChevronRight aria-hidden="true" />
-          </button>
-        ) : !dock && <div className="matter-sidebar-footer">
+        {/* On a phone the drawer's destinations sit in one row at its foot,
+            under the thumb: all workspaces (when the top bar has no Home), the
+            thread map, the host's own. */}
+        {mobile ? (((dock || drawerTools) && homeHref) || openThreadMap || o.railBottomLeading) && <div className="matter-drawer-foot">
+          {(dock || drawerTools) && homeHref && <a href={homeHref} onClick={goHome} aria-label={translate('workbench.allWorkspaces')} title={translate('workbench.allWorkspaces')}><Home data-icon="home" /></a>}
+          {openThreadMap && <button type="button" aria-label={translate('workbench.threadMap')} title={translate('workbench.threadMap')} onClick={() => { setSidebarOpen(false); openThreadMap(); }}>
+            <LayoutDashboard data-icon="thread-map" /></button>}
+          {o.railBottomLeading ? <div className="matter-sidebar-host-actions">{o.railBottomLeading}</div> : null}
+        </div> : !dock && <div className="matter-sidebar-footer">
           {translate("workbench.yourConversationsTogether")}</div>}
       </aside>}
       <main className="matter-main">
@@ -1209,12 +1236,12 @@ export function MatterWorkbench({
         <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
           footer={newThread}>
           {/* Both sections fold; this workspace's conversations keep the order dragged into them. */}
-          <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={workspaceOpen} onClick={() => setWorkspaceOpen(!workspaceOpen)}>
-            {workspaceOpen ? <ChevronDown /> : <ChevronRight />}
+          <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={sheetWorkspaceOpen} onClick={() => setSheetWorkspaceOpen(!sheetWorkspaceOpen)}>
+            {sheetWorkspaceOpen ? <ChevronDown /> : <ChevronRight />}
             <span>{translate('workbench.thisWorkspace')}</span>
             <span className="matter-section-count">{groupThreads(tabs).length}</span>
           </button>
-          {workspaceOpen && <div ref={sheetListRef} className="matter-thread-section" data-testid="sheet-workspace-threads">{renderThreadGroups(reorderable ? tabs : [...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)), reorderable)}</div>}
+          {sheetWorkspaceOpen && <div ref={sheetListRef} className="matter-thread-section" data-testid="sheet-workspace-threads">{renderThreadGroups(reorderable ? tabs : [...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)), reorderable)}</div>}
           {o.threads.some(thread => !tabs.some(tab => tab.key === thread.key)) && <>
             <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={sheetRecentsOpen} onClick={() => setSheetRecentsOpen(!sheetRecentsOpen)}>
               {sheetRecentsOpen ? <ChevronDown /> : <ChevronRight />}

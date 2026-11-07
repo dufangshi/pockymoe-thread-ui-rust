@@ -1089,6 +1089,30 @@
 .matter-thread-entry { display: flex; align-items: center; min-width: 0; position: relative; }
 .matter-thread-entry > .matter-thread-row { flex: 1; min-width: 0; padding-right: 32px; }
 .matter-thread-entry > .recent-thread-actions { position: absolute; right: 3px; }
+/* An open conversation in a phone's drawer: ✕ at the end takes it off the list;
+   its menu and agent count move left to make room. */
+.thread-ui-shell .matter-workbench .matter-thread-entry.is-closable > .matter-thread-row { padding-right: 72px; }
+.thread-ui-shell .matter-workbench .matter-thread-entry.is-closable:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 108px; }
+.thread-ui-shell .matter-workbench .matter-thread-entry.is-closable > .recent-thread-actions { right: 37px; }
+.thread-ui-shell .matter-workbench .matter-thread-entry.is-closable > .matter-agent-toggle { right: 72px; }
+.thread-ui-shell .matter-workbench .matter-thread-close {
+  position: absolute; right: 3px; display: grid; place-items: center; width: 32px; height: 36px;
+  border: 0; border-radius: 7px; background: transparent; color: var(--theme-fg-muted);
+}
+.thread-ui-shell .matter-workbench .matter-thread-close:active { background: var(--theme-hover); color: var(--theme-fg); }
+.matter-thread-close > svg { width: 15px; height: 15px; }
+/* A phone drawer's foot: its destinations in one row of icons, under the thumb. */
+.thread-ui-shell .matter-workbench .matter-drawer-foot {
+  display: flex; flex: none; align-items: center; gap: 8px; margin-top: auto; padding-top: 8px;
+  border-top: 1px solid var(--theme-border);
+}
+.thread-ui-shell .matter-workbench .matter-drawer-foot > :is(a, button) {
+  display: grid; place-items: center; width: 44px; height: 44px;
+  border: 1px solid var(--theme-border); border-radius: 12px; background: var(--theme-surface); color: var(--theme-fg-muted);
+}
+.thread-ui-shell .matter-workbench .matter-drawer-foot > :is(a, button):active { background: var(--theme-hover); color: var(--theme-fg); }
+.matter-drawer-foot > :is(a, button) > svg { width: 20px; height: 20px; }
+.thread-ui-shell .matter-workbench .matter-drawer-foot > .matter-sidebar-host-actions { margin-left: auto; padding: 0; }
 /* A conversation's agent threads: a small robot and count inside its row, left
    of its menu; they open under the row, on a guide line. */
 .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 70px; }

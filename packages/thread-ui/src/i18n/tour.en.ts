@@ -1,4 +1,10 @@
 export const tourEn = {
+  // Keep keys consumed by Web clients pinned before the tutorial redesign.
+  "tour.openWorkspaces": "Open workspaces",
+  "tour.openDevices": "Open devices",
+  "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.",
+  "tour.devices.list.prereq": "No workspace yet. Add one first, then come back.",
+  "tour.threads.thread.prereq": "Open any thread first (Workspaces → pick a workspace → a thread). The tour continues here.",
   "tour.entry": "Tutorial",
   "tour.hubTitle": "Tutorial",
   "tour.hubDescription": "The tutorial runs on a sample device, so click and send freely: everything stays in this page and never touches your devices or conversations. Closing it returns you to where you were.",

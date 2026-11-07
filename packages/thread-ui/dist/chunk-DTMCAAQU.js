@@ -1367,6 +1367,12 @@ var searchEn = {
 
 // src/i18n/tour.en.ts
 var tourEn = {
+  // Keep keys consumed by Web clients pinned before the tutorial redesign.
+  "tour.openWorkspaces": "Open workspaces",
+  "tour.openDevices": "Open devices",
+  "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.",
+  "tour.devices.list.prereq": "No workspace yet. Add one first, then come back.",
+  "tour.threads.thread.prereq": "Open any thread first (Workspaces \u2192 pick a workspace \u2192 a thread). The tour continues here.",
   "tour.entry": "Tutorial",
   "tour.hubTitle": "Tutorial",
   "tour.hubDescription": "The tutorial runs on a sample device, so click and send freely: everything stays in this page and never touches your devices or conversations. Closing it returns you to where you were.",
@@ -6545,6 +6551,12 @@ var searchZhCN = {
 
 // src/i18n/tour.zh-CN.ts
 var tourZhCN = {
+  // Keep keys consumed by Web clients pinned before the tutorial redesign.
+  "tour.openWorkspaces": "\u524D\u5F80\u5DE5\u4F5C\u533A",
+  "tour.openDevices": "\u524D\u5F80\u8BBE\u5907\u7BA1\u7406",
+  "tour.devices.relayList.prereq": "\u8FD8\u6CA1\u6709\u8BBE\u5907\u3002\u8BF7\u5148\u6DFB\u52A0\u8BBE\u5907\u5E76\u8FD0\u884C\u5B89\u88C5\u547D\u4EE4\u3002",
+  "tour.devices.list.prereq": "\u8FD8\u6CA1\u6709\u5DE5\u4F5C\u533A\u3002\u8BF7\u5148\u6DFB\u52A0\u4E00\u4E2A\u518D\u56DE\u6765\u3002",
+  "tour.threads.thread.prereq": "\u8BF7\u5148\u6253\u5F00\u4EFB\u610F\u5BF9\u8BDD\uFF08\u5DE5\u4F5C\u533A\u5217\u8868 \u2192 \u9009\u62E9\u5DE5\u4F5C\u533A \u2192 \u5BF9\u8BDD\uFF09\uFF0C\u6559\u7A0B\u4F1A\u5728\u8FD9\u91CC\u7EE7\u7EED\u3002",
   "tour.entry": "\u5F15\u5BFC\u6559\u7A0B",
   "tour.hubTitle": "\u4F7F\u7528\u6559\u7A0B",
   "tour.hubDescription": "\u6559\u7A0B\u5728\u4E00\u53F0\u6837\u4F8B\u8BBE\u5907\u4E0A\u6F14\u793A\uFF0C\u53EF\u4EE5\u653E\u5FC3\u70B9\u3001\u653E\u5FC3\u53D1\uFF1A\u6240\u6709\u64CD\u4F5C\u53EA\u53D1\u751F\u5728\u8FD9\u4E2A\u9875\u9762\u91CC\uFF0C\u4E0D\u4F1A\u78B0\u4F60\u7684\u8BBE\u5907\u548C\u5BF9\u8BDD\u3002\u5173\u95ED\u6559\u7A0B\u540E\u56DE\u5230\u539F\u6765\u7684\u9875\u9762\u3002",

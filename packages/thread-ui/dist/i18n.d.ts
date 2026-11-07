@@ -258,6 +258,11 @@ declare const en: {
         readonly one: "{{count}} day ago";
         readonly other: "{{count}} days ago";
     };
+    readonly "tour.openWorkspaces": "Open workspaces";
+    readonly "tour.openDevices": "Open devices";
+    readonly "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.";
+    readonly "tour.devices.list.prereq": "No workspace yet. Add one first, then come back.";
+    readonly "tour.threads.thread.prereq": "Open any thread first (Workspaces → pick a workspace → a thread). The tour continues here.";
     readonly "tour.entry": "Tutorial";
     readonly "tour.hubTitle": "Tutorial";
     readonly "tour.hubDescription": "The tutorial runs on a sample device, so click and send freely: everything stays in this page and never touches your devices or conversations. Closing it returns you to where you were.";
@@ -5524,6 +5529,11 @@ declare const zhCN: {
         one: string;
         other: string;
     };
+    "tour.openWorkspaces": "前往工作区";
+    "tour.openDevices": "前往设备管理";
+    "tour.devices.relayList.prereq": "还没有设备。请先添加设备并运行安装命令。";
+    "tour.devices.list.prereq": "还没有工作区。请先添加一个再回来。";
+    "tour.threads.thread.prereq": "请先打开任意对话（工作区列表 → 选择工作区 → 对话），教程会在这里继续。";
     "tour.entry": "引导教程";
     "tour.hubTitle": "使用教程";
     "tour.hubDescription": "教程在一台样例设备上演示，可以放心点、放心发：所有操作只发生在这个页面里，不会碰你的设备和对话。关闭教程后回到原来的页面。";
@@ -10812,6 +10822,11 @@ declare const resources: {
             readonly one: "{{count}} day ago";
             readonly other: "{{count}} days ago";
         };
+        readonly "tour.openWorkspaces": "Open workspaces";
+        readonly "tour.openDevices": "Open devices";
+        readonly "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.";
+        readonly "tour.devices.list.prereq": "No workspace yet. Add one first, then come back.";
+        readonly "tour.threads.thread.prereq": "Open any thread first (Workspaces → pick a workspace → a thread). The tour continues here.";
         readonly "tour.entry": "Tutorial";
         readonly "tour.hubTitle": "Tutorial";
         readonly "tour.hubDescription": "The tutorial runs on a sample device, so click and send freely: everything stays in this page and never touches your devices or conversations. Closing it returns you to where you were.";
@@ -16077,6 +16092,11 @@ declare const resources: {
             one: string;
             other: string;
         };
+        "tour.openWorkspaces": "前往工作区";
+        "tour.openDevices": "前往设备管理";
+        "tour.devices.relayList.prereq": "还没有设备。请先添加设备并运行安装命令。";
+        "tour.devices.list.prereq": "还没有工作区。请先添加一个再回来。";
+        "tour.threads.thread.prereq": "请先打开任意对话（工作区列表 → 选择工作区 → 对话），教程会在这里继续。";
         "tour.entry": "引导教程";
         "tour.hubTitle": "使用教程";
         "tour.hubDescription": "教程在一台样例设备上演示，可以放心点、放心发：所有操作只发生在这个页面里，不会碰你的设备和对话。关闭教程后回到原来的页面。";

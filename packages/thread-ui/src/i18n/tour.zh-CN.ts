@@ -1,4 +1,10 @@
 export const tourZhCN = {
+  // Keep keys consumed by Web clients pinned before the tutorial redesign.
+  "tour.openWorkspaces": "前往工作区",
+  "tour.openDevices": "前往设备管理",
+  "tour.devices.relayList.prereq": "还没有设备。请先添加设备并运行安装命令。",
+  "tour.devices.list.prereq": "还没有工作区。请先添加一个再回来。",
+  "tour.threads.thread.prereq": "请先打开任意对话（工作区列表 → 选择工作区 → 对话），教程会在这里继续。",
   "tour.entry": "引导教程",
   "tour.hubTitle": "使用教程",
   "tour.hubDescription": "教程在一台样例设备上演示，可以放心点、放心发：所有操作只发生在这个页面里，不会碰你的设备和对话。关闭教程后回到原来的页面。",

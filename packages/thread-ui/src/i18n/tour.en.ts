@@ -48,6 +48,7 @@ export const tourEn = {
 
   "tour.devices.relayAdd.title": "Add a device",
   "tour.devices.relayAdd.body": "Each computer that runs agents gets its own device token. Click Add device to open the form.",
+  "tour.devices.relayAddDesktop.body": "Click Add device; in the window that opens, name the device and create a token to get a macOS/Linux and a Windows command. Run it on that computer to connect it. Close the window and the tour goes on. The tutorial never creates tokens for you.",
   "tour.devices.relayForm.title": "Create a token, run the command",
   "tour.devices.relayForm.body": "Name the device and click Create token. You then get a macOS/Linux and a Windows command; run it on that computer to connect its Supervisor. The tutorial never creates tokens for you.",
   "tour.devices.relayForm.prereq": "Click Add device to open the form.",

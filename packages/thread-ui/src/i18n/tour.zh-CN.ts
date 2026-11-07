@@ -48,6 +48,7 @@ export const tourZhCN = {
 
   "tour.devices.relayAdd.title": "添加设备",
   "tour.devices.relayAdd.body": "每台运行 Agent 的电脑都有自己的设备令牌。点击「添加设备」打开表单。",
+  "tour.devices.relayAddDesktop.body": "点击「添加设备」，在弹出的窗口里填写设备名称并创建令牌，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。关闭窗口后教程继续。教程不会替你创建令牌。",
   "tour.devices.relayForm.title": "创建令牌，运行安装命令",
   "tour.devices.relayForm.body": "填写设备名称并点击「创建令牌」，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。教程不会替你创建令牌。",
   "tour.devices.relayForm.prereq": "先点击「添加设备」打开表单。",

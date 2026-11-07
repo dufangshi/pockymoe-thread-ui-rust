@@ -305,6 +305,7 @@ declare const en: {
     readonly "tour.chapter.moreHint": "Schedules, subagents, alerts";
     readonly "tour.devices.relayAdd.title": "Add a device";
     readonly "tour.devices.relayAdd.body": "Each computer that runs agents gets its own device token. Click Add device to open the form.";
+    readonly "tour.devices.relayAddDesktop.body": "Click Add device; in the window that opens, name the device and create a token to get a macOS/Linux and a Windows command. Run it on that computer to connect it. Close the window and the tour goes on. The tutorial never creates tokens for you.";
     readonly "tour.devices.relayForm.title": "Create a token, run the command";
     readonly "tour.devices.relayForm.body": "Name the device and click Create token. You then get a macOS/Linux and a Windows command; run it on that computer to connect its Supervisor. The tutorial never creates tokens for you.";
     readonly "tour.devices.relayForm.prereq": "Click Add device to open the form.";
@@ -5570,6 +5571,7 @@ declare const zhCN: {
     "tour.chapter.moreHint": "计划、子智能体、提醒";
     "tour.devices.relayAdd.title": "添加设备";
     "tour.devices.relayAdd.body": "每台运行 Agent 的电脑都有自己的设备令牌。点击「添加设备」打开表单。";
+    "tour.devices.relayAddDesktop.body": "点击「添加设备」，在弹出的窗口里填写设备名称并创建令牌，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。关闭窗口后教程继续。教程不会替你创建令牌。";
     "tour.devices.relayForm.title": "创建令牌，运行安装命令";
     "tour.devices.relayForm.body": "填写设备名称并点击「创建令牌」，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。教程不会替你创建令牌。";
     "tour.devices.relayForm.prereq": "先点击「添加设备」打开表单。";
@@ -10857,6 +10859,7 @@ declare const resources: {
         readonly "tour.chapter.moreHint": "Schedules, subagents, alerts";
         readonly "tour.devices.relayAdd.title": "Add a device";
         readonly "tour.devices.relayAdd.body": "Each computer that runs agents gets its own device token. Click Add device to open the form.";
+        readonly "tour.devices.relayAddDesktop.body": "Click Add device; in the window that opens, name the device and create a token to get a macOS/Linux and a Windows command. Run it on that computer to connect it. Close the window and the tour goes on. The tutorial never creates tokens for you.";
         readonly "tour.devices.relayForm.title": "Create a token, run the command";
         readonly "tour.devices.relayForm.body": "Name the device and click Create token. You then get a macOS/Linux and a Windows command; run it on that computer to connect its Supervisor. The tutorial never creates tokens for you.";
         readonly "tour.devices.relayForm.prereq": "Click Add device to open the form.";
@@ -16121,6 +16124,7 @@ declare const resources: {
         "tour.chapter.moreHint": "计划、子智能体、提醒";
         "tour.devices.relayAdd.title": "添加设备";
         "tour.devices.relayAdd.body": "每台运行 Agent 的电脑都有自己的设备令牌。点击「添加设备」打开表单。";
+        "tour.devices.relayAddDesktop.body": "点击「添加设备」，在弹出的窗口里填写设备名称并创建令牌，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。关闭窗口后教程继续。教程不会替你创建令牌。";
         "tour.devices.relayForm.title": "创建令牌，运行安装命令";
         "tour.devices.relayForm.body": "填写设备名称并点击「创建令牌」，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。教程不会替你创建令牌。";
         "tour.devices.relayForm.prereq": "先点击「添加设备」打开表单。";

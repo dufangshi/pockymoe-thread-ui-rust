@@ -1,6 +1,6 @@
 import { translate, useI18n } from '../i18n';
 import { SettingsDialog } from "./SettingsDialog";
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ChevronsLeft,
@@ -55,7 +55,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "./graph-ui/Dialog";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "./graph-ui/Tooltip";
@@ -523,6 +522,8 @@ export function ThreadWorkspaceLayout({
   const [draftTitle, setDraftTitle] = useState("");
   const [renamingThreadId, setRenamingThreadId] = useState<string | null>(null);
   const [createThreadDialogOpen, setCreateThreadDialogOpen] = useState(false);
+  const createThreadDialogId = useId();
+  const createThreadTrigger = useRef<HTMLButtonElement | null>(null);
   const [newThreadTitleDraft, setNewThreadTitleDraft] = useState("");
   const [creatingThread, setCreatingThread] = useState(false);
   const [topbarDetailsOpen, setTopbarDetailsOpen] = useState(false);
@@ -723,37 +724,57 @@ export function ThreadWorkspaceLayout({
       </>
     );
 
+    // The workbench repeats and publishes this slot outside its page tree.
+    // Plain triggers share one portal below and remember the actual opener.
+    return (
+      <button
+        type="button"
+        aria-label={compact ? newThreadLabel : undefined}
+        aria-haspopup="dialog"
+        aria-expanded={createThreadDialogOpen}
+        aria-controls={createThreadDialogId}
+        title={newThreadLabel}
+        className={className}
+        onClick={(event) => {
+          createThreadTrigger.current = event.currentTarget;
+          setCreateThreadDialogOpen(true);
+        }}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  function renderNewThreadDialog() {
     return (
       <Dialog
         open={createThreadDialogOpen}
         onOpenChange={(open) => {
-          if (!creatingThread) {
-            setCreateThreadDialogOpen(open);
-          }
+          if (!creatingThread) setCreateThreadDialogOpen(open);
         }}
       >
-        <DialogTrigger asChild>
-          <button
-            type="button"
-            aria-label={compact ? newThreadLabel : undefined}
-            title={newThreadLabel}
-            className={className}
-          >
-            {content}
-          </button>
-        </DialogTrigger>
         <DialogContent
+          id={createThreadDialogId}
           data-testid="create-thread-dialog"
+          overlayClassName="thread-graph-create-thread-overlay"
+          {...(renderNewThreadDialogContent ? { 'aria-describedby': undefined } : {})}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            if (createThreadTrigger.current?.isConnected) createThreadTrigger.current.focus();
+          }}
           data-theme-effective={effectiveTheme}
           data-theme-mode={themeMode}
           className="thread-graph-create-thread-dialog thread-graph-dialog max-h-[min(86vh,42rem)] overflow-hidden p-4 sm:max-w-[34rem]"
         >
           {renderNewThreadDialogContent ? (
-            renderNewThreadDialogContent({
-              close: closeCreateThreadDialog,
-              closeNavigation: closeNavigationSurfaces,
-              currentWorkspaceId,
-            })
+            <>
+              <DialogTitle className="sr-only">{translate("files.createNewChat")}</DialogTitle>
+              {renderNewThreadDialogContent({
+                close: closeCreateThreadDialog,
+                closeNavigation: closeNavigationSurfaces,
+                currentWorkspaceId,
+              })}
+            </>
           ) : (
             <>
               <DialogHeader>
@@ -1032,6 +1053,7 @@ export function ThreadWorkspaceLayout({
         explorer={workspaceContent} revealExplorer={workspaceRevealRequestKey ?? 0}>
         {children}
       </MatterWorkbench>
+      {renderNewThreadDialog()}
       <RenameDialog open={editingThreadId !== null} title={translate("files.renameThread_c51d25")} label={translate("files.threadTitle")} value={draftTitle} busy={renamingThreadId !== null} onChange={setDraftTitle} onCancel={cancelRenameThread} onSubmit={() => editingThreadId ? handleRenameThread(editingThreadId) : undefined} />
     </GraphChatShellRoot>;
   }
@@ -1348,6 +1370,7 @@ export function ThreadWorkspaceLayout({
         </GraphChatShellFrame>
       </GraphChatShellRoot>
 
+      {renderNewThreadDialog()}
       <RenameDialog
         open={editingThreadId !== null}
         title={translate("files.renameThread_c51d25")}

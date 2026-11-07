@@ -7,6 +7,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ThreadWorkspaceLayout } from './ThreadWorkspaceLayout';
+import { PersistentWorkbenchNavigation } from './MatterWorkbench';
 
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
@@ -351,6 +352,48 @@ describe('ThreadWorkspaceLayout', () => {
     expect(element.querySelector('.thread-shell-frame')?.className).toContain(
       'is-rail-hidden',
     );
+  });
+});
+
+describe('single New Chat dialog', () => {
+  it.each([
+    { layout: 'legacy', mobile: false },
+    { layout: 'legacy', mobile: true },
+    { layout: 'workbench', mobile: false },
+    { layout: 'workbench', mobile: true },
+    { layout: 'persistent', mobile: false },
+  ])('opens one accessible form and restores each opener ($layout, mobile=$mobile)', async ({ layout, mobile }) => {
+    mockViewport(mobile);
+    Element.prototype.scrollIntoView = vi.fn();
+    localStorage.setItem('pockymoe.phoneDock', 'off');
+    const thread = { key: 'local:one', title: 'Thread', subtitle: 'Thread', status: 'idle' as const, href: '/threads/one', favorite: false };
+    const workbench = layout === 'legacy' ? undefined : {
+      threads: [thread], workspaceThreads: [thread], currentKey: thread.key, activeView: 'chat' as const, terminalEnabled: false,
+      onViewChange() {}, onSearch() {}, workspacePath: '', favorite: false,
+      onToggleFavorite() {}, onNavigate() {}, notifications: [], unreadCount: 0, onReadNotifications() {},
+    };
+    const page = <ThreadWorkspaceLayout threads={[]} status={null} {...(workbench ? { workbench } : {})}
+      renderNewThreadDialogContent={({ close }) => <form>
+        <input aria-label="Creation draft" />
+        <button type="button" onClick={close}>Cancel creation</button>
+      </form>}><p>Conversation</p></ThreadWorkspaceLayout>;
+    await act(async () => { render(layout === 'persistent' ? <PersistentWorkbenchNavigation>{page}</PersistentWorkbenchNavigation> : page); });
+    const triggers = [...document.querySelectorAll<HTMLButtonElement>('button[title="New Chat"]')];
+    expect(triggers.length).toBeGreaterThan(0);
+    if (layout === 'workbench' && !mobile) expect(triggers).toHaveLength(2);
+    for (const trigger of triggers) {
+      await act(async () => { trigger.focus(); trigger.click(); });
+      const dialogs = document.querySelectorAll<HTMLElement>('[data-testid="create-thread-dialog"]');
+      expect(dialogs).toHaveLength(1);
+      const dialog = dialogs[0]!;
+      expect(dialog.getAttribute('aria-hidden')).not.toBe('true');
+      expect(document.getElementById(trigger.getAttribute('aria-controls')!)).toBe(dialog);
+      expect(document.getElementById(dialog.getAttribute('aria-labelledby')!)?.textContent).toBe('Create New Chat');
+      expect(document.activeElement).toBe(dialog.querySelector('input'));
+      await act(async () => { dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })); });
+      expect(document.querySelector('[data-testid="create-thread-dialog"]')).toBeNull();
+      await vi.waitFor(() => expect(document.activeElement).toBe(trigger));
+    }
   });
 });
 

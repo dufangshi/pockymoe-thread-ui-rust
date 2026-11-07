@@ -1,5 +1,6 @@
 export const tourZhCN = {
   // Keep keys consumed by Web clients pinned before the tutorial redesign.
+  "tour.devices.relayWorkspaces.prereq": "工作区属于某台设备，请先连接一台在线设备。",
   "tour.openWorkspaces": "前往工作区",
   "tour.openDevices": "前往设备管理",
   "tour.devices.relayList.prereq": "还没有设备。请先添加设备并运行安装命令。",

@@ -258,6 +258,7 @@ declare const en: {
         readonly one: "{{count}} day ago";
         readonly other: "{{count}} days ago";
     };
+    readonly "tour.devices.relayWorkspaces.prereq": "Workspaces belong to a device. Connect to an online device first.";
     readonly "tour.openWorkspaces": "Open workspaces";
     readonly "tour.openDevices": "Open devices";
     readonly "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.";
@@ -5529,6 +5530,7 @@ declare const zhCN: {
         one: string;
         other: string;
     };
+    "tour.devices.relayWorkspaces.prereq": "工作区属于某台设备，请先连接一台在线设备。";
     "tour.openWorkspaces": "前往工作区";
     "tour.openDevices": "前往设备管理";
     "tour.devices.relayList.prereq": "还没有设备。请先添加设备并运行安装命令。";
@@ -10822,6 +10824,7 @@ declare const resources: {
             readonly one: "{{count}} day ago";
             readonly other: "{{count}} days ago";
         };
+        readonly "tour.devices.relayWorkspaces.prereq": "Workspaces belong to a device. Connect to an online device first.";
         readonly "tour.openWorkspaces": "Open workspaces";
         readonly "tour.openDevices": "Open devices";
         readonly "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.";
@@ -16092,6 +16095,7 @@ declare const resources: {
             one: string;
             other: string;
         };
+        "tour.devices.relayWorkspaces.prereq": "工作区属于某台设备，请先连接一台在线设备。";
         "tour.openWorkspaces": "前往工作区";
         "tour.openDevices": "前往设备管理";
         "tour.devices.relayList.prereq": "还没有设备。请先添加设备并运行安装命令。";

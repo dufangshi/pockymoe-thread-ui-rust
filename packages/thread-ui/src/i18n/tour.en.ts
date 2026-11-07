@@ -1,5 +1,6 @@
 export const tourEn = {
   // Keep keys consumed by Web clients pinned before the tutorial redesign.
+  "tour.devices.relayWorkspaces.prereq": "Workspaces belong to a device. Connect to an online device first.",
   "tour.openWorkspaces": "Open workspaces",
   "tour.openDevices": "Open devices",
   "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.",

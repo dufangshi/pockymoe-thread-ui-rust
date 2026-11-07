@@ -1368,6 +1368,7 @@ var searchEn = {
 // src/i18n/tour.en.ts
 var tourEn = {
   // Keep keys consumed by Web clients pinned before the tutorial redesign.
+  "tour.devices.relayWorkspaces.prereq": "Workspaces belong to a device. Connect to an online device first.",
   "tour.openWorkspaces": "Open workspaces",
   "tour.openDevices": "Open devices",
   "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.",
@@ -6552,6 +6553,7 @@ var searchZhCN = {
 // src/i18n/tour.zh-CN.ts
 var tourZhCN = {
   // Keep keys consumed by Web clients pinned before the tutorial redesign.
+  "tour.devices.relayWorkspaces.prereq": "\u5DE5\u4F5C\u533A\u5C5E\u4E8E\u67D0\u53F0\u8BBE\u5907\uFF0C\u8BF7\u5148\u8FDE\u63A5\u4E00\u53F0\u5728\u7EBF\u8BBE\u5907\u3002",
   "tour.openWorkspaces": "\u524D\u5F80\u5DE5\u4F5C\u533A",
   "tour.openDevices": "\u524D\u5F80\u8BBE\u5907\u7BA1\u7406",
   "tour.devices.relayList.prereq": "\u8FD8\u6CA1\u6709\u8BBE\u5907\u3002\u8BF7\u5148\u6DFB\u52A0\u8BBE\u5907\u5E76\u8FD0\u884C\u5B89\u88C5\u547D\u4EE4\u3002",

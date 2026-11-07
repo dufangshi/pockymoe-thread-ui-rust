@@ -56,7 +56,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-D4FU4LB3.js";
+} from "./chunk-ZGTPBVLM.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -86,7 +86,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-XGUDFUC5.js";
+} from "./chunk-YYLBMIIN.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -2608,7 +2608,11 @@ var syntax = {
   text: { 92: { name: "latexMath", tokenize: tokenizer(false) } },
   // Block parsing must precede setext headings, lists and blank paragraphs.
   flow: {
-    36: { name: "latexMathFlow", tokenize: tokenizer(true, true), concrete: true },
+    36: {
+      name: "latexMathFlow",
+      tokenize: tokenizer(true, true),
+      concrete: true
+    },
     92: { name: "latexMathFlow", tokenize: tokenizer(true), concrete: true }
   }
 };

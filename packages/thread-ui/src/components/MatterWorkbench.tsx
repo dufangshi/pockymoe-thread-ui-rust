@@ -119,6 +119,9 @@ export interface WorkbenchToolPanel {
 export interface MatterWorkbenchOptions {
   /** Optional host surface additions; absent in the browser workbench. */
   sidebarHeader?: ReactNode;
+  /** The sidebar's foot on a computer, in place of its note: e.g. this
+      conversation's device and its monitor. */
+  sidebarFooter?: ReactNode;
   sidebarLeading?: ReactNode;
   railLeading?: ReactNode;
   /** Host actions immediately above the final bottom rail control. */
@@ -1126,8 +1129,8 @@ export function MatterWorkbench({
           {openThreadMap && <button type="button" aria-label={translate('workbench.threadMap')} title={translate('workbench.threadMap')} onClick={() => { setSidebarOpen(false); openThreadMap(); }}>
             <LayoutDashboard data-icon="thread-map" /></button>}
           {o.railBottomLeading ? <div className="matter-sidebar-host-actions">{o.railBottomLeading}</div> : null}
-        </div> : !dock && <div className="matter-sidebar-footer">
-          {translate("workbench.yourConversationsTogether")}</div>}
+        </div> : !dock && (o.sidebarFooter ? <div className="matter-sidebar-device">{o.sidebarFooter}</div> : <div className="matter-sidebar-footer">
+          {translate("workbench.yourConversationsTogether")}</div>)}
       </aside>}
       <main className="matter-main">
         {!hostedNavigation && !mobile && !sidebarHidden && <div role="separator" aria-orientation="vertical" tabIndex={0} className="matter-sidebar-resize"

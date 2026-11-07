@@ -413,6 +413,9 @@ interface WorkbenchToolPanel {
 interface MatterWorkbenchOptions {
     /** Optional host surface additions; absent in the browser workbench. */
     sidebarHeader?: ReactNode;
+    /** The sidebar's foot on a computer, in place of its note: e.g. this
+        conversation's device and its monitor. */
+    sidebarFooter?: ReactNode;
     sidebarLeading?: ReactNode;
     railLeading?: ReactNode;
     /** Host actions immediately above the final bottom rail control. */

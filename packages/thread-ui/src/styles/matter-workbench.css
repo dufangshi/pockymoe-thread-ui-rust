@@ -582,6 +582,19 @@
   font-size: 11px;
   color: var(--theme-fg-muted);
 }
+/* A computer's sidebar ends with the conversation's device: one quiet row. */
+.matter-sidebar-device {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-top: auto;
+  padding: 8px 8px 0;
+  border-top: 1px solid var(--theme-border);
+  font-size: 11px;
+  color: var(--theme-fg-muted);
+}
 .matter-main {
   position: relative;
   min-width: 0;

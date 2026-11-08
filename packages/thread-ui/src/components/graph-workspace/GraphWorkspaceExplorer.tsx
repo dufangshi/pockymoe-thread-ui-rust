@@ -522,7 +522,7 @@ export function GraphWorkspaceExplorer({
       downloadOnly={downloadOnly}
       downloadReason={downloadReason}
       {...(workspaceAdapter?.downloadNode && activeNode?.kind === 'file'
-        ? { onDownloadFile: () => workspaceAdapter.downloadNode!({...workspaceIdentity, path: activeNode.path, kind: 'file'}) }
+        ? { onDownloadFile: (onProgress?: (loaded: number, total: number | null) => void) => workspaceAdapter.downloadNode!({...workspaceIdentity, path: activeNode.path, kind: 'file', ...(onProgress ? { onProgress } : {})}) }
         : {})}
       imageUrl={imageUrl}
       loadingMore={loadingMore}

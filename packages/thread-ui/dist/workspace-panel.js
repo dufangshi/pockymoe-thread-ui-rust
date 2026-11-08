@@ -56,7 +56,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-KH5WB53H.js";
+} from "./chunk-7Y6V753N.js";
 import {
   shellThemeProps,
   surfaceBehind,
@@ -69,7 +69,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-2P6442ZS.js";
+} from "./chunk-7FYPYQP3.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
@@ -4326,7 +4326,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment6, jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-EG2XNOIE.js")
+  () => import("./GraphWorkspaceMonacoEditor-XGH4LHWY.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4363,6 +4363,9 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }) {
   const { locale: i18nLocale } = useI18n();
   const [pending, setPending] = useState11(false);
   const [error, setError] = useState11(null);
+  const [progress, setProgress] = useState11(null);
+  const total = progress?.total ?? node.size ?? null;
+  const percent = progress && total ? Math.min(100, Math.round(progress.loaded / total * 100)) : null;
   const sizeLabel = fileSizeLabel(node.size);
   return /* @__PURE__ */ jsxs13("div", { className: "thread-graph-download-preview", children: [
     /* @__PURE__ */ jsx18(Download4, { "aria-hidden": "true", className: "thread-graph-download-preview-icon" }),
@@ -4381,12 +4384,14 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }) {
             if (!onDownload) return;
             setPending(true);
             setError(null);
+            setProgress(null);
             try {
-              await onDownload();
+              await onDownload((loaded, reported) => setProgress({ loaded, total: reported }));
             } catch (caught) {
-              setError(caught instanceof Error ? caught.message : translate("files.downloadFailedPleaseTryAgain"));
+              setError(caught instanceof Error && caught.message ? caught.message : translate("files.downloadFailedPleaseTryAgain"));
             } finally {
               setPending(false);
+              setProgress(null);
             }
           },
           children: [
@@ -4396,7 +4401,25 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }) {
         }
       ),
       !onDownload ? /* @__PURE__ */ jsx18(ErrorMark, { kind: "unavailable", message: translate("files.downloadsAreUnavailableForThisConnection") }) : error ? /* @__PURE__ */ jsx18(ErrorMark, { message: error }) : null
-    ] })
+    ] }),
+    pending && progress ? /* @__PURE__ */ jsxs13("div", { className: "thread-graph-download-progress", children: [
+      /* @__PURE__ */ jsx18(
+        "div",
+        {
+          role: "progressbar",
+          "aria-label": translate("files.downloadProgress", { value1: node.name }),
+          "aria-valuemin": 0,
+          "aria-valuemax": total ?? void 0,
+          "aria-valuenow": total ? Math.min(progress.loaded, total) : void 0,
+          "data-indeterminate": percent === null || void 0,
+          children: /* @__PURE__ */ jsx18("span", { style: percent === null ? void 0 : { width: `${percent}%` } })
+        }
+      ),
+      /* @__PURE__ */ jsxs13("small", { children: [
+        fileSizeLabel(progress.loaded),
+        total ? ` / ${fileSizeLabel(total)} \xB7 ${percent}%` : ""
+      ] })
+    ] }) : null
   ] });
 }
 function AlertDownloadButton({ name, onDownload }) {
@@ -4428,7 +4451,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-4EOLTLN3.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-7NTPDCGK.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -5640,7 +5663,7 @@ function GraphWorkspaceExplorer({
       fileTabs,
       downloadOnly,
       downloadReason,
-      ...workspaceAdapter?.downloadNode && activeNode?.kind === "file" ? { onDownloadFile: () => workspaceAdapter.downloadNode({ ...workspaceIdentity, path: activeNode.path, kind: "file" }) } : {},
+      ...workspaceAdapter?.downloadNode && activeNode?.kind === "file" ? { onDownloadFile: (onProgress) => workspaceAdapter.downloadNode({ ...workspaceIdentity, path: activeNode.path, kind: "file", ...onProgress ? { onProgress } : {} }) } : {},
       imageUrl,
       loadingMore,
       focusLine: focusedLine,

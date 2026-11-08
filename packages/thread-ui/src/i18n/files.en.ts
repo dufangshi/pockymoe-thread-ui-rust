@@ -434,6 +434,7 @@ export const filesEn = {
   "files.download": "Download {{value1}}",
   "files.downloadFailedPleaseTryAgain": "Download failed. Please try again.",
   "files.downloading": "Downloading…",
+  "files.downloadProgress": "Download progress of {{value1}}",
   "files.downloadFile": "Download file",
   "files.downloadsAreUnavailableForThisConnection": "Downloads are unavailable for this connection.",
   "files.sourceCode": "Source code",

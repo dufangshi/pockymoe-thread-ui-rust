@@ -722,6 +722,14 @@
   border-radius: 20px;
 }
 .thread-graph-download-preview-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+/* A download under way: a thin bar, then bytes and percent. */
+.thread-graph-download-progress { display: flex; flex-direction: column; align-items: center; gap: 4px; width: min(240px, 100%); }
+.thread-graph-download-progress [role='progressbar'] { position: relative; width: 100%; height: 4px; overflow: hidden; border-radius: 2px; background: var(--theme-border); }
+.thread-graph-download-progress [role='progressbar'] > span { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: var(--theme-accent-solid); transition: width 160ms linear; }
+.thread-graph-download-progress [data-indeterminate] > span { width: 30%; animation: thread-graph-download-sweep 1.2s ease-in-out infinite; }
+@keyframes thread-graph-download-sweep { from { left: -30%; } to { left: 100%; } }
+.thread-graph-download-progress small { color: var(--theme-fg-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .thread-graph-download-progress [data-indeterminate] > span { animation: none; left: 0; } .thread-graph-download-progress [role='progressbar'] > span { transition: none; } }
 .thread-graph-download-preview button,
 .thread-graph-download-preview-actions a {
   display: inline-flex;

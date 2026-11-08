@@ -196,6 +196,9 @@ interface ThreadWorkspaceAdapter {
         workspaceId?: string | null;
         path: string;
         kind: 'file' | 'directory';
+        /** Bytes received so far, and the total when the device reports it. The caller
+            shows the failure too: with this, the promise rejects with the reason. */
+        onProgress?: (loaded: number, total: number | null) => void;
     }) => Promise<void> | void;
     renameNode?: (input: {
         threadId: string;

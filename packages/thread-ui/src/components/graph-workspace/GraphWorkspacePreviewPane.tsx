@@ -124,11 +124,15 @@ function WorkspacePdfPreview({ src, node }: { src: string; node: WorkspaceTreeNo
 function DownloadFilePreview({ node, onDownload, readOnlyReason }: {
   readOnlyReason?: string;
   node: WorkspaceTreeNode;
-  onDownload?: () => Promise<void> | void;
+  onDownload?: (onProgress?: (loaded: number, total: number | null) => void) => Promise<void> | void;
 }) {
   const { locale: i18nLocale } = useI18n();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Bytes received so far; the total falls back to the file's listed size.
+  const [progress, setProgress] = useState<{ loaded: number; total: number | null } | null>(null);
+  const total = progress?.total ?? node.size ?? null;
+  const percent = progress && total ? Math.min(100, Math.round((progress.loaded / total) * 100)) : null;
   const sizeLabel = fileSizeLabel(node.size);
   return (
     <div className="thread-graph-download-preview">
@@ -145,9 +149,10 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }: {
             if (!onDownload) return;
             setPending(true);
             setError(null);
-            try { await onDownload(); }
-            catch (caught) { setError(caught instanceof Error ? caught.message : translate("files.downloadFailedPleaseTryAgain")); }
-            finally { setPending(false); }
+            setProgress(null);
+            try { await onDownload((loaded, reported) => setProgress({ loaded, total: reported })); }
+            catch (caught) { setError(caught instanceof Error && caught.message ? caught.message : translate("files.downloadFailedPleaseTryAgain")); }
+            finally { setPending(false); setProgress(null); }
           }}>
           <Download aria-hidden="true" size={16} />
           {pending ? translate("files.downloading") : translate("files.downloadFile")}
@@ -156,6 +161,16 @@ function DownloadFilePreview({ node, onDownload, readOnlyReason }: {
           ? <ErrorMark kind="unavailable" message={translate("files.downloadsAreUnavailableForThisConnection")} />
           : error ? <ErrorMark message={error} /> : null}
       </span>
+      {pending && progress ? (
+        <div className="thread-graph-download-progress">
+          <div role="progressbar" aria-label={translate('files.downloadProgress', { value1: node.name })}
+            aria-valuemin={0} aria-valuemax={total ?? undefined} aria-valuenow={total ? Math.min(progress.loaded, total) : undefined}
+            data-indeterminate={percent === null || undefined}>
+            <span style={percent === null ? undefined : { width: `${percent}%` }} />
+          </div>
+          <small>{fileSizeLabel(progress.loaded)}{total ? ` / ${fileSizeLabel(total)} · ${percent}%` : ''}</small>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -564,7 +579,7 @@ export function GraphWorkspacePreviewPane({
   downloadOnly?: boolean;
   /** Why the file is offered as a download, when known (e.g. it is not text). */
   downloadReason?: string | null;
-  onDownloadFile?: () => Promise<void> | void;
+  onDownloadFile?: (onProgress?: (loaded: number, total: number | null) => void) => Promise<void> | void;
   imageUrl?: string | null;
   loadingMore?: boolean;
   documents?: WorkspaceDocuments;

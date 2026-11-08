@@ -434,6 +434,7 @@ export const filesZhCN = {
   "files.download": "下载 {{value1}}",
   "files.downloadFailedPleaseTryAgain": "下载失败，请重试。",
   "files.downloading": "正在下载…",
+  "files.downloadProgress": "{{value1}} 的下载进度",
   "files.downloadFile": "下载文件",
   "files.downloadsAreUnavailableForThisConnection": "此连接无法下载。",
   "files.sourceCode": "源代码",

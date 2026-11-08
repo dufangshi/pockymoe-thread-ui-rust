@@ -23,6 +23,7 @@ import './styles/touch.css';
 
 export { CopyButton, useCopy } from './components/copy/CopyButton';
 export { formatFileSize } from './components/attachments/attachmentFiles';
+export type { ComposerUploadProgressState } from './components/composer/ComposerUploadProgress';
 export { copyText } from './components/shell/terminalClipboard';
 export { PathChip } from './components/copy/PathChip';
 export { MiddleName } from './components/copy/MiddleName';

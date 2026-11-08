@@ -207,6 +207,8 @@ export const workbenchEn = {
   "workbench.connectingToTheShellTryAgainAfter": "Connecting to the shell. Try again after it attaches.",
   "workbench.shellIsStillAttachingTryAgainAfter": "Shell is still attaching. Try again after it connects.",
   "workbench.connectTheShellBeforeSendingCommands": "Connect the shell before sending commands.",
+  "workbench.attachmentOver1Gb": "Each attachment must be 1 GB or smaller. Remove the larger file and try again. Your draft has been kept.",
+  "workbench.deviceNeedsUpdateForLargeFiles": "This device needs an update to receive files over 25 MB. Update it in Settings and try again. Your draft has been kept.",
   "workbench.aPromptCanIncludeAtMost10": "A prompt can include at most 10 attachments. Remove extra attachments and try again. Your draft has been kept.",
   "workbench.thisBackendDoesNotSupportSteeringAn": "This backend does not support steering an active turn. Send the message normally to queue it.",
   "workbench.messageSavedButSteerCouldNotBe": "Message saved, but steer could not be confirmed: {{value1}}",

@@ -805,6 +805,68 @@
   box-shadow: 0 8px 24px color-mix(in srgb, var(--app-bg) 18%, transparent);
 }
 
+.thread-ui-shell .thread-composer-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto 0.5rem;
+  padding: 6px 6px 8px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.75rem;
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+  pointer-events: auto;
+}
+.thread-ui-shell .thread-composer-upload-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  font-size: 13px;
+}
+.thread-ui-shell .thread-composer-upload-name { flex: 1 1 auto; min-width: 0; }
+.thread-ui-shell .thread-composer-upload small {
+  flex: none;
+  color: var(--theme-fg-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.thread-ui-shell .thread-composer-upload-cancel {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 0.5rem;
+  color: var(--theme-fg-muted);
+}
+.thread-ui-shell .thread-composer-upload-cancel:hover,
+.thread-ui-shell .thread-composer-upload-cancel:focus-visible {
+  background: var(--theme-border);
+  color: var(--theme-fg);
+}
+.thread-ui-shell .thread-composer-upload [role='progressbar'] {
+  position: relative;
+  height: 4px;
+  margin-right: 6px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--theme-border);
+}
+.thread-ui-shell .thread-composer-upload [role='progressbar'] > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--theme-accent-solid);
+  transition: width 160ms linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  .thread-ui-shell .thread-composer-upload [role='progressbar'] > span { transition: none; }
+}
+
 .thread-ui-shell .thread-composer-pending-row {
   border-color: var(--theme-border);
   background: var(--theme-surface);
@@ -917,6 +979,11 @@
 
   .thread-ui-shell .thread-composer-pending-row {
     min-height: 2.75rem;
+  }
+
+  .thread-ui-shell .thread-composer-upload-cancel {
+    width: 36px;
+    height: 36px;
   }
 }
 

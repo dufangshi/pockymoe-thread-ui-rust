@@ -78,6 +78,7 @@ import {
 } from './composer/contentEditablePrompt';
 import { ComposerFrame } from './composer/ComposerFrame';
 import { ComposerPendingQueue } from './composer/ComposerPendingQueue';
+import { ComposerUploadProgress, type ComposerUploadProgressState } from './composer/ComposerUploadProgress';
 import { ComposerPendingWakes } from './composer/ComposerPendingWakes';
 import { useQuoteSink } from './quotes/QuoteScope';
 import { ComposerToolbar } from './composer/ComposerToolbar';
@@ -111,6 +112,9 @@ export interface ThreadComposerProps {
   busy?: boolean;
   settingsBusy?: boolean;
   compactBusy?: boolean;
+  /** A large attachment going to the device; its prompt is sent afterwards. */
+  uploadProgress?: ComposerUploadProgressState | null;
+  onCancelUpload?: () => void;
   error?: string | null;
   model?: string | null;
   agentLabel?: string | null;
@@ -223,6 +227,8 @@ export function ThreadComposer({
   busy = false,
   settingsBusy = false,
   compactBusy = false,
+  uploadProgress = null,
+  onCancelUpload,
   error,
   model = null,
   agentLabel = null,
@@ -1229,14 +1235,17 @@ export function ThreadComposer({
       promptSlot={promptSlot}
       cornerSlot={!isShellView && pendingWakes.length > 0 ? <ComposerPendingWakes wakes={pendingWakes} /> : null}
       pendingQueueSlot={
-        !isShellView && pendingPrompts.length > 0 ? (
-          <ComposerPendingQueue
-            prompts={pendingPrompts}
-            onSteer={onSteerPendingPrompt}
-            onCancel={onCancelPendingPrompt}
-            {...(onCancelPendingPrompt ? { onEdit: editPendingPrompt } : {})}
-          />
-        ) : null
+        <>
+          {uploadProgress ? <ComposerUploadProgress progress={uploadProgress} onCancel={onCancelUpload} /> : null}
+          {!isShellView && pendingPrompts.length > 0 ? (
+            <ComposerPendingQueue
+              prompts={pendingPrompts}
+              onSteer={onSteerPendingPrompt}
+              onCancel={onCancelPendingPrompt}
+              {...(onCancelPendingPrompt ? { onEdit: editPendingPrompt } : {})}
+            />
+          ) : null}
+        </>
       }
       toolbarSlot={
         <ComposerToolbar

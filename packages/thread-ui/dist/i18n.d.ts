@@ -678,6 +678,8 @@ declare const en: {
     readonly "workbench.connectingToTheShellTryAgainAfter": "Connecting to the shell. Try again after it attaches.";
     readonly "workbench.shellIsStillAttachingTryAgainAfter": "Shell is still attaching. Try again after it connects.";
     readonly "workbench.connectTheShellBeforeSendingCommands": "Connect the shell before sending commands.";
+    readonly "workbench.attachmentOver1Gb": "Each attachment must be 1 GB or smaller. Remove the larger file and try again. Your draft has been kept.";
+    readonly "workbench.deviceNeedsUpdateForLargeFiles": "This device needs an update to receive files over 25 MB. Update it in Settings and try again. Your draft has been kept.";
     readonly "workbench.aPromptCanIncludeAtMost10": "A prompt can include at most 10 attachments. Remove extra attachments and try again. Your draft has been kept.";
     readonly "workbench.thisBackendDoesNotSupportSteeringAn": "This backend does not support steering an active turn. Send the message normally to queue it.";
     readonly "workbench.messageSavedButSteerCouldNotBe": "Message saved, but steer could not be confirmed: {{value1}}";
@@ -3334,6 +3336,9 @@ declare const en: {
     readonly "chat.templates": "templates";
     readonly "chat.noMCPServersAvailableRightNow": "No MCP servers available right now.";
     readonly "chat.queuedPrompts": "Queued prompts";
+    readonly "chat.uploadProgress": "Upload progress of {{value1}}";
+    readonly "chat.uploadCancel": "Cancel uploading {{value1}}";
+    readonly "chat.uploadReconnecting": "Reconnecting…";
     readonly "chat.queued": "Queued";
     readonly "chat.queueing": "Queueing";
     readonly "chat.removeQueuedPrompt": "Remove queued prompt";
@@ -5952,6 +5957,8 @@ declare const zhCN: {
     "workbench.connectingToTheShellTryAgainAfter": "正在连接 Shell，附加完成后请重试。";
     "workbench.shellIsStillAttachingTryAgainAfter": "Shell 仍在附加中，连接后请重试。";
     "workbench.connectTheShellBeforeSendingCommands": "发送命令前请连接 Shell。";
+    "workbench.attachmentOver1Gb": "单个附件不能超过 1 GB。移除过大的文件后重试，草稿已保留。";
+    "workbench.deviceNeedsUpdateForLargeFiles": "这台设备需要更新后才能接收超过 25 MB 的文件。请在设置中更新后重试，草稿已保留。";
     "workbench.aPromptCanIncludeAtMost10": "一个提示词最多包含 10 个附件。移除多余附件后重试，草稿已保留。";
     "workbench.thisBackendDoesNotSupportSteeringAn": "此 Harness 不支持在运行中的轮次插话。正常发送的消息会排队。";
     "workbench.messageSavedButSteerCouldNotBe": "消息已保存，但无法确认插话：{{value1}}";
@@ -8608,6 +8615,9 @@ declare const zhCN: {
     "chat.templates": "模板";
     "chat.noMCPServersAvailableRightNow": "当前无可用 MCP 服务器。";
     "chat.queuedPrompts": "排队的提示词";
+    "chat.uploadProgress": "{{value1}} 的上传进度";
+    "chat.uploadCancel": "取消上传 {{value1}}";
+    "chat.uploadReconnecting": "正在重新连接…";
     "chat.queued": "已排队";
     "chat.queueing": "正在排队";
     "chat.removeQueuedPrompt": "移除排队提示词";
@@ -11248,6 +11258,8 @@ declare const resources: {
         readonly "workbench.connectingToTheShellTryAgainAfter": "Connecting to the shell. Try again after it attaches.";
         readonly "workbench.shellIsStillAttachingTryAgainAfter": "Shell is still attaching. Try again after it connects.";
         readonly "workbench.connectTheShellBeforeSendingCommands": "Connect the shell before sending commands.";
+        readonly "workbench.attachmentOver1Gb": "Each attachment must be 1 GB or smaller. Remove the larger file and try again. Your draft has been kept.";
+        readonly "workbench.deviceNeedsUpdateForLargeFiles": "This device needs an update to receive files over 25 MB. Update it in Settings and try again. Your draft has been kept.";
         readonly "workbench.aPromptCanIncludeAtMost10": "A prompt can include at most 10 attachments. Remove extra attachments and try again. Your draft has been kept.";
         readonly "workbench.thisBackendDoesNotSupportSteeringAn": "This backend does not support steering an active turn. Send the message normally to queue it.";
         readonly "workbench.messageSavedButSteerCouldNotBe": "Message saved, but steer could not be confirmed: {{value1}}";
@@ -13904,6 +13916,9 @@ declare const resources: {
         readonly "chat.templates": "templates";
         readonly "chat.noMCPServersAvailableRightNow": "No MCP servers available right now.";
         readonly "chat.queuedPrompts": "Queued prompts";
+        readonly "chat.uploadProgress": "Upload progress of {{value1}}";
+        readonly "chat.uploadCancel": "Cancel uploading {{value1}}";
+        readonly "chat.uploadReconnecting": "Reconnecting…";
         readonly "chat.queued": "Queued";
         readonly "chat.queueing": "Queueing";
         readonly "chat.removeQueuedPrompt": "Remove queued prompt";
@@ -16521,6 +16536,8 @@ declare const resources: {
         "workbench.connectingToTheShellTryAgainAfter": "正在连接 Shell，附加完成后请重试。";
         "workbench.shellIsStillAttachingTryAgainAfter": "Shell 仍在附加中，连接后请重试。";
         "workbench.connectTheShellBeforeSendingCommands": "发送命令前请连接 Shell。";
+        "workbench.attachmentOver1Gb": "单个附件不能超过 1 GB。移除过大的文件后重试，草稿已保留。";
+        "workbench.deviceNeedsUpdateForLargeFiles": "这台设备需要更新后才能接收超过 25 MB 的文件。请在设置中更新后重试，草稿已保留。";
         "workbench.aPromptCanIncludeAtMost10": "一个提示词最多包含 10 个附件。移除多余附件后重试，草稿已保留。";
         "workbench.thisBackendDoesNotSupportSteeringAn": "此 Harness 不支持在运行中的轮次插话。正常发送的消息会排队。";
         "workbench.messageSavedButSteerCouldNotBe": "消息已保存，但无法确认插话：{{value1}}";
@@ -19177,6 +19194,9 @@ declare const resources: {
         "chat.templates": "模板";
         "chat.noMCPServersAvailableRightNow": "当前无可用 MCP 服务器。";
         "chat.queuedPrompts": "排队的提示词";
+        "chat.uploadProgress": "{{value1}} 的上传进度";
+        "chat.uploadCancel": "取消上传 {{value1}}";
+        "chat.uploadReconnecting": "正在重新连接…";
         "chat.queued": "已排队";
         "chat.queueing": "正在排队";
         "chat.removeQueuedPrompt": "移除排队提示词";

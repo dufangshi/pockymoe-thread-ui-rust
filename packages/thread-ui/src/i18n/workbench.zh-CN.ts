@@ -207,6 +207,8 @@ export const workbenchZhCN = {
   "workbench.connectingToTheShellTryAgainAfter": "正在连接 Shell，附加完成后请重试。",
   "workbench.shellIsStillAttachingTryAgainAfter": "Shell 仍在附加中，连接后请重试。",
   "workbench.connectTheShellBeforeSendingCommands": "发送命令前请连接 Shell。",
+  "workbench.attachmentOver1Gb": "单个附件不能超过 1 GB。移除过大的文件后重试，草稿已保留。",
+  "workbench.deviceNeedsUpdateForLargeFiles": "这台设备需要更新后才能接收超过 25 MB 的文件。请在设置中更新后重试，草稿已保留。",
   "workbench.aPromptCanIncludeAtMost10": "一个提示词最多包含 10 个附件。移除多余附件后重试，草稿已保留。",
   "workbench.thisBackendDoesNotSupportSteeringAn": "此 Harness 不支持在运行中的轮次插话。正常发送的消息会排队。",
   "workbench.messageSavedButSteerCouldNotBe": "消息已保存，但无法确认插话：{{value1}}",

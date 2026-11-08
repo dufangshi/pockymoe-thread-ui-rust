@@ -843,10 +843,15 @@
   border-radius: 0.5rem;
   color: var(--theme-fg-muted);
 }
-.thread-ui-shell .thread-composer-upload-cancel:hover,
 .thread-ui-shell .thread-composer-upload-cancel:focus-visible {
   background: var(--theme-border);
   color: var(--theme-fg);
+}
+@media (hover: hover) {
+  .thread-ui-shell .thread-composer-upload-cancel:hover {
+    background: var(--theme-border);
+    color: var(--theme-fg);
+  }
 }
 .thread-ui-shell .thread-composer-upload [role='progressbar'] {
   position: relative;

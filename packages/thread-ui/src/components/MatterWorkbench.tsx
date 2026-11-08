@@ -528,10 +528,13 @@ export function MatterWorkbench({
   const chatCovered = Boolean(o.panels && o.activeView === 'shell' && toolPanel.maximized && !toolPanel.collapsed);
   // A compact workbench draws Files over the conversation: Chat closes it.
   const filesCoverChat = () => explorerOpen && (mobile || Boolean(rootRef.current?.querySelector('.workbench-panels.is-compact')));
+  // On a phone (or a narrow window) an open inspector covers the conversation too.
+  const closeCoveringInspector = () => {
+    if (o.panels?.inspector && (mobile || Boolean(rootRef.current?.querySelector('[data-inspector-covers]')))) o.panels.inspector.onClose();
+  };
   const showChat = () => {
     if (filesCoverChat()) setExplorerOpen(false);
-    // On a phone (or a narrow window) an open inspector covers the conversation too.
-    if (o.panels?.inspector && (mobile || Boolean(rootRef.current?.querySelector('[data-inspector-covers]')))) o.panels.inspector.onClose();
+    closeCoveringInspector();
     if (o.panels) {
       if (chatCovered) toolPanel.update({ maximized: false });
     } else o.onViewChange('chat');
@@ -693,6 +696,7 @@ export function MatterWorkbench({
   };
   const pane: PhonePane = explorerOpen ? 'files' : o.activeView === 'shell' ? 'shell' : 'chat';
   const choosePane = (next: PhonePane) => {
+    closeCoveringInspector();
     if (next === 'files') { setExplorerOpen(true); return; }
     if (explorerOpen) setExplorerOpen(false);
     // The host's view change toggles the terminal.

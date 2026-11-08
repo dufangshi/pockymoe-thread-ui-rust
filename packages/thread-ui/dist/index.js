@@ -12373,9 +12373,12 @@ function MatterWorkbench({
   const toolPanel = useWorkbenchToolPanel();
   const chatCovered = Boolean(o.panels && o.activeView === "shell" && toolPanel.maximized && !toolPanel.collapsed);
   const filesCoverChat = () => explorerOpen && (mobile || Boolean(rootRef.current?.querySelector(".workbench-panels.is-compact")));
+  const closeCoveringInspector = () => {
+    if (o.panels?.inspector && (mobile || Boolean(rootRef.current?.querySelector("[data-inspector-covers]")))) o.panels.inspector.onClose();
+  };
   const showChat = () => {
     if (filesCoverChat()) setExplorerOpen(false);
-    if (o.panels?.inspector && (mobile || Boolean(rootRef.current?.querySelector("[data-inspector-covers]")))) o.panels.inspector.onClose();
+    closeCoveringInspector();
     if (o.panels) {
       if (chatCovered) toolPanel.update({ maximized: false });
     } else o.onViewChange("chat");
@@ -12559,6 +12562,7 @@ function MatterWorkbench({
   };
   const pane = explorerOpen ? "files" : o.activeView === "shell" ? "shell" : "chat";
   const choosePane = (next) => {
+    closeCoveringInspector();
     if (next === "files") {
       setExplorerOpen(true);
       return;

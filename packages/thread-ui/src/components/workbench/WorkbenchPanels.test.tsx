@@ -466,3 +466,26 @@ describe('host inspector in a narrow workbench', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 });
+describe('host inspector on a phone', () => {
+  it('closes from the dock Chat button and from a More sheet panel entry that also closes the sheet', () => {
+    vi.stubGlobal('innerWidth', 390);
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    const onClose = vi.fn(); const onToggle = vi.fn();
+    options = { ...options, presentation: { ...options.presentation, mode: 'focus' }, inspector: { id: 'git', title: 'Git', content: null, onClose } };
+    act(() => root.render(
+      <MatterWorkbench options={{ ...workbenchOptions(), panels: options, toolPanels: [{ id: 'git', label: 'Git', icon: null, active: true, onToggle }] }} title="Primary" settings={null} newThread={null}
+        actions={null} threadMenu={null} connection={null} explorer={null} revealExplorer={0}>
+        <textarea aria-label="Primary draft" />
+      </MatterWorkbench>,
+    ));
+    expect(host.querySelector('[data-inspector-covers]')).not.toBeNull();
+    const chat = [...host.querySelectorAll<HTMLButtonElement>('button')].find(button => button.getAttribute('aria-label') === t('workbench.chat'))!;
+    act(() => chat.click());
+    expect(onClose).toHaveBeenCalledOnce();
+    act(() => host.querySelector<HTMLButtonElement>(`button[aria-label="${t('workbench.moreActions')}"]`)!.click());
+    const entry = [...document.querySelectorAll<HTMLButtonElement>('.matter-phone-sheet-tools button')].find(button => button.textContent === 'Git')!;
+    act(() => entry.click());
+    expect(onToggle).toHaveBeenCalledOnce();
+    expect(document.querySelector(`[aria-label="${t('workbench.moreActions')}"]`)?.getAttribute('aria-expanded')).toBe('false');
+  });
+});

@@ -1926,7 +1926,7 @@
 
 /* A host inspector (Git, isolation) docked at the right like the files drawer:
    a sibling of the conversation, never a modal layer over it. */
-.workbench-inspector:focus { outline: none; }
+.workbench-inspector { outline: none; }
 .workbench-inspector:focus-visible { box-shadow: inset 0 0 0 2px var(--theme-accent-soft, var(--theme-accent-solid)); }
 .workbench-inspector > header { gap: 8px; padding-right: 8px; }
 .workbench-inspector > header strong { font-size: 13px; }

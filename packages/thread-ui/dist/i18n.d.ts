@@ -1002,6 +1002,7 @@ declare const en: {
     readonly "workbench.closeSplit": "Close split";
     readonly "workbench.closeSplitContinues": "Close split; both conversations keep running";
     readonly "workbench.closeFiles": "Close files";
+    readonly "workbench.closeInspector": "Close {{name}}";
     readonly "workbench.closeTools": "Close tools";
     readonly "workbench.splitBack": "Back";
     readonly "workbench.splitClosePicker": "Close conversation picker";
@@ -6274,6 +6275,7 @@ declare const zhCN: {
     "workbench.closeSplit": "关闭分屏";
     "workbench.closeSplitContinues": "关闭分屏，两个会话继续运行";
     "workbench.closeFiles": "关闭文件";
+    "workbench.closeInspector": "关闭{{name}}";
     "workbench.closeTools": "关闭工具";
     "workbench.splitBack": "返回上一级";
     "workbench.splitClosePicker": "关闭会话选择器";
@@ -11568,6 +11570,7 @@ declare const resources: {
         readonly "workbench.closeSplit": "Close split";
         readonly "workbench.closeSplitContinues": "Close split; both conversations keep running";
         readonly "workbench.closeFiles": "Close files";
+        readonly "workbench.closeInspector": "Close {{name}}";
         readonly "workbench.closeTools": "Close tools";
         readonly "workbench.splitBack": "Back";
         readonly "workbench.splitClosePicker": "Close conversation picker";
@@ -16839,6 +16842,7 @@ declare const resources: {
         "workbench.closeSplit": "关闭分屏";
         "workbench.closeSplitContinues": "关闭分屏，两个会话继续运行";
         "workbench.closeFiles": "关闭文件";
+        "workbench.closeInspector": "关闭{{name}}";
         "workbench.closeTools": "关闭工具";
         "workbench.splitBack": "返回上一级";
         "workbench.splitClosePicker": "关闭会话选择器";

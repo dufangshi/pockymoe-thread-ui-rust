@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -58,6 +59,21 @@ export interface WorkbenchPanelsOptions {
   inlineFilesHeader?: boolean;
   toolsOpen?: boolean;
   onCloseTools?: () => void;
+  /** A host inspector docked at the right beside the conversation (Git,
+      isolation). It takes the files drawer's place, width and resize handle;
+      Files replaces it while open. Not modal: the conversation stays usable. */
+  inspector?: WorkbenchInspector | null | undefined;
+}
+export interface WorkbenchInspector {
+  /** Changing it is a new opening: focus moves into the panel. */
+  id: string;
+  title: string;
+  /** What the content belongs to (the thread), so a switch is visible. */
+  subtitle?: string | undefined;
+  /** Header controls before Close, such as a view switch or refresh. */
+  actions?: ReactNode;
+  content: ReactNode;
+  onClose: () => void;
 }
 export function WorkbenchPanels({
   options: o,
@@ -121,7 +137,7 @@ export function WorkbenchPanels({
     setDrawerWidth(next);
     try { localStorage.setItem('remote-codex.explorer-width', String(next)); } catch { /* Optional preference. */ }
   };
-  const drawerResizeHandle = () => !compact && (
+  const drawerResizeHandle = (docked = !compact) => docked && (
     <div
       role="separator"
       tabIndex={0}
@@ -255,6 +271,31 @@ export function WorkbenchPanels({
   const showThread = splitShown(o.presentation);
   const showReference = showThread || mode === 'collaboration';
   const closeFiles = () => o.onPresentationChange(closeFilesPatch(o.presentation));
+  const inspector = mode === 'files' ? null : o.inspector ?? null;
+  const inspectorShown = inspector?.id ?? null;
+  // The inspector stays beside the conversation while both fit (a 280px
+  // conversation and the 360px minimum dock); only narrower, it covers it.
+  const inspectorDocked = rootWidth >= 640;
+  const inspectorCovers = Boolean(inspector) && !inspectorDocked;
+  const inspectorRef = useRef<HTMLElement>(null);
+  const inspectorOpener = useRef<HTMLElement | null>(null);
+  const inspectorTitleId = useId();
+  // A panel the reader opens takes focus; one restored with the page does not.
+  // Closing returns focus to what opened it, so keyboard users are not lost.
+  const shownBefore = useRef(inspectorShown);
+  useEffect(() => {
+    const before = shownBefore.current;
+    shownBefore.current = inspectorShown;
+    if (inspectorShown && inspectorShown !== before) {
+      if (!before) inspectorOpener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      inspectorRef.current?.focus({ preventScroll: true });
+    } else if (!inspectorShown && before) {
+      const opener = inspectorOpener.current;
+      inspectorOpener.current = null;
+      const focusLost = !document.activeElement || document.activeElement === document.body;
+      if (focusLost && opener?.isConnected) opener.focus({ preventScroll: true });
+    }
+  }, [inspectorShown]);
   // Minimized, the files view keeps only its tree, a strip at the right edge, and
   // folds its editor into a tab on the strip's left edge. Closing it, or a screen
   // too narrow to dock it, ends that.
@@ -295,16 +336,20 @@ export function WorkbenchPanels({
     onFocusPane: o.onFocusPane,
     onPresentationChange: o.onPresentationChange,
     onCloseTools: o.onCloseTools,
+    inspector: o.inspector,
+    inspectorCovers: false,
   });
   historyHandlers.current = {
     presentation: o.presentation,
     onFocusPane: o.onFocusPane,
     onPresentationChange: o.onPresentationChange,
     onCloseTools: o.onCloseTools,
+    inspector: o.inspector,
+    inspectorCovers,
   };
   // Phone panes are views, not route navigation. Back returns to the left conversation.
   useEffect(() => {
-    const drawerOpen = mode === 'files' || o.toolsOpen;
+    const drawerOpen = mode === 'files' || o.toolsOpen || inspectorCovers;
     if (
       !compact ||
       (!drawerOpen && (!showReference || mobileView !== 'reference'))
@@ -315,6 +360,7 @@ export function WorkbenchPanels({
     const back = () => {
       const handlers = historyHandlers.current;
       if (o.toolsOpen) handlers.onCloseTools?.();
+      else if (handlers.inspector && mode !== 'files' && handlers.inspectorCovers) handlers.inspector.onClose();
       else if (mode === 'files')
         handlers.onPresentationChange(closeFilesPatch(handlers.presentation));
       else {
@@ -336,13 +382,14 @@ export function WorkbenchPanels({
         history.replaceState(state, '');
       }
     };
-  }, [compact, mobileView, showReference, mode, referenceId, o.toolsOpen]);
+  }, [compact, mobileView, showReference, mode, referenceId, o.toolsOpen, inspectorCovers]);
   return (
     <div
       ref={root}
       className={`workbench-panels ${compact ? 'is-compact' : ''}`}
       data-testid="workbench-panels"
       data-mode={mode}
+      data-inspector-covers={inspectorCovers || undefined}
       style={{ '--primary-ratio': `${ratio}%`, '--workbench-tool-width': `${visibleDrawerWidth}px`, paddingBottom: keyboardInset || undefined } as CSSProperties}
     >
       {o.storageFailed && (
@@ -533,6 +580,45 @@ export function WorkbenchPanels({
         </section>
       )}
       </div>
+      {inspector && (
+        <aside
+          ref={inspectorRef}
+          tabIndex={-1}
+          aria-labelledby={inspectorTitleId}
+          className="workbench-tool-drawer workbench-inspector"
+          data-inspector={inspector.id}
+          data-docked={inspectorDocked || undefined}
+          data-testid="workbench-inspector"
+          onKeyDown={(event) => {
+            // Only keys from the panel itself: a confirmation it portals to the
+            // page root handles its own Escape.
+            if (event.key === 'Escape' && !event.defaultPrevented && event.currentTarget.contains(event.target as Node)) {
+              event.preventDefault();
+              event.stopPropagation();
+              inspector.onClose();
+            }
+          }}
+        >
+          {drawerResizeHandle(inspectorDocked)}
+          <header>
+            <div>
+              <strong id={inspectorTitleId}>{inspector.title}</strong>
+              {inspector.subtitle && <small>{inspector.subtitle}</small>}
+            </div>
+            {inspector.actions}
+            <button
+              type="button"
+              data-testid="workbench-close-inspector"
+              aria-label={t('workbench.closeInspector', { name: inspector.title })}
+              title={t('workbench.closeInspector', { name: inspector.title })}
+              onClick={inspector.onClose}
+            >
+              <X size={17} />
+            </button>
+          </header>
+          <div className="workbench-pane-body workbench-inspector-body">{inspector.content}</div>
+        </aside>
+      )}
       {filesVisited && (
         <aside
           role="region"

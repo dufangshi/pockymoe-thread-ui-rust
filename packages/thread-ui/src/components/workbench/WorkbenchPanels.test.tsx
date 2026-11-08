@@ -406,3 +406,86 @@ describe('split panes and independent tools', () => {
     ).toBe(false);
   });
 });
+describe('host inspector dock', () => {
+  const inspector = (id = 'git', onClose = vi.fn()) => ({ id, title: id === 'git' ? 'Git' : 'Isolation', subtitle: 'Primary', onClose,
+    content: <input aria-label={`${id} field`} /> });
+  it('docks beside a usable conversation, takes focus when opened and returns it on close', () => {
+    options = { ...options, presentation: { ...options.presentation, mode: 'focus' } };
+    render();
+    const draft = host.querySelector<HTMLTextAreaElement>('textarea[aria-label="Primary draft"]')!;
+    const opener = document.createElement('button'); document.body.append(opener); opener.focus();
+    const onClose = vi.fn();
+    options = { ...options, inspector: inspector('git', onClose) };
+    render();
+    const panel = host.querySelector<HTMLElement>('[data-testid="workbench-inspector"]')!;
+    expect(panel.getAttribute('aria-labelledby')).toBeTruthy();
+    expect(document.getElementById(panel.getAttribute('aria-labelledby')!)?.textContent).toBe('Git');
+    expect(document.activeElement).toBe(panel);
+    // Not modal: the conversation keeps its draft, focus and tab order.
+    expect(host.querySelector('[inert]')).toBeNull();
+    draft.focus(); expect(document.activeElement).toBe(draft);
+    // Escape typed in the conversation is the conversation's own.
+    act(() => draft.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+    expect(onClose).not.toHaveBeenCalled();
+    const field = panel.querySelector<HTMLInputElement>('input')!; field.focus();
+    act(() => field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+    expect(onClose).toHaveBeenCalledOnce();
+    act(() => panel.querySelector<HTMLButtonElement>('[data-testid="workbench-close-inspector"]')!.click());
+    expect(onClose).toHaveBeenCalledTimes(2);
+    options = { ...options, inspector: null };
+    render();
+    expect(host.querySelector('[data-testid="workbench-inspector"]')).toBeNull();
+    expect(document.activeElement).toBe(opener);
+    opener.remove();
+  });
+  it('yields its place to Files and closes first on phone Back', () => {
+    const onClose = vi.fn();
+    options = { ...options, presentation: { ...options.presentation, mode: 'files' }, inspector: inspector('isolation', onClose) };
+    render();
+    expect(host.querySelector('[data-testid="workbench-inspector"]')).toBeNull();
+    vi.stubGlobal('innerWidth', 500);
+    options = { ...options, presentation: { ...options.presentation, mode: 'focus' } };
+    act(() => root.unmount()); root = createRoot(host); render();
+    expect(host.querySelector('[data-inspector="isolation"]')).not.toBeNull();
+    act(() => window.dispatchEvent(new PopStateEvent('popstate')));
+    expect(onClose).toHaveBeenCalledOnce();
+    expect(options.onPresentationChange).not.toHaveBeenCalled();
+  });
+});
+describe('host inspector in a narrow workbench', () => {
+  it('stays docked beside the conversation while both fit and leaves Back to the page', () => {
+    vi.stubGlobal('innerWidth', 700);
+    const onClose = vi.fn();
+    options = { ...options, presentation: { ...options.presentation, mode: 'focus' }, inspector: { id: 'git', title: 'Git', content: null, onClose } };
+    render();
+    const panel = host.querySelector<HTMLElement>('[data-testid="workbench-inspector"]')!;
+    expect(panel.hasAttribute('data-docked')).toBe(true);
+    expect(host.querySelector('[data-inspector-covers]')).toBeNull();
+    expect(panel.querySelector('[role="separator"]')).not.toBeNull();
+    act(() => window.dispatchEvent(new PopStateEvent('popstate')));
+    expect(onClose).not.toHaveBeenCalled();
+  });
+});
+describe('host inspector on a phone', () => {
+  it('closes from the dock Chat button and from a More sheet panel entry that also closes the sheet', () => {
+    vi.stubGlobal('innerWidth', 390);
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    const onClose = vi.fn(); const onToggle = vi.fn();
+    options = { ...options, presentation: { ...options.presentation, mode: 'focus' }, inspector: { id: 'git', title: 'Git', content: null, onClose } };
+    act(() => root.render(
+      <MatterWorkbench options={{ ...workbenchOptions(), panels: options, toolPanels: [{ id: 'git', label: 'Git', icon: null, active: true, onToggle }] }} title="Primary" settings={null} newThread={null}
+        actions={null} threadMenu={null} connection={null} explorer={null} revealExplorer={0}>
+        <textarea aria-label="Primary draft" />
+      </MatterWorkbench>,
+    ));
+    expect(host.querySelector('[data-inspector-covers]')).not.toBeNull();
+    const chat = [...host.querySelectorAll<HTMLButtonElement>('button')].find(button => button.getAttribute('aria-label') === t('workbench.chat'))!;
+    act(() => chat.click());
+    expect(onClose).toHaveBeenCalledOnce();
+    act(() => host.querySelector<HTMLButtonElement>(`button[aria-label="${t('workbench.moreActions')}"]`)!.click());
+    const entry = [...document.querySelectorAll<HTMLButtonElement>('.matter-phone-sheet-tools button')].find(button => button.textContent === 'Git')!;
+    act(() => entry.click());
+    expect(onToggle).toHaveBeenCalledOnce();
+    expect(document.querySelector(`[aria-label="${t('workbench.moreActions')}"]`)?.getAttribute('aria-expanded')).toBe('false');
+  });
+});

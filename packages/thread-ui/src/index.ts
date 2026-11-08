@@ -179,7 +179,7 @@ export type { WorkspaceDocumentSnapshot, WorkspaceDocumentSaveInput, WorkspaceSa
 export { confirmWorkspaceDocumentLeave, getDirtyWorkspaceDocumentCount, approveWorkspaceDocumentUnloadOnce, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval } from "./components/graph-workspace/explorer/workspaceDocuments";
 export { closeFilesPatch, openFilesPatch, splitShown, useWorkbenchPresentation } from "./components/workbench/presentation";
 export type { WorkbenchPresentation, ReferenceMode } from "./components/workbench/presentation";
-export type { WorkbenchPanelsOptions } from "./components/workbench/WorkbenchPanels";
+export type { WorkbenchInspector, WorkbenchPanelsOptions } from "./components/workbench/WorkbenchPanels";
 export type { WorkbenchToolPanelControls } from "./components/workbench/toolPanel";
 
 export { SettingsDialog } from './components/SettingsDialog';

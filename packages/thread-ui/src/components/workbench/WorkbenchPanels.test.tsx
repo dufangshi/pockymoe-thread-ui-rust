@@ -11,6 +11,7 @@ import {
   WorkbenchPanels,
   type WorkbenchPanelsOptions,
 } from './WorkbenchPanels';
+import { AppShellNavContext } from '../../app-shell/AppShellNavContext';
 import type { WorkbenchToolPanelControls } from './toolPanel';
 import { ComposerJumpLatestButton } from '../composer/ComposerJumpLatestButton';
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
@@ -464,6 +465,30 @@ describe('host inspector in a narrow workbench', () => {
     expect(panel.querySelector('[role="separator"]')).not.toBeNull();
     act(() => window.dispatchEvent(new PopStateEvent('popstate')));
     expect(onClose).not.toHaveBeenCalled();
+  });
+});
+describe('tools on a classic phone', () => {
+  it('sit in the thread tools menu, not the top bar, and the closed menu shows one that needs a look', () => {
+    vi.stubGlobal('innerWidth', 402);
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    const onToggle = vi.fn();
+    act(() => root.render(
+      <AppShellNavContext.Provider value={{ phoneDock: false } as never}>
+        <MatterWorkbench options={{ ...workbenchOptions(), panels: options, toolPanels: [
+          { id: 'git', label: 'Git', icon: null, active: false, onToggle },
+          { id: 'isolation', label: 'Isolation request', icon: null, active: false, onToggle() {}, attention: 'waiting' },
+        ] }} title="Primary" settings={null} newThread={null} actions={null} threadMenu={null} connection={null} explorer={null} revealExplorer={0}>
+          <textarea aria-label="Primary draft" />
+        </MatterWorkbench>
+      </AppShellNavContext.Provider>,
+    ));
+    expect(host.querySelector('header.matter-topbar button[aria-label="Git"]')).toBeNull();
+    const toggle = host.querySelector<HTMLButtonElement>('.matter-toolbar-toggle')!;
+    expect(toggle.dataset.attention).toBe('waiting');
+    expect(toggle.getAttribute('aria-label')).toBe(`${t('workbench.threadTools')}: Isolation request`);
+    const entry = document.querySelector<HTMLButtonElement>('#matter-thread-tools .matter-thread-tools-panels button[aria-label="Git"]')!;
+    act(() => entry.click());
+    expect(onToggle).toHaveBeenCalledOnce();
   });
 });
 describe('host inspector on a phone', () => {

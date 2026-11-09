@@ -439,6 +439,8 @@ interface WorkbenchToolPanel {
     icon: ReactNode;
     active: boolean;
     onToggle: () => void;
+    /** Needs a look. A phone's closed menu shows this on its toggle: 'waiting', 'running' or 'failed'. */
+    attention?: string | undefined;
 }
 interface MatterWorkbenchOptions {
     /** Optional host surface additions; absent in the browser workbench. */

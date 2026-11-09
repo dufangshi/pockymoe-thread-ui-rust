@@ -115,6 +115,8 @@ export interface WorkbenchToolPanel {
   icon: ReactNode;
   active: boolean;
   onToggle: () => void;
+  /** Needs a look. A phone's closed menu shows this on its toggle: 'waiting', 'running' or 'failed'. */
+  attention?: string | undefined;
 }
 export interface MatterWorkbenchOptions {
   /** Optional host surface additions; absent in the browser workbench. */
@@ -598,6 +600,8 @@ export function MatterWorkbench({
   const setWorkspaceOpen = (open: boolean) => fold('workspace', open);
   const setRecentsOpen = (open: boolean) => fold('recents', open);
   const openTabsOpen = sections.open;
+  // On a phone the tools are inside the menu: closed, it still says one needs a look.
+  const toolsAttention = mobile ? o.toolPanels?.find(panel => panel.attention) : undefined;
   const [sheetRecentsOpen, setSheetRecentsOpen] = useState(true);
   // The dock's thread sheet keeps its own folds: it is this workspace's list.
   const [sheetWorkspaceOpen, setSheetWorkspaceOpen] = useState(true);
@@ -1004,7 +1008,9 @@ export function MatterWorkbench({
               }
               o.onViewChange('shell');
             }}><Terminal data-icon="terminal" /></button>}
-            {o.toolPanels?.map(panel => <button key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
+            {/* Tools live in the thread tools menu, so the bar has room however many
+                there are. A framed page has no tabs row and so no menu. */}
+            {navigationFrame && o.toolPanels?.map(panel => <button key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
             <button disabled={!workspaceControlsEnabled} aria-label={translate("workbench.toggleExplorer")} aria-pressed={explorerOpen} aria-expanded={explorerOpen} title={translate("workbench.explorer")} onClick={() => setExplorerOpen(open => !open)}><FolderOpen data-icon="explorer" /></button>
             {!mobile && settings}
           </>}
@@ -1173,8 +1179,11 @@ export function MatterWorkbench({
         </div>
         {/* New thread stays in reach however many tabs there are. */}
         <div className="matter-tab-add">{newThread}</div>
-        {!o.emptyWorkspace && <button ref={toolbarToggleRef} disabled={!workspaceControlsEnabled} className="matter-toolbar-toggle" aria-label={translate("workbench.threadTools")} aria-haspopup="menu" aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal data-icon="thread-tools" /></button>}
-        <ThreadToolsMenu id="matter-thread-tools" open={toolbarOpen && !o.emptyWorkspace && workspaceControlsEnabled} anchorRef={toolbarToggleRef} panels={o.statusActions}
+        {!o.emptyWorkspace && <button ref={toolbarToggleRef} disabled={!workspaceControlsEnabled} className="matter-toolbar-toggle" data-attention={toolsAttention?.attention} aria-label={toolsAttention ? `${translate("workbench.threadTools")}: ${toolsAttention.label}` : translate("workbench.threadTools")} aria-haspopup="menu" aria-expanded={toolbarOpen} aria-controls="matter-thread-tools" onClick={() => setToolbarOpen(open => !open)} title={toolbarOpen ? translate("workbench.hideThreadTools") : translate("workbench.showThreadTools")}><SlidersHorizontal data-icon="thread-tools" /></button>}
+        <ThreadToolsMenu id="matter-thread-tools" open={toolbarOpen && !o.emptyWorkspace && workspaceControlsEnabled} anchorRef={toolbarToggleRef} panels={mobile ? <>
+            {o.toolPanels?.map(panel => <button type="button" key={panel.id} aria-label={panel.label} title={panel.label} aria-pressed={panel.active} onClick={panel.onToggle}>{panel.icon}</button>)}
+            {o.statusActions}
+          </> : o.statusActions}
           path={o.workspacePath} title={title} favorite={o.favorite} favoriteBusy={o.favoriteBusy} onToggleFavorite={o.onToggleFavorite}
           onClose={(restore) => { setToolbarOpen(false); if (restore) toolbarToggleRef.current?.focus(); }}>
           {actions}

@@ -1902,6 +1902,15 @@
 .thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports']) { order: 10; margin-top: 5px; position: relative; }
 .thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports'])::before { content: ''; position: absolute; top: -3px; left: 4px; right: 4px; height: 1px; background: var(--theme-border); }
 .thread-ui-shell .matter-toolbar-toggle[aria-expanded='true'] { background: var(--theme-hover); color: var(--theme-fg); }
+/* A tool in the menu is open, or needs a look while the menu is closed. */
+.thread-ui-shell .matter-thread-tools-panels button[aria-pressed='true'] { background: var(--theme-hover); }
+.thread-ui-shell .matter-toolbar-toggle[data-attention] { position: relative; }
+.thread-ui-shell .matter-toolbar-toggle[data-attention]::after {
+  content: ''; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--status-warning-fg); box-shadow: 0 0 0 2px var(--theme-panel);
+}
+.thread-ui-shell .matter-toolbar-toggle[data-attention='running']::after { background: var(--theme-accent-solid); }
+.thread-ui-shell .matter-toolbar-toggle[data-attention='failed']::after { border-radius: 1px; transform: rotate(45deg) scale(.9); background: var(--status-danger-fg); }
 
 /* Waiting is a solid speech bubble with a lower-right tail; never animated. */
 .matter-status-dot[data-status='waiting'] {

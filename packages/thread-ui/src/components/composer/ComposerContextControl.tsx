@@ -191,6 +191,8 @@ function ContextBreakdown({ snapshot }: { snapshot: ContextInspectionSnapshotDto
         {buffer.map(row)}
         {free.map(row)}
       </ul>
+      {used.some((entry) => entry.id === 'provider_overhead')
+        ? <p className="thread-context-footnote">{translate('chat.contextProviderOverheadNote')}</p> : null}
       {used.some((entry) => entry.id === 'unattributed')
         ? <p className="thread-context-footnote">{translate('chat.contextUnattributedNote')}</p> : null}
       {deferred.length ? (

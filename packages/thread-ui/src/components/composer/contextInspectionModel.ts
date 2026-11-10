@@ -30,6 +30,8 @@ const USED_CATEGORIES: Record<string, { slot: number; label: TranslationKey; ran
   mcp_instructions: { slot: 1, label: 'chat.contextCategoryMcpInstructions', rank: 2 },
   runtime_context: { slot: 1, label: 'chat.contextCategoryRuntime', rank: 3 },
   custom_agents: { slot: 1, label: 'chat.contextCategoryAgents', rank: 4 },
+  // What the provider counts beyond the request's own content, every request.
+  provider_overhead: { slot: 1, label: 'chat.contextCategoryProviderOverhead', rank: 4.5 },
   system_tools: { slot: 2, label: 'chat.contextCategorySystemTools', rank: 5 },
   tools: { slot: 2, label: 'chat.contextCategoryTools', rank: 5 },
   mcp_tools: { slot: 2, label: 'chat.contextCategoryMcpTools', rank: 6 },

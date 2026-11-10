@@ -1724,6 +1724,7 @@ declare const en: {
     readonly 'settings.upstreamsDirect': "Direct connection";
     readonly 'settings.upstreamsMoreActions': "More actions for {{name}}";
     readonly 'settings.upstreamsHarness': "Harness";
+    readonly 'settings.savedToAccount': "Saved to your account and applied across devices and browsers.";
     readonly 'settings.messageShortcuts': "Message shortcuts";
     readonly 'settings.savedToYourAccountAndAppliedAcross': "Saved to your account and applied across devices and browsers. On Mac, Command also works in place of Ctrl.";
     readonly 'settings.ctrlEnterToSend': "Ctrl+Enter to send";
@@ -3674,7 +3675,7 @@ declare const en: {
     readonly "chat.contextOutsideWindow": "Outside the window · not counted as used";
     readonly "chat.contextOtherDetails": "Other details";
     readonly "chat.contextItemNotLoaded": "Not loaded";
-    readonly "chat.contextUnattributedNote": "Unattributed is the difference between the harness's reported total and the local categories. It is not spread over them.";
+    readonly "chat.contextUnattributedNote": "Unattributed is the part of the harness’s reported total that is still unexplained (images, for example). It is not spread over the categories.";
     readonly "chat.contextSourceClaudeFull": "Claude full count";
     readonly "chat.contextSourceClaudeSummary": "Claude summary · categories estimated";
     readonly "chat.contextSourceCodexTrace": "Codex total · categories estimated";
@@ -3758,6 +3759,8 @@ declare const en: {
     readonly "chat.contextStepsNeedUpdate": "This device’s Supervisor does not record requests yet. Update it in Settings and new requests will appear here.";
     readonly "chat.contextStepsFailed": "Could not load the record.";
     readonly "chat.contextCategoryMessages": "Messages";
+    readonly "chat.contextCategoryProviderOverhead": "Provider overhead";
+    readonly "chat.contextProviderOverheadNote": "Provider overhead is the constant part the provider counts beyond the request’s own content, estimated from the smallest difference this conversation has shown.";
     readonly "chat.contextCategoryUnattributed": "Unattributed";
     readonly "chat.contextCategoryFree": "Free";
     readonly "chat.contextCategoryBuffer": "Auto-compact reserve";
@@ -7053,6 +7056,7 @@ declare const zhCN: {
     'settings.upstreamsDirect': "直连";
     'settings.upstreamsMoreActions': "{{name}} 的更多操作";
     'settings.upstreamsHarness': "Harness";
+    'settings.savedToAccount': "保存到账号，在设备和浏览器间同步。";
     'settings.messageShortcuts': "消息快捷键";
     'settings.savedToYourAccountAndAppliedAcross': "保存到账号并在设备和浏览器间同步。Mac 上也可用 Command 代替 Ctrl。";
     'settings.ctrlEnterToSend': "Ctrl+Enter 发送";
@@ -9003,7 +9007,7 @@ declare const zhCN: {
     "chat.contextOutsideWindow": "窗口外 · 不计入占用";
     "chat.contextOtherDetails": "其他明细";
     "chat.contextItemNotLoaded": "未加载";
-    "chat.contextUnattributedNote": "未归属是 Harness 上报的总量与本地分类之差，没有摊到其他分类。";
+    "chat.contextUnattributedNote": "未归属是 Harness 上报的总量里仍然说不清来源的部分（例如图片），没有摊到其他分类。";
     "chat.contextSourceClaudeFull": "Claude 完整计数";
     "chat.contextSourceClaudeSummary": "Claude 摘要 · 分类为估算";
     "chat.contextSourceCodexTrace": "Codex 上报 · 分类为估算";
@@ -9087,6 +9091,8 @@ declare const zhCN: {
     "chat.contextStepsNeedUpdate": "这台设备的 Supervisor 还不记录每次请求。在设置里更新它之后，新的请求会出现在这里。";
     "chat.contextStepsFailed": "无法加载记录。";
     "chat.contextCategoryMessages": "消息";
+    "chat.contextCategoryProviderOverhead": "模型侧开销";
+    "chat.contextProviderOverheadNote": "模型侧开销是请求内容之外、每次请求都会计入的固定部分，按这个对话出现过的最小差值估算。";
     "chat.contextCategoryUnattributed": "未归属";
     "chat.contextCategoryFree": "可用";
     "chat.contextCategoryBuffer": "自动压缩预留";
@@ -12404,6 +12410,7 @@ declare const resources: {
         readonly 'settings.upstreamsDirect': "Direct connection";
         readonly 'settings.upstreamsMoreActions': "More actions for {{name}}";
         readonly 'settings.upstreamsHarness': "Harness";
+        readonly 'settings.savedToAccount': "Saved to your account and applied across devices and browsers.";
         readonly 'settings.messageShortcuts': "Message shortcuts";
         readonly 'settings.savedToYourAccountAndAppliedAcross': "Saved to your account and applied across devices and browsers. On Mac, Command also works in place of Ctrl.";
         readonly 'settings.ctrlEnterToSend': "Ctrl+Enter to send";
@@ -14354,7 +14361,7 @@ declare const resources: {
         readonly "chat.contextOutsideWindow": "Outside the window · not counted as used";
         readonly "chat.contextOtherDetails": "Other details";
         readonly "chat.contextItemNotLoaded": "Not loaded";
-        readonly "chat.contextUnattributedNote": "Unattributed is the difference between the harness's reported total and the local categories. It is not spread over them.";
+        readonly "chat.contextUnattributedNote": "Unattributed is the part of the harness’s reported total that is still unexplained (images, for example). It is not spread over the categories.";
         readonly "chat.contextSourceClaudeFull": "Claude full count";
         readonly "chat.contextSourceClaudeSummary": "Claude summary · categories estimated";
         readonly "chat.contextSourceCodexTrace": "Codex total · categories estimated";
@@ -14438,6 +14445,8 @@ declare const resources: {
         readonly "chat.contextStepsNeedUpdate": "This device’s Supervisor does not record requests yet. Update it in Settings and new requests will appear here.";
         readonly "chat.contextStepsFailed": "Could not load the record.";
         readonly "chat.contextCategoryMessages": "Messages";
+        readonly "chat.contextCategoryProviderOverhead": "Provider overhead";
+        readonly "chat.contextProviderOverheadNote": "Provider overhead is the constant part the provider counts beyond the request’s own content, estimated from the smallest difference this conversation has shown.";
         readonly "chat.contextCategoryUnattributed": "Unattributed";
         readonly "chat.contextCategoryFree": "Free";
         readonly "chat.contextCategoryBuffer": "Auto-compact reserve";
@@ -17732,6 +17741,7 @@ declare const resources: {
         'settings.upstreamsDirect': "直连";
         'settings.upstreamsMoreActions': "{{name}} 的更多操作";
         'settings.upstreamsHarness': "Harness";
+        'settings.savedToAccount': "保存到账号，在设备和浏览器间同步。";
         'settings.messageShortcuts': "消息快捷键";
         'settings.savedToYourAccountAndAppliedAcross': "保存到账号并在设备和浏览器间同步。Mac 上也可用 Command 代替 Ctrl。";
         'settings.ctrlEnterToSend': "Ctrl+Enter 发送";
@@ -19682,7 +19692,7 @@ declare const resources: {
         "chat.contextOutsideWindow": "窗口外 · 不计入占用";
         "chat.contextOtherDetails": "其他明细";
         "chat.contextItemNotLoaded": "未加载";
-        "chat.contextUnattributedNote": "未归属是 Harness 上报的总量与本地分类之差，没有摊到其他分类。";
+        "chat.contextUnattributedNote": "未归属是 Harness 上报的总量里仍然说不清来源的部分（例如图片），没有摊到其他分类。";
         "chat.contextSourceClaudeFull": "Claude 完整计数";
         "chat.contextSourceClaudeSummary": "Claude 摘要 · 分类为估算";
         "chat.contextSourceCodexTrace": "Codex 上报 · 分类为估算";
@@ -19766,6 +19776,8 @@ declare const resources: {
         "chat.contextStepsNeedUpdate": "这台设备的 Supervisor 还不记录每次请求。在设置里更新它之后，新的请求会出现在这里。";
         "chat.contextStepsFailed": "无法加载记录。";
         "chat.contextCategoryMessages": "消息";
+        "chat.contextCategoryProviderOverhead": "模型侧开销";
+        "chat.contextProviderOverheadNote": "模型侧开销是请求内容之外、每次请求都会计入的固定部分，按这个对话出现过的最小差值估算。";
         "chat.contextCategoryUnattributed": "未归属";
         "chat.contextCategoryFree": "可用";
         "chat.contextCategoryBuffer": "自动压缩预留";

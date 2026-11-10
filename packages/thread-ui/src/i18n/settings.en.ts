@@ -262,6 +262,7 @@ export const settingsEn = {
   'settings.upstreamsDirect': 'Direct connection',
   'settings.upstreamsMoreActions': 'More actions for {{name}}',
   'settings.upstreamsHarness': 'Harness',
+  'settings.savedToAccount': 'Saved to your account and applied across devices and browsers.',
   'settings.messageShortcuts': 'Message shortcuts',
   'settings.savedToYourAccountAndAppliedAcross':
     'Saved to your account and applied across devices and browsers. On Mac, Command also works in place of Ctrl.',

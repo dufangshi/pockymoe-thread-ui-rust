@@ -56,7 +56,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-AMTVP2QD.js";
+} from "./chunk-RTK3A33B.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -86,7 +86,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-BB27P36H.js";
+} from "./chunk-XP6LQKPJ.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -4547,6 +4547,8 @@ var USED_CATEGORIES = {
   mcp_instructions: { slot: 1, label: "chat.contextCategoryMcpInstructions", rank: 2 },
   runtime_context: { slot: 1, label: "chat.contextCategoryRuntime", rank: 3 },
   custom_agents: { slot: 1, label: "chat.contextCategoryAgents", rank: 4 },
+  // What the provider counts beyond the request's own content, every request.
+  provider_overhead: { slot: 1, label: "chat.contextCategoryProviderOverhead", rank: 4.5 },
   system_tools: { slot: 2, label: "chat.contextCategorySystemTools", rank: 5 },
   tools: { slot: 2, label: "chat.contextCategoryTools", rank: 5 },
   mcp_tools: { slot: 2, label: "chat.contextCategoryMcpTools", rank: 6 },
@@ -5372,6 +5374,7 @@ function ContextBreakdown({ snapshot }) {
       buffer.map(row),
       free.map(row)
     ] }),
+    used.some((entry) => entry.id === "provider_overhead") ? /* @__PURE__ */ jsx26("p", { className: "thread-context-footnote", children: translate("chat.contextProviderOverheadNote") }) : null,
     used.some((entry) => entry.id === "unattributed") ? /* @__PURE__ */ jsx26("p", { className: "thread-context-footnote", children: translate("chat.contextUnattributedNote") }) : null,
     deferred.length ? /* @__PURE__ */ jsxs21("section", { className: "thread-context-outside", children: [
       /* @__PURE__ */ jsx26("h4", { className: "thread-context-heading", children: translate("chat.contextOutsideWindow") }),

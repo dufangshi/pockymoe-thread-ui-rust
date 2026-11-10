@@ -238,6 +238,7 @@ export const settingsZhCN = {
   'settings.upstreamsDirect': '直连',
   'settings.upstreamsMoreActions': '{{name}} 的更多操作',
   'settings.upstreamsHarness': 'Harness',
+  'settings.savedToAccount': '保存到账号，在设备和浏览器间同步。',
   'settings.messageShortcuts': '消息快捷键',
   'settings.savedToYourAccountAndAppliedAcross':
     '保存到账号并在设备和浏览器间同步。Mac 上也可用 Command 代替 Ctrl。',

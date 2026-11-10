@@ -16,25 +16,34 @@ export interface ContextReading {
 export interface ContextSegment {
   id: string;
   label: string;
-  /** Palette slot (1-7); 0 is the neutral of unattributed and unknown categories. */
+  /** Palette slot (1-8); 0 is the neutral of unattributed and unknown categories. */
   slot: number;
   tokens: number;
 }
 
-/** A hue belongs to a category, whichever others are present, and the order is
-    fixed so neighbours stay the validated adjacent pairs. */
+/** A hue belongs to a group of categories, whichever others are present, and the
+    groups keep one order so neighbours stay the validated adjacent pairs:
+    1 system, 2 tool definitions, 3 memory, 4 skills, 5 the user, 6 the model's
+    own output, 7 tool results, 8 what the harness injected. */
 const USED_CATEGORIES: Record<string, { slot: number; label: TranslationKey; rank: number }> = {
   system_prompt: { slot: 1, label: 'chat.contextCategorySystemPrompt', rank: 1 },
-  system_tools: { slot: 2, label: 'chat.contextCategorySystemTools', rank: 2 },
-  tools: { slot: 2, label: 'chat.contextCategoryTools', rank: 2 },
-  runtime_context: { slot: 6, label: 'chat.contextCategoryRuntime', rank: 7 },
-  mcp_instructions: { slot: 3, label: 'chat.contextCategoryMcpInstructions', rank: 3 },
-  mcp_tools: { slot: 3, label: 'chat.contextCategoryMcpTools', rank: 4 },
-  memory_files: { slot: 4, label: 'chat.contextCategoryMemory', rank: 5 },
-  skills: { slot: 5, label: 'chat.contextCategorySkills', rank: 6 },
-  custom_agents: { slot: 6, label: 'chat.contextCategoryAgents', rank: 7 },
-  messages: { slot: 7, label: 'chat.contextCategoryMessages', rank: 8 },
-  unattributed: { slot: 0, label: 'chat.contextCategoryUnattributed', rank: 10 },
+  mcp_instructions: { slot: 1, label: 'chat.contextCategoryMcpInstructions', rank: 2 },
+  runtime_context: { slot: 1, label: 'chat.contextCategoryRuntime', rank: 3 },
+  custom_agents: { slot: 1, label: 'chat.contextCategoryAgents', rank: 4 },
+  system_tools: { slot: 2, label: 'chat.contextCategorySystemTools', rank: 5 },
+  tools: { slot: 2, label: 'chat.contextCategoryTools', rank: 5 },
+  mcp_tools: { slot: 2, label: 'chat.contextCategoryMcpTools', rank: 6 },
+  memory_files: { slot: 3, label: 'chat.contextCategoryMemory', rank: 7 },
+  skills: { slot: 4, label: 'chat.contextCategorySkills', rank: 8 },
+  user_messages: { slot: 5, label: 'chat.contextCategoryUserMessages', rank: 9 },
+  assistant_messages: { slot: 6, label: 'chat.contextCategoryAssistantMessages', rank: 10 },
+  reasoning: { slot: 6, label: 'chat.contextCategoryReasoning', rank: 11 },
+  tool_calls: { slot: 6, label: 'chat.contextCategoryToolCalls', rank: 12 },
+  // A conversation its collector does not split: drawn as the model's side.
+  messages: { slot: 6, label: 'chat.contextCategoryMessages', rank: 13 },
+  tool_results: { slot: 7, label: 'chat.contextCategoryToolResults', rank: 14 },
+  injected: { slot: 8, label: 'chat.contextCategoryInjected', rank: 15 },
+  unattributed: { slot: 0, label: 'chat.contextCategoryUnattributed', rank: 20 },
 };
 const OTHER_LABELS: Record<string, TranslationKey> = {
   free_space: 'chat.contextCategoryFree',
@@ -156,7 +165,7 @@ export function segmentOf(category: ContextInspectionCategoryDto): ContextSegmen
 export function arrangeContextCategories(snapshot: ContextInspectionSnapshotDto) {
   const of = (kind: ContextInspectionCategoryDto['kind']) =>
     snapshot.categories.filter((entry) => entry.kind === kind && validCount(entry.tokens));
-  const rank = (entry: ContextInspectionCategoryDto) => USED_CATEGORIES[entry.id]?.rank ?? 9;
+  const rank = (entry: ContextInspectionCategoryDto) => USED_CATEGORIES[entry.id]?.rank ?? 19;
   return {
     used: of('used').map((entry, index) => ({ entry, index }))
       .sort((a, b) => rank(a.entry) - rank(b.entry) || a.index - b.index).map(({ entry }) => entry),

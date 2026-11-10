@@ -271,6 +271,97 @@ describe('ComposerContextControl', () => {
   });
 });
 
+describe('context views', () => {
+  const step = (turn: number, index: number, tool: number, described = true) => ({
+    seq: turn * 10 + index, turnId: `t${turn}`, turn, step: index, at: '2026-11-10T10:00:00Z',
+    inputTokens: 1000 + tool, cachedInputTokens: 900, cacheWriteInputTokens: 0, outputTokens: 50, reasoningOutputTokens: 0, modelMs: 2000, toolMs: 500,
+    ...(described ? { usedTokens: 1050 + tool, windowTokens: 100_000, source: 'codexTrace' as const, categories: { system_prompt: 600, user_messages: 400, tool_results: tool } } : {}),
+  });
+  const record = {
+    turnCount: 2,
+    totals: { usageTurns: 2, inputTokens: 5000, cachedInputTokens: 3500, cacheWriteInputTokens: 0, outputTokens: 200, reasoningOutputTokens: 0, modelTimeMs: 8000, wallTimeMs: 10_000, outputTimeMs: 4000, timedOutputTokens: 200 },
+    steps: [step(1, 1, 0), step(1, 2, 300), step(1, 3, 0, false), step(2, 1, 100)],
+  };
+  const tab = (name: string) => [...document.querySelectorAll<HTMLButtonElement>('.thread-context-tabs [role="tab"]')].find((node) => node.textContent === name)!;
+  const pick = (name: string) => [...document.querySelectorAll<HTMLButtonElement>('.thread-context-trend-controls [role="tab"]')].find((node) => node.textContent === name)!;
+  const settle = async () => { await act(async () => { await new Promise((resolve) => setTimeout(resolve, 300)); }); };
+
+  it('offers the trend and statistics only where the device records steps', async () => {
+    await render({ inspector: { load: async () => available(claudeSummary) } });
+    await act(async () => { meter().click(); });
+    expect(document.querySelector('.thread-context-tabs')).toBeNull();
+  });
+
+  it('says the device needs an update when its Supervisor keeps no record', async () => {
+    await render({ inspector: { load: async () => available(claudeSummary), loadSteps: async () => null } });
+    await act(async () => { meter().click(); });
+    await act(async () => { tab('Trend').click(); });
+    await settle();
+    expect(document.querySelector('[data-context-note="unsupported"]')?.textContent).toContain('Update it in Settings');
+    expect(document.querySelector('.thread-context-column')).toBeNull();
+  });
+
+  it('draws one bar per request or per turn, and lists the selected one with what changed', async () => {
+    const loadSteps = vi.fn(async () => record);
+    await render({ inspector: { load: async () => available(claudeSummary), loadSteps } });
+    await act(async () => { meter().click(); });
+    // Nothing is read for a view that is not open.
+    expect(loadSteps).not.toHaveBeenCalled();
+    await act(async () => { tab('Trend').click(); });
+    await settle();
+    expect(loadSteps).toHaveBeenCalledTimes(1);
+    expect(document.querySelectorAll('.thread-context-column')).toHaveLength(4);
+    // The newest request is selected; it added a tool result since the undescribed one, which only compares totals.
+    const head = () => document.querySelector('.thread-context-point-head')?.textContent;
+    expect(head()).toContain('Turn 2 · step 1');
+    // The undescribed request is one neutral bar.
+    const third = document.querySelectorAll('.thread-context-column')[2]!;
+    expect([...third.querySelectorAll('.thread-context-fill')].map((node) => node.getAttribute('data-slot'))).toEqual(['0']);
+    expect(document.querySelector('.thread-context-trend')?.textContent).toContain('Grey bars have no breakdown');
+    // Selecting the second request shows its tool results and their growth.
+    await act(async () => { document.querySelectorAll('.thread-context-column')[1]!.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+    expect(head()).toContain('Turn 1 · step 2');
+    const rows = [...document.querySelectorAll('.thread-context-point .thread-context-row')].map((row) => row.textContent);
+    expect(rows).toEqual(['System prompt600', 'User messages400', 'Tool results+300300']);
+    // Arrow keys move the selection.
+    await act(async () => { document.querySelector('.thread-context-chart-viewport')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); });
+    expect(head()).toContain('Turn 1 · step 1');
+    // By turn: one bar each, the turn's requests added up.
+    await act(async () => { pick('Turn').click(); });
+    expect(document.querySelectorAll('.thread-context-column')).toHaveLength(2);
+    expect(head()).toContain('Turn 2 · 1 steps');
+    // Change: the first bar is everything, later ones only what moved.
+    await act(async () => { pick('Change').click(); });
+    expect(document.querySelectorAll('.thread-context-column')[1]!.querySelectorAll('.thread-context-fill').length).toBeGreaterThan(0);
+  });
+
+  it('shows cache hits, what the requests read and where the time went', async () => {
+    await render({ inspector: { load: async () => available(claudeSummary), loadSteps: async () => record } });
+    await act(async () => { meter().click(); });
+    await act(async () => { tab('Statistics').click(); });
+    await settle();
+    const stats = document.querySelector('.thread-context-stats')!;
+    expect(stats.querySelector('.thread-context-percent')?.textContent).toBe('70.0%');
+    expect(stats.textContent).toContain('Read5k');
+    expect(stats.textContent).toContain('From cache3.5k');
+    expect([...stats.querySelectorAll('.thread-context-rows .thread-context-row')].map((row) => row.textContent)).toEqual([
+      // 1,800 + 1,200 + 400 over the three described requests.
+      'System prompt1.8k52.9%', 'User messages1.2k35.3%', 'Tool results40011.8%',
+    ]);
+    expect(stats.textContent).toContain('Model8s');
+    expect(stats.textContent).toContain('Tools and waits2s');
+    expect(stats.textContent).toContain('50 tok/s');
+  });
+
+  it('says so when the record cannot be read', async () => {
+    await render({ inspector: { load: async () => available(claudeSummary), loadSteps: async () => { throw new Error('HTTP 404'); } } });
+    await act(async () => { meter().click(); });
+    await act(async () => { tab('Trend').click(); });
+    await settle();
+    expect(document.querySelector('[data-context-note="failed"]')?.textContent).toContain('Could not load the record.');
+  });
+});
+
 describe('contextInspectionModel', () => {
   it('keeps a full count over a summary of the same context, but not over a later one', () => {
     const full = { ...claudeSummary, source: 'claudeFull' as const, updatedAt: '2026-11-01T00:00:00Z' };

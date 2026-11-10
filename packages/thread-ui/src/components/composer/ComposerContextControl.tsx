@@ -4,6 +4,7 @@ import type {
   ContextInspectionGroupItemDto,
   ContextInspectionSnapshotDto,
   ThreadContextInspectionDto,
+  ThreadContextStepsDto,
   ThreadContextUsageDto,
 } from '@pockymoe/shared';
 import { ChevronRight, Loader2, X } from 'lucide-react';
@@ -17,6 +18,7 @@ import { PathChip } from '../copy/PathChip';
 import { useModalFocus } from '../menu/useModalFocus';
 import { shellThemeProps } from '../themeHooks';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
+import { ContextStats, ContextSwitch, ContextTrend, useContextSteps } from './ContextInsights';
 import {
   arrangeContextCategories,
   contextAge,
@@ -39,6 +41,10 @@ import {
 /** How the host reads a thread's context analysis, on the thread's own device. */
 export interface ThreadContextInspector {
   load: (options: { detail: ContextInspectionDetailDto; refresh?: boolean }) => Promise<ThreadContextInspectionDto>;
+  /** The thread's record of model requests, for the trend and statistics views;
+      absent where the host cannot ask for it. Resolves to null when the
+      device's Supervisor is too old to keep one. */
+  loadSteps?: (() => Promise<ThreadContextStepsDto | null>) | undefined;
   /** Opens the setting that turns the analysis on; absent where it cannot be reached. */
   openSettings?: (() => void) | undefined;
 }
@@ -107,10 +113,12 @@ function ContextItemRow({ item, estimated }: { item: ContextInspectionGroupItemD
   );
 }
 
-function ContextRow({ id, label, tokens, share, swatch, estimated, items }: {
+function ContextRow({ id, label, tokens, share, swatch, estimated, items, count }: {
   id: string;
   label: string;
   tokens: number;
+  /** How many request items it holds, when they are counted but not listed. */
+  count?: number | null | undefined;
   /** The share of the window. Outside the window there is none. */
   share?: string | undefined;
   swatch: { slot?: number; kind: ContextInspectionCategoryDto['kind'] };
@@ -128,7 +136,7 @@ function ContextRow({ id, label, tokens, share, swatch, estimated, items }: {
       <span aria-hidden="true" className="thread-context-swatch" data-kind={swatch.kind} data-slot={swatch.slot} />
       <span className="thread-context-row-label">
         <span className="thread-context-row-name">{label}</span>
-        {items?.length ? <span className="thread-context-row-count">{items.length}</span> : null}
+        {items?.length || count ? <span className="thread-context-row-count">{items?.length || count}</span> : null}
       </span>
       <span className="thread-context-tokens">{approximate(estimated)}{formatContextTokens(tokens)}</span>
       {share !== undefined ? <span className="thread-context-share">{share}</span> : null}
@@ -164,7 +172,7 @@ function ContextBreakdown({ snapshot }: { snapshot: ContextInspectionSnapshotDto
         swatch={{ slot: segment.slot, kind: entry.kind }}
         // The free space and the reserve are not counted, whatever the categories' precision.
         estimated={(entry.kind === 'used' || entry.kind === 'deferred') && (entry.precision ?? snapshot.precision) === 'estimated'}
-        items={items.get(entry.id)} />
+        items={items.get(entry.id)} count={entry.count} />
     );
   };
   return (
@@ -263,10 +271,12 @@ function ContextNote({ state, inspector, hasSnapshot, onRetry }: {
     : null;
 }
 
-function ContextPanelSurface({ phone, label, subtitle, trigger, onClose, footer, expandableItems, layoutKey, children }: {
+function ContextPanelSurface({ phone, label, subtitle, tabs, trigger, onClose, footer, expandableItems, layoutKey, children }: {
   phone: boolean;
   label: string;
   subtitle?: string | null | undefined;
+  /** The views of the panel, under its title. */
+  tabs?: ReactNode;
   trigger: HTMLElement | null;
   onClose: () => void;
   footer: ReactNode;
@@ -303,6 +313,7 @@ function ContextPanelSurface({ phone, label, subtitle, trigger, onClose, footer,
           </button>
         ) : null}
       </header>
+      {tabs ? <div className="thread-context-tabs">{tabs}</div> : null}
       <div className="thread-context-body">{children}</div>
       {footer ? <footer className="thread-context-footer">{footer}</footer> : null}
     </div>
@@ -368,6 +379,8 @@ export function ComposerContextControl({
   const [compacting, setCompacting] = useState(false);
   const compactInFlight = useRef(false);
   const [compactError, setCompactError] = useState<string | null>(null);
+  const [view, setView] = useState<'current' | 'trend' | 'stats'>('current');
+  const steps = useContextSteps(inspector?.loadSteps, open && view !== 'current', contextUsage?.updatedAt);
   const inspectionProvider = agent ?? contextUsage?.details?.provider;
 
   const load = useCallback((detail: ContextInspectionDetailDto, refresh: boolean) => {
@@ -482,8 +495,34 @@ export function ComposerContextControl({
       </button>
       {open ? (
         <ContextPanelSurface phone={phone} label={translate('chat.context')} subtitle={modelLabel || snapshot?.model} trigger={trigger.current} onClose={onClose} footer={footer}
-          expandableItems={snapshot ? (snapshot.groups ?? []).reduce((sum, group) => sum + (group.items?.length ?? 0), 0) : 0}
-          layoutKey={[state.status, state.response?.availability, snapshot?.source, snapshot?.categories.length].join('|')}>
+          tabs={inspector?.loadSteps ? (
+            <ContextSwitch label={translate('chat.contextViews')} value={view} onChange={setView} options={[
+              { value: 'current', label: translate('chat.contextTabCurrent') },
+              { value: 'trend', label: translate('chat.contextTabTrend') },
+              { value: 'stats', label: translate('chat.contextTabStats') },
+            ]} />
+          ) : null}
+          expandableItems={view === 'current' && snapshot ? (snapshot.groups ?? []).reduce((sum, group) => sum + (group.items?.length ?? 0), 0) : 0}
+          layoutKey={[view, state.status, state.response?.availability, snapshot?.source, snapshot?.categories.length, steps.data?.steps.length].join('|')}>
+          {view !== 'current' ? (
+            steps.data
+              ? (view === 'trend' ? <ContextTrend data={steps.data} /> : <ContextStats data={steps.data} />)
+              : steps.unsupported
+                ? <p className="thread-context-note" data-context-note="unsupported">{translate('chat.contextStepsNeedUpdate')}</p>
+              : steps.error
+                ? (
+                  <p className="thread-context-note" data-context-note="failed">
+                    <span>{translate('chat.contextStepsFailed')}</span>
+                    <ErrorMark message={steps.error} />
+                  </p>
+                )
+                : (
+                  <p className="thread-context-note" data-context-note="loading" role="status">
+                    <Loader2 aria-hidden="true" className="thread-context-spinner animate-spin" />
+                    <span>{translate('chat.contextLoading')}</span>
+                  </p>
+                )
+          ) : <>
           <div className="thread-context-summary" data-tone={tone}>
             <div className="thread-context-hero">
               <strong className="thread-context-percent">{reading ? formatContextPercent(reading.used, reading.window, true) : '—'}</strong>
@@ -540,6 +579,7 @@ export function ComposerContextControl({
           {!arranged && loading && !state.response ? (
             <div className="thread-context-skeleton" aria-hidden="true"><span /><span /><span /><span /></div>
           ) : null}
+          </>}
         </ContextPanelSurface>
       ) : null}
     </div>

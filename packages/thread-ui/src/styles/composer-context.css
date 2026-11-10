@@ -12,6 +12,7 @@
   --context-cat-5: #e87ba4;
   --context-cat-6: #008300;
   --context-cat-7: #6250d6;
+  --context-cat-8: #e34948;
   --context-neutral: color-mix(in srgb, var(--theme-fg-muted, #737373) 62%, transparent);
   --context-fill: var(--context-cat-1);
   --context-warning: #b25e00;
@@ -28,6 +29,7 @@
   --context-cat-5: #d55181;
   --context-cat-6: #008300;
   --context-cat-7: #9085e9;
+  --context-cat-8: #e66767;
   --context-warning: #eda100;
   --context-danger: #f07575;
 }
@@ -86,6 +88,16 @@
 .thread-context-segment[data-slot='5'], .thread-context-swatch[data-slot='5'] { background: var(--context-cat-5); }
 .thread-context-segment[data-slot='6'], .thread-context-swatch[data-slot='6'] { background: var(--context-cat-6); }
 .thread-context-segment[data-slot='7'], .thread-context-swatch[data-slot='7'] { background: var(--context-cat-7); }
+.thread-context-segment[data-slot='8'], .thread-context-swatch[data-slot='8'] { background: var(--context-cat-8); }
+.thread-context-fill { fill: var(--context-neutral); }
+.thread-context-fill[data-slot='1'] { fill: var(--context-cat-1); }
+.thread-context-fill[data-slot='2'] { fill: var(--context-cat-2); }
+.thread-context-fill[data-slot='3'] { fill: var(--context-cat-3); }
+.thread-context-fill[data-slot='4'] { fill: var(--context-cat-4); }
+.thread-context-fill[data-slot='5'] { fill: var(--context-cat-5); }
+.thread-context-fill[data-slot='6'] { fill: var(--context-cat-6); }
+.thread-context-fill[data-slot='7'] { fill: var(--context-cat-7); }
+.thread-context-fill[data-slot='8'] { fill: var(--context-cat-8); }
 .thread-context-segment.is-reserved,
 .thread-context-swatch[data-kind='buffer'] {
   background: repeating-linear-gradient(135deg, var(--context-neutral) 0 2px, transparent 2px 4px);
@@ -102,7 +114,7 @@
 
 /* ── The window ───────────────────────────────────────────────────────────── */
 .thread-ui-shell .thread-context-surface.thread-composer-menu-surface {
-  width: min(22.5rem, calc(100vw - 2rem));
+  width: min(26rem, calc(100vw - 2rem));
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--theme-border-strong, var(--theme-border));
@@ -256,6 +268,87 @@
 }
 .thread-context-action:focus-visible { outline: 2px solid var(--theme-accent-solid, currentColor); outline-offset: 1px; }
 .thread-context-action:disabled { cursor: not-allowed; opacity: 0.55; }
+
+/* ── Views: now, trend, statistics ────────────────────────────────────────── */
+.thread-context-tabs { flex: none; padding: 8px 14px 2px; }
+.thread-context-switch {
+  display: inline-flex;
+  max-width: 100%;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--context-track);
+}
+.thread-context-switch > button {
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--theme-fg-muted);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.thread-context-switch > button[aria-selected='true'] {
+  background: var(--theme-panel);
+  box-shadow: 0 0 0 1px var(--theme-border);
+  color: var(--theme-fg);
+  font-weight: 600;
+}
+.thread-context-switch > button:focus-visible { outline: 2px solid var(--theme-accent-solid, currentColor); outline-offset: 1px; }
+.thread-context-trend, .thread-context-stats { display: grid; gap: 10px; padding-top: 4px; }
+.thread-context-trend-controls { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; }
+.thread-context-chart { display: flex; min-width: 0; }
+.thread-context-chart-axis { position: relative; flex: none; color: var(--theme-fg-muted); font-size: 10px; line-height: 12px; font-variant-numeric: tabular-nums; }
+.thread-context-chart-axis > span { position: absolute; right: 6px; transform: translateY(-50%); white-space: nowrap; }
+.thread-context-chart-axis > span:first-child { transform: translateY(-1px); }
+.thread-context-chart-viewport {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  border-radius: 4px;
+}
+.thread-context-chart-viewport:focus-visible { outline: 2px solid var(--theme-accent-solid, currentColor); outline-offset: 2px; }
+.thread-context-chart-viewport svg { display: block; }
+.thread-context-grid { stroke: var(--theme-border); stroke-width: 1; }
+.thread-context-grid.is-zero { stroke: var(--theme-border-strong, var(--theme-border)); }
+/* The slash across a bar that runs past the scale: drawn in the surface colour so it reads as a cut. */
+.thread-context-break { stroke: var(--theme-panel); stroke-width: 2.5; stroke-linecap: square; pointer-events: none; }
+.thread-context-column { cursor: pointer; }
+.thread-context-column-hit { fill: transparent; }
+.thread-context-column[data-selected] .thread-context-column-hit { fill: var(--theme-hover); }
+.thread-context-time.is-model, .thread-context-time-key.is-model { fill: var(--theme-fg-soft, var(--theme-fg-muted)); background: var(--theme-fg-soft, var(--theme-fg-muted)); }
+.thread-context-time.is-tool, .thread-context-time-key.is-tool { fill: var(--context-neutral); background: var(--context-neutral); opacity: 0.6; }
+.thread-context-turn-mark line { stroke: var(--theme-border); stroke-width: 1; }
+.thread-context-turn-mark text { fill: var(--theme-fg-muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+.thread-context-point { display: grid; gap: 4px; }
+.thread-context-point-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0; }
+.thread-context-point-head > span { color: var(--theme-fg-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.thread-context-facts { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; }
+.thread-context-facts > div { display: flex; align-items: baseline; gap: 5px; min-width: 0; }
+.thread-context-facts dt { display: inline-flex; align-items: center; gap: 4px; color: var(--theme-fg-muted); font-size: 11px; }
+.thread-context-facts dd { margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.thread-context-change { margin-left: 5px; color: var(--theme-fg-muted); font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.thread-context-rows.is-compact { margin-top: 2px; }
+.thread-context-rows.is-compact .thread-context-row { grid-template-columns: 0 10px minmax(0, 1fr) auto auto; min-height: 22px; }
+.thread-context-rows.is-compact .thread-context-row:has(> .thread-context-share) { grid-template-columns: 0 10px minmax(0, 1fr) auto minmax(44px, auto); }
+.thread-context-rows.is-compact .thread-context-change { margin-left: 0; }
+.thread-context-trend > .thread-context-footnote { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 0; padding-left: 0; }
+.thread-context-key { display: inline-flex; align-items: center; gap: 4px; }
+.thread-context-time-key { display: inline-block; flex: none; width: 8px; height: 8px; border-radius: 2px; }
+.thread-context-stat { display: grid; gap: 6px; }
+.thread-context-stat + .thread-context-stat { padding-top: 10px; border-top: 1px dashed var(--theme-border); }
+.thread-context-stat .thread-context-footnote { margin-top: 0; padding-left: 0; }
+.thread-context-bar.is-tall { height: 12px; gap: var(--context-gap); border-radius: 4px; background: transparent; }
+.thread-context-bar.is-tall .thread-context-segment { border-radius: 2px; }
+.thread-context-bar.is-tall .thread-context-segment:first-child { border-radius: 4px 2px 2px 4px; }
+.thread-context-bar.is-tall .thread-context-segment:last-child { border-radius: 2px 4px 4px 2px; }
+.thread-context-surface.is-sheet .thread-context-tabs { padding: 8px 16px 2px; }
+.thread-context-surface.is-sheet .thread-context-switch { display: flex; }
+.thread-context-surface.is-sheet .thread-context-switch > button { flex: 1; min-height: 36px; font-size: 13px; }
+.thread-context-surface.is-sheet .thread-context-rows.is-compact .thread-context-row { min-height: 30px; }
 
 /* ── Phones: from the bottom, over a blurred page ─────────────────────────── */
 .thread-ui-shell.thread-context-sheet-layer {

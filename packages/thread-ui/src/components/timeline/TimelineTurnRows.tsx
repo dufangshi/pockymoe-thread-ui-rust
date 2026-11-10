@@ -899,12 +899,12 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   }, [activeForRendering, mergedItems, visibleSummaryAgent]);
   // With thinking summaries shown, the latest one says what the working turn is
   // about now: it stands above the work line, and replaces the operation below it.
+  // It stays when narration follows it: harnesses think, say what they will do,
+  // then run it, so a thought is nearly always older than the latest narration.
   const latestThought = useMemo(() => {
     if (!activeForRendering || !showReasoningSummaries) return null;
-    const narration = visibleSummaryAgent ? mergedItems.findIndex(item => item.id === visibleSummaryAgent.id) : -1;
-    const index = mergedItems.findLastIndex(item => item.kind === 'reasoning' && item.text.trim());
-    return index > narration ? mergedItems[index]! : null;
-  }, [activeForRendering, showReasoningSummaries, mergedItems, visibleSummaryAgent]);
+    return mergedItems.findLast(item => item.kind === 'reasoning' && item.text.trim()) ?? null;
+  }, [activeForRendering, showReasoningSummaries, mergedItems]);
   const logEntries = leadingUserCount < 0 ? [] : groupedItems.slice(leadingUserCount);
   // A finished turn's answer has one place, below its work, folded or open: it
   // never moves into the opening work (where it would vanish for a moment).

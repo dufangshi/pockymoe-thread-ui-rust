@@ -19459,10 +19459,8 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
   }, [activeForRendering, mergedItems, visibleSummaryAgent]);
   const latestThought = useMemo12(() => {
     if (!activeForRendering || !showReasoningSummaries) return null;
-    const narration = visibleSummaryAgent ? mergedItems.findIndex((item) => item.id === visibleSummaryAgent.id) : -1;
-    const index = mergedItems.findLastIndex((item) => item.kind === "reasoning" && item.text.trim());
-    return index > narration ? mergedItems[index] : null;
-  }, [activeForRendering, showReasoningSummaries, mergedItems, visibleSummaryAgent]);
+    return mergedItems.findLast((item) => item.kind === "reasoning" && item.text.trim()) ?? null;
+  }, [activeForRendering, showReasoningSummaries, mergedItems]);
   const logEntries = leadingUserCount < 0 ? [] : groupedItems.slice(leadingUserCount);
   const finalAnswer = isTerminalTurnStatus(turn.status) && visibleSummaryAgent ? visibleSummaryAgent : null;
   const lastLogEntry = logEntries.at(-1);

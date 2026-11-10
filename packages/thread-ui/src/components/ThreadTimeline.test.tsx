@@ -332,10 +332,14 @@ describe('ThreadTimeline', () => {
     flushSync(() => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
     expect(element.querySelectorAll('.tlog-current')).toHaveLength(1);
     expect(element.querySelector('.tlog-current.is-thought')).not.toBeNull();
-    // A newer narration takes over, and the line under it shows the operation again.
+    // Harnesses think, narrate, then run: narration after the thought does not remove it,
+    // and the thought still stands in for the operation under the folded turn.
     flushSync(() => root?.render(timeline([thought('t1', 'Reading the logs'), { id: 'n', kind: 'agentMessage', text: 'Found it', responsePhase: 'commentary' }, command('third')])));
+    expect(element.querySelector('.tlog-current.is-thought .tlog-title')?.textContent).toBe('Reading the logs');
+    expect(element.querySelectorAll('.tlog-current')).toHaveLength(1);
+    // Before any thought, the folded turn shows its current operation as before.
+    flushSync(() => root?.render(timeline([{ id: 'n', kind: 'agentMessage', text: 'Starting', responsePhase: 'commentary' }, command('fourth')])));
     expect(element.querySelector('.tlog-current.is-thought')).toBeNull();
-    expect(element.querySelector('.tlog-current .tlog-title')?.textContent).toBe('third');
   });
 
   it('shows no thinking summary line when summaries are off', () => {

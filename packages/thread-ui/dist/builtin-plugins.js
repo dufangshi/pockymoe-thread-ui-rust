@@ -7,7 +7,7 @@ import {
   formatNumber,
   translate,
   useI18n
-} from "./chunk-AA3MCXIJ.js";
+} from "./chunk-L4USAOBJ.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/plugins/builtin-plugin-modules.tsx

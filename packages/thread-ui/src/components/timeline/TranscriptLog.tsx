@@ -248,6 +248,13 @@ export function unwrapShellCommand(command: string) {
   return match[1] === "'" ? body.replace(/'\\''/g, "'") : body.replace(/\\(["\\$`])/g, '$1');
 }
 
+/** A thought is text, not an operation: harnesses leave it "running" until the
+    turn ends, so it never carries the running mark. */
+function rowStatus(item: ThreadHistoryItemDto) {
+  const status = logStatus(item.status);
+  return item.kind === 'reasoning' && status === 'running' ? 'done' : status;
+}
+
 function statusTag(status: ReturnType<typeof logStatus>) {
   if (status === 'failed') return <span className="tlog-tag is-failed">{translate('chat.logFailedTag')}</span>;
   if (status === 'interrupted') return <span className="tlog-tag is-interrupted">{translate('chat.logInterrupted')}</span>;
@@ -367,7 +374,7 @@ function OperationRow({ item, defaultOpen = false, path }: { item: ThreadHistory
   // unless the reader has opened or closed it.
   const [chosen, setChosen] = useState<boolean | null>(null);
   const open = chosen ?? defaultOpen;
-  const status = logStatus(item.status);
+  const status = rowStatus(item);
   const title = rowTitle(item, actions?.workspaceRoot);
   return (
     <div className="tlog-row" data-kind={item.kind} data-status={status} data-open={open || undefined}>
@@ -511,7 +518,7 @@ export const LogRun = memo(function LogRun({
   const wakes = useMemo(() => items.filter(isWakeItem).length, [items]);
   const parts = [...activityParts(counts),
     ...(wakes ? [{ key: 'wakes', count: wakes, text: translate('chat.logWakes', { count: wakes }) }] : [])];
-  const running = items.some((item) => logStatus(item.status) === 'running');
+  const running = items.some((item) => rowStatus(item) === 'running');
   const duration = itemsDuration(items);
   const blocks = useMemo(() => rowBlocks(items), [items]);
   // Only the run being worked on shows its edits; finished runs keep them folded.

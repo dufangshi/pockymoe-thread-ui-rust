@@ -314,6 +314,39 @@ describe('ThreadTimeline', () => {
     expect(element.querySelector('.tlog-current .tlog-title')?.textContent).toBe('fourth');
   });
 
+  it('puts the latest thinking summary of a working turn above its work line, without a running mark', () => {
+    const turn: ThreadTurnDto = { ...completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Inspect' }]), status: 'inProgress' };
+    const command = (id: string) => ({ id, kind: 'commandExecution' as const, text: id, status: 'completed' });
+    const thought = (id: string, text: string) => ({ id, kind: 'reasoning' as const, text, status: 'running' });
+    const timeline = (items: ThreadTurnDto['items']) => <ThreadTimeline turns={[turn]} liveOutput="" threadRunning activeTurnId={turn.id}
+      liveItems={{ turnId: turn.id, items }} />;
+    const element = render(timeline([thought('t1', 'Reading the logs'), command('first'), thought('t2', '**Next**: parse the capture\nmore'), command('second')]));
+    // Thoughts stay "running" until the turn ends; none of them spins, nor does their run.
+    expect(element.querySelectorAll('.tlog-row[data-kind="reasoning"] .tlog-spinner')).toHaveLength(0);
+    expect(element.querySelector('.tlog-run[data-running]')).toBeNull();
+    const now = element.querySelector('.tlog-current.is-thought');
+    expect(now?.querySelector('.tlog-title')?.textContent).toBe('Next: parse the capture');
+    // It stands between the prompt and the work line, folded or open.
+    const line = element.querySelector('.thread-graph-worked-summary')!;
+    expect(now!.compareDocumentPosition(line) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    flushSync(() => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    expect(element.querySelectorAll('.tlog-current')).toHaveLength(1);
+    expect(element.querySelector('.tlog-current.is-thought')).not.toBeNull();
+    // A newer narration takes over, and the line under it shows the operation again.
+    flushSync(() => root?.render(timeline([thought('t1', 'Reading the logs'), { id: 'n', kind: 'agentMessage', text: 'Found it', responsePhase: 'commentary' }, command('third')])));
+    expect(element.querySelector('.tlog-current.is-thought')).toBeNull();
+    expect(element.querySelector('.tlog-current .tlog-title')?.textContent).toBe('third');
+  });
+
+  it('shows no thinking summary line when summaries are off', () => {
+    shellSettings.showReasoningSummaries = false;
+    const turn: ThreadTurnDto = { ...completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Inspect' }]), status: 'inProgress' };
+    const element = render(<ThreadTimeline turns={[turn]} liveOutput="" threadRunning activeTurnId={turn.id}
+      liveItems={{ turnId: turn.id, items: [{ id: 't', kind: 'reasoning', text: 'Hidden', status: 'running' }, { id: 'c', kind: 'commandExecution', text: 'ls', status: 'completed' }] }} />);
+    expect(element.querySelector('.tlog-current.is-thought')).toBeNull();
+    expect(element.textContent).not.toContain('Hidden');
+  });
+
   it('keeps a peer round human approval accessible while the whole task remains folded', () => {
     const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Task'}]),id:'task'} as ThreadTurnDto;
     const peer: ThreadTurnDto = {...completedTurn([{id:'wake:user',kind:'userMessage',text:'Wake envelope',peerWork:{taskTurnId:'task',messages:[{id:'q',kind:'question',name:'Reviewer',subject:'Scope?'}]}}]),id:'wake',status:'inProgress',hasDeferredItems:true};

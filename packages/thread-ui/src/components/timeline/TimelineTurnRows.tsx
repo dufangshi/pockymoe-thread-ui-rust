@@ -897,6 +897,14 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     const index = mergedItems.findLastIndex(item => isLogItem(item) && item.kind !== 'reasoning');
     return index > narration ? mergedItems[index]! : null;
   }, [activeForRendering, mergedItems, visibleSummaryAgent]);
+  // With thinking summaries shown, the latest one says what the working turn is
+  // about now: it stands above the work line, and replaces the operation below it.
+  const latestThought = useMemo(() => {
+    if (!activeForRendering || !showReasoningSummaries) return null;
+    const narration = visibleSummaryAgent ? mergedItems.findIndex(item => item.id === visibleSummaryAgent.id) : -1;
+    const index = mergedItems.findLastIndex(item => item.kind === 'reasoning' && item.text.trim());
+    return index > narration ? mergedItems[index]! : null;
+  }, [activeForRendering, showReasoningSummaries, mergedItems, visibleSummaryAgent]);
   const logEntries = leadingUserCount < 0 ? [] : groupedItems.slice(leadingUserCount);
   // A finished turn's answer has one place, below its work, folded or open: it
   // never moves into the opening work (where it would vanish for a moment).
@@ -923,6 +931,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     hasCollapsedHiddenItems ? (
       <div className="thread-graph-turn-collapsed-summary space-y-2">
         {collapsedSummary.users.slice(0, leadingPrompts).map(renderPrompt)}
+        {latestThought ? <div className="tlog-current is-thought"><LogRow key={latestThought.id} item={latestThought} /></div> : null}
         <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
           <TranscriptAgentByline />
           <button
@@ -1038,7 +1047,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           ? renderSummaryAgent(finalAnswer) : null}
         {effectiveCollapsed && !finalAnswer && visibleSummaryAgent && !answerSections?.some(entry => entry.kind === 'item' && entry.item.id === visibleSummaryAgent.id)
           ? renderSummaryAgent(visibleSummaryAgent) : null}
-        {effectiveCollapsed && currentOperation ? <div className="tlog-current"><LogRow key={currentOperation.id} item={currentOperation} /></div> : null}
+        {effectiveCollapsed && currentOperation && !latestThought ? <div className="tlog-current"><LogRow key={currentOperation.id} item={currentOperation} /></div> : null}
         {/* The plan and status leave with the work when the turn ends. */}
         <Collapse open={activeForRendering}>
           <GraphChatTurnBody

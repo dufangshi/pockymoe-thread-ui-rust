@@ -3097,7 +3097,16 @@ var devicesEn = {
   "devices.sharedControlDevice": "The whole device",
   "devices.sharedControlWith": "with {{name}} \xB7 {{access}}",
   "devices.sharedControlFix": "Revoke these shares or make them view only, without new threads, to let its agents reach your other devices.",
-  "devices.sharedControlOpen": "Open Sharing"
+  "devices.sharedControlOpen": "Open Sharing",
+  "devices.setupWaiting": "Waiting for the device to connect\u2026",
+  "devices.setupFinishing": "Connected. Finishing protection\u2026",
+  "devices.setupNeedsFinish": "Connected. Finish protection to use it.",
+  "devices.setupReady": "Connected and protected.",
+  "devices.setupOpen": "Open device",
+  "devices.finishProtectionHint": "This device is connected but its protection is not finished.",
+  "devices.finishProtectionFailed": "Could not finish protection. Retry, or copy the setup command again from the device's page and run it on the device.",
+  "devices.protectionRepairHint": "This device's protection has to be set up again: copy the setup command from its page and run it on the device.",
+  "devices.alreadyRemoved": "This device is no longer in your account."
 };
 
 // src/i18n/files.en.ts
@@ -8342,7 +8351,16 @@ var devicesZhCN = {
   "devices.sharedControlDevice": "\u6574\u53F0\u8BBE\u5907",
   "devices.sharedControlWith": "\u5171\u4EAB\u7ED9 {{name}} \xB7 {{access}}",
   "devices.sharedControlFix": "\u64A4\u9500\u8FD9\u4E9B\u5171\u4EAB\uFF0C\u6216\u6539\u4E3A\u4EC5\u67E5\u770B\u4E14\u4E0D\u80FD\u65B0\u5EFA\u7EBF\u7A0B\uFF0C\u5B83\u7684 Agent \u5C31\u80FD\u8BBF\u95EE\u4F60\u7684\u5176\u4ED6\u8BBE\u5907\u3002",
-  "devices.sharedControlOpen": "\u6253\u5F00\u5171\u4EAB"
+  "devices.sharedControlOpen": "\u6253\u5F00\u5171\u4EAB",
+  "devices.setupWaiting": "\u7B49\u5F85\u8BBE\u5907\u8FDE\u63A5\u2026",
+  "devices.setupFinishing": "\u5DF2\u8FDE\u63A5\uFF0C\u6B63\u5728\u5B8C\u6210\u4FDD\u62A4\u2026",
+  "devices.setupNeedsFinish": "\u5DF2\u8FDE\u63A5\u3002\u5B8C\u6210\u4FDD\u62A4\u540E\u5373\u53EF\u4F7F\u7528\u3002",
+  "devices.setupReady": "\u5DF2\u8FDE\u63A5\u5E76\u53D7\u4FDD\u62A4\u3002",
+  "devices.setupOpen": "\u6253\u5F00\u8BBE\u5907",
+  "devices.finishProtectionHint": "\u8BBE\u5907\u5DF2\u8FDE\u63A5\uFF0C\u4F46\u4FDD\u62A4\u8FD8\u6CA1\u6709\u5B8C\u6210\u3002",
+  "devices.finishProtectionFailed": "\u65E0\u6CD5\u5B8C\u6210\u4FDD\u62A4\u3002\u8BF7\u91CD\u8BD5\uFF0C\u6216\u5728\u8BBE\u5907\u9875\u91CD\u65B0\u590D\u5236\u5B89\u88C5\u547D\u4EE4\u5E76\u5728\u8BBE\u5907\u4E0A\u8FD0\u884C\u3002",
+  "devices.protectionRepairHint": "\u9700\u8981\u91CD\u65B0\u8BBE\u7F6E\u6B64\u8BBE\u5907\u7684\u4FDD\u62A4\uFF1A\u5728\u8BBE\u5907\u9875\u590D\u5236\u5B89\u88C5\u547D\u4EE4\uFF0C\u5E76\u5728\u8BBE\u5907\u4E0A\u8FD0\u884C\u3002",
+  "devices.alreadyRemoved": "\u6B64\u8BBE\u5907\u5DF2\u4E0D\u5728\u4F60\u7684\u8D26\u6237\u4E2D\u3002"
 };
 
 // src/i18n/files.zh-CN.ts

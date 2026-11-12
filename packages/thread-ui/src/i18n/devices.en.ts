@@ -416,4 +416,13 @@ export const devicesEn = {
   "devices.sharedControlWith": "with {{name}} · {{access}}",
   "devices.sharedControlFix": "Revoke these shares or make them view only, without new threads, to let its agents reach your other devices.",
   "devices.sharedControlOpen": "Open Sharing",
+  "devices.setupWaiting": "Waiting for the device to connect…",
+  "devices.setupFinishing": "Connected. Finishing protection…",
+  "devices.setupNeedsFinish": "Connected. Finish protection to use it.",
+  "devices.setupReady": "Connected and protected.",
+  "devices.setupOpen": "Open device",
+  "devices.finishProtectionHint": "This device is connected but its protection is not finished.",
+  "devices.finishProtectionFailed": "Could not finish protection. Retry, or copy the setup command again from the device's page and run it on the device.",
+  "devices.protectionRepairHint": "This device's protection has to be set up again: copy the setup command from its page and run it on the device.",
+  "devices.alreadyRemoved": "This device is no longer in your account.",
 } as const;

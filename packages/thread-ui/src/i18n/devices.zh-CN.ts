@@ -416,4 +416,13 @@ export const devicesZhCN = {
   "devices.sharedControlWith": "共享给 {{name}} · {{access}}",
   "devices.sharedControlFix": "撤销这些共享，或改为仅查看且不能新建线程，它的 Agent 就能访问你的其他设备。",
   "devices.sharedControlOpen": "打开共享",
+  "devices.setupWaiting": "等待设备连接…",
+  "devices.setupFinishing": "已连接，正在完成保护…",
+  "devices.setupNeedsFinish": "已连接。完成保护后即可使用。",
+  "devices.setupReady": "已连接并受保护。",
+  "devices.setupOpen": "打开设备",
+  "devices.finishProtectionHint": "设备已连接，但保护还没有完成。",
+  "devices.finishProtectionFailed": "无法完成保护。请重试，或在设备页重新复制安装命令并在设备上运行。",
+  "devices.protectionRepairHint": "需要重新设置此设备的保护：在设备页复制安装命令，并在设备上运行。",
+  "devices.alreadyRemoved": "此设备已不在你的账户中。",
 } as const;

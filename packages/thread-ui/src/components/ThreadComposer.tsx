@@ -710,6 +710,13 @@ export function ThreadComposer({
     };
   }
 
+  // What the editor last reported as its own text, and a way to take in text it
+  // gained since without an input event reaching us.
+  const editorTextRef = useRef<string | null>(null);
+  const handlePromptInputRef = useRef<() => void>(() => {});
+  const adoptEditorText = useCallback(() => {
+    requestAnimationFrame(() => handlePromptInputRef.current());
+  }, []);
   useComposerPromptDomSync({
     promptRef,
     isShellView,
@@ -723,6 +730,8 @@ export function ThreadComposer({
     renderedPreviewSignatureRef,
     serializeEditorPrompt,
     restoreSelection,
+    editorTextRef,
+    adoptEditorText,
   });
 
   function dismissPromptFocus() {
@@ -827,6 +836,7 @@ export function ThreadComposer({
     }
     const nextSelection = snapshotSelection();
     selectionSnapshotRef.current = nextSelection;
+    editorTextRef.current = nextPrompt;
     updateDraft((current) => ({
       prompt: nextPrompt,
       attachments: current.attachments.filter((attachment) =>
@@ -834,6 +844,8 @@ export function ThreadComposer({
       ),
     }), 'deferred');
   }
+
+  handlePromptInputRef.current = handlePromptInput;
 
   function handlePromptPaste(event: ClipboardEvent<HTMLDivElement>) {
     const files = extractFilesFromTransfer(

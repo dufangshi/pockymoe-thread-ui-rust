@@ -154,11 +154,17 @@ export function useCompactComposer(
         if (ownsEvent(pendingPointerEvent)) focusWithin = true;
         pendingPointerEvent = null;
       }
-      const overflowing = promptExceedsCompactLine(editor, group, toolbar);
-      // Apply the fade only when real content exceeds the compact budget.
-      form.toggleAttribute("data-composer-overflow", overflowing);
       if (focusWithin || menuOpen()) opened = true;
       const next = opened;
+      // Overflow only shows on the folded composer. While it is open (someone is
+      // typing or dictating) nothing is measured: measuring lays out a copy of
+      // the prompt beside it, on every keystroke, in the middle of whatever the
+      // keyboard is doing.
+      const overflowing = next
+        ? form.hasAttribute("data-composer-overflow")
+        : promptExceedsCompactLine(editor, group, toolbar);
+      // Apply the fade only when real content exceeds the compact budget.
+      form.toggleAttribute("data-composer-overflow", overflowing);
       // A composition (dictation, an IME's underlined candidates) only ever opens
       // the composer: folding it mid-word could cancel the composition.
       const composing = editor.dataset.imeComposing === "true";

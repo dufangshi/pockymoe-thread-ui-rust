@@ -713,4 +713,7 @@ export const chatEn = {
   "chat.attachmentView": "View full size",
   "chat.attachmentOpenInFiles": "Open in files",
   "chat.attachmentRemove": "Remove",
+  "chat.inputTraceLabel": "Recording keyboard events ({{count}}); no text is recorded",
+  "chat.inputTraceCopy": "Copy the input recording",
+  "chat.inputTraceClear": "Clear",
 } as const;

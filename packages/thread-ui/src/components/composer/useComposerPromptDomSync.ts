@@ -15,6 +15,7 @@ import {
 } from './composerUtils';
 import { FILE_GLYPH_SVG, fileBadge, fileFamily, shortFileName } from '../attachments/attachmentFiles';
 import { restoreSelectionAfterInsertedAttachments } from './contentEditablePrompt';
+import { traceInput } from './inputTrace';
 
 interface UseComposerPromptDomSyncInput {
   promptRef: RefObject<HTMLDivElement | null>;
@@ -29,6 +30,10 @@ interface UseComposerPromptDomSyncInput {
   renderedPreviewSignatureRef: MutableRefObject<string>;
   serializeEditorPrompt: () => string;
   restoreSelection: (selection: PromptSelectionRange | null) => void;
+  /** The text the editor last reported as its own (an input event). */
+  editorTextRef: MutableRefObject<string | null>;
+  /** The editor holds newer text than the state: take it in. */
+  adoptEditorText: () => void;
 }
 
 /** Lucide's quote mark, for tiles built outside React. */
@@ -147,6 +152,8 @@ export function useComposerPromptDomSync({
   renderedPreviewSignatureRef,
   serializeEditorPrompt,
   restoreSelection,
+  editorTextRef,
+  adoptEditorText,
 }: UseComposerPromptDomSyncInput) {
   useI18n();
   useLayoutEffect(() => {
@@ -156,12 +163,25 @@ export function useComposerPromptDomSync({
     }
 
     const pendingSelection = pendingSelectionRef.current;
-    const shouldSyncDom = serializeEditorPrompt() !== prompt;
+    let shouldSyncDom = serializeEditorPrompt() !== prompt;
+    // The state is what the editor itself reported, and the editor has moved on
+    // since: a keyboard is in the middle of a sequence (a voice keyboard deleting
+    // what it wrote to insert the tidied text, a composition that just ended).
+    // Rebuilding the prompt from the older state here would put back text the
+    // keyboard has already replaced and move the caret under it, so its next
+    // step lands in the wrong place. The editor is right; the state follows.
+    if (shouldSyncDom && pendingSelection === null && editorTextRef.current === prompt && document.activeElement === editor) {
+      shouldSyncDom = false;
+      traceInput(editor, 'sync-skipped', `state=${prompt.length}`);
+      adoptEditorText();
+    }
 
     if (shouldSyncDom) {
+      traceInput(editor, 'sync-replace', `state=${prompt.length}:focused=${document.activeElement === editor}`);
       editor.replaceChildren(
         buildPromptFragment(promptSegments, attachmentPreviewUrls),
       );
+      editorTextRef.current = null;
     } else if (renderedPreviewSignatureRef.current !== previewSignature) {
       // A thumbnail becoming available must not replace the text nodes tracked
       // by native dictation/autocorrection, or disturb its live selection.
@@ -187,7 +207,9 @@ export function useComposerPromptDomSync({
       }
       selectionSnapshotRef.current = pendingSelection;
     } else if (document.activeElement === editor && shouldSyncDom) {
-      restoreSelection(selectionSnapshotRef.current);
+      // Replacing the content drops the caret to the start. Without a known
+      // position, the end is where typing continues, never the start.
+      restoreSelection(selectionSnapshotRef.current ?? { start: prompt.length, end: prompt.length });
     }
 
     pendingSelectionRef.current = null;
@@ -205,5 +227,7 @@ export function useComposerPromptDomSync({
     restoreSelection,
     selectionSnapshotRef,
     serializeEditorPrompt,
+    editorTextRef,
+    adoptEditorText,
   ]);
 }

@@ -1,5 +1,7 @@
 import { translate, useI18n } from '../../i18n';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { CopyButton } from '../copy/CopyButton';
+import { attachInputTrace, clearInputTrace, inputTraceCount, inputTraceEnabled, inputTraceReport, subscribeInputTrace } from './inputTrace';
 import { GraphWorkspaceImageLightbox } from '../ZoomableImage';
 import { Quote, ScanSearch, X } from 'lucide-react';
 import type { ComposerQuoteDraft } from './composerUtils';
@@ -87,6 +89,10 @@ export function ComposerPromptEditor({
   // An attachment tile opens its card: name, kind, size, and view or remove.
   const [details, setDetails] = useState<HTMLElement | null>(null);
   const quoteScope = useQuoteScope();
+  // Off unless the page was opened with ?inputtrace=1: see inputTrace.ts.
+  const tracing = inputTraceEnabled();
+  const traced = useSyncExternalStore(subscribeInputTrace, inputTraceCount, () => 0);
+  useEffect(() => (tracing && promptRef.current ? attachInputTrace(promptRef.current) : undefined), [promptRef, tracing]);
   const detailsQuote = details?.dataset.kind === 'quote' && details.dataset.quote
     ? (JSON.parse(details.dataset.quote) as PromptQuote) : null;
   const detailsNumber = details?.dataset.placeholder?.match(/\d+/)?.[0] ?? '';
@@ -129,6 +135,13 @@ export function ComposerPromptEditor({
               </button>
             );
           })}
+        </div>
+      ) : null}
+      {tracing ? (
+        <div className="composer-input-trace" data-composer-input-trace>
+          <span>{translate('chat.inputTraceLabel', { count: traced })}</span>
+          <CopyButton value={inputTraceReport} label={translate('chat.inputTraceCopy')} />
+          <button type="button" onClick={clearInputTrace}>{translate('chat.inputTraceClear')}</button>
         </div>
       ) : null}
       <div className={graphChatInputClassName}>

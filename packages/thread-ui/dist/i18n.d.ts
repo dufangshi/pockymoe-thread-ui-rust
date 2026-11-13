@@ -3986,6 +3986,9 @@ declare const en: {
     readonly "chat.attachmentView": "View full size";
     readonly "chat.attachmentOpenInFiles": "Open in files";
     readonly "chat.attachmentRemove": "Remove";
+    readonly "chat.inputTraceLabel": "Recording keyboard events ({{count}}); no text is recorded";
+    readonly "chat.inputTraceCopy": "Copy the input recording";
+    readonly "chat.inputTraceClear": "Clear";
     readonly "auth.ui.signInTitle": "Sign in";
     readonly "auth.ui.registerTitle": "Create your account";
     readonly "auth.ui.or": "or";
@@ -9327,6 +9330,9 @@ declare const zhCN: {
     "chat.attachmentView": "查看大图";
     "chat.attachmentOpenInFiles": "在文件中打开";
     "chat.attachmentRemove": "移除";
+    "chat.inputTraceLabel": "正在记录键盘事件（{{count}} 条），不记录文字内容";
+    "chat.inputTraceCopy": "复制输入记录";
+    "chat.inputTraceClear": "清空";
     "auth.ui.signInTitle": "登录";
     "auth.ui.registerTitle": "创建账号";
     "auth.ui.or": "或";
@@ -14690,6 +14696,9 @@ declare const resources: {
         readonly "chat.attachmentView": "View full size";
         readonly "chat.attachmentOpenInFiles": "Open in files";
         readonly "chat.attachmentRemove": "Remove";
+        readonly "chat.inputTraceLabel": "Recording keyboard events ({{count}}); no text is recorded";
+        readonly "chat.inputTraceCopy": "Copy the input recording";
+        readonly "chat.inputTraceClear": "Clear";
         readonly "auth.ui.signInTitle": "Sign in";
         readonly "auth.ui.registerTitle": "Create your account";
         readonly "auth.ui.or": "or";
@@ -20030,6 +20039,9 @@ declare const resources: {
         "chat.attachmentView": "查看大图";
         "chat.attachmentOpenInFiles": "在文件中打开";
         "chat.attachmentRemove": "移除";
+        "chat.inputTraceLabel": "正在记录键盘事件（{{count}} 条），不记录文字内容";
+        "chat.inputTraceCopy": "复制输入记录";
+        "chat.inputTraceClear": "清空";
         "auth.ui.signInTitle": "登录";
         "auth.ui.registerTitle": "创建账号";
         "auth.ui.or": "或";

@@ -713,4 +713,7 @@ export const chatZhCN = {
   "chat.attachmentView": "查看大图",
   "chat.attachmentOpenInFiles": "在文件中打开",
   "chat.attachmentRemove": "移除",
+  "chat.inputTraceLabel": "正在记录键盘事件（{{count}} 条），不记录文字内容",
+  "chat.inputTraceCopy": "复制输入记录",
+  "chat.inputTraceClear": "清空",
 } as const;

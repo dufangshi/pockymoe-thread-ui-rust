@@ -2643,7 +2643,10 @@ var chatEn = {
   "chat.attachmentDetails": "{{name}}, show details",
   "chat.attachmentView": "View full size",
   "chat.attachmentOpenInFiles": "Open in files",
-  "chat.attachmentRemove": "Remove"
+  "chat.attachmentRemove": "Remove",
+  "chat.inputTraceLabel": "Recording keyboard events ({{count}}); no text is recorded",
+  "chat.inputTraceCopy": "Copy the input recording",
+  "chat.inputTraceClear": "Clear"
 };
 
 // src/i18n/common.en.ts
@@ -7897,7 +7900,10 @@ var chatZhCN = {
   "chat.attachmentDetails": "{{name}}\uFF0C\u67E5\u770B\u8BE6\u60C5",
   "chat.attachmentView": "\u67E5\u770B\u5927\u56FE",
   "chat.attachmentOpenInFiles": "\u5728\u6587\u4EF6\u4E2D\u6253\u5F00",
-  "chat.attachmentRemove": "\u79FB\u9664"
+  "chat.attachmentRemove": "\u79FB\u9664",
+  "chat.inputTraceLabel": "\u6B63\u5728\u8BB0\u5F55\u952E\u76D8\u4E8B\u4EF6\uFF08{{count}} \u6761\uFF09\uFF0C\u4E0D\u8BB0\u5F55\u6587\u5B57\u5185\u5BB9",
+  "chat.inputTraceCopy": "\u590D\u5236\u8F93\u5165\u8BB0\u5F55",
+  "chat.inputTraceClear": "\u6E05\u7A7A"
 };
 
 // src/i18n/common.zh-CN.ts

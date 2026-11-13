@@ -56,7 +56,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-W33FHP7U.js";
+} from "./chunk-MWITIBRK.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -86,7 +86,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-325KFAEM.js";
+} from "./chunk-CTH6JXS7.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -119,7 +119,7 @@ styleInject('.matter-thread-menu {\n  position: relative;\n}\n.matter-thread-men
 styleInject('.matter-phone-dock,\n.matter-phone-sheet,\n.matter-phone-sheet-scrim {\n  display: none;\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .matter-workbench.has-phone-dock,\n  .thread-ui-shell .matter-workbench.has-phone-dock.is-sidebar-hidden {\n    grid-template-rows: calc(34px + env(safe-area-inset-top)) minmax(0, 1fr) auto;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock > .matter-topbar {\n    grid-row: 1;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock > .matter-main {\n    grid-row: 2;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only {\n    gap: 6px;\n    padding: env(safe-area-inset-top) 6px 0 4px;\n  }\n  .matter-topbar.is-status-only .matter-topbar-status {\n    display: flex;\n    flex: none;\n    align-items: center;\n  }\n  .matter-topbar.is-status-only:not(#_) .matter-topbar-status > button {\n    flex: none;\n    width: auto;\n    min-width: 0;\n    height: 34px;\n  }\n  .matter-topbar-spacer {\n    flex: 1;\n  }\n  .matter-topbar.is-status-only .matter-topbar-usage {\n    display: flex;\n    flex: none;\n    align-items: center;\n  }\n  .matter-topbar.is-status-only:not(#_) .matter-topbar-usage .thread-subscription-usage {\n    flex: none;\n    width: auto;\n    min-width: 0;\n    height: 30px;\n    gap: 8px;\n    padding: 0 6px;\n  }\n  .matter-topbar.is-status-only.is-search-open .matter-topbar-usage {\n    display: none;\n  }\n  .matter-topbar.is-status-only.is-search-open .matter-topbar-status,\n  .matter-topbar.is-status-only.is-search-open .matter-topbar-spacer,\n  .matter-topbar.is-status-only.is-search-open .matter-running-chip {\n    display: none;\n  }\n  .matter-topbar.is-status-only.is-search-open .matter-topbar-search {\n    flex: 1;\n    min-width: 0;\n  }\n  .matter-topbar.is-status-only:not(#_) > button,\n  .matter-topbar.is-status-only:not(#_) .matter-connection > button {\n    flex: none;\n    width: 34px;\n    min-width: 34px;\n    height: 34px;\n  }\n  .matter-topbar.is-status-only:not(#_) > .matter-running-chip {\n    width: auto;\n    min-width: 0;\n    gap: 4px;\n    padding: 0 9px;\n    height: 26px;\n    border-radius: 999px;\n  }\n  .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > .matter-running-chip {\n    background: color-mix(in oklch, var(--theme-accent-solid) 14%, transparent);\n    color: var(--theme-accent-strong);\n    font-weight: 600;\n    font-size: 12px;\n  }\n  .matter-running-icon {\n    position: relative;\n    display: inline-flex;\n    flex: none;\n  }\n  .matter-running-icon svg {\n    width: 14px;\n    height: 14px;\n  }\n  .matter-running-icon > i {\n    position: absolute;\n    top: -2px;\n    right: -3px;\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n    background: currentColor;\n    box-shadow: 0 0 0 1.5px var(--matter-chrome);\n    animation: matter-running-pulse 1.6s ease-in-out infinite;\n  }\n  @keyframes matter-running-pulse {\n    0%, 100% {\n      opacity: 1;\n    }\n    50% {\n      opacity: 0.35;\n    }\n  }\n  @media (max-width: 419px) {\n    .matter-running-label {\n      display: none;\n    }\n  }\n  @media (max-width: 379px) {\n    .thread-ui-shell .matter-workbench .matter-topbar.is-status-only {\n      gap: 3px;\n    }\n    .matter-topbar.is-status-only:not(#_) .matter-topbar-usage .thread-subscription-usage {\n      gap: 6px;\n      padding: 0 3px;\n    }\n    .matter-topbar.is-status-only:not(#_) > .matter-running-chip {\n      padding: 0 7px;\n    }\n  }\n  .matter-topbar.is-status-only .matter-connection:empty {\n    display: none;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-phone-dock {\n    grid-row: 3;\n    grid-column: 1 / -1;\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 8px max(6px, env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px));\n    background: var(--matter-dock-surface, var(--matter-chrome));\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock.is-typing .matter-phone-dock {\n    transform: translateY(calc(-1 * var(--thread-detail-keyboard-inset, 0px)));\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock button {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    height: 44px;\n    min-width: 44px;\n    margin: 0;\n    padding: 0;\n    border-radius: 13px;\n    color: var(--theme-fg-soft);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock svg {\n    width: 20px;\n    height: 20px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread {\n    position: relative;\n    flex: 1;\n    min-width: 0;\n    justify-content: flex-start;\n    gap: 8px;\n    padding: 0 10px;\n    border: 1px solid var(--theme-border);\n    background: var(--theme-panel);\n    color: var(--theme-fg);\n    font-size: 14px;\n    font-weight: 600;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread svg {\n    width: 16px;\n    height: 16px;\n    flex: none;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-thread .matter-status-dot {\n    flex: none;\n  }\n  .matter-phone-thread-title {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-align: left;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .matter-phone-pins {\n    display: flex;\n    flex: 1;\n    min-width: 0;\n    gap: 2px;\n    padding: 2px;\n    border: 1px solid var(--theme-border);\n    border-radius: 15px;\n    background: var(--theme-panel);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin {\n    flex: 1 1 0;\n    min-width: 0;\n    height: 40px;\n    gap: 4px;\n    padding: 0 8px;\n    border-radius: 12px;\n    color: var(--theme-fg-muted);\n    font-size: 13px;\n    font-weight: 500;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin[aria-pressed=true] {\n    background: var(--theme-surface-strong);\n    color: var(--theme-fg);\n    font-weight: 600;\n    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin svg {\n    width: 14px;\n    height: 14px;\n    flex: none;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-pin-title {\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .matter-phone-panes {\n    display: flex;\n    padding: 2px;\n    border: 1px solid var(--theme-border);\n    border-radius: 15px;\n    background: var(--theme-panel);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-panes button {\n    height: 40px;\n    border-radius: 12px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-panes button[aria-pressed=true] {\n    background: var(--theme-surface-strong);\n    color: var(--theme-fg);\n    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .thread-graph-composer-host {\n    bottom: var(--thread-composer-keyboard-inset, 0px);\n    padding: 8px 0 6px;\n    border-top: 1px solid var(--matter-dock-edge, var(--theme-border));\n    background: var(--matter-dock-surface, var(--matter-chrome));\n    pointer-events: auto;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock:not(.is-typing) .thread-graph-composer-host {\n    bottom: 0;\n    padding-bottom: 0;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .thread-graph-composer-form {\n    padding-bottom: 0;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .file-ask-bar {\n    margin-top: 0;\n    padding: 8px 10px max(8px, calc(var(--thread-detail-keyboard-inset, 0px) + 8px));\n    border-top: 1px solid var(--matter-dock-edge, var(--theme-border));\n    background: var(--matter-dock-surface, var(--matter-chrome));\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock:not(.is-typing) .file-ask-bar {\n    padding-bottom: 0;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .file-ask-bar-shell {\n    box-shadow: none;\n    -webkit-backdrop-filter: none;\n    backdrop-filter: none;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed .matter-phone-dock,\n  .thread-ui-shell .matter-workbench.is-left-handed .matter-phone-sheet-footer,\n  .thread-ui-shell .matter-workbench.is-left-handed .file-ask-bar-shell {\n    flex-direction: row-reverse;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed .file-ask-bar-shell {\n    padding: 5px 14px 5px 5px;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed .matter-phone-thread-title {\n    text-align: left;\n  }\n  .matter-workbench.is-left-handed .matter-phone-hand-icon {\n    transform: scaleX(-1);\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] .thread-graph-composer-input-group {\n    grid-template-columns: max-content minmax(0, 1fr);\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-prompt-region {\n    grid-column: 2;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] .thread-graph-composer-toolbar {\n    grid-column: 1;\n    flex-direction: row-reverse;\n    justify-content: flex-end;\n    justify-self: start;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] :is(.composer-tools, .composer-settings) {\n    flex-direction: row-reverse;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed :is(.thread-jump-latest-cluster, .thread-jump-nav) {\n    flex-direction: row-reverse;\n  }\n  .thread-ui-shell .matter-workbench.is-left-handed .thread-jump-nav > .thread-jump-latest {\n    margin: 0 3px 0 0;\n  }\n  .matter-phone-sheet-scrim {\n    display: block;\n    position: fixed;\n    inset: 0;\n    z-index: 94;\n    background: rgb(10 14 12 / 36%);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet {\n    position: fixed;\n    inset: auto 0 0;\n    z-index: 95;\n    display: flex;\n    flex-direction: column;\n    max-height: 78dvh;\n    padding: 6px 0 max(8px, env(safe-area-inset-bottom));\n    border-radius: 22px 22px 0 0;\n    background: var(--theme-panel);\n    box-shadow: 0 -10px 34px rgb(0 0 0 / 18%);\n    visibility: hidden;\n    transform: translateY(105%);\n    transition: transform 180ms ease-out, visibility 0s linear 180ms;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet[data-open] {\n    visibility: visible;\n    transform: none;\n    transition: transform 180ms ease-out;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet[data-dragging] {\n    transition: none;\n  }\n  .matter-phone-sheet-body {\n    touch-action: pan-y;\n  }\n  .matter-phone-sheet-grabber {\n    flex: none;\n    width: 40px;\n    height: 5px;\n    margin: 2px auto 8px;\n    border-radius: 3px;\n    background: var(--theme-border-strong);\n  }\n  .matter-phone-sheet-body {\n    flex: 1;\n    min-height: 0;\n    overflow-y: auto;\n    overscroll-behavior: contain;\n    padding: 0 10px 6px;\n  }\n  .matter-phone-sheet-body h3 {\n    margin: 10px 8px 6px;\n    overflow: hidden;\n    color: var(--theme-fg-muted);\n    font-size: 12px;\n    font-weight: 600;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-body .matter-sheet-section-heading {\n    height: 36px;\n    margin: 6px 0 2px;\n    padding: 0 8px;\n    font-weight: 600;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-sheet-head {\n    display: grid;\n    gap: 4px;\n    margin: 10px 8px 8px;\n  }\n  .matter-phone-sheet-body .matter-phone-sheet-head h3.matter-phone-sheet-title {\n    display: -webkit-box;\n    margin: 0;\n    color: var(--theme-fg);\n    font-size: 14px;\n    line-height: 1.35;\n    white-space: normal;\n    overflow-wrap: anywhere;\n    -webkit-box-orient: vertical;\n    -webkit-line-clamp: 2;\n  }\n  .matter-phone-sheet-head .matter-phone-sheet-path {\n    max-width: 100%;\n    justify-self: start;\n  }\n  .matter-phone-sheet .matter-thread-row {\n    min-height: 52px;\n    font-size: 14px;\n  }\n  .matter-phone-sheet .matter-thread-entry {\n    position: relative;\n  }\n  .matter-phone-sheet-footer {\n    display: flex;\n    flex: none;\n    gap: 8px;\n    align-items: center;\n    padding: 8px 12px 0;\n    border-top: 1px solid var(--theme-border);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer > * {\n    height: 46px;\n    min-width: 46px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer .matter-new-thread {\n    display: flex;\n    flex: 1;\n    align-items: center;\n    justify-content: center;\n    gap: 8px;\n    width: auto;\n    border: 1px solid color-mix(in oklch, var(--theme-accent-solid) 38%, transparent);\n    border-radius: 14px;\n    background: color-mix(in oklch, var(--theme-accent-solid) 14%, transparent);\n    color: var(--theme-accent-strong, var(--theme-accent-solid));\n    font-size: 14px;\n    font-weight: 600;\n  }\n  .matter-phone-sheet-footer .matter-new-thread::after {\n    content: attr(aria-label);\n  }\n  .matter-phone-sheet-footer .matter-new-thread svg {\n    width: 18px;\n    height: 18px;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar {\n    top: 0;\n    z-index: 96;\n    padding-top: calc(12px + env(safe-area-inset-top));\n    padding-bottom: max(12px, env(safe-area-inset-bottom));\n    border-right: 1px solid var(--theme-border);\n    box-shadow: 12px 0 40px rgb(0 0 0 / 28%);\n  }\n  .matter-workbench.has-phone-dock .matter-sidebar[data-dragging]:not(#_) {\n    visibility: visible;\n    transition: none;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar-scrim {\n    inset: 0;\n    z-index: 95;\n    background: rgb(0 0 0 / 42%);\n    opacity: 0;\n    pointer-events: none;\n    transition: opacity 160ms;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar-scrim[data-open] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n  .matter-workbench.has-phone-dock .matter-sidebar-scrim[data-dragging]:not(#_) {\n    transition: none;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-sidebar {\n    width: min(320px, calc(100vw - 48px));\n  }\n  .matter-drawer-brand {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    min-width: 0;\n    font-size: 17px;\n    font-weight: 700;\n    letter-spacing: -.01em;\n  }\n  .matter-drawer-brand b {\n    display: inline-flex;\n    flex: none;\n    align-items: center;\n    justify-content: center;\n    width: 30px;\n    height: 30px;\n    border-radius: 9px;\n    background: var(--theme-surface-strong);\n    font-size: 15px;\n    letter-spacing: -1.5px;\n  }\n  .matter-drawer-brand i {\n    color: var(--theme-accent-strong, var(--theme-accent-solid));\n    font-style: normal;\n  }\n  .thread-ui-shell .matter-workbench .matter-drawer-home {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n    min-height: 46px;\n    margin: 2px 0 10px;\n    padding: 0 12px;\n    border: 1px solid var(--theme-border);\n    border-radius: 12px;\n    background: var(--theme-surface);\n    color: var(--theme-fg);\n    font-size: 14px;\n    font-weight: 600;\n  }\n  .matter-drawer-home > span {\n    flex: 1;\n    min-width: 0;\n    text-align: left;\n  }\n  .thread-ui-shell .matter-workbench .matter-drawer-home + .matter-drawer-home {\n    margin-top: -4px;\n  }\n  .matter-drawer-home svg {\n    width: 18px;\n    height: 18px;\n    flex: none;\n    color: var(--theme-fg-muted);\n  }\n  .thread-ui-shell .matter-workbench .matter-drawer-home.matter-drawer-map {\n    flex: none;\n    margin: 8px 0 0;\n  }\n  .thread-ui-shell .matter-workbench.has-phone-dock .matter-main {\n    overscroll-behavior-x: none;\n  }\n  .matter-phone-sheet-tools {\n    display: grid;\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n    gap: 4px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-tools > button {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 5px;\n    width: auto;\n    height: 64px;\n    padding: 6px 2px;\n    border-radius: 14px;\n    color: var(--theme-fg);\n    font-size: 11.5px;\n    line-height: 1.2;\n    text-align: center;\n  }\n  .matter-phone-sheet-tools svg {\n    width: 22px;\n    height: 22px;\n  }\n  .matter-phone-sheet-host {\n    display: contents;\n  }\n  .matter-phone-sheet-host :is(div, span):not(:has(svg)):not(.matter-phone-sheet-host [role=dialog] *, [role=dialog]) {\n    display: none;\n  }\n  .matter-phone-sheet-host :is(div, span):has(> :is(button, a)):not(.matter-phone-sheet-host [role=dialog] *, [role=dialog]) {\n    display: contents;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-host :is(button, a)[aria-label]:not(.matter-phone-sheet-host [role=dialog] *) {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 5px;\n    width: auto;\n    height: 64px;\n    padding: 6px 2px;\n    border: 0;\n    border-radius: 14px;\n    background: transparent;\n    color: var(--theme-fg);\n    font-size: 11.5px;\n    line-height: 1.2;\n    text-align: center;\n  }\n  .matter-phone-sheet-host :is(button, a)[aria-label]:not(.matter-phone-sheet-host [role=dialog] *)::after {\n    content: attr(aria-label);\n    max-width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-host svg {\n    width: 22px;\n    height: 22px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-tools :is(button, a)[aria-pressed=true] {\n    background: var(--theme-surface-strong);\n    color: var(--theme-fg);\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-footer > .matter-phone-sheet-apps {\n    display: grid;\n    flex: 1;\n    grid-auto-columns: minmax(0, 1fr);\n    grid-auto-flow: column;\n    gap: 2px;\n    height: auto;\n    margin: 0 -6px;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-apps > :is(button, a, div) {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 4px;\n    width: auto;\n    height: 54px;\n    padding: 4px 2px;\n    border-radius: 12px;\n    color: var(--theme-fg);\n    font-size: 11px;\n    line-height: 1.2;\n    text-align: center;\n  }\n  .matter-phone-sheet-apps > * > span {\n    max-width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-all {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 8px;\n    width: 100%;\n    height: 44px;\n    border: 1px solid var(--theme-border);\n    border-radius: 12px;\n    background: var(--theme-surface);\n    color: var(--theme-fg);\n    font-size: 14px;\n    font-weight: 600;\n  }\n  .matter-phone-sheet-all svg {\n    width: 17px;\n    height: 17px;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-sheet-apps svg {\n    width: 20px;\n    height: 20px;\n    color: var(--theme-fg-muted);\n  }\n  .matter-phone-sheet-settings {\n    position: relative;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-settings > button,\n  .thread-ui-shell .matter-workbench .matter-phone-sheet-settings > div > button {\n    position: static;\n    width: 20px;\n    min-width: 20px;\n    height: 20px;\n  }\n  .matter-phone-sheet-settings > button::after,\n  .matter-phone-sheet-settings > div > button::after {\n    content: "";\n    position: absolute;\n    inset: 0;\n  }\n}\n@keyframes matter-phone-spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .matter-running-icon > i {\n    animation: none;\n  }\n  .thread-ui-shell .matter-workbench .matter-phone-sheet,\n  .thread-ui-shell .matter-workbench .matter-phone-sheet[data-open],\n  .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread {\n    transition: none;\n  }\n}\n.thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-pin .matter-status-dot {\n  flex: none;\n}\n');
 
 // src/styles/composer-compact.css
-styleInject('[data-composer-layout] {\n  container-type: inline-size;\n}\n[data-composer-layout] .thread-graph-composer-input-group,\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-input-group {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) max-content;\n  align-items: end;\n  column-gap: 8px;\n  height: auto;\n  padding: 0;\n  overflow: visible;\n}\n[data-composer-layout] .thread-graph-composer-prompt-region {\n  min-width: 0;\n  width: auto;\n  grid-column: 1;\n  grid-row: 1;\n  align-self: center;\n}\n[data-composer-layout] .thread-graph-composer-toolbar,\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar {\n  grid-column: 2;\n  grid-row: 1;\n  width: max-content;\n  min-width: 0;\n  min-height: 0;\n  display: flex;\n  flex-wrap: nowrap;\n  justify-content: flex-end;\n  align-items: center;\n  padding: 0;\n  gap: 4px;\n  margin: 0;\n}\n[data-composer-layout] :is(.composer-tools, .composer-settings),\n.thread-ui-shell .matter-workbench [data-composer-layout] :is(.composer-tools, .composer-settings) {\n  flex: 0 0 auto;\n  display: flex;\n  flex-wrap: nowrap;\n  gap: 4px;\n  align-items: center;\n}\n[data-composer-layout] .thread-graph-composer-input,\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-input {\n  min-height: 0 !important;\n  max-height: none !important;\n  width: 100%;\n  padding: 0 !important;\n  line-height: 24px;\n  overflow: visible;\n  transition: none;\n}\n[data-composer-layout] .thread-graph-composer-input > [role=textbox] {\n  min-height: 24px !important;\n  max-height: 24px;\n  line-height: 24px;\n  padding: 0;\n  overflow: hidden;\n  scrollbar-width: none;\n}\n[data-composer-layout=expanded] .thread-graph-composer-prompt-region {\n  grid-column: 1 / -1;\n}\n[data-composer-layout=expanded] .thread-graph-composer-input > [role=textbox] {\n  max-height: min(240px, 30dvh);\n  overflow-y: auto;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile {\n  flex-direction: row;\n  gap: 4px;\n  width: auto;\n  max-width: 9rem;\n  height: 22px;\n  margin: 0 2px;\n  padding: 0 6px 0 3px;\n  border-radius: 6px;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile-icon {\n  width: 16px;\n  height: 18px;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile-glyph {\n  width: 13px;\n  height: 16px;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile-icon > b {\n  display: none;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile-icon > img {\n  border-radius: 3px;\n}\n[data-composer-layout] .composer-model-label {\n  max-width: min(24rem, max(4rem, calc(100cqi - 14rem)));\n  cursor: pointer;\n  min-height: 28px;\n  border-radius: 6px;\n}\n[data-composer-layout] .composer-model-label:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  [data-composer-layout] .composer-model-label:hover {\n    background: var(--theme-hover);\n  }\n}\n[data-composer-layout] .composer-model-name {\n  display: block;\n  max-width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  line-height: 16px;\n}\n[data-composer-layout] .composer-model-effort {\n  display: block;\n  font-size: 10px;\n  font-weight: 600;\n  line-height: 11px;\n  color: var(--effort-color, currentColor);\n}\n:root[data-theme-effective=light] [data-composer-layout] .composer-model-effort {\n  color: color-mix(in oklab, var(--effort-color, currentColor) 72%, black);\n}\n[data-composer-layout] .composer-model-label:disabled {\n  cursor: not-allowed;\n  opacity: .5;\n}\n[data-composer-layout] .thread-graph-composer-toolbar {\n  cursor: default;\n}\n[data-composer-layout] .thread-graph-composer-toolbar button:not(:disabled) {\n  cursor: pointer;\n}\n[data-composer-layout] .thread-graph-composer-stop-button {\n  position: static;\n}\n[data-composer-layout] .thread-graph-composer-shell,\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-shell {\n  padding: 9px 12px;\n}\n@container (max-width: 480px) {\n  [data-composer-layout] :is(.composer-tools, .composer-settings),\n  .thread-ui-shell .matter-workbench [data-composer-layout] :is(.composer-tools, .composer-settings) {\n    gap: 2px;\n  }\n  [data-composer-layout] .thread-graph-composer-toolbar,\n  .thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar {\n    gap: 2px;\n  }\n}\n[data-composer-layout] .thread-graph-composer-input > span {\n  inset: 0;\n}\n@container (max-width: 300px) {\n  .thread-ui-shell .matter-workbench [data-composer-layout] :is(.thread-graph-composer-icon-button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button) {\n    width: 24px !important;\n    height: 24px !important;\n    min-width: 24px !important;\n    min-height: 24px !important;\n  }\n}\n[data-composer-layout=collapsed][data-composer-overflow] .thread-graph-composer-input > [role=textbox] {\n  -webkit-mask-image:\n    linear-gradient(\n      to right,\n      #000 calc(100% - min(48px, 30%)),\n      transparent 100%);\n  mask-image:\n    linear-gradient(\n      to right,\n      #000 calc(100% - min(48px, 30%)),\n      transparent 100%);\n}\n.thread-ui-shell .thread-composer-usage-tag {\n  position: absolute;\n  z-index: 2;\n  right: 24px;\n  bottom: 0;\n  transform: translateY(50%);\n  display: flex;\n  height: 14px;\n  pointer-events: none;\n}\n.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  height: 14px;\n  gap: 8px;\n  padding: 0 6px;\n  border: 0;\n  border-radius: 0;\n  background:\n    linear-gradient(\n      to bottom,\n      var(--composer-seam-surface, color-mix(in srgb, var(--theme-panel) 86%, var(--theme-bg))) calc(50% + 2px),\n      transparent calc(50% + 2px));\n  color: var(--theme-fg-muted);\n  font-size: 9px;\n  font-weight: 400;\n  line-height: 1;\n  white-space: nowrap;\n  box-shadow: none;\n  cursor: pointer;\n  pointer-events: auto;\n}\n.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:active {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:hover {\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:focus-visible {\n  outline: 1px solid var(--theme-accent-strong);\n  outline-offset: 2px;\n}\n.thread-ui-shell .thread-composer-usage-tag [data-subscription-window-track] {\n  width: 18px;\n  height: 3px;\n  background: color-mix(in srgb, var(--theme-fg-muted) 25%, transparent);\n}\n.thread-subscription-usage[data-usage-stale] > span {\n  opacity: .6;\n}\n:root .thread-ui-shell .thread-subscription-usage-details.thread-composer-menu-surface[data-composer-menu-surface] {\n  position: fixed;\n  inset: auto;\n  z-index: 150;\n  margin: 0;\n  width: 260px;\n  padding: 12px;\n  border: 1px solid var(--theme-border-strong, #52525b);\n  border-radius: 12px;\n  background: var(--subscription-details-bg, var(--theme-panel, #18181b)) !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  color: var(--theme-fg, #fafafa);\n  box-shadow: 0 12px 36px rgb(0 0 0 / 24%);\n  font-size: 12px;\n  line-height: 1.4;\n  opacity: 1;\n  pointer-events: auto;\n  overflow: auto;\n}\n.thread-subscription-usage-details::backdrop {\n  background: transparent;\n}\n.thread-subscription-usage-detail-window + .thread-subscription-usage-detail-window {\n  margin-top: 10px;\n}\n.thread-subscription-usage-detail-heading {\n  display: flex;\n  justify-content: space-between;\n  align-items: baseline;\n  gap: 12px;\n}\n.thread-subscription-usage-detail-heading strong {\n  font-weight: 600;\n}\n.thread-subscription-usage-detail-reset {\n  display: block;\n  margin-top: 3px;\n  padding: 0;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted, #a1a1aa);\n  font: inherit;\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n  text-align: left;\n  cursor: pointer;\n}\n.thread-subscription-usage-detail-reset:active {\n  color: var(--theme-fg, inherit);\n  text-decoration: underline dotted;\n  text-underline-offset: 2px;\n}\n@media (hover: hover) {\n  .thread-subscription-usage-detail-reset:hover {\n    color: var(--theme-fg, inherit);\n    text-decoration: underline dotted;\n    text-underline-offset: 2px;\n  }\n}\n.thread-subscription-usage-detail-freshness {\n  margin-top: 10px;\n  padding-top: 8px;\n  border-top: 1px solid var(--theme-border, #3f3f46);\n  color: var(--theme-fg-muted, #a1a1aa);\n  font-size: 10px;\n}\n[data-composer-layout=collapsed][data-composer-overflow] .thread-graph-composer-input[data-more-lines]::after {\n  content: attr(data-more-lines);\n  position: absolute;\n  right: 0;\n  top: 50%;\n  transform: translateY(-50%);\n  padding: 1px 6px;\n  border-radius: 999px;\n  background: var(--theme-hover, rgba(127, 127, 127, .14));\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 16px;\n  pointer-events: none;\n  white-space: nowrap;\n}\n[data-composer-layout=collapsed][data-composer-overflow] .thread-graph-composer-input[data-more-lines] > [role=textbox] {\n  padding-right: 52px;\n}\n.thread-ui-shell .thread-graph-composer-send-button[data-empty=true] {\n  opacity: .45;\n  cursor: default;\n}\n.thread-ui-shell .thread-composer-placeholder-hint {\n  opacity: .75;\n}\n@media (max-width: 639px), (pointer: coarse) {\n  .thread-ui-shell .thread-composer-placeholder-hint {\n    display: none;\n  }\n}\n.thread-ui-shell .composer-mode-chip {\n  align-self: flex-start;\n}\n[data-composer-layout=collapsed] :is(.composer-tools, .composer-model-control, .composer-context-control),\n.thread-ui-shell .matter-workbench [data-composer-layout=collapsed] :is(.composer-tools, .composer-model-control, .composer-context-control) {\n  display: none;\n}\n[data-composer-layout=collapsed] .composer-tools:has([data-composer-menu-surface]),\n.thread-ui-shell .matter-workbench [data-composer-layout=collapsed] .composer-tools:has([data-composer-menu-surface]) {\n  display: flex;\n}\n[data-composer-layout=collapsed] :is(.composer-model-control, .composer-context-control):has([data-composer-menu-surface]),\n.thread-ui-shell .matter-workbench [data-composer-layout=collapsed] :is(.composer-model-control, .composer-context-control):has([data-composer-menu-surface]) {\n  display: block;\n}\n[data-composer-layout=expanded] .thread-graph-composer-toolbar,\n.thread-ui-shell .matter-workbench [data-composer-layout=expanded] .thread-graph-composer-toolbar {\n  grid-column: 1 / -1;\n  grid-row: 2;\n  width: auto;\n  justify-self: stretch;\n  justify-content: space-between;\n  padding-top: 4px;\n  margin: 0 -6px -4px;\n}\n[data-composer-layout=expanded] .composer-settings,\n.thread-ui-shell .matter-workbench [data-composer-layout=expanded] .composer-settings {\n  flex: 0 0 auto;\n  flex-wrap: nowrap;\n}\n[data-composer-layout] .composer-model-control {\n  flex: none;\n}\n[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button),\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button) {\n  position: relative;\n  width: 32px;\n  height: 32px;\n  min-width: 32px;\n  min-height: 32px;\n}\n[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button) {\n  background: transparent !important;\n  border-color: transparent !important;\n  box-shadow: none !important;\n}\n[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button):is(:active, [aria-expanded=true]) {\n  background: var(--theme-hover) !important;\n}\n@media (hover: hover) {\n  [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button):is(:hover, [aria-expanded=true]) {\n    background: var(--theme-hover) !important;\n  }\n}\n[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button)::after {\n  content: "";\n  position: absolute;\n  inset: -4px;\n}\n[data-composer-layout] .composer-model-label {\n  min-height: 32px;\n}\n[data-composer-layout] .composer-model-control[data-with-context=true] {\n  display: flex;\n  flex-direction: column;\n  align-self: center;\n  height: 32px;\n}\n[data-composer-layout] .composer-model-control[data-with-context=true] > .composer-model-label {\n  flex: 1 1 auto;\n  min-height: 0;\n  height: 24px;\n  max-height: 24px;\n  padding-block: 0;\n  gap: 0;\n}\n[data-composer-layout] .composer-model-control[data-with-context=true] .composer-model-name {\n  font-size: 10px;\n  line-height: 11px;\n}\n[data-composer-layout] .composer-model-control[data-with-context=true] .composer-model-effort {\n  font-size: 9px;\n  line-height: 10px;\n}\n@media (max-width: 639px) {\n  [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button),\n  .thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button) {\n    width: 34px;\n    height: 34px;\n    min-width: 34px;\n    min-height: 34px;\n  }\n  [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button)::after {\n    inset: -3px;\n  }\n  [data-composer-layout] .composer-model-label {\n    min-height: 34px;\n  }\n  [data-composer-layout] .composer-model-control[data-with-context=true] {\n    height: 34px;\n  }\n  [data-composer-layout] .composer-model-control[data-with-context=true] > .composer-model-label {\n    min-height: 0;\n    height: 26px;\n    max-height: 26px;\n  }\n}\n');
+styleInject('[data-composer-layout] {\n  container-type: inline-size;\n}\n[data-composer-layout] .thread-graph-composer-input-group,\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-input-group {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) max-content;\n  align-items: end;\n  column-gap: 8px;\n  height: auto;\n  padding: 0;\n  overflow: visible;\n}\n[data-composer-layout] .thread-graph-composer-prompt-region {\n  min-width: 0;\n  width: auto;\n  grid-column: 1;\n  grid-row: 1;\n  align-self: center;\n}\n[data-composer-layout] .thread-graph-composer-toolbar,\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar {\n  grid-column: 2;\n  grid-row: 1;\n  width: max-content;\n  min-width: 0;\n  min-height: 0;\n  display: flex;\n  flex-wrap: nowrap;\n  justify-content: flex-end;\n  align-items: center;\n  padding: 0;\n  gap: 4px;\n  margin: 0;\n}\n[data-composer-layout] :is(.composer-tools, .composer-settings),\n.thread-ui-shell .matter-workbench [data-composer-layout] :is(.composer-tools, .composer-settings) {\n  flex: 0 0 auto;\n  display: flex;\n  flex-wrap: nowrap;\n  gap: 4px;\n  align-items: center;\n}\n[data-composer-layout] .thread-graph-composer-input,\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-input {\n  min-height: 0 !important;\n  max-height: none !important;\n  width: 100%;\n  padding: 0 !important;\n  line-height: 24px;\n  overflow: visible;\n  transition: none;\n}\n[data-composer-layout] .thread-graph-composer-input > [role=textbox] {\n  min-height: 24px !important;\n  max-height: 24px;\n  line-height: 24px;\n  padding: 0;\n  overflow: hidden;\n  scrollbar-width: none;\n}\n[data-composer-layout=expanded] .thread-graph-composer-prompt-region {\n  grid-column: 1 / -1;\n}\n[data-composer-layout=expanded] .thread-graph-composer-input > [role=textbox] {\n  max-height: min(240px, 30dvh);\n  overflow-y: auto;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile {\n  flex-direction: row;\n  gap: 4px;\n  width: auto;\n  max-width: 9rem;\n  height: 22px;\n  margin: 0 2px;\n  padding: 0 6px 0 3px;\n  border-radius: 6px;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile-icon {\n  width: 16px;\n  height: 18px;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile-glyph {\n  width: 13px;\n  height: 16px;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile-icon > b {\n  display: none;\n}\n[data-composer-layout]:not([data-composer-layout=expanded]) .thread-graph-composer-input .attachment-tile-icon > img {\n  border-radius: 3px;\n}\n[data-composer-layout] .composer-model-label {\n  max-width: min(24rem, max(4rem, calc(100cqi - 14rem)));\n  cursor: pointer;\n  min-height: 28px;\n  border-radius: 6px;\n}\n[data-composer-layout] .composer-model-label:active {\n  background: var(--theme-hover);\n}\n@media (hover: hover) {\n  [data-composer-layout] .composer-model-label:hover {\n    background: var(--theme-hover);\n  }\n}\n[data-composer-layout] .composer-model-name {\n  display: block;\n  max-width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  line-height: 16px;\n}\n[data-composer-layout] .composer-model-effort {\n  display: block;\n  font-size: 10px;\n  font-weight: 600;\n  line-height: 11px;\n  color: var(--effort-color, currentColor);\n}\n:root[data-theme-effective=light] [data-composer-layout] .composer-model-effort {\n  color: color-mix(in oklab, var(--effort-color, currentColor) 72%, black);\n}\n[data-composer-layout] .composer-model-label:disabled {\n  cursor: not-allowed;\n  opacity: .5;\n}\n[data-composer-layout] .thread-graph-composer-toolbar {\n  cursor: default;\n}\n[data-composer-layout] .thread-graph-composer-toolbar button:not(:disabled) {\n  cursor: pointer;\n}\n[data-composer-layout] .thread-graph-composer-stop-button {\n  position: static;\n}\n[data-composer-layout] .thread-graph-composer-shell,\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-shell {\n  padding: 9px 12px;\n}\n@container (max-width: 480px) {\n  [data-composer-layout] :is(.composer-tools, .composer-settings),\n  .thread-ui-shell .matter-workbench [data-composer-layout] :is(.composer-tools, .composer-settings) {\n    gap: 2px;\n  }\n  [data-composer-layout] .thread-graph-composer-toolbar,\n  .thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar {\n    gap: 2px;\n  }\n}\n[data-composer-layout] .thread-graph-composer-input > span {\n  inset: 0;\n}\n@container (max-width: 300px) {\n  .thread-ui-shell .matter-workbench [data-composer-layout] :is(.thread-graph-composer-icon-button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button) {\n    width: 24px !important;\n    height: 24px !important;\n    min-width: 24px !important;\n    min-height: 24px !important;\n  }\n}\n[data-composer-layout=collapsed][data-composer-overflow] .thread-graph-composer-input > [role=textbox] {\n  -webkit-mask-image:\n    linear-gradient(\n      to right,\n      #000 calc(100% - min(48px, 30%)),\n      transparent 100%);\n  mask-image:\n    linear-gradient(\n      to right,\n      #000 calc(100% - min(48px, 30%)),\n      transparent 100%);\n}\n.thread-ui-shell .thread-composer-usage-tag {\n  position: absolute;\n  z-index: 2;\n  right: 24px;\n  bottom: 0;\n  transform: translateY(50%);\n  display: flex;\n  height: 14px;\n  pointer-events: none;\n}\n.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  height: 14px;\n  gap: 8px;\n  padding: 0 6px;\n  border: 0;\n  border-radius: 0;\n  background:\n    linear-gradient(\n      to bottom,\n      var(--composer-seam-surface, color-mix(in srgb, var(--theme-panel) 86%, var(--theme-bg))) calc(50% + 2px),\n      transparent calc(50% + 2px));\n  color: var(--theme-fg-muted);\n  font-size: 9px;\n  font-weight: 400;\n  line-height: 1;\n  white-space: nowrap;\n  box-shadow: none;\n  cursor: pointer;\n  pointer-events: auto;\n}\n.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:active {\n  color: var(--theme-fg);\n}\n@media (hover: hover) {\n  .thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:hover {\n    color: var(--theme-fg);\n  }\n}\n.thread-ui-shell .thread-composer-usage-tag .thread-subscription-usage:focus-visible {\n  outline: 1px solid var(--theme-accent-strong);\n  outline-offset: 2px;\n}\n.thread-ui-shell .thread-composer-usage-tag [data-subscription-window-track] {\n  width: 18px;\n  height: 3px;\n  background: color-mix(in srgb, var(--theme-fg-muted) 25%, transparent);\n}\n.thread-subscription-usage[data-usage-stale] > span {\n  opacity: .6;\n}\n:root .thread-ui-shell .thread-subscription-usage-details.thread-composer-menu-surface[data-composer-menu-surface] {\n  position: fixed;\n  inset: auto;\n  z-index: 150;\n  margin: 0;\n  width: 260px;\n  padding: 12px;\n  border: 1px solid var(--theme-border-strong, #52525b);\n  border-radius: 12px;\n  background: var(--subscription-details-bg, var(--theme-panel, #18181b)) !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  color: var(--theme-fg, #fafafa);\n  box-shadow: 0 12px 36px rgb(0 0 0 / 24%);\n  font-size: 12px;\n  line-height: 1.4;\n  opacity: 1;\n  pointer-events: auto;\n  overflow: auto;\n}\n.thread-subscription-usage-details::backdrop {\n  background: transparent;\n}\n.thread-subscription-usage-detail-window + .thread-subscription-usage-detail-window {\n  margin-top: 10px;\n}\n.thread-subscription-usage-detail-heading {\n  display: flex;\n  justify-content: space-between;\n  align-items: baseline;\n  gap: 12px;\n}\n.thread-subscription-usage-detail-heading strong {\n  font-weight: 600;\n}\n.thread-subscription-usage-detail-reset {\n  display: block;\n  margin-top: 3px;\n  padding: 0;\n  border: 0;\n  background: none;\n  color: var(--theme-fg-muted, #a1a1aa);\n  font: inherit;\n  font-size: 11px;\n  font-variant-numeric: tabular-nums;\n  text-align: left;\n  cursor: pointer;\n}\n.thread-subscription-usage-detail-reset:active {\n  color: var(--theme-fg, inherit);\n  text-decoration: underline dotted;\n  text-underline-offset: 2px;\n}\n@media (hover: hover) {\n  .thread-subscription-usage-detail-reset:hover {\n    color: var(--theme-fg, inherit);\n    text-decoration: underline dotted;\n    text-underline-offset: 2px;\n  }\n}\n.thread-subscription-usage-detail-freshness {\n  margin-top: 10px;\n  padding-top: 8px;\n  border-top: 1px solid var(--theme-border, #3f3f46);\n  color: var(--theme-fg-muted, #a1a1aa);\n  font-size: 10px;\n}\n[data-composer-layout=collapsed][data-composer-overflow] .thread-graph-composer-input[data-more-lines]::after {\n  content: attr(data-more-lines);\n  position: absolute;\n  right: 0;\n  top: 50%;\n  transform: translateY(-50%);\n  padding: 1px 6px;\n  border-radius: 999px;\n  background: var(--theme-hover, rgba(127, 127, 127, .14));\n  color: var(--theme-fg-muted);\n  font-size: 11px;\n  line-height: 16px;\n  pointer-events: none;\n  white-space: nowrap;\n}\n[data-composer-layout=collapsed][data-composer-overflow] .thread-graph-composer-input[data-more-lines] > [role=textbox] {\n  padding-right: 52px;\n}\n.thread-ui-shell .thread-graph-composer-send-button[data-empty=true] {\n  opacity: .45;\n  cursor: default;\n}\n.thread-ui-shell .thread-composer-placeholder-hint {\n  opacity: .75;\n}\n@media (max-width: 639px), (pointer: coarse) {\n  .thread-ui-shell .thread-composer-placeholder-hint {\n    display: none;\n  }\n}\n.thread-ui-shell .composer-mode-chip {\n  align-self: flex-start;\n}\n[data-composer-layout=collapsed] :is(.composer-tools, .composer-model-control, .composer-context-control),\n.thread-ui-shell .matter-workbench [data-composer-layout=collapsed] :is(.composer-tools, .composer-model-control, .composer-context-control) {\n  display: none;\n}\n[data-composer-layout=collapsed] .composer-tools:has([data-composer-menu-surface]),\n.thread-ui-shell .matter-workbench [data-composer-layout=collapsed] .composer-tools:has([data-composer-menu-surface]) {\n  display: flex;\n}\n[data-composer-layout=collapsed] :is(.composer-model-control, .composer-context-control):has([data-composer-menu-surface]),\n.thread-ui-shell .matter-workbench [data-composer-layout=collapsed] :is(.composer-model-control, .composer-context-control):has([data-composer-menu-surface]) {\n  display: block;\n}\n[data-composer-layout=expanded] .thread-graph-composer-toolbar,\n.thread-ui-shell .matter-workbench [data-composer-layout=expanded] .thread-graph-composer-toolbar {\n  grid-column: 1 / -1;\n  grid-row: 2;\n  width: auto;\n  justify-self: stretch;\n  justify-content: space-between;\n  padding-top: 4px;\n  margin: 0 -6px -4px;\n}\n[data-composer-layout=expanded] .composer-settings,\n.thread-ui-shell .matter-workbench [data-composer-layout=expanded] .composer-settings {\n  flex: 0 0 auto;\n  flex-wrap: nowrap;\n}\n[data-composer-layout] .composer-model-control {\n  flex: none;\n}\n[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button),\n.thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button) {\n  position: relative;\n  width: 32px;\n  height: 32px;\n  min-width: 32px;\n  min-height: 32px;\n}\n[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button) {\n  background: transparent !important;\n  border-color: transparent !important;\n  box-shadow: none !important;\n}\n[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button):is(:active, [aria-expanded=true]) {\n  background: var(--theme-hover) !important;\n}\n@media (hover: hover) {\n  [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button):is(:hover, [aria-expanded=true]) {\n    background: var(--theme-hover) !important;\n  }\n}\n[data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button)::after {\n  content: "";\n  position: absolute;\n  inset: -4px;\n}\n[data-composer-layout] .composer-model-label {\n  min-height: 32px;\n}\n[data-composer-layout] .composer-model-control[data-with-context=true] {\n  display: flex;\n  flex-direction: column;\n  align-self: center;\n  height: 32px;\n}\n[data-composer-layout] .composer-model-control[data-with-context=true] > .composer-model-label {\n  flex: 1 1 auto;\n  min-height: 0;\n  height: 24px;\n  max-height: 24px;\n  padding-block: 0;\n  gap: 0;\n}\n[data-composer-layout] .composer-model-control[data-with-context=true] .composer-model-name {\n  font-size: 10px;\n  line-height: 11px;\n}\n[data-composer-layout] .composer-model-control[data-with-context=true] .composer-model-effort {\n  font-size: 9px;\n  line-height: 10px;\n}\n@media (max-width: 639px) {\n  [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button),\n  .thread-ui-shell .matter-workbench [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button) {\n    width: 34px;\n    height: 34px;\n    min-width: 34px;\n    min-height: 34px;\n  }\n  [data-composer-layout] .thread-graph-composer-toolbar :is(.composer-tools > div > button, .composer-tools > button, .thread-graph-composer-stop-button, .thread-graph-composer-send-button)::after {\n    inset: -3px;\n  }\n  [data-composer-layout] .composer-model-label {\n    min-height: 34px;\n  }\n  [data-composer-layout] .composer-model-control[data-with-context=true] {\n    height: 34px;\n  }\n  [data-composer-layout] .composer-model-control[data-with-context=true] > .composer-model-label {\n    min-height: 0;\n    height: 26px;\n    max-height: 26px;\n  }\n}\n.composer-input-trace {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  min-height: 40px;\n  padding: 0 12px;\n  font-size: 12px;\n  color: var(--theme-fg-muted);\n}\n.composer-input-trace > span {\n  flex: 1;\n  min-width: 0;\n}\n.composer-input-trace > button:not(.copy-button) {\n  min-height: 40px;\n  padding: 0 8px;\n  border: 0;\n  background: transparent;\n  color: inherit;\n  text-decoration: underline;\n}\n[data-composer-layout=collapsed] .composer-input-trace {\n  display: none;\n}\n');
 
 // src/styles/composer-reasoning.css
 styleInject('@property --effort-color { syntax: "<color>"; inherits: true; initial-value: #56b987; }\n.composer-reasoning {\n  border-top: 1px solid var(--theme-border);\n  margin-top: 6px;\n  padding: 8px 10px 2px;\n  transition: --effort-color 240ms ease;\n}\n.composer-reasoning-heading {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  font-size: 11px;\n  color: var(--theme-fg-muted);\n}\n.composer-reasoning-value {\n  color: var(--effort-color);\n  background: color-mix(in srgb, var(--effort-color) 12%, transparent);\n  border: 1px solid color-mix(in srgb, var(--effort-color) 20%, transparent);\n  border-radius: 7px;\n  padding: 2px 8px;\n  font-size: 11px;\n  line-height: 16px;\n  animation: composer-effort-reveal 180ms ease-out;\n}\n:root[data-theme-effective=light] .composer-reasoning-value {\n  color: color-mix(in oklab, var(--effort-color) 72%, black);\n}\n.composer-reasoning-slider {\n  position: relative;\n  display: block;\n  height: 60px;\n  margin: 0 0 -2px;\n  touch-action: none;\n  user-select: none;\n  cursor: pointer;\n}\n.composer-reasoning-slider[data-disabled] {\n  cursor: default;\n  opacity: 0.5;\n}\n.composer-reasoning-track {\n  position: absolute;\n  top: 14px;\n  right: 0;\n  left: 0;\n  height: 7px;\n  overflow: hidden;\n  border-radius: 999px;\n  background: color-mix(in srgb, var(--theme-fg-muted) 26%, transparent);\n  box-shadow: inset 0 1px 2px rgb(0 0 0 / 12%);\n}\n.composer-reasoning-range {\n  position: absolute;\n  height: 100%;\n  border-radius: inherit;\n  background:\n    linear-gradient(\n      90deg,\n      color-mix(in oklab, var(--effort-color) 62%, white),\n      var(--effort-color));\n  transition: right 200ms cubic-bezier(0.2, 0.8, 0.2, 1), background 200ms ease;\n}\n.composer-reasoning-thumb {\n  display: block;\n  width: 22px;\n  height: 22px;\n  border: 3px solid var(--theme-panel);\n  border-radius: 50%;\n  outline: 1px solid color-mix(in srgb, var(--effort-color) 50%, transparent);\n  background:\n    radial-gradient(\n      circle at 35% 25%,\n      color-mix(in srgb, var(--effort-color) 50%, white),\n      var(--effort-color) 65%);\n  box-shadow: 0 2px 7px rgb(0 0 0 / 15%), 0 0 0 4px color-mix(in srgb, var(--effort-color) 10%, transparent);\n  transition:\n    transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1),\n    box-shadow 200ms ease,\n    background 200ms ease;\n}\n.composer-reasoning-slider > span[style] {\n  top: 6.5px;\n  transition: left 200ms cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.composer-reasoning-thumb:active,\n.composer-reasoning-thumb:focus-visible,\n.composer-reasoning[data-interacting=true] .composer-reasoning-thumb {\n  transform: scale(1.12);\n  box-shadow:\n    0 2px 8px rgb(0 0 0 / 15%),\n    0 0 0 7px color-mix(in srgb, var(--effort-color) 14%, transparent),\n    0 0 22px color-mix(in srgb, var(--effort-color) 25%, transparent);\n}\n@media (hover: hover) {\n  .composer-reasoning-thumb:hover {\n    transform: scale(1.12);\n    box-shadow:\n      0 2px 8px rgb(0 0 0 / 15%),\n      0 0 0 7px color-mix(in srgb, var(--effort-color) 14%, transparent),\n      0 0 22px color-mix(in srgb, var(--effort-color) 25%, transparent);\n  }\n}\n.composer-reasoning-stops {\n  position: absolute;\n  inset: 31px 0 0;\n  pointer-events: none;\n}\n.composer-reasoning-stops > span {\n  position: absolute;\n  top: 0;\n  transform: translateX(-50%);\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 4px;\n  min-width: 24px;\n  padding: 0 0 4px;\n  font-size: 9px;\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n  transition: color 180ms ease;\n}\n.composer-reasoning-stops i {\n  height: 3px;\n  width: 1px;\n  background: var(--theme-border);\n}\n.composer-reasoning-stops > [data-preview] {\n  color: var(--effort-color);\n}\n@keyframes composer-effort-reveal {\n  from {\n    opacity: 0.5;\n    transform: translateY(2px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .composer-reasoning,\n  .composer-reasoning *,\n  .composer-reasoning-slider > span[style] {\n    transition: none;\n    animation: none;\n  }\n}\n.composer-model-menu-heading {\n  line-height: 16px;\n}\n.thread-ui-shell .composer-model-menu[data-composer-menu-surface] {\n  --composer-menu-surface-bg: var(--theme-panel);\n}\n');
@@ -246,7 +246,7 @@ function StatusMark({ status: status3, label }) {
 // src/components/ThreadComposer.tsx
 import {
   useCallback as useCallback12,
-  useEffect as useEffect21,
+  useEffect as useEffect22,
   useMemo as useMemo6,
   useRef as useRef16,
   useState as useState26
@@ -1470,10 +1470,10 @@ function useCompactComposer(formRef, enabled) {
         if (ownsEvent(pendingPointerEvent)) focusWithin = true;
         pendingPointerEvent = null;
       }
-      const overflowing = promptExceedsCompactLine(editor, group, toolbar);
-      form.toggleAttribute("data-composer-overflow", overflowing);
       if (focusWithin || menuOpen()) opened = true;
       const next = opened;
+      const overflowing = next ? form.hasAttribute("data-composer-overflow") : promptExceedsCompactLine(editor, group, toolbar);
+      form.toggleAttribute("data-composer-overflow", overflowing);
       const composing = editor.dataset.imeComposing === "true";
       setExpanded((current) => current === next || composing && current ? current : next);
       const lineHeight = Number.parseFloat(getComputedStyle(editor).lineHeight) || 0;
@@ -3857,8 +3857,8 @@ var GraphChatMarkdownAwareBody = memo3(
         return;
       }
       const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
+        (entries2) => {
+          for (const entry of entries2) {
             if (entry.isIntersecting) {
               setIsActivated(true);
               observer.disconnect();
@@ -4071,9 +4071,9 @@ function delegateWakeMessages(turn, context) {
   if (header2) {
     const footer = text.lastIndexOf(WAKE_FOOTER);
     const body = text.slice(header2[0].length, footer < 0 ? void 0 : footer);
-    const entries = wakeEntries(body);
-    for (const [index, entry] of entries.entries()) {
-      const block = body.slice(entry.index + entry[0].length, entries[index + 1]?.index);
+    const entries2 = wakeEntries(body);
+    for (const [index, entry] of entries2.entries()) {
+      const block = body.slice(entry.index + entry[0].length, entries2[index + 1]?.index);
       const marker = "\n  closing message: ";
       const start = block.indexOf(marker);
       reports.set(entry[2], {
@@ -4703,10 +4703,10 @@ var CONTEXT_GROUPS = [
 var contextGroupLabel = (slot) => translate(CONTEXT_GROUPS.find((group) => group.slot === slot)?.label ?? "chat.contextGroupOther");
 var positive = (value) => typeof value === "number" && Number.isFinite(value) && value > 0 ? value : 0;
 function groupTokens(step) {
-  const entries = Object.entries(step.categories ?? {});
-  if (!entries.length) return { groups: { 0: positive(step.inputTokens) }, split: false };
+  const entries2 = Object.entries(step.categories ?? {});
+  if (!entries2.length) return { groups: { 0: positive(step.inputTokens) }, split: false };
   const groups = {};
-  for (const [id, tokens] of entries) {
+  for (const [id, tokens] of entries2) {
     const slot = contextCategorySlot(id);
     groups[slot] = (groups[slot] ?? 0) + positive(tokens);
   }
@@ -8333,6 +8333,103 @@ function useComposerMenuLifecycle({
 import {
   useLayoutEffect as useLayoutEffect8
 } from "react";
+
+// src/components/composer/inputTrace.ts
+var FLAG = "pockymoe-input-trace";
+var LIMIT = 600;
+var entries = [];
+var started = 0;
+var listeners = /* @__PURE__ */ new Set();
+function inputTraceEnabled() {
+  if (typeof window === "undefined") return false;
+  try {
+    if (/[?&]inputtrace=1(?:&|$)/.test(window.location.search)) sessionStorage.setItem(FLAG, "1");
+    else if (/[?&]inputtrace=0(?:&|$)/.test(window.location.search)) sessionStorage.removeItem(FLAG);
+    return sessionStorage.getItem(FLAG) === "1";
+  } catch {
+    return false;
+  }
+}
+function caretOf(editor) {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0) return "none";
+  const range = selection.getRangeAt(0);
+  if (!editor.contains(range.startContainer) || !editor.contains(range.endContainer)) return "outside";
+  const start = measureSelectionOffset(editor, range.startContainer, range.startOffset);
+  const end = range.collapsed ? start : measureSelectionOffset(editor, range.endContainer, range.endOffset);
+  return start === end ? String(start) : `${start}-${end}`;
+}
+function traceInput(editor, event, detail = "") {
+  if (!editor || !inputTraceEnabled()) return;
+  const now = performance.now();
+  if (!entries.length) started = now;
+  const entry = [Math.round(now - started), event, detail, serializeEditorPrompt(editor).length, caretOf(editor), editor.childNodes.length];
+  const last = entries.at(-1);
+  if (event === "selectionchange" && last && last[1] === event && last[3] === entry[3] && last[4] === entry[4]) return;
+  entries.push(entry);
+  if (entries.length > LIMIT) entries = entries.slice(-LIMIT);
+  listeners.forEach((listener) => listener());
+}
+function inputTraceCount() {
+  return entries.length;
+}
+function subscribeInputTrace(listener) {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+function clearInputTrace() {
+  entries = [];
+  listeners.forEach((listener) => listener());
+}
+function inputTraceReport() {
+  const head = `pockymoe input trace \xB7 ${navigator.userAgent}
+ms event detail textLength caret childNodes`;
+  return [head, ...entries.map((entry) => entry.map((value) => value === "" ? "-" : value).join(" "))].join("\n");
+}
+function attachInputTrace(editor) {
+  if (!inputTraceEnabled()) return () => {
+  };
+  const input = (event) => {
+    const e = event;
+    const ranges = event.type === "beforeinput" && typeof e.getTargetRanges === "function" ? e.getTargetRanges().map((range) => {
+      try {
+        return `${measureSelectionOffset(editor, range.startContainer, range.startOffset)}-${measureSelectionOffset(editor, range.endContainer, range.endOffset)}`;
+      } catch {
+        return "?";
+      }
+    }).join(",") : "";
+    traceInput(editor, event.type, `${e.inputType || "?"}:${e.data?.length ?? 0}${e.isComposing ? ":composing" : ""}${ranges ? `:range=${ranges}` : ""}`);
+  };
+  const composition = (event) => traceInput(editor, event.type, String(event.data?.length ?? 0));
+  const plain = (event) => traceInput(editor, event.type);
+  const key = (event) => {
+    const e = event;
+    if (["Backspace", "Delete", "Enter", "Unidentified", "Process"].includes(e.key)) traceInput(editor, "keydown", `${e.key}${e.isComposing ? ":composing" : ""}`);
+  };
+  const selection = () => {
+    if (document.activeElement === editor) traceInput(editor, "selectionchange");
+  };
+  const handlers = [
+    ["beforeinput", input],
+    ["input", input],
+    ["compositionstart", composition],
+    ["compositionupdate", composition],
+    ["compositionend", composition],
+    ["focus", plain],
+    ["blur", plain],
+    ["keydown", key]
+  ];
+  for (const [type, handler] of handlers) editor.addEventListener(type, handler, true);
+  document.addEventListener("selectionchange", selection);
+  return () => {
+    for (const [type, handler] of handlers) editor.removeEventListener(type, handler, true);
+    document.removeEventListener("selectionchange", selection);
+  };
+}
+
+// src/components/composer/useComposerPromptDomSync.ts
 var QUOTE_GLYPH_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>';
 function createPromptQuoteToken(attachment) {
   const n = attachment.placeholder.match(/\d+/)?.[0] ?? "";
@@ -8428,7 +8525,9 @@ function useComposerPromptDomSync({
   selectionSnapshotRef,
   renderedPreviewSignatureRef,
   serializeEditorPrompt: serializeEditorPrompt2,
-  restoreSelection
+  restoreSelection,
+  editorTextRef,
+  adoptEditorText
 }) {
   useI18n();
   useLayoutEffect8(() => {
@@ -8437,11 +8536,18 @@ function useComposerPromptDomSync({
       return;
     }
     const pendingSelection = pendingSelectionRef.current;
-    const shouldSyncDom = serializeEditorPrompt2() !== prompt;
+    let shouldSyncDom = serializeEditorPrompt2() !== prompt;
+    if (shouldSyncDom && pendingSelection === null && editorTextRef.current === prompt && document.activeElement === editor) {
+      shouldSyncDom = false;
+      traceInput(editor, "sync-skipped", `state=${prompt.length}`);
+      adoptEditorText();
+    }
     if (shouldSyncDom) {
+      traceInput(editor, "sync-replace", `state=${prompt.length}:focused=${document.activeElement === editor}`);
       editor.replaceChildren(
         buildPromptFragment(promptSegments, attachmentPreviewUrls)
       );
+      editorTextRef.current = null;
     } else if (renderedPreviewSignatureRef.current !== previewSignature) {
       const attachments = new Map(promptSegments.flatMap(
         (segment) => segment.type === "attachment" ? [[segment.attachment.clientId, segment]] : []
@@ -8462,7 +8568,7 @@ function useComposerPromptDomSync({
       }
       selectionSnapshotRef.current = pendingSelection;
     } else if (document.activeElement === editor && shouldSyncDom) {
-      restoreSelection(selectionSnapshotRef.current);
+      restoreSelection(selectionSnapshotRef.current ?? { start: prompt.length, end: prompt.length });
     }
     pendingSelectionRef.current = null;
     pendingInsertedAttachmentIdsRef.current = [];
@@ -8478,7 +8584,9 @@ function useComposerPromptDomSync({
     renderedPreviewSignatureRef,
     restoreSelection,
     selectionSnapshotRef,
-    serializeEditorPrompt2
+    serializeEditorPrompt2,
+    editorTextRef,
+    adoptEditorText
   ]);
 }
 
@@ -8543,7 +8651,7 @@ function ComposerModeChip({ busy, onExit }) {
 }
 
 // src/components/composer/ComposerPromptEditor.tsx
-import { useRef as useRef15, useState as useState24 } from "react";
+import { useEffect as useEffect20, useRef as useRef15, useState as useState24, useSyncExternalStore as useSyncExternalStore2 } from "react";
 import { Quote as Quote3, ScanSearch as ScanSearch2, X as X5 } from "lucide-react";
 import { Fragment as Fragment13, jsx as jsx39, jsxs as jsxs34 } from "react/jsx-runtime";
 function hasIOSNativeBridge() {
@@ -8580,6 +8688,9 @@ function ComposerPromptEditor({
   const [preview, setPreview] = useState24(null);
   const [details, setDetails] = useState24(null);
   const quoteScope = useQuoteScope();
+  const tracing = inputTraceEnabled();
+  const traced = useSyncExternalStore2(subscribeInputTrace, inputTraceCount, () => 0);
+  useEffect20(() => tracing && promptRef.current ? attachInputTrace(promptRef.current) : void 0, [promptRef, tracing]);
   const detailsQuote = details?.dataset.kind === "quote" && details.dataset.quote ? JSON.parse(details.dataset.quote) : null;
   const detailsNumber = details?.dataset.placeholder?.match(/\d+/)?.[0] ?? "";
   const removeDetails = () => {
@@ -8632,6 +8743,11 @@ function ComposerPromptEditor({
             quote.clientId
           );
         }) }) : null,
+        tracing ? /* @__PURE__ */ jsxs34("div", { className: "composer-input-trace", "data-composer-input-trace": true, children: [
+          /* @__PURE__ */ jsx39("span", { children: translate("chat.inputTraceLabel", { count: traced }) }),
+          /* @__PURE__ */ jsx39(CopyButton, { value: inputTraceReport, label: translate("chat.inputTraceCopy") }),
+          /* @__PURE__ */ jsx39("button", { type: "button", onClick: clearInputTrace, children: translate("chat.inputTraceClear") })
+        ] }) : null,
         /* @__PURE__ */ jsxs34("div", { className: graphChatInputClassName, children: [
           prompt.length === 0 && promptPlaceholder && /* @__PURE__ */ jsxs34(
             "span",
@@ -8911,7 +9027,7 @@ function useComposerPromptSlots({
 }
 
 // src/components/composer/useComposerSettingsActions.ts
-import { useCallback as useCallback11, useEffect as useEffect20, useState as useState25 } from "react";
+import { useCallback as useCallback11, useEffect as useEffect21, useState as useState25 } from "react";
 function useComposerSettingsActions({
   collaborationMode,
   onUpdateSettings,
@@ -8919,7 +9035,7 @@ function useComposerSettingsActions({
 }) {
   const [optimisticCollaborationMode, setOptimisticCollaborationMode] = useState25(null);
   const displayedCollaborationMode = optimisticCollaborationMode ?? collaborationMode;
-  useEffect20(() => {
+  useEffect21(() => {
     setOptimisticCollaborationMode(null);
   }, [collaborationMode]);
   const updateSettings = useCallback11(
@@ -9342,12 +9458,12 @@ function ThreadComposer({
   const [slashPanelView, setSlashPanelView] = useState26("root");
   const [slashQuery, setSlashQuery] = useState26(null);
   const [slashActive, setSlashActive] = useState26(0);
-  useEffect21(() => {
+  useEffect22(() => {
     if (openMenu !== "slash" && slashQuery !== null) setSlashQuery(null);
   }, [openMenu, slashQuery]);
   const modelMenuOpened = useRef16(onModelMenuOpen);
   modelMenuOpened.current = onModelMenuOpen;
-  useEffect21(() => {
+  useEffect22(() => {
     if (openMenu === "model") modelMenuOpened.current?.();
   }, [openMenu]);
   const submitInFlightRef = useRef16(false);
@@ -9684,6 +9800,12 @@ ${current.prompt}` : text,
       end: nextCaret
     };
   }
+  const editorTextRef = useRef16(null);
+  const handlePromptInputRef = useRef16(() => {
+  });
+  const adoptEditorText = useCallback12(() => {
+    requestAnimationFrame(() => handlePromptInputRef.current());
+  }, []);
   useComposerPromptDomSync({
     promptRef,
     isShellView,
@@ -9696,7 +9818,9 @@ ${current.prompt}` : text,
     selectionSnapshotRef,
     renderedPreviewSignatureRef,
     serializeEditorPrompt: serializeEditorPrompt2,
-    restoreSelection
+    restoreSelection,
+    editorTextRef,
+    adoptEditorText
   });
   function dismissPromptFocus() {
     promptRef.current?.blur();
@@ -9786,6 +9910,7 @@ ${current.prompt}` : text,
     }
     const nextSelection = snapshotSelection();
     selectionSnapshotRef.current = nextSelection;
+    editorTextRef.current = nextPrompt;
     updateDraft((current) => ({
       prompt: nextPrompt,
       attachments: current.attachments.filter(
@@ -9793,6 +9918,7 @@ ${current.prompt}` : text,
       )
     }), "deferred");
   }
+  handlePromptInputRef.current = handlePromptInput;
   function handlePromptPaste(event) {
     const files = extractFilesFromTransfer(
       event.clipboardData?.items,
@@ -10211,7 +10337,7 @@ import {
 
 // src/components/timeline/tokenFormatting.tsx
 import {
-  useEffect as useEffect22,
+  useEffect as useEffect23,
   useLayoutEffect as useLayoutEffect9,
   useRef as useRef17,
   useState as useState27
@@ -10493,7 +10619,7 @@ function TurnTokenSummary({ turn }) {
       window.removeEventListener("resize", updatePopoverShift);
     };
   }, [details.length, isMobileOpen]);
-  useEffect22(() => {
+  useEffect23(() => {
     if (!isMobileOpen && !isDesktopOpen) {
       return;
     }
@@ -10843,7 +10969,7 @@ function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraCon
 }
 
 // src/components/ThreadWorkspaceLayout.tsx
-import { useEffect as useEffect30, useId as useId7, useMemo as useMemo9, useRef as useRef29, useState as useState41 } from "react";
+import { useEffect as useEffect31, useId as useId7, useMemo as useMemo9, useRef as useRef29, useState as useState41 } from "react";
 import {
   ArrowLeft as ArrowLeft2,
   ChevronsLeft,
@@ -11040,7 +11166,7 @@ function historyItemLabel(kind) {
 // src/components/workbench/WorkbenchPanels.tsx
 import {
   useCallback as useCallback15,
-  useEffect as useEffect25,
+  useEffect as useEffect26,
   useId as useId6,
   useMemo as useMemo7,
   useRef as useRef21,
@@ -11049,7 +11175,7 @@ import {
 import { ChevronLeft, FolderOpen as FolderOpen2, X as X6 } from "lucide-react";
 
 // src/components/workbench/presentation.ts
-import { useCallback as useCallback13, useEffect as useEffect23, useRef as useRef20, useState as useState30 } from "react";
+import { useCallback as useCallback13, useEffect as useEffect24, useRef as useRef20, useState as useState30 } from "react";
 var defaultPresentation = {
   referenceId: null,
   mode: "focus",
@@ -11133,7 +11259,7 @@ function useWorkbenchPresentation(scope, contextKey = null) {
   const value = stored.generation === generation ? stored.value : { ...read(scope), ...pending };
   if (stored.generation !== generation)
     setStored({ generation, value, storageFailed: false, pending });
-  useEffect23(() => {
+  useEffect24(() => {
     if (!scope || stored.generation !== generation || !stored.pending) return;
     const storageFailed = write(scope, stored.value, stored.pending);
     setStored(
@@ -11167,10 +11293,10 @@ function useWorkbenchPresentation(scope, contextKey = null) {
 }
 
 // src/components/workbench/useTerminalKeyboardInset.ts
-import { useEffect as useEffect24, useState as useState31 } from "react";
+import { useEffect as useEffect25, useState as useState31 } from "react";
 function useTerminalKeyboardInset(root, enabled) {
   const [inset3, setInset] = useState31(0);
-  useEffect24(() => {
+  useEffect25(() => {
     const node = root.current;
     if (!enabled || !node) {
       setInset(0);
@@ -11276,7 +11402,7 @@ function WorkbenchPanels({
     "primary"
   );
   const previousMode = useRef21(mode);
-  useEffect25(() => {
+  useEffect26(() => {
     if (previousMode.current !== mode) {
       const before = previousMode.current;
       previousMode.current = mode;
@@ -11289,7 +11415,7 @@ function WorkbenchPanels({
   const toolsOpen = Boolean(o.toolsOpen);
   const keyboardInset = useTerminalKeyboardInset(root, compact && toolsOpen);
   const [toolsVisited, setToolsVisited] = useState33(toolsOpen);
-  useEffect25(() => {
+  useEffect26(() => {
     if (toolsOpen) setToolsVisited(true);
   }, [toolsOpen]);
   const mainColumn = useRef21(null);
@@ -11354,7 +11480,7 @@ function WorkbenchPanels({
     }
   );
   const [lastReveal, setLastReveal] = useState33(revealExplorer);
-  useEffect25(() => {
+  useEffect26(() => {
     if (lastReveal !== revealExplorer) {
       setLastReveal(revealExplorer);
       if (revealExplorer > 0) {
@@ -11362,22 +11488,22 @@ function WorkbenchPanels({
       }
     }
   }, [revealExplorer, lastReveal, o.onPresentationChange]);
-  useEffect25(() => {
+  useEffect26(() => {
     if (mode === "files") setFilesVisited(true);
   }, [mode]);
-  useEffect25(() => {
+  useEffect26(() => {
     if (!root.current) return;
-    const observer = new ResizeObserver((entries) => {
-      const width = entries[0].contentRect.width;
+    const observer = new ResizeObserver((entries2) => {
+      const width = entries2[0].contentRect.width;
       setCompact(width < 800);
       setRootWidth(width);
     });
     observer.observe(root.current);
     return () => observer.disconnect();
   }, []);
-  useEffect25(() => {
+  useEffect26(() => {
     if (!mainColumn.current) return;
-    const observer = new ResizeObserver((entries) => setColumnHeight(entries[0].contentRect.height));
+    const observer = new ResizeObserver((entries2) => setColumnHeight(entries2[0].contentRect.height));
     observer.observe(mainColumn.current);
     return () => observer.disconnect();
   }, []);
@@ -11441,7 +11567,7 @@ function WorkbenchPanels({
       }
     }
   );
-  useEffect25(() => {
+  useEffect26(() => {
     setMobileView("primary");
   }, [o.primaryTitle]);
   const close = () => {
@@ -11459,7 +11585,7 @@ function WorkbenchPanels({
   const inspectorOpener = useRef21(null);
   const inspectorTitleId = useId6();
   const shownBefore = useRef21(inspectorShown);
-  useEffect25(() => {
+  useEffect26(() => {
     const before = shownBefore.current;
     shownBefore.current = inspectorShown;
     if (inspectorShown && inspectorShown !== before) {
@@ -11473,7 +11599,7 @@ function WorkbenchPanels({
     }
   }, [inspectorShown]);
   const [filesMinimized, setFilesMinimized] = useState33(false);
-  useEffect25(() => {
+  useEffect26(() => {
     if (mode !== "files" || compact) setFilesMinimized(false);
   }, [mode, compact]);
   const paneSwitchEnabled = compact && showThread;
@@ -11493,7 +11619,7 @@ function WorkbenchPanels({
     return { primary: { ...base, pane: "primary" }, reference: { ...base, pane: "reference" } };
   }, [paneSwitchEnabled, mobileView, o.primaryTitle, referenceTitle, o.marks?.primary, o.marks?.reference, selectPane, claimSwitch]);
   const onPaneSwitchChange = o.onPaneSwitchChange;
-  useEffect25(() => {
+  useEffect26(() => {
     if (!onPaneSwitchChange) return;
     onPaneSwitchChange(paneSwitches?.primary ?? null);
     return () => onPaneSwitchChange(null);
@@ -11518,7 +11644,7 @@ function WorkbenchPanels({
     inspector: o.inspector,
     inspectorCovers
   };
-  useEffect25(() => {
+  useEffect26(() => {
     const drawerOpen = mode === "files" || o.toolsOpen || inspectorCovers;
     if (!compact || !drawerOpen && (!showReference || mobileView !== "reference"))
       return;
@@ -11848,7 +11974,7 @@ function WorkbenchPanels({
 }
 
 // src/components/MatterWorkbench.tsx
-import { Fragment as Fragment19, createContext as createContext12, useContext as useContext10, useSyncExternalStore as useSyncExternalStore2, useEffect as useEffect29, useLayoutEffect as useLayoutEffect14, useMemo as useMemo8, useState as useState40, useRef as useRef28 } from "react";
+import { Fragment as Fragment19, createContext as createContext12, useContext as useContext10, useSyncExternalStore as useSyncExternalStore3, useEffect as useEffect30, useLayoutEffect as useLayoutEffect14, useMemo as useMemo8, useState as useState40, useRef as useRef28 } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -11976,7 +12102,7 @@ function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, favoriteB
 }
 
 // src/components/GroupedThreadTabs.tsx
-import { useEffect as useEffect26, useLayoutEffect as useLayoutEffect13, useRef as useRef24, useState as useState36 } from "react";
+import { useEffect as useEffect27, useLayoutEffect as useLayoutEffect13, useRef as useRef24, useState as useState36 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
 import { Bot, X as X7 } from "lucide-react";
 import { Fragment as Fragment17, jsx as jsx50, jsxs as jsxs44 } from "react/jsx-runtime";
@@ -12002,10 +12128,10 @@ function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, onThreadM
   const [menu, setMenu] = useState36(null);
   const trigger = useRef24(null);
   const popup = useRef24(null);
-  useEffect26(() => {
+  useEffect27(() => {
     setMenu(null);
   }, [currentKey]);
-  useEffect26(() => {
+  useEffect27(() => {
     if (!menu) return;
     const close = (event) => {
       if (!popup.current?.contains(event.target) && !trigger.current?.contains(event.target)) setMenu(null);
@@ -12189,7 +12315,7 @@ ${activity.label}`,
 }
 
 // src/components/workbench/PhoneDock.tsx
-import { useEffect as useEffect27, useRef as useRef25 } from "react";
+import { useEffect as useEffect28, useRef as useRef25 } from "react";
 import { ChevronsUpDown, Ellipsis, FolderOpen as FolderOpen3, MessageSquare, Terminal } from "lucide-react";
 import { Fragment as Fragment18, jsx as jsx51, jsxs as jsxs45 } from "react/jsx-runtime";
 function PhoneDock({
@@ -12233,7 +12359,7 @@ function PhoneDock({
 }
 function PinnedThreads({ value, threadsOpen, onOpenThreads }) {
   const { claim } = value;
-  useEffect27(() => {
+  useEffect28(() => {
     const releasePrimary = claim("primary");
     const releaseReference = claim("reference");
     return () => {
@@ -12270,11 +12396,11 @@ function PhoneSheet({ open, label, onClose, children: children2, footer }) {
   const close = useRef25(onClose);
   close.current = onClose;
   useExclusiveSecondary(sheet, open, () => close.current(), "sheet");
-  useEffect27(() => {
+  useEffect28(() => {
     if (!open) return;
     sheet.current?.querySelector("[data-sheet-autofocus], button, a")?.focus({ preventScroll: true });
   }, [open]);
-  useEffect27(() => {
+  useEffect28(() => {
     const node = sheet.current;
     if (!open) {
       if (node) node.style.height = "";
@@ -12368,7 +12494,7 @@ function PhoneSheet({ open, label, onClose, children: children2, footer }) {
 import { useRef as useRef27, useState as useState39 } from "react";
 
 // src/components/workbench/useDragReorder.ts
-import { useEffect as useEffect28, useRef as useRef26, useState as useState38 } from "react";
+import { useEffect as useEffect29, useRef as useRef26, useState as useState38 } from "react";
 var REORDER_LONG_PRESS_MS = 700;
 function inOrder(items, keyOf, order) {
   if (!order?.length) return items;
@@ -12383,7 +12509,7 @@ function inOrder(items, keyOf, order) {
 function usePendingOrder(keys) {
   const [pending, setPending] = useState38(null);
   const joined = keys.join("\n");
-  useEffect28(() => {
+  useEffect29(() => {
     if (pending && pending.join("\n") === joined) setPending(null);
   }, [joined, pending]);
   const shown = pending ? [...pending.filter((key) => keys.includes(key)), ...keys.filter((key) => !pending.includes(key))] : keys;
@@ -12395,7 +12521,7 @@ function useDragReorder(listRef, { axis, itemSelector, enabled, onCommit, scroll
   const away = useRef26(outside);
   away.current = outside;
   const detachable = Boolean(outside);
-  useEffect28(() => {
+  useEffect29(() => {
     if (!enabled) return;
     const horizontal = axis === "x";
     let drag = null;
@@ -12682,7 +12808,7 @@ function notificationGroups(notifications) {
 var PersistentNavigationContext = createContext12(null);
 function PersistentWorkbenchNavigation({ children: children2 }) {
   const [mobile, setMobile] = useState40(() => window.matchMedia("(max-width: 639px)").matches);
-  useEffect29(() => {
+  useEffect30(() => {
     const media = window.matchMedia("(max-width: 639px)");
     const update = () => setMobile(media.matches);
     media.addEventListener("change", update);
@@ -12690,16 +12816,16 @@ function PersistentWorkbenchNavigation({ children: children2 }) {
   }, []);
   const store = useMemo8(() => {
     let snapshot = null;
-    const listeners = /* @__PURE__ */ new Set();
+    const listeners2 = /* @__PURE__ */ new Set();
     return {
       publish(props) {
         snapshot = props;
-        listeners.forEach((listener) => listener());
+        listeners2.forEach((listener) => listener());
       },
       subscribe(listener) {
-        listeners.add(listener);
+        listeners2.add(listener);
         return () => {
-          listeners.delete(listener);
+          listeners2.delete(listener);
         };
       },
       getSnapshot: () => snapshot
@@ -12709,7 +12835,7 @@ function PersistentWorkbenchNavigation({ children: children2 }) {
 }
 function PersistentNavigationFrame({ children: children2 }) {
   const store = useContext10(PersistentNavigationContext);
-  const props = useSyncExternalStore2(store.subscribe, store.getSnapshot, store.getSnapshot);
+  const props = useSyncExternalStore3(store.subscribe, store.getSnapshot, store.getSnapshot);
   const framed = props ? { ...props, options: { ...props.options, panels: void 0 } } : null;
   return /* @__PURE__ */ jsx53(MatterWorkbench, { ...framed ?? { title: "", options: { threads: [], currentKey: "", favorite: false, workspacePath: "", activeView: "chat", terminalEnabled: false, onViewChange() {
   }, onToggleFavorite() {
@@ -12749,7 +12875,7 @@ function MatterWorkbench({
   };
   const commitWorkspaceOrder = useMemo8(() => (keys) => reorderWorkspace.current(keys), []);
   const tabsRef = useRef28(null);
-  useEffect29(() => {
+  useEffect30(() => {
     const strip = tabsRef.current;
     if (!strip) return;
     const wheel = (event) => {
@@ -12815,7 +12941,7 @@ function MatterWorkbench({
     outside: editorTabs && splitThread ? tabOutside : void 0
   });
   const tabScrollEdges = useTabScrollEdges(tabsRef);
-  useEffect29(() => {
+  useEffect30(() => {
     tabsRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
   }, [o.currentKey, tabs.length]);
   const [sidebarOpen, setSidebarOpen] = useState40(false);
@@ -12823,14 +12949,14 @@ function MatterWorkbench({
   const [mobile, setMobile] = useState40(
     () => typeof window !== "undefined" && window.matchMedia("(max-width: 639px)").matches
   );
-  useEffect29(() => {
+  useEffect30(() => {
     const query = window.matchMedia("(max-width: 639px)");
     const change = () => setMobile(query.matches);
     query.addEventListener("change", change);
     return () => query.removeEventListener("change", change);
   }, []);
   const [narrowPhone, setNarrowPhone] = useState40(() => typeof window !== "undefined" && window.innerWidth < 420);
-  useEffect29(() => {
+  useEffect30(() => {
     const update = () => setNarrowPhone(window.innerWidth < 420);
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
@@ -12846,7 +12972,7 @@ function MatterWorkbench({
   const [runningOpen, setRunningOpen] = useState40(false);
   const [typing, setTyping] = useState40(false);
   const rootRef = useRef28(null);
-  useEffect29(() => {
+  useEffect30(() => {
     if (!dock) {
       setTyping(false);
       return;
@@ -12886,7 +13012,7 @@ function MatterWorkbench({
   }, [dock]);
   const sidebarRef = useRef28(null);
   const scrimRef = useRef28(null);
-  useEffect29(() => {
+  useEffect30(() => {
     const root = rootRef.current, drawer = sidebarRef.current;
     if (!mobile || !root || !drawer) return;
     let start = null;
@@ -12967,7 +13093,7 @@ function MatterWorkbench({
       root.removeEventListener("touchcancel", end);
     };
   }, [mobile, sidebarOpen]);
-  useEffect29(() => {
+  useEffect30(() => {
     const root = rootRef.current;
     if (!dock || !root) return;
     let start = null;
@@ -13018,7 +13144,7 @@ function MatterWorkbench({
   };
   const viewChange = useRef28(o.onViewChange);
   viewChange.current = o.onViewChange;
-  useEffect29(() => {
+  useEffect30(() => {
     if (navigationFrame || !o.terminalEnabled) return;
     const toggle = (event) => {
       if (event.key !== "`" || !event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
@@ -13031,7 +13157,7 @@ function MatterWorkbench({
   }, [o.terminalEnabled, navigationFrame]);
   const searchKey = useRef28({ open: o.onSearch, available: !o.emptyWorkspace, searchOpen: Boolean(o.searchOpen) });
   searchKey.current = { open: o.onSearch, available: !o.emptyWorkspace, searchOpen: Boolean(o.searchOpen) };
-  useEffect29(() => {
+  useEffect30(() => {
     if (navigationFrame) return;
     const find = (event) => {
       if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || event.key.toLowerCase() !== "f") return;
@@ -13121,7 +13247,7 @@ function MatterWorkbench({
     if (o.panels) o.panels.onPresentationChange(next ? openFilesPatch(o.panels.presentation) : closeFilesPatch(o.panels.presentation));
     else setLegacyExplorerOpen(next);
   };
-  useEffect29(() => {
+  useEffect30(() => {
     if (workspaceControlsEnabled) return;
     setLegacyExplorerOpen(false);
     setToolbarOpen(false);
@@ -13146,7 +13272,7 @@ function MatterWorkbench({
     } catch {
     }
   };
-  useEffect29(() => {
+  useEffect30(() => {
     if (!sidebarOpen) return;
     const escape = (event) => {
       if (event.key === "Escape") setSidebarOpen(false);
@@ -13155,11 +13281,11 @@ function MatterWorkbench({
     return () => window.removeEventListener("keydown", escape);
   }, [sidebarOpen]);
   const searchWasOpen = useRef28(o.searchOpen);
-  useEffect29(() => {
+  useEffect30(() => {
     if (dock && searchWasOpen.current && !o.searchOpen) rootRef.current?.querySelector(".matter-phone-more")?.focus({ preventScroll: true });
     searchWasOpen.current = o.searchOpen;
   }, [dock, o.searchOpen]);
-  useEffect29(() => {
+  useEffect30(() => {
     sidebarRef.current?.querySelector('[data-testid="workspace-threads"] [aria-current="page"]')?.scrollIntoView?.({ block: "nearest" });
   }, [o.currentKey]);
   const [lastReveal, setLastReveal] = useState40(revealExplorer);
@@ -13178,7 +13304,7 @@ function MatterWorkbench({
     }
     o.onCloseTab?.(rootKey);
   };
-  useEffect29(() => {
+  useEffect30(() => {
     setThreadsOpen(false);
     setMoreOpen(false);
   }, [o.currentKey]);
@@ -14186,7 +14312,7 @@ function ThreadCard({
   const workspaceLabel = workspaceLabels[thread.workspaceId];
   const roomMetaLabel = workspaceLabel && !currentWorkspaceId ? workspaceLabel : null;
   const isCurrentThread = currentThreadId === thread.id;
-  useEffect30(() => {
+  useEffect31(() => {
     return () => {
       if (resetTimerRef.current !== null) {
         window.clearTimeout(resetTimerRef.current);
@@ -14469,7 +14595,7 @@ function ThreadWorkspaceLayout({
     "chat"
   );
   const [workspaceVisited, setWorkspaceVisited] = useState41(false);
-  useEffect30(() => {
+  useEffect31(() => {
     if (mobileWorkspace === "workspace") setWorkspaceVisited(true);
   }, [mobileWorkspace]);
   const [editingThreadId, setEditingThreadId] = useState41(null);
@@ -14481,14 +14607,14 @@ function ThreadWorkspaceLayout({
   const [newThreadTitleDraft, setNewThreadTitleDraft] = useState41("");
   const [creatingThread, setCreatingThread] = useState41(false);
   const [topbarDetailsOpen, setTopbarDetailsOpen] = useState41(false);
-  useEffect30(() => {
+  useEffect31(() => {
     if (workspaceRevealRequestKey === void 0) {
       return;
     }
     setWorkspaceCollapsed(false);
     setMobileWorkspace("workspace");
   }, [workspaceRevealRequestKey]);
-  useEffect30(() => {
+  useEffect31(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -14502,7 +14628,7 @@ function ThreadWorkspaceLayout({
       mediaQuery.removeEventListener("change", handleViewportChange);
     };
   }, []);
-  useEffect30(() => {
+  useEffect31(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -14516,7 +14642,7 @@ function ThreadWorkspaceLayout({
       mediaQuery.removeEventListener("change", handleViewportChange);
     };
   }, []);
-  useEffect30(() => {
+  useEffect31(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -15225,19 +15351,19 @@ function ThreadWorkspaceLayout({
 
 // src/components/ThreadTimeline.tsx
 import { mergeThreadHistoryItem as mergeThreadHistoryItem2 } from "@pockymoe/shared";
-import { memo as memo8, useCallback as useCallback20, useEffect as useEffect42, useMemo as useMemo14, useRef as useRef40, useState as useState61 } from "react";
+import { memo as memo8, useCallback as useCallback20, useEffect as useEffect43, useMemo as useMemo14, useRef as useRef40, useState as useState61 } from "react";
 
 // src/components/LongTextDialog.tsx
 import { X as X10 } from "lucide-react";
 
 // src/components/DiffDetail.tsx
-import { useEffect as useEffect31, useMemo as useMemo10, useState as useState42 } from "react";
+import { useEffect as useEffect32, useMemo as useMemo10, useState as useState42 } from "react";
 import { jsx as jsx56, jsxs as jsxs49 } from "react/jsx-runtime";
 function DiffDetail({ text, compact = false, formatPath }) {
   useI18n();
   const [highlighter, setHighlighter] = useState42(null);
   const theme = useAppShellNav()?.effectiveTheme ?? (document.documentElement.dataset.themeEffective === "light" ? "light" : "dark");
-  useEffect31(() => {
+  useEffect32(() => {
     let active = true;
     void getGraphChatHighlighter().then((value) => {
       if (active) setHighlighter(value);
@@ -15503,7 +15629,7 @@ function ForkTurnButton({ onFork }) {
 }
 
 // src/plugins/useMessagePresentation.ts
-import { useEffect as useEffect32, useMemo as useMemo11, useState as useState44 } from "react";
+import { useEffect as useEffect33, useMemo as useMemo11, useState as useState44 } from "react";
 function useMessagePresentation(context) {
   const { presentMessage } = usePlugins();
   const { item, streaming } = context;
@@ -15513,7 +15639,7 @@ function useMessagePresentation(context) {
   );
   const [validation, setValidation] = useState44(null);
   const [original, setOriginal] = useState44(null);
-  useEffect32(() => {
+  useEffect33(() => {
     if (!candidate?.validate) return;
     let active = true;
     void Promise.resolve().then(() => candidate.validate()).then((valid) => {
@@ -15573,7 +15699,7 @@ function echoesFailure(error, text) {
 }
 
 // src/components/graph-chat/MessageSenderMark.tsx
-import { useEffect as useEffect33, useLayoutEffect as useLayoutEffect15, useRef as useRef30, useState as useState45 } from "react";
+import { useEffect as useEffect34, useLayoutEffect as useLayoutEffect15, useRef as useRef30, useState as useState45 } from "react";
 import { createPortal as createPortal5 } from "react-dom";
 import { Fragment as Fragment22, jsx as jsx60, jsxs as jsxs53 } from "react/jsx-runtime";
 function displayName(sender) {
@@ -15604,7 +15730,7 @@ function MessageSenderMark({ sender }) {
     const top = above >= 8 ? above : Math.min(rect.bottom + 6, window.innerHeight - height - 8);
     setPosition({ left, top });
   }, [open]);
-  useEffect33(() => {
+  useEffect34(() => {
     if (!open) return;
     const close = (event) => {
       if (event.target instanceof Node && (card.current?.contains(event.target) || button.current?.contains(event.target))) return;
@@ -16038,7 +16164,7 @@ function renderableHistoryItems(items) {
 function countTurnSteps(turn, items, summaryItems = items) {
   const recorded = renderableHistoryItems([...new Map(items.map((item) => [item.id, item])).values()]);
   const latestReply = recorded.findLast((item) => item.kind === "agentMessage");
-  const count = (entries) => entries.filter((item) => item.kind !== "userMessage" && item.id !== latestReply?.id && item.origin !== "nativeBackgroundWait").length;
+  const count = (entries2) => entries2.filter((item) => item.kind !== "userMessage" && item.id !== latestReply?.id && item.origin !== "nativeBackgroundWait").length;
   const loaded = count(recorded);
   if (!turn.hasDeferredItems) return loaded;
   const snapshot = renderableHistoryItems([...new Map(summaryItems.map((item) => [item.id, item])).values()]);
@@ -16275,7 +16401,7 @@ function groupTimelineHistoryItems(items) {
   );
 }
 function groupConsecutiveTimelineHistoryItems(items) {
-  const entries = [];
+  const entries2 = [];
   let index = 0;
   while (index < items.length) {
     const current = items[index];
@@ -16283,7 +16409,7 @@ function groupConsecutiveTimelineHistoryItems(items) {
       break;
     }
     if (current.kind !== "commandExecution" && current.kind !== "fileChange" && current.kind !== "webSearch" && current.kind !== "fileRead" && current.kind !== "toolCall" && current.kind !== "agentToolCall" && current.kind !== "skillToolCall") {
-      entries.push({
+      entries2.push({
         kind: "item",
         key: current.id,
         item: current
@@ -16297,7 +16423,7 @@ function groupConsecutiveTimelineHistoryItems(items) {
       index += 1;
     }
     if (groupedItems.length === 1) {
-      entries.push({
+      entries2.push({
         kind: "item",
         key: groupedItems[0].id,
         item: groupedItems[0]
@@ -16306,7 +16432,7 @@ function groupConsecutiveTimelineHistoryItems(items) {
     }
     const groupKey = current.id;
     if (current.kind === "commandExecution") {
-      entries.push({
+      entries2.push({
         kind: "commandGroup",
         key: groupKey,
         items: groupedItems
@@ -16314,7 +16440,7 @@ function groupConsecutiveTimelineHistoryItems(items) {
       continue;
     }
     if (current.kind === "fileChange") {
-      entries.push({
+      entries2.push({
         kind: "fileChangeGroup",
         key: groupKey,
         items: groupedItems
@@ -16322,7 +16448,7 @@ function groupConsecutiveTimelineHistoryItems(items) {
       continue;
     }
     if (current.kind === "fileRead") {
-      entries.push({
+      entries2.push({
         kind: "fileReadGroup",
         key: groupKey,
         items: groupedItems
@@ -16330,7 +16456,7 @@ function groupConsecutiveTimelineHistoryItems(items) {
       continue;
     }
     if (current.kind === "toolCall") {
-      entries.push({
+      entries2.push({
         kind: "toolCallGroup",
         key: groupKey,
         items: groupedItems
@@ -16338,7 +16464,7 @@ function groupConsecutiveTimelineHistoryItems(items) {
       continue;
     }
     if (current.kind === "agentToolCall") {
-      entries.push({
+      entries2.push({
         kind: "agentToolCallGroup",
         key: groupKey,
         items: groupedItems
@@ -16346,20 +16472,20 @@ function groupConsecutiveTimelineHistoryItems(items) {
       continue;
     }
     if (current.kind === "skillToolCall") {
-      entries.push({
+      entries2.push({
         kind: "skillToolCallGroup",
         key: groupKey,
         items: groupedItems
       });
       continue;
     }
-    entries.push({
+    entries2.push({
       kind: "searchGroup",
       key: groupKey,
       items: groupedItems
     });
   }
-  return entries;
+  return entries2;
 }
 function isAgentActivityEntry(entry) {
   if (entry.kind !== "item") {
@@ -16367,8 +16493,8 @@ function isAgentActivityEntry(entry) {
   }
   return entry.item.origin === "nativeTaskNotification" || entry.item.kind === "commandExecution" || entry.item.kind === "fileChange" || entry.item.kind === "webSearch" || entry.item.kind === "fileRead" || entry.item.kind === "toolCall" || entry.item.kind === "agentToolCall" || entry.item.kind === "skillToolCall" || entry.item.kind === "reasoning";
 }
-function containsReasoningEntry(entries) {
-  return entries.some(
+function containsReasoningEntry(entries2) {
+  return entries2.some(
     (entry) => entry.kind === "item" && entry.item.kind === "reasoning"
   );
 }
@@ -16381,20 +16507,20 @@ function entryItemCount(entry) {
   }
   return entry.items.length;
 }
-function groupAgentActivitySequences(entries) {
+function groupAgentActivitySequences(entries2) {
   const grouped = [];
   let index = 0;
-  while (index < entries.length) {
-    if (!isAgentActivityEntry(entries[index])) {
-      grouped.push(entries[index]);
+  while (index < entries2.length) {
+    if (!isAgentActivityEntry(entries2[index])) {
+      grouped.push(entries2[index]);
       index += 1;
       continue;
     }
     const start = index;
-    while (index < entries.length && isAgentActivityEntry(entries[index])) {
+    while (index < entries2.length && isAgentActivityEntry(entries2[index])) {
       index += 1;
     }
-    const activityEntries = entries.slice(start, index);
+    const activityEntries = entries2.slice(start, index);
     const itemCount = activityEntries.reduce(
       (total, entry) => total + entryItemCount(entry),
       0
@@ -16470,7 +16596,7 @@ function buildRequestEntryAnchors({
   const turnSequence = buildTurnSequence(visibleTurns, optimisticTurn);
   const beforeTurnId = /* @__PURE__ */ new Map();
   const trailing = [];
-  const entries = [
+  const entries2 = [
     ...unanchoredAnsweredNotes.map((note) => ({
       kind: "note",
       id: note.id,
@@ -16484,7 +16610,7 @@ function buildRequestEntryAnchors({
       request
     }))
   ].sort((left, right) => left.createdAt.localeCompare(right.createdAt));
-  for (const entry of entries) {
+  for (const entry of entries2) {
     const anchor = firstTurnAtOrAfter(turnSequence, entry.createdAt);
     if (!anchor) {
       trailing.push(entry);
@@ -16850,15 +16976,15 @@ function ActivityNoteSection({
   )) });
 }
 function RequestEntrySection({
-  entries,
+  entries: entries2,
   respondingRequestId,
   onRespondToRequest
 }) {
   const { locale: i18nLocale } = useI18n();
-  if (entries.length === 0) {
+  if (entries2.length === 0) {
     return null;
   }
-  return /* @__PURE__ */ jsx64("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: entries.map(
+  return /* @__PURE__ */ jsx64("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: entries2.map(
     (entry) => entry.kind === "note" ? /* @__PURE__ */ jsx64(AnsweredRequestNote, { note: entry.note }, entry.id) : /* @__PURE__ */ jsx64(
       PendingRequestCard,
       {
@@ -16877,7 +17003,7 @@ function RequestEntrySectionForTurn({
   onRespondToRequest
 }) {
   const { locale: i18nLocale } = useI18n();
-  const entries = [
+  const entries2 = [
     ...notes.map((note) => ({
       kind: "note",
       id: note.id,
@@ -16894,24 +17020,24 @@ function RequestEntrySectionForTurn({
   return /* @__PURE__ */ jsx64(
     RequestEntrySection,
     {
-      entries,
+      entries: entries2,
       respondingRequestId,
       onRespondToRequest
     }
   );
 }
 function ActivityRequestEntrySection({
-  entries,
+  entries: entries2,
   respondingRequestId,
   onRespondToRequest,
   onOpenThread,
   onOpenLinkedThread
 }) {
   const { locale: i18nLocale } = useI18n();
-  if (entries.length === 0) {
+  if (entries2.length === 0) {
     return null;
   }
-  return /* @__PURE__ */ jsx64("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: [...entries].sort((left, right) => left.createdAt.localeCompare(right.createdAt)).map(
+  return /* @__PURE__ */ jsx64("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: [...entries2].sort((left, right) => left.createdAt.localeCompare(right.createdAt)).map(
     (entry) => entry.kind === "activity" ? /* @__PURE__ */ jsx64(
       ActivityNoteCard,
       {
@@ -16937,7 +17063,7 @@ import {
   Fragment as Fragment30,
   memo as memo7,
   useCallback as useCallback17,
-  useEffect as useEffect39,
+  useEffect as useEffect40,
   useRef as useRef37,
   useMemo as useMemo13,
   useState as useState58
@@ -17935,10 +18061,10 @@ function GraphChatTurnFrame({
 }
 
 // src/components/timeline/TurnHead.tsx
-import { useState as useState54, useSyncExternalStore as useSyncExternalStore3 } from "react";
+import { useState as useState54, useSyncExternalStore as useSyncExternalStore4 } from "react";
 
 // src/components/timeline/Collapse.tsx
-import { useEffect as useEffect35, useRef as useRef32, useState as useState50 } from "react";
+import { useEffect as useEffect36, useRef as useRef32, useState as useState50 } from "react";
 import { jsx as jsx69 } from "react/jsx-runtime";
 var DURATION = 260;
 function animates() {
@@ -17949,7 +18075,7 @@ function Collapse({ open, children: children2 }) {
   const previous = useRef32(open);
   const last = useRef32(children2);
   if (open) last.current = children2;
-  useEffect35(() => {
+  useEffect36(() => {
     if (previous.current === open) return;
     previous.current = open;
     if (!animates()) {
@@ -18078,7 +18204,7 @@ function TokenSpeedDetails({ speed, value, live = false }) {
 
 // src/components/timeline/turnStatus.tsx
 import { Bot as Bot4, Hourglass as Hourglass2 } from "lucide-react";
-import { useEffect as useEffect36, useRef as useRef34, useState as useState52 } from "react";
+import { useEffect as useEffect37, useRef as useRef34, useState as useState52 } from "react";
 
 // src/components/timeline/TokenMetricIcon.tsx
 import { Fragment as Fragment27, jsx as jsx71, jsxs as jsxs62 } from "react/jsx-runtime";
@@ -18262,7 +18388,7 @@ function ProgressIndicator({ age, at }) {
 function useSecondClock(enabled) {
   const { locale: i18nLocale } = useI18n();
   const [now, setNow] = useState52(() => Date.now());
-  useEffect36(() => {
+  useEffect37(() => {
     if (!enabled) {
       return;
     }
@@ -18513,7 +18639,7 @@ var subscribeWide = (change) => {
   return () => query.removeEventListener("change", change);
 };
 var readWide = () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia(wideQuery).matches;
-var useWideScreen = () => useSyncExternalStore3(subscribeWide, readWide, () => false);
+var useWideScreen = () => useSyncExternalStore4(subscribeWide, readWide, () => false);
 var clock = (at) => new Date(at).toLocaleTimeString(getLocale(), { hour: "numeric", minute: "2-digit" });
 var dated = (at) => new Date(at).toLocaleString(getLocale(), {
   month: "short",
@@ -18528,8 +18654,8 @@ function TurnHead({ turn, active, added, onBeforeResize }) {
   const [open, setOpen] = useState54(false);
   const [withDate, setWithDate] = useState54(false);
   const now = useSecondClock(active);
-  const started = turn.startedAt;
-  const took = formatElapsedDuration(started, active ? now : Date.parse(turn.completedAt ?? ""));
+  const started2 = turn.startedAt;
+  const took = formatElapsedDuration(started2, active ? now : Date.parse(turn.completedAt ?? ""));
   const usage = turn.tokenUsage?.total;
   const speed = turn.tokenUsage?.generationSpeed;
   const rate2 = active ? speed?.averageOutputTokensPerSecond : speed?.averageOutputTokensPerSecond ?? speed?.averageTokensPerSecond;
@@ -18545,15 +18671,15 @@ function TurnHead({ turn, active, added, onBeforeResize }) {
   ] });
   const cost = usage || turn.priceEstimate ? /* @__PURE__ */ jsx76(TokenUsageCost, { usage, price: turn.priceEstimate }) : null;
   const more = /* @__PURE__ */ jsxs67(Fragment28, { children: [
-    started ? /* @__PURE__ */ jsx76(
+    started2 ? /* @__PURE__ */ jsx76(
       "button",
       {
         type: "button",
         className: "thread-turn-head-time",
-        title: formatLongTimestamp(started),
+        title: formatLongTimestamp(started2),
         "aria-pressed": withDate,
         onClick: () => setWithDate((value) => !value),
-        children: /* @__PURE__ */ jsx76("time", { dateTime: started, children: withDate ? dated(started) : clock(started) })
+        children: /* @__PURE__ */ jsx76("time", { dateTime: started2, children: withDate ? dated(started2) : clock(started2) })
       }
     ) : null,
     /* @__PURE__ */ jsx76(TurnModels, { turn }),
@@ -18604,7 +18730,7 @@ function isSubstantiveAnswer(item) {
   const length = Array.from(text).length;
   return length >= 600 || length >= 300 && (/^#{1,6}[ \t]/m.test(text) && text.split(/\n\s*\n/).length >= 3 || text.split("\n").filter((line) => /^\|.*\|$/.test(line.trim())).length >= 3);
 }
-function groupAnswerSections(entries, visibleAgentId) {
+function groupAnswerSections(entries2, visibleAgentId) {
   const result = [];
   let work = [];
   let anchor = "start";
@@ -18620,7 +18746,7 @@ function groupAnswerSections(entries, visibleAgentId) {
     });
     work = [];
   };
-  for (const entry of entries) {
+  for (const entry of entries2) {
     if (entry.kind === "item" && (isSubstantiveAnswer(entry.item) || entry.item.id === visibleAgentId || entry.item.origin === "nativeBackgroundWait" && entry.item.status === "waiting")) {
       flush();
       result.push(entry);
@@ -18825,11 +18951,11 @@ function segmentDuration(segment) {
 }
 
 // src/components/timeline/TranscriptLog.tsx
-import { createContext as createContext15, memo as memo6, useCallback as useCallback16, useContext as useContext14, useEffect as useEffect38, useMemo as useMemo12, useState as useState56 } from "react";
+import { createContext as createContext15, memo as memo6, useCallback as useCallback16, useContext as useContext14, useEffect as useEffect39, useMemo as useMemo12, useState as useState56 } from "react";
 import { BellRing as BellRing6, ChevronRight as ChevronRight6, Maximize2 as Maximize23 } from "lucide-react";
 
 // src/components/timeline/ActivityCount.tsx
-import { useEffect as useEffect37, useRef as useRef36, useState as useState55 } from "react";
+import { useEffect as useEffect38, useRef as useRef36, useState as useState55 } from "react";
 import { createPortal as createPortal6 } from "react-dom";
 import { BellRing as BellRing5, Bot as Bot5, Check as Check4, FileText as FileText3, Lightbulb, Search as Search3, SquareTerminal, Wrench as Wrench3, X as X11 } from "lucide-react";
 import { jsx as jsx77, jsxs as jsxs68 } from "react/jsx-runtime";
@@ -18868,7 +18994,7 @@ function ActivityCount({ part }) {
       setHint({ left: Math.min(Math.max(rect.left + rect.width / 2, 132), window.innerWidth - 132), top: below ? rect.bottom + 8 : rect.top - 8, below });
     }, HINT_DELAY_MS);
   };
-  useEffect37(() => {
+  useEffect38(() => {
     if (!hint) return;
     const close = () => cancel();
     window.addEventListener("scroll", close, true);
@@ -18878,7 +19004,7 @@ function ActivityCount({ part }) {
       window.removeEventListener("resize", close);
     };
   }, [hint]);
-  useEffect37(() => () => {
+  useEffect38(() => () => {
     if (timer.current !== null) window.clearTimeout(timer.current);
   }, []);
   return /* @__PURE__ */ jsxs68(
@@ -18995,7 +19121,7 @@ function useItemDetail(item, enabled) {
   const live = logStatus(item.status) === "running";
   const [state, setState] = useState56(null);
   const [attempt, setAttempt] = useState56(0);
-  useEffect38(() => {
+  useEffect39(() => {
     if (!enabled || !loadable || !loader) return;
     let active = true;
     let cache = detailCache.get(loader);
@@ -19724,8 +19850,8 @@ function formatWorkedDuration(startedAt, completedAt, items) {
   }
   return translate("chat.workedForSeconds", { seconds: seconds2 });
 }
-function collapsedSummaryMessages(entries, active) {
-  const itemEntries = entries.filter(
+function collapsedSummaryMessages(entries2, active) {
+  const itemEntries = entries2.filter(
     (entry) => entry.kind === "item"
   );
   const users = itemEntries.map((entry) => entry.item).filter(
@@ -19738,9 +19864,9 @@ function collapsedSummaryMessages(entries, active) {
     if (entry.kind === "agentActivityGroup") return entry.entries.some(hasBackgroundOrigin);
     return entry.kind === "item" && (entry.item.origin === "nativeBackgroundWait" || entry.item.origin === "nativeTaskNotification");
   };
-  const hasBackground = entries.some(hasBackgroundOrigin);
+  const hasBackground = entries2.some(hasBackgroundOrigin);
   const summaryAgent = active || !hasBackground ? latestAgent : latestAgent?.responsePhase === "final" ? latestAgent : void 0;
-  const hiddenEntries = entries.filter((entry) => {
+  const hiddenEntries = entries2.filter((entry) => {
     if (entry.kind !== "item") {
       return true;
     }
@@ -19842,7 +19968,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
   const [openSoleRun, setOpenSoleRun] = useState58(false);
   const [openStretches, setOpenStretches] = useState58(() => /* @__PURE__ */ new Set());
   const revealedSearch = useRef37(null);
-  useEffect39(() => {
+  useEffect40(() => {
     if (!revealTarget || revealedSearch.current === revealTarget.key) return;
     const keys = [];
     function contains(entry) {
@@ -19863,10 +19989,10 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
       [groupKey]: !currentExpanded
     }));
   }, [onBeforeMessageResize]);
-  const renderHistoryEntries = (entries, options) => /* @__PURE__ */ jsx80(
+  const renderHistoryEntries = (entries2, options) => /* @__PURE__ */ jsx80(
     TimelineHistoryEntries,
     {
-      entries,
+      entries: entries2,
       expandedGroups: options?.collapsed ? {} : expandedGroups,
       onToggleGroupedItem: options?.onExpand ? (key, current) => {
         if (options.collapsed) options.onExpand?.();
@@ -19883,7 +20009,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
       fallbackTimeLabel: turnTimeLabel,
       fallbackTimeTitle: turnTimeTitle,
       turnStartedAt: turn.startedAt,
-      autoOpenLatestToolDetails: autoOpenLatestToolDetails && entries.at(-1)?.key === groupedItems.at(-1)?.key,
+      autoOpenLatestToolDetails: autoOpenLatestToolDetails && entries2.at(-1)?.key === groupedItems.at(-1)?.key,
       ...options?.openLastRun ? { openRunBefore: null } : openRunBefore !== void 0 ? { openRunBefore } : {},
       openSoleRun,
       ...onSelectArtifact ? { onSelectArtifact } : {},
@@ -20268,7 +20394,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
   ) }) }, `${threadId ?? ""}:${turn.id}`) });
 });
 function TimelineHistoryEntries({
-  entries,
+  entries: entries2,
   expandedGroups,
   onToggleGroupedItem,
   threadId,
@@ -20289,7 +20415,7 @@ function TimelineHistoryEntries({
   openSoleRun = false
 }) {
   const { locale: i18nLocale } = useI18n();
-  const latestEntryKey = entries.at(-1)?.key ?? null;
+  const latestEntryKey = entries2.at(-1)?.key ?? null;
   const relativeTimeMeta = useCallback17(
     (timestamp, endTimestamp) => timestamp ? /* @__PURE__ */ jsx80(
       TimelineTimeToggle,
@@ -20329,7 +20455,7 @@ function TimelineHistoryEntries({
       key
     );
   };
-  const blocks = logBlocks(entries, autoOpenLatestToolDetails);
+  const blocks = logBlocks(entries2, autoOpenLatestToolDetails);
   const lastKey = blocks.at(-1)?.key;
   const lastRunKey = blocks.findLast((block) => block.kind === "run")?.key;
   const soleRun = openSoleRun && blocks.length === 1 && blocks[0].kind === "run";
@@ -20384,10 +20510,10 @@ function foldedAnswerBlocks(sections, segments, finalId) {
   gap(null);
   return blocks;
 }
-function logBlocks(entries, working = false) {
+function logBlocks(entries2, working = false) {
   const blocks = [];
   const runningShown = /* @__PURE__ */ new Set();
-  for (const entry of entries) {
+  for (const entry of entries2) {
     if (entry.kind === "item") {
       blocks.push({ kind: "item", key: entry.key, item: entry.item });
       continue;
@@ -20418,13 +20544,13 @@ function logBlocks(entries, working = false) {
   }
   return blocks;
 }
-function flattenHistoryEntries(entries) {
-  return entries.flatMap((entry) => entry.kind === "item" ? [entry.item] : entry.kind === "agentActivityGroup" ? flattenHistoryEntries(entry.entries) : entry.items);
+function flattenHistoryEntries(entries2) {
+  return entries2.flatMap((entry) => entry.kind === "item" ? [entry.item] : entry.kind === "agentActivityGroup" ? flattenHistoryEntries(entry.entries) : entry.items);
 }
-function storyBlocks(entries, segments, answerId) {
+function storyBlocks(entries2, segments, answerId) {
   const before = new Map(segments.flatMap((segment) => segment.before ? [[segment.before, segment]] : []));
   const blocks = [];
-  for (const item of flattenHistoryEntries(entries)) {
+  for (const item of flattenHistoryEntries(entries2)) {
     const segment = before.get(item.id);
     if (segment) blocks.push({ kind: "run", segment });
     blocks.push({ kind: "entry", entry: { kind: "item", key: item.id, item } });
@@ -20475,7 +20601,7 @@ function buildSyntheticLiveTurn(turnId, items) {
 }
 
 // src/components/timeline/useDeferredHistoryDetail.ts
-import { useCallback as useCallback18, useEffect as useEffect40, useRef as useRef38, useState as useState59 } from "react";
+import { useCallback as useCallback18, useEffect as useEffect41, useRef as useRef38, useState as useState59 } from "react";
 function inlineDetail(item, title, text) {
   return {
     id: item.id,
@@ -20496,7 +20622,7 @@ function useDeferredHistoryDetail({
   const [expandedText, setExpandedText] = useState59(
     null
   );
-  useEffect40(() => {
+  useEffect41(() => {
     requestIdRef.current += 1;
     detailCacheRef.current.clear();
     setExpandedText(null);
@@ -20626,7 +20752,7 @@ function useDeferredHistoryDetail({
 // src/components/timeline/useTimelineScroll.ts
 import {
   useCallback as useCallback19,
-  useEffect as useEffect41,
+  useEffect as useEffect42,
   useLayoutEffect as useLayoutEffect16,
   useRef as useRef39,
   useState as useState60
@@ -20926,13 +21052,13 @@ function useTimelineScroll({
       window.cancelAnimationFrame(frame);
     };
   }, [threadId, scrollToBottom]);
-  useEffect41(() => {
+  useEffect42(() => {
     autoLoadedEarlierRef.current = false;
     userScrolledHistoryRef.current = false;
     topLoadArmedRef.current = false;
     pendingPrependScrollRef.current = null;
   }, [threadId]);
-  useEffect41(() => {
+  useEffect42(() => {
     if (!loadingEarlier) {
       autoLoadedEarlierRef.current = false;
     }
@@ -20970,7 +21096,7 @@ function useTimelineScroll({
     lastScrollTopRef.current = nextScrollTop;
     lastObservedScrollHeightRef.current = container.scrollHeight;
   }, [loadingEarlier, turnsLength, correctAnchor]);
-  useEffect41(() => {
+  useEffect42(() => {
     setVisibleCount((current) => {
       if (current >= turnsLength - 1) {
         return turnsLength;
@@ -20978,7 +21104,7 @@ function useTimelineScroll({
       return Math.max(current, INITIAL_VISIBLE_TURNS);
     });
   }, [turnsLength]);
-  useEffect41(() => {
+  useEffect42(() => {
     const container = scrollContainerRef.current;
     if (container && !anchorRef.current) {
       lastObservedScrollHeightRef.current = container.scrollHeight;
@@ -21012,7 +21138,7 @@ function useTimelineScroll({
       window.cancelAnimationFrame(frame);
     };
   }, [contentRevision, isTailVisible, scrollToBottom, scrollRequestKey]);
-  useEffect41(() => {
+  useEffect42(() => {
     const container = scrollContainerRef.current;
     const content = scrollContentRef.current;
     if (!container || !content || typeof ResizeObserver === "undefined") {
@@ -21062,7 +21188,7 @@ function useTimelineScroll({
       viewportObserver.disconnect();
     };
   }, [correctAnchor, scrollToBottom]);
-  useEffect41(() => {
+  useEffect42(() => {
     if (!shouldStickToBottomRef.current || userScrolledAwayFromTailRef.current) {
       previousBottomSpacerRef.current = bottomSpacer;
       return;
@@ -21078,10 +21204,10 @@ function useTimelineScroll({
       window.cancelAnimationFrame(frame);
     };
   }, [bottomSpacer, scrollToBottom]);
-  useEffect41(() => {
+  useEffect42(() => {
     onTailVisibilityChange?.(isTailVisible);
   }, [isTailVisible, onTailVisibilityChange]);
-  useEffect41(() => stopAnchor, [stopAnchor]);
+  useEffect42(() => stopAnchor, [stopAnchor]);
   return {
     scrollContainerRef,
     scrollContentRef,
@@ -21266,7 +21392,7 @@ function ThreadTimelineComponent({
   const [turnDetailErrors, setTurnDetailErrors] = useState61({});
   const openLinkedThread = adapter?.onOpenLinkedThread;
   const openedSearchKeyRef = useRef40(null);
-  useEffect42(() => {
+  useEffect43(() => {
     if (!searchTarget || openedSearchKeyRef.current === searchTarget.key || !turns.some((turn) => turn.id === searchTarget.turnId)) return;
     openedSearchKeyRef.current = searchTarget.key;
     const parent = groupPeerWorkTurns(turns).find((group) => group.continuations.some((turn) => turn.id === searchTarget.turnId));
@@ -21343,7 +21469,7 @@ function ThreadTimelineComponent({
     ...openThreadLink ? { open: openThreadLink } : {},
     ...adapter?.describeThread ? { describe: adapter.describeThread } : {}
   }), [adapter?.getThreadHref, adapter?.describeThread, openThreadLink]);
-  useEffect42(() => {
+  useEffect43(() => {
     const container = scrollContainerRef.current;
     const composer = container?.closest(".thread-graph-chat-panel")?.querySelector(":scope > .thread-graph-composer-host");
     if (!container || typeof ResizeObserver === "undefined") return;
@@ -21377,14 +21503,14 @@ function ThreadTimelineComponent({
       toggles.disconnect();
     };
   }, [bottomSpacer, scrollContainerRef]);
-  useEffect42(() => {
+  useEffect43(() => {
     setLoadedTurnDetails({});
     turnDetailRequestedAtRef.current = {};
     setEndedLiveItems(null);
     setLoadingTurnDetailIds(/* @__PURE__ */ new Set());
     setTurnDetailErrors({});
   }, [threadId]);
-  useEffect42(() => {
+  useEffect43(() => {
     if (!searchTarget || lastSearchKeyRef.current === searchTarget.key || collapsedTurnOverrides[searchTarget.turnId] !== false) return;
     preserveScrollPositionForResize();
     const frame = requestAnimationFrame(() => {
@@ -21458,7 +21584,7 @@ function ThreadTimelineComponent({
     if (!turn.hasDeferredItems || loadedTurnDetails[turn.id]) return;
     fetchTurnDetail(turn, false);
   }, [loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds]);
-  useEffect42(() => {
+  useEffect43(() => {
     if (!loadTurnDetail) return;
     for (const turn of turns) {
       const loaded = loadedTurnDetails[turn.id];
@@ -21478,7 +21604,7 @@ function ThreadTimelineComponent({
       });
     }
   }, [turns, loadTurnDetail, loadedTurnDetails, collapsedTurnOverrides, loadingTurnDetailIds, turnDetailErrors]);
-  useEffect42(() => {
+  useEffect43(() => {
     if (!loadTurnDetail) return;
     for (const turn of turns) {
       if (turn.status !== "inProgress" || !turn.hasDeferredItems || collapsedTurnOverrides[turn.id] === true || loadingTurnDetailIds.has(turn.id)) continue;
@@ -21606,13 +21732,13 @@ function ThreadTimelineComponent({
     handleScroll();
     updateNavigationAvailability();
   }, [handleScroll, updateNavigationAvailability]);
-  useEffect42(() => {
+  useEffect43(() => {
     const previous = navigationResetRef.current;
     if (previous.threadId === threadId && previous.scrollRequestKey === scrollRequestKey && previous.searchKey === searchTarget?.key) return;
     navigationResetRef.current = { threadId, scrollRequestKey, searchKey: searchTarget?.key };
     resetNavigation();
   }, [threadId, scrollRequestKey, searchTarget?.key, resetNavigation]);
-  useEffect42(() => {
+  useEffect43(() => {
     updateNavigationAvailability();
   }, [visibleTurns, updateNavigationAvailability]);
   const navigateToTurn = useCallback20((target) => {
@@ -21624,14 +21750,14 @@ function ThreadTimelineComponent({
     container.scrollTo({ top, behavior: "smooth" });
     updateNavigationAvailability();
   }, [scrollContainerRef, preserveScrollPositionForResize, updateNavigationAvailability]);
-  useEffect42(() => {
+  useEffect43(() => {
     if (!pendingPreviousNavigationRef.current || loadingEarlier) return;
     const target = findTurn(-1);
     if (!target) return;
     pendingPreviousNavigationRef.current = false;
     navigateToTurn(target);
   }, [visibleTurns, loadingEarlier, findTurn, navigateToTurn]);
-  useEffect42(() => {
+  useEffect43(() => {
     const previousChanged = handledNavigationRef.current.previous !== previousTurnScrollRequestKey;
     const nextChanged = handledNavigationRef.current.next !== nextTurnScrollRequestKey;
     handledNavigationRef.current = { previous: previousTurnScrollRequestKey, next: nextTurnScrollRequestKey };
@@ -22156,7 +22282,7 @@ import {
 import {
   forwardRef as forwardRef2,
   useCallback as useCallback22,
-  useEffect as useEffect47,
+  useEffect as useEffect48,
   useImperativeHandle as useImperativeHandle2,
   useMemo as useMemo17,
   useRef as useRef45,
@@ -22167,7 +22293,7 @@ import {
 import {
   forwardRef,
   useCallback as useCallback21,
-  useEffect as useEffect46,
+  useEffect as useEffect47,
   useImperativeHandle,
   useMemo as useMemo16,
   useRef as useRef43,
@@ -22863,7 +22989,7 @@ function installTouchTextInput(host, textarea, send) {
       if (!composing) sync();
     }, 0);
   };
-  const listeners = [
+  const listeners2 = [
     ["keydown", keydown],
     ["keypress", keypress],
     ["beforeinput", beforeinput],
@@ -22872,12 +22998,12 @@ function installTouchTextInput(host, textarea, send) {
     ["compositionupdate", compositionupdate],
     ["compositionend", compositionend]
   ];
-  for (const [type, listener] of listeners) host.addEventListener(type, listener, true);
+  for (const [type, listener] of listeners2) host.addEventListener(type, listener, true);
   return {
     /** The shell's line changed without the field (a key from the key bar). */
     forget,
     dispose: () => {
-      for (const [type, listener] of listeners) host.removeEventListener(type, listener, true);
+      for (const [type, listener] of listeners2) host.removeEventListener(type, listener, true);
     }
   };
 }
@@ -22945,7 +23071,7 @@ function buildShellControlState({
 
 // src/components/shell/useShellSocketLifecycle.ts
 import {
-  useEffect as useEffect43
+  useEffect as useEffect44
 } from "react";
 
 // src/components/shell/shellSocketSideEffects.ts
@@ -23252,7 +23378,7 @@ function useShellSocketLifecycle({
 }) {
   const shellId = shell?.id;
   const shellCwd = shell?.cwd;
-  useEffect43(() => {
+  useEffect44(() => {
     const terminal = terminalRef.current;
     const baseAttachStartInput = {
       shellId: shellId ?? null,
@@ -23511,7 +23637,7 @@ function useShellSocketLifecycle({
 }
 
 // src/components/shell/TerminalMenu.tsx
-import { useEffect as useEffect44, useLayoutEffect as useLayoutEffect17, useRef as useRef41, useState as useState62 } from "react";
+import { useEffect as useEffect45, useLayoutEffect as useLayoutEffect17, useRef as useRef41, useState as useState62 } from "react";
 import { jsx as jsx82 } from "react/jsx-runtime";
 function TerminalMenu({
   anchor,
@@ -23537,7 +23663,7 @@ function TerminalMenu({
     setPosition({ left, top });
     menu.querySelector('[role^="menuitem"]:not(:disabled), input')?.focus();
   }, [anchor]);
-  useEffect44(() => {
+  useEffect45(() => {
     const outside = (event) => {
       if (!ref.current?.contains(event.target)) close.current();
     };
@@ -23576,7 +23702,7 @@ function TerminalMenu({
 }
 
 // src/components/shell/TerminalSelection.tsx
-import { useEffect as useEffect45, useLayoutEffect as useLayoutEffect18, useMemo as useMemo15, useRef as useRef42, useState as useState63 } from "react";
+import { useEffect as useEffect46, useLayoutEffect as useLayoutEffect18, useMemo as useMemo15, useRef as useRef42, useState as useState63 } from "react";
 import { jsx as jsx83, jsxs as jsxs72 } from "react/jsx-runtime";
 function bufferText(terminal) {
   const buffer = terminal.buffer.active;
@@ -23617,7 +23743,7 @@ function TerminalSelection({ terminal, host, point, onCopy, onClose }) {
     selection?.modify?.("move", "backward", "word");
     selection?.modify?.("extend", "forward", "word");
   }, [metrics, point, topLine]);
-  useEffect45(() => {
+  useEffect46(() => {
     const update = () => {
       const selection = window.getSelection();
       const inside2 = selection && selection.rangeCount > 0 && body.current?.contains(selection.anchorNode);
@@ -23846,7 +23972,7 @@ var ShellPane = forwardRef(
     const terminalRef = useRef43(null);
     const oscClipboardRef = useRef43(null);
     const preferences = useTerminalPreferences();
-    useEffect46(() => {
+    useEffect47(() => {
       if (!preferences.allowProgramClipboard) oscClipboardRef.current?.clear();
     }, [preferences.allowProgramClipboard]);
     const fitAddonRef = useRef43(null);
@@ -23946,13 +24072,13 @@ var ShellPane = forwardRef(
     const settleAttachPromise = useCallback21((connected) => {
       attachPromiseControllerRef.current.settle(connected);
     }, []);
-    useEffect46(() => {
+    useEffect47(() => {
       isVisibleRef.current = isVisible;
     }, [isVisible]);
-    useEffect46(() => {
+    useEffect47(() => {
       isMobileShellRef.current = isMobileShell;
     }, [isMobileShell]);
-    useEffect46(() => {
+    useEffect47(() => {
       shellIdRef.current = shell?.id ?? null;
     }, [shell?.id]);
     const sendShellInput = useCallback21((data) => {
@@ -23970,7 +24096,7 @@ var ShellPane = forwardRef(
       });
       return true;
     }, []);
-    useEffect46(() => {
+    useEffect47(() => {
       sendShellInputRef.current = sendShellInput;
     }, [sendShellInput]);
     const sendShellClear = useCallback21(() => {
@@ -24047,7 +24173,7 @@ var ShellPane = forwardRef(
       },
       [isTerminalVisible, sendBackendSize]
     );
-    useEffect46(() => {
+    useEffect47(() => {
       syncTerminalSizeRef.current = syncTerminalSize;
     }, [syncTerminalSize]);
     const refreshTerminalLayout = useCallback21(
@@ -24076,10 +24202,10 @@ var ShellPane = forwardRef(
       },
       [isMobileShell, isTerminalVisible, syncTerminalSize, terminalHostNode]
     );
-    useEffect46(() => {
+    useEffect47(() => {
       refreshTerminalLayoutRef.current = () => refreshTerminalLayout();
     }, [refreshTerminalLayout]);
-    useEffect46(() => {
+    useEffect47(() => {
       if (!isMobileShell || !isVisible || !terminalReady) return;
       let frame = 0;
       const refresh = () => {
@@ -24092,7 +24218,7 @@ var ShellPane = forwardRef(
         window.visualViewport?.removeEventListener("resize", refresh);
       };
     }, [isMobileShell, isVisible, terminalReady]);
-    useEffect46(() => {
+    useEffect47(() => {
       onRuntimeStateChange({
         status: viewerId ? "attached" : shellStatus,
         shellInputEnabled: Boolean(viewerId && shell),
@@ -24112,7 +24238,7 @@ var ShellPane = forwardRef(
       shellStatus,
       viewerId
     ]);
-    useEffect46(() => {
+    useEffect47(() => {
       if (!terminalHostNode || terminalRef.current || terminalInitializingRef.current) {
         return;
       }
@@ -24225,7 +24351,7 @@ var ShellPane = forwardRef(
         lastSentSizeRef.current = null;
       };
     }, [effectiveTheme, terminalHostNode]);
-    useEffect46(() => {
+    useEffect47(() => {
       const host = terminalHostNode;
       if (!host) return;
       const paste = (event) => {
@@ -24292,7 +24418,7 @@ var ShellPane = forwardRef(
         host.removeEventListener("contextmenu", contextMenu);
       };
     }, [copyFeedback, terminalHostNode]);
-    useEffect46(() => {
+    useEffect47(() => {
       const resetAction = deriveShellMissingSessionResetAction({
         hasShell: Boolean(shell)
       });
@@ -24312,21 +24438,21 @@ var ShellPane = forwardRef(
         terminalRef.current?.reset();
       }
     }, [setViewerId, settleAttachPromise, shell]);
-    useEffect46(() => {
+    useEffect47(() => {
       const terminal = terminalRef.current;
       if (!terminal) {
         return;
       }
       terminal.options.theme = terminalThemeFor(effectiveTheme, terminalHostNode);
     }, [effectiveTheme, themeRevision, terminalHostNode]);
-    useEffect46(() => {
+    useEffect47(() => {
       const terminal = terminalRef.current;
       if (!terminal) {
         return;
       }
       terminal.options.disableStdin = false;
     }, [isMobileShell]);
-    useEffect46(() => {
+    useEffect47(() => {
       if (!isVisible || !terminalReady) {
         return;
       }
@@ -24340,7 +24466,7 @@ var ShellPane = forwardRef(
         window.cancelAnimationFrame(frame);
       };
     }, [autoFocus, isActive, isVisible, refreshTerminalLayout, shell?.id, terminalReady]);
-    useEffect46(() => {
+    useEffect47(() => {
       const terminal = terminalRef.current;
       if (!terminalReady || !terminal || !isVisible) return;
       let frame = 0;
@@ -24361,7 +24487,7 @@ var ShellPane = forwardRef(
         rendered.dispose();
       };
     }, [terminalReady, isVisible]);
-    useEffect46(() => {
+    useEffect47(() => {
       if (!isMobileShell || !terminalReady || !terminalHostNode) return;
       const viewport = terminalHostNode.querySelector(".xterm-viewport");
       const screen = terminalHostNode.querySelector(".xterm-screen");
@@ -24408,7 +24534,7 @@ var ShellPane = forwardRef(
       settleAttachPromise,
       onShellUpdate
     });
-    useEffect46(() => {
+    useEffect47(() => {
       return () => {
         const reconnectTimer = refValue2(reconnectTimerRef);
         const attachTimeout = refValue2(attachTimeoutRef);
@@ -24738,7 +24864,7 @@ function TerminalStatusDot({ status: status3 }) {
 }
 function TerminalTabs({
   layout,
-  entries,
+  entries: entries2,
   width,
   busy,
   renamingId,
@@ -24773,7 +24899,7 @@ function TerminalTabs({
       className: `terminal-tabs ${hasText ? "has-text" : "is-narrow"}`,
       "data-testid": "terminal-tabs",
       children: layout.groups.flatMap((group) => group.shellIds.map((id, index) => {
-        const entry = entries.get(id);
+        const entry = entries2.get(id);
         if (!entry) return null;
         const active = layout.activeShellId === id;
         const prefix = splitPrefix(index, group.shellIds.length);
@@ -25091,7 +25217,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     if (state?.error || shell.status === "detached") return "disconnected";
     return "running";
   }, [runtime]);
-  const entries = useMemo17(() => new Map(liveShells.map((shell) => [
+  const entries2 = useMemo17(() => new Map(liveShells.map((shell) => [
     shell.id,
     { id: shell.id, label: labels.get(shell.id) ?? shell.id, status: terminalStatus(shell), detail: `${shell.cwd} \xB7 ${shell.id.slice(0, 8)}` }
   ])), [labels, liveShells, terminalStatus]);
@@ -25100,7 +25226,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
   runtimeRef.current = runtime;
   const labelsRef = useRef45(labels);
   labelsRef.current = labels;
-  useEffect47(() => {
+  useEffect48(() => {
     if (shellState) saveTerminalLayout(layoutKey, layout);
   }, [layout, layoutKey, shellState]);
   const showFeedback = useCallback22((tone, text) => {
@@ -25111,7 +25237,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       feedbackTimer.current = null;
     }, tone === "failed" ? 3e3 : 1500);
   }, []);
-  useEffect47(() => () => {
+  useEffect48(() => () => {
     if (feedbackTimer.current !== null) window.clearTimeout(feedbackTimer.current);
   }, []);
   const loadShellState = useCallback22(async () => {
@@ -25125,7 +25251,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       setLoading(false);
     }
   }, [shellAdapter, threadId]);
-  useEffect47(() => {
+  useEffect48(() => {
     setLoading(true);
     void loadShellState();
   }, [loadShellState]);
@@ -25246,23 +25372,23 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       setError(caught instanceof Error ? caught.message : translate("files.unableToRenameShell"));
     }
   }, [renameDraft, shellAdapter, updateShellEntry]);
-  useEffect47(() => {
+  useEffect48(() => {
     if (!openRequest || openRequest === handledOpenRequest.current) return;
     handledOpenRequest.current = openRequest;
     pendingAutoCreate.current = true;
     setFocusArmed(true);
   }, [openRequest]);
-  useEffect47(() => {
+  useEffect48(() => {
     if (!pendingAutoCreate.current || !panelVisible || !shellState || loading || busy || workspacePathMissing || status3 === "creating") return;
     pendingAutoCreate.current = false;
     if (liveShells.length === 0) void createTerminal("group");
   }, [busy, createTerminal, liveShells.length, loading, openRequest, panelVisible, shellState, status3, workspacePathMissing]);
-  useEffect47(() => {
+  useEffect48(() => {
     if (!shellState || loading) return;
     if (hadLiveShells.current && liveShells.length === 0) onLastTerminalClosed?.();
     hadLiveShells.current = liveShells.length > 0;
   }, [liveShells.length, loading, onLastTerminalClosed, shellState]);
-  useEffect47(() => {
+  useEffect48(() => {
     if (!focusArmed) return;
     const leave = (event) => {
       if (!panelRef.current?.contains(event.target)) setFocusArmed(false);
@@ -25270,12 +25396,12 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     document.addEventListener("focusin", leave);
     return () => document.removeEventListener("focusin", leave);
   }, [focusArmed, panelRef]);
-  useEffect47(() => {
+  useEffect48(() => {
     if (!focusArmed || !panelVisible || isMobileShell || !layout.activeShellId) return;
     const frame = window.requestAnimationFrame(() => paneRefs.current.get(layout.activeShellId)?.focus());
     return () => window.cancelAnimationFrame(frame);
   }, [focusArmed, isMobileShell, layout.activeShellId, panelVisible]);
-  useEffect47(() => {
+  useEffect48(() => {
     if (typeof window.matchMedia !== "function") return;
     const query = window.matchMedia("(max-width: 767px), (hover: none) and (pointer: coarse)");
     const update = () => setIsMobileShell(query.matches);
@@ -25283,11 +25409,11 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
   }, []);
-  useEffect47(() => {
+  useEffect48(() => {
     const node = groupsRef.current;
     if (!node) return;
-    const observer = new ResizeObserver((entries2) => {
-      const { width, height } = entries2[0].contentRect;
+    const observer = new ResizeObserver((entries3) => {
+      const { width, height } = entries3[0].contentRect;
       setGroupsSize((current) => current.width === width && current.height === height ? current : { width, height });
     });
     observer.observe(node);
@@ -25319,7 +25445,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     }
     await activePane()?.reconnect();
   };
-  useEffect47(() => {
+  useEffect48(() => {
     onStateChange?.(buildShellControlState({
       activeRuntime,
       activeShell,
@@ -25475,7 +25601,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       setMenu(null);
     }, children: [
       layout.groups.flatMap((group) => group.shellIds.map((shellId, index) => {
-        const entry = entries.get(shellId);
+        const entry = entries2.get(shellId);
         if (!entry) return null;
         const prefix = group.shellIds.length > 1 ? index === 0 ? "\u250C " : index === group.shellIds.length - 1 ? "\u2514 " : "\u251C " : "";
         return /* @__PURE__ */ jsx87("div", { className: "terminal-menu-row", "data-shell-id": shellId, children: renamingId === shellId ? /* @__PURE__ */ jsxs76("form", { className: "terminal-menu-rename", onSubmit: (event) => {
@@ -25545,7 +25671,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       }
     ) : /* @__PURE__ */ jsxs76(Fragment33, { children: [
       /* @__PURE__ */ jsx87("h2", { className: "terminal-title", children: translate("workbench.terminal") }),
-      !showTabs && activeShell && /* @__PURE__ */ jsxs76("span", { className: "terminal-header-active", title: entries.get(activeShell.id)?.detail, children: [
+      !showTabs && activeShell && /* @__PURE__ */ jsxs76("span", { className: "terminal-header-active", title: entries2.get(activeShell.id)?.detail, children: [
         /* @__PURE__ */ jsx87(TerminalStatusDot, { status: terminalStatus(activeShell) }),
         /* @__PURE__ */ jsx87("span", { children: activeLabel })
       ] })
@@ -25692,7 +25818,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
               TerminalTabs,
               {
                 layout,
-                entries,
+                entries: entries2,
                 width: tabsWidth,
                 busy,
                 renamingId,
@@ -25813,7 +25939,7 @@ var MemoizedThreadGraphWorkspacePanel = memo9(
 
 // src/components/ExportTranscriptDialog.tsx
 import { Users, Link2, FileCode, Pencil as Pencil4 } from "lucide-react";
-import { useEffect as useEffect48, useMemo as useMemo18, useRef as useRef46, useState as useState66 } from "react";
+import { useEffect as useEffect49, useMemo as useMemo18, useRef as useRef46, useState as useState66 } from "react";
 import { createPortal as createPortal7 } from "react-dom";
 import { Fragment as Fragment34, jsx as jsx90, jsxs as jsxs79 } from "react/jsx-runtime";
 function shareScopePrefix(share) {
@@ -25930,7 +26056,7 @@ function ThreadActionsDialog({
   const [effectiveTheme, setEffectiveTheme] = useState66(
     () => typeof document !== "undefined" && !document.documentElement.classList.contains("dark") ? "light" : "dark"
   );
-  useEffect48(() => {
+  useEffect49(() => {
     if (!open) {
       return;
     }
@@ -25946,14 +26072,14 @@ function ThreadActionsDialog({
     setCanCreateThreads(false);
     void onLoadTurns();
   }, [defaultScope, initialMode, onLoadTurns, open]);
-  useEffect48(() => {
+  useEffect49(() => {
     if (open && turns.length > 0) {
       setSelectedTurnIds(new Set(turns.slice(0, 10).map((turn) => turn.turnId)));
     }
   }, [open, turns]);
   const windowRef = useRef46(null);
   useModalFocus(windowRef, open, busy ? void 0 : onCancel);
-  useEffect48(() => {
+  useEffect49(() => {
     if (!open) {
       return;
     }
@@ -26408,7 +26534,7 @@ import {
 // src/components/graph-chat/GraphChatThreadChatPanel.tsx
 import {
   useCallback as useCallback23,
-  useEffect as useEffect50,
+  useEffect as useEffect51,
   useLayoutEffect as useLayoutEffect20,
   useMemo as useMemo19,
   useRef as useRef49,
@@ -26461,7 +26587,7 @@ function ThreadRelationBar({ parentThreadId, parent, currentWorkspaceId, href, o
 
 // src/components/quotes/QuoteSelectionPill.tsx
 import { Quote as Quote4 } from "lucide-react";
-import { useEffect as useEffect49, useRef as useRef47, useState as useState67 } from "react";
+import { useEffect as useEffect50, useRef as useRef47, useState as useState67 } from "react";
 import { createPortal as createPortal8 } from "react-dom";
 import { jsx as jsx93, jsxs as jsxs82 } from "react/jsx-runtime";
 var MESSAGE = '[data-testid="chat-message"]';
@@ -26493,7 +26619,7 @@ function QuoteSelectionPill({ root, composerRef, turnNumber, onQuote }) {
   const pressing = useRef47(false);
   const number = useRef47(turnNumber);
   number.current = turnNumber;
-  useEffect49(() => {
+  useEffect50(() => {
     let frame = 0;
     const update = () => {
       cancelAnimationFrame(frame);
@@ -26762,7 +26888,7 @@ function GraphChatThreadChatPanel({
     },
     [timelineTailVisibilityChange]
   );
-  useEffect50(() => {
+  useEffect51(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
     }
@@ -26774,7 +26900,7 @@ function GraphChatThreadChatPanel({
       mediaQuery.removeEventListener("change", updateViewport);
     };
   }, []);
-  useEffect50(() => {
+  useEffect51(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -26862,7 +26988,7 @@ function GraphChatThreadChatPanel({
     hasPendingRequests,
     useFloatingMobileComposer
   ]);
-  useEffect50(() => {
+  useEffect51(() => {
     if (!isMobileViewport) {
       setMobilePromptFocused(false);
       return;
@@ -27419,7 +27545,7 @@ ${pageMark}` : pageMark } : composerProps,
 // src/plugins/PluginProvider.tsx
 import {
   useCallback as useCallback24,
-  useEffect as useEffect51,
+  useEffect as useEffect52,
   useMemo as useMemo21,
   useRef as useRef51,
   useState as useState70
@@ -27492,7 +27618,7 @@ function PluginProvider({
       if (!stale()) setLoading(false);
     }
   }, [adapter, builtinPlugins]);
-  useEffect51(() => {
+  useEffect52(() => {
     void refresh();
   }, [refresh]);
   const setPluginEnabled = useCallback24(
@@ -27671,7 +27797,7 @@ import { useRef as useRef53, useState as useState73 } from "react";
 import {
   useCallback as useCallback25,
   useContext as useContext15,
-  useEffect as useEffect52,
+  useEffect as useEffect53,
   useMemo as useMemo22,
   useRef as useRef52,
   useState as useState71
@@ -27743,7 +27869,7 @@ function ThreadPluginScope({
       });
     }
   }, [supported, threadId]);
-  useEffect52(() => {
+  useEffect53(() => {
     void reload();
     return () => {
       ++request.current;
@@ -27753,7 +27879,7 @@ function ThreadPluginScope({
   const gateByDevice = sameDevice && device.devicePluginsKnown === true;
   const deviceState = sameDevice ? `${device.plugins.map((plugin) => `${plugin.id}:${plugin.enabled}`).join("|")}#${device.settingsVersion ?? 0}` : "";
   const seenDeviceState = useRef52(deviceState);
-  useEffect52(() => {
+  useEffect53(() => {
     if (seenDeviceState.current === deviceState) return;
     seenDeviceState.current = deviceState;
     void reload();
@@ -27897,7 +28023,7 @@ function ThreadPluginScope({
 
 // src/plugins/InstalledPluginPanel.tsx
 import { CircleAlert as CircleAlert2, CircleCheck, CircleDashed, RefreshCw, TriangleAlert as TriangleAlert4 } from "lucide-react";
-import { useCallback as useCallback26, useEffect as useEffect53, useState as useState72 } from "react";
+import { useCallback as useCallback26, useEffect as useEffect54, useState as useState72 } from "react";
 import { Fragment as Fragment37, jsx as jsx100, jsxs as jsxs87 } from "react/jsx-runtime";
 var HEALTH = {
   ok: { icon: CircleCheck, label: "settings.healthOk" },
@@ -27949,7 +28075,7 @@ function InstalledPluginPanel({ plugin }) {
       setLoading(false);
     }
   }, [adapter, canStatus, plugin.id]);
-  useEffect53(() => {
+  useEffect54(() => {
     void refresh();
   }, [refresh]);
   const install = plugin.capabilities.install;
@@ -28086,7 +28212,7 @@ function PluginSettingsButton({ plugin, className }) {
 
 // src/plugins/ThreadPluginsControl.tsx
 import { Puzzle, RotateCcw, Settings as Settings3 } from "lucide-react";
-import { useEffect as useEffect54, useId as useId8, useMemo as useMemo23, useRef as useRef54, useState as useState74 } from "react";
+import { useEffect as useEffect55, useId as useId8, useMemo as useMemo23, useRef as useRef54, useState as useState74 } from "react";
 import { Fragment as Fragment38, jsx as jsx102, jsxs as jsxs89 } from "react/jsx-runtime";
 var choiceOf = (plugin) => plugin.enabledOverride === null ? "inherit" : plugin.enabledOverride ? "on" : "off";
 var overrideOf = (choice) => choice === "inherit" ? null : choice === "on";
@@ -28371,7 +28497,7 @@ function ThreadPluginSettingsDialog({
   const descriptor = useRef54(plugin);
   descriptor.current = plugin;
   const overridden = useRef54(plugin.settingsOverridden);
-  useEffect54(() => {
+  useEffect55(() => {
     if (overridden.current && !plugin.settingsOverridden)
       setGeneration((value) => value + 1);
     overridden.current = plugin.settingsOverridden;
@@ -28474,7 +28600,7 @@ function PhoneHandChoice({ hand, onChange }) {
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect55, useRef as useRef55, useState as useState75 } from "react";
+import { useEffect as useEffect56, useRef as useRef55, useState as useState75 } from "react";
 import { jsx as jsx104, jsxs as jsxs91 } from "react/jsx-runtime";
 function MenuIcon() {
   const { locale: i18nLocale } = useI18n();
@@ -28544,7 +28670,7 @@ function AppShellNavigationMenu({
   const { locale: i18nLocale } = useI18n();
   const shellNav = useAppShellNav();
   const menuRef = useRef55(null);
-  useEffect55(() => {
+  useEffect56(() => {
     if (!shellNav?.navOpen) {
       return;
     }
@@ -28645,7 +28771,7 @@ function AppShellSettingsDialog({
   const selectedThemeMode = shellNav?.themeMode ?? "system";
   const effectiveTheme = shellNav?.effectiveTheme ?? "dark";
   const autoCollapseCompletedTurns = shellNav?.autoCollapseCompletedTurns ?? true;
-  useEffect55(() => {
+  useEffect56(() => {
     if (!shellNav?.settingsOpen) {
       return;
     }
@@ -28923,7 +29049,7 @@ function AppShellSettingsDialog({
 }
 
 // src/components/threadMap/ThreadMap.tsx
-import { useCallback as useCallback27, useEffect as useEffect60, useLayoutEffect as useLayoutEffect23, useMemo as useMemo24, useRef as useRef63, useState as useState82 } from "react";
+import { useCallback as useCallback27, useEffect as useEffect61, useLayoutEffect as useLayoutEffect23, useMemo as useMemo24, useRef as useRef63, useState as useState82 } from "react";
 import { ArrowLeft as ArrowLeft4, ArrowUpRight as ArrowUpRight2, ChevronRight as ChevronRight9, ChevronUp as ChevronUp4, Folder as Folder6, List, Monitor as Monitor4, Network as Network2, RotateCw as RotateCw2, Layers as Layers4, Activity as Activity2, DollarSign as DollarSign4, X as X14 } from "lucide-react";
 
 // src/components/threadMap/model.ts
@@ -29425,7 +29551,7 @@ function ThreadTileContent({ node, box, hours, current, onOpen, hover, onShowChi
 var ThreadTile = memo10(ThreadTileContent, (a, b) => a.node.thread === b.node.thread && a.node.parent?.label === b.node.parent?.label && a.node.running === b.node.running && a.box.x === b.box.x && a.box.y === b.box.y && a.box.width === b.box.width && a.box.height === b.box.height && a.phone === b.phone && a.readable === b.readable && a.hours === b.hours && a.current === b.current && a.dimmed === b.dimmed && a.onQuickLook === b.onQuickLook && Boolean(a.onShowChildren) === Boolean(b.onShowChildren));
 
 // src/components/threadMap/MapScrollList.tsx
-import { useEffect as useEffect56, useRef as useRef56, useState as useState76 } from "react";
+import { useEffect as useEffect57, useRef as useRef56, useState as useState76 } from "react";
 import { jsx as jsx106, jsxs as jsxs93 } from "react/jsx-runtime";
 function MapScrollList({ children: children2, label }) {
   const viewport = useRef56(null), track = useRef56(null);
@@ -29442,7 +29568,7 @@ function MapScrollList({ children: children2, label }) {
       setThumb({ height: size, top: full > height ? el.scrollTop / (full - height) * (height - size) : 0 });
     });
   };
-  useEffect56(() => {
+  useEffect57(() => {
     measure();
     const el = viewport.current;
     if (!el) return;
@@ -29534,7 +29660,7 @@ function PhoneMapMenu({ scope, setScope, onRefresh, list, onToggleList, destinat
 
 // src/components/threadMap/MapTooltip.tsx
 import {
-  useEffect as useEffect58,
+  useEffect as useEffect59,
   useId as useId9,
   useLayoutEffect as useLayoutEffect21,
   useRef as useRef59,
@@ -29552,7 +29678,7 @@ import {
 } from "lucide-react";
 
 // src/components/threadMap/MapChrome.tsx
-import { useEffect as useEffect57, useRef as useRef58, useState as useState78 } from "react";
+import { useEffect as useEffect58, useRef as useRef58, useState as useState78 } from "react";
 import { createPortal as createPortal11 } from "react-dom";
 import { MoreVertical, Info as Info2 } from "lucide-react";
 import { Fragment as Fragment40, jsx as jsx108, jsxs as jsxs95 } from "react/jsx-runtime";
@@ -29581,7 +29707,7 @@ function DeviceMenu({ device, items }) {
     if (restore) trigger.current?.focus();
   };
   useMenuKeyboard(menu, Boolean(anchor), close);
-  useEffect57(() => {
+  useEffect58(() => {
     if (!anchor) return;
     const outside = (event) => {
       if (!menu.current?.contains(event.target) && !trigger.current?.contains(event.target)) setAnchor(null);
@@ -29677,7 +29803,7 @@ function MapLegend({ compact, inline = false, children: children2 }) {
   const [anchor, setAnchor] = useState78(null);
   const close = () => setAnchor(null);
   useModalFocus(dialog, Boolean(anchor), close);
-  useEffect57(() => {
+  useEffect58(() => {
     if (!anchor) return;
     const outside = (event) => {
       if (!dialog.current?.contains(event.target) && !trigger.current?.contains(event.target)) close();
@@ -29822,9 +29948,9 @@ var ReadableSelection = class {
       return !baseline || baseline.rank !== mapPriority(node) || Math.abs(node.weight - baseline.score) / Math.max(1e-3, baseline.score) > 0.3;
     });
     if (old && (old.plan.entries.length > 0 || old.plan.overflow) && old.bounds === size && (frozen || !changed)) {
-      const entries = old.plan.entries.map((entry) => ({ ...entry, node: latest.get(entry.node.id) ?? entry.node }));
+      const entries2 = old.plan.entries.map((entry) => ({ ...entry, node: latest.get(entry.node.id) ?? entry.node }));
       const overflow = old.plan.overflow;
-      return { entries, overflow: overflow ? summary(overflow.nodes.map((node) => latest.get(node.id) ?? node), kind, older, overflow.rect) : null };
+      return { entries: entries2, overflow: overflow ? summary(overflow.nodes.map((node) => latest.get(node.id) ?? node), kind, older, overflow.rect) : null };
     }
     const ranked = old && (frozen || !changed) && old.order.length > 0 ? old.order.flatMap((key) => latest.has(key) ? [latest.get(key)] : []) : [...candidates].sort(byPriority);
     const minimum = kind === "threads" ? { width: 132 + GAP2 * 2, height: 64 + GAP2 * 2 } : kind === "workspaces" ? { width: 154, height: 190 } : { width: 176, height: 236 };
@@ -29845,24 +29971,24 @@ var ReadableSelection = class {
     for (; count >= 0; count--) {
       const visible = ranked.slice(0, count);
       const hidden = [...ranked.slice(count), ...olderNodes];
-      const entries = visible.map((node) => ({ node, overflow: false, weight: weight(node) }));
-      if (hidden.length) entries.push({ node: ranked[0] ?? scoped[0], overflow: true, weight: 0.65 });
-      let placed = squarify(entries, (entry) => entry.weight, bounds);
+      const entries2 = visible.map((node) => ({ node, overflow: false, weight: weight(node) }));
+      if (hidden.length) entries2.push({ node: ranked[0] ?? scoped[0], overflow: true, weight: 0.65 });
+      let placed = squarify(entries2, (entry) => entry.weight, bounds);
       const readable = (layout, reserveAllImportant = true) => layout.every(({ item, rect }) => {
         const min = item.overflow ? { width: 138, height: 70 } : reserveAllImportant ? minimumFor(item.node, rect) : minimum;
         return rect.width + 0.01 >= min.width && rect.height + 0.01 >= min.height;
       });
       for (const exponent of [0.5, 0]) {
         if (readable(placed)) break;
-        placed = squarify(entries, (entry) => entry.weight ** exponent, bounds);
+        placed = squarify(entries2, (entry) => entry.weight ** exponent, bounds);
       }
       if (!readable(placed)) {
         let best = Infinity;
-        for (let columns = 1; columns <= entries.length; columns++) {
-          const rows = Math.ceil(entries.length / columns);
+        for (let columns = 1; columns <= entries2.length; columns++) {
+          const rows = Math.ceil(entries2.length / columns);
           const width = bounds.width / columns, height = bounds.height / rows;
           if (width < 138 || height < 70) continue;
-          const grid = entries.map((item, index) => ({ item, rect: { x: bounds.x + index % columns * width, y: bounds.y + Math.floor(index / columns) * height, width, height } }));
+          const grid = entries2.map((item, index) => ({ item, rect: { x: bounds.x + index % columns * width, y: bounds.y + Math.floor(index / columns) * height, width, height } }));
           const score = Math.abs(Math.log(width / height / 1.6));
           if (score < best && readable(grid)) {
             placed = grid;
@@ -29873,16 +29999,16 @@ var ReadableSelection = class {
       let partial = false;
       if (count === 1 && kind === "workspaces" && !readable(placed)) {
         for (const exponent of [1, 0.5, 0]) {
-          const candidate = squarify(entries, (entry) => entry.weight ** exponent, bounds);
+          const candidate = squarify(entries2, (entry) => entry.weight ** exponent, bounds);
           if (readable(candidate, false)) {
             placed = candidate;
             partial = true;
             break;
           }
         }
-        if (!partial) for (let columns = 1; columns <= entries.length; columns++) {
-          const rows = Math.ceil(entries.length / columns), width = bounds.width / columns, height = bounds.height / rows;
-          const candidate = entries.map((item, index) => ({ item, rect: { x: bounds.x + index % columns * width, y: bounds.y + Math.floor(index / columns) * height, width, height } }));
+        if (!partial) for (let columns = 1; columns <= entries2.length; columns++) {
+          const rows = Math.ceil(entries2.length / columns), width = bounds.width / columns, height = bounds.height / rows;
+          const candidate = entries2.map((item, index) => ({ item, rect: { x: bounds.x + index % columns * width, y: bounds.y + Math.floor(index / columns) * height, width, height } }));
           if (readable(candidate, false)) {
             placed = candidate;
             partial = true;
@@ -29910,11 +30036,11 @@ var duration = (ms) => ms === 0 ? translate("workbench.threadMapShortMinutes", {
 var atOf = (thread) => Date.parse(thread.lastActiveAt ?? "");
 function mapTipData(node, hours = 24, extra) {
   const thread = node.thread;
-  const entries = thread ? [thread] : threadLeaves([node]).map((item) => item.thread);
+  const entries2 = thread ? [thread] : threadLeaves([node]).map((item) => item.thread);
   const windowHours = Number.isFinite(hours) && hours > 0 ? hours : 24;
-  const values = (field) => entries.map((t2) => t2[field]).filter(known2);
+  const values = (field) => entries2.map((t2) => t2[field]).filter(known2);
   const turns = values("turns"), total = values("totalMs"), recent = values("activeMs");
-  const prices = entries.flatMap(
+  const prices = entries2.flatMap(
     (t2) => known2(t2.priceEstimate?.totalUsd) ? [t2.priceEstimate.totalUsd] : []
   );
   const metrics = [];
@@ -29946,7 +30072,7 @@ function mapTipData(node, hours = 24, extra) {
       label: `${translate("workbench.threadMapStatRecent", { hours: windowHours })}: ${duration(sum2(recent))}`
     });
   if (prices.length) {
-    const usd = formatCompactUsd(sum2(prices)), partial = entries.some(
+    const usd = formatCompactUsd(sum2(prices)), partial = entries2.some(
       (t2) => t2.pricePartial || !known2(t2.priceEstimate?.totalUsd)
     );
     metrics.push({
@@ -29955,7 +30081,7 @@ function mapTipData(node, hours = 24, extra) {
       label: translate("workbench.threadMapCost", { usd }) + (partial ? ` \xB7 ${translate("workbench.threadMapPricePartialShort")}` : "")
     });
   }
-  const charts = entries.flatMap(
+  const charts = entries2.flatMap(
     (t2) => t2.hourlyMs?.length ? [t2.hourlyMs.slice(-24)] : []
   );
   const hourly = charts.length ? Array.from(
@@ -29966,14 +30092,14 @@ function mapTipData(node, hours = 24, extra) {
     }, 0)
   ) : void 0;
   let latest, latestAt = -Infinity;
-  for (const entry of entries) {
+  for (const entry of entries2) {
     const at = atOf(entry);
     if (Number.isFinite(at) && at > latestAt) {
       latest = entry.lastActiveAt;
       latestAt = at;
     }
   }
-  const waiting = entries.some(isWaiting), running = entries.some(isLive);
+  const waiting = entries2.some(isWaiting), running = entries2.some(isLive);
   const status3 = thread ? waiting ? "waiting" : thread.running ? "running" : running ? "agents-running" : thread.failed ? "failed" : thread.interrupted ? "interrupted" : thread.unread ? "unread" : "idle" : waiting ? "waiting" : running ? "running" : void 0;
   return {
     kind: thread ? "thread" : node.workspace ? "workspace" : node.device ? "device" : node.kind,
@@ -30200,7 +30326,7 @@ function MapTooltip({
       window.visualViewport?.removeEventListener("scroll", update);
     };
   }, [anchor, trigger, node?.thread?.agent]);
-  useEffect58(() => {
+  useEffect59(() => {
     const key = (event) => {
       if (event.key === "Escape" && !event.defaultPrevented) {
         event.preventDefault();
@@ -30246,7 +30372,7 @@ import {
   memo as memo12,
   useRef as useRef61,
   useState as useState81,
-  useEffect as useEffect59
+  useEffect as useEffect60
 } from "react";
 import {
   ArrowUpCircle,
@@ -31012,7 +31138,7 @@ function OverflowCell({
     if (restore) trigger.current?.focus();
   };
   useMenuKeyboard(menu, Boolean(anchor), close);
-  useEffect59(() => {
+  useEffect60(() => {
     if (!anchor) return;
     const outside = (e) => {
       if (!menu.current?.contains(e.target) && !trigger.current?.contains(e.target))
@@ -31437,7 +31563,7 @@ function ThreadMap({
       if (!pointerInside.current && !focusInside.current) setFrozen(false);
     }, 800);
   };
-  useEffect60(() => () => clearTimeout(freezeTimer.current), []);
+  useEffect61(() => () => clearTimeout(freezeTimer.current), []);
   const orders = useRef63(new StableMapOrder()), layouts = useRef63(new MapLayoutCache());
   const priorScope = useRef63(scope);
   const priorLayoutRevision = useRef63(layoutRevision);
@@ -31540,8 +31666,8 @@ function ThreadMap({
     clearTimeout(tipCloseTimer.current);
     tipCloseTimer.current = setTimeout(() => setTip(null), 180);
   }, []);
-  useEffect60(() => () => clearTimeout(tipCloseTimer.current), []);
-  useEffect60(() => {
+  useEffect61(() => () => clearTimeout(tipCloseTimer.current), []);
+  useEffect61(() => {
     const node = canvas.current;
     if (!node) return;
     const measure = () => {
@@ -31566,7 +31692,7 @@ function ThreadMap({
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme-preset", "data-theme-effective"] });
     return () => observer.disconnect();
   }, [root, focusId, openGroups, size.width, size.height]);
-  useEffect60(() => {
+  useEffect61(() => {
     if (stableLayout && focusInside.current && !canvas.current?.contains(document.activeElement)) {
       focusInside.current = false;
       thaw();
@@ -31638,7 +31764,7 @@ function ThreadMap({
       setScope((page ? ["all", "active", "all"] : ["active", "week", "all"])[Number(event.key) - 1]);
     }
   };
-  useEffect60(() => {
+  useEffect61(() => {
     const key = (event) => outsideKey.current(event);
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
@@ -31648,13 +31774,13 @@ function ThreadMap({
   const pendingRevealTarget = useRef63(null);
   const pendingPulses = useRef63(/* @__PURE__ */ new Set());
   const previousPulses = useRef63(/* @__PURE__ */ new Set());
-  useEffect60(() => {
+  useEffect61(() => {
     const keys = new Set(pulseKeys ?? []);
     for (const key of keys) if (!previousPulses.current.has(key)) pendingPulses.current.add(key);
     previousPulses.current = keys;
   }, [pulseKeys]);
   const lastRevealed = useRef63(null);
-  useEffect60(() => {
+  useEffect61(() => {
     if (!revealKey) {
       lastRevealed.current = null;
       return;
@@ -31695,7 +31821,7 @@ function ThreadMap({
       return;
     }
   }, [revealKey, devices]);
-  useEffect60(() => {
+  useEffect61(() => {
     if (document.visibilityState === "hidden" || canvas.current?.closest("[hidden], [inert]")) {
       for (const key of pendingPulses.current) if (key !== pendingReveal.current) pendingPulses.current.delete(key);
       return;
@@ -31768,7 +31894,7 @@ function ThreadMap({
   }, [current.id]);
   const gesture = useRef63({ navigate, current, root, nodes, onDismiss });
   gesture.current = { navigate, current, root, nodes, onDismiss: page ? void 0 : onDismiss };
-  useEffect60(() => {
+  useEffect61(() => {
     const node = canvas.current;
     if (!node) return;
     let pinch = null;
@@ -32393,12 +32519,12 @@ function ThreadMap({
 }
 
 // src/components/threadMap/ThreadMapDialog.tsx
-import { useSyncExternalStore as useSyncExternalStore4 } from "react";
+import { useSyncExternalStore as useSyncExternalStore5 } from "react";
 import { X as X15 } from "lucide-react";
 import { jsx as jsx113, jsxs as jsxs100 } from "react/jsx-runtime";
 function ThreadMapDialog({ open, onOpenChange, themeMode, effectiveTheme, hostSurface, ...map }) {
   useI18n();
-  const narrow = useSyncExternalStore4((callback) => {
+  const narrow = useSyncExternalStore5((callback) => {
     const media = window.matchMedia("(max-width: 639px)");
     media.addEventListener("change", callback);
     return () => media.removeEventListener("change", callback);
@@ -32505,7 +32631,7 @@ function PublicTranscript({ snapshot }) {
 }
 
 // src/components/ConversationSearchControls.tsx
-import { useEffect as useEffect61, useRef as useRef64, useState as useState83 } from "react";
+import { useEffect as useEffect62, useRef as useRef64, useState as useState83 } from "react";
 import { Check as Check6, ChevronDown as ChevronDown7 } from "lucide-react";
 import { jsx as jsx115, jsxs as jsxs102 } from "react/jsx-runtime";
 function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal }) {
@@ -32519,7 +32645,7 @@ function ConversationSearchScopePicker({ value, onChange, labels, allowGlobal })
     setOpen(false);
     if (restore) trigger.current?.focus();
   });
-  useEffect61(() => {
+  useEffect62(() => {
     if (!open) return;
     const outside = (event) => {
       if (!root.current?.contains(event.target)) setOpen(false);

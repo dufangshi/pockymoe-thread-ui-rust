@@ -163,12 +163,11 @@ declare function StatusMark({ status, label }: {
     label?: string | undefined;
 }): react.JSX.Element;
 
-/** One document clock for perpetual indicators. No CSS animation/compositor loop,
- * React renders, per-element timers or inherited root custom properties. */
+/** One document clock; only the retained indicators receive beat writes. */
 declare const STATUS_BEAT_MS = 400;
 declare const STATUS_BEAT_SELECTOR: string;
-/** Hosts install once at startup. Extra selectors let host-only indicators share
- * the same beat. Mount/status changes are observed, never polled. */
+/** Hosts install once at startup. Membership follows DOM/status changes; ticks
+ * never search the document. Extra selectors share the same clock. */
 declare function installStatusBeat(doc?: Document, extraSelectors?: readonly string[]): () => void;
 
 interface SlashPanelState<T> {

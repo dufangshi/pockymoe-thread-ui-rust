@@ -22,7 +22,7 @@ function RunningDots({
   tone?: 'amber' | 'emerald' | 'sky';
   color?: string;
 }) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   const dotClassName =
     tone === 'emerald'
       ? 'bg-sky-200/90'
@@ -143,7 +143,7 @@ function TurnStatusIndicator({
 }: {
   status: TimelineTurn['status'];
 }) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   const label = turnStatusLabel(status);
 
   if (status === 'completed') {
@@ -235,7 +235,7 @@ export function TurnStatusBar({
   backgroundAgentCount?: number;
   waitingForWake?: boolean;
 }) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   const label = turnStatusLabel(turn.status);
   const runtimeSummary = formatTurnRuntimeSummary(turn);
   const active = isActiveTurnStatus(turn.status);

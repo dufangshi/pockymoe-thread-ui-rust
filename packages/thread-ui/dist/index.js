@@ -18545,7 +18545,7 @@ function RunningDots2({
   tone = "amber",
   color
 }) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   const dotClassName = tone === "emerald" ? "bg-sky-200/90" : tone === "sky" ? "bg-sky-300/90" : "bg-amber-200/90";
   return /* @__PURE__ */ jsx74("span", { className: "ml-1.5 inline-flex items-center gap-1", "aria-hidden": "true", children: [0, 1, 2].map((index) => /* @__PURE__ */ jsx74(
     "span",
@@ -18622,7 +18622,7 @@ function formatElapsedDuration(startedAt, now) {
 function TurnStatusIndicator({
   status: status3
 }) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   const label = turnStatusLabel(status3);
   if (status3 === "completed") {
     return /* @__PURE__ */ jsx74(
@@ -18708,7 +18708,7 @@ function TurnStatusBar({
   backgroundAgentCount = 0,
   waitingForWake = false
 }) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   const label = turnStatusLabel(turn.status);
   const runtimeSummary = formatTurnRuntimeSummary(turn);
   const active = isActiveTurnStatus(turn.status);

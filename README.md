@@ -53,11 +53,14 @@ Hosts import the shared stylesheet and call `installStatusBeat()` once at startu
 only while a matching indicator is mounted, the document is visible and reduced
 motion is off. Host-only indicators may be passed as extra selectors.
 
-Perpetual indicators use `data-status-beat="0…7"` on the document root: one step
+Perpetual indicators use `data-beat="0…7"` on each matching indicator: one step
 per 400ms, 45° per step for running rings, and 800ms on/off states for blinking
 marks, agent rings and avatar halos. No easing, transitions, independent timers,
 inherited animated root variables or per-frame loops. Theme packs draw these same
-states. New infinite CSS status animations are rejected by
+states. The clock retains a set of indicators, reconciles changed subtrees at most
+once per frame, ignores streaming text and unrelated class changes, and never
+queries the document on a beat. Removed or inactive indicators lose the attribute.
+New infinite CSS status animations are rejected by
 `packages/thread-ui/src/statusAnimation.test.ts`; its short request/loading
 exceptions are explicit.
 

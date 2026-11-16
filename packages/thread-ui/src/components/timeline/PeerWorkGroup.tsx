@@ -22,7 +22,7 @@ export function PeerWorkGroup({ turn, context, expanded, loading, error, onToggl
   return <section className="thread-peer-work" data-turn-id={turn.id}>
     <div className="thread-peer-work-heading">
       <button type="button" className="thread-peer-work-toggle" onClick={onToggle} aria-expanded={expanded} disabled={loading} title={title}>
-        {loading ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : wake ? <BellRing aria-hidden="true" /> : <MessageCircle aria-hidden="true" />}
+        {loading ? <LoaderCircle className="request-spin" aria-hidden="true" /> : wake ? <BellRing aria-hidden="true" /> : <MessageCircle aria-hidden="true" />}
         <span className="thread-peer-work-kind">{label}</span>
         <span className="thread-peer-work-title">{`${sources}${!wake && first.subject ? ` · ${first.subject}` : ''}`}</span>
         <ChevronRight className={expanded ? 'rotate-90' : ''} aria-hidden="true" />

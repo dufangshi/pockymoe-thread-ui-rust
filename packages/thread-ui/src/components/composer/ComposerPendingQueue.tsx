@@ -87,7 +87,7 @@ export function ComposerPendingQueue({
               {prompt.optimistic ? (
                 <span className="inline-flex h-8 items-center gap-1.5 px-1.5 text-xs text-[var(--theme-fg-muted)]">
                   <Loader2
-                    className="h-3.5 w-3.5 animate-spin"
+                    className="h-3.5 w-3.5 request-spin"
                     aria-hidden="true"
                   />
                   {translate("chat.queueing")}</span>
@@ -113,7 +113,7 @@ export function ComposerPendingQueue({
                     >
                       {busy ? (
                         <Loader2
-                          className="h-3.5 w-3.5 animate-spin"
+                          className="h-3.5 w-3.5 request-spin"
                           aria-hidden="true"
                         />
                       ) : (

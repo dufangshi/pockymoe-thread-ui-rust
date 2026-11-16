@@ -42,7 +42,7 @@ describe('TurnStatusBar footer', () => {
       expect(render({ lastActivityAt: new Date(Date.now() - age * 1000).toISOString() })).toContain(`data-progress-freshness="${freshness}"`);
     }
     expect(render({ lastActivityAt: 'invalid' })).toContain('data-progress-freshness="unknown"');
-    expect(render().match(/animate-pulse/g)).toHaveLength(3);
+    expect(render()).not.toContain('animate-');
     expect(render()).not.toContain('Waiting for turn to finish');
     expect(render({ lastActivityAt: new Date().toISOString() })).toContain('Last progress · 0s ago');
     expect(render({ backgroundAgentCount: 1 })).toContain('1 background agent running');
@@ -81,7 +81,7 @@ describe('TurnStatusBar footer', () => {
     expect(html).toContain('thread-graph-turn-footer');
     expect(html).toContain('gpt-5.4 · medium');
     expect(html).toContain('1m 12s');
-    expect(html.match(/animate-pulse/g)).toHaveLength(3);
+    expect(html).not.toContain('animate-');
     expect(html).not.toContain('token-badge');
     expect(html).not.toContain('>--<');
   });

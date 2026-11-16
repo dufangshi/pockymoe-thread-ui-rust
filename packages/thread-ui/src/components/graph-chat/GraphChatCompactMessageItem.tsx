@@ -65,8 +65,7 @@ function GraphChatRunningDots({ tone = 'amber' }: { tone?: 'amber' | 'sky' }) {
       {[0, 1, 2].map((index) => (
         <span
           key={index}
-          className={`h-1.5 w-1.5 animate-pulse rounded-full ${dotClassName}`}
-          style={{ animationDelay: `${index * 180}ms` }}
+          className={`h-1.5 w-1.5 rounded-full thread-live-progress-dot ${dotClassName}`}
         />
       ))}
     </span>
@@ -148,7 +147,7 @@ export const GraphChatCompactMessageItem = memo(
         >
           <Brain
             data-icon="think"
-            className={`h-3.5 w-3.5 ${hasRunningReasoning ? 'animate-pulse' : ''}`}
+            className={`h-3.5 w-3.5 ${hasRunningReasoning ? 'is-running' : ''}`}
           />
           <span>{translate("chat.coT")}</span>
           {hasRunningReasoning ? <GraphChatRunningDots tone="sky" /> : null}

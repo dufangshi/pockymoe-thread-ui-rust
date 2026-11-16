@@ -17,8 +17,7 @@ function GraphChatRunningDots() {
       {[0, 1, 2].map((index) => (
         <span
           key={index}
-          className="h-1.5 w-1.5 animate-pulse rounded-full bg-sky-200/90"
-          style={{ animationDelay: `${index * 180}ms` }}
+          className="h-1.5 w-1.5 rounded-full thread-live-progress-dot bg-sky-200/90"
         />
       ))}
     </span>
@@ -56,7 +55,7 @@ export function GraphChatMessageStatusBadge({
         ? 'ui-status-success'
         : 'ui-status-neutral';
   const icon = isRunning ? (
-    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+    <Loader2 className="h-3.5 w-3.5" />
   ) : isFailed ? (
     <XCircle className="h-3.5 w-3.5" />
   ) : isCompleted ? (

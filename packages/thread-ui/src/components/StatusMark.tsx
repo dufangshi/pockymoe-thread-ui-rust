@@ -14,7 +14,7 @@ export function navigationStatusLabel(status: string) {
   }
 }
 
-/** The one thread status mark: spinner ring, green dot, hollow dot, amber square,
+/** The one thread status mark: static open ring, green dot, hollow dot, amber square,
     red diamond or orange hollow square, with its name for assistive technology. */
 export function StatusMark({ status, label }: { status: string; label?: string | undefined }) {
   useI18n();

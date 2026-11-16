@@ -759,11 +759,11 @@
    itself runs, pink-violet while only its agent threads do. */
 .matter-thread-group[data-avatar] > .matter-group-tab { --tab-agents-ring: #b65bd3; }
 .thread-ui-shell[data-theme-effective='dark'] .matter-thread-group[data-avatar] > .matter-group-tab { --tab-agents-ring: #d99cf3; }
-.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='running']) > .matter-thread-avatar { --tab-ring: var(--theme-accent-solid); animation: none; }
-.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='agents-running']) > .matter-thread-avatar { --tab-ring: var(--tab-agents-ring); animation: none; }
+.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='running']) > .matter-thread-avatar { --tab-ring: var(--theme-accent-solid); box-shadow: 0 0 0 2px var(--tab-ring), 0 0 0 4.5px color-mix(in srgb, var(--tab-ring) 28%, transparent); }
+.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='agents-running']) > .matter-thread-avatar { --tab-ring: var(--tab-agents-ring); box-shadow: 0 0 0 2px var(--tab-ring), 0 0 0 4.5px color-mix(in srgb, var(--tab-ring) 28%, transparent); }
 
 @media (prefers-reduced-motion: reduce) {
-  .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot:is([data-status='running'], [data-status='agents-running'])) > .matter-thread-avatar { animation: none; box-shadow: 0 0 0 2px var(--tab-ring); }
+  .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot:is([data-status='running'], [data-status='agents-running'])) > .matter-thread-avatar { animation: none; box-shadow: 0 0 0 2px var(--tab-ring), 0 0 0 4.5px color-mix(in srgb, var(--tab-ring) 28%, transparent); }
 }
 
 /* Desktop tabs are open conversations, closed with a ✕. The open tab keeps its ✕
@@ -912,7 +912,7 @@
 }
 .matter-notification-summary { margin: 5px 0; color: var(--theme-fg-soft); font-size: 12px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .thread-ui-shell .matter-workbench .thread-graph-message-time-row .thread-graph-message-time { opacity: 1; color: var(--theme-fg-muted); }
-.thread-ui-shell .matter-workbench .animate-pulse.rounded-full { background: var(--theme-accent-strong); }
+.thread-ui-shell .matter-workbench .thread-live-progress-dot { background: var(--theme-accent-strong); }
 .thread-ui-shell .matter-workbench .thread-graph-composer-stop-button { right: 0 !important; top: 0 !important; width: 32px !important; height: 32px !important; border-radius: 50%; background: color-mix(in srgb, #c83b42 12%, var(--theme-panel)); color: #b62f38; border: 1px solid color-mix(in srgb, #c83b42 30%, var(--theme-border)) !important; box-shadow: none; }
 .thread-ui-shell[data-theme-effective='dark'] .matter-workbench .thread-graph-composer-stop-button { color: #ff9b9f; }
 .thread-ui-shell .matter-workbench .thread-graph-composer-stop-button:active { background: color-mix(in srgb, #c83b42 22%, var(--theme-panel)); }
@@ -1938,3 +1938,6 @@
 /* A narrow workbench still docks the inspector while a usable conversation
    fits beside it; below that it covers the conversation like Files. */
 .workbench-panels.is-compact .workbench-inspector[data-docked] { position: relative; inset: auto; z-index: auto; width: min(var(--workbench-tool-width, 560px), calc(100% - 280px)); }
+
+/* A running agent badge stays lit in every motion preference. */
+.matter-group-toggle.is-badge[data-running] > svg { color: var(--matter-agents-glow, #20bc87); }

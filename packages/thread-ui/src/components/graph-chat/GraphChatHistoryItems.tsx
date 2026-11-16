@@ -212,8 +212,7 @@ function RunningDots({
       {[0, 1, 2].map((index) => (
         <span
           key={index}
-          className={`h-1.5 w-1.5 animate-pulse rounded-full ${dotClassName}`}
-          style={{ animationDelay: `${index * 180}ms` }}
+          className={`h-1.5 w-1.5 rounded-full thread-live-progress-dot ${dotClassName}`}
         />
       ))}
     </span>
@@ -297,7 +296,7 @@ function graphHistoryStatusConfig(status?: string | null) {
   if (isRunningHistoryStatus(status)) {
     return {
       className: 'is-pending',
-      icon: <Loader2 className="h-3.5 w-3.5 animate-spin" />,
+      icon: <Loader2 className="h-3.5 w-3.5" />,
       label: status?.trim() || translate("chat.running"),
     };
   }

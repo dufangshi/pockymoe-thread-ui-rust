@@ -30,7 +30,7 @@ export function ThreadGraphWorkspaceLoadingFallback() {
       <div className="workspace-loading-skeleton-bar" />
       <div className="flex-1 space-y-1 px-3 py-2">
         {[0, 1, 2, 3, 4].map((index) => (
-          <div key={index} className="h-7 animate-pulse rounded bg-[var(--theme-surface-strong)] motion-reduce:animate-none" style={{ width: `${72 - index * 6}%` }} />
+          <div key={index} className="h-7 request-pulse rounded bg-[var(--theme-surface-strong)] motion-reduce:animate-none" style={{ width: `${72 - index * 6}%` }} />
         ))}
       </div>
     </div>

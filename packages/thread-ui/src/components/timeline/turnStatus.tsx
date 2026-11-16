@@ -35,8 +35,8 @@ function RunningDots({
       {[0, 1, 2].map((index) => (
         <span
           key={index}
-          className={`h-1.5 w-1.5 rounded-full animate-pulse ${dotClassName}`}
-          style={{ animationDelay: `${index * 180}ms`, backgroundColor: color, transition: 'background-color 300ms ease' }}
+          className={`h-1.5 w-1.5 rounded-full thread-live-progress-dot ${dotClassName}`}
+          style={{ backgroundColor: color }}
         />
       ))}
     </span>
@@ -256,7 +256,7 @@ export function TurnStatusBar({
       <div ref={setClockElement} className="thread-graph-turn-footer flex w-full items-center justify-between gap-3 text-xs">
         <div className="thread-graph-turn-footer-runtime flex min-w-0 flex-wrap items-center gap-2">
           {active && turn.status !== 'recovering' ? <TranscriptAgentByline size="small" /> : null}
-          {/* Waiting and background agents read as small moving marks, not phrases. */}
+          {/* Waiting and background agents read as small static marks, not phrases. */}
           {active && turn.status !== 'recovering' && waitingForWake ? (
             <span className="thread-wait-mark" role="status" aria-label={translate('chat.waitingForWake')} title={translate('chat.waitingForWake')}>
               <Hourglass aria-hidden="true" />

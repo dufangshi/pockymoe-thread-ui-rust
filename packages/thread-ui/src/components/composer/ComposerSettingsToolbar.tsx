@@ -243,7 +243,7 @@ export function ComposerSettingsToolbar({
         className={`${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
       >
         {sending && !goalComposeMode ? (
-          <Loader2 aria-hidden="true" className="composer-send-spinner h-[17px] w-[17px] animate-spin" strokeWidth={2.4} />
+          <Loader2 aria-hidden="true" className="composer-send-spinner h-[17px] w-[17px] request-spin" strokeWidth={2.4} />
         ) : goalComposeMode ? (
           <Target aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
         ) : sendLater ? (

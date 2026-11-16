@@ -194,7 +194,7 @@ export function WorkspaceExplorerPanel({
           >
             <RefreshCw
               data-icon="refresh"
-              className={`h-4 w-4 motion-reduce:animate-none ${loading ? 'animate-spin' : ''}`}
+              className={`h-4 w-4 motion-reduce:animate-none ${loading ? 'request-spin' : ''}`}
             />
           </button>
           {canUpload || onEmptyGarbage ? (
@@ -352,7 +352,7 @@ export function WorkspaceExplorerPanel({
           {[0, 1, 2, 3, 4].map((index) => (
             <div
               key={index}
-              className="h-7 animate-pulse rounded bg-[var(--theme-surface-strong)] motion-reduce:animate-none"
+              className="h-7 request-pulse rounded bg-[var(--theme-surface-strong)] motion-reduce:animate-none"
               style={{ width: `${72 - index * 6}%` }}
             />
           ))}

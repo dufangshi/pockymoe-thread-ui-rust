@@ -35,7 +35,7 @@ export function ForkTurnButton({ onFork }: { onFork: () => Promise<void> }) {
           setState('failed');
         }
       }}>
-      {state === 'busy' ? <LoaderCircle className="animate-spin" aria-hidden="true" />
+      {state === 'busy' ? <LoaderCircle className="request-spin" aria-hidden="true" />
         : state === 'failed' ? <TriangleAlert aria-hidden="true" /> : <GitFork aria-hidden="true" />}
       {state === 'failed' ? <span className="copy-button-note" aria-hidden="true">{note}</span> : null}
       <span className="copy-button-status" role="status">{state === 'busy' ? translate('chat.forking') : note}</span>

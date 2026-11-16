@@ -91,8 +91,8 @@ export function ComposerGoalsPanel({
       </div>
       {goalState.status === 'loading' && goals.length === 0 ? (
         <div className="space-y-2 p-3" role="status" aria-label={translate("chat.loadingGoals")}>
-          <div className="h-12 animate-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" />
-          <div className="h-12 animate-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" />
+          <div className="h-12 request-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" />
+          <div className="h-12 request-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" />
         </div>
       ) : goalState.error && goals.length === 0 ? (
         <p className="flex items-center justify-center gap-1 px-4 py-5 text-center text-sm text-[var(--theme-fg-muted)]">

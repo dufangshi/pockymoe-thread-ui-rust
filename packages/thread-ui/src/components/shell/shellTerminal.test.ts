@@ -1,11 +1,25 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { getVisibleTerminalText, isReplayingShellSnapshot, renderShellSnapshot, writeShellReplay } from './shellTerminal';
+import { getVisibleTerminalText, keepTerminalCursorStatic, isReplayingShellSnapshot, renderShellSnapshot, writeShellReplay } from './shellTerminal';
 
 describe('shell terminal helpers', () => {
+  it('keeps an application-requested cursor blink static after parsed input and disposes its listener', () => {
+    let parsed: (() => void) | undefined;
+    const dispose = vi.fn(() => { parsed = undefined; });
+    const terminal = { options: { cursorBlink: true, cursorStyle: 'underline' }, onWriteParsed(callback: () => void) { parsed = callback; return { dispose }; } };
+    const subscription = keepTerminalCursorStatic(terminal as unknown as Parameters<typeof keepTerminalCursorStatic>[0]);
+    expect(terminal.options.cursorBlink).toBe(false);
+    terminal.options.cursorBlink = true;
+    parsed!();
+    expect(terminal.options).toEqual({ cursorBlink: false, cursorStyle: 'underline' });
+    subscription.dispose();
+    expect(dispose).toHaveBeenCalledOnce();
+    expect(parsed).toBeUndefined();
+  });
+
   it('reads visible xterm row text and trims trailing blank rows', () => {
     const host = document.createElement('div');
     host.innerHTML = [

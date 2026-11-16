@@ -48,6 +48,9 @@ export function renderChatMermaid(source: string, dark: boolean, signal?: AbortS
       maxEdges: 500,
       theme: dark ? 'dark' : 'default',
       fontFamily: 'system-ui, sans-serif',
+      // The repeated :not() beats Mermaid's important classDef styles. Embed the
+      // override so expanded SVG images stay static as well.
+      themeCSS: ':not(#_):not(#_) { animation: none !important; transition: none !important; } .edge-animation-slow, .edge-animation-fast { animation: none !important; stroke-dashoffset: 0 !important; }',
       secure: ['secure', 'securityLevel', 'startOnLoad', 'suppressErrorRendering',
         'htmlLabels', 'maxTextSize', 'maxEdges', 'theme', 'themeVariables', 'themeCSS',
         'fontFamily', 'dompurifyConfig'],
@@ -61,10 +64,22 @@ export function renderChatMermaid(source: string, dark: boolean, signal?: AbortS
       const { svg } = await mermaid.render(id, source).catch((error: unknown) => {
         throw moduleLoadFailure(error) ? new MermaidLoadError(String((error as Error).message)) : error;
       });
-      return DOMPurify.sanitize(svg, {
+      const sanitized = DOMPurify.sanitize(svg, {
         USE_PROFILES: { svg: true, svgFilters: true },
         FORBID_TAGS: ['foreignObject'],
+        RETURN_DOM_FRAGMENT: true,
       });
+      // Mermaid classDef also emits important inline styles. CSS cannot override
+      // those; remove only motion declarations and preserve paint/layout/text.
+      const root = sanitized.querySelector<SVGSVGElement>('svg');
+      if (!root) throw new Error('Invalid Mermaid SVG');
+      for (const element of [root, ...root.querySelectorAll<SVGElement>('[style]')]) {
+        const style = (element as SVGElement).style;
+        for (const property of Array.from(style)) {
+          if (/^(?:-webkit-)?(?:animation|transition)(?:-|$)/.test(property)) style.removeProperty(property);
+        }
+      }
+      return root.outerHTML;
     } finally {
       // Also clean up Mermaid's temporary measurement DOM if rendering throws.
       document.getElementById(`d${id}`)?.remove();

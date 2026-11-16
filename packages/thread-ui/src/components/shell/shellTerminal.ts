@@ -1,5 +1,14 @@
 import type { Terminal } from 'xterm';
 
+/** Applications may request blinking with DECSCUSR / DECSET 12. Keep the
+ * cursor steady after each parsed input batch, without a clock or render hook. */
+export function keepTerminalCursorStatic(terminal: Terminal) {
+  terminal.options.cursorBlink = false;
+  return terminal.onWriteParsed(() => {
+    if (terminal.options.cursorBlink) terminal.options.cursorBlink = false;
+  });
+}
+
 // Terminals redrawing a snapshot. A snapshot is recorded output, so the queries
 // in it (cursor position, colours, device attributes) were answered when they
 // first ran; xterm answers them again as it redraws, and those answers must not

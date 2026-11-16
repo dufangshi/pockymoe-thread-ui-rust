@@ -34,7 +34,6 @@ export { useModalFocus } from './components/menu/useModalFocus';
 export { useLongPress } from './components/menu/useLongPress';
 export { confirmAsync } from './components/menu/confirmAsync';
 export { StatusMark, navigationStatusLabel } from './components/StatusMark';
-export { installStatusBeat, STATUS_BEAT_MS, STATUS_BEAT_SELECTOR } from './statusBeat';
 
 export type {
   DescribeThread,
@@ -197,9 +196,10 @@ export { ThreadLoadingIndicator } from './components/ThreadLoadingIndicator';
 export { TurnNotificationButton } from './components/timeline/TurnNotificationButton';
 import './styles/notifications.css';
 // The bundle injects exactly the sheets imported here; styles.css is only the source list.
-import './styles/status-beat.css';
 
 export { ImageFallbackProvider, ImageRecoveryProvider, ImageDiagnosisProvider } from './components/RecoverableImage';
 
 export { PersistentWorkbenchNavigation } from "./components/MatterWorkbench";
 export { useVisibleClock } from './visibleClock';
+
+import './styles/request-animations.css';

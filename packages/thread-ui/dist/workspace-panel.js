@@ -56,7 +56,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-MWITIBRK.js";
+} from "./chunk-4P3Q3JCJ.js";
 import {
   shellThemeProps,
   surfaceBehind,
@@ -69,7 +69,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-CTH6JXS7.js";
+} from "./chunk-5UDEWZQO.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
@@ -2285,7 +2285,7 @@ function WorkspaceExplorerRow({
                 onToggle(node.path);
               }
             },
-            children: loading ? /* @__PURE__ */ jsx4(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin text-slate-400 motion-reduce:animate-none" }) : expanded ? /* @__PURE__ */ jsx4(ChevronDown, { className: "h-3.5 w-3.5 text-slate-400" }) : /* @__PURE__ */ jsx4(ChevronRight, { className: "h-3.5 w-3.5 text-slate-400" })
+            children: loading ? /* @__PURE__ */ jsx4(LoaderCircle, { className: "h-3.5 w-3.5 request-spin text-slate-400 motion-reduce:animate-none" }) : expanded ? /* @__PURE__ */ jsx4(ChevronDown, { className: "h-3.5 w-3.5 text-slate-400" }) : /* @__PURE__ */ jsx4(ChevronRight, { className: "h-3.5 w-3.5 text-slate-400" })
           }
         ) : /* @__PURE__ */ jsx4("span", { className: "h-7 w-7 shrink-0 sm:h-6 sm:w-6", "aria-hidden": "true" }),
         /* @__PURE__ */ jsxs3(
@@ -2774,7 +2774,7 @@ function WorkspaceExplorerPanel({
               RefreshCw,
               {
                 "data-icon": "refresh",
-                className: `h-4 w-4 motion-reduce:animate-none ${loading ? "animate-spin" : ""}`
+                className: `h-4 w-4 motion-reduce:animate-none ${loading ? "request-spin" : ""}`
               }
             )
           }
@@ -2938,7 +2938,7 @@ function WorkspaceExplorerPanel({
         children: [0, 1, 2, 3, 4].map((index) => /* @__PURE__ */ jsx6(
           "div",
           {
-            className: "h-7 animate-pulse rounded bg-[var(--theme-surface-strong)] motion-reduce:animate-none",
+            className: "h-7 request-pulse rounded bg-[var(--theme-surface-strong)] motion-reduce:animate-none",
             style: { width: `${72 - index * 6}%` }
           },
           index
@@ -3088,7 +3088,7 @@ function WorkspaceFileActions({ children, metadata, path, relativePath, onDownlo
   } : void 0;
   return /* @__PURE__ */ jsxs5("div", { className: "workspace-file-actions", role: "toolbar", "aria-label": translate("files.fileActions"), title: metadata, children: [
     children,
-    reload && /* @__PURE__ */ jsx7("button", { type: "button", className: "thread-graph-editor-toolbar-button", disabled: busy, title: translate("files.reloadFile"), "aria-label": translate("files.reloadFile"), onClick: () => void reload(), children: /* @__PURE__ */ jsx7(RefreshCw2, { size: 15, className: busy ? "animate-spin motion-reduce:animate-none" : "" }) }),
+    reload && /* @__PURE__ */ jsx7("button", { type: "button", className: "thread-graph-editor-toolbar-button", disabled: busy, title: translate("files.reloadFile"), "aria-label": translate("files.reloadFile"), onClick: () => void reload(), children: /* @__PURE__ */ jsx7(RefreshCw2, { size: 15, className: busy ? "request-spin motion-reduce:animate-none" : "" }) }),
     reload && error && /* @__PURE__ */ jsx7(ErrorMark, { message: error, onRetry: () => void reload() }),
     onDownload && /* @__PURE__ */ jsx7("button", { type: "button", className: "thread-graph-editor-toolbar-button", title: translate("files.downloadFile"), "aria-label": translate("files.downloadFile"), onClick: onDownload, children: /* @__PURE__ */ jsx7(Download2, { size: 15 }) }),
     /* @__PURE__ */ jsx7(CopyButton, { value: relativePath || path, label: translate("common.copyPath") }),
@@ -4320,7 +4320,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment6, jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-GR53T33T.js")
+  () => import("./GraphWorkspaceMonacoEditor-AAXNOUFN.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function fileSizeLabel(size) {
@@ -4445,7 +4445,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-UHG5BS7U.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-ADUJ2GTY.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);

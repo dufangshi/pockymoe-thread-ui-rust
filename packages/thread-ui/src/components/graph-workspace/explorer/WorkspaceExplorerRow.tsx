@@ -206,7 +206,7 @@ export function WorkspaceExplorerRow({
           }}
         >
           {loading ? (
-            <LoaderCircle className="h-3.5 w-3.5 animate-spin text-slate-400 motion-reduce:animate-none" />
+            <LoaderCircle className="h-3.5 w-3.5 request-spin text-slate-400 motion-reduce:animate-none" />
           ) : expanded ? (
             <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
           ) : (

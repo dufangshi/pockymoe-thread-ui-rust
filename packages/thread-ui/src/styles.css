@@ -23,4 +23,5 @@
 @import './styles/touch.css';
 
 @import './styles/notifications.css';
-@import './styles/status-beat.css';
+
+@import './styles/request-animations.css';

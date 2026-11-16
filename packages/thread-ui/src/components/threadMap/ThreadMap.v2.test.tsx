@@ -193,33 +193,33 @@ describe('ThreadMap page', () => {
     expect(tile('archive')).toBeFalsy();
   });
 
-  it('reveals compressed threads and pulses once, without replaying on data refresh', () => {
+  it('reveals compressed threads without status animation on data refresh', () => {
     vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
     const devices = makeDevices();
     show({ devices, revealKey: 'old' });
     expect(tile('old')).toBeTruthy();
     expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Product');
-    expect(tile('old').dataset.pulse).toBe('done');
+    expect(tile('old').dataset.pulse).toBeUndefined();
     act(() => tile('old').dispatchEvent(new Event('animationend', { bubbles: true })));
     show({ devices: [...devices], revealKey: 'old' });
     expect(tile('old').dataset.pulse).toBeUndefined();
   });
 
-  it('reveals a device from the host Devices page and pulses its cached canvas', () => {
+  it('reveals a device from the host Devices page without animating its cached canvas', () => {
     vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
     show({ revealKey: 'device:d' });
     expect(host.querySelector('.thread-map-crumbs [aria-current]')?.textContent).toBe('Mac Studio');
-    expect(host.querySelector<HTMLElement>('.thread-map-canvas')?.dataset.pulse).toBe('done');
+    expect(host.querySelector<HTMLElement>('.thread-map-canvas')?.dataset.pulse).toBeUndefined();
   });
 
-  it('uses amber pulses for waiting and consumes repeated pulseKeys only once', () => {
+  it('keeps waiting static across repeated status updates', () => {
     vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
     const devices = [{ ...makeDevices()[0]!, workspaces: [{ id: 'w', label: 'Product', threads: [thread('waiting', 0, { needsInput: { kind: 'input' } })] }] }];
     show({ devices, pulseKeys: ['waiting'] });
-    expect(tile('waiting').dataset.pulse).toBe('waiting');
+    expect(tile('waiting').dataset.pulse).toBeUndefined();
     act(() => tile('waiting').dispatchEvent(new Event('animationend', { bubbles: true })));
     show({ devices, pulseKeys: ['waiting'] }); expect(tile('waiting').dataset.pulse).toBeUndefined();
-    show({ devices, pulseKeys: [] }); show({ devices, pulseKeys: ['waiting'] }); expect(tile('waiting').dataset.pulse).toBe('waiting');
+    show({ devices, pulseKeys: [] }); show({ devices, pulseKeys: ['waiting'] }); expect(tile('waiting').dataset.pulse).toBeUndefined();
   });
 
   it('consumes event pulses while a persistent page is hidden', () => {

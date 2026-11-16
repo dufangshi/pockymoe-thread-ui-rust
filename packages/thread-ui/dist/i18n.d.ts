@@ -1127,7 +1127,7 @@ declare const en: {
     readonly "workbench.threadMapLegendColor": "Fill: run time in {{hours}} h";
     readonly "workbench.threadMapLess": "less";
     readonly "workbench.threadMapMore": "more";
-    readonly "workbench.threadMapLegendRunning": "breathing: running";
+    readonly "workbench.threadMapLegendRunning": "ring: running";
     readonly "workbench.threadMapShortUnderMinute": "<1m";
     readonly "workbench.threadMapShortMinutes": "{{value}}m";
     readonly "workbench.threadMapShortHours": "{{value}}h";
@@ -6471,7 +6471,7 @@ declare const zhCN: {
     "workbench.threadMapLegendColor": "底色：近 {{hours}} 小时运行";
     "workbench.threadMapLess": "少";
     "workbench.threadMapMore": "多";
-    "workbench.threadMapLegendRunning": "呼吸：运行中";
+    "workbench.threadMapLegendRunning": "内环：运行中";
     "workbench.threadMapShortUnderMinute": "<1 分";
     "workbench.threadMapShortMinutes": "{{value}} 分";
     "workbench.threadMapShortHours": "{{value}} 小时";
@@ -11837,7 +11837,7 @@ declare const resources: {
         readonly "workbench.threadMapLegendColor": "Fill: run time in {{hours}} h";
         readonly "workbench.threadMapLess": "less";
         readonly "workbench.threadMapMore": "more";
-        readonly "workbench.threadMapLegendRunning": "breathing: running";
+        readonly "workbench.threadMapLegendRunning": "ring: running";
         readonly "workbench.threadMapShortUnderMinute": "<1m";
         readonly "workbench.threadMapShortMinutes": "{{value}}m";
         readonly "workbench.threadMapShortHours": "{{value}}h";
@@ -17180,7 +17180,7 @@ declare const resources: {
         "workbench.threadMapLegendColor": "底色：近 {{hours}} 小时运行";
         "workbench.threadMapLess": "少";
         "workbench.threadMapMore": "多";
-        "workbench.threadMapLegendRunning": "呼吸：运行中";
+        "workbench.threadMapLegendRunning": "内环：运行中";
         "workbench.threadMapShortUnderMinute": "<1 分";
         "workbench.threadMapShortMinutes": "{{value}} 分";
         "workbench.threadMapShortHours": "{{value}} 小时";

@@ -29,7 +29,7 @@ export function WorkspaceFileActions({ children, metadata, path, relativePath, o
   } : undefined;
   return <div className="workspace-file-actions" role="toolbar" aria-label={translate('files.fileActions')} title={metadata}>
     {children}
-    {reload && <button type="button" className="thread-graph-editor-toolbar-button" disabled={busy} title={translate('files.reloadFile')} aria-label={translate('files.reloadFile')} onClick={() => void reload()}><RefreshCw size={15} className={busy ? 'animate-spin motion-reduce:animate-none' : ''}/></button>}
+    {reload && <button type="button" className="thread-graph-editor-toolbar-button" disabled={busy} title={translate('files.reloadFile')} aria-label={translate('files.reloadFile')} onClick={() => void reload()}><RefreshCw size={15} className={busy ? 'request-spin motion-reduce:animate-none' : ''}/></button>}
     {/* Reloading failed: why (and Retry) behind a mark right after Reload. */}
     {reload && error && <ErrorMark message={error} onRetry={() => void reload()} />}
     {onDownload && <button type="button" className="thread-graph-editor-toolbar-button" title={translate('files.downloadFile')} aria-label={translate('files.downloadFile')} onClick={onDownload}><Download size={15}/></button>}

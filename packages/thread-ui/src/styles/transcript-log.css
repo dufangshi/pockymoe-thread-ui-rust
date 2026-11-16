@@ -321,8 +321,8 @@
   flex: none;
   width: 11px;
   height: 11px;
-  border: 1.5px solid var(--theme-border-strong);
-  border-top-color: var(--theme-accent-solid);
+  border: 1.5px solid var(--theme-accent-solid);
+  border-top-color: transparent;
   border-radius: 50%;
   animation: none;
 }
@@ -440,15 +440,13 @@
 /* The operation a folded, working turn is running now. */
 .tlog-current { min-width: 0; margin-top: -4px; }
 /* The latest thinking summary of a working turn, above its work line: its text
-   switches between two sheen positions, like the running operation groups. */
+   uses its active colour, like the running operation groups. */
 .tlog-current.is-thought { margin-top: 0; margin-bottom: -4px; }
 .tlog-current.is-thought .tlog-row:not([data-open]) .tlog-title {
-  background-image: linear-gradient(105deg, var(--theme-fg-muted) 35%, var(--theme-fg) 50%, var(--theme-fg-muted) 65%);
-  background-size: 250% 100%; background-clip: text; -webkit-background-clip: text; color: transparent;
-  animation: none;
+  color: var(--theme-accent-strong, var(--theme-accent-solid));
 }
 @media (prefers-reduced-motion: reduce) {
-  .tlog-current.is-thought .tlog-row:not([data-open]) .tlog-title { animation: none; background: none; color: var(--theme-fg); }
+  .tlog-current.is-thought .tlog-row:not([data-open]) .tlog-title { color: var(--theme-accent-strong, var(--theme-accent-solid)); }
 }
 
 /* Plan: a compact checklist */

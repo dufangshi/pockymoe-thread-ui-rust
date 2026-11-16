@@ -1,0 +1,8 @@
+/* Only bounded requests use these classes; thread/device/connection state never does. */
+.request-spin { animation: request-spin 1s linear infinite; }
+.request-pulse { animation: request-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+@keyframes request-spin { to { transform: rotate(360deg); } }
+@keyframes request-pulse { 50% { opacity: .5; } }
+@media (prefers-reduced-motion: reduce) {
+  .request-spin, .request-pulse, .workbench-thread-picker-popover .is-spinning { animation: none; }
+}

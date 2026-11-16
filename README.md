@@ -46,23 +46,17 @@ pnpm dev
 The playground is the default place to redesign the UI toward a GraphChat-like product surface without
 pulling in the full Pockymoe control-plane runtime.
 
-## Status motion
+## Status indicators
 
-Hosts import the shared stylesheet and call `installStatusBeat()` once at startup
-(before rendering). The returned function disposes the document clock. It runs
-only while a matching indicator is mounted, the document is visible and reduced
-motion is off. Host-only indicators may be passed as extra selectors.
+Thread, agent, device and connection indicators are static. Hosts consume the
+public package entry and its injected styles; no status clock or installation is
+needed. Running uses an open arc, agents-running a ring with a centre dot, maps a
+steady inset ring, and avatar tabs a lit ring and faint halo. Theme packs preserve
+these shapes and the same static meanings.
 
-Perpetual indicators use `data-beat="0…7"` on each matching indicator: one step
-per 400ms, 45° per step for running rings, and 800ms on/off states for blinking
-marks, agent rings and avatar halos. No easing, transitions, independent timers,
-inherited animated root variables or per-frame loops. Theme packs draw these same
-states. The clock retains a set of indicators, reconciles changed subtrees at most
-once per frame, ignores streaming text and unrelated class changes, and never
-queries the document on a beat. Removed or inactive indicators lose the attribute.
-New infinite CSS status animations are rejected by
-`packages/thread-ui/src/statusAnimation.test.ts`; its short request/loading
-exceptions are explicit.
+Only short, bounded requests use `request-spin` or `request-pulse`; reduced motion
+turns those animations off. The explicit request/loading allowlist in
+`packages/thread-ui/src/statusAnimation.test.ts` rejects other infinite animations.
 
 ## Boundary
 

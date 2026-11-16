@@ -644,7 +644,7 @@ export const workbenchEn = {
   "workbench.threadMapLegendColor": "Fill: run time in {{hours}} h",
   "workbench.threadMapLess": "less",
   "workbench.threadMapMore": "more",
-  "workbench.threadMapLegendRunning": "breathing: running",
+  "workbench.threadMapLegendRunning": "ring: running",
   "workbench.threadMapShortUnderMinute": "<1m",
   "workbench.threadMapShortMinutes": "{{value}}m",
   "workbench.threadMapShortHours": "{{value}}h",

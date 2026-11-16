@@ -644,7 +644,7 @@ export const workbenchZhCN = {
   "workbench.threadMapLegendColor": "底色：近 {{hours}} 小时运行",
   "workbench.threadMapLess": "少",
   "workbench.threadMapMore": "多",
-  "workbench.threadMapLegendRunning": "呼吸：运行中",
+  "workbench.threadMapLegendRunning": "内环：运行中",
   "workbench.threadMapShortUnderMinute": "<1 分",
   "workbench.threadMapShortMinutes": "{{value}} 分",
   "workbench.threadMapShortHours": "{{value}} 小时",

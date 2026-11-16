@@ -96,7 +96,7 @@ export function GraphChatToolCall({
       default:
         return {
           className: 'is-pending',
-          icon: <Loader2 className="h-3.5 w-3.5 animate-spin" />,
+          icon: <Loader2 className="h-3.5 w-3.5" />,
           label: translate("chat.running"),
         };
     }

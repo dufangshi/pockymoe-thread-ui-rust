@@ -52,7 +52,7 @@ const reducedMotion = () => typeof window !== 'undefined' && typeof window.match
 /**
  * Every thread on every device as a zoomable treemap: devices hold workspaces,
  * workspaces hold threads. A thread's area follows its turns and its color the
- * time it ran in the last `hours`; running threads breathe. Tapping a device or a
+ * time it ran in the last `hours`; running threads keep a lit inset ring. Tapping a device or a
  * workspace fills the map with it (what is inside shows as a preview until
  * then), tapping a thread opens it. On touch, pinching in goes up a level,
  * spreading opens the block under the fingers and dragging down dismisses.
@@ -274,7 +274,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       return;
     }
   }, [revealKey, devices]);
-  // Event pulses are consumed once; geometry/content refreshes never replay them.
+  // Consume reveal requests without status animation or expiry timers.
   useEffect(() => {
     if (document.visibilityState === 'hidden' || canvas.current?.closest('[hidden], [inert]')) {
       for (const key of pendingPulses.current) if (key !== pendingReveal.current) pendingPulses.current.delete(key);
@@ -285,12 +285,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       if (pendingReveal.current === key && current.id !== pendingRevealTarget.current) continue;
       const element = key.startsWith('device:') ? current.id === key ? canvas.current : byMapId(stage.current, key) : byMapId(stage.current, `thread:${key}`);
       if (!element) { if (pendingReveal.current !== key) pendingPulses.current.delete(key); continue; }
-      const waiting = element.hasAttribute('data-waiting');
       if (pendingReveal.current === key && element.closest('.thread-map-list-scroll')) element.scrollIntoView?.({ block: 'nearest' });
-      element.setAttribute('data-pulse', waiting ? 'waiting' : 'done');
-      const clear = () => element.removeAttribute('data-pulse');
-      const timer = setTimeout(clear, 900);
-      element.addEventListener('animationend', () => { clearTimeout(timer); clear(); }, { once: true });
       pendingPulses.current.delete(key);
       if (pendingReveal.current === key) pendingReveal.current = null;
     }

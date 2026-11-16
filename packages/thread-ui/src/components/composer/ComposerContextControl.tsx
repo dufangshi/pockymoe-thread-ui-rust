@@ -247,7 +247,7 @@ function ContextNote({ state, inspector, hasSnapshot, onRetry }: {
   if (!response) {
     return status === 'loading' ? (
       <p className="thread-context-note" data-context-note="loading" role="status">
-        <Loader2 aria-hidden="true" className="thread-context-spinner animate-spin" />
+        <Loader2 aria-hidden="true" className="thread-context-spinner request-spin" />
         <span>{translate('chat.contextLoading')}</span>
       </p>
     ) : null;
@@ -464,7 +464,7 @@ export function ComposerContextControl({
       {compactError ? <ErrorMark message={compactError} onRetry={() => void compact()} /> : null}
       <button type="button" className="thread-context-action" disabled={!onCompact || compactPending || compactDisabled} aria-busy={compactPending || undefined}
         onClick={() => void compact()}>
-        {compactPending ? <Loader2 aria-hidden="true" className="animate-spin" /> : null}
+        {compactPending ? <Loader2 aria-hidden="true" className="static-status-arc" /> : null}
         {translate(compactPending ? 'chat.compactingContext' : 'chat.contextCompact')}
       </button>
     </>
@@ -514,7 +514,7 @@ export function ComposerContextControl({
                 )
                 : (
                   <p className="thread-context-note" data-context-note="loading" role="status">
-                    <Loader2 aria-hidden="true" className="thread-context-spinner animate-spin" />
+                    <Loader2 aria-hidden="true" className="thread-context-spinner request-spin" />
                     <span>{translate('chat.contextLoading')}</span>
                   </p>
                 )

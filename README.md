@@ -58,6 +58,10 @@ Only short, bounded requests use `request-spin` or `request-pulse`; reduced moti
 turns those animations off. The explicit request/loading allowlist in
 `packages/thread-ui/src/statusAnimation.test.ts` rejects other infinite animations.
 
+The xterm cursor stays steady, including when terminal output requests a blinking
+cursor. Mermaid animated edges keep their dash pattern and arrowheads but use
+static embedded SVG styles, so inline and expanded diagrams do not run a loop.
+
 ## Boundary
 
 Keep the shared packages UI-only:

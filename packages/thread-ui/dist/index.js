@@ -3088,6 +3088,9 @@ function renderChatMermaid(source, dark, signal) {
       maxEdges: 500,
       theme: dark ? "dark" : "default",
       fontFamily: "system-ui, sans-serif",
+      // The repeated :not() beats Mermaid's important classDef styles. Embed the
+      // override so expanded SVG images stay static as well.
+      themeCSS: ":not(#_):not(#_) { animation: none !important; transition: none !important; } .edge-animation-slow, .edge-animation-fast { animation: none !important; stroke-dashoffset: 0 !important; }",
       secure: [
         "secure",
         "securityLevel",
@@ -3111,10 +3114,20 @@ function renderChatMermaid(source, dark, signal) {
       const { svg } = await mermaid.render(id, source).catch((error) => {
         throw moduleLoadFailure(error) ? new MermaidLoadError(String(error.message)) : error;
       });
-      return DOMPurify.sanitize(svg, {
+      const sanitized = DOMPurify.sanitize(svg, {
         USE_PROFILES: { svg: true, svgFilters: true },
-        FORBID_TAGS: ["foreignObject"]
+        FORBID_TAGS: ["foreignObject"],
+        RETURN_DOM_FRAGMENT: true
       });
+      const root = sanitized.querySelector("svg");
+      if (!root) throw new Error("Invalid Mermaid SVG");
+      for (const element of [root, ...root.querySelectorAll("[style]")]) {
+        const style = element.style;
+        for (const property of Array.from(style)) {
+          if (/^(?:-webkit-)?(?:animation|transition)(?:-|$)/.test(property)) style.removeProperty(property);
+        }
+      }
+      return root.outerHTML;
     } finally {
       document.getElementById(`d${id}`)?.remove();
     }
@@ -22876,6 +22889,12 @@ function deriveShellLifecycleEventAction({
 }
 
 // src/components/shell/shellTerminal.ts
+function keepTerminalCursorStatic(terminal) {
+  terminal.options.cursorBlink = false;
+  return terminal.onWriteParsed(() => {
+    if (terminal.options.cursorBlink) terminal.options.cursorBlink = false;
+  });
+}
 var replaying = /* @__PURE__ */ new WeakMap();
 function isReplayingShellSnapshot(terminal) {
   return (replaying.get(terminal) ?? 0) > 0;
@@ -24032,6 +24051,7 @@ var ShellPane = forwardRef(
       paneHeight: void 0
     });
     const terminalInitializingRef = useRef43(false);
+    const terminalCursorSubscriptionRef = useRef43(null);
     const terminalInputSubscriptionRef = useRef43(null);
     const isVisibleRef = useRef43(isVisible);
     const isMobileShellRef = useRef43(isMobileShell);
@@ -24295,7 +24315,7 @@ var ShellPane = forwardRef(
           linkHandler: { activate: (event, uri) => {
             void activateTerminalLink(event, uri);
           } },
-          cursorBlink: true,
+          cursorBlink: false,
           disableStdin: false,
           fontFamily: "IBM Plex Mono, SFMono-Regular, Menlo, monospace",
           fontSize: 13,
@@ -24306,6 +24326,7 @@ var ShellPane = forwardRef(
         const fitAddon = new FitConstructor();
         terminal.loadAddon(fitAddon);
         terminal.open(terminalHostNode);
+        terminalCursorSubscriptionRef.current = keepTerminalCursorStatic(terminal);
         terminalRef.current = terminal;
         oscClipboardRef.current = installOsc52Clipboard(terminal, terminalHostNode, {
           enabled: () => terminalPreferences().allowProgramClipboard,
@@ -24370,6 +24391,8 @@ var ShellPane = forwardRef(
       return () => {
         cancelled = true;
         terminalInitializingRef.current = false;
+        terminalCursorSubscriptionRef.current?.dispose();
+        terminalCursorSubscriptionRef.current = null;
         terminalInputSubscriptionRef.current?.dispose();
         terminalInputSubscriptionRef.current = null;
         oscClipboardRef.current?.dispose();

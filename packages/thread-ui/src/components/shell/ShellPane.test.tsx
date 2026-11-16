@@ -60,6 +60,7 @@ class FakeTerminal {
   paste(data: string) { this.pastes.push(data); }
 
   onRender() { return {dispose() {}}; }
+  onWriteParsed() { return { dispose() {} }; }
 
   onData(handler: (data: string) => void) {
     this.dataHandler = handler;
@@ -305,6 +306,7 @@ describe('ShellPane', () => {
     renderShellPane({ adapter, mobile: true, inputTransform: data => data === 'c' ? '\x03' : data });
     const socket = await attachShell(adapter, sockets);
     expect(terminalInstances[0]!.options.disableStdin).toBe(false);
+    expect(terminalInstances[0]!.options.cursorBlink).toBe(false);
     terminalInstances[0]!.input('中文');
     terminalInstances[0]!.input('c');
     expect(socket.sentMessages).toContainEqual({type:'shell.input',shellId:'shell-1',viewerId:'viewer-1',data:'中文'});

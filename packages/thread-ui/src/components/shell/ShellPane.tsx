@@ -36,6 +36,7 @@ import {
 } from './shellEvents';
 import {
   getVisibleTerminalText,
+  keepTerminalCursorStatic,
   isReplayingShellSnapshot,
   renderShellSnapshot,
 } from './shellTerminal';
@@ -177,6 +178,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
       paneHeight: undefined,
     });
     const terminalInitializingRef = useRef(false);
+    const terminalCursorSubscriptionRef = useRef<{ dispose: () => void } | null>(null);
     const terminalInputSubscriptionRef = useRef<{
       dispose: () => void;
     } | null>(null);
@@ -498,7 +500,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
           (fitModule as unknown as {default: typeof fitModule}).default.FitAddon;
         const terminal = new TerminalConstructor({
           linkHandler: { activate: (event, uri) => { void activateTerminalLink(event, uri); } },
-          cursorBlink: true,
+          cursorBlink: false,
           disableStdin: false,
           fontFamily: 'IBM Plex Mono, SFMono-Regular, Menlo, monospace',
           fontSize: 13,
@@ -509,6 +511,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
         const fitAddon = new FitConstructor();
         terminal.loadAddon(fitAddon);
         terminal.open(terminalHostNode);
+        terminalCursorSubscriptionRef.current = keepTerminalCursorStatic(terminal);
         terminalRef.current = terminal;
         oscClipboardRef.current = installOsc52Clipboard(terminal, terminalHostNode, {
           enabled: () => terminalPreferences().allowProgramClipboard,
@@ -593,6 +596,8 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
       return () => {
         cancelled = true;
         terminalInitializingRef.current = false;
+        terminalCursorSubscriptionRef.current?.dispose();
+        terminalCursorSubscriptionRef.current = null;
         terminalInputSubscriptionRef.current?.dispose();
         terminalInputSubscriptionRef.current = null;
         oscClipboardRef.current?.dispose();

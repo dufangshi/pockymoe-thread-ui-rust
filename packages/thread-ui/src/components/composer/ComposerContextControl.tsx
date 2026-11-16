@@ -10,6 +10,7 @@ import type {
 import { ChevronRight, Loader2, X } from 'lucide-react';
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { useVisibleClock } from '../../visibleClock';
 
 import { getLocale, translate, useI18n } from '../../i18n';
 import { ErrorMark } from '../copy/ErrorMark';
@@ -376,7 +377,7 @@ export function ComposerContextControl({
   const trigger = useRef<HTMLButtonElement>(null);
   const [state, setState] = useState<LoadState>({ status: 'idle', response: null, error: null });
   const [lastDetail, setLastDetail] = useState<{ detail: ContextInspectionDetailDto; refresh: boolean }>({ detail: 'summary', refresh: false });
-  const [now, setNow] = useState(() => Date.now());
+  const now = useVisibleClock(open, 60_000);
   const sequence = useRef(0);
   const [compacting, setCompacting] = useState(false);
   const compactInFlight = useRef(false);
@@ -411,13 +412,6 @@ export function ComposerContextControl({
     const full = inspectionProvider === 'claude';
     load(full ? 'full' : 'summary', full);
   }, [open, load, inspectionProvider]);
-
-  useEffect(() => {
-    if (!open) return;
-    setNow(Date.now());
-    const timer = window.setInterval(() => setNow(Date.now()), 15_000);
-    return () => window.clearInterval(timer);
-  }, [open, contextUsage?.updatedAt, state.response]);
 
   // A compaction finished: the categories on screen describe what it removed.
   const wasCompacting = useRef(compactBusy);

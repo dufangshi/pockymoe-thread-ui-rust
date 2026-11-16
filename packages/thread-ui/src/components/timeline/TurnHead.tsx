@@ -43,7 +43,8 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
   const wide = useWideScreen();
   const [open, setOpen] = useState(false);
   const [withDate, setWithDate] = useState(false);
-  const now = useSecondClock(active);
+  const [clockElement, setClockElement] = useState<HTMLDivElement | null>(null);
+  const now = useSecondClock(active, clockElement);
   const started = turn.startedAt;
   const took = formatElapsedDuration(started, active ? now : Date.parse(turn.completedAt ?? ''));
   const usage = turn.tokenUsage?.total;
@@ -82,7 +83,7 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
   </>;
 
   if (wide) return (
-    <div className="thread-turn-head-block">
+    <div ref={setClockElement} className="thread-turn-head-block">
       <div className="thread-turn-head is-wide" data-active={active || undefined} data-status={turn.status}>
         <span className="thread-turn-head-main" role={worked ? 'img' : undefined} aria-label={worked ?? undefined}>{dot}</span>
         {cost}
@@ -92,7 +93,7 @@ export function TurnHead({ turn, active, added, onBeforeResize }: {
   );
 
   return (
-    <div className="thread-turn-head-block">
+    <div ref={setClockElement} className="thread-turn-head-block">
       <div className="thread-turn-head" data-active={active || undefined} data-status={turn.status} onClick={toggle}>
         <button type="button" className="thread-turn-head-main" aria-expanded={open} title={translate('chat.turnHeadDetails')}
           aria-label={worked ?? translate('chat.turnHeadDetails')}>

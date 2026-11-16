@@ -1,6 +1,7 @@
 import { getLocale } from '../../i18n';
 import { translate, useI18n } from '../../i18n';
 import { useEffect, useId, useRef, useState } from 'react';
+import { useVisibleClock } from '../../visibleClock';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
 import type { AgentSubscriptionUsageDto } from '@pockymoe/shared';
 
@@ -35,14 +36,8 @@ export function ComposerSubscriptionUsage({
   const [keyboardFocused, setKeyboardFocused] = useState(false);
   // Reset times read as "in 2 days 5 hours"; a tap on one shows the date instead.
   const [absoluteReset, setAbsoluteReset] = useState(false);
-  const [now, setNow] = useState(() => Date.now());
   const open = detailsVisible || hovered || keyboardFocused;
-  useEffect(() => {
-    if (!open) return;
-    setNow(Date.now());
-    const timer = window.setInterval(() => setNow(Date.now()), 30_000);
-    return () => window.clearInterval(timer);
-  }, [open]);
+  const now = useVisibleClock(open, 60_000);
   const detailsId = useId();
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {

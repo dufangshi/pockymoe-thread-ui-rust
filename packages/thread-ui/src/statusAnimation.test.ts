@@ -22,3 +22,19 @@ it('reserves infinite CSS animations for request/loading indicators', () => {
   }
   expect(unexpected).toEqual([]);
 });
+
+it('ships every sheet listed in styles.css through an injected import', () => {
+  // tsup injects only the CSS that modules import; a sheet listed in styles.css alone never reaches the bundle.
+  const src = fileURLToPath(new URL('./', import.meta.url));
+  const listed = [...readFileSync(path.join(src, 'styles.css'), 'utf8').matchAll(/@import\s+['"]\.\/(styles\/[\w-]+\.css)['"]/g)].map(match => match[1]!);
+  const modules: string[] = [];
+  const walk = (dir: string) => { for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) walk(path.join(dir, entry.name));
+    else if (/\.tsx?$/.test(entry.name) && !/\.test\./.test(entry.name)) modules.push(readFileSync(path.join(dir, entry.name), 'utf8'));
+  } };
+  walk(src);
+  const imported = new Set(modules.flatMap(source => [...source.matchAll(/import\s+['"][./]*\/?(?:styles\/)?([\w-]+\.css)['"]/g)].map(match => `styles/${match[1]}`)));
+  // Sheets a host imports by path are published through package.json instead.
+  const exported = readFileSync(path.join(src, '../package.json'), 'utf8');
+  expect(listed.filter(sheet => !imported.has(sheet) && !exported.includes(`./src/${sheet}`))).toEqual([]);
+});

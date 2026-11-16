@@ -4,6 +4,7 @@
 :root .thread-map :is(.thread-map-tile, .thread-map-section, .thread-map-dense-tile)[data-running] { box-shadow: inset 0 0 0 1.5px var(--thread-map-live); }
 :root .thread-map :is(.thread-map-tile, .thread-map-section)[data-running]::before { content: none; }
 :root .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot:is([data-status='running'], [data-status='agents-running'])) > .matter-thread-avatar { box-shadow: 0 0 0 2px var(--tab-ring); }
+/* Steady while any agent thread runs: lit, never blinking. */
 :root .matter-group-toggle.is-badge[data-running] > svg { color: var(--matter-agents-glow, #20bc87); }
 @media (prefers-reduced-motion: no-preference) {
   :root .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot:is([data-status='running'], [data-status='agents-running'])) > .matter-thread-avatar { box-shadow: 0 0 0 2px var(--tab-ring), 0 0 0 4.5px color-mix(in srgb, var(--tab-ring) 28%, transparent); }
@@ -16,7 +17,7 @@
   :root :is(.matter-status-dot[data-status='running'], .tlog-spinner, .thread-room-running, .animate-spin)[data-beat='6'] { transform: rotate(270deg); }
   :root :is(.matter-status-dot[data-status='running'], .tlog-spinner, .thread-room-running, .animate-spin)[data-beat='7'] { transform: rotate(315deg); }
   :root :is(.thread-map-running-dot, .thread-turn-head[data-active] .thread-turn-head-dot, .matter-running-icon > i, .animate-pulse):is([data-beat='2'], [data-beat='3'], [data-beat='6'], [data-beat='7']) { opacity: 0; }
-  :root :is(.matter-status-dot[data-status='agents-running'], .thread-background-agent-status svg, .matter-group-toggle.is-badge[data-running] > svg):is([data-beat='2'], [data-beat='3'], [data-beat='6'], [data-beat='7']) { opacity: .45; }
+  :root :is(.matter-status-dot[data-status='agents-running'], .thread-background-agent-status svg):is([data-beat='2'], [data-beat='3'], [data-beat='6'], [data-beat='7']) { opacity: .45; }
   :root .thread-map :is(.thread-map-tile, .thread-map-section, .thread-map-dense-tile)[data-running]:is([data-beat='2'], [data-beat='3'], [data-beat='6'], [data-beat='7']) { box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--thread-map-live) 45%, transparent); }
   :root .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot:is([data-status='running'], [data-status='agents-running'])) > .matter-thread-avatar:is([data-beat='2'], [data-beat='3'], [data-beat='6'], [data-beat='7']) { box-shadow: 0 0 0 2px var(--tab-ring); }
   :root .thread-wait-mark svg:is([data-beat='2'], [data-beat='3'], [data-beat='6'], [data-beat='7']) { transform: rotate(180deg); }

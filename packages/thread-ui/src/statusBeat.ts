@@ -6,7 +6,6 @@ export const STATUS_BEAT_SELECTOR = [
   '.thread-turn-head[data-active] .thread-turn-head-dot',
   '.thread-wait-mark svg', '.thread-background-agent-status svg',
   '.tlog-spinner', '.thread-room-running', '.matter-running-icon > i',
-  '.matter-group-toggle.is-badge[data-running] > svg',
   ...['matter-thread-row', 'matter-group-tab', 'matter-agent-threads-item'].flatMap(row =>
     ['running', 'agents-running'].map(status => `.${row}:has(> .matter-status-dot[data-status="${status}"]) > .matter-thread-avatar`)),
   '.thread-graph-turn[data-turn-active="true"] .thread-transcript-agent .matter-thread-avatar',

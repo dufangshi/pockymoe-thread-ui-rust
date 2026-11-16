@@ -540,7 +540,7 @@
   border-width: 2.5px;
   border-color: oklch(0.48 0.19 255);
   border-top-color: transparent;
-  animation: matter-running 1s linear infinite;
+  animation: none;
 }
 .thread-ui-shell[data-theme-effective='dark'] .matter-status-dot[data-status='running'] {
   border-color: oklch(0.8 0.12 245);
@@ -551,7 +551,7 @@
   height: 10px;
   border-color: #8066cd;
   background: radial-gradient(circle, #8066cd 0 2px, transparent 2.5px);
-  animation: matter-agents-running 1.8s ease-in-out infinite;
+  animation: none;
 }
 .thread-ui-shell[data-theme-effective='dark'] .matter-status-dot[data-status='agents-running'] {
   border-color: #b39af2;
@@ -571,8 +571,8 @@
 .matter-status-dot[data-status='unknown'] { border-style: dotted; opacity: .6; }
 /* Interrupted is the stop sign: a solid amber square, unlike the hollow idle ring. */
 .matter-status-dot[data-status='interrupted'] { border-color: #c08a3e; background: #c08a3e; border-radius: 1.5px; }
-@keyframes matter-running { to { transform: rotate(360deg); } }
-@keyframes matter-agents-running { 50% { opacity: .45; } }
+
+
 @media (prefers-reduced-motion: reduce) { .matter-status-dot:is([data-status='running'], [data-status='agents-running']) { animation: none; } }
 /* Hidden unless a theme preset gives it an image. */
 .matter-thread-avatar { display: none; }
@@ -744,10 +744,8 @@
 /* Every agent thread closed: the way back to them stays, and counts for nothing. */
 .matter-thread-group > .matter-group-toggle.is-badge[data-closed-only] > svg { opacity: .6; }
 /* Agents at work: the robot slowly brightens into the running colour and fades back. */
-.matter-thread-group > .matter-group-toggle.is-badge[data-running] > svg { animation: matter-tab-agents-glow 2.4s ease-in-out infinite; }
-@keyframes matter-tab-agents-glow {
-  50% { color: var(--matter-agents-glow, #20bc87); filter: drop-shadow(0 0 3px var(--matter-agents-glow, #20bc87)); }
-}
+.matter-thread-group > .matter-group-toggle.is-badge[data-running] > svg { animation: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .matter-thread-group > .matter-group-toggle.is-badge[data-running] > svg { animation: none; color: var(--matter-agents-glow, #20bc87); }
 }
@@ -761,12 +759,9 @@
    itself runs, pink-violet while only its agent threads do. */
 .matter-thread-group[data-avatar] > .matter-group-tab { --tab-agents-ring: #b65bd3; }
 .thread-ui-shell[data-theme-effective='dark'] .matter-thread-group[data-avatar] > .matter-group-tab { --tab-agents-ring: #d99cf3; }
-.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='running']) > .matter-thread-avatar { --tab-ring: var(--theme-accent-solid); animation: matter-tab-running 1.8s ease-in-out infinite; }
-.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='agents-running']) > .matter-thread-avatar { --tab-ring: var(--tab-agents-ring); animation: matter-tab-running 1.8s ease-in-out infinite; }
-@keyframes matter-tab-running {
-  0%, 100% { box-shadow: 0 0 0 2px var(--tab-ring); }
-  50% { box-shadow: 0 0 0 2px var(--tab-ring), 0 0 0 4.5px color-mix(in srgb, var(--tab-ring) 28%, transparent); }
-}
+.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='running']) > .matter-thread-avatar { --tab-ring: var(--theme-accent-solid); animation: none; }
+.matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot[data-status='agents-running']) > .matter-thread-avatar { --tab-ring: var(--tab-agents-ring); animation: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .matter-thread-group[data-avatar] > .matter-group-tab:has(> .matter-status-dot:is([data-status='running'], [data-status='agents-running'])) > .matter-thread-avatar { animation: none; box-shadow: 0 0 0 2px var(--tab-ring); }
 }

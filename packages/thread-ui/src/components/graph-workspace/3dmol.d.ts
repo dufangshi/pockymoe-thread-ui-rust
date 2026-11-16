@@ -41,6 +41,7 @@ declare module '3dmol' {
     resize(): void;
     setBackgroundColor(color: string, opacity?: number): void;
     setCameraParameters(parameters: Record<string, unknown>): void;
+    setViewChangeCallback(callback: (() => void) | null): void;
     zoom(factor: number): void;
     zoomTo(): void;
   }

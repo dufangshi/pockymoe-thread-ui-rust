@@ -46,6 +46,21 @@ pnpm dev
 The playground is the default place to redesign the UI toward a GraphChat-like product surface without
 pulling in the full Pockymoe control-plane runtime.
 
+## Status motion
+
+Hosts import the shared stylesheet and call `installStatusBeat()` once at startup
+(before rendering). The returned function disposes the document clock. It runs
+only while a matching indicator is mounted, the document is visible and reduced
+motion is off. Host-only indicators may be passed as extra selectors.
+
+Perpetual indicators use `data-status-beat="0…7"` on the document root: one step
+per 400ms, 45° per step for running rings, and 800ms on/off states for blinking
+marks, agent rings and avatar halos. No easing, transitions, independent timers,
+inherited animated root variables or per-frame loops. Theme packs draw these same
+states. New infinite CSS status animations are rejected by
+`packages/thread-ui/src/statusAnimation.test.ts`; its short request/loading
+exceptions are explicit.
+
 ## Boundary
 
 Keep the shared packages UI-only:

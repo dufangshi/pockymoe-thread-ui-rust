@@ -34,6 +34,7 @@ export { useModalFocus } from './components/menu/useModalFocus';
 export { useLongPress } from './components/menu/useLongPress';
 export { confirmAsync } from './components/menu/confirmAsync';
 export { StatusMark, navigationStatusLabel } from './components/StatusMark';
+export { installStatusBeat, STATUS_BEAT_MS, STATUS_BEAT_SELECTOR } from './statusBeat';
 
 export type {
   DescribeThread,

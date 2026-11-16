@@ -96,7 +96,7 @@
 .thread-ui-shell .thread-turn-head[data-active] .thread-turn-head-dot {
   opacity: 1;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--turn-head-dot, #2fb37a) 20%, transparent);
-  animation: thread-live-dot 1.6s ease-in-out infinite;
+  animation: none;
 }
 .thread-ui-shell .thread-turn-head[data-status='failed']:not([data-active]) .thread-turn-head-dot { background: var(--theme-danger, #e5484d); opacity: 0.85; }
 .thread-ui-shell .thread-turn-head[data-status='interrupted']:not([data-active]) .thread-turn-head-dot { background: var(--theme-fg-muted); }
@@ -142,8 +142,8 @@
 .thread-ui-shell .thread-turn-head-added { display: inline-flex; align-items: center; gap: 3px; }
 .thread-ui-shell .thread-added-prompt-icon { flex: none; width: 13px; height: 13px; }
 
-/* Live marks on the working line instead of phrases: an hourglass that turns
-   while waiting for a wake, a bot and its count that breathes while background
+/* Live marks on the working line instead of phrases: an hourglass that switches orientation
+   while waiting for a wake, a bot and its count that switches brightness while background
    agents run. Their full wording is in the label and title. */
 .thread-ui-shell :is(.thread-wait-mark, .thread-background-agent-status) {
   display: inline-flex;
@@ -155,12 +155,12 @@
   font-variant-numeric: tabular-nums;
 }
 .thread-ui-shell :is(.thread-wait-mark, .thread-background-agent-status) svg { width: 14px; height: 14px; }
-.thread-ui-shell .thread-wait-mark svg { animation: thread-hourglass 2.4s ease-in-out infinite; }
-.thread-ui-shell .thread-background-agent-status svg { color: var(--theme-accent-strong, var(--theme-accent-solid)); animation: thread-agent-breathe 1.8s ease-in-out infinite; }
+.thread-ui-shell .thread-wait-mark svg { animation: none; }
+.thread-ui-shell .thread-background-agent-status svg { color: var(--theme-accent-strong, var(--theme-accent-solid)); animation: none; }
 .thread-ui-shell .thread-background-agent-status b { font-weight: 600; }
-@keyframes thread-live-dot { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
-@keyframes thread-hourglass { 0%, 40% { transform: rotate(0); } 50%, 90% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
-@keyframes thread-agent-breathe { 0%, 100% { opacity: 0.55; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-1px); } }
+
+
+
 @media (prefers-reduced-motion: reduce) {
   .thread-ui-shell :is(.thread-turn-head-dot, .thread-wait-mark svg, .thread-background-agent-status svg) { animation: none; }
 }
@@ -324,9 +324,9 @@
   border: 1.5px solid var(--theme-border-strong);
   border-top-color: var(--theme-accent-solid);
   border-radius: 50%;
-  animation: tlog-spin 0.9s linear infinite;
+  animation: none;
 }
-@keyframes tlog-spin { to { transform: rotate(360deg); } }
+
 @media (prefers-reduced-motion: reduce) { .tlog-spinner { animation: none; } }
 
 .tlog-batch { padding-left: 14px; }
@@ -440,12 +440,12 @@
 /* The operation a folded, working turn is running now. */
 .tlog-current { min-width: 0; margin-top: -4px; }
 /* The latest thinking summary of a working turn, above its work line: its text
-   carries a moving sheen, like the running operation groups. */
+   switches between two sheen positions, like the running operation groups. */
 .tlog-current.is-thought { margin-top: 0; margin-bottom: -4px; }
 .tlog-current.is-thought .tlog-row:not([data-open]) .tlog-title {
   background-image: linear-gradient(105deg, var(--theme-fg-muted) 35%, var(--theme-fg) 50%, var(--theme-fg-muted) 65%);
   background-size: 250% 100%; background-clip: text; -webkit-background-clip: text; color: transparent;
-  animation: thread-operation-sheen 2.4s linear infinite;
+  animation: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .tlog-current.is-thought .tlog-row:not([data-open]) .tlog-title { animation: none; background: none; color: var(--theme-fg); }

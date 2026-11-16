@@ -686,8 +686,8 @@
 /* Compact room rail: activity is visible without opening a room. */
 .thread-graph-room-card-icon[data-thread-status="running"] { color: var(--status-success-fg, #70cfa3); background: color-mix(in srgb, var(--status-success-fg, #70cfa3) 12%, transparent); }
 .thread-graph-room-card-icon[data-thread-status="failed"] { color: var(--status-danger-fg, #e78a8a); }
-.thread-room-running { animation: thread-room-spin 1.6s linear infinite; }
-@keyframes thread-room-spin { to { transform: rotate(360deg); } }
+.thread-room-running { animation: none; }
+
 @media (prefers-reduced-motion: reduce) { .thread-room-running { animation: none; } }
 .thread-ui-rail-collapsed .thread-graph-room-card { padding-inline: 0; }
 .thread-room-tooltip[data-slot="tooltip-content"] { max-width: min(280px, calc(100vw - 32px)); overflow-wrap: anywhere; padding: 10px 13px; border: 1px solid var(--theme-border, #444); border-radius: 12px; background: var(--theme-panel, #242420); color: var(--theme-fg, #eee); box-shadow: 0 8px 28px #0003; }

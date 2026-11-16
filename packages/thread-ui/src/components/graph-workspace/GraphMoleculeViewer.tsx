@@ -122,6 +122,34 @@ export function GraphMoleculeViewer({
     return () => window.clearInterval(interval);
   }, [isPlaying, xyzArray.length]);
 
+  const updateCameraInfo = useCallback(() => {
+    const view = viewerRef.current?.getView?.();
+    if (Array.isArray(view) && view.length >= 8) {
+      const [x, y, z, zoom, qx, qy, qz, qw] = view;
+      if (
+        typeof x === 'number' &&
+        typeof y === 'number' &&
+        typeof z === 'number' &&
+        typeof zoom === 'number' &&
+        typeof qx === 'number' &&
+        typeof qy === 'number' &&
+        typeof qz === 'number' &&
+        typeof qw === 'number'
+      ) {
+        const magnitude = Math.sqrt(qx * qx + qy * qy + qz * qz);
+        const lookAt =
+          magnitude > 0
+            ? { x: qx / magnitude, y: qy / magnitude, z: qz / magnitude }
+            : { x: 0, y: 0, z: 0 };
+        setCameraInfo({
+          position: { x, y, z, qx, qy, qz, qw },
+          lookAt,
+          zoom,
+        });
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const host = viewerHostRef.current;
     if (!host || viewerRef.current) {
@@ -164,6 +192,8 @@ export function GraphMoleculeViewer({
           const viewer = $3Dmol.createViewer(host, {});
           viewerRef.current = viewer;
           viewer.setBackgroundColor('#f8fafc', 0.8);
+          viewer.setViewChangeCallback(updateCameraInfo);
+          updateCameraInfo();
           window.addEventListener('resize', resizeViewer);
           window.setTimeout(resizeViewer, 100);
         } catch (error) {
@@ -183,10 +213,11 @@ export function GraphMoleculeViewer({
     return () => {
       cancelled = true;
       window.removeEventListener('resize', resizeViewer);
+      viewerRef.current?.setViewChangeCallback(null);
       viewerRef.current = null;
       modelRef.current = null;
     };
-  }, []);
+  }, [updateCameraInfo]);
 
   useEffect(() => {
     const viewer = viewerRef.current;
@@ -349,45 +380,6 @@ export function GraphMoleculeViewer({
     onSelectionChange?.({ moleculeId, atoms: selectedSerials });
   }, [moleculeId, onSelectionChange, selectedSerials, xyzContent]);
 
-  useEffect(() => {
-    if (!xyzContent) {
-      return;
-    }
-
-    let animationFrame = 0;
-    const tick = () => {
-      const view = viewerRef.current?.getView?.();
-      if (Array.isArray(view) && view.length >= 8) {
-        const [x, y, z, zoom, qx, qy, qz, qw] = view;
-        if (
-          typeof x === 'number' &&
-          typeof y === 'number' &&
-          typeof z === 'number' &&
-          typeof zoom === 'number' &&
-          typeof qx === 'number' &&
-          typeof qy === 'number' &&
-          typeof qz === 'number' &&
-          typeof qw === 'number'
-        ) {
-          const magnitude = Math.sqrt(qx * qx + qy * qy + qz * qz);
-          const lookAt =
-            magnitude > 0
-              ? { x: qx / magnitude, y: qy / magnitude, z: qz / magnitude }
-              : { x: 0, y: 0, z: 0 };
-          setCameraInfo({
-            position: { x, y, z, qx, qy, qz, qw },
-            lookAt,
-            zoom,
-          });
-        }
-      }
-      animationFrame = window.requestAnimationFrame(tick);
-    };
-
-    animationFrame = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(animationFrame);
-  }, [xyzContent]);
-
   const handleScreenshot = useCallback(async () => {
     const viewer = viewerRef.current;
     if (!viewer?.pngURI) {
@@ -546,7 +538,7 @@ export function GraphMoleculeViewer({
                 >
                   <span
                     className={`h-2.5 w-2.5 rounded-full ${
-                      isLive ? 'animate-pulse bg-red-600' : 'bg-gray-300'
+                      isLive ? 'bg-red-600' : 'bg-gray-300'
                     }`}
                   />
                   {translate("files.live")}</Button>

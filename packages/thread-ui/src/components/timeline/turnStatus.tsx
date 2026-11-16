@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../../i18n';
 import { Bot, Hourglass } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { useVisibleClock } from '../../visibleClock';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../graph-ui/Tooltip';
 
 import {
@@ -21,7 +22,7 @@ function RunningDots({
   tone?: 'amber' | 'emerald' | 'sky';
   color?: string;
 }) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   const dotClassName =
     tone === 'emerald'
       ? 'bg-sky-200/90'
@@ -110,21 +111,8 @@ export function normalizePlanStepStatus(status: string) {
   return 'other' as const;
 }
 
-export function useSecondClock(enabled: boolean) {
-  const { locale: i18nLocale } = useI18n();
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    if (!enabled) {
-      return;
-    }
-
-    setNow(Date.now());
-    const interval = window.setInterval(() => setNow(Date.now()), 1_000);
-    return () => window.clearInterval(interval);
-  }, [enabled]);
-
-  return now;
+export function useSecondClock(enabled: boolean, element?: Element | null) {
+  return useVisibleClock(enabled, 1000, element);
 }
 
 export function formatElapsedDuration(
@@ -155,7 +143,7 @@ function TurnStatusIndicator({
 }: {
   status: TimelineTurn['status'];
 }) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   const label = turnStatusLabel(status);
 
   if (status === 'completed') {
@@ -247,11 +235,12 @@ export function TurnStatusBar({
   backgroundAgentCount?: number;
   waitingForWake?: boolean;
 }) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   const label = turnStatusLabel(turn.status);
   const runtimeSummary = formatTurnRuntimeSummary(turn);
   const active = isActiveTurnStatus(turn.status);
-  const now = useSecondClock(active && variant === 'footer');
+  const [clockElement, setClockElement] = useState<HTMLDivElement | null>(null);
+  const now = useSecondClock(active && variant === 'footer', clockElement);
   const elapsedLabel = formatElapsedDuration(turn.startedAt, active ? now : Date.parse(turn.completedAt ?? turn.startedAt ?? ''));
   const effectiveLastActivityAt = lastActivityAt ?? turn.startedAt;
   const progressAge = effectiveLastActivityAt ? Math.max(0, Math.floor((now - Date.parse(effectiveLastActivityAt)) / 1000)) : null;
@@ -264,7 +253,7 @@ export function TurnStatusBar({
 
   if (variant === 'footer') {
     return (
-      <div className="thread-graph-turn-footer flex w-full items-center justify-between gap-3 text-xs">
+      <div ref={setClockElement} className="thread-graph-turn-footer flex w-full items-center justify-between gap-3 text-xs">
         <div className="thread-graph-turn-footer-runtime flex min-w-0 flex-wrap items-center gap-2">
           {active && turn.status !== 'recovering' ? <TranscriptAgentByline size="small" /> : null}
           {/* Waiting and background agents read as small moving marks, not phrases. */}

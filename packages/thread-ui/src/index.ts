@@ -200,3 +200,4 @@ import './styles/notifications.css';
 export { ImageFallbackProvider, ImageRecoveryProvider, ImageDiagnosisProvider } from './components/RecoverableImage';
 
 export { PersistentWorkbenchNavigation } from "./components/MatterWorkbench";
+export { useVisibleClock } from './visibleClock';

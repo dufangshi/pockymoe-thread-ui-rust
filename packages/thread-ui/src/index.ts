@@ -196,6 +196,8 @@ export { ThreadLoadingIndicator } from './components/ThreadLoadingIndicator';
 
 export { TurnNotificationButton } from './components/timeline/TurnNotificationButton';
 import './styles/notifications.css';
+// The bundle injects exactly the sheets imported here; styles.css is only the source list.
+import './styles/status-beat.css';
 
 export { ImageFallbackProvider, ImageRecoveryProvider, ImageDiagnosisProvider } from './components/RecoverableImage';
 

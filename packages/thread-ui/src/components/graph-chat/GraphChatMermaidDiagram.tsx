@@ -6,6 +6,9 @@ import { GraphWorkspaceImageLightbox } from '../ZoomableImage';
 import { MermaidLoadError, renderChatMermaid } from './graphChatMermaid';
 import { ErrorMark } from '../copy/ErrorMark';
 
+/** Diagrams already drawn, by source and colour mode. */
+const rendered = new Map<string, string>();
+
 export const GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram({
   source, dark, pending = false,
 }: { source: string; dark: boolean; pending?: boolean }) {
@@ -21,8 +24,16 @@ export const GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram({
   useEffect(() => {
     if (pending) return;
     const controller = new AbortController();
+    const key = `${dark ? 'd' : 'l'}\n${source}`;
+    const known = rendered.get(key);
+    if (known !== undefined && attempt === 0) { setResult({ source, dark, svg: known }); return; }
     void renderChatMermaid(source, dark, controller.signal).then(
-      svg => { if (!controller.signal.aborted) setResult({ source, dark, svg }); },
+      svg => {
+        // Folding, switching threads and coming back show the same picture
+        // without parsing and laying it out again.
+        if (svg) { rendered.set(key, svg); if (rendered.size > 60) rendered.delete(rendered.keys().next().value!); }
+        if (!controller.signal.aborted) setResult({ source, dark, svg });
+      },
       (error: unknown) => {
         if (controller.signal.aborted) return;
         const stale = error instanceof MermaidLoadError;

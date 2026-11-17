@@ -3690,6 +3690,16 @@ function readGraphMoleculeViewerData(source) {
 
 // src/components/graph-workspace/GraphMoleculeViewer.tsx
 import { jsx as jsx15, jsxs as jsxs11 } from "react/jsx-runtime";
+var webGlProbe;
+function webGlAvailable() {
+  if (webGlProbe === void 0) {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    webGlProbe = Boolean(context);
+    context?.getExtension("WEBGL_lose_context")?.loseContext();
+  }
+  return webGlProbe;
+}
 function GraphMoleculeViewer({
   className = "",
   moleculeId = null,
@@ -3772,9 +3782,7 @@ function GraphMoleculeViewer({
     }
     let cancelled = false;
     try {
-      const canvas = document.createElement("canvas");
-      const webGl = canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-      if (!webGl) {
+      if (!webGlAvailable()) {
         setViewerInitError(
           translate("files.webGLIsUnavailableInThisBrowserEnvironment")
         );
@@ -3818,6 +3826,10 @@ function GraphMoleculeViewer({
       cancelled = true;
       window.removeEventListener("resize", resizeViewer);
       viewerRef.current?.setViewChangeCallback(null);
+      try {
+        viewerRef.current?.clear?.();
+      } catch {
+      }
       viewerRef.current = null;
       modelRef.current = null;
     };

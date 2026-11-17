@@ -44,6 +44,19 @@ export type GraphMoleculeAtomSelection = {
   atoms: number[];
 };
 
+let webGlProbe: boolean | undefined;
+/** Whether the browser can draw 3D. Asked once per page, and the probe's
+ *  context is released: every mount used to take one and keep it. */
+function webGlAvailable() {
+  if (webGlProbe === undefined) {
+    const canvas = document.createElement('canvas');
+    const context = (canvas.getContext('webgl2') || canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
+    webGlProbe = Boolean(context);
+    context?.getExtension('WEBGL_lose_context')?.loseContext();
+  }
+  return webGlProbe;
+}
+
 export function GraphMoleculeViewer({
   className = '',
   moleculeId = null,
@@ -159,12 +172,7 @@ export function GraphMoleculeViewer({
     let cancelled = false;
 
     try {
-      const canvas = document.createElement('canvas');
-      const webGl =
-        canvas.getContext('webgl2') ||
-        canvas.getContext('webgl') ||
-        canvas.getContext('experimental-webgl');
-      if (!webGl) {
+      if (!webGlAvailable()) {
         setViewerInitError(
           translate("files.webGLIsUnavailableInThisBrowserEnvironment"),
         );
@@ -214,6 +222,9 @@ export function GraphMoleculeViewer({
       cancelled = true;
       window.removeEventListener('resize', resizeViewer);
       viewerRef.current?.setViewChangeCallback(null);
+      // Let go of the models and the drawing context now, not at some later
+      // collection: a page gets only a handful of WebGL contexts.
+      try { (viewerRef.current as { clear?: () => void } | null)?.clear?.(); } catch { /* Already torn down. */ }
       viewerRef.current = null;
       modelRef.current = null;
     };

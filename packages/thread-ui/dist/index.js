@@ -2755,8 +2755,8 @@ function pluginCapabilities(modules, plugins) {
         for (const renderer of module.inlineCodeRenderers ?? []) {
           if (!renderer.languages.includes(context.language.trim().toLowerCase()))
             continue;
-          const rendered = renderer.render(context);
-          if (rendered) return rendered;
+          const rendered2 = renderer.render(context);
+          if (rendered2) return rendered2;
         }
       }
       return null;
@@ -3141,6 +3141,7 @@ function renderChatMermaid(source, dark, signal) {
 
 // src/components/graph-chat/GraphChatMermaidDiagram.tsx
 import { jsx as jsx15, jsxs as jsxs10 } from "react/jsx-runtime";
+var rendered = /* @__PURE__ */ new Map();
 var GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram2({
   source,
   dark,
@@ -3157,8 +3158,19 @@ var GraphChatMermaidDiagram = memo(function GraphChatMermaidDiagram2({
   useEffect8(() => {
     if (pending) return;
     const controller = new AbortController();
+    const key = `${dark ? "d" : "l"}
+${source}`;
+    const known3 = rendered.get(key);
+    if (known3 !== void 0 && attempt === 0) {
+      setResult({ source, dark, svg: known3 });
+      return;
+    }
     void renderChatMermaid(source, dark, controller.signal).then(
       (svg2) => {
+        if (svg2) {
+          rendered.set(key, svg2);
+          if (rendered.size > 60) rendered.delete(rendered.keys().next().value);
+        }
         if (!controller.signal.aborted) setResult({ source, dark, svg: svg2 });
       },
       (error) => {
@@ -3568,13 +3580,13 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
       return null;
     }
     if (!readOnly && ["xyz", "extxyz", "cif", "pdb"].includes(language)) {
-      const rendered = plugins.renderInlineCode({
+      const rendered2 = plugins.renderInlineCode({
         code: textContent,
         isIncomplete: false,
         language
       });
-      if (isValidElement(rendered)) {
-        return rendered;
+      if (isValidElement(rendered2)) {
+        return rendered2;
       }
     }
     if (isFencedOrBlockCode) {
@@ -17926,7 +17938,7 @@ var GraphChatArtifactHistoryItem = memo5(
     const plugins = usePlugins();
     const [expanded, setExpanded] = useState50(false);
     const artifact = item.artifact;
-    const rendered = artifact ? plugins.renderArtifact({
+    const rendered2 = artifact ? plugins.renderArtifact({
       artifact,
       expanded,
       onToggleExpanded: () => setExpanded((current) => !current)
@@ -17971,7 +17983,7 @@ var GraphChatArtifactHistoryItem = memo5(
         timeMeta,
         title: translate("chat.created"),
         tone: "artifact",
-        children: expanded ? rendered ?? /* @__PURE__ */ jsx66("pre", { className: "thread-graph-history-event-pre max-h-80 overflow-auto", children: JSON.stringify(artifact?.payload ?? item, null, 2) }) : null
+        children: expanded ? rendered2 ?? /* @__PURE__ */ jsx66("pre", { className: "thread-graph-history-event-pre max-h-80 overflow-auto", children: JSON.stringify(artifact?.payload ?? item, null, 2) }) : null
       }
     );
   }
@@ -24553,13 +24565,13 @@ var ShellPane = forwardRef(
           syncTerminalSizeRef.current({ deferBackendSize: true });
         });
       };
-      const rendered = terminal.onRender(fit);
+      const rendered2 = terminal.onRender(fit);
       void document.fonts?.ready.then(fit);
       fit();
       return () => {
         disposed = true;
         cancelAnimationFrame(frame);
-        rendered.dispose();
+        rendered2.dispose();
       };
     }, [terminalReady, isVisible]);
     useEffect47(() => {
@@ -27844,7 +27856,7 @@ function PluginActionOutput({
 }) {
   const { t: t2 } = useI18n();
   const plugins = usePlugins();
-  const rendered = plugins.renderActionOutput(pluginId, { action, output });
+  const rendered2 = plugins.renderActionOutput(pluginId, { action, output });
   let json;
   try {
     json = JSON.stringify(output, null, 2) ?? String(output);
@@ -27856,8 +27868,8 @@ function PluginActionOutput({
     json.length > OUTPUT_LIMIT && /* @__PURE__ */ jsx98("p", { className: "plugin-report-note", children: t2("automation.outputTruncated") })
   ] });
   return /* @__PURE__ */ jsxs86("section", { className: "plugin-action-output", "aria-label": t2("automation.pluginOutput"), children: [
-    rendered ?? raw,
-    rendered && /* @__PURE__ */ jsxs86("details", { className: "plugin-report-disclosure", children: [
+    rendered2 ?? raw,
+    rendered2 && /* @__PURE__ */ jsxs86("details", { className: "plugin-report-disclosure", children: [
       /* @__PURE__ */ jsx98("summary", { children: t2("automation.rawOutput") }),
       raw
     ] })
@@ -32169,11 +32181,11 @@ function ThreadMap({
       item.id
     );
   };
-  let rendered = 0;
+  let rendered2 = 0;
   if (!page) spatial.current = [];
   const runningLeaves = (node) => node.kind === "thread" ? node.running ? [node] : [] : node.children.flatMap(runningLeaves);
   const render = (items, bounds2, depth, offset = { x: 0, y: 0 }) => layouts.current.layout(items[0]?.parent?.id ?? current.id, items, bounds2).map(({ item, rect }) => {
-    rendered++;
+    rendered2++;
     const box = inset2(rect, depth ? 1.5 : 2.5);
     if (item.kind === "compressed") {
       spatial.current.push({ id: item.id, rect: { ...box, x: box.x + offset.x, y: box.y + offset.y } });
@@ -32221,7 +32233,7 @@ function ThreadMap({
     const extra = item.kind === "device" ? deviceExtras?.[item.device.id] : void 0;
     const header2 = extra ? 36 : HEADER;
     const inner = { x: 3, y: header2, width: Math.max(0, box.width - 6), height: Math.max(0, box.height - header2 - 3) };
-    const preview = !unlisted && rendered < 1600 && fits2(item, inner, depth);
+    const preview = !unlisted && rendered2 < 1600 && fits2(item, inner, depth);
     const live = !preview && !unlisted && item.running > 0 && inner.width >= 44 && inner.height >= 34 ? runningLeaves(item).slice(0, 4) : [];
     const liveInner = { ...inner, height: Math.max(0, inner.height - (item.threads > live.length ? 15 : 0)) };
     const named = box.width >= 72;

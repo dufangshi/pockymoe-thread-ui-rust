@@ -56,7 +56,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-4P3Q3JCJ.js";
+} from "./chunk-KZCYQWEY.js";
 import {
   shellThemeProps,
   surfaceBehind,
@@ -73,7 +73,7 @@ import {
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
-import { memo as memo2, useEffect as useEffect13, useMemo as useMemo11, useState as useState13 } from "react";
+import { lazy as lazy2, memo as memo2, Suspense as Suspense2, useEffect as useEffect12, useMemo as useMemo10, useState as useState13 } from "react";
 import {
   GitBranch,
   Paperclip,
@@ -5768,372 +5768,9 @@ function GraphWorkspaceExplorer({
   );
 }
 
-// src/components/graph-chat/GraphVisualization.tsx
-import { useCallback as useCallback7, useEffect as useEffect12, useMemo as useMemo10 } from "react";
-import {
-  addEdge,
-  Background,
-  Controls,
-  Handle,
-  MarkerType as MarkerType2,
-  Position as Position4,
-  ReactFlow,
-  ReactFlowProvider,
-  useEdgesState,
-  useNodesState
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-
-// src/components/graph-chat/FloatingConnectionLine.tsx
-import { getBezierPath } from "@xyflow/react";
-
-// src/components/graph-chat/FloatingHelper.tsx
-import { MarkerType, Position } from "@xyflow/react";
-import { jsx as jsx21, jsxs as jsxs16 } from "react/jsx-runtime";
-function getNodeIntersection(intersectionNode, targetNode) {
-  const intersectionNodeWidth = Math.max(intersectionNode.measured.width ?? 1, 1);
-  const intersectionNodeHeight = Math.max(
-    intersectionNode.measured.height ?? 1,
-    1
-  );
-  const intersectionNodePosition = intersectionNode.internals.positionAbsolute;
-  const targetPosition = targetNode.internals.positionAbsolute;
-  const targetNodeWidth = Math.max(targetNode.measured.width ?? 1, 1);
-  const targetNodeHeight = Math.max(targetNode.measured.height ?? 1, 1);
-  const w = intersectionNodeWidth / 2;
-  const h = intersectionNodeHeight / 2;
-  const x2 = intersectionNodePosition.x + w;
-  const y2 = intersectionNodePosition.y + h;
-  const x1 = targetPosition.x + targetNodeWidth / 2;
-  const y1 = targetPosition.y + targetNodeHeight / 2;
-  const xx1 = (x1 - x2) / (2 * w) - (y1 - y2) / (2 * h);
-  const yy1 = (x1 - x2) / (2 * w) + (y1 - y2) / (2 * h);
-  const a = 1 / (Math.abs(xx1) + Math.abs(yy1));
-  const xx3 = a * xx1;
-  const yy3 = a * yy1;
-  const x = w * (xx3 + yy3) + x2;
-  const y = h * (-xx3 + yy3) + y2;
-  return { x, y };
-}
-function getEdgePosition(node, intersectionPoint) {
-  const n = { ...node.internals.positionAbsolute, ...node };
-  const nx = Math.round(n.x);
-  const ny = Math.round(n.y);
-  const px = Math.round(intersectionPoint.x);
-  const py = Math.round(intersectionPoint.y);
-  if (px <= nx + 1) {
-    return Position.Left;
-  }
-  if (px >= nx + (node.measured.width ?? 1) - 1) {
-    return Position.Right;
-  }
-  if (py <= ny + 1) {
-    return Position.Top;
-  }
-  if (py >= n.y + (node.measured.height ?? 1) - 1) {
-    return Position.Bottom;
-  }
-  return Position.Top;
-}
-function getEdgeParams(source, target) {
-  const sourceIntersectionPoint = getNodeIntersection(source, target);
-  const targetIntersectionPoint = getNodeIntersection(target, source);
-  const sourcePos = getEdgePosition(source, sourceIntersectionPoint);
-  const targetPos = getEdgePosition(target, targetIntersectionPoint);
-  return {
-    sx: sourceIntersectionPoint.x,
-    sy: sourceIntersectionPoint.y,
-    tx: targetIntersectionPoint.x,
-    ty: targetIntersectionPoint.y,
-    sourcePos,
-    targetPos
-  };
-}
-function buildGraph(inputNodes, width = 900, height = 620) {
-  if (!inputNodes || !Array.isArray(inputNodes)) {
-    return { nodes: [], edges: [] };
-  }
-  const forceLayout = (nodes2, edges2, layoutWidth, layoutHeight) => {
-    const nodePositions = /* @__PURE__ */ new Map();
-    const nodeCount = nodes2.length;
-    nodes2.forEach((node, index) => {
-      const hash = node.id.split("").reduce((value, character) => {
-        const nextValue = (value << 5) - value + character.charCodeAt(0);
-        return nextValue & nextValue;
-      }, 0);
-      nodePositions.set(node.id, {
-        x: Math.abs(hash) % layoutWidth + index * 100 % layoutWidth,
-        y: Math.abs(hash >> 16) % layoutHeight + index * 150 % layoutHeight,
-        vx: 0,
-        vy: 0
-      });
-    });
-    for (let iteration = 0; iteration < 200; iteration += 1) {
-      for (let i = 0; i < nodeCount; i += 1) {
-        for (let j = i + 1; j < nodeCount; j += 1) {
-          const firstNode = nodes2[i];
-          const secondNode = nodes2[j];
-          if (!firstNode || !secondNode) {
-            continue;
-          }
-          const pos1 = nodePositions.get(firstNode.id);
-          const pos2 = nodePositions.get(secondNode.id);
-          if (!pos1 || !pos2) {
-            continue;
-          }
-          const dx = pos1.x - pos2.x;
-          const dy = pos1.y - pos2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-          const optimalDistance = 200;
-          const force = (optimalDistance - distance) * 0.5;
-          const fx = dx / distance * force;
-          const fy = dy / distance * force;
-          pos1.vx += fx;
-          pos1.vy += fy;
-          pos2.vx -= fx;
-          pos2.vy -= fy;
-        }
-      }
-      edges2.forEach((edge) => {
-        const pos1 = nodePositions.get(edge.source);
-        const pos2 = nodePositions.get(edge.target);
-        if (!pos1 || !pos2) {
-          return;
-        }
-        const dx = pos2.x - pos1.x;
-        const dy = pos2.y - pos1.y;
-        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-        const targetLength = 120;
-        const springForce = (distance - targetLength) * 0.3;
-        const fx = dx / distance * springForce;
-        const fy = dy / distance * springForce;
-        pos1.vx += fx;
-        pos1.vy += fy;
-        pos2.vx -= fx;
-        pos2.vy -= fy;
-      });
-      nodePositions.forEach((position) => {
-        position.x += position.vx * 0.1;
-        position.y += position.vy * 0.1;
-        position.vx *= 0.9;
-        position.vy *= 0.9;
-        position.x = Math.max(80, Math.min(layoutWidth - 80, position.x));
-        position.y = Math.max(80, Math.min(layoutHeight - 80, position.y));
-      });
-    }
-    return nodePositions;
-  };
-  const inputIds = new Set(inputNodes.map((node) => node.id));
-  const edges = [];
-  inputNodes.forEach((node) => {
-    if (!node.out_node_id) {
-      return;
-    }
-    const outNodes = Array.isArray(node.out_node_id) ? node.out_node_id : [node.out_node_id];
-    outNodes.forEach((outNodeId) => {
-      if (!inputIds.has(outNodeId)) {
-        return;
-      }
-      edges.push({
-        id: `${node.id}-${outNodeId}`,
-        source: node.id,
-        target: outNodeId,
-        type: "floating",
-        sourceHandle: null,
-        targetHandle: null,
-        markerEnd: { type: MarkerType.Arrow }
-      });
-    });
-  });
-  const positions = forceLayout(inputNodes, edges, width, height);
-  const nodes = inputNodes.map((node) => ({
-    id: node.id,
-    type: "styledNode",
-    position: positions.get(node.id) ?? { x: 100, y: 100 },
-    data: {
-      label: /* @__PURE__ */ jsxs16("div", { className: "text-center", children: [
-        /* @__PURE__ */ jsx21("div", { className: "text-sm font-semibold", children: node.name }),
-        node.description ? /* @__PURE__ */ jsx21("div", { className: "mt-1 max-w-32 overflow-hidden text-ellipsis text-xs text-slate-500 dark:text-slate-400", children: node.description }) : null
-      ] })
-    }
-  }));
-  return { nodes, edges };
-}
-
-// src/components/graph-chat/FloatingConnectionLine.tsx
-import { jsx as jsx22, jsxs as jsxs17 } from "react/jsx-runtime";
-function FloatingConnectionLine({
-  toX,
-  toY,
-  fromPosition,
-  toPosition,
-  fromNode
-}) {
-  useI18n();
-  if (!fromNode) {
-    return null;
-  }
-  const targetNode = {
-    id: "connection-target",
-    measured: {
-      width: 1,
-      height: 1
-    },
-    internals: {
-      positionAbsolute: { x: toX, y: toY }
-    }
-  };
-  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
-    fromNode,
-    targetNode
-  );
-  const [edgePath] = getBezierPath({
-    sourceX: sx,
-    sourceY: sy,
-    sourcePosition: sourcePos || fromPosition,
-    targetPosition: targetPos || toPosition,
-    targetX: tx || toX,
-    targetY: ty || toY
-  });
-  return /* @__PURE__ */ jsxs17("g", { children: [
-    /* @__PURE__ */ jsx22(
-      "path",
-      {
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: 1.5,
-        className: "animated",
-        d: edgePath
-      }
-    ),
-    /* @__PURE__ */ jsx22(
-      "circle",
-      {
-        cx: tx || toX,
-        cy: ty || toY,
-        fill: "var(--theme-panel)",
-        r: 3,
-        stroke: "currentColor",
-        strokeWidth: 1.5
-      }
-    )
-  ] });
-}
-
-// src/components/graph-chat/FloatingEdge.tsx
-import { getBezierPath as getBezierPath2, useInternalNode } from "@xyflow/react";
-import { jsx as jsx23 } from "react/jsx-runtime";
-function FloatingEdge({
-  id,
-  source,
-  target,
-  markerEnd,
-  style
-}) {
-  const sourceNode = useInternalNode(source);
-  const targetNode = useInternalNode(target);
-  if (!sourceNode || !targetNode) {
-    return null;
-  }
-  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
-    sourceNode,
-    targetNode
-  );
-  const [edgePath] = getBezierPath2({
-    sourceX: sx,
-    sourceY: sy,
-    sourcePosition: sourcePos,
-    targetPosition: targetPos,
-    targetX: tx,
-    targetY: ty
-  });
-  return /* @__PURE__ */ jsx23(
-    "path",
-    {
-      id,
-      className: "react-flow__edge-path",
-      d: edgePath,
-      markerEnd,
-      style
-    }
-  );
-}
-
-// src/components/graph-chat/GraphVisualization.tsx
-import { jsx as jsx24, jsxs as jsxs18 } from "react/jsx-runtime";
-function GraphVisualization({ nodes: inputNodes }) {
-  useI18n();
-  const [flowNodes, setFlowNodes, onNodesChange] = useNodesState([]);
-  const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState([]);
-  const graph = useMemo10(() => buildGraph(inputNodes), [inputNodes]);
-  const edgeTypes = useMemo10(() => ({ floating: FloatingEdge }), []);
-  const nodeTypes = useMemo10(
-    () => ({
-      styledNode: ({ data, isConnectable }) => /* @__PURE__ */ jsxs18("div", { className: "thread-graph-flow-node", children: [
-        data.label,
-        /* @__PURE__ */ jsx24(
-          Handle,
-          {
-            type: "target",
-            position: Position4.Top,
-            isConnectable,
-            style: { opacity: 0, pointerEvents: "none" }
-          }
-        ),
-        /* @__PURE__ */ jsx24(
-          Handle,
-          {
-            type: "source",
-            position: Position4.Bottom,
-            isConnectable,
-            style: { opacity: 0, pointerEvents: "none" }
-          }
-        )
-      ] })
-    }),
-    []
-  );
-  useEffect12(() => {
-    setFlowNodes(graph.nodes);
-    setFlowEdges(graph.edges);
-  }, [graph.edges, graph.nodes, setFlowEdges, setFlowNodes]);
-  const onConnect = useCallback7(
-    (params) => setFlowEdges(
-      (edges) => addEdge(
-        {
-          ...params,
-          type: "floating",
-          sourceHandle: null,
-          targetHandle: null,
-          markerEnd: { type: MarkerType2.Arrow }
-        },
-        edges
-      )
-    ),
-    [setFlowEdges]
-  );
-  return /* @__PURE__ */ jsx24("div", { className: "thread-graph-flow h-full min-h-0", children: /* @__PURE__ */ jsx24(ReactFlowProvider, { children: /* @__PURE__ */ jsxs18(
-    ReactFlow,
-    {
-      nodes: flowNodes,
-      edges: flowEdges,
-      onNodesChange,
-      onEdgesChange,
-      onConnect,
-      fitView: true,
-      nodeTypes,
-      edgeTypes,
-      connectionLineComponent: FloatingConnectionLine,
-      children: [
-        /* @__PURE__ */ jsx24(Controls, {}),
-        /* @__PURE__ */ jsx24(Background, { gap: 16 })
-      ]
-    }
-  ) }) });
-}
-
 // src/components/ThreadGraphWorkspacePanel.tsx
-import { jsx as jsx25, jsxs as jsxs19 } from "react/jsx-runtime";
+import { jsx as jsx21, jsxs as jsxs16 } from "react/jsx-runtime";
+var GraphVisualization = lazy2(() => import("./GraphVisualization-5WUAAW2N.js").then((module) => ({ default: module.GraphVisualization })));
 var DEFAULT_WORKSPACE_FEATURES = {
   workspace: true,
   toolUsage: false,
@@ -6346,27 +5983,27 @@ function ThreadGraphWorkspacePanel({
   onActiveFileChange
 }) {
   const { locale: i18nLocale } = useI18n();
-  const features = useMemo11(
+  const features = useMemo10(
     () => resolveWorkspaceFeatures(featureConfig),
     [featureConfig]
   );
   const initialTab = firstEnabledWorkspaceTab(features, featureConfig?.defaultTab);
   const [activeTab, setActiveTab] = useState13(initialTab);
-  const artifacts = useMemo11(() => collectArtifacts(detail), [detail]);
-  const toolEvents = useMemo11(() => collectToolEvents(detail), [detail, i18nLocale]);
+  const artifacts = useMemo10(() => collectArtifacts(detail), [detail]);
+  const toolEvents = useMemo10(() => collectToolEvents(detail), [detail, i18nLocale]);
   const threadPanels = plugins.getThreadPanels();
-  const graphNodes = useMemo11(
+  const graphNodes = useMemo10(
     () => collectGraphNodes(detail, toolEvents),
     [detail, toolEvents, i18nLocale]
   );
-  const primaryTabs = useMemo11(() => {
+  const primaryTabs = useMemo10(() => {
     const tabs = [];
     if (features.workspace) {
       tabs.push({ id: "workspace", label: translate("files.workspace"), icon: null });
     }
     return tabs;
   }, [features.workspace, i18nLocale]);
-  const secondaryTabs = useMemo11(() => {
+  const secondaryTabs = useMemo10(() => {
     const tabs = [];
     if (features.threadGraph) {
       tabs.push({ id: "graph", label: translate("files.threadGraph"), icon: GitBranch });
@@ -6376,12 +6013,12 @@ function ThreadGraphWorkspacePanel({
     }
     return tabs;
   }, [features.extensions, features.threadGraph, i18nLocale]);
-  useEffect13(() => {
+  useEffect12(() => {
     if (!activeTab || !isWorkspaceTabEnabled(features, activeTab)) {
       setActiveTab(firstEnabledWorkspaceTab(features, featureConfig?.defaultTab));
     }
   }, [activeTab, featureConfig?.defaultTab, features]);
-  useEffect13(() => {
+  useEffect12(() => {
     if (focusPathRequest && features.workspace) {
       setActiveTab("workspace");
     }
@@ -6389,32 +6026,32 @@ function ThreadGraphWorkspacePanel({
   if (!activeTab) {
     return null;
   }
-  return /* @__PURE__ */ jsxs19("div", { className: "thread-graph-right-panel flex h-full min-h-0 flex-col overflow-hidden", children: [
-    primaryTabs.length + secondaryTabs.length > 1 && /* @__PURE__ */ jsxs19("div", { className: "thread-graph-right-tabs flex h-9 shrink-0 items-center gap-0 overflow-hidden border-b px-1", children: [
+  return /* @__PURE__ */ jsxs16("div", { className: "thread-graph-right-panel flex h-full min-h-0 flex-col overflow-hidden", children: [
+    primaryTabs.length + secondaryTabs.length > 1 && /* @__PURE__ */ jsxs16("div", { className: "thread-graph-right-tabs flex h-9 shrink-0 items-center gap-0 overflow-hidden border-b px-1", children: [
       primaryTabs.map((tab) => {
         const Icon = tab.icon;
-        return /* @__PURE__ */ jsxs19(
+        return /* @__PURE__ */ jsxs16(
           "button",
           {
             type: "button",
             onClick: () => setActiveTab(tab.id),
             className: `thread-graph-right-tab inline-flex h-9 shrink-0 items-center gap-1.5 px-2.5 text-xs font-medium transition ${activeTab === tab.id ? "is-active" : ""}`,
             children: [
-              Icon ? /* @__PURE__ */ jsx25(Icon, { className: "h-3.5 w-3.5" }) : null,
+              Icon ? /* @__PURE__ */ jsx21(Icon, { className: "h-3.5 w-3.5" }) : null,
               tab.label
             ]
           },
           tab.id
         );
       }),
-      secondaryTabs.length ? /* @__PURE__ */ jsx25(
+      secondaryTabs.length ? /* @__PURE__ */ jsx21(
         "div",
         {
           className: "thread-graph-right-tab-secondary ml-auto flex h-6 min-w-0 shrink items-center gap-0.5 border-l pl-1",
           "aria-label": translate("files.pockymoeWorkspaceExtensions"),
           children: secondaryTabs.map((tab) => {
             const Icon = tab.icon;
-            return /* @__PURE__ */ jsx25(
+            return /* @__PURE__ */ jsx21(
               "button",
               {
                 type: "button",
@@ -6422,7 +6059,7 @@ function ThreadGraphWorkspacePanel({
                 className: `thread-graph-right-tab inline-flex h-8 w-8 shrink-0 items-center justify-center text-xs font-medium transition ${activeTab === tab.id ? "is-active" : ""}`,
                 title: tab.label,
                 "aria-label": tab.label,
-                children: /* @__PURE__ */ jsx25(Icon, { className: "h-3.5 w-3.5" })
+                children: /* @__PURE__ */ jsx21(Icon, { className: "h-3.5 w-3.5" })
               },
               tab.id
             );
@@ -6430,8 +6067,8 @@ function ThreadGraphWorkspacePanel({
         }
       ) : null
     ] }),
-    /* @__PURE__ */ jsxs19("div", { className: "min-h-0 flex-1 overflow-hidden", children: [
-      activeTab === "workspace" ? /* @__PURE__ */ jsx25(
+    /* @__PURE__ */ jsxs16("div", { className: "min-h-0 flex-1 overflow-hidden", children: [
+      activeTab === "workspace" ? /* @__PURE__ */ jsx21(
         GraphWorkspaceExplorer,
         {
           activeView,
@@ -6444,17 +6081,17 @@ function ThreadGraphWorkspacePanel({
           ...onActiveFileChange ? { onActiveFileChange } : {}
         }
       ) : null,
-      activeTab === "graph" ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-visualization-panel h-full min-h-0 p-3", children: /* @__PURE__ */ jsx25(GraphVisualization, { nodes: graphNodes }) }) : null,
-      activeTab === "extensions" ? /* @__PURE__ */ jsx25("div", { className: "h-full min-h-0 overflow-y-auto p-3", children: /* @__PURE__ */ jsxs19("div", { className: "grid gap-3", children: [
-        /* @__PURE__ */ jsx25(WorkspaceInfoCard, { label: translate("files.pluginPanels"), children: threadPanels.length ? /* @__PURE__ */ jsx25("div", { className: "flex flex-wrap gap-2", children: threadPanels.map((panel) => /* @__PURE__ */ jsx25(
+      activeTab === "graph" ? /* @__PURE__ */ jsx21("div", { className: "thread-graph-visualization-panel h-full min-h-0 p-3", children: /* @__PURE__ */ jsx21(Suspense2, { fallback: null, children: /* @__PURE__ */ jsx21(GraphVisualization, { nodes: graphNodes }) }) }) : null,
+      activeTab === "extensions" ? /* @__PURE__ */ jsx21("div", { className: "h-full min-h-0 overflow-y-auto p-3", children: /* @__PURE__ */ jsxs16("div", { className: "grid gap-3", children: [
+        /* @__PURE__ */ jsx21(WorkspaceInfoCard, { label: translate("files.pluginPanels"), children: threadPanels.length ? /* @__PURE__ */ jsx21("div", { className: "flex flex-wrap gap-2", children: threadPanels.map((panel) => /* @__PURE__ */ jsx21(
           "span",
           {
             className: "rounded-full border border-[var(--theme-border)] px-2 py-1 text-xs text-[var(--theme-fg-soft)]",
             children: panel.label
           },
           panel.id
-        )) }) : /* @__PURE__ */ jsx25("p", { className: "text-[var(--theme-fg-muted)]", children: translate("files.noThreadPanelsAreEnabled") }) }),
-        /* @__PURE__ */ jsx25(WorkspaceInfoCard, { label: translate("files.enabledRenderers"), children: /* @__PURE__ */ jsx25("div", { className: "flex flex-wrap gap-2", children: plugins.plugins.filter((plugin) => plugin.enabled).map((plugin) => /* @__PURE__ */ jsx25(
+        )) }) : /* @__PURE__ */ jsx21("p", { className: "text-[var(--theme-fg-muted)]", children: translate("files.noThreadPanelsAreEnabled") }) }),
+        /* @__PURE__ */ jsx21(WorkspaceInfoCard, { label: translate("files.enabledRenderers"), children: /* @__PURE__ */ jsx21("div", { className: "flex flex-wrap gap-2", children: plugins.plugins.filter((plugin) => plugin.enabled).map((plugin) => /* @__PURE__ */ jsx21(
           "span",
           {
             className: "rounded-full border border-[var(--theme-border)] px-2 py-1 text-xs text-[var(--theme-fg-soft)]",
@@ -6462,22 +6099,22 @@ function ThreadGraphWorkspacePanel({
           },
           plugin.id
         )) }) }),
-        /* @__PURE__ */ jsx25(WorkspaceInfoCard, { label: translate("files.pockymoeTools"), children: /* @__PURE__ */ jsxs19("div", { className: "grid gap-2 text-[var(--theme-fg-muted)]", children: [
-          /* @__PURE__ */ jsxs19("div", { className: "flex items-start gap-2", children: [
-            /* @__PURE__ */ jsx25(Terminal, { className: "mt-0.5 h-4 w-4 shrink-0" }),
-            /* @__PURE__ */ jsx25("p", { children: translate("files.terminalStaysAvailableWhenTheTerminalPlugin") })
+        /* @__PURE__ */ jsx21(WorkspaceInfoCard, { label: translate("files.pockymoeTools"), children: /* @__PURE__ */ jsxs16("div", { className: "grid gap-2 text-[var(--theme-fg-muted)]", children: [
+          /* @__PURE__ */ jsxs16("div", { className: "flex items-start gap-2", children: [
+            /* @__PURE__ */ jsx21(Terminal, { className: "mt-0.5 h-4 w-4 shrink-0" }),
+            /* @__PURE__ */ jsx21("p", { children: translate("files.terminalStaysAvailableWhenTheTerminalPlugin") })
           ] }),
-          /* @__PURE__ */ jsxs19("div", { className: "flex items-start gap-2", children: [
-            /* @__PURE__ */ jsx25(Paperclip, { className: "mt-0.5 h-4 w-4 shrink-0" }),
-            /* @__PURE__ */ jsx25("p", { children: translate("files.composerAttachmentsSlashPanelsHooksMCPGoals") })
+          /* @__PURE__ */ jsxs16("div", { className: "flex items-start gap-2", children: [
+            /* @__PURE__ */ jsx21(Paperclip, { className: "mt-0.5 h-4 w-4 shrink-0" }),
+            /* @__PURE__ */ jsx21("p", { children: translate("files.composerAttachmentsSlashPanelsHooksMCPGoals") })
           ] }),
-          /* @__PURE__ */ jsxs19("div", { className: "flex items-start gap-2", children: [
-            /* @__PURE__ */ jsx25(Trash24, { className: "mt-0.5 h-4 w-4 shrink-0" }),
-            /* @__PURE__ */ jsx25("p", { children: translate("files.destructiveActionsStayExplicitDeleteThreadInterrupt") })
+          /* @__PURE__ */ jsxs16("div", { className: "flex items-start gap-2", children: [
+            /* @__PURE__ */ jsx21(Trash24, { className: "mt-0.5 h-4 w-4 shrink-0" }),
+            /* @__PURE__ */ jsx21("p", { children: translate("files.destructiveActionsStayExplicitDeleteThreadInterrupt") })
           ] })
         ] }) }),
-        metaContent ? /* @__PURE__ */ jsx25(WorkspaceInfoCard, { label: translate("files.threadMeta"), children: metaContent }) : null,
-        settingsContent ? /* @__PURE__ */ jsx25(WorkspaceInfoCard, { label: translate("files.settings"), children: settingsContent }) : null
+        metaContent ? /* @__PURE__ */ jsx21(WorkspaceInfoCard, { label: translate("files.threadMeta"), children: metaContent }) : null,
+        settingsContent ? /* @__PURE__ */ jsx21(WorkspaceInfoCard, { label: translate("files.settings"), children: settingsContent }) : null
       ] }) }) : null
     ] })
   ] });

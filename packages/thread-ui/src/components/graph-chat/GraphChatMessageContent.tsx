@@ -30,7 +30,7 @@ import { VerifiedWorkspacePath } from '../VerifiedWorkspacePath';
 import { parseWorkspacePathText, remarkWorkspacePaths, type WorkspacePathResolver } from '../workspacePathLinks';
 import { usePlugins } from '../../plugins/usePlugins';
 import { GraphChatToolCall } from './GraphChatToolCall';
-import { getGraphChatHighlighter, syntaxThemeFor } from './graphChatShiki';
+import { fencedLanguages, getGraphChatHighlighter, hasFence, highlightCode, syntaxThemeFor } from './graphChatShiki';
 import { useThemeFeature } from '../themeHooks';
 import { GraphChatMermaidDiagram } from './GraphChatMermaidDiagram';
 import { hasClosedMarkdownFence, isMermaidCode } from './graphChatMermaid';
@@ -155,9 +155,26 @@ function isToolCodeElement(value: ReactNode) {
   );
 }
 
+/** A long text that keeps changing (an answer being written) is rendered a
+ *  few times a second, not on every piece: each render parses all of its
+ *  Markdown again, so the cost grew with the square of the answer's length.
+ *  The last value always renders. */
+function useSteadyText(text: string) {
+  const [shown, setShown] = useState(text);
+  const last = useRef(0);
+  const long = text.length > 2000;
+  useEffect(() => {
+    if (!long || text === shown) return;
+    const wait = Math.max(0, 220 - (performance.now() - last.current));
+    const timer = window.setTimeout(() => { last.current = performance.now(); setShown(text); }, wait);
+    return () => window.clearTimeout(timer);
+  }, [long, shown, text]);
+  return long ? shown : text;
+}
+
 export const GraphChatMessageContent = memo(function GraphChatMessageContent({
   className = 'thread-graph-markdown',
-  content,
+  content: latestContent,
   readOnly = false,
   streaming = false,
   onOpenWorkspaceFile,
@@ -175,6 +192,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
   resolveHref?: ((href: string) => string) | undefined;
 }) {
   const { locale: i18nLocale } = useI18n();
+  const content = useSteadyText(latestContent);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const plugins = usePlugins();
   const [highlighter, setHighlighter] = useState<Awaited<
@@ -188,12 +206,21 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
     [content, readOnly],
   );
 
+  // The highlighter and its grammars load only for a message that has code,
+  // and only the languages its fences name. `grammars` changes when a new
+  // language appears while the message streams.
+  const fenced = hasFence(content);
+  const grammars = useMemo(() => (fenced ? fencedLanguages(content).sort().join(' ') : ''), [content, fenced]);
+  const [, setGrammarsLoaded] = useState('');
   useEffect(() => {
+    if (!fenced) return;
     let alive = true;
-    getGraphChatHighlighter()
+    getGraphChatHighlighter(grammars ? grammars.split(' ') : [])
       .then((loadedHighlighter) => {
         if (alive) {
           setHighlighter(loadedHighlighter);
+          // The same highlighter object gains languages: render again for them.
+          setGrammarsLoaded(grammars);
         }
       })
       .catch(() => undefined);
@@ -201,7 +228,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
     return () => {
       alive = false;
     };
-  }, []);
+  }, [fenced, grammars]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -339,15 +366,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
       let html = '';
 
       if (highlighter) {
-        try {
-          html = ensureTransparentShikiBg(
-            highlighter.codeToHtml(textContent, { lang, theme }),
-          );
-        } catch {
-          html = ensureTransparentShikiBg(
-            highlighter.codeToHtml(textContent, { lang: 'text', theme }),
-          );
-        }
+        html = ensureTransparentShikiBg(highlightCode(highlighter, textContent, lang, theme));
       }
 
       return (

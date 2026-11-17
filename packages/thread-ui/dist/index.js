@@ -39,8 +39,11 @@ import {
   confirmWorkspaceDocumentLeave,
   copyText,
   externalLinkProps,
+  fencedLanguages,
   getDirtyWorkspaceDocumentCount,
   getGraphChatHighlighter,
+  hasFence,
+  highlightCode,
   isRiskyPaste,
   languageForPath,
   localFileHref,
@@ -56,7 +59,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-4P3Q3JCJ.js";
+} from "./chunk-KZCYQWEY.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -3412,9 +3415,24 @@ function isToolCodeElement(value) {
   }
   return className.includes("language-tool-call") || className.includes("language-tool-merged") || className.includes("language-tool-result");
 }
+function useSteadyText(text) {
+  const [shown, setShown] = useState9(text);
+  const last = useRef6(0);
+  const long = text.length > 2e3;
+  useEffect9(() => {
+    if (!long || text === shown) return;
+    const wait = Math.max(0, 220 - (performance.now() - last.current));
+    const timer = window.setTimeout(() => {
+      last.current = performance.now();
+      setShown(text);
+    }, wait);
+    return () => window.clearTimeout(timer);
+  }, [long, shown, text]);
+  return long ? shown : text;
+}
 var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
   className = "thread-graph-markdown",
-  content,
+  content: latestContent,
   readOnly = false,
   streaming = false,
   onOpenWorkspaceFile,
@@ -3423,6 +3441,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
   resolveHref
 }) {
   const { locale: i18nLocale } = useI18n();
+  const content = useSteadyText(latestContent);
   const rootRef = useRef6(null);
   const plugins = usePlugins();
   const [highlighter, setHighlighter] = useState9(null);
@@ -3433,17 +3452,22 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
     () => readOnly ? { processedContent: content, resultMap: /* @__PURE__ */ new Map() } : preprocessGraphChatToolBlocks(content),
     [content, readOnly]
   );
+  const fenced = hasFence(content);
+  const grammars = useMemo2(() => fenced ? fencedLanguages(content).sort().join(" ") : "", [content, fenced]);
+  const [, setGrammarsLoaded] = useState9("");
   useEffect9(() => {
+    if (!fenced) return;
     let alive = true;
-    getGraphChatHighlighter().then((loadedHighlighter) => {
+    getGraphChatHighlighter(grammars ? grammars.split(" ") : []).then((loadedHighlighter) => {
       if (alive) {
         setHighlighter(loadedHighlighter);
+        setGrammarsLoaded(grammars);
       }
     }).catch(() => void 0);
     return () => {
       alive = false;
     };
-  }, []);
+  }, [fenced, grammars]);
   useEffect9(() => {
     const root = rootRef.current;
     const shell = root?.closest(".thread-ui-shell");
@@ -3560,15 +3584,7 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
       const id = `${language || "text"}:${textContent.length}:${textContent.slice(0, 32)}`;
       let html = "";
       if (highlighter) {
-        try {
-          html = ensureTransparentShikiBg(
-            highlighter.codeToHtml(textContent, { lang, theme })
-          );
-        } catch {
-          html = ensureTransparentShikiBg(
-            highlighter.codeToHtml(textContent, { lang: "text", theme })
-          );
-        }
+        html = ensureTransparentShikiBg(highlightCode(highlighter, textContent, lang, theme));
       }
       return (
         // The frame holds the copy key floating over the code's corner; the code
@@ -27301,13 +27317,13 @@ function isRenderableHistoryItem2(value) {
   );
 }
 function sanitizeThreadDetailHistory(detail) {
-  const sanitizeItems = (items) => Array.isArray(items) ? items.filter(isRenderableHistoryItem2) : [];
+  const sanitizeItems = (items) => Array.isArray(items) ? items.every(isRenderableHistoryItem2) ? items : items.filter(isRenderableHistoryItem2) : [];
   return {
     ...detail,
-    turns: Array.isArray(detail.turns) ? detail.turns.map((turn) => ({
-      ...turn,
-      items: sanitizeItems(turn.items)
-    })) : [],
+    turns: Array.isArray(detail.turns) ? detail.turns.map((turn) => {
+      const items = sanitizeItems(turn.items);
+      return items === turn.items ? turn : { ...turn, items };
+    }) : [],
     ...detail.liveItems ? {
       liveItems: {
         ...detail.liveItems,

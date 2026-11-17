@@ -1,5 +1,5 @@
 import { translate, useI18n } from '../i18n';
-import { memo, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { lazy, memo, Suspense, useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   GitBranch,
   Paperclip,
@@ -20,8 +20,10 @@ import { GraphWorkspaceExplorer } from './graph-workspace/GraphWorkspaceExplorer
 import { WorkspaceInfoCard } from './graph-workspace/GraphWorkspaceCards';
 import type { GraphToolEventSummary } from './graph-workspace/GraphToolUsagePanel';
 import { collectArtifacts } from './graph-workspace/workspaceTree';
-import { GraphVisualization } from './graph-chat/GraphVisualization';
 import type { GraphChatInputNode } from './graph-chat/FloatingHelper';
+
+// The graph tab is off in most hosts; its layout library loads only when the tab is shown.
+const GraphVisualization = lazy(() => import('./graph-chat/GraphVisualization').then(module => ({ default: module.GraphVisualization })));
 
 export interface ThreadGraphWorkspacePanelProps {
   detail: ThreadDetailDto;
@@ -423,7 +425,7 @@ export function ThreadGraphWorkspacePanel({
 
         {activeTab === 'graph' ? (
           <div className="thread-graph-visualization-panel h-full min-h-0 p-3">
-            <GraphVisualization nodes={graphNodes} />
+            <Suspense fallback={null}><GraphVisualization nodes={graphNodes} /></Suspense>
           </div>
         ) : null}
 

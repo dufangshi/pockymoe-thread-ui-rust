@@ -134,16 +134,19 @@ function isRenderableHistoryItem(
  * entire screen.
  */
 function sanitizeThreadDetailHistory(detail: ThreadDetailDto): ThreadDetailDto {
+  // Well-formed items keep their array, and a turn with nothing to drop keeps
+  // its object: the rows are memoised by identity, and a new object for every
+  // turn on every update made the whole transcript render again.
   const sanitizeItems = (items: unknown): ThreadHistoryItemDto[] =>
-    Array.isArray(items) ? items.filter(isRenderableHistoryItem) : [];
+    Array.isArray(items) ? (items.every(isRenderableHistoryItem) ? items : items.filter(isRenderableHistoryItem)) : [];
 
   return {
     ...detail,
     turns: Array.isArray(detail.turns)
-      ? detail.turns.map((turn) => ({
-          ...turn,
-          items: sanitizeItems(turn.items),
-        }))
+      ? detail.turns.map((turn) => {
+          const items = sanitizeItems(turn.items);
+          return items === turn.items ? turn : { ...turn, items };
+        })
       : [],
     ...(detail.liveItems
       ? {

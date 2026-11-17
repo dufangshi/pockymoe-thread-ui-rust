@@ -1804,7 +1804,7 @@ function ZoomableImage({
   alt,
   className,
   fullSrc,
-  loading,
+  loading: loading2,
   src,
   width,
   height
@@ -1815,7 +1815,7 @@ function ZoomableImage({
   const insideLink = useContext2(MarkdownImageLinkContext);
   const dimension = (value) => typeof value === "number" ? value : value && /^\d+(?:\.\d+)?%?$/.test(value) ? value.endsWith("%") ? value : Number(value) : void 0;
   const imageStyle = { width: dimension(width), height: dimension(height) };
-  const imageProps = { src, alt, className, loading, style: imageStyle };
+  const imageProps = { src, alt, className, loading: loading2, style: imageStyle };
   function closeLightbox() {
     setOpen(false);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
@@ -1981,100 +1981,125 @@ function syntaxThemeFor(dark, cssPalette) {
   if (cssPalette) return CSS_VARIABLES_SYNTAX_THEME;
   return dark ? "ayu-dark" : "github-light-default";
 }
-var graphChatHighlighterPromise = null;
-function getGraphChatHighlighter() {
-  graphChatHighlighterPromise ??= Promise.all([
+var GRAMMARS = {
+  javascript: () => import("shiki/langs/javascript.mjs"),
+  typescript: () => import("shiki/langs/typescript.mjs"),
+  tsx: () => import("shiki/langs/tsx.mjs"),
+  jsx: () => import("shiki/langs/jsx.mjs"),
+  python: () => import("shiki/langs/python.mjs"),
+  json: () => import("shiki/langs/json.mjs"),
+  bash: () => import("shiki/langs/bash.mjs"),
+  shellscript: () => import("shiki/langs/shellscript.mjs"),
+  yaml: () => import("shiki/langs/yaml.mjs"),
+  toml: () => import("shiki/langs/toml.mjs"),
+  markdown: () => import("shiki/langs/markdown.mjs"),
+  html: () => import("shiki/langs/html.mjs"),
+  css: () => import("shiki/langs/css.mjs"),
+  sql: () => import("shiki/langs/sql.mjs"),
+  csv: () => import("shiki/langs/csv.mjs"),
+  ruby: () => import("shiki/langs/ruby.mjs"),
+  rust: () => import("shiki/langs/rust.mjs"),
+  go: () => import("shiki/langs/go.mjs"),
+  java: () => import("shiki/langs/java.mjs"),
+  c: () => import("shiki/langs/c.mjs"),
+  cpp: () => import("shiki/langs/cpp.mjs"),
+  csharp: () => import("shiki/langs/csharp.mjs"),
+  xml: () => import("shiki/langs/xml.mjs")
+};
+var ALIASES = {
+  js: "javascript",
+  mjs: "javascript",
+  cjs: "javascript",
+  ts: "typescript",
+  mts: "typescript",
+  cts: "typescript",
+  py: "python",
+  sh: "bash",
+  shell: "bash",
+  zsh: "bash",
+  yml: "yaml",
+  md: "markdown",
+  htm: "html",
+  rb: "ruby",
+  rs: "rust",
+  golang: "go",
+  "c++": "cpp",
+  cc: "cpp",
+  hpp: "cpp",
+  h: "c",
+  cs: "csharp",
+  "c#": "csharp",
+  svg: "xml",
+  jsonc: "json",
+  json5: "json"
+};
+var grammarOf = (language) => {
+  const name = language.trim().toLowerCase();
+  const known = ALIASES[name] ?? name;
+  return known in GRAMMARS ? known : null;
+};
+var corePromise = null;
+var loading = /* @__PURE__ */ new Map();
+function core() {
+  corePromise ??= Promise.all([
     import("shiki/core"),
     import("shiki/engine/javascript"),
     import("shiki/themes/github-light-default.mjs"),
-    import("shiki/themes/ayu-dark.mjs"),
-    import("shiki/langs/javascript.mjs"),
-    import("shiki/langs/typescript.mjs"),
-    import("shiki/langs/tsx.mjs"),
-    import("shiki/langs/jsx.mjs"),
-    import("shiki/langs/python.mjs"),
-    import("shiki/langs/json.mjs"),
-    import("shiki/langs/bash.mjs"),
-    import("shiki/langs/shellscript.mjs"),
-    import("shiki/langs/yaml.mjs"),
-    import("shiki/langs/toml.mjs"),
-    import("shiki/langs/markdown.mjs"),
-    import("shiki/langs/html.mjs"),
-    import("shiki/langs/css.mjs"),
-    import("shiki/langs/sql.mjs"),
-    import("shiki/langs/csv.mjs"),
-    import("shiki/langs/ruby.mjs"),
-    import("shiki/langs/rust.mjs"),
-    import("shiki/langs/go.mjs"),
-    import("shiki/langs/java.mjs"),
-    import("shiki/langs/c.mjs"),
-    import("shiki/langs/cpp.mjs"),
-    import("shiki/langs/csharp.mjs"),
-    import("shiki/langs/xml.mjs")
-  ]).then(
-    ([
-      { createHighlighterCore, createCssVariablesTheme },
-      { createJavaScriptRegexEngine },
-      ayuLight,
-      ayuDark,
-      javascript,
-      typescript,
-      tsx,
-      jsx16,
-      python,
-      json,
-      bash,
-      shellscript,
-      yaml,
-      toml,
-      markdown,
-      html,
-      css,
-      sql,
-      csv,
-      ruby,
-      rust,
-      go,
-      java,
-      c,
-      cpp,
-      csharp,
-      xml
-    ]) => createHighlighterCore({
-      engine: createJavaScriptRegexEngine(),
-      themes: [
-        ayuLight.default,
-        ayuDark.default,
-        createCssVariablesTheme({ name: CSS_VARIABLES_SYNTAX_THEME, variablePrefix: "--shiki-", fontStyle: true })
-      ],
-      langs: [
-        javascript.default,
-        typescript.default,
-        tsx.default,
-        jsx16.default,
-        python.default,
-        json.default,
-        bash.default,
-        shellscript.default,
-        yaml.default,
-        toml.default,
-        markdown.default,
-        html.default,
-        css.default,
-        sql.default,
-        csv.default,
-        ruby.default,
-        rust.default,
-        go.default,
-        java.default,
-        c.default,
-        cpp.default,
-        csharp.default,
-        xml.default
-      ]
-    })
-  );
-  return graphChatHighlighterPromise;
+    import("shiki/themes/ayu-dark.mjs")
+  ]).then(([{ createHighlighterCore, createCssVariablesTheme }, { createJavaScriptRegexEngine }, light, dark]) => createHighlighterCore({
+    engine: createJavaScriptRegexEngine(),
+    themes: [
+      light.default,
+      dark.default,
+      createCssVariablesTheme({ name: CSS_VARIABLES_SYNTAX_THEME, variablePrefix: "--shiki-", fontStyle: true })
+    ],
+    langs: []
+  }));
+  return corePromise;
+}
+async function getGraphChatHighlighter(languages) {
+  const highlighter = await core();
+  const wanted = languages ? [...new Set(languages.map(grammarOf).filter((name) => name !== null))] : Object.keys(GRAMMARS);
+  await Promise.all(wanted.map((name) => {
+    let pending = loading.get(name);
+    if (!pending) {
+      pending = GRAMMARS[name]().then((grammar) => highlighter.loadLanguage(grammar.default)).catch(() => {
+        loading.delete(name);
+      });
+      loading.set(name, pending);
+    }
+    return pending;
+  }));
+  return highlighter;
+}
+function fencedLanguages(markdown) {
+  const names = /* @__PURE__ */ new Set();
+  for (const match of markdown.matchAll(/^[ \t]{0,3}(?:`{3,}|~{3,})[ \t]*([\w#+.-]+)/gm)) names.add(match[1]);
+  return [...names];
+}
+var hasFence = (markdown) => /^[ \t]{0,3}(?:`{3,}|~{3,})/m.test(markdown);
+var highlighted = /* @__PURE__ */ new Map();
+function highlightCode(highlighter, code, lang, theme) {
+  const key = `${theme}
+${lang}
+${code}`;
+  const known = highlighted.get(key);
+  if (known !== void 0) {
+    highlighted.delete(key);
+    highlighted.set(key, known);
+    return known;
+  }
+  let html;
+  try {
+    html = highlighter.codeToHtml(code, { lang, theme });
+  } catch {
+    html = highlighter.codeToHtml(code, { lang: "text", theme });
+  }
+  if (code.length < 2e5) {
+    highlighted.set(key, html);
+    if (highlighted.size > 300) highlighted.delete(highlighted.keys().next().value);
+  }
+  return html;
 }
 
 // src/components/workbench/FilePanelContext.tsx
@@ -2162,6 +2187,9 @@ export {
   WorkspaceFileLink,
   syntaxThemeFor,
   getGraphChatHighlighter,
+  fencedLanguages,
+  hasFence,
+  highlightCode,
   Tooltip,
   TooltipTrigger,
   TooltipContent,

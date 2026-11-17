@@ -4,6 +4,29 @@ import { Check, ChevronDown } from 'lucide-react';
 import { useMenuKeyboard } from './menu/useMenuKeyboard';
 import '../styles/form-controls.css';
 
+/**
+ * Lists and menus open in a layer of their own, outside the window that opened
+ * them. A window's scroll lock (every modal dialog has one) blocks touch and
+ * wheel scrolling outside the window, so such a list only moved by dragging
+ * its scroll thumb. A scroll that starts in one of them is let through before
+ * it reaches the lock; the page behind stays locked, and the lists contain
+ * their overscroll.
+ */
+const FLOATING_SCROLL = '.pm-select-menu, [role=menu], [role=listbox], [data-floating-scroll]';
+let floatingScrollInstalled = false;
+export function installFloatingScroll() {
+  if (floatingScrollInstalled || typeof document === 'undefined') return;
+  floatingScrollInstalled = true;
+  const pass = (event: Event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const surface = target?.closest(FLOATING_SCROLL);
+    // Only layers outside every dialog: inside one, its own lock allows them.
+    if (surface && !surface.closest('[role=dialog], [role=alertdialog]')) event.stopPropagation();
+  };
+  document.body.addEventListener('touchmove', pass, { passive: true });
+  document.body.addEventListener('wheel', pass, { passive: true });
+}
+
 export interface SelectOption { value: string | number; label: ReactNode; disabled?: boolean; hidden?: boolean; group?: string; }
 export interface SelectProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value' | 'defaultValue' | 'onChange' | 'children' | 'name' | 'type' | 'role'> {
   value?: string | number;
@@ -116,6 +139,7 @@ export function Select({ value, defaultValue, onValueChange, options, children, 
     const index = candidates.indexOf(trigger.current!); close(false);
     candidates[index + (backwards ? -1 : 1)]?.focus();
   };
+  useEffect(installFloatingScroll, []);
   const popupLabel = buttonProps['aria-label'] ?? ([...(trigger.current?.labels ?? [])].map(label => label.textContent).join(' ').trim() || plainText(current?.label ?? placeholder));
   return <Dialog.Root open={open} onOpenChange={next => { setMenuReady(false); setOpen(next); }} modal={false}>
     <Dialog.Trigger asChild><button {...buttonProps} ref={trigger} type="button" role="combobox" value={selected} form={form} disabled={disabled} aria-expanded={open} aria-haspopup="listbox" aria-controls={open ? popupId : undefined}

@@ -73,3 +73,13 @@
   .pm-select { min-height: 40px; }
   .pm-select-menu [role=option] { min-height: 44px; }
 }
+
+/* A window's content scrolls up and down, never sideways. A control's enlarged
+   touch area (an invisible ::after a few pixels around it) counts as content,
+   so a mark near the edge made the whole form slide sideways under the finger.
+   A part that should scroll sideways (code, tables, wide lists) says so itself
+   with its own overflow-x. */
+:is([role=dialog], [role=alertdialog]):is([data-slot=dialog-content], .host-dialog),
+:is([role=dialog], [role=alertdialog]) :is(.overflow-y-auto, .host-secondary-window-body):not(.overflow-x-auto, .overflow-x-scroll) {
+  overflow-x: hidden;
+}

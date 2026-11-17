@@ -439,9 +439,9 @@
 
 /* The operation a folded, working turn is running now. */
 .tlog-current { min-width: 0; margin-top: -4px; }
-/* The latest thinking summary of a working turn, above its work line: its text
-   uses its active colour, like the running operation groups. */
-.tlog-current.is-thought { margin-top: 0; margin-bottom: -4px; }
+/* The latest thinking summary of a working turn, below its folded work line in
+   the place of the running operation: its text uses its active colour, like
+   the running operation groups. */
 .tlog-current.is-thought .tlog-row:not([data-open]) .tlog-title {
   color: var(--theme-accent-strong, var(--theme-accent-solid));
 }

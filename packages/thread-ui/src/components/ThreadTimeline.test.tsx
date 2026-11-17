@@ -314,7 +314,7 @@ describe('ThreadTimeline', () => {
     expect(element.querySelector('.tlog-current .tlog-title')?.textContent).toBe('fourth');
   });
 
-  it('puts the latest thinking summary of a working turn above its work line, without a running mark', () => {
+  it('puts the latest thinking summary of a working turn below its folded work line, without a running mark', () => {
     const turn: ThreadTurnDto = { ...completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Inspect' }]), status: 'inProgress' };
     const command = (id: string) => ({ id, kind: 'commandExecution' as const, text: id, status: 'completed' });
     const thought = (id: string, text: string) => ({ id, kind: 'reasoning' as const, text, status: 'running' });
@@ -324,14 +324,17 @@ describe('ThreadTimeline', () => {
     // Thoughts stay "running" until the turn ends; none of them spins, nor does their run.
     expect(element.querySelectorAll('.tlog-row[data-kind="reasoning"] .tlog-spinner')).toHaveLength(0);
     expect(element.querySelector('.tlog-run[data-running]')).toBeNull();
+    const toggle = () => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!;
+    // Folded, it stands under the work line; open, the list shows it and the line goes.
+    if (toggle().getAttribute('aria-expanded') === 'true') flushSync(() => toggle().click());
     const now = element.querySelector('.tlog-current.is-thought');
     expect(now?.querySelector('.tlog-title')?.textContent).toBe('Next: parse the capture');
-    // It stands between the prompt and the work line, folded or open.
     const line = element.querySelector('.thread-graph-worked-summary')!;
-    expect(now!.compareDocumentPosition(line) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    flushSync(() => element.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    expect(line.compareDocumentPosition(now!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(element.querySelectorAll('.tlog-current')).toHaveLength(1);
-    expect(element.querySelector('.tlog-current.is-thought')).not.toBeNull();
+    flushSync(() => toggle().click());
+    expect(element.querySelector('.tlog-current')).toBeNull();
+    flushSync(() => toggle().click());
     // Harnesses think, narrate, then run: narration after the thought does not remove it,
     // and the thought still stands in for the operation under the folded turn.
     flushSync(() => root?.render(timeline([thought('t1', 'Reading the logs'), { id: 'n', kind: 'agentMessage', text: 'Found it', responsePhase: 'commentary' }, command('third')])));

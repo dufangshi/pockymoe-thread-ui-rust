@@ -898,7 +898,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     return index > narration ? mergedItems[index]! : null;
   }, [activeForRendering, mergedItems, visibleSummaryAgent]);
   // With thinking summaries shown, the latest one says what the working turn is
-  // about now: it stands above the work line, and replaces the operation below it.
+  // about now: below the folded work line, in the place of the running
+  // operation, and only while the work is folded (open, it is in the list).
   // It stays when narration follows it: harnesses think, say what they will do,
   // then run it, so a thought is nearly always older than the latest narration.
   const latestThought = useMemo(() => {
@@ -931,7 +932,6 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     hasCollapsedHiddenItems ? (
       <div className="thread-graph-turn-collapsed-summary space-y-2">
         {collapsedSummary.users.slice(0, leadingPrompts).map(renderPrompt)}
-        {latestThought ? <div className="tlog-current is-thought"><LogRow key={latestThought.id} item={latestThought} /></div> : null}
         <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
           <TranscriptAgentByline />
           <button
@@ -1047,7 +1047,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           ? renderSummaryAgent(finalAnswer) : null}
         {effectiveCollapsed && !finalAnswer && visibleSummaryAgent && !answerSections?.some(entry => entry.kind === 'item' && entry.item.id === visibleSummaryAgent.id)
           ? renderSummaryAgent(visibleSummaryAgent) : null}
-        {effectiveCollapsed && currentOperation && !latestThought ? <div className="tlog-current"><LogRow key={currentOperation.id} item={currentOperation} /></div> : null}
+        {effectiveCollapsed && latestThought ? <div className="tlog-current is-thought"><LogRow key={latestThought.id} item={latestThought} /></div>
+          : effectiveCollapsed && currentOperation ? <div className="tlog-current"><LogRow key={currentOperation.id} item={currentOperation} /></div> : null}
         {/* The plan and status leave with the work when the turn ends. */}
         <Collapse open={activeForRendering}>
           <GraphChatTurnBody

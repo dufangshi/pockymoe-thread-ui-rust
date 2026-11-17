@@ -1,0 +1,2239 @@
+import {
+  shellThemeProps,
+  surfaceBehind
+} from "./chunk-JIPNJR2N.js";
+import {
+  translate,
+  useI18n,
+  useMenuKeyboard
+} from "./chunk-YCPNQG5Q.js";
+
+// src/components/shell/terminalClipboard.ts
+async function copyText(text) {
+  if (!text) return false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+  }
+  const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  const field = document.createElement("textarea");
+  field.value = text;
+  field.setAttribute("readonly", "");
+  Object.assign(field.style, { position: "fixed", top: "0", left: "0", opacity: "0", pointerEvents: "none" });
+  document.body.append(field);
+  field.select();
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch {
+    copied = false;
+  }
+  field.remove();
+  active?.focus({ preventScroll: true });
+  return copied;
+}
+async function readClipboardText() {
+  try {
+    if (!navigator.clipboard?.readText) return null;
+    return await navigator.clipboard.readText();
+  } catch {
+    return null;
+  }
+}
+function isRiskyPaste(text, bracketed) {
+  return !bracketed && /[\r\n]/.test(text.replace(/[\r\n]+$/, ""));
+}
+function pastedLineCount(text) {
+  return text.replace(/[\r\n]+$/, "").split(/\r\n|\r|\n/).length;
+}
+
+// src/components/copy/CopyButton.tsx
+import { useEffect, useRef, useState } from "react";
+import { Check, Copy, TriangleAlert } from "lucide-react";
+import { jsx, jsxs } from "react/jsx-runtime";
+function useCopy() {
+  const [state, setState] = useState("idle");
+  const timer = useRef(void 0);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const copy = async (value) => {
+    const ok = await copyText(value);
+    setState(ok ? "copied" : "failed");
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setState("idle"), ok ? 1500 : 3e3);
+    return ok;
+  };
+  return { state, copy };
+}
+function CopyButton({ value, label, className, onCopied }) {
+  useI18n();
+  const { state, copy } = useCopy();
+  const text = state === "copied" ? translate("common.copied") : state === "failed" ? translate("common.copyFailed") : label;
+  return /* @__PURE__ */ jsxs(
+    "button",
+    {
+      type: "button",
+      className: `copy-button${className ? ` ${className}` : ""}`,
+      "data-state": state,
+      "aria-label": label,
+      title: text,
+      onClick: async (event) => {
+        event.stopPropagation();
+        if (await copy(typeof value === "function" ? value() : value)) onCopied?.();
+      },
+      children: [
+        state === "copied" ? /* @__PURE__ */ jsx(Check, { "aria-hidden": "true" }) : state === "failed" ? /* @__PURE__ */ jsx(TriangleAlert, { "aria-hidden": "true" }) : /* @__PURE__ */ jsx(Copy, { "aria-hidden": "true" }),
+        state === "failed" ? /* @__PURE__ */ jsx("span", { className: "copy-button-note", "aria-hidden": "true", children: text }) : null,
+        /* @__PURE__ */ jsx("span", { className: "copy-button-status", role: "status", children: state === "idle" ? "" : text })
+      ]
+    }
+  );
+}
+
+// src/components/copy/PathChip.tsx
+import { useState as useState2 } from "react";
+import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
+function splitPath(path) {
+  const trimmed = path.replace(/[\\/]+$/, "");
+  const cut = Math.max(trimmed.lastIndexOf("/"), trimmed.lastIndexOf("\\"));
+  return cut < 0 ? { head: "", tail: path } : { head: path.slice(0, cut + 1), tail: path.slice(cut + 1) };
+}
+function PathChip({ path, display, copyValue, label, className }) {
+  useI18n();
+  const [whole, setWhole] = useState2(false);
+  const { head, tail } = splitPath(display ?? path);
+  return /* @__PURE__ */ jsxs2("span", { className: `path-chip${whole ? " is-whole" : ""}${className ? ` ${className}` : ""}`, title: path, children: [
+    /* @__PURE__ */ jsxs2(
+      "button",
+      {
+        type: "button",
+        className: "path-chip-text",
+        "aria-expanded": whole,
+        "aria-label": translate("common.pathShowWhole", { path }),
+        onClick: () => setWhole((value) => !value),
+        children: [
+          head ? /* @__PURE__ */ jsx2("span", { className: "path-chip-head", children: head }) : null,
+          /* @__PURE__ */ jsx2("span", { className: "path-chip-tail", children: tail })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsx2(CopyButton, { value: copyValue ?? path, label: label ?? translate("common.copyPath") })
+  ] });
+}
+
+// src/components/copy/MiddleName.tsx
+import { jsx as jsx3, jsxs as jsxs3 } from "react/jsx-runtime";
+function MiddleName({ name, className }) {
+  const dot = name.lastIndexOf(".");
+  const keep = Math.min(name.length, dot > 0 && name.length - dot <= 12 ? Math.max(8, name.length - dot + 5) : 8);
+  if (name.length <= keep + 2) return /* @__PURE__ */ jsx3("span", { className: `middle-name${className ? ` ${className}` : ""}`, children: /* @__PURE__ */ jsx3("span", { className: "middle-name-head", children: name }) });
+  return /* @__PURE__ */ jsxs3("span", { className: `middle-name${className ? ` ${className}` : ""}`, children: [
+    /* @__PURE__ */ jsx3("span", { className: "middle-name-head", children: name.slice(0, -keep) }),
+    /* @__PURE__ */ jsx3("span", { className: "middle-name-tail", children: name.slice(-keep) })
+  ] });
+}
+
+// src/components/copy/ErrorMark.tsx
+import { useCallback, useEffect as useEffect2, useId, useLayoutEffect, useRef as useRef2, useState as useState3 } from "react";
+import { createPortal } from "react-dom";
+import { CircleAlert, RotateCw } from "lucide-react";
+import { Fragment, jsx as jsx4, jsxs as jsxs4 } from "react/jsx-runtime";
+function ErrorMark({
+  message,
+  detail,
+  kind = "error",
+  label,
+  onRetry,
+  retryLabel,
+  retryDisabled = false,
+  secondaryAction,
+  className = "",
+  announce = true,
+  tabIndex
+}) {
+  useI18n();
+  const id = useId();
+  const trigger = useRef2(null);
+  const bubble = useRef2(null);
+  const [open, setOpen] = useState3(false);
+  const [place, setPlace] = useState3({ left: -9999, top: -9999 });
+  const name = label ?? translate(kind === "unavailable" ? "common.whyUnavailable" : "common.whyFailed");
+  const placeBubble = useCallback(() => {
+    const button = trigger.current?.getBoundingClientRect();
+    const box = bubble.current?.getBoundingClientRect();
+    if (!button || !box) return;
+    const width = Math.min(box.width, window.innerWidth - 16);
+    const left = Math.max(8, Math.min(button.left + button.width / 2 - width / 2, window.innerWidth - width - 8));
+    const below = button.bottom + 6 + box.height <= window.innerHeight - 8 || button.top - 6 - box.height < 8;
+    setPlace((current) => ({ ...current, left, top: below ? button.bottom + 6 : button.top - 6 - box.height }));
+  }, []);
+  useLayoutEffect(() => {
+    if (!open) return;
+    const host = trigger.current?.parentElement ?? trigger.current;
+    const ink = host ? getComputedStyle(host).color : void 0;
+    setPlace((current) => ({
+      ...current,
+      ...ink ? { color: ink, borderColor: `color-mix(in srgb, ${ink} 22%, transparent)` } : {},
+      // The mark's hover tint may be translucent; the popup needs its parent surface.
+      background: surfaceBehind(trigger.current?.parentElement)
+    }));
+    placeBubble();
+  }, [open, message, detail, placeBubble]);
+  useEffect2(() => {
+    if (!open) return;
+    const outside = (event) => {
+      const target = event.target;
+      if (!bubble.current?.contains(target) && !trigger.current?.contains(target)) setOpen(false);
+    };
+    const key = (event) => {
+      if (event.key !== "Escape") return;
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      setOpen(false);
+      trigger.current?.focus();
+    };
+    const follow = (event) => {
+      if (event.target instanceof Node && bubble.current?.contains(event.target)) return;
+      const button = trigger.current?.getBoundingClientRect();
+      if (!button || button.bottom < 0 || button.top > window.innerHeight) setOpen(false);
+      else placeBubble();
+    };
+    const own = bubble.current;
+    const keep = (event) => event.stopPropagation();
+    own?.addEventListener("pointerdown", keep);
+    own?.addEventListener("mousedown", keep);
+    document.addEventListener("pointerdown", outside, true);
+    window.addEventListener("keydown", key, true);
+    window.addEventListener("resize", follow);
+    window.addEventListener("scroll", follow, true);
+    return () => {
+      document.removeEventListener("pointerdown", outside, true);
+      window.removeEventListener("keydown", key, true);
+      window.removeEventListener("resize", follow);
+      window.removeEventListener("scroll", follow, true);
+      own?.removeEventListener("pointerdown", keep);
+      own?.removeEventListener("mousedown", keep);
+    };
+  }, [open, placeBubble]);
+  const theme = shellThemeProps(trigger.current);
+  return /* @__PURE__ */ jsxs4(Fragment, { children: [
+    /* @__PURE__ */ jsx4(
+      "button",
+      {
+        ref: trigger,
+        type: "button",
+        className: `error-mark ${className}`.trim(),
+        "data-kind": kind,
+        "aria-label": name,
+        title: name,
+        "aria-expanded": open,
+        "aria-controls": open ? id : void 0,
+        tabIndex,
+        onClick: (event) => {
+          event.stopPropagation();
+          setOpen((current) => !current);
+        },
+        children: /* @__PURE__ */ jsx4(CircleAlert, { "aria-hidden": "true" })
+      }
+    ),
+    kind === "error" && announce ? /* @__PURE__ */ jsx4("span", { className: "sr-only", role: "alert", children: message }) : null,
+    open ? createPortal(
+      /* @__PURE__ */ jsxs4(
+        "div",
+        {
+          ref: bubble,
+          id,
+          role: "dialog",
+          "aria-label": name,
+          className: `thread-ui-shell error-mark-bubble ${theme.themeClass}`.trim(),
+          "data-theme-effective": theme["data-theme-effective"],
+          "data-kind": kind,
+          style: place,
+          children: [
+            /* @__PURE__ */ jsx4("p", { className: "error-mark-message", children: message }),
+            detail ? /* @__PURE__ */ jsx4("pre", { className: "error-mark-detail", children: detail }) : null,
+            onRetry ? /* @__PURE__ */ jsxs4("button", { type: "button", className: "error-mark-retry", disabled: retryDisabled, onClick: () => {
+              setOpen(false);
+              onRetry();
+            }, children: [
+              /* @__PURE__ */ jsx4(RotateCw, { "aria-hidden": "true" }),
+              retryLabel ?? translate("common.retry")
+            ] }) : null,
+            secondaryAction ? /* @__PURE__ */ jsx4("button", { type: "button", className: "error-mark-retry", onClick: () => {
+              setOpen(false);
+              secondaryAction.onClick();
+            }, children: secondaryAction.label }) : null
+          ]
+        }
+      ),
+      // Inside a menu on the browser's top layer, the page's body would paint under it.
+      trigger.current?.closest("[popover]") ?? document.body
+    ) : null
+  ] });
+}
+
+// src/components/menu/useModalFocus.ts
+import { useEffect as useEffect3, useRef as useRef3 } from "react";
+var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+function useModalFocus(windowRef, open, onClose, initial) {
+  const close = useRef3(onClose);
+  close.current = onClose;
+  useEffect3(() => {
+    if (!open) return;
+    const root = windowRef.current;
+    if (!root) return;
+    const before = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const visible = (element) => element.offsetParent !== null || element.getClientRects().length > 0;
+    const focusables = () => [...root.querySelectorAll(FOCUSABLE)].filter(visible);
+    const frame = requestAnimationFrame(() => {
+      if (root.contains(document.activeElement)) return;
+      const target = (initial ? root.querySelector(initial) : null) ?? focusables()[0] ?? root;
+      target.focus();
+    });
+    const key = (event) => {
+      const active = document.activeElement;
+      if (active && !root.contains(active) && active.closest('[role="dialog"], [role="alertdialog"], [role="menu"]')) return;
+      if (event.key === "Escape" && document.querySelector(".error-mark-bubble")) return;
+      if (event.key === "Escape" && close.current) {
+        event.preventDefault();
+        event.stopPropagation();
+        close.current();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const list = focusables();
+      if (!list.length) {
+        event.preventDefault();
+        return;
+      }
+      const first = list[0], last = list[list.length - 1];
+      const inside = root.contains(document.activeElement);
+      if (event.shiftKey && (document.activeElement === first || !inside)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !inside)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", key, true);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("keydown", key, true);
+      if (before?.isConnected) before.focus({ preventScroll: true });
+    };
+  }, [windowRef, open, initial]);
+}
+
+// src/components/menu/useLongPress.ts
+import { useRef as useRef4 } from "react";
+function useLongPress(onLongPress, delay = 500) {
+  const timer = useRef4(void 0);
+  const start = useRef4(null);
+  const fired = useRef4(false);
+  const cancel = () => {
+    window.clearTimeout(timer.current);
+    start.current = null;
+  };
+  return {
+    onTouchStart(event) {
+      const touch = event.touches[0];
+      if (!touch || event.touches.length > 1) return;
+      fired.current = false;
+      start.current = { x: touch.clientX, y: touch.clientY };
+      timer.current = window.setTimeout(() => {
+        if (!start.current) return;
+        fired.current = true;
+        onLongPress(start.current);
+      }, delay);
+    },
+    onTouchMove(event) {
+      const touch = event.touches[0];
+      if (start.current && touch && Math.hypot(touch.clientX - start.current.x, touch.clientY - start.current.y) > 10) cancel();
+    },
+    onTouchEnd: cancel,
+    onTouchCancel: cancel,
+    onClickCapture(event) {
+      if (fired.current) {
+        fired.current = false;
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }
+  };
+}
+
+// src/components/ConfirmDialog.tsx
+import { useRef as useRef5 } from "react";
+import { createPortal as createPortal2 } from "react-dom";
+import { jsx as jsx5, jsxs as jsxs5 } from "react/jsx-runtime";
+function ConfirmDialog({
+  open,
+  title,
+  description,
+  confirmLabel = translate("workbench.delete"),
+  busyLabel = translate("workbench.deleting"),
+  busy = false,
+  error,
+  onCancel,
+  onConfirm,
+  secondaryLabel,
+  onSecondary,
+  cancelLabel,
+  tone = "danger"
+}) {
+  useI18n();
+  const windowRef = useRef5(null);
+  useModalFocus(windowRef, open, busy ? void 0 : onCancel, "[data-initial-focus]");
+  if (!open) {
+    return null;
+  }
+  return createPortal2(
+    /* @__PURE__ */ jsxs5("div", { className: "fixed inset-0 z-[95] flex items-end justify-center p-0 sm:items-center sm:p-6", children: [
+      /* @__PURE__ */ jsx5(
+        "button",
+        {
+          type: "button",
+          "aria-label": translate("workbench.closeConfirmationDialog"),
+          onClick: onCancel,
+          disabled: busy,
+          className: "absolute inset-0 bg-[var(--overlay-scrim)] backdrop-blur-sm disabled:cursor-not-allowed"
+        }
+      ),
+      /* @__PURE__ */ jsxs5(
+        "div",
+        {
+          ref: windowRef,
+          role: "dialog",
+          "aria-modal": "true",
+          "aria-label": title,
+          className: "relative z-[1] w-full max-w-md rounded-t-2xl border border-b-0 border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:rounded-xl sm:border-b sm:p-6",
+          children: [
+            /* @__PURE__ */ jsxs5("div", { className: "flex items-start justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs5("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsx5("p", { className: "text-sm font-medium", children: title }),
+                /* @__PURE__ */ jsx5("p", { tabIndex: 0, className: "mt-2 max-h-[min(45dvh,20rem)] overflow-y-auto whitespace-pre-line text-sm leading-6 text-[var(--theme-fg-muted)]", style: { overflowWrap: "anywhere" }, children: description })
+              ] }),
+              /* @__PURE__ */ jsx5(
+                "button",
+                {
+                  type: "button",
+                  "aria-label": translate("workbench.closeDialog"),
+                  onClick: onCancel,
+                  disabled: busy,
+                  className: "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  children: /* @__PURE__ */ jsx5("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx5("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs5("div", { className: "mt-5 flex flex-wrap items-center justify-end gap-2", children: [
+              /* @__PURE__ */ jsx5(
+                "button",
+                {
+                  type: "button",
+                  "data-initial-focus": "",
+                  onClick: onCancel,
+                  disabled: busy,
+                  className: "min-h-10 rounded-md border border-[var(--theme-border)] px-4 py-2 text-sm font-medium text-[var(--theme-fg-soft)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  children: cancelLabel ?? translate("workbench.cancel")
+                }
+              ),
+              secondaryLabel && onSecondary ? /* @__PURE__ */ jsx5(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => void onSecondary(),
+                  disabled: busy,
+                  className: "min-h-10 rounded-md border border-[var(--theme-border)] px-4 py-2 text-sm font-medium text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  children: secondaryLabel
+                }
+              ) : null,
+              /* @__PURE__ */ jsx5(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => void onConfirm(),
+                  disabled: busy,
+                  className: `${tone === "primary" ? "ui-action-primary" : "ui-action-danger"} min-h-10 rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed`,
+                  children: busy ? busyLabel : confirmLabel
+                }
+              ),
+              error ? /* @__PURE__ */ jsx5(ErrorMark, { message: error }) : null
+            ] })
+          ]
+        }
+      )
+    ] }),
+    document.body
+  );
+}
+
+// src/components/menu/confirmAsync.tsx
+import { createRoot } from "react-dom/client";
+import { jsx as jsx6 } from "react/jsx-runtime";
+function confirmAsync({ title, description, confirmLabel, cancelLabel, tone, signal }) {
+  return new Promise((resolve) => {
+    if (signal?.aborted) {
+      resolve(false);
+      return;
+    }
+    let settled = false;
+    const host = document.createElement("div");
+    document.body.append(host);
+    const root = createRoot(host);
+    const finish = (value) => {
+      if (settled) return;
+      settled = true;
+      signal?.removeEventListener("abort", abort);
+      root.unmount();
+      host.remove();
+      resolve(value);
+    };
+    const abort = () => finish(false);
+    signal?.addEventListener("abort", abort, { once: true });
+    root.render(
+      /* @__PURE__ */ jsx6(
+        ConfirmDialog,
+        {
+          open: true,
+          title,
+          description,
+          confirmLabel,
+          ...cancelLabel ? { cancelLabel } : {},
+          ...tone ? { tone } : {},
+          onCancel: () => finish(false),
+          onConfirm: () => finish(true)
+        }
+      )
+    );
+  });
+}
+
+// src/components/RecoverableImage.tsx
+import { createContext, useContext, useEffect as useEffect4, useRef as useRef6, useState as useState4 } from "react";
+import { ImageOff } from "lucide-react";
+import { jsx as jsx7, jsxs as jsxs6 } from "react/jsx-runtime";
+import { createElement } from "react";
+var ImageRecoveryContext = createContext((src) => src);
+var ImageRecoveryProvider = ImageRecoveryContext.Provider;
+var ImageBlobContext = createContext(void 0);
+var ImageFallbackProvider = ImageBlobContext.Provider;
+var ImageDiagnosisContext = createContext(void 0);
+var ImageDiagnosisProvider = ImageDiagnosisContext.Provider;
+function RecoverableImage(props) {
+  return /* @__PURE__ */ jsx7(ImageAttempt, { ...props }, props.src);
+}
+function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) => image, ...props }) {
+  useI18n();
+  const refresh = useContext(ImageRecoveryContext);
+  const diagnose = useContext(ImageDiagnosisContext);
+  const readBlob = useContext(ImageBlobContext);
+  const latest = useRef6({ resolveSrc, resolveFallback, refresh, diagnose, readBlob });
+  latest.current = { resolveSrc, resolveFallback, refresh, diagnose, readBlob };
+  const [state, setState] = useState4({ url: src, attempt: 0, generation: 0, phase: "loading" });
+  const [cycle, setCycle] = useState4(0);
+  const [reason, setReason] = useState4(null);
+  const ownedUrl = useRef6(null);
+  const releaseBlob = () => {
+    if (ownedUrl.current) URL.revokeObjectURL(ownedUrl.current);
+    ownedUrl.current = null;
+  };
+  useEffect4(() => releaseBlob, []);
+  const failed = useRef6(false);
+  failed.current = state.phase === "waiting" || state.phase === "failed";
+  const retry = () => {
+    if (!failed.current) return;
+    setReason(null);
+    setCycle((value) => value + 1);
+    setState((current) => ({ ...current, url: "", attempt: 0, phase: "waiting" }));
+  };
+  useEffect4(() => {
+    window.addEventListener("online", retry);
+    window.addEventListener("pockymoe-images-reconnected", retry);
+    return () => {
+      window.removeEventListener("online", retry);
+      window.removeEventListener("pockymoe-images-reconnected", retry);
+    };
+  }, []);
+  useEffect4(() => {
+    if (state.phase !== "waiting") return;
+    if (state.attempt >= 2) {
+      setState((current) => ({ ...current, phase: "failed" }));
+      return;
+    }
+    let cancelled = false;
+    const abort = new AbortController();
+    const timer = window.setTimeout(async () => {
+      try {
+        const resolver = state.attempt > 0 ? latest.current.resolveFallback ?? latest.current.resolveSrc : latest.current.resolveSrc;
+        const resolved = await (resolver?.(src) ?? src);
+        let fresh = resolved;
+        if (latest.current.readBlob) {
+          void Promise.resolve().then(() => latest.current.refresh(resolved)).catch(() => {
+          });
+          const blob = await latest.current.readBlob(resolved, abort.signal);
+          if (cancelled) return;
+          if (blob) {
+            releaseBlob();
+            ownedUrl.current = URL.createObjectURL(blob);
+            fresh = ownedUrl.current;
+          } else fresh = await latest.current.refresh(resolved);
+        } else fresh = await latest.current.refresh(resolved);
+        if (fresh.startsWith("blob:") && fresh !== ownedUrl.current) throw new Error("Attachment URL is not available yet");
+        let url = fresh;
+        const parsed = new URL(fresh, window.location.href);
+        if (["http:", "https:"].includes(parsed.protocol)) {
+          parsed.searchParams.set("_imageRetry", `${Date.now()}-${cycle}-${state.attempt + 1}`);
+          url = parsed.href;
+        }
+        if (!cancelled) setState((current) => ({ url, attempt: state.attempt + 1, generation: current.generation + 1, phase: "loading" }));
+      } catch {
+        if (!cancelled) setState((current) => ({ ...current, attempt: current.attempt + 1 }));
+      }
+    }, [300, 900][state.attempt]);
+    return () => {
+      cancelled = true;
+      abort.abort();
+      clearTimeout(timer);
+    };
+  }, [src, state.phase, state.attempt, cycle]);
+  useEffect4(() => {
+    if (state.phase !== "failed" || !latest.current.diagnose) return;
+    let cancelled = false;
+    void latest.current.diagnose(state.url).then((value) => {
+      if (!cancelled) setReason(value);
+    }).catch(() => {
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [state.phase, state.url]);
+  const unavailable = state.phase === "failed";
+  return /* @__PURE__ */ jsxs6("span", { className: "recoverable-image", "data-image-state": state.phase, children: [
+    renderImage(unavailable || !state.url ? /* @__PURE__ */ jsx7("span", { className: "image-unavailable", role: "img", "aria-label": props.alt || translate("chat.imageUnavailable"), children: /* @__PURE__ */ jsx7(ImageOff, { "aria-hidden": "true" }) }) : /* @__PURE__ */ createElement(
+      "img",
+      {
+        ...props,
+        key: state.generation,
+        src: state.url,
+        style: { ...props.style, visibility: state.phase === "ready" ? props.style?.visibility : "hidden" },
+        onLoad: () => setState((current) => ({ ...current, phase: "ready" })),
+        onError: () => setState((current) => current.phase === "waiting" || current.phase === "failed" ? current : { ...current, phase: "waiting" })
+      }
+    )),
+    unavailable ? /* @__PURE__ */ jsx7("span", { className: "image-recovery-error", onPointerDown: (event) => event.stopPropagation(), children: /* @__PURE__ */ jsx7(ErrorMark, { message: reason ?? translate("chat.imageUnavailable"), onRetry: retry }) }) : null
+  ] });
+}
+
+// src/components/graph-ui/Dialog.tsx
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { XIcon } from "lucide-react";
+
+// src/components/graph-ui/utils.ts
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+
+// src/components/graph-ui/Dialog.tsx
+import { jsx as jsx8, jsxs as jsxs7 } from "react/jsx-runtime";
+function Dialog({ ...props }) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx8(DialogPrimitive.Root, { "data-slot": "dialog", ...props });
+}
+function DialogTrigger({
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx8(DialogPrimitive.Trigger, { "data-slot": "dialog-trigger", ...props });
+}
+function DialogPortal({
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx8(DialogPrimitive.Portal, { "data-slot": "dialog-portal", ...props });
+}
+function DialogClose({
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx8(DialogPrimitive.Close, { "data-slot": "dialog-close", ...props });
+}
+function DialogOverlay({
+  className,
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx8(
+    DialogPrimitive.Overlay,
+    {
+      "data-slot": "dialog-overlay",
+      className: cn(
+        "fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        className
+      ),
+      ...props
+    }
+  );
+}
+function DialogContent({
+  children,
+  className,
+  showCloseButton = true,
+  overlayClassName,
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsxs7(DialogPortal, { "data-slot": "dialog-portal", children: [
+    /* @__PURE__ */ jsx8(DialogOverlay, { className: overlayClassName }),
+    /* @__PURE__ */ jsxs7(
+      DialogPrimitive.Content,
+      {
+        "data-slot": "dialog-content",
+        className: cn(
+          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
+          className
+        ),
+        ...props,
+        children: [
+          children,
+          showCloseButton ? /* @__PURE__ */ jsxs7(
+            DialogPrimitive.Close,
+            {
+              "data-slot": "dialog-close",
+              className: "absolute right-4 top-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+              children: [
+                /* @__PURE__ */ jsx8(XIcon, { "data-icon": "close" }),
+                /* @__PURE__ */ jsx8("span", { className: "sr-only", children: translate("workbench.close") })
+              ]
+            }
+          ) : null
+        ]
+      }
+    )
+  ] });
+}
+function DialogHeader({ className, ...props }) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx8(
+    "div",
+    {
+      "data-slot": "dialog-header",
+      className: cn("flex flex-col gap-2 text-center sm:text-left", className),
+      ...props
+    }
+  );
+}
+function DialogTitle({
+  className,
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx8(
+    DialogPrimitive.Title,
+    {
+      "data-slot": "dialog-title",
+      className: cn("text-lg font-semibold leading-none", className),
+      ...props
+    }
+  );
+}
+function DialogDescription({
+  className,
+  ...props
+}) {
+  const { locale: i18nLocale } = useI18n();
+  return /* @__PURE__ */ jsx8(
+    DialogPrimitive.Description,
+    {
+      "data-slot": "dialog-description",
+      className: cn("text-sm text-muted-foreground", className),
+      ...props
+    }
+  );
+}
+
+// src/components/graph-workspace/explorer/workspaceDocuments.ts
+var storeKey = /* @__PURE__ */ Symbol.for("remote-codex.workspace-documents");
+var documentGlobal = globalThis;
+var memory = documentGlobal[storeKey] ??= {
+  stores: /* @__PURE__ */ new Map(),
+  listeners: /* @__PURE__ */ new Set()
+};
+var documentStores = memory.stores;
+var documentListeners = memory.listeners;
+if (typeof window !== "undefined" && !memory.unloadInstalled) {
+  memory.unloadInstalled = true;
+  window.addEventListener("beforeunload", (event) => {
+    const protectedDocs = protectedWorkspaceDocuments();
+    const approval = memory.unloadApproval;
+    const approved = approval && approvalMatches(approval, protectedDocs);
+    if (approved) {
+      if (event.isTrusted) delete memory.unloadApproval;
+      return;
+    }
+    if (protectedDocs.length) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+  });
+}
+function protectedWorkspaceDocuments() {
+  return [...documentStores.values()].flatMap((store) => [...store.values()]).filter(isProtected);
+}
+function getDirtyWorkspaceDocumentCount() {
+  return protectedWorkspaceDocuments().length;
+}
+function snapshotProtectedDocuments() {
+  return protectedWorkspaceDocuments().map((doc) => ({ doc, revision: doc.revision, content: doc.content, baseContent: doc.baseContent, phase: doc.phase }));
+}
+function approvalMatches(approval, documents = protectedWorkspaceDocuments()) {
+  return approval.length === documents.length && documents.every((doc) => approval.some((saved) => saved.doc === doc && saved.revision === doc.revision && saved.content === doc.content && saved.baseContent === doc.baseContent && saved.phase === doc.phase));
+}
+function approveWorkspaceDocumentUnloadOnce() {
+  memory.unloadApproval = snapshotProtectedDocuments();
+}
+function prepareWorkspaceDocumentUnloadApproval() {
+  const snapshot = snapshotProtectedDocuments();
+  return () => {
+    if (!approvalMatches(snapshot)) return false;
+    memory.unloadApproval = snapshot;
+    return true;
+  };
+}
+function revokeWorkspaceDocumentUnloadApproval() {
+  delete memory.unloadApproval;
+}
+function isProtected(doc) {
+  return doc.content !== doc.baseContent || ["saving", "unknown", "conflict"].includes(doc.phase);
+}
+function newDraft(key, snapshot) {
+  return {
+    key,
+    snapshot,
+    content: snapshot.content ?? "",
+    baseContent: snapshot.content ?? "",
+    revision: 0,
+    editing: false,
+    phase: "clean",
+    error: null
+  };
+}
+function editDraft(doc, content) {
+  return {
+    ...doc,
+    content,
+    revision: doc.revision + 1,
+    phase: ["saving", "conflict", "unknown"].includes(doc.phase) ? doc.phase : content === doc.baseContent ? "clean" : "dirty"
+  };
+}
+function settleSave(doc, receipt) {
+  const submitted = doc.submitted;
+  if (!submitted || submitted.operationId !== receipt.operationId || submitted.revision !== receipt.draftRevision)
+    return doc;
+  if (receipt.status === "saved" && receipt.contentHash && receipt.fileIdentity) {
+    return {
+      ...doc,
+      baseContent: submitted.content,
+      snapshot: {
+        ...doc.snapshot,
+        content: submitted.content,
+        contentHash: receipt.contentHash,
+        fileIdentity: receipt.fileIdentity,
+        size: receipt.size ?? doc.snapshot.size,
+        workspaceRevision: receipt.workspaceRevision ?? doc.snapshot.workspaceRevision,
+        encoding: receipt.encoding ?? doc.snapshot.encoding,
+        bom: receipt.bom ?? doc.snapshot.bom,
+        eol: receipt.eol ?? doc.snapshot.eol
+      },
+      phase: doc.content === submitted.content ? "clean" : "dirty",
+      submitted: void 0,
+      conflict: void 0,
+      needsVerification: false,
+      operationPending: false,
+      error: null
+    };
+  }
+  if (receipt.status === "conflict")
+    return {
+      ...doc,
+      phase: "conflict",
+      conflict: receipt.snapshot,
+      conflictFrom: "save",
+      submitted: void 0,
+      error: receipt.snapshot ? null : translate("files.safeMissing")
+    };
+  if (receipt.status === "failedBeforeWrite")
+    return {
+      ...doc,
+      phase: "error",
+      submitted: void 0,
+      snapshot: receipt.code === "forbidden" ? { ...doc.snapshot, readOnlyReason: "permissionDenied" } : doc.snapshot,
+      error: receipt.message ?? translate("files.failedToSaveFile")
+    };
+  return {
+    ...doc,
+    phase: "unknown",
+    operationPending: receipt.status === "pending",
+    error: translate(
+      receipt.status === "pending" ? "files.safeWaitBeforeLeave" : "files.safeUnknown"
+    )
+  };
+}
+function confirmWorkspaceDocumentLeave() {
+  const protectedDocs = [...documentStores.values()].flatMap((store) => [...store.values()]).filter(isProtected);
+  if (!protectedDocs.length) return true;
+  if (protectedDocs.some(
+    (doc) => doc.phase === "saving" || doc.phase === "unknown"
+  )) {
+    window.alert(translate("files.safeWaitBeforeLeave"));
+    return false;
+  }
+  if (!window.confirm(translate("files.safeLeave"))) return false;
+  for (const store of documentStores.values())
+    for (const [path, doc] of store)
+      if (isProtected(doc)) {
+        store.delete(path);
+        window.dispatchEvent(
+          new CustomEvent("workspace-model-release", { detail: doc.key })
+        );
+      }
+  for (const listener of documentListeners) listener();
+  return true;
+}
+function downloadDraft(doc, disk = false) {
+  const content = disk ? doc.conflict?.content : doc.content;
+  if (content == null) return;
+  const url = URL.createObjectURL(
+    new Blob([content], { type: "text/plain;charset=utf-8" })
+  );
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${doc.snapshot.name}.${disk ? "disk-snapshot" : "draft"}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// src/components/workspacePaths.ts
+function normalizeFileSystemPath(value) {
+  return value.trim().replace(/\\/g, "/").replace(/^\/([a-z]:\/)/i, "$1");
+}
+var APP_LOCAL_PATH_PREFIXES = [
+  "/api/",
+  "/assets/",
+  "/control-plane",
+  "/devices/",
+  "/relay/",
+  "/relay-account",
+  "/relay-admin",
+  "/relay-devices",
+  "/relay-portal",
+  "/threads",
+  "/workspaces"
+];
+function localFileHref(value, origin) {
+  let candidate = value.trim();
+  if (!candidate || candidate.startsWith("#") || candidate.startsWith("//")) return null;
+  if (/^(https?:|file:)/i.test(candidate)) {
+    try {
+      const url = new URL(candidate);
+      if (url.protocol !== "file:" && url.origin !== origin) return null;
+      candidate = (url.protocol === "file:" && url.hostname ? `//${url.hostname}` : "") + url.pathname + url.hash;
+    } catch {
+      return null;
+    }
+  } else {
+    candidate = candidate.split("?")[0] ?? "";
+  }
+  try {
+    candidate = decodeURIComponent(candidate);
+  } catch {
+  }
+  candidate = normalizeFileSystemPath(candidate);
+  if (/^[a-z][a-z+.-]*:/i.test(candidate) && !/^[a-z]:\//i.test(candidate)) return null;
+  if (APP_LOCAL_PATH_PREFIXES.some((prefix) => candidate === prefix || candidate.startsWith(prefix))) return null;
+  return candidate || null;
+}
+function relativeWorkspacePath(value, workspaceRoot) {
+  let path = normalizeFileSystemPath(value);
+  const root = normalizeFileSystemPath(workspaceRoot).replace(/\/+$/, "");
+  const absolute = path.startsWith("/") || /^[a-z]:\//i.test(path);
+  if (absolute) {
+    const windows = /^[a-z]:\//i.test(root) || root.startsWith("//");
+    const comparePath = windows ? path.toLowerCase() : path;
+    const compareRoot = windows ? root.toLowerCase() : root;
+    if (comparePath === compareRoot) return "";
+    if (!comparePath.startsWith(`${compareRoot}/`)) return null;
+    path = path.slice(root.length + 1);
+  }
+  const segments = [];
+  for (const part of path.split("/")) {
+    if (!part || part === ".") continue;
+    if (part === "..") {
+      if (!segments.length) return null;
+      segments.pop();
+    } else segments.push(part);
+  }
+  return segments.join("/");
+}
+
+// src/components/graph-ui/Tooltip.tsx
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { jsx as jsx9, jsxs as jsxs8 } from "react/jsx-runtime";
+function TooltipProvider({
+  delayDuration = 0,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx9(
+    TooltipPrimitive.Provider,
+    {
+      "data-slot": "tooltip-provider",
+      delayDuration,
+      ...props
+    }
+  );
+}
+function Tooltip({ ...props }) {
+  return /* @__PURE__ */ jsx9(TooltipProvider, { children: /* @__PURE__ */ jsx9(TooltipPrimitive.Root, { "data-slot": "tooltip", ...props }) });
+}
+function TooltipTrigger({
+  ...props
+}) {
+  return /* @__PURE__ */ jsx9(TooltipPrimitive.Trigger, { "data-slot": "tooltip-trigger", ...props });
+}
+function TooltipContent({
+  children,
+  className,
+  sideOffset = 0,
+  arrowStyle,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx9(TooltipPrimitive.Portal, { children: /* @__PURE__ */ jsxs8(
+    TooltipPrimitive.Content,
+    {
+      "data-slot": "tooltip-content",
+      sideOffset,
+      className: cn(
+        "z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md bg-foreground px-3 py-1.5 text-balance text-xs text-background animate-in fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+        className
+      ),
+      ...props,
+      children: [
+        children,
+        /* @__PURE__ */ jsx9(TooltipPrimitive.Arrow, { "data-slot": "tooltip-arrow", width: 10, height: 5, className: "fill-foreground", style: arrowStyle })
+      ]
+    }
+  ) });
+}
+
+// src/components/RenameDialog.tsx
+import { useRef as useRef7 } from "react";
+import { createPortal as createPortal3 } from "react-dom";
+import { jsx as jsx10, jsxs as jsxs9 } from "react/jsx-runtime";
+function RenameDialog({
+  open,
+  title,
+  label,
+  value,
+  busy = false,
+  error,
+  description,
+  submitLabel,
+  onChange,
+  onCancel,
+  onSubmit
+}) {
+  useI18n();
+  const windowRef = useRef7(null);
+  useModalFocus(windowRef, open, busy ? void 0 : onCancel, "input");
+  if (!open) {
+    return null;
+  }
+  function handleSubmit(event) {
+    event.preventDefault();
+    void onSubmit();
+  }
+  return createPortal3(
+    /* @__PURE__ */ jsxs9("div", { className: "fixed inset-0 z-[95] flex items-end justify-center p-0 sm:items-center sm:p-6", children: [
+      /* @__PURE__ */ jsx10(
+        "button",
+        {
+          type: "button",
+          "aria-label": translate("workbench.closeRenameDialog"),
+          onClick: onCancel,
+          disabled: busy,
+          className: "absolute inset-0 bg-[var(--overlay-scrim)] backdrop-blur-sm disabled:cursor-not-allowed"
+        }
+      ),
+      /* @__PURE__ */ jsxs9(
+        "form",
+        {
+          ref: windowRef,
+          role: "dialog",
+          "aria-modal": "true",
+          "aria-label": title,
+          onSubmit: handleSubmit,
+          onKeyDown: (event) => {
+            if (event.key === "Escape") {
+              event.stopPropagation();
+              if (!busy) onCancel();
+            }
+          },
+          className: "relative z-[1] w-full max-w-md rounded-t-2xl border border-b-0 border-[var(--theme-border)] bg-[var(--theme-panel)] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-[var(--theme-fg)] shadow-[var(--theme-shadow)] sm:rounded-xl sm:border-b sm:p-6",
+          children: [
+            /* @__PURE__ */ jsxs9("div", { className: "flex items-start justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs9("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsx10("p", { className: "text-sm font-medium", children: title }),
+                /* @__PURE__ */ jsx10("p", { className: "mt-1 text-sm text-[var(--theme-fg-muted)]", children: description ?? translate("workbench.changesAreSavedOnlyAfterConfirmation") })
+              ] }),
+              /* @__PURE__ */ jsx10(
+                "button",
+                {
+                  type: "button",
+                  "aria-label": translate("workbench.closeDialog"),
+                  onClick: onCancel,
+                  disabled: busy,
+                  className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--theme-border)] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  children: /* @__PURE__ */ jsx10("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx10("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs9("div", { className: "mt-5", children: [
+              /* @__PURE__ */ jsx10("label", { htmlFor: "rename-dialog-input", className: "text-sm font-medium", children: label }),
+              /* @__PURE__ */ jsx10(
+                "input",
+                {
+                  id: "rename-dialog-input",
+                  "aria-label": label,
+                  autoFocus: true,
+                  value,
+                  onChange: (event) => onChange(event.target.value),
+                  className: "mt-2 w-full rounded-md border border-[var(--theme-border)] bg-[var(--theme-surface)] px-4 py-3 text-[var(--theme-fg)] outline-none transition focus:border-[var(--theme-accent-solid)]"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs9("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
+              /* @__PURE__ */ jsx10(
+                "button",
+                {
+                  type: "button",
+                  onClick: onCancel,
+                  disabled: busy,
+                  className: "rounded-md border border-[var(--theme-border)] px-4 py-2 text-sm font-medium text-[var(--theme-fg-soft)] transition hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed disabled:opacity-60",
+                  children: translate("workbench.cancel")
+                }
+              ),
+              /* @__PURE__ */ jsx10(
+                "button",
+                {
+                  type: "submit",
+                  disabled: busy || !value.trim(),
+                  className: "ui-action-success rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed",
+                  children: submitLabel ?? translate("workbench.save")
+                }
+              ),
+              error ? /* @__PURE__ */ jsx10(ErrorMark, { message: error }) : null
+            ] })
+          ]
+        }
+      )
+    ] }),
+    document.body
+  );
+}
+
+// src/components/useTabScrollEdges.ts
+import { useLayoutEffect as useLayoutEffect2, useState as useState5 } from "react";
+function useTabScrollEdges(ref) {
+  const [edges, setEdges] = useState5({ start: false, end: false });
+  useLayoutEffect2(() => {
+    const element = ref.current;
+    if (!element) return;
+    const update = () => {
+      const start = element.scrollLeft > 2;
+      const end = element.scrollWidth - element.clientWidth - element.scrollLeft > 2;
+      setEdges((current) => current.start === start && current.end === end ? current : { start, end });
+    };
+    update();
+    element.addEventListener("scroll", update, { passive: true });
+    const resize = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
+    resize?.observe(element);
+    const mutation = new MutationObserver(update);
+    mutation.observe(element, { childList: true, subtree: true, characterData: true });
+    window.addEventListener("resize", update);
+    return () => {
+      element.removeEventListener("scroll", update);
+      resize?.disconnect();
+      mutation.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [ref]);
+  return { "data-overflow-start": edges.start, "data-overflow-end": edges.end };
+}
+
+// src/components/TabScrollButtons.tsx
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Fragment as Fragment2, jsx as jsx11, jsxs as jsxs10 } from "react/jsx-runtime";
+function TabScrollButtons({ targetRef, edges }) {
+  useI18n();
+  const page = (direction) => {
+    const strip = targetRef.current;
+    if (!strip) return;
+    const smooth = !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    strip.scrollBy({ left: direction * Math.max(80, strip.clientWidth * 0.8), behavior: smooth ? "smooth" : "auto" });
+  };
+  return /* @__PURE__ */ jsxs10(Fragment2, { children: [
+    edges["data-overflow-start"] ? /* @__PURE__ */ jsx11(
+      "button",
+      {
+        type: "button",
+        className: "tab-scroll-button",
+        "data-edge": "start",
+        tabIndex: -1,
+        "aria-label": translate("workbench.scrollTabsBack"),
+        title: translate("workbench.scrollTabsBack"),
+        onClick: () => page(-1),
+        children: /* @__PURE__ */ jsx11(ChevronLeft, { "aria-hidden": "true" })
+      }
+    ) : null,
+    edges["data-overflow-end"] ? /* @__PURE__ */ jsx11(
+      "button",
+      {
+        type: "button",
+        className: "tab-scroll-button",
+        "data-edge": "end",
+        tabIndex: -1,
+        "aria-label": translate("workbench.scrollTabsForward"),
+        title: translate("workbench.scrollTabsForward"),
+        onClick: () => page(1),
+        children: /* @__PURE__ */ jsx11(ChevronRight, { "aria-hidden": "true" })
+      }
+    ) : null
+  ] });
+}
+
+// src/components/graph-workspace/GraphResizablePanels.tsx
+import { GripVerticalIcon } from "lucide-react";
+import * as ResizablePrimitive from "react-resizable-panels";
+import { jsx as jsx12 } from "react/jsx-runtime";
+function classNames(...values) {
+  return values.filter(Boolean).join(" ");
+}
+function ResizablePanelGroup({
+  className,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx12(
+    ResizablePrimitive.PanelGroup,
+    {
+      "data-slot": "resizable-panel-group",
+      className: classNames(
+        "flex h-full w-full data-[panel-group-direction=vertical]:flex-col",
+        className
+      ),
+      ...props
+    }
+  );
+}
+function ResizablePanel({
+  ...props
+}) {
+  return /* @__PURE__ */ jsx12(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
+}
+function ResizableHandle({
+  withHandle,
+  className,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx12(
+    ResizablePrimitive.PanelResizeHandle,
+    {
+      "data-slot": "resizable-handle",
+      className: classNames(
+        "bg-border focus-visible:ring-ring relative flex w-px items-center justify-center after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-hidden data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full data-[panel-group-direction=vertical]:after:translate-x-0 data-[panel-group-direction=vertical]:after:-translate-y-1/2 [&[data-panel-group-direction=vertical]>div]:rotate-90",
+        className
+      ),
+      ...props,
+      children: withHandle ? /* @__PURE__ */ jsx12("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx12(GripVerticalIcon, { className: "size-2.5" }) }) : null
+    }
+  );
+}
+
+// src/components/graph-workspace/workspaceTree.ts
+var MOLECULAR_EXTENSIONS = /* @__PURE__ */ new Set(["xyz", "extxyz", "cif", "pdb"]);
+var IMAGE_EXTENSIONS = /* @__PURE__ */ new Set([
+  "png",
+  "jpg",
+  "jpeg",
+  "gif",
+  "webp",
+  "svg"
+]);
+var PDF_EXTENSIONS = /* @__PURE__ */ new Set(["pdf"]);
+function collectArtifacts(detail) {
+  const artifacts = [];
+  for (const turn of detail.turns) {
+    for (const item of turn.items) {
+      if (item.kind === "artifact" && item.artifact) {
+        artifacts.push(item.artifact);
+      }
+    }
+  }
+  for (const item of detail.liveItems?.items ?? []) {
+    if (item.kind === "artifact" && item.artifact) {
+      artifacts.push(item.artifact);
+    }
+  }
+  return artifacts;
+}
+function sanitizePathSegment(value) {
+  return value.trim().replace(/^\/+|\/+$/g, "").replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
+}
+function extensionOf(path) {
+  return path.split(".").pop()?.toLowerCase() || "";
+}
+function fileNameFromPath(path) {
+  return path.split("/").filter(Boolean).at(-1) ?? path;
+}
+function workspaceTreeNodeToGraphNode(node) {
+  const kind = node.kind === "directory" ? "directory" : "file";
+  const normalized = normalizeFileSystemPath(node.path);
+  const path = normalized.startsWith("/") || /^[a-z]:\//i.test(normalized) ? normalized : relativeWorkspacePath(normalized, "") ?? normalized;
+  const children = (node.children ?? []).map(workspaceTreeNodeToGraphNode);
+  return {
+    id: `workspace:${path}`,
+    name: node.name,
+    path,
+    kind,
+    ...node.size !== void 0 ? { size: node.size } : {},
+    ...node.hasChildren !== void 0 ? { hasChildren: node.hasChildren } : kind === "directory" ? { hasChildren: children.length > 0 } : {},
+    ...node.childrenLoaded !== void 0 ? { childrenLoaded: node.childrenLoaded } : kind === "directory" ? { childrenLoaded: node.children !== void 0 } : {},
+    ...node.truncated !== void 0 ? { truncated: node.truncated } : {},
+    workspaceNode: { ...node, path },
+    children
+  };
+}
+function findFirstWorkspaceFile(node) {
+  if (node.kind === "file") {
+    return node;
+  }
+  for (const child of node.children) {
+    const found = findFirstWorkspaceFile(child);
+    if (found) {
+      return found;
+    }
+  }
+  return null;
+}
+function normalizeWorkspacePath(path) {
+  return path.trim().replace(/\\/g, "/").replace(/^\.\/+/, "").replace(/^\/+/, "");
+}
+function workspaceRelativeFocusPath(path, workspaceRootPath) {
+  return relativeWorkspacePath(path, workspaceRootPath) ?? normalizeFileSystemPath(path);
+}
+function ancestorDirectoryPaths(path) {
+  const normalized = normalizeWorkspacePath(path);
+  const segments = normalized.split("/").filter(Boolean);
+  segments.pop();
+  const paths = [];
+  let current = "";
+  for (const segment of segments) {
+    current = current ? `${current}/${segment}` : segment;
+    paths.push(current);
+  }
+  return paths;
+}
+function hasWorkspacePath(node, targetPath) {
+  if (!node || !targetPath) {
+    return false;
+  }
+  if (node.path === targetPath) {
+    return true;
+  }
+  return node.children.some((child) => hasWorkspacePath(child, targetPath));
+}
+function buildMoleculePreviewSnapshot(file) {
+  if (!file) {
+    return null;
+  }
+  const extension = extensionOf(file.path);
+  if (!MOLECULAR_EXTENSIONS.has(extension)) {
+    return null;
+  }
+  return {
+    content: [file.content.endsWith("\n") ? file.content : `${file.content}
+`],
+    format: extension === "extxyz" ? "xyz" : extension,
+    name: file.name,
+    uuid: file.path
+  };
+}
+function languageForPath(path) {
+  const extension = extensionOf(path);
+  if (extension === "tsx" || extension === "jsx") {
+    return "tsx";
+  }
+  if (extension === "yml") {
+    return "yaml";
+  }
+  return extension || "text";
+}
+function ensureDirectory(root, segments) {
+  let current = root;
+  let path = "";
+  for (const segment of segments) {
+    path = path ? `${path}/${segment}` : segment;
+    let child = current.children.find(
+      (node) => node.kind === "directory" && node.name === segment
+    );
+    if (!child) {
+      child = {
+        id: `dir:${path}`,
+        name: segment,
+        path,
+        kind: "directory",
+        children: []
+      };
+      current.children.push(child);
+    }
+    current = child;
+  }
+  return current;
+}
+function addPathNode(root, path, node) {
+  const segments = path.split("/").filter(Boolean);
+  const fileName = segments.pop() ?? node.name;
+  const parent = ensureDirectory(root, segments);
+  parent.children.push({
+    ...node,
+    name: node.name || fileName,
+    path
+  });
+}
+function compareWorkspaceNodes(left, right) {
+  if (left.kind === "directory" && right.kind !== "directory") {
+    return -1;
+  }
+  if (left.kind !== "directory" && right.kind === "directory") {
+    return 1;
+  }
+  return left.name.localeCompare(right.name);
+}
+function sortWorkspaceTree(node) {
+  node.children.sort(compareWorkspaceNodes);
+  for (const child of node.children) {
+    sortWorkspaceTree(child);
+  }
+  return node;
+}
+function collectWorkspaceItems(detail, artifacts, status, activeView) {
+  const root = {
+    id: "root",
+    name: detail.workspace.label ?? translate("files.workspace"),
+    path: "",
+    kind: "directory",
+    children: []
+  };
+  const artifactRoot = {
+    id: "artifacts",
+    name: "artifacts",
+    path: "artifacts",
+    kind: "directory",
+    children: []
+  };
+  for (const artifact of artifacts) {
+    const title = artifact.title || artifact.id;
+    const safeName = sanitizePathSegment(title) || artifact.id;
+    artifactRoot.children.push({
+      id: `artifact:${artifact.id}`,
+      name: `${safeName}.artifact`,
+      path: `artifacts/${safeName}.artifact`,
+      kind: "artifact",
+      artifact,
+      preview: artifact.summaryText ?? artifact.type,
+      detail: JSON.stringify(artifact.payload, null, 2),
+      children: []
+    });
+  }
+  const eventRoot = {
+    id: "thread-events",
+    name: "thread-events",
+    path: "thread-events",
+    kind: "directory",
+    children: []
+  };
+  const liveRoot = {
+    id: "live",
+    name: "live",
+    path: "live",
+    kind: "directory",
+    children: []
+  };
+  let sequence = 0;
+  const addEventNode = (turnId, item, live = false) => {
+    sequence += 1;
+    const label = item.kind.replace(/([A-Z])/g, "-$1").toLowerCase();
+    const eventPath = `${live ? "live" : `thread-events/${turnId}`}/${String(
+      sequence
+    ).padStart(3, "0")}-${label}.json`;
+    const preview = "text" in item && typeof item.text === "string" ? item.text.slice(0, 160) : item.kind;
+    const artifact = item.kind === "artifact" && item.artifact ? item.artifact : null;
+    const node = artifact && live ? {
+      id: `live-artifact:${artifact.id}`,
+      name: artifact.title || artifact.id,
+      path: eventPath,
+      kind: "live-artifact",
+      artifact,
+      item,
+      preview: artifact.summaryText ?? artifact.type,
+      detail: JSON.stringify(artifact.payload, null, 2),
+      children: []
+    } : {
+      id: `event:${item.id}`,
+      name: fileNameFromPath(eventPath),
+      path: eventPath,
+      kind: "event",
+      item,
+      preview,
+      detail: JSON.stringify(item, null, 2),
+      children: []
+    };
+    if (live) {
+      liveRoot.children.push(node);
+      return;
+    }
+    addPathNode(eventRoot, eventPath.replace(/^thread-events\//, ""), node);
+  };
+  for (const turn of detail.turns) {
+    for (const item of turn.items) {
+      if (item.kind === "commandExecution" || item.kind === "webSearch" || item.kind === "fileRead" || item.kind === "fileChange" || item.kind === "agentToolCall" || item.kind === "skillToolCall" || item.kind === "toolCall" || item.kind === "hook" || item.kind === "plan" || item.kind === "reasoning") {
+        addEventNode(turn.id, item);
+      }
+    }
+  }
+  for (const item of detail.liveItems?.items ?? []) {
+    addEventNode(detail.thread.activeTurnId ?? "live", item, true);
+  }
+  void status;
+  void activeView;
+  root.children.push(artifactRoot, eventRoot, liveRoot);
+  return sortWorkspaceTree(root);
+}
+function flattenWorkspaceNodes(root) {
+  const map = /* @__PURE__ */ new Map();
+  const visit = (node) => {
+    map.set(node.id, node);
+    for (const child of node.children) {
+      visit(child);
+    }
+  };
+  visit(root);
+  return map;
+}
+function findFirstPreviewNode(node) {
+  if (node.kind === "artifact" || node.kind === "live-artifact" || node.kind === "event" || node.kind === "file") {
+    return node;
+  }
+  for (const child of node.children) {
+    const found = findFirstPreviewNode(child);
+    if (found) {
+      return found;
+    }
+  }
+  return null;
+}
+function collectAncestorPaths(path) {
+  const segments = path.split("/").filter(Boolean);
+  const paths = [];
+  for (let index = 1; index <= segments.length; index += 1) {
+    paths.push(segments.slice(0, index).join("/"));
+  }
+  return paths;
+}
+
+// src/components/ZoomableImage.tsx
+import { createContext as createContext2, useContext as useContext2, useEffect as useEffect5, useRef as useRef9, useState as useState7 } from "react";
+import { createPortal as createPortal4 } from "react-dom";
+
+// src/components/useImageViewport.ts
+import { useRef as useRef8, useState as useState6 } from "react";
+var MIN_SCALE = 0.5;
+var MAX_SCALE = 5;
+var clamp = (scale) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
+function useImageViewport() {
+  const viewportRef = useRef8(null);
+  const [view, setView] = useState6({ x: 0, y: 0, scale: 1 });
+  const current = useRef8(view);
+  const pointers = useRef8(/* @__PURE__ */ new Map());
+  const baseline = useRef8(null);
+  const moved = useRef8(false);
+  const [dragging, setDragging] = useState6(false);
+  const commit = (next) => {
+    current.current = next;
+    setView(next);
+  };
+  function centerAndDistance() {
+    const points = [...pointers.current.values()].slice(0, 2);
+    const a = points[0];
+    if (!a) return null;
+    const b = points[1] ?? a;
+    return { center: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, distance: Math.hypot(a.x - b.x, a.y - b.y) };
+  }
+  function restartGesture() {
+    const points = centerAndDistance();
+    baseline.current = points ? { ...points, view: current.current } : null;
+    setDragging(pointers.current.size > 0);
+  }
+  function local(point) {
+    const element = viewportRef.current;
+    if (!element) return point;
+    const rect = element.getBoundingClientRect();
+    const style = getComputedStyle(element);
+    return {
+      x: point.x - rect.left - (rect.width + parseFloat(style.paddingLeft || "0") - parseFloat(style.paddingRight || "0")) / 2,
+      y: point.y - rect.top - (rect.height + parseFloat(style.paddingTop || "0") - parseFloat(style.paddingBottom || "0")) / 2
+    };
+  }
+  function updateScale(scale, clientX, clientY) {
+    const old = current.current;
+    const next = clamp(scale);
+    const anchor = clientX === void 0 || clientY === void 0 ? { x: 0, y: 0 } : local({ x: clientX, y: clientY });
+    const ratio = next / old.scale;
+    commit({ scale: next, x: anchor.x - (anchor.x - old.x) * ratio, y: anchor.y - (anchor.y - old.y) * ratio });
+  }
+  function onPointerDown(event) {
+    if (event.button !== 0) return;
+    if (pointers.current.size === 0) moved.current = false;
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    event.currentTarget.setPointerCapture(event.pointerId);
+    restartGesture();
+  }
+  function onPointerMove(event) {
+    if (!pointers.current.has(event.pointerId)) return;
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    const base = baseline.current;
+    const points = centerAndDistance();
+    if (!base || !points) return;
+    const dx = points.center.x - base.center.x;
+    const dy = points.center.y - base.center.y;
+    if (Math.hypot(dx, dy) > 3 || Math.abs(points.distance - base.distance) > 3) moved.current = true;
+    if (pointers.current.size >= 2 && base.distance > 0) {
+      const scale = clamp(base.view.scale * points.distance / base.distance);
+      const ratio = scale / base.view.scale;
+      const start = local(base.center);
+      const end = local(points.center);
+      commit({ scale, x: end.x - (start.x - base.view.x) * ratio, y: end.y - (start.y - base.view.y) * ratio });
+    } else if (base.view.scale > 1) {
+      commit({ ...base.view, x: base.view.x + dx, y: base.view.y + dy });
+    }
+  }
+  function onPointerEnd(event) {
+    if (!pointers.current.delete(event.pointerId)) return;
+    restartGesture();
+  }
+  return {
+    viewportRef,
+    scale: view.scale,
+    dragging,
+    moved,
+    transform: `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.scale})`,
+    reset: () => {
+      commit({ x: 0, y: 0, scale: 1 });
+      restartGesture();
+    },
+    updateScale,
+    handlers: {
+      onPointerDown,
+      onPointerMove,
+      onPointerUp: onPointerEnd,
+      onPointerCancel: onPointerEnd,
+      onLostPointerCapture: onPointerEnd,
+      onWheel: (event) => {
+        event.preventDefault();
+        updateScale(current.current.scale + (event.deltaY < 0 ? 0.25 : -0.25), event.clientX, event.clientY);
+      }
+    }
+  };
+}
+
+// src/components/ZoomableImage.tsx
+import { Maximize2, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { Fragment as Fragment3, jsx as jsx13, jsxs as jsxs11 } from "react/jsx-runtime";
+var MarkdownImageLinkContext = createContext2(false);
+var IMAGE_LIGHTBOX_MIN_SCALE = 0.5;
+var IMAGE_LIGHTBOX_MAX_SCALE = 5;
+var IMAGE_LIGHTBOX_SCALE_STEP = 0.25;
+function GraphWorkspaceImageLightbox({
+  alt,
+  backgroundColor,
+  onClose,
+  src,
+  resolveSrc
+}) {
+  const { locale: i18nLocale } = useI18n();
+  const { viewportRef, scale, dragging, transform, reset: resetView, updateScale, handlers, moved } = useImageViewport();
+  const closeButtonRef = useRef9(null);
+  const backdropPointer = useRef9(true);
+  const windowRef = useRef9(null);
+  useModalFocus(windowRef, true, onClose, ".thread-graph-image-lightbox-close");
+  useEffect5(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+  return createPortal4(
+    /* @__PURE__ */ jsxs11(
+      "div",
+      {
+        ref: windowRef,
+        className: "thread-graph-image-lightbox",
+        style: backgroundColor ? { backgroundColor } : void 0,
+        role: "dialog",
+        "aria-modal": "true",
+        "aria-label": translate("files.imagePreview", { value1: alt || translate("files.workspaceImage") }),
+        children: [
+          /* @__PURE__ */ jsxs11(
+            "div",
+            {
+              className: "thread-graph-image-lightbox-toolbar",
+              role: "toolbar",
+              "aria-label": translate("files.imageZoomControls"),
+              children: [
+                /* @__PURE__ */ jsx13(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => updateScale(scale - IMAGE_LIGHTBOX_SCALE_STEP),
+                    disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE,
+                    title: translate("files.zoomOut"),
+                    "aria-label": translate("files.zoomOut"),
+                    children: /* @__PURE__ */ jsx13(Minus, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsxs11(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: resetView,
+                    className: "thread-graph-image-lightbox-scale",
+                    title: translate("files.resetZoom"),
+                    "aria-label": translate("files.resetZoomCurrently", { value1: Math.round(scale * 100) }),
+                    children: [
+                      /* @__PURE__ */ jsx13(RotateCcw, { className: "h-3.5 w-3.5" }),
+                      /* @__PURE__ */ jsxs11("span", { children: [
+                        Math.round(scale * 100),
+                        "%"
+                      ] })
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsx13(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => updateScale(scale + IMAGE_LIGHTBOX_SCALE_STEP),
+                    disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE,
+                    title: translate("files.zoomIn"),
+                    "aria-label": translate("files.zoomIn"),
+                    children: /* @__PURE__ */ jsx13(Plus, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsx13(
+                  "span",
+                  {
+                    className: "thread-graph-image-lightbox-divider",
+                    "aria-hidden": "true"
+                  }
+                ),
+                /* @__PURE__ */ jsx13(
+                  "button",
+                  {
+                    ref: closeButtonRef,
+                    type: "button",
+                    onClick: onClose,
+                    title: translate("files.closeImagePreview"),
+                    "aria-label": translate("files.closeImagePreview"),
+                    children: /* @__PURE__ */ jsx13(X, { className: "h-4 w-4" })
+                  }
+                )
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsx13(
+            "div",
+            {
+              ref: viewportRef,
+              className: "thread-graph-image-lightbox-viewport",
+              onClick: (event) => {
+                if (event.target === event.currentTarget && backdropPointer.current && !moved.current) {
+                  onClose();
+                }
+              },
+              ...handlers,
+              onPointerDown: (event) => {
+                backdropPointer.current = event.target === event.currentTarget;
+                handlers.onPointerDown(event);
+              },
+              children: /* @__PURE__ */ jsx13(
+                RecoverableImage,
+                {
+                  resolveSrc,
+                  src,
+                  alt,
+                  draggable: false,
+                  className: dragging ? "is-dragging" : "",
+                  style: {
+                    transform
+                  }
+                }
+              )
+            }
+          )
+        ]
+      }
+    ),
+    document.body
+  );
+}
+function ZoomableImage({
+  alt,
+  className,
+  fullSrc,
+  loading: loading2,
+  src,
+  width,
+  height
+}) {
+  const { locale: i18nLocale } = useI18n();
+  const triggerRef = useRef9(null);
+  const [open, setOpen] = useState7(false);
+  const insideLink = useContext2(MarkdownImageLinkContext);
+  const dimension = (value) => typeof value === "number" ? value : value && /^\d+(?:\.\d+)?%?$/.test(value) ? value.endsWith("%") ? value : Number(value) : void 0;
+  const imageStyle = { width: dimension(width), height: dimension(height) };
+  const imageProps = { src, alt, className, loading: loading2, style: imageStyle };
+  function closeLightbox() {
+    setOpen(false);
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  }
+  if (insideLink) return /* @__PURE__ */ jsx13(RecoverableImage, { ...imageProps });
+  return /* @__PURE__ */ jsxs11(Fragment3, { children: [
+    /* @__PURE__ */ jsx13(RecoverableImage, { ...imageProps, renderImage: (image) => /* @__PURE__ */ jsx13(
+      "button",
+      {
+        ref: triggerRef,
+        type: "button",
+        className: "thread-graph-zoomable-image-trigger",
+        style: { width: dimension(width) },
+        onClick: () => setOpen(true),
+        title: translate("files.openImagePreview"),
+        "aria-label": translate("files.openImagePreview_bdac35", { value1: alt || translate("files.workspaceImage") }),
+        children: image
+      }
+    ) }),
+    open ? /* @__PURE__ */ jsx13(
+      GraphWorkspaceImageLightbox,
+      {
+        src: fullSrc || src,
+        alt,
+        onClose: closeLightbox
+      }
+    ) : null
+  ] });
+}
+function WorkspaceImagePreview({ src, alt }) {
+  useI18n();
+  const { viewportRef, scale, dragging, transform, reset, updateScale, handlers } = useImageViewport();
+  const [open, setOpen] = useState7(false);
+  return /* @__PURE__ */ jsxs11("div", { className: "workspace-image-preview", children: [
+    /* @__PURE__ */ jsxs11("div", { className: "workspace-image-controls", role: "toolbar", "aria-label": translate("files.imageZoomControls"), children: [
+      /* @__PURE__ */ jsx13("button", { type: "button", onClick: () => updateScale(scale - 0.25), disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE, "aria-label": translate("files.zoomOut"), children: /* @__PURE__ */ jsx13(Minus, { size: 14 }) }),
+      /* @__PURE__ */ jsx13("button", { type: "button", onClick: reset, "aria-label": translate("files.resetZoom"), children: /* @__PURE__ */ jsxs11("span", { children: [
+        Math.round(scale * 100),
+        "%"
+      ] }) }),
+      /* @__PURE__ */ jsx13("button", { type: "button", onClick: () => updateScale(scale + 0.25), disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE, "aria-label": translate("files.zoomIn"), children: /* @__PURE__ */ jsx13(Plus, { size: 14 }) }),
+      /* @__PURE__ */ jsx13("button", { type: "button", onClick: () => setOpen(true), "aria-label": translate("files.openImagePreview"), children: /* @__PURE__ */ jsx13(Maximize2, { size: 14 }) })
+    ] }),
+    /* @__PURE__ */ jsx13("div", { ref: viewportRef, className: "workspace-image-viewport", ...handlers, children: /* @__PURE__ */ jsx13(RecoverableImage, { src, alt, draggable: false, className: dragging ? "is-dragging" : "", style: { transform } }) }),
+    open && /* @__PURE__ */ jsx13(GraphWorkspaceImageLightbox, { src, alt, onClose: () => setOpen(false) })
+  ] });
+}
+
+// src/components/externalLinkProps.ts
+function externalLinkProps(href) {
+  if (!href) return {};
+  try {
+    const origin = typeof window === "undefined" ? void 0 : window.location.origin;
+    const url = new URL(href, origin);
+    if ((url.protocol === "http:" || url.protocol === "https:") && url.origin !== origin) {
+      return { target: "_blank", rel: "noopener noreferrer" };
+    }
+  } catch {
+  }
+  return {};
+}
+
+// src/components/markdownHtml.ts
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+var schema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    "*": [...(defaultSchema.attributes?.["*"] ?? []).filter((attribute) => attribute !== "align"), ["align", "left", "center", "right"]],
+    code: [["className", /^language-./, "math-inline", "math-display"]],
+    details: [...defaultSchema.attributes?.details ?? [], "open"]
+  },
+  strip: [...defaultSchema.strip ?? [], "style", "iframe", "object", "embed"],
+  protocols: {
+    ...defaultSchema.protocols,
+    // Preserve adapter links and Windows drive paths; the URL transform still
+    // rejects non-file drive schemes before any browser anchor is created.
+    href: [...defaultSchema.protocols?.href ?? [], "file", "workspace-auto", ..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+  }
+};
+var markdownHtmlPlugins = [rehypeRaw, [rehypeSanitize, schema]];
+
+// src/components/WorkspaceFileLink.tsx
+import { useEffect as useEffect6, useRef as useRef10, useState as useState8 } from "react";
+import { createPortal as createPortal5 } from "react-dom";
+import { Check as Check2, TriangleAlert as TriangleAlert2 } from "lucide-react";
+import { Fragment as Fragment4, jsx as jsx14, jsxs as jsxs12 } from "react/jsx-runtime";
+function WorkspaceFileLink({ path, line, children, onOpen, className = "thread-inline-link" }) {
+  useI18n();
+  const [menu, setMenu] = useState8(null);
+  const [copy, setCopy] = useState8(null);
+  const menuRef = useRef10(null);
+  const linkRef = useRef10(null);
+  const displayPath = path.startsWith("/") || /^[a-z]:/i.test(path) ? path : `./${path.replace(/^\.\//, "")}`;
+  const copyValue = path.replace(/^\.\//, "") + (line ? `:${line}` : "");
+  const close = (restoreFocus) => {
+    setMenu(null);
+    setCopy(null);
+    if (restoreFocus) linkRef.current?.focus();
+  };
+  useMenuKeyboard(menuRef, Boolean(menu), close);
+  useEffect6(() => {
+    if (!menu) return;
+    const dismiss = (event) => {
+      if (!menuRef.current?.contains(event.target)) close(false);
+    };
+    document.addEventListener("pointerdown", dismiss);
+    window.addEventListener("scroll", dismiss, true);
+    return () => {
+      document.removeEventListener("pointerdown", dismiss);
+      window.removeEventListener("scroll", dismiss, true);
+    };
+  }, [menu]);
+  const show = (x, y) => {
+    setCopy(null);
+    setMenu({ x: Math.min(x, window.innerWidth - 190), y: Math.min(y, window.innerHeight - 100) });
+  };
+  const press = useLongPress(({ x, y }) => show(x, y));
+  const open = () => {
+    setMenu(null);
+    onOpen({ path, ...line ? { line } : {} });
+  };
+  return /* @__PURE__ */ jsxs12(Fragment4, { children: [
+    /* @__PURE__ */ jsx14(
+      "a",
+      {
+        ref: linkRef,
+        "data-file-link": "",
+        href: displayPath.split("/").map(encodeURIComponent).join("/") + (line ? `#L${line}` : ""),
+        title: copyValue,
+        className,
+        ...press,
+        onClick: (event) => {
+          event.preventDefault();
+          open();
+        },
+        onContextMenu: (event) => {
+          event.preventDefault();
+          show(event.clientX, event.clientY);
+        },
+        children
+      }
+    ),
+    menu && createPortal5(/* @__PURE__ */ jsxs12("div", { ref: menuRef, role: "menu", "aria-label": translate("files.fileLink"), className: "thread-workspace-link-menu", style: { left: Math.max(8, menu.x), top: Math.max(8, menu.y) }, children: [
+      /* @__PURE__ */ jsx14("button", { type: "button", role: "menuitem", onClick: open, children: translate("files.openFile") }),
+      /* @__PURE__ */ jsxs12("button", { type: "button", role: "menuitem", "data-copy-state": copy ?? void 0, onClick: async () => {
+        const ok = await copyText(copyValue);
+        setCopy(ok ? "copied" : "failed");
+        if (ok) window.setTimeout(() => close(true), 700);
+      }, children: [
+        copy === "copied" ? /* @__PURE__ */ jsx14(Check2, { "aria-hidden": "true" }) : copy === "failed" ? /* @__PURE__ */ jsx14(TriangleAlert2, { "aria-hidden": "true" }) : null,
+        copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : translate("common.copyPath")
+      ] }),
+      /* @__PURE__ */ jsx14("span", { className: "copy-button-status", role: "status", children: copy === "copied" ? translate("common.copied") : copy === "failed" ? translate("common.copyFailed") : "" })
+    ] }), linkRef.current?.closest(".thread-ui-shell") ?? document.body)
+  ] });
+}
+
+// src/components/graph-chat/graphChatShiki.ts
+var CSS_VARIABLES_SYNTAX_THEME = "pockymoe-css-variables";
+function syntaxThemeFor(dark, cssPalette) {
+  if (cssPalette) return CSS_VARIABLES_SYNTAX_THEME;
+  return dark ? "ayu-dark" : "github-light-default";
+}
+var GRAMMARS = {
+  javascript: () => import("shiki/langs/javascript.mjs"),
+  typescript: () => import("shiki/langs/typescript.mjs"),
+  tsx: () => import("shiki/langs/tsx.mjs"),
+  jsx: () => import("shiki/langs/jsx.mjs"),
+  python: () => import("shiki/langs/python.mjs"),
+  json: () => import("shiki/langs/json.mjs"),
+  bash: () => import("shiki/langs/bash.mjs"),
+  shellscript: () => import("shiki/langs/shellscript.mjs"),
+  yaml: () => import("shiki/langs/yaml.mjs"),
+  toml: () => import("shiki/langs/toml.mjs"),
+  markdown: () => import("shiki/langs/markdown.mjs"),
+  html: () => import("shiki/langs/html.mjs"),
+  css: () => import("shiki/langs/css.mjs"),
+  sql: () => import("shiki/langs/sql.mjs"),
+  csv: () => import("shiki/langs/csv.mjs"),
+  ruby: () => import("shiki/langs/ruby.mjs"),
+  rust: () => import("shiki/langs/rust.mjs"),
+  go: () => import("shiki/langs/go.mjs"),
+  java: () => import("shiki/langs/java.mjs"),
+  c: () => import("shiki/langs/c.mjs"),
+  cpp: () => import("shiki/langs/cpp.mjs"),
+  csharp: () => import("shiki/langs/csharp.mjs"),
+  xml: () => import("shiki/langs/xml.mjs")
+};
+var ALIASES = {
+  js: "javascript",
+  mjs: "javascript",
+  cjs: "javascript",
+  ts: "typescript",
+  mts: "typescript",
+  cts: "typescript",
+  py: "python",
+  sh: "bash",
+  shell: "bash",
+  zsh: "bash",
+  yml: "yaml",
+  md: "markdown",
+  htm: "html",
+  rb: "ruby",
+  rs: "rust",
+  golang: "go",
+  "c++": "cpp",
+  cc: "cpp",
+  hpp: "cpp",
+  h: "c",
+  cs: "csharp",
+  "c#": "csharp",
+  svg: "xml",
+  jsonc: "json",
+  json5: "json"
+};
+var grammarOf = (language) => {
+  const name = language.trim().toLowerCase();
+  const known = ALIASES[name] ?? name;
+  return known in GRAMMARS ? known : null;
+};
+var corePromise = null;
+var loading = /* @__PURE__ */ new Map();
+function core() {
+  corePromise ??= Promise.all([
+    import("shiki/core"),
+    import("shiki/engine/javascript"),
+    import("shiki/themes/github-light-default.mjs"),
+    import("shiki/themes/ayu-dark.mjs")
+  ]).then(([{ createHighlighterCore, createCssVariablesTheme }, { createJavaScriptRegexEngine }, light, dark]) => createHighlighterCore({
+    engine: createJavaScriptRegexEngine(),
+    themes: [
+      light.default,
+      dark.default,
+      createCssVariablesTheme({ name: CSS_VARIABLES_SYNTAX_THEME, variablePrefix: "--shiki-", fontStyle: true })
+    ],
+    langs: []
+  }));
+  return corePromise;
+}
+async function getGraphChatHighlighter(languages) {
+  const highlighter = await core();
+  const wanted = languages ? [...new Set(languages.map(grammarOf).filter((name) => name !== null))] : Object.keys(GRAMMARS);
+  await Promise.all(wanted.map((name) => {
+    let pending = loading.get(name);
+    if (!pending) {
+      pending = GRAMMARS[name]().then((grammar) => highlighter.loadLanguage(grammar.default)).catch(() => {
+        loading.delete(name);
+      });
+      loading.set(name, pending);
+    }
+    return pending;
+  }));
+  return highlighter;
+}
+function fencedLanguages(markdown) {
+  const names = /* @__PURE__ */ new Set();
+  for (const match of markdown.matchAll(/^[ \t]{0,3}(?:`{3,}|~{3,})[ \t]*([\w#+.-]+)/gm)) names.add(match[1]);
+  return [...names];
+}
+var hasFence = (markdown) => /^[ \t]{0,3}(?:`{3,}|~{3,})/m.test(markdown);
+var highlighted = /* @__PURE__ */ new Map();
+function highlightCode(highlighter, code, lang, theme) {
+  const key = `${theme}
+${lang}
+${code}`;
+  const known = highlighted.get(key);
+  if (known !== void 0) {
+    highlighted.delete(key);
+    highlighted.set(key, known);
+    return known;
+  }
+  let html;
+  try {
+    html = highlighter.codeToHtml(code, { lang, theme });
+  } catch {
+    html = highlighter.codeToHtml(code, { lang: "text", theme });
+  }
+  if (code.length < 2e5) {
+    highlighted.set(key, html);
+    if (highlighted.size > 300) highlighted.delete(highlighted.keys().next().value);
+  }
+  return html;
+}
+
+// src/components/workbench/FilePanelContext.tsx
+import { createContext as createContext3, useContext as useContext3 } from "react";
+var FilePanelContext = createContext3(null);
+var useFilePanel = () => useContext3(FilePanelContext);
+
+// src/components/graph-ui/Button.tsx
+import { Slot } from "@radix-ui/react-slot";
+import { cva } from "class-variance-authority";
+import { jsx as jsx15 } from "react/jsx-runtime";
+var buttonVariants = cva(
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+        destructive: "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
+        outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline"
+      },
+      size: {
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default"
+    }
+  }
+);
+function Button({
+  asChild = false,
+  className,
+  size,
+  variant,
+  ...props
+}) {
+  const Comp = asChild ? Slot : "button";
+  return /* @__PURE__ */ jsx15(
+    Comp,
+    {
+      "data-slot": "button",
+      className: cn(buttonVariants({ variant, size, className })),
+      ...props
+    }
+  );
+}
+
+export {
+  copyText,
+  readClipboardText,
+  isRiskyPaste,
+  pastedLineCount,
+  useCopy,
+  CopyButton,
+  splitPath,
+  PathChip,
+  MiddleName,
+  ErrorMark,
+  useModalFocus,
+  useLongPress,
+  ConfirmDialog,
+  confirmAsync,
+  cn,
+  Button,
+  normalizeFileSystemPath,
+  localFileHref,
+  relativeWorkspacePath,
+  ImageRecoveryProvider,
+  ImageFallbackProvider,
+  ImageDiagnosisProvider,
+  RecoverableImage,
+  MarkdownImageLinkContext,
+  GraphWorkspaceImageLightbox,
+  ZoomableImage,
+  WorkspaceImagePreview,
+  externalLinkProps,
+  markdownHtmlPlugins,
+  WorkspaceFileLink,
+  syntaxThemeFor,
+  getGraphChatHighlighter,
+  fencedLanguages,
+  hasFence,
+  highlightCode,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  Dialog,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  RenameDialog,
+  FilePanelContext,
+  useFilePanel,
+  useTabScrollEdges,
+  TabScrollButtons,
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+  MOLECULAR_EXTENSIONS,
+  IMAGE_EXTENSIONS,
+  PDF_EXTENSIONS,
+  collectArtifacts,
+  extensionOf,
+  workspaceTreeNodeToGraphNode,
+  findFirstWorkspaceFile,
+  workspaceRelativeFocusPath,
+  ancestorDirectoryPaths,
+  hasWorkspacePath,
+  buildMoleculePreviewSnapshot,
+  languageForPath,
+  collectWorkspaceItems,
+  flattenWorkspaceNodes,
+  findFirstPreviewNode,
+  collectAncestorPaths,
+  documentStores,
+  documentListeners,
+  getDirtyWorkspaceDocumentCount,
+  approveWorkspaceDocumentUnloadOnce,
+  prepareWorkspaceDocumentUnloadApproval,
+  revokeWorkspaceDocumentUnloadApproval,
+  isProtected,
+  newDraft,
+  editDraft,
+  settleSave,
+  confirmWorkspaceDocumentLeave,
+  downloadDraft
+};

@@ -1,5 +1,5 @@
 import { translate, useI18n } from '../../i18n';
-import type { ComponentProps, Dispatch, SetStateAction } from 'react';
+import type { ComponentProps, Dispatch, ReactNode, SetStateAction } from 'react';
 
 import type { ThreadShellControlState } from '../../types';
 import {
@@ -33,6 +33,8 @@ export type ComposerShellToolsPanelProps = ComponentProps<
 
 export interface ComposerToolbarProps {
   canInterrupt?: boolean;
+  /** A send that failed: its mark and retry, just before the send key. */
+  sendError?: ReactNode;
   interruptLabel?: string;
   onInterrupt?: (() => Promise<void> | void) | undefined;
   isShellView: boolean;
@@ -54,6 +56,7 @@ export interface ComposerToolbarProps {
 
 export function ComposerToolbar({
   canInterrupt = false,
+  sendError = null,
   interruptLabel,
   onInterrupt,
   isShellView,
@@ -104,7 +107,7 @@ export function ComposerToolbar({
 
       <div className="composer-settings flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5">
         {!isShellView && settingsToolbarProps ? (
-          <ComposerSettingsToolbar {...settingsToolbarProps} queueing={canInterrupt} beforeSend={canInterrupt ? (
+          <ComposerSettingsToolbar {...settingsToolbarProps} queueing={canInterrupt} beforeSend={sendError || canInterrupt ? (<>{sendError}{canInterrupt ? (
             <InputGroupButton
               type="button" variant="ghost" size="icon-xs"
               aria-label={interruptLabel} title={interruptLabel}
@@ -113,7 +116,7 @@ export function ComposerToolbar({
             >
               <span aria-hidden="true" className="block h-2.5 w-2.5 rounded-[2px] bg-current" />
             </InputGroupButton>
-          ) : null} />
+          ) : null}</>) : null} />
         ) : null}
 
         {isShellView && shellPromptLabel ? (

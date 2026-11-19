@@ -5,6 +5,7 @@ import type { AgentBackendToolboxItemSchemaDto } from '@pockymoe/shared';
 import {
   filterToolboxItemsForCapabilities,
   toolboxItemActionDecision,
+  toolboxItemActive,
   toolboxItemClassName,
   toolboxItemDisabled,
   toolboxItemStatus,
@@ -116,7 +117,7 @@ describe('composerToolbox', () => {
         goalStatus: null,
         busy: false,
       }),
-    ).toBe('On');
+    ).toEqual({ kind: 'switch', on: true });
     expect(
       toolboxItemStatus(item('compact'), {
         fastMode: false,
@@ -125,7 +126,7 @@ describe('composerToolbox', () => {
         goalStatus: null,
         busy: false,
       }),
-    ).toBe('Busy');
+    ).toEqual({ kind: 'text', text: 'Busy' });
     expect(
       toolboxItemStatus(item('goal'), {
         fastMode: false,
@@ -134,7 +135,7 @@ describe('composerToolbox', () => {
         goalStatus: 'paused',
         busy: false,
       }),
-    ).toBe('Composing');
+    ).toEqual({ kind: 'text', text: 'Composing', active: true });
     expect(
       toolboxItemStatus(item('goal'), {
         fastMode: false,
@@ -143,7 +144,7 @@ describe('composerToolbox', () => {
         goalStatus: 'budgetLimited',
         busy: false,
       }),
-    ).toBe('Budget');
+    ).toEqual({ kind: 'text', text: 'Budget', active: false });
     expect(
       toolboxItemStatus(item('fork'), {
         fastMode: false,
@@ -152,7 +153,7 @@ describe('composerToolbox', () => {
         goalStatus: null,
         busy: true,
       }),
-    ).toBe('Idle only');
+    ).toEqual({ kind: 'text', text: 'Idle only' });
     expect(
       toolboxItemStatus(item('skills'), {
         fastMode: false,
@@ -161,7 +162,7 @@ describe('composerToolbox', () => {
         goalStatus: null,
         busy: false,
       }),
-    ).toBe('View');
+    ).toEqual({ kind: 'more' });
     expect(
       toolboxItemStatus(item('prompt'), {
         fastMode: false,
@@ -170,7 +171,7 @@ describe('composerToolbox', () => {
         goalStatus: null,
         busy: false,
       }),
-    ).toBe('Compose');
+    ).toBeNull();
     expect(
       toolboxItemStatus(item('unsupported'), {
         fastMode: false,
@@ -179,7 +180,7 @@ describe('composerToolbox', () => {
         goalStatus: null,
         busy: false,
       }),
-    ).toBe('Unavailable');
+    ).toEqual({ kind: 'text', text: 'Unavailable' });
   });
 
   it('disables actions that require idle state or settings availability', () => {
@@ -225,30 +226,11 @@ describe('composerToolbox', () => {
     ).toBe(true);
   });
 
-  it('marks active fast and goal actions with warning styling', () => {
-    expect(
-      toolboxItemClassName(item('fast'), {
-        fastMode: true,
-        goalComposeMode: false,
-        goalStatus: null,
-        menuItemClassName: 'menu-item',
-      }),
-    ).toContain('ui-status-warning');
-    expect(
-      toolboxItemClassName(item('goal'), {
-        fastMode: false,
-        goalComposeMode: false,
-        goalStatus: 'active',
-        menuItemClassName: 'menu-item',
-      }),
-    ).toContain('ui-status-warning');
-    expect(
-      toolboxItemClassName(item('mcp'), {
-        fastMode: false,
-        goalComposeMode: false,
-        goalStatus: null,
-        menuItemClassName: 'menu-item',
-      }),
-    ).toContain('menu-item');
+  it('marks active fast and goal actions without a warning colour', () => {
+    expect(toolboxItemActive(item('fast'), { fastMode: true, goalComposeMode: false, goalStatus: null })).toBe(true);
+    expect(toolboxItemActive(item('goal'), { fastMode: false, goalComposeMode: false, goalStatus: 'active' })).toBe(true);
+    expect(toolboxItemActive(item('goal'), { fastMode: false, goalComposeMode: false, goalStatus: 'paused' })).toBe(false);
+    expect(toolboxItemClassName('menu-item')).toContain('menu-item');
+    expect(toolboxItemClassName('menu-item')).not.toContain('ui-status-warning');
   });
 });

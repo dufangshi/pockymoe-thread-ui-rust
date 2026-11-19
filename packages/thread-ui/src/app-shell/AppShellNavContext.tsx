@@ -38,6 +38,8 @@ export interface AppShellNavContextValue {
   setShowReasoningSummaries?: (enabled: boolean) => void;
   sendShortcut?: ComposerSendShortcut;
   setSendShortcut?: (shortcut: ComposerSendShortcut) => Promise<void>;
+  /** Where the choice is kept: the Relay account, or (local mode) this browser. */
+  sendShortcutScope?: 'account' | 'browser';
   sendShortcutLoading?: boolean;
   sendShortcutSaving?: boolean;
   sendShortcutError?: string | null;

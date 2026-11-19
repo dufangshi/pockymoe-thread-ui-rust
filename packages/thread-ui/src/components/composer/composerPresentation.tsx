@@ -16,22 +16,16 @@ export const HOOK_EVENT_OPTIONS: Array<{
   label: string;
   matcherHint: string;
 }> = [
-  { value: 'preToolUse', label: 'PreToolUse', matcherHint: 'Bash' },
-  {
-    value: 'permissionRequest',
-    label: 'PermissionRequest',
-    matcherHint: 'Bash',
-  },
-  { value: 'postToolUse', label: 'PostToolUse', matcherHint: 'Bash' },
-  {
-    value: 'sessionStart',
-    label: 'SessionStart',
-    matcherHint: 'startup|resume',
-  },
-  { value: 'userPromptSubmit', label: 'UserPromptSubmit', matcherHint: '' },
+  // Event names in the reader's language (§13); the form still shows the
+  // harness's JSON key beside the choice.
+  { value: 'preToolUse', get label() { return translate("chat.hookEvent.preToolUse"); }, matcherHint: 'Bash' },
+  { value: 'permissionRequest', get label() { return translate("chat.hookEvent.permissionRequest"); }, matcherHint: 'Bash' },
+  { value: 'postToolUse', get label() { return translate("chat.hookEvent.postToolUse"); }, matcherHint: 'Bash' },
+  { value: 'sessionStart', get label() { return translate("chat.hookEvent.sessionStart"); }, matcherHint: 'startup|resume' },
+  { value: 'userPromptSubmit', get label() { return translate("chat.hookEvent.userPromptSubmit"); }, matcherHint: '' },
   { value: 'stop', get label() { return translate("chat.stop"); }, matcherHint: '' },
-  { value: 'preCompact', label: 'PreCompact', matcherHint: '' },
-  { value: 'postCompact', label: 'PostCompact', matcherHint: '' },
+  { value: 'preCompact', get label() { return translate("chat.hookEvent.preCompact"); }, matcherHint: '' },
+  { value: 'postCompact', get label() { return translate("chat.hookEvent.postCompact"); }, matcherHint: '' },
 ];
 
 export function buildComposerControlState({
@@ -45,6 +39,7 @@ export function buildComposerControlState({
   supportedEffortCount,
   fastMode,
   sendShortcut = 'ctrlEnter',
+  turnRunning = false,
 }: {
   goalComposeMode: boolean;
   goalBusy: boolean;
@@ -56,17 +51,25 @@ export function buildComposerControlState({
   supportedEffortCount: number;
   fastMode: boolean;
   sendShortcut?: 'ctrlEnter' | 'enter';
+  /** A turn is running: sending now queues, and the steer shortcut delivers now. */
+  turnRunning?: boolean;
 }) {
   const promptPlaceholder = goalComposeMode
     ? translate("chat.describeTheGoalTheBackendShouldContinue")
     : (disabledPlaceholder ??
       (isShellView
         ? translate("chat.sendShellInputToTheAttachedTerminal")
-        : translate("chat.typeMessage")));
-  // Keyboards only: how to send, from the current shortcut setting.
+        : turnRunning
+          ? translate("chat.queueNextPrompt")
+          : translate("chat.typeMessage")));
+  // Keyboards only: how to send, from the current shortcut setting. While a
+  // turn runs that key queues, and the steer key is named too (§12: the
+  // placeholder and the send key say the same thing).
   const promptPlaceholderHint = goalComposeMode || disabledPlaceholder || isShellView
     ? ''
-    : translate(sendShortcut === 'enter' ? "chat.enterToSend" : "chat.ctrlEnterToSend");
+    : turnRunning
+      ? translate(sendShortcut === 'enter' ? "chat.enterToQueueCtrlEnterToSteer" : "chat.ctrlEnterToQueueCtrlShiftEnterToSteer")
+      : translate(sendShortcut === 'enter' ? "chat.enterToSend" : "chat.ctrlEnterToSend");
   const sendButtonLabel = goalComposeMode
     ? goalBusy
       ? translate("chat.setting")
@@ -174,18 +177,11 @@ export function buildComposerClassNames({
     composerPromptRegionClassName: isShellView
       ? 'thread-composer-prompt-region'
       : 'thread-graph-composer-prompt-region',
-    promptInputClassName: `${composerInputClassName} min-h-[5.25rem] w-full px-4 pr-14 pt-3 outline-none transition sm:min-h-[5.75rem] ${
-      isDragTargetActive
-        ? 'is-drag-target border-sky-300/80 bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]'
-        : ''
-    }`,
+    // The drop highlight is the composer frame's (ComposerFrame `drop`), in theme colours.
+    promptInputClassName: `${composerInputClassName} min-h-[5.25rem] w-full px-4 pr-14 pt-3 outline-none transition sm:min-h-[5.75rem] ${isDragTargetActive ? 'is-drag-target' : ''}`,
     // Sending shows on the send key (a spinner), not as a tint over the prompt.
     graphChatInputGroupClassName: 'thread-graph-composer-input-group relative border-0 bg-transparent shadow-none ring-0',
-    graphChatInputClassName: `${composerInputClassName} min-h-[68px] max-h-32 w-full overflow-y-auto px-3 pt-3 text-[16px] leading-relaxed text-slate-800 outline-none transition sm:min-h-[92px] sm:max-h-40 sm:px-4 sm:pt-4 sm:text-[14px] dark:text-slate-100 ${
-      isDragTargetActive
-        ? 'is-drag-target bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]'
-        : ''
-    }`,
+    graphChatInputClassName: `${composerInputClassName} min-h-[68px] max-h-32 w-full overflow-y-auto px-3 pt-3 text-[16px] leading-relaxed text-slate-800 outline-none transition sm:min-h-[92px] sm:max-h-40 sm:px-4 sm:pt-4 sm:text-[14px] dark:text-slate-100 ${isDragTargetActive ? 'is-drag-target' : ''}`,
   };
 }
 
@@ -300,7 +296,8 @@ export function authStatusLabel(
     case 'oAuth':
       return 'OAuth';
     case 'notLoggedIn':
-      return translate("chat.login");
+      // A state, not a button: "Log in" read as an action here.
+      return translate("chat.notLoggedIn");
     case 'unsupported':
       return translate("chat.public");
     default:
@@ -337,6 +334,16 @@ export function hookSourceLabel(value: ThreadHooksDto['hooks'][number]['source']
       return translate("chat.managed");
     case 'sessionFlags':
       return translate("chat.session");
+    case 'system':
+      return translate("chat.hookSource.system");
+    case 'user':
+      return translate("chat.hookSource.user");
+    case 'project':
+      return translate("chat.hookSource.project");
+    case 'mdm':
+      return translate("chat.managed");
+    case 'plugin':
+      return translate("chat.hookSource.plugin");
     default:
       return value[0]?.toUpperCase() + value.slice(1);
   }
@@ -413,7 +420,7 @@ export function editableHookTarget(
 export function goalStatusLabel(value: ThreadGoalStatusDto) {
   switch (value) {
     case 'active':
-      return translate("chat.active");
+      return translate("chat.goalStatusActive");
     case 'paused':
       return translate("chat.paused");
     case 'budgetLimited':

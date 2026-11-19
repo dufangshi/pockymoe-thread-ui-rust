@@ -196,7 +196,7 @@ function renderMenu({
         onUpdateSettings={onUpdateSettings}
         toolboxItemDisabled={(item) => item.action === 'fast'}
         toolboxItemClassName={(item) => `toolbox-${item.action}`}
-        toolboxItemStatus={(item) => (item.action === 'fast' ? 'Off' : 'View')}
+        toolboxItemStatus={(item) => (item.action === 'fast' ? { kind: 'switch', on: false } : { kind: 'more' })}
         onSetSlashPanelView={setSlashPanelView}
         onUpdateGoal={vi.fn()}
         onOpenForkTurns={onOpenForkTurns}
@@ -290,7 +290,8 @@ describe('ComposerSlashToolboxMenu', () => {
     const view = renderMenu({ onUpdateSettings });
     const planButton = buttonByText(view, '/plan');
 
-    expect(planButton?.getAttribute('aria-pressed')).toBe('false');
+    expect(planButton?.getAttribute('role')).toBe('menuitemcheckbox');
+    expect(planButton?.getAttribute('aria-checked')).toBe('false');
     planButton?.click();
     expect(onUpdateSettings).toHaveBeenCalledWith({
       collaborationMode: 'plan',
@@ -305,8 +306,8 @@ describe('ComposerSlashToolboxMenu', () => {
     });
     const planButton = buttonByText(view, '/plan');
 
-    expect(planButton?.getAttribute('aria-pressed')).toBe('true');
-    expect(planButton?.textContent).toContain('On');
+    expect(planButton?.getAttribute('aria-checked')).toBe('true');
+    expect(planButton?.querySelector('.composer-toolbox-switch[data-on]')).not.toBeNull();
     planButton?.click();
     expect(onUpdateSettings).toHaveBeenCalledWith({
       collaborationMode: 'default',

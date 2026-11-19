@@ -296,7 +296,7 @@ export const filesZhCN = {
   "files.copyFailed": "复制失败",
   "files.deleteThread": "删除线程 {{value1}}",
   "files.deleteThread_d6d95f": "删除线程",
-  "files.createNewChat": "创建新对话",
+  "files.createNewChat": "新建线程",
   "files.nameTheRoomSoItIsEasy": "为对话命名，方便之后查找。",
   "files.chatName": "对话名称",
   "files.create": "创建",

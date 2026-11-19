@@ -77,6 +77,8 @@ export interface WorkbenchThread {
   agent?: string;
   /** A shortcut's place in the account's own order; unordered ones follow by recency. */
   shortcutOrder?: number;
+  /** The start of a prompt written here and not sent: the row and tab say so. */
+  draft?: string;
 }
 /** The latest notifications, those of a conversation's agent threads listed
     together under its root (titled), the rest alone. */
@@ -857,7 +859,10 @@ export function MatterWorkbench({
       />
       <span className="matter-thread-copy">
         <span>{thread.title}</span>
-        <small>{thread.subtitle}</small>
+        {/* An unsent prompt takes the subtitle's place, so it is not forgotten. */}
+        {thread.draft && thread.key !== o.currentKey
+          ? <small className="matter-thread-draft"><b>{translate('workbench.draftLabel')}</b>{thread.draft}</small>
+          : <small>{thread.subtitle}</small>}
       </span>
     </a>
     {agents && <button type="button" className="matter-agent-toggle" aria-expanded={agents.open} data-running={agents.running > 0 || undefined}

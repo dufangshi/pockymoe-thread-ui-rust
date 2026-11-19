@@ -82,6 +82,7 @@ import { ComposerUploadProgress, type ComposerUploadProgressState } from './comp
 import { ComposerPendingWakes } from './composer/ComposerPendingWakes';
 import { useQuoteSink } from './quotes/QuoteScope';
 import { ComposerToolbar } from './composer/ComposerToolbar';
+import { ErrorMark } from './copy/ErrorMark';
 import type { ThreadContextInspector } from './composer/ComposerContextControl';
 import { useComposerAttachments } from './composer/useComposerAttachments';
 import { useAttachmentPreviewUrls } from './composer/useAttachmentPreviewUrls';
@@ -330,6 +331,10 @@ export function ThreadComposer({
     if (openMenu === 'model') modelMenuOpened.current?.();
   }, [openMenu]);
   const submitInFlightRef = useRef(false);
+  // The last send that did not go out: its mark sits by the send key with a
+  // retry (docs/ui-principles.md §11), not in the composer's far corner.
+  const [sendFailure, setSendFailure] = useState<{ delivery?: 'steer' } | null>(null);
+  useEffect(() => { if (!error) setSendFailure(null); }, [error]);
   const [mcpPanelMode, setMcpPanelMode] = useState<McpPanelMode>('list');
   const slashCapabilities = useMemo(
     () => ({
@@ -786,6 +791,7 @@ export function ThreadComposer({
       }
 
       const submission = captureSubmission({ prompt, attachments });
+      setSendFailure(null);
       try {
         const submitted = await onSubmit({
           ...submitInput,
@@ -793,11 +799,13 @@ export function ThreadComposer({
         });
         if (submitted === false) {
           submission.cancel();
+          if (!isShellView) setSendFailure(delivery ? { delivery } : {});
           return;
         }
         submission.complete();
       } catch (error) {
         submission.cancel();
+        if (!isShellView) setSendFailure(delivery ? { delivery } : {});
         throw error;
       }
     } finally {
@@ -870,7 +878,7 @@ export function ThreadComposer({
     }
   }
 
-  function handlePromptDragEnter(event: DragEvent<HTMLDivElement>) {
+  function handlePromptDragEnter(event: DragEvent<HTMLElement>) {
     const dragAction = derivePromptFileDragAction(
       hasTransferFiles(event.dataTransfer?.items, event.dataTransfer?.files),
     );
@@ -883,7 +891,7 @@ export function ThreadComposer({
     }
   }
 
-  function handlePromptDragOver(event: DragEvent<HTMLDivElement>) {
+  function handlePromptDragOver(event: DragEvent<HTMLElement>) {
     const dragAction = derivePromptFileDragAction(
       hasTransferFiles(event.dataTransfer?.items, event.dataTransfer?.files),
     );
@@ -899,14 +907,14 @@ export function ThreadComposer({
     }
   }
 
-  function handlePromptDragLeave(event: DragEvent<HTMLDivElement>) {
+  function handlePromptDragLeave(event: DragEvent<HTMLElement>) {
     if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
       return;
     }
     setIsDragTargetActive(false);
   }
 
-  function handlePromptDrop(event: DragEvent<HTMLDivElement>) {
+  function handlePromptDrop(event: DragEvent<HTMLElement>) {
     const files = extractFilesFromTransfer(
       event.dataTransfer?.items,
       event.dataTransfer?.files,
@@ -1010,6 +1018,7 @@ export function ThreadComposer({
     supportedEffortCount: supportedEfforts.length,
     fastMode,
     sendShortcut,
+    turnRunning: canInterrupt,
   });
   const {
     composerLayerClassName,
@@ -1036,6 +1045,9 @@ export function ThreadComposer({
     busy,
   });
   const toolbarProps = useComposerToolbarProps({
+    sendProgress: uploadProgress
+      ? ((uploadProgress.index - 1) + (uploadProgress.total > 0 ? Math.min(1, uploadProgress.loaded / uploadProgress.total) : 1)) / Math.max(1, uploadProgress.count)
+      : null,
     slashQuery,
     slashActive,
     isShellView,
@@ -1190,6 +1202,11 @@ export function ThreadComposer({
     planMode: displayedCollaborationMode === 'plan',
     settingsBusy,
     onExitPlanMode: () => { void handleUpdateSettings({ collaborationMode: 'default' }); },
+    fastMode: slashCapabilities.fast && fastMode,
+    onExitFastMode: () => { void handleUpdateSettings({ fastMode: false }); },
+    activeGoal: slashCapabilities.goal && goalState.data?.status === 'active' ? goalState.data : null,
+    ...(onUpdateGoal ? { onPauseGoal: () => { void onUpdateGoal({ status: 'paused' }); } } : {}),
+    ...(onOpenGoal ? { onOpenGoals: () => { setOpenMenu('slash'); setSlashPanelView('goals'); void onOpenGoal(); } } : {}),
     goalTokenBudget,
     goalLocalError,
     goalBusy,
@@ -1213,10 +1230,11 @@ export function ThreadComposer({
         flushControlledDraftToHost();
       }
     },
-    onPromptDragEnter: handlePromptDragEnter,
-    onPromptDragOver: handlePromptDragOver,
-    onPromptDragLeave: handlePromptDragLeave,
-    onPromptDrop: handlePromptDrop,
+    // The whole frame takes dropped files (ComposerFrame `drop`), not only the text.
+    onPromptDragEnter: () => undefined,
+    onPromptDragOver: () => undefined,
+    onPromptDragLeave: () => undefined,
+    onPromptDrop: () => undefined,
     onGoalTokenBudgetChange: setGoalTokenBudget,
     onCancelGoal: exitGoalComposeMode,
     onShellPromptChange: setPrompt,
@@ -1231,7 +1249,7 @@ export function ThreadComposer({
       formClassName={formClassName}
       shellClassName={composerShellClassName}
       inputGroupClassName={graphChatInputGroupClassName}
-      error={error}
+      error={sendFailure && error ? null : error}
       followTail={followTail}
       photoInputRef={photoInputRef}
       fileInputRef={fileInputRef}
@@ -1265,10 +1283,25 @@ export function ThreadComposer({
           canInterrupt={!isShellView && canInterrupt}
           interruptLabel={interruptLabel}
           onInterrupt={onInterrupt}
+          sendError={sendFailure && error ? (
+            <ErrorMark
+              className="composer-send-error"
+              message={translate('chat.promptNotSent')}
+              detail={error}
+              onRetry={() => { void submitPrompt(sendFailure.delivery); }}
+            />
+          ) : null}
         />
       }
       goalSlot={goalSlot}
       shellPromptSlot={shellPromptSlot}
+      drop={isShellView ? undefined : {
+        active: isDragTargetActive,
+        onDragEnter: handlePromptDragEnter,
+        onDragOver: handlePromptDragOver,
+        onDragLeave: handlePromptDragLeave,
+        onDrop: handlePromptDrop,
+      }}
     />
   );
 }

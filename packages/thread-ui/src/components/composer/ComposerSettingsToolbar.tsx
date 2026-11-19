@@ -53,6 +53,7 @@ export function ComposerSettingsToolbar({
   promptEmpty = false,
   sendButtonLabel,
   sending = false,
+  sendProgress = null,
   sendButtonClassName,
   sendButtonBaseClassName,
   beforeSend,
@@ -89,6 +90,9 @@ export function ComposerSettingsToolbar({
   sendButtonLabel: string;
   /** A prompt is on its way: the key turns into a spinner until it lands. */
   sending?: boolean;
+  /** Files of this prompt still uploading, 0–1: the send key shows a ring that
+      fills instead of a spinner, since this can take minutes (§6). */
+  sendProgress?: number | null;
   sendButtonClassName: string;
   modelControlsDisabled: boolean;
   effortControlsDisabled: boolean;
@@ -173,6 +177,9 @@ export function ComposerSettingsToolbar({
         {openMenu === 'model' && (
           <ComposerMenuSurface
             align="end"
+            aria-label={translate('chat.model')}
+            // The effort slider joins the arrow order; left and right still move it.
+            menu={{ onClose: () => onSetOpenMenu(() => null), itemSelector: '[role^="menuitem"]:not([disabled]), .composer-reasoning-thumb:not([data-disabled])' }}
             className="composer-model-menu w-[min(19rem,calc(100vw-2rem))] rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1.5 text-[var(--theme-fg)] shadow-xl"
           >
             <p className="composer-model-menu-heading flex items-baseline justify-between gap-3 px-2 py-1 text-xs text-[var(--theme-fg-muted)]">
@@ -242,7 +249,13 @@ export function ComposerSettingsToolbar({
         disabled={goalBusy || (activeView === 'chat' ? disabled : false)}
         className={`${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
       >
-        {sending && !goalComposeMode ? (
+        {sending && !goalComposeMode && sendProgress !== null ? (
+          <svg aria-hidden="true" viewBox="0 0 20 20" className="composer-send-progress h-[18px] w-[18px]">
+            <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeOpacity="0.3" strokeWidth="2.4" />
+            <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"
+              pathLength={100} strokeDasharray={`${Math.max(2, Math.round(sendProgress * 100))} 100`} transform="rotate(-90 10 10)" />
+          </svg>
+        ) : sending && !goalComposeMode ? (
           <Loader2 aria-hidden="true" className="composer-send-spinner h-[17px] w-[17px] request-spin" strokeWidth={2.4} />
         ) : goalComposeMode ? (
           <Target aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />

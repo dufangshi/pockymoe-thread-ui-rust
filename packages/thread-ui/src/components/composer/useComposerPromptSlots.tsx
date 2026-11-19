@@ -6,7 +6,7 @@ import type {
 } from 'react';
 
 import { ComposerGoalComposeCard } from './ComposerGoalComposeCard';
-import { ComposerModeChip } from './ComposerModeChip';
+import { ComposerModeChips } from './ComposerModeChip';
 import { ComposerPromptEditor } from './ComposerPromptEditor';
 import { ComposerShellPromptInput } from './ComposerShellPromptInput';
 import type { ComposerQuoteDraft } from './composerUtils';
@@ -30,6 +30,13 @@ export interface UseComposerPromptSlotsInput {
   planMode?: boolean;
   settingsBusy?: boolean;
   onExitPlanMode?: () => void;
+  /** Fast mode is on: a chip says so and turns it off. */
+  fastMode?: boolean;
+  onExitFastMode?: (() => void) | undefined;
+  /** A goal is running: a chip shows it, opens the goal list and pauses it. */
+  activeGoal?: { objective: string } | null;
+  onPauseGoal?: (() => void) | undefined;
+  onOpenGoals?: (() => void) | undefined;
   goalTokenBudget: string;
   goalLocalError: string | null;
   goalBusy: boolean;
@@ -69,6 +76,11 @@ export function useComposerPromptSlots({
   planMode = false,
   settingsBusy = false,
   onExitPlanMode,
+  fastMode = false,
+  onExitFastMode,
+  activeGoal = null,
+  onPauseGoal,
+  onOpenGoals,
   goalTokenBudget,
   goalLocalError,
   goalBusy,
@@ -123,8 +135,13 @@ export function useComposerPromptSlots({
         onTokenBudgetChange={onGoalTokenBudgetChange}
         onCancel={onCancelGoal}
       />
-    ) : planMode && !isShellView && onExitPlanMode ? (
-      <ComposerModeChip busy={settingsBusy} onExit={onExitPlanMode} />
+    ) : !isShellView ? (
+      <ComposerModeChips
+        busy={settingsBusy || goalBusy}
+        plan={planMode && onExitPlanMode ? { onExit: onExitPlanMode } : null}
+        fast={fastMode && onExitFastMode ? { onExit: onExitFastMode } : null}
+        goal={activeGoal && onPauseGoal ? { objective: activeGoal.objective, onPause: onPauseGoal, ...(onOpenGoals ? { onOpen: onOpenGoals } : {}) } : null}
+      />
     ) : null,
     shellPromptSlot: isShellView ? (
       <ComposerShellPromptInput

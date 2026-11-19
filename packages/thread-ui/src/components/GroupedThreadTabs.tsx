@@ -1,7 +1,7 @@
 import { translate, useI18n } from '../i18n';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Bot, X } from 'lucide-react';
+import { Bot, PencilLine, X } from 'lucide-react';
 import type { WorkbenchThread } from './MatterWorkbench';
 import { navigationStatusLabel } from './StatusMark';
 
@@ -113,6 +113,7 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
           <span className="matter-status-dot" role="img" aria-label={activity.label} data-status={activity.status} />
           {children.length > 0 && <span className="matter-tab-agents-slot" aria-hidden="true" />}
           <span>{root.title}{selected ? ` · ${selected.title}` : ''}</span>
+          {root.draft ? <PencilLine className="matter-tab-draft" role="img" aria-label={translate('workbench.hasUnsentDraft')} /> : null}
         </a>
         {children.length > 0 && <button className="matter-group-toggle is-badge" data-closed-only={openChildren.length ? undefined : true} aria-label={translate("workbench.agentThreads", { value1: root.title, value2: openChildren.length })}
           aria-expanded={menu?.key === root.key} aria-controls="matter-agent-threads" data-running={openChildren.some(child => child.status === 'running') || undefined} onClick={event => {

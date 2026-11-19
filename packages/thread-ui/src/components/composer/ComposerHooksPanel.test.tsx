@@ -9,6 +9,10 @@ import type { AgentHookDto, ThreadHooksDto } from '@pockymoe/shared';
 import { ComposerHooksPanel } from './ComposerHooksPanel';
 import type { HooksPanelMode } from './types';
 
+// The panel's own buttons, not the copy and expand buttons of its path chips.
+const panelButtons = (view: Element) =>
+  Array.from(view.querySelectorAll<HTMLButtonElement>('button')).filter((button) => !button.closest('.path-chip'));
+
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
 
@@ -152,12 +156,12 @@ describe('ComposerHooksPanel', () => {
       />,
     );
 
-    expect(view.textContent).toContain('PreToolUse · Bash');
-    expect(view.textContent).toContain('PostToolUse · Bash');
+    expect(view.textContent).toContain('Before a tool runs · Bash');
+    expect(view.textContent).toContain('After a tool runs · Bash');
     expect(view.textContent).toContain('Project hooks are experimental');
     expect(view.textContent).toContain('Invalid hook config');
 
-    const buttons = Array.from(view.querySelectorAll<HTMLButtonElement>('button'));
+    const buttons = panelButtons(view);
     buttons.find((button) => button.textContent === 'Edit')?.click();
     buttons.find((button) => button.textContent === 'Untrust')?.click();
     buttons.find((button) => button.textContent === 'Trust')?.click();
@@ -181,7 +185,7 @@ describe('ComposerHooksPanel', () => {
       />,
     );
 
-    view.querySelector<HTMLButtonElement>('button')?.click();
+    panelButtons(view)[0]?.click();
 
     expect(onResetHookForm).toHaveBeenCalledTimes(1);
     expect(onSetHooksPanelMode).toHaveBeenCalledWith('add');
@@ -205,7 +209,7 @@ describe('ComposerHooksPanel', () => {
       'echo ok',
     );
 
-    Array.from(view.querySelectorAll<HTMLButtonElement>('button'))
+    panelButtons(view)
       .find((button) => button.textContent === 'Write Hook')
       ?.click();
 
@@ -233,7 +237,7 @@ describe('ComposerHooksPanel', () => {
 
     expect(view.textContent).toContain('Editing PreToolUse in global hooks.json');
 
-    Array.from(view.querySelectorAll<HTMLButtonElement>('button'))
+    panelButtons(view)
       .find((button) => button.textContent === 'Back')
       ?.click();
 

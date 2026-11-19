@@ -14,8 +14,9 @@ import type {
   UpdateThreadGoalInput,
   UpdateThreadSettingsInput,
 } from '@pockymoe/shared';
-import type { ComponentType, MouseEvent, SVGProps } from 'react';
+import { useEffect, useRef, type ComponentType, type MouseEvent, type SVGProps } from 'react';
 import {
+  ChevronRight,
   CircleSlash,
   GitFork,
   History,
@@ -42,6 +43,7 @@ import { ComposerGoalsPanel } from './ComposerGoalsPanel';
 import { ComposerMcpPanel } from './ComposerMcpPanel';
 import { ComposerSkillsPanel } from './ComposerSkillsPanel';
 import { ErrorMark } from '../copy/ErrorMark';
+import type { ToolboxItemStatus } from './composerToolbox';
 import type {
   HookScope,
   HooksPanelMode,
@@ -50,7 +52,8 @@ import type {
   SlashPanelView,
 } from './types';
 
-// With rich menus every toolbox row gets an icon tile and its description.
+// Rich menus add an icon tile; every theme shows the command and what it does
+// (theme packs change appearance, not information; §8: no meaning in title).
 const toolboxIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   plan: ListChecks,
   goal: Target,
@@ -80,18 +83,40 @@ function ToolboxLabel({ rich, action, command, description: rawDescription }: {
   command: string;
   description?: string | null | undefined;
 }) {
-  if (!rich) return <span>{command}</span>;
   const Icon = toolboxIcons[action] ?? MessageSquarePlus;
   const builtin = rawDescription ? BUILTIN_DESCRIPTIONS[rawDescription] : undefined;
   const description = builtin ? translate(builtin) : rawDescription;
   return (
     <>
-      <span className="composer-toolbox-icon" aria-hidden="true"><Icon data-icon={toolboxIcons[action] ? action : 'prompt'} /></span>
-      <span className="composer-toolbox-text">
-        <span className="composer-toolbox-command">{command}</span>
-        {description ? <span className="composer-toolbox-description">{description}</span> : null}
+      {rich ? <span className="composer-toolbox-icon" aria-hidden="true"><Icon data-icon={toolboxIcons[action] ? action : 'prompt'} /></span> : null}
+      <span className="composer-toolbox-text flex min-w-0 flex-1 flex-col">
+        {/* A long custom command keeps one line; its whole name is the row's description title. */}
+        <span className="composer-toolbox-command truncate" title={command}>{command}</span>
+        {description ? <span className="composer-toolbox-description text-[11px] leading-[15px] text-[var(--theme-fg-muted)]">{description}</span> : null}
       </span>
     </>
+  );
+}
+
+function ToolboxStatus({ status }: { status: ToolboxItemStatus }) {
+  if (!status) return null;
+  if (status.kind === 'switch') {
+    return (
+      <span className="composer-toolbox-status composer-toolbox-status-switch shrink-0" aria-hidden="true">
+        <span className="composer-toolbox-switch" data-on={status.on || undefined} />
+      </span>
+    );
+  }
+  if (status.kind === 'more') {
+    return <ChevronRight aria-hidden="true" className="composer-toolbox-more h-4 w-4 shrink-0 text-[var(--theme-fg-muted)]" />;
+  }
+  return (
+    <span
+      className={`composer-toolbox-status shrink-0 whitespace-nowrap text-[11px] ${status.active ? 'font-semibold text-[var(--theme-accent-strong)]' : 'text-[var(--theme-fg-muted)]'}`}
+      data-active={status.active || undefined}
+    >
+      {status.text}
+    </span>
   );
 }
 
@@ -144,10 +169,12 @@ export function ComposerSlashToolboxMenu({
   panelButtonClassName,
   chipButtonClassName,
   onToggle,
+  onClose,
   onToolboxItemClick,
   onUpdateSettings,
   toolboxItemDisabled,
   toolboxItemClassName,
+  toolboxItemActive,
   toolboxItemStatus,
   onSetSlashPanelView,
   onViewGoals,
@@ -229,6 +256,7 @@ export function ComposerSlashToolboxMenu({
   panelButtonClassName: string;
   chipButtonClassName: string;
   onToggle: () => void;
+  onClose?: () => void;
   onToolboxItemClick: (
     item: AgentBackendToolboxItemSchemaDto,
     event: MouseEvent<HTMLButtonElement>,
@@ -236,7 +264,8 @@ export function ComposerSlashToolboxMenu({
   onUpdateSettings: (input: UpdateThreadSettingsInput) => void;
   toolboxItemDisabled: (item: AgentBackendToolboxItemSchemaDto) => boolean;
   toolboxItemClassName: (item: AgentBackendToolboxItemSchemaDto) => string;
-  toolboxItemStatus: (item: AgentBackendToolboxItemSchemaDto) => string;
+  toolboxItemActive?: (item: AgentBackendToolboxItemSchemaDto) => boolean;
+  toolboxItemStatus: (item: AgentBackendToolboxItemSchemaDto) => ToolboxItemStatus;
   onSetSlashPanelView: (view: SlashPanelView) => void;
   onViewGoals?: () => Promise<void> | void;
   onUpdateGoal?: (input: UpdateThreadGoalInput) => Promise<void> | void;
@@ -281,14 +310,28 @@ export function ComposerSlashToolboxMenu({
     'data-active': slashQuery !== null && command === activeCommand ? true : undefined,
   });
   const panelCommand: Partial<Record<SlashPanelView, string>> = { fork: '/fork', forkTurns: '/fork', skills: '/skills', hooks: '/hooks', mcp: '/mcp' };
+  // Opened with the button, the root list is a menu (focus, arrows, Esc). The
+  // list typed `/` opens keeps focus in the prompt; panels are forms.
+  const keyboardMenu = slashPanelView === 'root' && slashQuery === null;
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    // Entering a panel moves focus to its first control ("Back").
+    if (!open || slashPanelView === 'root' || slashQuery !== null) return;
+    surfaceRef.current
+      ?.querySelector<HTMLElement>('[data-slash-surface] button:not([disabled])')
+      ?.focus({ preventScroll: true });
+  }, [open, slashPanelView, slashQuery]);
+  const rowClass = (item: AgentBackendToolboxItemSchemaDto) => toolboxItemClassName(item);
   return (
-    <div className="relative">
+    <div className="relative" ref={surfaceRef}>
       <InputGroupButton
         type="button"
         variant="ghost"
         size="icon-xs"
         data-composer-menu-trigger="true"
         aria-label={translate("chat.openSlashToolbox")}
+        aria-haspopup="menu"
+        aria-expanded={open}
         title={translate("chat.openSlashToolbox")}
         onClick={onToggle}
         className={`${iconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`}
@@ -299,7 +342,10 @@ export function ComposerSlashToolboxMenu({
       {open && (
         <ComposerMenuSurface
           align="start"
-          className={`${menuClassName} w-72 rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20 backdrop-blur-xl`}
+          data-slash-surface="true"
+          aria-label={translate("chat.openSlashToolbox")}
+          menu={keyboardMenu ? { onClose: onClose ?? onToggle } : undefined}
+          className={`${menuClassName} composer-slash-surface rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20 backdrop-blur-xl`}
           onClick={(event) => {
             event.stopPropagation();
           }}
@@ -320,7 +366,9 @@ export function ComposerSlashToolboxMenu({
                   type="button"
                   {...activeProps('/plan')}
                   data-toolbox-action="plan"
-                  aria-pressed={displayedCollaborationMode === 'plan'}
+                  role="menuitemcheckbox"
+                  aria-checked={displayedCollaborationMode === 'plan'}
+                  data-on={displayedCollaborationMode === 'plan' || undefined}
                   disabled={settingsBusy}
                   onClick={() =>
                     onUpdateSettings({
@@ -330,48 +378,45 @@ export function ComposerSlashToolboxMenu({
                           : 'plan',
                     })
                   }
-                  className={`${
-                    displayedCollaborationMode === 'plan'
-                      ? 'ui-status-warning'
-                      : menuItemClassName
-                  } block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`}
-                  title={translate("chat.togglePlanMode")}
+                  className={`${menuItemClassName} block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`}
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <ToolboxLabel rich={rich} action="plan" command="/plan" />
-                    <span className="composer-toolbox-status text-[11px] uppercase tracking-[0.16em] text-stone-400">
-                      {displayedCollaborationMode === 'plan' ? translate("chat.on") : translate("chat.off")}
-                    </span>
+                    <ToolboxLabel rich={rich} action="plan" command="/plan" description={translate('chat.toolboxPlanDescription')} />
+                    <ToolboxStatus status={{ kind: 'switch', on: displayedCollaborationMode === 'plan' }} />
                   </div>
                 </button>
               ) : null}
-              {shownItems.map((item, index) =>
-                item.action === 'goal' ? (
+              {shownItems.map((item, index) => {
+                const status = toolboxItemStatus(item);
+                const active = toolboxItemActive?.(item) || undefined;
+                const toggle = status?.kind === 'switch';
+                return item.action === 'goal' ? (
                   // The row sets a goal like the others run their tool; the history
                   // of earlier goals is the button at its end.
                   <div
                     key={`${item.action}:${item.command}`}
                     data-toolbox-action={item.action}
+                    data-active={active}
+                    role="none"
                     className={`composer-toolbox-split mt-1 flex min-h-11 overflow-hidden rounded-xl ${index === 0 && !planShown ? 'mt-0' : ''}`}
-                    title={item.description ?? item.label}
                   >
                     <button
                       type="button"
+                      role="menuitem"
                       {...activeProps(item.command)}
                       disabled={toolboxItemDisabled(item)}
                       onClick={(event) => onToolboxItemClick(item, event)}
-                      className={`${toolboxItemClassName(item)} mt-0 min-w-0 flex-1`}
+                      className={`${rowClass(item)} mt-0 min-w-0 flex-1`}
                       aria-label={translate("chat.openGoalComposer")}
                     >
                       <div className="flex items-center justify-between gap-3">
                         <ToolboxLabel rich={rich} action={item.action} command={item.command} description={item.description} />
-                        <span className="composer-toolbox-status text-[11px] uppercase tracking-[0.16em] text-stone-400">
-                          {toolboxItemStatus(item)}
-                        </span>
+                        <ToolboxStatus status={status} />
                       </div>
                     </button>
                     <button
                       type="button"
+                      role="menuitem"
                       disabled={toolboxItemDisabled(item)}
                       onClick={() => {
                         onSetSlashPanelView('goals');
@@ -388,29 +433,30 @@ export function ComposerSlashToolboxMenu({
                   <button
                     key={`${item.action}:${item.command}`}
                     type="button"
+                    role={toggle ? 'menuitemcheckbox' : 'menuitem'}
+                    {...(toggle ? { 'aria-checked': status.on } : {})}
                     {...activeProps(item.command)}
                     data-toolbox-action={item.action}
+                    data-active={active}
+                    data-on={toggle && status.on ? true : undefined}
                     disabled={toolboxItemDisabled(item)}
                     onClick={(event) => onToolboxItemClick(item, event)}
-                    className={`${toolboxItemClassName(item)} ${index === 0 && !planShown ? 'mt-0' : ''}`}
-                    title={item.description ?? item.label}
+                    className={`${rowClass(item)} ${index === 0 && !planShown ? 'mt-0' : ''}`}
                   >
                     <div className="flex items-center justify-between gap-3">
                       <ToolboxLabel rich={rich} action={item.action} command={item.command} description={item.description} />
-                      <span className="composer-toolbox-status text-[11px] uppercase tracking-[0.16em] text-stone-400">
-                        {toolboxItemStatus(item)}
-                      </span>
+                      <ToolboxStatus status={status} />
                     </div>
                   </button>
-                ),
-              )}
+                );
+              })}
               {availableToolboxItems.length === 0 && !planModeAvailable ? (
                 <p className="px-3 py-2 text-sm text-stone-400">
                   {translate("chat.noBackendToolsAreAvailableForThis")}</p>
               ) : null}
             </div>
           ) : (
-            <div className="flex min-h-0 max-h-80 flex-col">
+            <div className="flex min-h-0 max-h-80 flex-col" data-slash-panel={slashPanelView}>
               {forkBusy && (slashPanelView === 'fork' || slashPanelView === 'forkTurns') ? (
                 <p role="status" className="shrink-0 px-3 py-2 text-sm text-[var(--theme-fg-muted)]">
                   {translate("chat.creatingForkYouWillBeTakenTo")}</p>

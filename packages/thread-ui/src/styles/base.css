@@ -827,6 +827,12 @@
   font-size: 13px;
 }
 .thread-ui-shell .thread-composer-upload-name { flex: 1 1 auto; min-width: 0; }
+/* The prompt waiting for the files, one line: the composer is empty meanwhile. */
+.thread-ui-shell .thread-composer-upload-preview {
+  margin: 0; overflow: hidden; color: var(--theme-fg-muted); font-size: 12px;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.thread-ui-shell .thread-composer-upload-preview > span { margin-right: 4px; color: var(--theme-fg); }
 .thread-ui-shell .thread-composer-upload small {
   flex: none;
   color: var(--theme-fg-muted);

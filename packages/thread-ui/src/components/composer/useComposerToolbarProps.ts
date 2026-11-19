@@ -16,6 +16,7 @@ import type { ThreadShellControlState } from '../../types';
 import type { ThreadContextInspector } from './ComposerContextControl';
 import {
   toolboxItemClassName,
+  toolboxItemActive,
   toolboxItemDisabled,
   toolboxItemStatus,
 } from './composerToolbox';
@@ -47,6 +48,8 @@ export interface ComposerToolbarCapabilities {
 }
 
 export interface UseComposerToolbarPropsInput {
+  /** Overall upload of this prompt's files, 0–1, while they go ahead of it. */
+  sendProgress?: number | null;
   isShellView: boolean;
   canToggleShellView: boolean;
   isMobileShell: boolean;
@@ -275,6 +278,7 @@ export function useComposerToolbarProps({
   onCopyShell,
   onClearShell,
   onShellControl,
+  sendProgress = null,
 }: UseComposerToolbarPropsInput): ComposerToolbarProps {
   const slashToolboxProps: ComposerSlashToolboxProps | null = isShellView
     ? null
@@ -330,6 +334,7 @@ export function useComposerToolbarProps({
           onSetOpenMenu((current) =>
             current === 'slash' ? null : 'slash',
           ),
+        onClose: () => onSetOpenMenu(() => null),
         onToolboxItemClick,
         onUpdateSettings,
         toolboxItemDisabled: (item) =>
@@ -339,13 +344,9 @@ export function useComposerToolbarProps({
             busy,
             forkBusy,
           }),
-        toolboxItemClassName: (item) =>
-          toolboxItemClassName(item, {
-            fastMode,
-            goalComposeMode,
-            goalStatus,
-            menuItemClassName,
-          }),
+        toolboxItemClassName: () => toolboxItemClassName(menuItemClassName),
+        toolboxItemActive: (item) =>
+          toolboxItemActive(item, { fastMode, goalComposeMode, goalStatus }),
         toolboxItemStatus: (item) =>
           toolboxItemStatus(item, {
             fastMode,
@@ -396,6 +397,7 @@ export function useComposerToolbarProps({
           onSetOpenMenu((current) =>
             current === 'attachments' ? null : 'attachments',
           ),
+        onClose: () => onSetOpenMenu(() => null),
         onPickPhoto,
         onPickFile,
       };
@@ -426,6 +428,7 @@ export function useComposerToolbarProps({
         fastMode,
         sendButtonLabel,
         sending: busy && activeView === 'chat',
+        sendProgress,
         sendButtonClassName,
         modelControlsDisabled,
         effortControlsDisabled,

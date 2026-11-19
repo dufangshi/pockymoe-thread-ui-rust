@@ -296,7 +296,7 @@ export const filesEn = {
   "files.copyFailed": "Copy failed",
   "files.deleteThread": "Delete thread {{value1}}",
   "files.deleteThread_d6d95f": "Delete thread",
-  "files.createNewChat": "Create New Chat",
+  "files.createNewChat": "New thread",
   "files.nameTheRoomSoItIsEasy": "Name the room so it is easy to find later.",
   "files.chatName": "Chat name",
   "files.create": "Create",

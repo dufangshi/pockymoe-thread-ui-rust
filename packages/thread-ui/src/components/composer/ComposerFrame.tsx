@@ -1,10 +1,8 @@
 import { usePhoneDock } from '../workbench/phoneDockContext';
 import { useAppShellNav } from '../../app-shell/AppShellNavContext';
-import type {
-  FormEvent,
-  MutableRefObject,
-  ReactNode,
-} from 'react';
+import { useEffect, type DragEvent, type FormEvent, type MutableRefObject, type ReactNode } from 'react';
+import { Download } from 'lucide-react';
+import { translate } from '../../i18n';
 
 import type { AgentSubscriptionUsageDto, PromptAttachmentKindDto } from '@pockymoe/shared';
 import { useCompactComposer } from './useCompactComposer';
@@ -46,6 +44,18 @@ export interface ComposerFrameProps {
   toolbarSlot: ReactNode;
   goalSlot: ReactNode;
   shellPromptSlot: ReactNode;
+  /** Files dragged over the composer: the whole frame is the drop target. */
+  drop?: {
+    active: boolean;
+    onDragEnter: (event: DragEvent<HTMLFormElement>) => void;
+    onDragOver: (event: DragEvent<HTMLFormElement>) => void;
+    onDragLeave: (event: DragEvent<HTMLFormElement>) => void;
+    onDrop: (event: DragEvent<HTMLFormElement>) => void;
+  } | undefined;
+}
+
+function hasFiles(event: globalThis.DragEvent) {
+  return Array.from(event.dataTransfer?.types ?? []).includes('Files');
 }
 
 export function ComposerFrame({
@@ -75,7 +85,29 @@ export function ComposerFrame({
   toolbarSlot,
   goalSlot,
   shellPromptSlot,
+  drop,
 }: ComposerFrameProps) {
+  const dropEnabled = Boolean(drop);
+  useEffect(() => {
+    // A file dropped beside the composer must not replace the app with the
+    // file. Whatever accepted the drop (the composer, the file explorer) has
+    // already called preventDefault; nothing else takes it.
+    if (!dropEnabled) return;
+    const over = (event: globalThis.DragEvent) => {
+      if (event.defaultPrevented || !hasFiles(event)) return;
+      event.preventDefault();
+      if (event.dataTransfer) event.dataTransfer.dropEffect = 'none';
+    };
+    const dropped = (event: globalThis.DragEvent) => {
+      if (!event.defaultPrevented && hasFiles(event)) event.preventDefault();
+    };
+    window.addEventListener('dragover', over);
+    window.addEventListener('drop', dropped);
+    return () => {
+      window.removeEventListener('dragover', over);
+      window.removeEventListener('drop', dropped);
+    };
+  }, [dropEnabled]);
   const { expanded, focusOwner, ...focusEvents } = useCompactComposer(formRef, activeView === 'chat');
   // The phone dock's status bar shows usage instead.
   const dock = usePhoneDock();
@@ -127,6 +159,8 @@ export function ComposerFrame({
         data-composer-busy={busy ? 'true' : undefined}
         data-composer-layout={activeView === 'chat' ? (expanded ? 'expanded' : 'collapsed') : undefined}
         data-testid={activeView === 'chat' ? 'chat-composer' : undefined}
+        data-drop-target={drop?.active ? 'true' : undefined}
+        {...(drop ? { onDragEnter: drop.onDragEnter, onDragOver: drop.onDragOver, onDragLeave: drop.onDragLeave, onDrop: drop.onDrop } : {})}
         onSubmit={onSubmit}
         className={formClassName}
       >
@@ -140,6 +174,12 @@ export function ComposerFrame({
 
           {goalSlot}
           {shellPromptSlot}
+          {drop?.active ? (
+            <div className="composer-drop-hint" aria-hidden="true">
+              <Download className="h-4 w-4" />
+              {translate('chat.dropToAttach')}
+            </div>
+          ) : null}
           {usage ? <div className="thread-composer-usage-tag">{usage}</div> : null}
         </div>
       </form>

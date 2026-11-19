@@ -45,7 +45,7 @@ describe('composer presentation helpers', () => {
   });
 
   it('formats hook labels and JSON keys', () => {
-    expect(hookEventLabel('permissionRequest')).toBe('PermissionRequest');
+    expect(hookEventLabel('permissionRequest')).toBe('On a permission request');
     expect(hookEventJsonKey('postCompact')).toBe('PostCompact');
     expect(hookSourceLabel('cloudRequirements')).toBe('Cloud');
     expect(hookSourceLabel('sessionFlags')).toBe('Session');

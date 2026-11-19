@@ -105,7 +105,8 @@ describe("ComposerPendingQueue", () => {
 
     const text = container.querySelector<HTMLButtonElement>(".thread-composer-pending-text")!;
     expect(text.getAttribute("aria-expanded")).toBe("false");
-    expect(container.querySelector(".thread-composer-queue-edit")).toBeNull();
+    // Edit is always there, not only once the row is opened.
+    expect(container.querySelector(".thread-composer-queue-edit")).not.toBeNull();
     await act(async () => text.click());
     expect(text.getAttribute("aria-expanded")).toBe("true");
     expect(text.className).toContain("whitespace-pre-wrap");
@@ -133,7 +134,7 @@ describe("ComposerPendingQueue", () => {
     });
 
     expect(container.querySelector('[aria-label="Queued prompts"]')).not.toBeNull();
-    expect(container.textContent).toContain("Queued");
+    expect(container.textContent).toContain("1 queued");
     expect(container.textContent).toContain("Wait for this turn");
     expect(
       Array.from(container.querySelectorAll("button")).some((button) =>

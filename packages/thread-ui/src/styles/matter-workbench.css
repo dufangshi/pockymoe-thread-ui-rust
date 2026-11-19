@@ -593,6 +593,12 @@
 .matter-status-dot[data-status='unknown'] { border-style: dotted; opacity: .6; }
 /* Interrupted is the stop sign: a solid amber square, unlike the hollow idle ring. */
 .matter-status-dot[data-status='interrupted'] { border-color: #c08a3e; background: #c08a3e; border-radius: 1.5px; }
+/* In a list every mark sits in one 12px slot (the running ring's width), so a
+   running thread's title lines up with the rest. Theme packs that resize marks
+   set their own margins. */
+:is(.matter-thread-row, .matter-agent-threads-item) > .matter-status-dot { margin-inline: 2.5px; }
+:is(.matter-thread-row, .matter-agent-threads-item) > .matter-status-dot:is([data-status='running'], [data-status='waiting']) { margin-inline: 0; }
+:is(.matter-thread-row, .matter-agent-threads-item) > .matter-status-dot[data-status='agents-running'] { margin-inline: 1px; }
 
 
 @media (prefers-reduced-motion: reduce) { .matter-status-dot:is([data-status='running'], [data-status='agents-running']) { animation: none; } }

@@ -973,7 +973,8 @@ export function MatterWorkbench({
         {runningCount > 0 && <button className="matter-running-chip" aria-expanded={runningOpen}
           aria-label={translate('workbench.runningChip', { count: runningCount })} title={translate('workbench.runningChip', { count: runningCount })}
           onClick={() => { setThreadsOpen(false); setMoreOpen(false); setRunningOpen(true); }}>
-          <span className="matter-running-icon" aria-hidden="true"><MessagesSquare /><i /></span>
+          {/* The running mark itself (UI §6), not a chat bubble, which reads as "waiting for you". */}
+          <span className="matter-running-icon" aria-hidden="true"><StatusMark status="running" /></span>
           <span>{runningCount}</span><span className="matter-running-label">{translate('workbench.running')}</span>
         </button>}
         <div className="matter-connection">{connection}</div>

@@ -37,4 +37,33 @@
   /* Every dialog's close button. */
   [data-slot='dialog-close'] { min-width: 40px; min-height: 40px; display: grid; place-items: center; }
   /* Composer keys stay 34px and widen their touch area (composer-compact.css). */
+
+  /* Thread rows in the phone's sheets and drawer: 52px rows whose menu, ✕ and
+     agent-thread toggle are each 44×44 and side by side without overlap. */
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry { min-height: 52px; }
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry > .recent-thread-actions,
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-close { right: 0; width: 44px; height: 44px; }
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry > .matter-agent-toggle {
+    right: 44px; height: 44px; min-width: 40px; justify-content: center; padding: 0 4px;
+  }
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry > .matter-thread-row { padding-right: 48px; }
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 92px; }
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry.is-closable > .recent-thread-actions { right: 44px; }
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry.is-closable > .matter-agent-toggle { right: 88px; }
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry.is-closable > .matter-thread-row { padding-right: 92px; }
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry.is-closable:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 132px; }
+  /* Left-handed: the row's controls move to the left edge, under the left
+     thumb; the title still reads left to right. */
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry > .recent-thread-actions,
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-close { right: auto; left: 0; }
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry > .matter-agent-toggle { right: auto; left: 44px; }
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry.is-closable > .recent-thread-actions { right: auto; left: 44px; }
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry.is-closable > .matter-agent-toggle { right: auto; left: 88px; }
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry > .matter-thread-row { padding-right: 10px; padding-left: 52px; }
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row,
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry.is-closable > .matter-thread-row { padding-right: 10px; padding-left: 96px; }
+  .thread-ui-shell .matter-workbench.is-left-handed :is(.matter-phone-sheet, .matter-sidebar) .matter-thread-entry.is-closable:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 10px; padding-left: 136px; }
+  /* Section headings and their + are finger-sized too. */
+  .thread-ui-shell .matter-workbench :is(.matter-phone-sheet, .matter-sidebar) .matter-section-heading { height: 44px; }
+  .thread-ui-shell .matter-workbench .matter-sidebar .matter-section-add :is(button, a) { width: 40px; height: 40px; border-radius: 10px; }
 }

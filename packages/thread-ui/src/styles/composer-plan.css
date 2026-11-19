@@ -896,9 +896,11 @@
 @media (max-width: 639px) {
   /* Touch: 36px row, 44px-wide targets through their hit areas. */
   .thread-ui-shell .thread-jump-nav { height: 36px; }
-  .thread-ui-shell .thread-jump-nav > button { width: 36px; height: 30px; }
-  .thread-ui-shell .thread-jump-nav > .thread-jump-latest { width: 30px; height: 30px; }
-  .thread-ui-shell .thread-jump-nav > button::after { content: ''; position: absolute; inset: -6px -4px; }
+  .thread-ui-shell .thread-jump-nav > button { width: 40px; height: 30px; }
+  .thread-ui-shell .thread-jump-nav > .thread-jump-latest { width: 30px; height: 30px; margin-left: 5px; }
+  /* Neighbours touch, so the width is the target; the latest circle widens by its hit area. */
+  .thread-ui-shell .thread-jump-nav > button::after { content: ''; position: absolute; inset: -6px 0; }
+  .thread-ui-shell .thread-jump-nav > .thread-jump-latest::after { inset: -6px -5px; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .thread-ui-shell .thread-jump-nav { background: var(--theme-panel); -webkit-backdrop-filter: none; backdrop-filter: none; }

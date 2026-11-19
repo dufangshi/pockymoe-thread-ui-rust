@@ -15,7 +15,7 @@
 @media (max-width: 639px) {
   .thread-ui-shell .matter-workbench.has-phone-dock,
   .thread-ui-shell .matter-workbench.has-phone-dock.is-sidebar-hidden {
-    grid-template-rows: calc(34px + env(safe-area-inset-top)) minmax(0, 1fr) auto;
+    grid-template-rows: calc(40px + env(safe-area-inset-top)) minmax(0, 1fr) auto;
   }
   .thread-ui-shell .matter-workbench.has-phone-dock > .matter-topbar { grid-row: 1; }
   .thread-ui-shell .matter-workbench.has-phone-dock > .matter-main { grid-row: 2; }
@@ -30,7 +30,8 @@
     flex: none;
     align-items: center;
   }
-  .matter-topbar.is-status-only:not(#_) .matter-topbar-status > button { flex: none; width: auto; min-width: 0; height: 34px; }
+  /* Every control in the status bar is a 40px target (UI §10); the bar is 40px tall. */
+  .matter-topbar.is-status-only:not(#_) .matter-topbar-status > button { flex: none; width: auto; min-width: 0; height: 40px; }
   .matter-topbar-spacer { flex: 1; }
   .matter-topbar.is-status-only .matter-topbar-usage { display: flex; flex: none; align-items: center; }
   .matter-topbar.is-status-only:not(#_) .matter-topbar-usage .thread-subscription-usage { flex: none; width: auto; min-width: 0; height: 30px; gap: 8px; padding: 0 6px; }
@@ -42,9 +43,9 @@
   .matter-topbar.is-status-only:not(#_) > button,
   .matter-topbar.is-status-only:not(#_) .matter-connection > button {
     flex: none;
-    width: 34px;
-    min-width: 34px;
-    height: 34px;
+    width: 44px;
+    min-width: 44px;
+    height: 40px;
   }
   .matter-topbar.is-status-only:not(#_) > .matter-running-chip {
     width: auto;
@@ -53,28 +54,19 @@
     padding: 0 9px;
     height: 26px;
     border-radius: 999px;
+    position: relative;
   }
+  /* The pill stays small; its touch target is the bar's full height. */
+  .matter-topbar.is-status-only:not(#_) > .matter-running-chip::after { content: ''; position: absolute; inset: -7px -2px; }
   .thread-ui-shell .matter-workbench .matter-topbar.is-status-only > .matter-running-chip {
     background: color-mix(in oklch, var(--theme-accent-solid) 14%, transparent);
     color: var(--theme-accent-strong);
     font-weight: 600;
     font-size: 12px;
   }
-  /* The account's running threads: a threads mark with a live dot, the count
-     and, where it fits, the word. */
-  .matter-running-icon { position: relative; display: inline-flex; flex: none; }
-  .matter-running-icon svg { width: 14px; height: 14px; }
-  .matter-running-icon > i {
-    position: absolute;
-    top: -2px;
-    right: -3px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    box-shadow: 0 0 0 1.5px var(--matter-chrome);
-    animation: none;
-  }
+  /* The account's running threads: the running mark (UI §6), the count and,
+     where it fits, the word. */
+  .matter-running-icon { position: relative; display: inline-flex; flex: none; align-items: center; }
 
   /* Narrow phones keep the mark and the count, and tighten the spacing so
      the monitor, usage, running count and bell share one row. */
@@ -213,7 +205,7 @@
   }
   .thread-ui-shell .matter-workbench.is-left-handed [data-composer-layout] :is(.composer-tools, .composer-settings) { flex-direction: row-reverse; }
   .thread-ui-shell .matter-workbench.is-left-handed :is(.thread-jump-latest-cluster, .thread-jump-nav) { flex-direction: row-reverse; }
-  .thread-ui-shell .matter-workbench.is-left-handed .thread-jump-nav > .thread-jump-latest { margin: 0 3px 0 0; }
+  .thread-ui-shell .matter-workbench.is-left-handed .thread-jump-nav > .thread-jump-latest { margin: 0 5px 0 0; }
 
 
   /* Bottom sheets. Closed sheets stay mounted (inert) so host dialogs survive. */
@@ -483,7 +475,6 @@
 
 @keyframes matter-phone-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) {
-  .matter-running-icon > i { animation: none; }
   .thread-ui-shell .matter-workbench .matter-phone-sheet,
   .thread-ui-shell .matter-workbench .matter-phone-sheet[data-open],
   .thread-ui-shell .matter-workbench .matter-phone-dock .matter-phone-thread { transition: none; }

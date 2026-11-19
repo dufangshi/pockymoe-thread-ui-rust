@@ -81,6 +81,7 @@ export const settingsEn = {
   'settings.connEditTitle': 'Edit connection',
   'settings.connEdit': 'Edit',
   'settings.connEditNamed': 'Edit {{name}}',
+  'settings.connCopyBaseUrl': 'Copy base URL',
   'settings.connLoading': 'Loading connections…',
   'settings.connLoadFailed': 'Unable to load connections.',
   'settings.connUpdateSupervisor':
@@ -325,6 +326,8 @@ export const settingsEn = {
   'settings.saving_56a228': 'Saving…',
   'settings.savePrices': 'Save prices',
   'settings.cancel': 'Cancel',
+  'settings.noModelPriceMatch': 'No model matches “{{value1}}”',
+  'settings.addModelNamed': 'Add {{value1}}',
   'settings.resetRemoveCustom': 'Reset / remove custom',
   'settings.updateThisSupervisorToEnableUpstreamAnd':
     'Update this Supervisor to enable upstream and template management.',
@@ -416,6 +419,7 @@ export const settingsEn = {
     'Unable to save your message shortcuts.',
   'settings.settings': 'Settings',
   'settings.settingsCategories': 'Settings categories',
+  'settings.moreCategories': '{{count}} more categories',
   'settings.in': 'In',
   'settings.cached': 'Cached',
   'settings.out_220e06': 'Out',

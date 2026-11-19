@@ -449,10 +449,20 @@ function markdownResourcePath(markdownPath: string, resourceUrl: string, workspa
 // Stable component types keep image state alive when Explorer updates its callbacks.
 // Defining these inside the preview remounted every image (and closed its lightbox).
 const workspaceMarkdownComponents: Components = {
-  a({ href, children: originalChildren, node: _node, ...props }) {
+  a({ href, children: originalChildren, node, ...props }) {
     const { markdownPath, workspaceRootPath, onOpenWorkspaceFile } = useContext(MarkdownResourceContext);
-    const children = <MarkdownImageLinkContext.Provider value={true}>{originalChildren}</MarkdownImageLinkContext.Provider>;
     const workspacePath = href ? markdownResourcePath(markdownPath, href, workspaceRootPath) : null;
+    // A link that only wraps its own image (`<a href="x.png"><img src="x.png">`,
+    // GitHub's "click to enlarge") is the image: it opens in the lightbox in
+    // place instead of leaving the document. A link to anything else stays a link.
+    const content = (node?.children ?? []).filter(child => child.type !== 'text' || child.value.trim());
+    const image = content.length === 1 && content[0]?.type === 'element' && content[0].tagName === 'img' ? content[0] : null;
+    const imageSrc = typeof image?.properties?.src === 'string' ? image.properties.src : null;
+    if (href && imageSrc && (imageSrc === href
+      || (workspacePath !== null && markdownResourcePath(markdownPath, imageSrc, workspaceRootPath) === workspacePath))) {
+      return <>{originalChildren}</>;
+    }
+    const children = <MarkdownImageLinkContext.Provider value={true}>{originalChildren}</MarkdownImageLinkContext.Provider>;
     if (workspacePath && onOpenWorkspaceFile) {
       return <WorkspaceFileLink path={workspacePath} onOpen={({ path }) => onOpenWorkspaceFile(path)}>{children}</WorkspaceFileLink>;
     }
@@ -509,7 +519,8 @@ const GraphWorkspaceMarkdownPreview = memo(
     }, [markdownPath, readingPositions]);
     return (
       <div ref={scrollRef} onScroll={event => { lastScrollTop.current = event.currentTarget.scrollTop; readingPositions?.set(markdownPath, lastScrollTop.current); }} className="thread-graph-markdown thread-graph-markdown-preview min-h-0 flex-1 overflow-auto px-5 py-4 sm:px-7 sm:py-6">
-        <div className="thread-graph-markdown-document">
+        {/* Its images open as one gallery in the lightbox (ZoomableImage). */}
+        <div className="thread-graph-markdown-document" data-image-gallery="">
         <MarkdownResourceContext.Provider value={{ markdownPath, workspaceRootPath, onOpenWorkspaceFile, resolveWorkspaceFileUrl }}>
         <ReactMarkdown
           urlTransform={url => localFileHref(url, typeof window === 'undefined' ? undefined : window.location.origin) ? url : defaultUrlTransform(url)}

@@ -4,9 +4,23 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useModalFocus } from './menu/useModalFocus';
 import { useImageViewport } from './useImageViewport';
-import { Maximize2, Minus, Plus, RotateCcw, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Maximize2, Minus, Plus, RotateCcw, X } from 'lucide-react';
 
 export const MarkdownImageLinkContext = createContext(false);
+
+/** The images of one document, in order, that a lightbox can step through. */
+export interface ImageGallery { images: Array<{ src: string; alt: string }>; index: number }
+
+/** Images shown inside an element marked `data-image-gallery` (a Markdown
+    preview) open as one gallery, in document order; others open alone. */
+function galleryAround(image: HTMLImageElement | null | undefined): ImageGallery | undefined {
+  const scope = image?.closest<HTMLElement>('[data-image-gallery]');
+  if (!image || !scope) return undefined;
+  const images = [...scope.querySelectorAll<HTMLImageElement>('.thread-graph-zoomable-image-trigger img')];
+  const index = images.indexOf(image);
+  if (images.length < 2 || index < 0) return undefined;
+  return { images: images.map(item => ({ src: item.currentSrc || item.src, alt: item.alt })), index };
+}
 
 const IMAGE_LIGHTBOX_MIN_SCALE = 0.5;
 const IMAGE_LIGHTBOX_MAX_SCALE = 5;
@@ -39,18 +53,25 @@ function zoomLabel(scale: number, fit: number) {
 }
 
 export function GraphWorkspaceImageLightbox({
-  alt,
+  alt: firstAlt,
   backgroundColor,
   onClose,
-  src,
+  src: firstSrc,
   resolveSrc,
+  gallery,
 }: {
   alt: string;
   backgroundColor?: string;
   onClose: () => void;
   src: string;
   resolveSrc?: ImageResolver | undefined;
+  /** Step through a document's images (‹ ›, arrow keys) without closing. */
+  gallery?: ImageGallery | undefined;
 }) {
+  const [position, setPosition] = useState(gallery?.index ?? 0);
+  const shown = gallery?.images[position];
+  const src = shown?.src ?? firstSrc;
+  const alt = shown?.alt ?? firstAlt;
   const { locale: i18nLocale } = useI18n();
   const { viewportRef, scale, dragging, transform, reset: resetView, updateScale, handlers, moved } = useImageViewport();
   const fit = useFitRatio(viewportRef);
@@ -59,6 +80,26 @@ export function GraphWorkspaceImageLightbox({
   const windowRef = useRef<HTMLDivElement | null>(null);
   // Focus starts on close and stays in the viewer; Esc closes; focus returns to the image.
   useModalFocus(windowRef, true, onClose, '.thread-graph-image-lightbox-close');
+  const count = gallery?.images.length ?? 0;
+  const step = (direction: -1 | 1) => {
+    if (!gallery) return;
+    const next = position + direction;
+    if (next < 0 || next >= count) return;
+    setPosition(next);
+    resetView();
+  };
+  const stepRef = useRef(step);
+  stepRef.current = step;
+  useEffect(() => {
+    if (!gallery) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+      if (event.key === 'ArrowLeft') { event.preventDefault(); stepRef.current(-1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); stepRef.current(1); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [gallery]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -82,6 +123,10 @@ export function GraphWorkspaceImageLightbox({
         role="toolbar"
         aria-label={translate("files.imageZoomControls")}
       >
+        {gallery ? <>
+          <span className="thread-graph-image-lightbox-position" aria-live="polite">{translate('files.imagePosition', { value1: position + 1, value2: count })}</span>
+          <span className="thread-graph-image-lightbox-divider" aria-hidden="true" />
+        </> : null}
         <button
           type="button"
           onClick={() => updateScale(scale - IMAGE_LIGHTBOX_SCALE_STEP)}
@@ -138,7 +183,7 @@ export function GraphWorkspaceImageLightbox({
           handlers.onPointerDown(event);
         }}
       >
-        <RecoverableImage resolveSrc={resolveSrc}
+        <RecoverableImage resolveSrc={gallery && position !== gallery.index ? undefined : resolveSrc}
           src={src}
           alt={alt}
           draggable={false}
@@ -148,6 +193,16 @@ export function GraphWorkspaceImageLightbox({
           }}
         />
       </div>
+      {gallery ? <>
+        <button type="button" className="thread-graph-image-lightbox-step" data-edge="start" disabled={position === 0}
+          onClick={() => step(-1)} aria-label={translate('files.previousImage')} title={translate('files.previousImage')}>
+          <ChevronLeft aria-hidden="true" />
+        </button>
+        <button type="button" className="thread-graph-image-lightbox-step" data-edge="end" disabled={position >= count - 1}
+          onClick={() => step(1)} aria-label={translate('files.nextImage')} title={translate('files.nextImage')}>
+          <ChevronRight aria-hidden="true" />
+        </button>
+      </> : null}
     </div>,
     document.body,
   );
@@ -174,6 +229,7 @@ export function ZoomableImage({
   const { locale: i18nLocale } = useI18n();
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
+  const [gallery, setGallery] = useState<ImageGallery | undefined>();
 
   const insideLink = useContext(MarkdownImageLinkContext);
   // Accept dimensions only, never arbitrary inline styles from README HTML.
@@ -184,7 +240,8 @@ export function ZoomableImage({
 
   function closeLightbox() {
     setOpen(false);
-    window.requestAnimationFrame(() => triggerRef.current?.focus());
+    // Back on the image, with the document where the reader left it.
+    window.requestAnimationFrame(() => triggerRef.current?.focus({ preventScroll: true }));
   }
 
   if (insideLink) return <RecoverableImage {...imageProps} />;
@@ -196,7 +253,7 @@ export function ZoomableImage({
         type="button"
         className="thread-graph-zoomable-image-trigger"
         style={{ width: dimension(width) }}
-        onClick={() => setOpen(true)}
+        onClick={() => { setGallery(galleryAround(triggerRef.current?.querySelector('img'))); setOpen(true); }}
         title={translate("files.openImagePreview")}
         aria-label={translate("files.openImagePreview_bdac35", { value1: alt || translate("files.workspaceImage") })}
       >
@@ -206,6 +263,7 @@ export function ZoomableImage({
         <GraphWorkspaceImageLightbox
           src={fullSrc || src}
           alt={alt}
+          gallery={gallery}
           onClose={closeLightbox}
         />
       ) : null}

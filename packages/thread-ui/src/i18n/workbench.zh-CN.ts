@@ -237,6 +237,7 @@ export const workbenchZhCN = {
   "workbench.shareAsLink": "通过链接共享",
   "workbench.createAndCopyReadOnlyLink": "创建并复制只读链接",
   "workbench.sharingPermissions": "共享权限",
+  "workbench.sharingNeedsRelay": "共享要通过 Relay：用 Relay 账号打开这台设备后才能共享。",
   "workbench.downloadTranscript": "下载对话记录",
   "workbench.onlyTheOwnerCanCreateAPublic": "只有所有者可以为此线程创建公开链接。",
   "workbench.openThisDeviceThroughYourRelayAccount": "通过 Relay 账号打开此设备以创建只读共享链接。",

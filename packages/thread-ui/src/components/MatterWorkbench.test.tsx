@@ -213,7 +213,7 @@ describe('one-handed phone dock', () => {
     act(() => host.querySelector<HTMLButtonElement>('.matter-phone-thread')!.click());
     expect(sheet.hasAttribute('data-open')).toBe(true);
     // Unread threads come before idle ones.
-    expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['Bws', 'Aws']);
+    expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['B', 'A']);
     act(() => sheet.querySelector<HTMLAnchorElement>('a[href="/threads/b"]')!.click());
     expect(onNavigate).toHaveBeenCalledWith('/threads/b');
     expect(sheet.hasAttribute('data-open')).toBe(false);
@@ -224,7 +224,8 @@ describe('one-handed phone dock', () => {
     options = { ...baseOptions, emptyWorkspace: true, currentKey: '', onNavigate, workspaceThreads: [thread('a'), thread('b', 'unread')] };
     render();
     const list = host.querySelector('[data-testid="workspace-home-threads"]')!;
-    expect([...list.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['Aws', 'Bws']);
+    // The workspace is named once, so its rows carry no subtitle.
+    expect([...list.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['A', 'B']);
     expect(host.querySelector('.matter-phone-thread .matter-status-dot')).toBeNull();
     act(() => list.querySelector<HTMLAnchorElement>('a[href="/threads/b"]')!.click());
     expect(onNavigate).toHaveBeenCalledWith('/threads/b');
@@ -234,7 +235,7 @@ describe('one-handed phone dock', () => {
     options = { ...baseOptions, currentKey: 'c', workspaceThreads: [thread('a'), thread('b', 'running'), thread('c')] };
     render();
     const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Threads"]')!;
-    expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['Cws', 'Bws', 'Aws']);
+    expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['C', 'B', 'A']);
   });
 
   it('opens a drawer with no heading row, all workspaces at its foot and ordered shortcuts, without a Files button', () => {

@@ -327,7 +327,8 @@
   padding: 0 8px;
   font-weight: 600;
 }
-/* A long workspace name stays on one line. */
+/* A long workspace name stays on one line, in the sidebar heading and the phone sheet. */
+.matter-sheet-workspace-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .matter-sidebar-heading > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* This workspace takes what it needs, at most half the height; recent chats
    follow right after it. Each scrolls on its own. */

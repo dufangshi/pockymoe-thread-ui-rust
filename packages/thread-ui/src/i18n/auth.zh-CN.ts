@@ -233,6 +233,8 @@ export const authZhCN = {
   "auth.hide": "隐藏 {{value1}}",
   "auth.show": "显示 {{value1}}",
   "auth.localDeviceConnection": "本地设备连接",
+  "auth.connectionDownShort": "已断开 · 重连中",
+  "auth.connectionOfflineShort": "离线",
   "auth.deviceConnectionEncrypted": "设备连接已加密",
   "auth.deviceIdentityChanged": "设备身份已更改",
   "auth.connectionIsNotEndToEndEncrypted": "连接未进行端到端加密",

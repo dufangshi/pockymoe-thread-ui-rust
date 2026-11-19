@@ -248,6 +248,7 @@ export const workbenchEn = {
   "workbench.deleteFromSupervisorTheBackendSessionId": "Delete {{value1}} from supervisor. The backend session id will no longer appear in this workspace list.",
   "workbench.loadingThreadDetail": "Loading thread detail...",
   "workbench.unableToResolveThisThread": "Unable to resolve this thread.",
+  "workbench.deviceUnreachable": "The device is not answering.",
   "workbench.unableToLoadBackends": "Unable to load backends.",
   "workbench.unableToListLocalSessions": "Unable to list local sessions.",
   "workbench.sessionIDIsRequired": "Session ID is required.",

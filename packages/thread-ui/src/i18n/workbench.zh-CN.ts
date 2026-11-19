@@ -248,6 +248,7 @@ export const workbenchZhCN = {
   "workbench.deleteFromSupervisorTheBackendSessionId": "从 Supervisor 删除 {{value1}}。Harness 会话 ID 将不再显示在此工作区列表中。",
   "workbench.loadingThreadDetail": "正在加载线程详情…",
   "workbench.unableToResolveThisThread": "无法解析此线程。",
+  "workbench.deviceUnreachable": "设备暂时连不上。",
   "workbench.unableToLoadBackends": "无法加载 Harness。",
   "workbench.unableToListLocalSessions": "无法列出本地会话。",
   "workbench.sessionIDIsRequired": "必须填写会话 ID。",

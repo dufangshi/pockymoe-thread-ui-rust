@@ -233,6 +233,8 @@ export const authEn = {
   "auth.hide": "Hide {{value1}}",
   "auth.show": "Show {{value1}}",
   "auth.localDeviceConnection": "Local device connection",
+  "auth.connectionDownShort": "Disconnected · reconnecting",
+  "auth.connectionOfflineShort": "Offline",
   "auth.deviceConnectionEncrypted": "Device connection encrypted",
   "auth.deviceIdentityChanged": "Device identity changed",
   "auth.connectionIsNotEndToEndEncrypted": "Connection is not end-to-end encrypted",

@@ -169,7 +169,7 @@ describe('one-handed phone dock', () => {
     expect(topbar().classList.contains('is-status-only')).toBe(true);
     expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
     expect(topbar().querySelector('button[aria-label="Notifications"]')).not.toBeNull();
-    expect(topbar().querySelector('.matter-running-chip')?.getAttribute('aria-label')).toBe('2 conversations are running on this account. Show them');
+    expect(topbar().querySelector('.matter-running-chip')?.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
     for (const label of ['Chat', 'Terminal', 'Toggle Explorer', 'Open settings', 'Go back']) {
       expect(topbar().querySelector(`button[aria-label="${label}"]`)).toBeNull();
     }
@@ -339,7 +339,7 @@ describe('one-handed phone dock', () => {
     render();
     const chip = topbar().querySelector<HTMLButtonElement>('.matter-running-chip')!;
     expect(chip.textContent).toContain('2');
-    expect(chip.getAttribute('aria-label')).toBe('2 conversations are running on this account. Show them');
+    expect(chip.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
     act(() => chip.click());
     const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Running threads"]')!;
     expect(sheet.hasAttribute('data-open')).toBe(true);
@@ -362,7 +362,7 @@ describe('one-handed phone dock', () => {
     };
     render();
     const chip = topbar().querySelector<HTMLButtonElement>('.matter-running-chip')!;
-    expect(chip.getAttribute('aria-label')).toBe('2 conversations are running on this account. Show them');
+    expect(chip.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
     act(() => chip.click());
     const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Running threads"]')!;
     expect([...sheet.querySelectorAll('h3')].map(heading => heading.textContent)).toEqual(['Running 2', 'Finished, not read yet 1']);

@@ -30,7 +30,7 @@ export const settingsEn = {
   "settings.notificationsLocalBrowser": "Local notifications appear in the workbench bell.",
 
   'settings.pluginSettings': '{{value1}} settings',
-  'settings.threadPluginsTitle': 'Plugins in this conversation',
+  'settings.threadPluginsTitle': 'Plugins in this thread',
   'settings.threadPluginsHint':
     'Choose whether each plugin works in this conversation.',
   'settings.threadPluginsCustomized': 'customized here',
@@ -63,12 +63,12 @@ export const settingsEn = {
     'Changed elsewhere. Reload, then try again.',
   'settings.threadPluginsSaveFailed': 'Unable to save this change.',
   'settings.threadPluginsLoadFailed':
-    "Unable to load this conversation's plugins.",
+    "Unable to load this thread's plugins.",
   'settings.threadPluginsLoading': 'Loading…',
   'settings.threadPluginsUnsupported':
     'Update this Supervisor to set plugins per conversation.',
   'settings.threadPluginsForbidden':
-    "This conversation's plugin settings cannot be read here.",
+    "This thread's plugin settings cannot be read here.",
   'settings.threadPluginsReadOnly':
     'View only: plugin settings cannot be changed here.',
   'settings.threadPluginsEmpty': 'No plugins can be set per conversation.',

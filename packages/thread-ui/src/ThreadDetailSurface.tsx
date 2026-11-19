@@ -1,4 +1,5 @@
 import { createWorkspacePathResolver } from './components/workspacePathLinks';
+import { displayThreadTitle } from './components/threadTitle';
 import { ThreadLoadingIndicator } from './components/ThreadLoadingIndicator';
 import { ErrorMark } from './components/copy/ErrorMark';
 import { translate, useI18n } from './i18n';
@@ -543,7 +544,7 @@ export function ThreadDetailSurface({
       viewportConstrained
       currentThreadId={currentThreadId ?? detail?.thread.id}
       // While a thread loads, its title from the list rather than "New thread".
-      currentThreadLabel={detail?.thread.title ?? threads.find(thread => thread.id === (currentThreadId ?? detail?.thread.id))?.title ?? undefined}
+      currentThreadLabel={displayThreadTitle(detail?.thread.title ?? threads.find(thread => thread.id === (currentThreadId ?? detail?.thread.id))?.title)}
       currentWorkspaceId={currentWorkspaceId ?? detail?.thread.workspaceId}
       currentWorkspaceLabel={currentWorkspaceLabel ?? detail?.workspace.label}
       harnessLabel={composerProps?.agentLabel}

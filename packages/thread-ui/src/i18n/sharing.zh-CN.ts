@@ -196,7 +196,7 @@ export const sharingZhCN = {
   "sharing.threadControl": "查看、发消息和控制",
   "sharing.reviewFiles": "文件",
   "sharing.filesNone": "不可访问",
-  "sharing.reviewNewThreads": "新建对话",
+  "sharing.reviewNewThreads": "新建线程",
   "sharing.allowed": "允许",
   "sharing.notAllowed": "不允许",
   "sharing.reviewExpiry": "到期",

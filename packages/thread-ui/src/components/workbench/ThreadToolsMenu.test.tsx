@@ -45,7 +45,7 @@ it('opens under its toggle with the workspace path, the thread and its star, the
   expect(menu()?.querySelector('.matter-thread-tools-path')?.textContent).toContain('~/dev/remoteCodex');
   expect(menu()?.querySelector('.matter-thread-tools-title')?.textContent).toBe('thread ui');
   // The star keeps the menu open.
-  act(() => menu()!.querySelector<HTMLButtonElement>('[aria-label="Add shortcut"]')!.click());
+  act(() => menu()!.querySelector<HTMLButtonElement>('[aria-label="Star thread"]')!.click());
   expect(onFavorite).toHaveBeenCalledOnce();
   expect(menu()).not.toBeNull();
   // An action runs and the menu steps aside.

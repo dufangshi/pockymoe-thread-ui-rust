@@ -314,7 +314,7 @@ describe('ThreadWorkspaceLayout', () => {
       </ThreadWorkspaceLayout>,
     );
 
-    const button = element.querySelector('[title="New Chat"]');
+    const button = element.querySelector('[title="New thread"]');
     expect(button).toBeTruthy();
     flushSync(() => {
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -348,7 +348,7 @@ describe('ThreadWorkspaceLayout', () => {
 
     expect(element.querySelector('.thread-rooms-rail')).toBeNull();
     expect(element.querySelector('[aria-label="Open rooms"]')).toBeNull();
-    expect(element.querySelector('[title="New Chat"]')).toBeNull();
+    expect(element.querySelector('[title="New thread"]')).toBeNull();
     expect(element.querySelector('.thread-shell-frame')?.className).toContain(
       'is-rail-hidden',
     );
@@ -378,7 +378,7 @@ describe('single New Chat dialog', () => {
         <button type="button" onClick={close}>Cancel creation</button>
       </form>}><p>Conversation</p></ThreadWorkspaceLayout>;
     await act(async () => { render(layout === 'persistent' ? <PersistentWorkbenchNavigation>{page}</PersistentWorkbenchNavigation> : page); });
-    const triggers = [...document.querySelectorAll<HTMLButtonElement>('button[title="New Chat"]')];
+    const triggers = [...document.querySelectorAll<HTMLButtonElement>('button[title="New thread"]')];
     expect(triggers.length).toBeGreaterThan(0);
     if (layout === 'workbench' && !mobile) expect(triggers).toHaveLength(2);
     for (const trigger of triggers) {
@@ -388,7 +388,7 @@ describe('single New Chat dialog', () => {
       const dialog = dialogs[0]!;
       expect(dialog.getAttribute('aria-hidden')).not.toBe('true');
       expect(document.getElementById(trigger.getAttribute('aria-controls')!)).toBe(dialog);
-      expect(document.getElementById(dialog.getAttribute('aria-labelledby')!)?.textContent).toBe('Create New Chat');
+      expect(document.getElementById(dialog.getAttribute('aria-labelledby')!)?.textContent).toBe('New thread');
       expect(document.activeElement).toBe(dialog.querySelector('input'));
       await act(async () => { dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })); });
       expect(document.querySelector('[data-testid="create-thread-dialog"]')).toBeNull();
@@ -412,7 +412,7 @@ describe('host-restricted navigation', () => {
       <p>Child conversation</p>
     </ThreadWorkspaceLayout>);
     expect(host.querySelector('a[href="/workspaces"]')).toBeNull();
-    expect(host.querySelector('button[title="New Chat"]')).not.toBeNull();
+    expect(host.querySelector('button[title="New thread"]')).not.toBeNull();
     expect(host.querySelector('[data-testid="settings-dialog"]')).toBeNull();
     expect(host.querySelector('button[aria-label="Open settings"]')).toBeNull();
     expect(host.querySelector('a[href="/threads/child"]')).not.toBeNull();

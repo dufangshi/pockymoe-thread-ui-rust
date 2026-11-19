@@ -30,7 +30,7 @@ export const settingsZhCN = {
   "settings.notificationsLocalBrowser": "本地模式的通知会显示在工作台铃铛中。",
 
   'settings.pluginSettings': '{{value1}}设置',
-  'settings.threadPluginsTitle': '此对话的插件',
+  'settings.threadPluginsTitle': '此线程的插件',
   'settings.threadPluginsHint': '选择插件是否在这个对话中生效。',
   'settings.threadPluginsCustomized': '此对话已自定义',
   'settings.threadPluginsInherit': '沿用全局',
@@ -58,11 +58,11 @@ export const settingsZhCN = {
   'settings.threadPluginsReload': '重新加载',
   'settings.threadPluginsConflict': '已在别处更改。请重新加载后再修改。',
   'settings.threadPluginsSaveFailed': '无法保存此更改。',
-  'settings.threadPluginsLoadFailed': '无法加载此对话的插件。',
+  'settings.threadPluginsLoadFailed': '无法加载此线程的插件。',
   'settings.threadPluginsLoading': '正在加载…',
   'settings.threadPluginsUnsupported':
     '更新此 Supervisor 后即可按对话设置插件。',
-  'settings.threadPluginsForbidden': '此处无法读取此对话的插件设置。',
+  'settings.threadPluginsForbidden': '此处无法读取此线程的插件设置。',
   'settings.threadPluginsReadOnly': '只读：无法在此更改插件设置。',
   'settings.threadPluginsEmpty': '没有可按对话设置的插件。',
   'settings.pluginNotEnabled': '插件未启用，请在插件列表中开启后生效。',

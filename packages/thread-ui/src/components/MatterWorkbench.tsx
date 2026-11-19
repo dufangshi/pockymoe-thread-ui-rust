@@ -582,10 +582,12 @@ export function MatterWorkbench({
   // chats wait folded, since the tabs hold the recently opened ones. A phone's
   // drawer opens with its open conversations (the desktop's tabs) and keeps the
   // other lists folded to one line each; without open ones it lists this
-  // workspace and recent chats. Each fold is remembered per form factor.
+  // workspace and recent chats. With only a few open (≤3) the drawer would be
+  // mostly empty, so this workspace starts open too. Each fold is remembered per
+  // form factor, and a fold the reader chose wins over these defaults.
   const sectionsKey = `${SIDEBAR_SECTIONS_KEY}:${mobile ? (phoneOpenTabs ? 'phone-open' : 'phone') : 'desktop'}`;
   const sectionDefaults = !mobile ? { open: true, shortcuts: true, workspace: true, recents: false }
-    : phoneOpenTabs ? { open: true, shortcuts: false, workspace: false, recents: false }
+    : phoneOpenTabs ? { open: true, shortcuts: false, workspace: groupThreads(phoneOpenTabs).length <= 3, recents: false }
     : { open: true, shortcuts: false, workspace: true, recents: true };
   const readSections = () => { try { return { ...sectionDefaults, ...JSON.parse(localStorage.getItem(sectionsKey) ?? '{}') }; } catch { return sectionDefaults; } };
   const [sections, setSections] = useState<{ open: boolean; shortcuts: boolean; workspace: boolean; recents: boolean }>(readSections);

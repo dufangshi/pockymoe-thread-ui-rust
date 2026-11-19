@@ -86,7 +86,7 @@ export const adminZhCN = {
   "admin.attentionUnstable": "台设备在 1 小时内重连 ≥ 5 次",
   "admin.attentionNoKey": "个账号未设置账号密钥",
   "admin.attentionLegacyLinks": "个公开链接仍是旧版明文",
-  "admin.oldestWaiting": "最早提交于{{time}}",
+  "admin.oldestWaiting": "最早提交于 {{time}}",
   "admin.review": "去审批",
   "admin.viewDevices": "查看设备",
   "admin.viewList": "查看名单",

@@ -379,7 +379,11 @@ describe('one-handed phone dock', () => {
     ] };
     render();
     act(() => button('Notifications')!.click());
-    const panel = host.querySelector('section.matter-notifications')!;
+    // On a phone the list is a bottom sheet's content (UI §4).
+    const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Notifications"]')!;
+    expect(sheet.hasAttribute('data-open')).toBe(true);
+    expect(sheet.querySelector('.matter-phone-sheet-close')?.getAttribute('aria-label')).toBe('Close');
+    const panel = sheet.querySelector('.matter-notifications')!;
     const group = panel.querySelector('.matter-notification-group')!;
     expect(group.querySelector('.matter-notification-root')?.textContent).toBe('Main task');
     expect([...group.querySelectorAll(':scope > a:not(.matter-notification-root)')].map(item => item.textContent?.slice(0, 11))).toEqual(['Worker done', 'Helper done']);

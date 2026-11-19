@@ -887,6 +887,19 @@ export function MatterWorkbench({
     navigationHost!.publish({ options: o, title, homeHref, settings, newThread, actions, threadMenu, connection, deviceMonitor, explorer: null, revealExplorer: 0,
       navigationActions: { showChat, toggleExplorer: () => setExplorerOpen(open => !open), explorerOpen, chatPressed: o.panels ? !chatCovered : o.activeView === 'chat' } });
   });
+  const notificationList = o.notifications.length ? (
+              notificationGroups(o.notifications).map(group => group.title
+                ? <div key={group.key} className="matter-notification-group">
+                  <a className="matter-notification-root" href={group.href} onClick={(e) => { e.preventDefault(); navigate(group.href!); }}>
+                    <MessagesSquare aria-hidden="true" /><span>{group.title}</span>
+                  </a>
+                  {group.items.map(renderNotification)}
+                </div>
+                : group.items.map(renderNotification))
+            ) : (
+              <p>{translate("workbench.allCaughtUpCompletedThreadsWillAppear")}</p>
+            );
+
   return (
     <div
       ref={rootRef}
@@ -1251,7 +1264,7 @@ export function MatterWorkbench({
           terminalEnabled={o.terminalEnabled} onPane={choosePane}
           onOpenThreads={() => { setMoreOpen(false); setThreadsOpen(true); }} onOpenMore={() => { setThreadsOpen(false); setMoreOpen(true); }}
           threadsOpen={threadsOpen} moreOpen={moreOpen} />
-        <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
+        <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} title={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
           footer={newThread}>
           {/* Both sections fold; this workspace's conversations keep the order dragged into them. */}
           <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={sheetWorkspaceOpen} onClick={() => setSheetWorkspaceOpen(!sheetWorkspaceOpen)}>
@@ -1269,7 +1282,7 @@ export function MatterWorkbench({
             {sheetRecentsOpen && <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>}
           </>}
         </PhoneSheet>
-        <PhoneSheet open={runningOpen} label={translate('workbench.runningSheet')} onClose={() => setRunningOpen(false)}
+        <PhoneSheet open={runningOpen} label={translate('workbench.runningSheet')} title={translate('workbench.runningSheet')} onClose={() => setRunningOpen(false)}
           footer={<button type="button" className="matter-phone-sheet-all" onClick={() => { setRunningOpen(false); setThreadsOpen(true); }}>
             <MessagesSquare aria-hidden="true" /><span>{translate('workbench.allThreads')}</span>
           </button>}>
@@ -1283,7 +1296,7 @@ export function MatterWorkbench({
           </>}
         </PhoneSheet>
         {/* The app's destinations sit in the footer, so Settings shows however many tools there are. */}
-        <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} onClose={() => setMoreOpen(false)}
+        <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} title={title} onClose={() => setMoreOpen(false)}
           footer={<nav className="matter-phone-sheet-apps" aria-label={translate('workbench.app')}>
             {openThreadMap && <button type="button" onClick={() => { setMoreOpen(false); openThreadMap(); }}><LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span></button>}
             <button type="button" aria-label={translate('workbench.workspaceAndShortcuts')} onClick={() => setSidebarOpen(true)}><PanelLeft data-icon="sidebar" /><span>{translate('workbench.drawerShort')}</span></button>
@@ -1293,7 +1306,6 @@ export function MatterWorkbench({
           </nav>}>
           {/* Copying the path keeps the sheet open, so its check mark shows. */}
           <div className="matter-phone-sheet-head" data-sheet-keep="">
-            <h3 className="matter-phone-sheet-title">{title}</h3>
             {!o.emptyWorkspace && o.workspacePath ? <PathChip path={o.workspacePath} display={homeRelativePath(o.workspacePath)} className="matter-phone-sheet-path" /> : null}
           </div>
           <div className="matter-phone-sheet-tools">
@@ -1309,7 +1321,13 @@ export function MatterWorkbench({
         x: contextMenu.x, y: contextMenu.y, returnFocus: contextMenu.returnFocus,
         onClose: () => setContextMenu(current => current?.id === contextMenu.id ? null : current),
       })}</Fragment>}
-      {bellOpen && (
+      {/* Phones: notifications rise from the bottom like every secondary window (UI §4). */}
+      {mobile ? (
+        <PhoneSheet open={bellOpen} label={translate("workbench.notifications")} title={translate("workbench.notifications")}
+          onClose={() => setBellOpen(false)}>
+          <div className="matter-notifications is-sheet">{notificationList}</div>
+        </PhoneSheet>
+      ) : bellOpen && (
         <>
           <button
             className="matter-popover-scrim"
@@ -1331,18 +1349,7 @@ export function MatterWorkbench({
                 <X data-icon="close" />
               </button>
             </div>
-            {o.notifications.length ? (
-              notificationGroups(o.notifications).map(group => group.title
-                ? <div key={group.key} className="matter-notification-group">
-                  <a className="matter-notification-root" href={group.href} onClick={(e) => { e.preventDefault(); navigate(group.href!); }}>
-                    <MessagesSquare aria-hidden="true" /><span>{group.title}</span>
-                  </a>
-                  {group.items.map(renderNotification)}
-                </div>
-                : group.items.map(renderNotification))
-            ) : (
-              <p>{translate("workbench.allCaughtUpCompletedThreadsWillAppear")}</p>
-            )}
+            {notificationList}
           </section>
         </>
       )}

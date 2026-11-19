@@ -184,6 +184,7 @@ export type { WorkbenchInspector, WorkbenchPanelsOptions } from "./components/wo
 export type { WorkbenchToolPanelControls } from "./components/workbench/toolPanel";
 
 export { SettingsDialog } from './components/SettingsDialog';
+export { useSheetViewport } from './components/useSheetViewport';
 
 export { createWorkspacePathResolver } from './components/workspacePathLinks';
 

@@ -247,7 +247,42 @@
   /* Following the finger while it drags the sheet down. */
   .thread-ui-shell .matter-workbench .matter-phone-sheet[data-dragging] { transition: none; }
   .matter-phone-sheet-body { touch-action: pan-y; }
-  .matter-phone-sheet-grabber { flex: none; width: 40px; height: 5px; margin: 2px auto 8px; border-radius: 3px; background: var(--theme-border-strong); }
+  /* Header: the grab handle centred above a title and a 40px close (UI §4). */
+  .matter-phone-sheet-header {
+    position: relative;
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 8px 0 18px;
+  }
+  .matter-phone-sheet-grabber { position: absolute; top: 0; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--theme-border-strong); }
+  .matter-phone-sheet-header > :is(h2, span) { flex: 1; min-width: 0; }
+  .matter-phone-sheet-heading {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: var(--theme-fg);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-close {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    color: var(--theme-fg-muted);
+  }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-close:active { background: var(--theme-hover); }
+  .matter-phone-sheet-close svg { width: 20px; height: 20px; }
   .matter-phone-sheet-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 10px 6px; }
   .matter-phone-sheet-body h3 {
     margin: 10px 8px 6px;
@@ -259,20 +294,10 @@
     white-space: nowrap;
   }
   /* The thread sheet's sections fold from their headings. */
-  .thread-ui-shell .matter-workbench .matter-phone-sheet-body .matter-sheet-section-heading { height: 36px; margin: 6px 0 2px; padding: 0 8px; font-weight: 600; color: var(--theme-fg-muted); }
-  /* The More sheet names the thread in up to two lines, then its workspace. */
-  .matter-phone-sheet-head { display: grid; gap: 4px; margin: 10px 8px 8px; }
-  .matter-phone-sheet-body .matter-phone-sheet-head h3.matter-phone-sheet-title {
-    display: -webkit-box;
-    margin: 0;
-    color: var(--theme-fg);
-    font-size: 14px;
-    line-height: 1.35;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
+  .thread-ui-shell .matter-workbench .matter-phone-sheet-body .matter-sheet-section-heading { height: 44px; margin: 2px 0; padding: 0 8px; font-weight: 600; color: var(--theme-fg-muted); }
+  /* The More sheet names the thread in its header, then shows its workspace here. */
+  .matter-phone-sheet-head { display: grid; gap: 4px; margin: 0 8px 8px; }
+  .matter-phone-sheet-head:empty { display: none; }
   .matter-phone-sheet-head .matter-phone-sheet-path { max-width: 100%; justify-self: start; }
   .matter-phone-sheet .matter-thread-row { min-height: 52px; font-size: 14px; }
   .matter-phone-sheet .matter-thread-entry { position: relative; }

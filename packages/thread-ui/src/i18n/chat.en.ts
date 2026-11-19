@@ -782,4 +782,5 @@ export const chatEn = {
   "chat.uploadFileOf": "file {{value1}} of {{value2}}",
   "chat.uploadStarting": "Starting the upload…",
   "chat.uploadWaitingToSend": "Sends when uploaded:",
+  "chat.sendUnavailableLabel": "{{value1}}: {{value2}}",
 } as const;

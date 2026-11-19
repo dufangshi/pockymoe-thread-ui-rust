@@ -50,6 +50,8 @@ export interface ComposerToolbarCapabilities {
 export interface UseComposerToolbarPropsInput {
   /** Overall upload of this prompt's files, 0–1, while they go ahead of it. */
   sendProgress?: number | null;
+  /** Why the send key cannot send right now. */
+  sendUnavailable?: string | null;
   isShellView: boolean;
   canToggleShellView: boolean;
   isMobileShell: boolean;
@@ -279,6 +281,7 @@ export function useComposerToolbarProps({
   onClearShell,
   onShellControl,
   sendProgress = null,
+  sendUnavailable = null,
 }: UseComposerToolbarPropsInput): ComposerToolbarProps {
   const slashToolboxProps: ComposerSlashToolboxProps | null = isShellView
     ? null
@@ -429,6 +432,7 @@ export function useComposerToolbarProps({
         sendButtonLabel,
         sending: busy && activeView === 'chat',
         sendProgress,
+        sendUnavailable,
         sendButtonClassName,
         modelControlsDisabled,
         effortControlsDisabled,

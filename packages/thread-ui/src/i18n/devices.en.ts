@@ -76,6 +76,8 @@ export const devicesEn = {
   "devices.cPUPower": "CPU power",
   "devices.memoryUtilization": "Memory utilization",
   "devices.memory": "Memory",
+  "devices.memoryShort": "Mem",
+  "devices.vramShort": "VRAM",
   "devices.usedTotal": "Used / total",
   "devices.available": "Available",
   "devices.swapPageFile": "Swap / page file",

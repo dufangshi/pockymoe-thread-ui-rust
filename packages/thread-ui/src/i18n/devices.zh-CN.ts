@@ -76,6 +76,8 @@ export const devicesZhCN = {
   "devices.cPUPower": "CPU 功耗",
   "devices.memoryUtilization": "内存使用率",
   "devices.memory": "内存",
+  "devices.memoryShort": "内存",
+  "devices.vramShort": "显存",
   "devices.usedTotal": "已用 / 总量",
   "devices.available": "可用",
   "devices.swapPageFile": "交换空间 / 分页文件",

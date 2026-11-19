@@ -753,6 +753,9 @@ export function MatterWorkbench({
   // The sidebar and the thread sheet list this workspace's threads apart from
   // the recent ones elsewhere.
   const workspaceThreads = o.workspaceThreads ? tabs : [];
+  // The workspace these threads share: named once, in the sidebar heading.
+  const workspacePlace = workspaceThreads.length && workspaceThreads.every(thread => thread.subtitle === workspaceThreads[0]!.subtitle)
+    ? workspaceThreads[0]!.subtitle || undefined : undefined;
   const recentThreads = o.threads.filter(thread => !workspaceThreads.some(tab => tab.key === thread.key));
   const attention = (thread: WorkbenchThread) => thread.status === 'running' ? 0 : thread.status === 'unread' || thread.status === 'failed' ? 1 : 2;
   // The thread sheet lists the current thread's group first, then by attention.
@@ -834,7 +837,7 @@ export function MatterWorkbench({
     while (scroller && !(scroller.scrollHeight > scroller.clientHeight && /auto|scroll/.test(getComputedStyle(scroller).overflowY))) scroller = scroller.parentElement;
     if (scroller) scroller.scrollTop += drift;
   }, [agentsOpen]);
-  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { count: number; running: number; open: boolean }, onClose?: () => void) => (
+  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { count: number; running: number; open: boolean }, onClose?: () => void, place?: string) => (
     <div key={thread.key} className={`matter-thread-entry ${onClose ? 'is-closable' : ''}`}>
     <a
       href={thread.href}
@@ -859,10 +862,11 @@ export function MatterWorkbench({
       />
       <span className="matter-thread-copy">
         <span>{thread.title}</span>
-        {/* An unsent prompt takes the subtitle's place, so it is not forgotten. */}
+        {/* An unsent prompt takes the subtitle's place, so it is not forgotten.
+            Under "This workspace" the workspace's name would repeat on every row. */}
         {thread.draft && thread.key !== o.currentKey
           ? <small className="matter-thread-draft"><b>{translate('workbench.draftLabel')}</b>{thread.draft}</small>
-          : <small>{thread.subtitle}</small>}
+          : thread.subtitle && thread.subtitle !== place ? <small>{thread.subtitle}</small> : null}
       </span>
     </a>
     {agents && <button type="button" className="matter-agent-toggle" aria-expanded={agents.open} data-running={agents.running > 0 || undefined}
@@ -881,12 +885,12 @@ export function MatterWorkbench({
       title={translate('workbench.closeTab', { title: thread.title })} onClick={onClose}><X aria-hidden="true" /></button>}
     </div>
   );
-  const renderThreadGroups = (threads: WorkbenchThread[], reorder = false, onClose?: (rootKey: string) => void) => groupThreads(threads).map(({ root, children }) => {
+  const renderThreadGroups = (threads: WorkbenchThread[], reorder = false, onClose?: (rootKey: string) => void, place?: string) => groupThreads(threads).map(({ root, children }) => {
     const open = agentsOpen[root.key] ?? children.some(child => child.key === o.currentKey);
     return <div key={root.key} className="matter-thread-group-entry" data-reorder-key={reorder ? root.key : undefined}>
-      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.filter(child => !child.closedAt).length, running: children.filter(child => !child.closedAt && child.status === 'running').length, open } : undefined, onClose ? () => onClose(root.key) : undefined)}
+      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.filter(child => !child.closedAt).length, running: children.filter(child => !child.closedAt && child.status === 'running').length, open } : undefined, onClose ? () => onClose(root.key) : undefined, place)}
       {children.length > 0 && open && <div className="matter-agent-children" role="group" aria-label={translate('workbench.agentThreads_187f89', { value1: root.title })}>
-        {children.map(child => renderThread(child))}
+        {children.map(child => renderThread(child, undefined, undefined, undefined, place))}
       </div>}
     </div>;
   });
@@ -1065,7 +1069,7 @@ export function MatterWorkbench({
         {(!mobile || o.sidebarHeader) && <div className="matter-sidebar-heading">
           {o.sidebarHeader ?? (dock
             ? <span className="matter-drawer-brand"><b aria-hidden="true">p<i>m</i></b>Pockymoe</span>
-            : <span>{translate("workbench.workspace")}</span>)}
+            : <span title={workspacePlace}>{workspacePlace ?? translate("workbench.workspace")}</span>)}
           <button
             className="matter-mobile-close"
             aria-label={translate("workbench.closeSidebar")}
@@ -1111,9 +1115,8 @@ export function MatterWorkbench({
             <ShortcutList threads={favorites} onReorder={o.onReorderShortcuts}
               renderRow={thread => renderThread(thread, threadGroupActivity(thread, o.threads.filter(child => child.rootKey === thread.key && child.key !== thread.key)))} />
             {!o.threads.some((t) => t.favorite) && (
-              <p className="matter-sidebar-hint">
-                {translate("workbench.starAThreadToKeepItClose")}<br />
-                {translate("workbench.acrossWorkspacesAndDevices")}</p>
+              <p className="matter-sidebar-hint is-shortcuts-empty" title={translate("workbench.acrossWorkspacesAndDevices")}>
+                <Star data-icon="shortcuts" aria-hidden="true" />{translate("workbench.starAThreadToKeepItClose")}</p>
             )}
           </div>
         )}
@@ -1133,7 +1136,7 @@ export function MatterWorkbench({
           </div>
           {workspaceOpen && (
             <div ref={workspaceListRef} className="matter-thread-section" data-testid="workspace-threads">
-              {renderThreadGroups(workspaceThreads, reorderable)}
+              {renderThreadGroups(workspaceThreads, reorderable, undefined, workspacePlace)}
             </div>
           )}
         </>}
@@ -1229,7 +1232,7 @@ export function MatterWorkbench({
                 ? <div className="matter-workspace-home">
                     {children}
                     <section className="matter-workspace-home-list matter-thread-section" aria-label={translate('workbench.thisWorkspace')} data-testid="workspace-home-threads">
-                      {renderThreadGroups(workspaceThreads, reorderable)}
+                      {renderThreadGroups(workspaceThreads, reorderable, undefined, workspacePlace)}
                     </section>
                   </div>
                 : children}

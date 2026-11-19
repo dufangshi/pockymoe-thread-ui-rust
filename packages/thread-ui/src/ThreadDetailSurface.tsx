@@ -357,9 +357,11 @@ export function ThreadDetailSurface({
       ...(loadTurnDetail ? { onLoadTurnDetail: loadTurnDetail } : {}),
       ...(cancelPendingSteer ? { cancelPendingSteer } : {}),
       ...(adapter.forkTurn ? { onForkTurn: adapter.forkTurn } : {}),
+      onRetryPrompt: (prompt: string) => adapter.sendPrompt({ prompt }),
     }),
     [
       adapter.forkTurn,
+      adapter.sendPrompt,
       detail?.workspace.absPath,
       detail?.workspace.id,
       detail?.thread.id,

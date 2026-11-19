@@ -61,6 +61,8 @@ export interface ThreadTimelineAdapter {
   /** Forks a new thread keeping history through this finished turn, then opens
       it. Set only where the harness can fork at a chosen turn. */
   onForkTurn?: (turnId: string) => Promise<void>;
+  /** Sends a failed turn's prompt again, as the composer would. */
+  onRetryPrompt?: (prompt: string) => Promise<unknown> | unknown;
 }
 
 export interface ShellSocketHandlers {

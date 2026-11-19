@@ -1,4 +1,5 @@
 import { translate, useI18n } from '../../i18n';
+import { formatDurationSeconds } from './durationFormatting';
 import {
   Fragment,
   memo,
@@ -62,7 +63,8 @@ import { TurnTokenSummary } from './tokenFormatting';
 import { TurnStatusBar } from './turnStatus';
 import { Collapse } from './Collapse';
 import { ErrorMark } from '../copy/ErrorMark';
-import { turnErrorText } from './turnErrors';
+import { describeTurnError } from './turnErrors';
+import { TurnFailureNote } from './TurnFailureNote';
 import { activityParts, hasActivity, logStatus, storySegments, stretchBetween, stretchFromItems, turnActivity, turnChangedFiles } from './activity';
 import { MessagePreviewContext } from '../graph-chat/GraphChatMessageBody';
 import { ActivitySummary, ChangedFiles, isLogItem, LogRow, LogRun, opensDiff, Parts, RunPlaceholder } from './TranscriptLog';
@@ -498,17 +500,7 @@ export function formatWorkedDuration(
     1,
     Math.floor((endMillis - startMillis) / 1000),
   );
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  if (hours > 0) {
-    return translate("chat.workedForHours", { hours, minutes });
-  }
-  if (minutes > 0) {
-    return translate("chat.workedForMinutes", { minutes, seconds });
-  }
-  return translate("chat.workedForSeconds", { seconds });
+  return translate("chat.workedFor", { duration: formatDurationSeconds(totalSeconds, { pad: false }) });
 }
 
 import { TimelineTimeToggle } from './TimelineTimeToggle';
@@ -842,6 +834,15 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const recordedNothing = isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems
     && !groupedItems.some(entry => entry.kind !== 'item' || entry.item.kind !== 'userMessage');
   const [emptyOpen, setEmptyOpen] = useState(false);
+  // Retry resends what the reader typed; a wake or delegate envelope is not theirs to resend.
+  const retryablePrompt = groupedItems.find((entry): entry is TimelineHistoryEntry & { kind: 'item' } =>
+    entry.kind === 'item' && entry.item.kind === 'userMessage' && (!entry.item.origin || entry.item.origin === 'user'))?.item.text ?? null;
+  // An interrupted turn's reason sits beside its amber "Interrupted", not at the
+  // far end of the head line in failure red (an empty turn says it when opened).
+  const interruptedError = turn.status === 'interrupted' && turn.error && !recordedNothing ? describeTurnError(turn.error) : null;
+  const interruptedMark = interruptedError
+    ? <ErrorMark className="thread-interrupted-mark" message={interruptedError.message} detail={interruptedError.detail ?? undefined} announce={false} />
+    : null;
   const terminalWorkedNode =
     isTerminalTurnStatus(turn.status) && !hasCollapsedHiddenItems ? recordedNothing ? (
       <>
@@ -856,24 +857,29 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
         </div>
         <Collapse open={emptyOpen}>
-          <div className="thread-graph-turn-empty-note">
+          <div className="thread-graph-turn-empty-note" data-failed={turn.error ? true : undefined}>
             <p>{translate('chat.turnRecordedNothing')}</p>
-            {turn.error ? <p className="thread-graph-turn-empty-reason">{turnErrorText(turn.error)}</p> : null}
+            {turn.error ? <TurnFailureNote error={turn.error} prompt={retryablePrompt} /> : null}
           </div>
         </Collapse>
       </>
     ) : (
-      <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm">
+      // Nothing ran: a quiet note of the time, without the dashed rule that
+      // makes a line look like work that opens (ui-principles §5).
+      <div className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm" data-plain={summaryParts.length ? undefined : true}>
         <TranscriptAgentByline />
         <span className="thread-graph-worked-label shrink-0">
           {workedLabel}
         </span>
         {interruptedLabel}
+        {interruptedMark}
         <ActivitySummary parts={summaryParts} />
-        <span
-          className="thread-graph-worked-rule h-px min-w-0 flex-1"
-          aria-hidden="true"
-        />
+        {summaryParts.length ? (
+          <span
+            className="thread-graph-worked-rule h-px min-w-0 flex-1"
+            aria-hidden="true"
+          />
+        ) : null}
       </div>
     ) : null;
   const leadingUserCount = groupedItems.findIndex(
@@ -943,7 +949,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
               setOpenSoleRun(effectiveCollapsed);
               onToggleCollapse(turn, effectiveCollapsed);
             }}
-            aria-label={translate("chat.turn_6e6e38", { value1: workedLabel, value2: effectiveCollapsed ? translate("chat.expand") : translate("chat.collapse"), value3: absoluteIndex })}
+            aria-label={translate("chat.turn_6e6e38", { value1: [workedLabel, ...workParts.filter(part => part.count !== undefined).map(part => part.text)].join(translate('chat.countSeparator')), value2: effectiveCollapsed ? translate("chat.expand") : translate("chat.collapse"), value3: absoluteIndex })}
             aria-expanded={!effectiveCollapsed}
             aria-busy={deferredItemsLoading}
             title={deferredItemsLoading ? translate("chat.loadingCompleteHistory") : undefined}
@@ -960,10 +966,14 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
               ? <ActivitySummary parts={workParts} />
               : fileParts.length ? null : <span className="thread-execution-step-count">{stepCount + peerWorkSteps} {translate("chat.steps")}</span>}
           </button>
+          {interruptedMark}
           {fileParts.length && changedFiles.length ? (
             <button type="button" className="tlog-files-toggle" aria-expanded={filesOpen} title={translate('chat.logShowFiles')}
+              aria-label={fileParts.map(part => part.text).join(' ')}
               onClick={(event) => { onBeforeMessageResize?.(event.currentTarget); setFilesOpen(value => !value); }}>
-              <span className="tlog-sep" aria-hidden="true">·</span><Parts parts={fileParts} />
+              <span className="tlog-files-full"><span className="tlog-sep" aria-hidden="true">·</span><Parts parts={fileParts} /></span>
+              {/* A phone keeps the line to one row: the edits shrink to "±N" like the other counts. */}
+              <span className="tlog-files-compact" aria-hidden="true">±{changedFiles.length}</span>
             </button>
           ) : fileParts.length ? <span className="tlog-summary"><span className="tlog-sep" aria-hidden="true">·</span><Parts parts={fileParts} /></span> : null}
           {/* The turn's full history did not load: the line keeps its summary and
@@ -1084,7 +1094,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
 
   if (nestedPeerWork) return <MessageExpansionScope key={`${threadId ?? ''}:${turn.id}`}>
     <div className="thread-peer-execution">{historyNode}{liveHookPromptNode}{liveOutputNode}
-      {turn.error ? <ErrorMark message={turnErrorText(turn.error)} announce={false} /> : null}
+      {turn.error ? <ErrorMark message={describeTurnError(turn.error).message} detail={describeTurnError(turn.error).detail ?? undefined} announce={false} /> : null}
     </div>
   </MessageExpansionScope>;
 
@@ -1097,7 +1107,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       body={canToggleWorkedSummary ? collapsedSummaryNode : turnBody}
       collapsed={effectiveCollapsed}
       collapsedBody={collapsedSummaryNode}
-      error={(failedWith && firstPromptId) || recordedNothing || !turn.error ? null : turnErrorText(turn.error)}
+      error={(failedWith && firstPromptId) || recordedNothing || interruptedMark || !turn.error ? null : describeTurnError(turn.error).message}
+      errorDetail={turn.error ? describeTurnError(turn.error).detail : null}
       head={headNode}
       headerStatus={<TurnStatusBar turn={turn} />}
       isActive={activeForRendering}

@@ -463,7 +463,7 @@ describe('ThreadTimeline', () => {
   it.each([
     ['inProgress', 'Working', '工作中'],
     ['recovering', 'Confirming status', '正在确认状态'],
-    ['completed', 'Worked for 1m 12s', '工作了 1 分钟 12 秒'],
+    ['completed', 'Worked for 1m 12s', '工作了 1 分 12 秒'],
   ] as const)('refreshes the %s worked label with identical memoized props', (status, english, chinese) => {
     setLocale('en', false);
     const turn = { ...completedTurn([
@@ -1644,6 +1644,6 @@ describe('an ended turn that recorded nothing', () => {
     flushSync(() => toggle.click());
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
     expect(element.querySelector('.thread-graph-turn-empty-note')?.textContent).toContain('Nothing was recorded in this turn.');
-    expect(element.querySelector('.thread-graph-turn-empty-reason')?.textContent).toContain('Supervisor connection ended');
+    expect(element.querySelector('.thread-turn-failure-message')?.textContent).toContain('Supervisor connection ended');
   });
 });

@@ -8,6 +8,8 @@ export interface GraphChatTurnFrameProps {
   collapsed: boolean;
   collapsedBody?: ReactNode;
   error?: string | null;
+  /** The original error, in small type under the readable one. */
+  errorDetail?: string | null;
   footer?: ReactNode;
   /** The turn's own line above its prompt: start time, model and usage. */
   head?: ReactNode;
@@ -27,6 +29,7 @@ export function GraphChatTurnFrame({
   collapsed,
   collapsedBody,
   error,
+  errorDetail,
   footer,
   head,
   headerStatus,
@@ -72,7 +75,7 @@ export function GraphChatTurnFrame({
         {error ? (
           <div className="thread-graph-turn-head-row flex items-center gap-1">
             <div className="min-w-0 flex-1">{head}</div>
-            <ErrorMark message={error} announce={false} />
+            <ErrorMark message={error} detail={errorDetail ?? undefined} announce={false} />
           </div>
         ) : head}
         {collapsed ? collapsedBody : body}

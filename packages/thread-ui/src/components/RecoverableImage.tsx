@@ -22,10 +22,13 @@ export function RecoverableImage(props: Omit<ImgHTMLAttributes<HTMLImageElement>
   resolveSrc?: ImageResolver | undefined;
   resolveFallback?: ImageResolver | undefined;
   renderImage?: ((image: ReactNode) => ReactNode) | undefined;
+  /** Where the image is the whole view (a file preview), the placeholder also
+      says in words that it cannot be shown. */
+  labelledPlaceholder?: boolean | undefined;
 }) {
   return <ImageAttempt key={props.src} {...props} />;
 }
-function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = image => image, ...props }: Parameters<typeof RecoverableImage>[0]) {
+function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = image => image, labelledPlaceholder, ...props }: Parameters<typeof RecoverableImage>[0]) {
   useI18n();
   const refresh = useContext(ImageRecoveryContext);
   const diagnose = useContext(ImageDiagnosisContext);
@@ -111,9 +114,10 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = image =>
   return <span className="recoverable-image" data-image-state={state.phase}>
     {renderImage(unavailable || !state.url
       // The placeholder names the picture it stands for, so a reader knows what is missing.
-      ? <span className="image-unavailable" role="img" aria-label={props.alt || translate('chat.imageUnavailable')}>
+      ? <span className={`image-unavailable${labelledPlaceholder ? ' is-labelled' : ''}`} role="img" aria-label={props.alt || translate('chat.imageUnavailable')}>
           <ImageOff aria-hidden="true" />
-          {props.alt ? <span className="image-unavailable-caption" aria-hidden="true">{translate('chat.imageAltUnavailable', { alt: props.alt })}</span> : null}
+          {props.alt ? <span className="image-unavailable-caption" aria-hidden="true">{translate('chat.imageAltUnavailable', { alt: props.alt })}</span>
+            : labelledPlaceholder ? <span className="image-unavailable-caption" aria-hidden="true">{translate('chat.imageUnavailable')}</span> : null}
         </span>
       : <img {...props} key={state.generation} src={state.url}
           style={{ ...props.style, visibility: state.phase === 'ready' ? props.style?.visibility : 'hidden' }}

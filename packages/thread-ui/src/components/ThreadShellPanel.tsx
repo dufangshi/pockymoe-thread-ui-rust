@@ -383,10 +383,23 @@ export const ThreadShellPanel = forwardRef<
     }
   }, [shellAdapter, threadId, updateLayout]);
 
+  const commandMayBeRunning = useCallback(async (shellId: string) => {
+    if (runtimeRef.current[shellId]?.isCommandRunning) return true;
+    try {
+      const state = await shellAdapter.fetchState(threadId);
+      const shell = state.shells.find(item => item.id === shellId) as { commandRunning?: boolean | null } | undefined;
+      return shell?.commandRunning !== false;
+    } catch {
+      return true;
+    }
+  }, [shellAdapter, threadId]);
+
   const killTerminal = useCallback(async (shellId: string | null | undefined) => {
     if (!shellId) return;
-    // A command still runs there: ask first. An idle shell just closes.
-    if (runtimeRef.current[shellId]?.isCommandRunning && !(await confirmAsync({
+    // A command still runs there: ask first. An idle shell just closes. The
+    // device answers for the moment of the click (output may have been quiet
+    // since the command started); when it cannot tell, ask anyway.
+    if (await commandMayBeRunning(shellId) && !(await confirmAsync({
       title: t('workbench.terminalKillRunningTitle', { value1: labelsRef.current.get(shellId) ?? shellId.slice(0, 8) }),
       description: t('workbench.terminalKillRunningBody'),
       confirmLabel: t('workbench.terminalKill'),
@@ -403,7 +416,7 @@ export const ThreadShellPanel = forwardRef<
     } finally {
       setBusy(false);
     }
-  }, [loadShellState, shellAdapter, updateLayout]);
+  }, [commandMayBeRunning, loadShellState, shellAdapter, updateLayout]);
 
   const startRename = useCallback((shellId: string) => {
     renamingRef.current = shellId;
@@ -695,7 +708,7 @@ export const ThreadShellPanel = forwardRef<
         <button
           type="button"
           className="terminal-switcher"
-          aria-label={`${t('workbench.terminalSwitch')}: ${activeLabel ?? t('workbench.terminal')}`}
+          aria-label={t('workbench.terminalSwitchTo', { value1: activeLabel ?? t('workbench.terminal') })}
           aria-haspopup="menu"
           aria-expanded={menu?.kind === 'switcher'}
           disabled={!liveShells.length}

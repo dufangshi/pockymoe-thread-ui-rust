@@ -12,6 +12,32 @@ const IMAGE_LIGHTBOX_MIN_SCALE = 0.5;
 const IMAGE_LIGHTBOX_MAX_SCALE = 5;
 const IMAGE_LIGHTBOX_SCALE_STEP = 0.25;
 
+/** How large the fitted image is against its own pixels: the viewer's scale 1
+    is "fit to the window", so 100% there can be a 6% shrink. */
+function useFitRatio(viewportRef: { current: HTMLDivElement | null }) {
+  const [fit, setFit] = useState(1);
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const measure = () => {
+      const image = viewport.querySelector('img');
+      if (image && image.naturalWidth > 0 && image.offsetWidth > 0) setFit(image.offsetWidth / image.naturalWidth);
+    };
+    measure();
+    viewport.addEventListener('load', measure, true);
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    observer?.observe(viewport);
+    return () => { viewport.removeEventListener('load', measure, true); observer?.disconnect(); };
+  }, [viewportRef]);
+  return fit;
+}
+
+/** The zoom as the reader sees it, against the image's real pixels. */
+function zoomLabel(scale: number, fit: number) {
+  const percent = Math.max(1, Math.round(scale * fit * 100));
+  return scale === 1 && Math.abs(fit - 1) > 0.005 ? translate('files.zoomFit', { value1: percent }) : `${percent}%`;
+}
+
 export function GraphWorkspaceImageLightbox({
   alt,
   backgroundColor,
@@ -27,6 +53,7 @@ export function GraphWorkspaceImageLightbox({
 }) {
   const { locale: i18nLocale } = useI18n();
   const { viewportRef, scale, dragging, transform, reset: resetView, updateScale, handlers, moved } = useImageViewport();
+  const fit = useFitRatio(viewportRef);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const backdropPointer = useRef(true);
   const windowRef = useRef<HTMLDivElement | null>(null);
@@ -69,10 +96,10 @@ export function GraphWorkspaceImageLightbox({
           onClick={resetView}
           className="thread-graph-image-lightbox-scale"
           title={translate("files.resetZoom")}
-          aria-label={translate("files.resetZoomCurrently", { value1: Math.round(scale * 100) })}
+          aria-label={translate("files.resetZoomCurrently", { value1: zoomLabel(scale, fit) })}
         >
           <RotateCcw className="h-3.5 w-3.5" />
-          <span>{Math.round(scale * 100)}%</span>
+          <span>{zoomLabel(scale, fit)}</span>
         </button>
         <button
           type="button"
@@ -190,16 +217,17 @@ export function ZoomableImage({
 export function WorkspaceImagePreview({ src, alt }: { src: string; alt: string }) {
   useI18n();
   const { viewportRef, scale, dragging, transform, reset, updateScale, handlers } = useImageViewport();
+  const fit = useFitRatio(viewportRef);
   const [open, setOpen] = useState(false);
   return <div className="workspace-image-preview">
     <div className="workspace-image-controls" role="toolbar" aria-label={translate('files.imageZoomControls')}>
       <button type="button" onClick={() => updateScale(scale - .25)} disabled={scale <= IMAGE_LIGHTBOX_MIN_SCALE} aria-label={translate('files.zoomOut')}><Minus size={14} /></button>
-      <button type="button" onClick={reset} aria-label={translate('files.resetZoom')}><span>{Math.round(scale * 100)}%</span></button>
+      <button type="button" onClick={reset} aria-label={translate('files.resetZoomCurrently', { value1: zoomLabel(scale, fit) })} title={translate('files.resetZoom')}><span>{zoomLabel(scale, fit)}</span></button>
       <button type="button" onClick={() => updateScale(scale + .25)} disabled={scale >= IMAGE_LIGHTBOX_MAX_SCALE} aria-label={translate('files.zoomIn')}><Plus size={14} /></button>
       <button type="button" onClick={() => setOpen(true)} aria-label={translate('files.openImagePreview')}><Maximize2 size={14} /></button>
     </div>
     <div ref={viewportRef} className="workspace-image-viewport" {...handlers}>
-      <RecoverableImage src={src} alt={alt} draggable={false} className={dragging ? 'is-dragging' : ''} style={{ transform }} />
+      <RecoverableImage src={src} alt={alt} draggable={false} className={dragging ? 'is-dragging' : ''} style={{ transform }} labelledPlaceholder />
     </div>
     {open && <GraphWorkspaceImageLightbox src={src} alt={alt} onClose={() => setOpen(false)} />}
   </div>;

@@ -60,8 +60,22 @@ it('shows the name while a finger holds it and hides it when the finger lifts, w
   const touch = (type: string) => label.dispatchEvent(Object.assign(new Event(type, { bubbles: true }), { touches: type === 'touchend' ? [] : [{ clientX: 10, clientY: 10 }] }));
   act(() => { touch('touchstart'); vi.advanceTimersByTime(450); });
   expect(tooltip()?.textContent).toBe('screenshot-classic-dark-phone-confirm.png');
-  act(() => { label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })); });
-  expect(tapped).not.toHaveBeenCalled();
+  // Browsers send the click after touchend, when the bubble is already gone.
   act(() => { touch('touchend'); });
   expect(tooltip()).toBeNull();
+  act(() => { label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })); });
+  expect(tapped).not.toHaveBeenCalled();
+  // The next, ordinary tap goes through.
+  act(() => { label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })); });
+  expect(tapped).toHaveBeenCalledTimes(1);
+});
+
+it('lets a short tap through', () => {
+  const label = render(true);
+  const tapped = vi.fn();
+  host.querySelector('[role="treeitem"]')!.addEventListener('click', tapped);
+  const touch = (type: string) => label.dispatchEvent(Object.assign(new Event(type, { bubbles: true }), { touches: type === 'touchend' ? [] : [{ clientX: 10, clientY: 10 }] }));
+  act(() => { touch('touchstart'); vi.advanceTimersByTime(100); touch('touchend'); });
+  act(() => { label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })); });
+  expect(tapped).toHaveBeenCalledTimes(1);
 });

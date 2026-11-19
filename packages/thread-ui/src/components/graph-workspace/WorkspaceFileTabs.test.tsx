@@ -69,7 +69,7 @@ describe('WorkspaceFileTabs', () => {
     );
     expect(onClose).not.toHaveBeenCalled();
     expect(document.body.textContent).toContain(
-      'Discard unsaved changes in preview.ts?',
+      'Close preview.ts?',
     );
 
     const discard = [...document.body.querySelectorAll('button')].find(

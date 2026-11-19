@@ -8,7 +8,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from 'react';
-import { ChevronLeft, FolderOpen, X } from 'lucide-react';
+import { ChevronLeft, FolderOpen, Maximize2, Minus, X } from 'lucide-react';
 import { translate as t, useI18n } from '../../i18n';
 import { closeFilesPatch, openFilesPatch, splitShown, type WorkbenchPresentation } from './presentation';
 import { FilePanelContext } from './FilePanelContext';
@@ -131,9 +131,14 @@ export function WorkbenchPanels({
   });
   const [rootWidth, setRootWidth] = useState(window.innerWidth);
   const drawerDrag = useRef<{ x: number; width: number } | null>(null);
-  const visibleDrawerWidth = Math.min(drawerWidth, Math.max(360, rootWidth - 280));
+  // The dock leaves the conversation its minimum: 280px, or with a split both
+  // panes theirs (the primary's 360px and the reference's 365px, as the pane
+  // grid clamps them), before it takes more than its own 360px minimum.
+  const conversationMin = splitShown(o.presentation) ? 725 : 280;
+  const drawerMax = Math.max(360, rootWidth - conversationMin);
+  const visibleDrawerWidth = Math.min(drawerWidth, drawerMax);
   const resizeDrawer = (width: number) => {
-    const next = Math.round(Math.max(360, Math.min(Math.max(360, rootWidth - 280), width)));
+    const next = Math.round(Math.max(360, Math.min(drawerMax, width)));
     setDrawerWidth(next);
     try { localStorage.setItem('remote-codex.explorer-width', String(next)); } catch { /* Optional preference. */ }
   };
@@ -144,7 +149,7 @@ export function WorkbenchPanels({
       aria-label={t('workbench.resizeExplorer')}
       aria-orientation="vertical"
       aria-valuemin={360}
-      aria-valuemax={Math.max(360, rootWidth - 280)}
+      aria-valuemax={drawerMax}
       aria-valuenow={visibleDrawerWidth}
       className="workbench-tool-resize"
       onPointerDown={(event) => {
@@ -639,19 +644,34 @@ export function WorkbenchPanels({
           }}
         >
           {drawerResizeHandle()}
-          {!o.inlineFilesHeader && <header>
+          {/* The same head as the inspectors beside it: name, whose files, and
+              its controls at the end (docs/ui-principles.md §4). */}
+          <header>
             <div>
               <strong>{t('workbench.referenceFiles')}</strong>
               {o.toolsTargetLabel && <small>{o.toolsTargetLabel}</small>}
             </div>
+            {o.inlineFilesHeader && !compact && (
+              <button
+                type="button"
+                aria-pressed={filesMinimized}
+                aria-label={t(filesMinimized ? 'workbench.restoreFiles' : 'workbench.minimizeFiles')}
+                title={t(filesMinimized ? 'workbench.restoreFiles' : 'workbench.minimizeFiles')}
+                onClick={() => setFilesMinimized(!filesMinimized)}
+              >
+                {filesMinimized ? <Maximize2 size={15} /> : <Minus size={17} />}
+              </button>
+            )}
             <button
+              type="button"
               data-testid="workbench-close-files"
               aria-label={t('workbench.closeFiles')}
+              title={t('workbench.closeFiles')}
               onClick={closeFiles}
             >
               <X size={17} />
             </button>
-          </header>}
+          </header>
           <FilePanelContext.Provider value={o.inlineFilesHeader ? {
             close: closeFiles,
             ...(o.toolsTargetLabel ? { label: o.toolsTargetLabel } : {}),

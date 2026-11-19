@@ -1160,3 +1160,10 @@
   .thread-ui-shell .tab-scroll-button:hover { color: var(--theme-fg); }
 }
 .thread-ui-shell .tab-scroll-button > svg { width: 15px; height: 15px; }
+/* File tabs are narrow and each ends in its ×: the paging buttons take cells of
+   their own beside the strip instead of covering a tab's name or its close. */
+.thread-ui-shell .workspace-tab-scroll[data-overflow-start="true"] > .thread-graph-editor-tabs { margin-left: 22px; }
+.thread-ui-shell .workspace-tab-scroll[data-overflow-end="true"] > .thread-graph-editor-tabs { margin-right: 22px; }
+.thread-ui-shell .workspace-tab-scroll > .tab-scroll-button { width: 22px; background: var(--theme-panel); }
+.thread-ui-shell .workspace-tab-scroll > .tab-scroll-button[data-edge="start"] { border-right: 1px solid var(--theme-border); }
+.thread-ui-shell .workspace-tab-scroll > .tab-scroll-button[data-edge="end"] { border-left: 1px solid var(--theme-border); }

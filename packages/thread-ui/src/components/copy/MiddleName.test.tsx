@@ -11,3 +11,6 @@ it('retains a short extension and leaves short names intact', () => {
   const html = renderToStaticMarkup(<MiddleName name="grok-4.7" />);
   expect(html).toContain('grok-4.7'); expect(html).not.toContain('middle-name-tail');
 });
+it('keeps the extension of a short name that does not fit', () => {
+  expect(renderToStaticMarkup(<MiddleName name="diagram.drawio" />)).toContain('middle-name-head">diagram</span><span class="middle-name-tail">.drawio</span>');
+});

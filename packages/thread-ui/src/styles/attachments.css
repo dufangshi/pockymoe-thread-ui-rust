@@ -177,3 +177,9 @@ button.attachment-card-preview:focus-visible { outline: 2px solid var(--theme-ac
 .thread-graph-image-lightbox-viewport > .recoverable-image { display: contents; }
 .thread-graph-image-lightbox-viewport > .recoverable-image > .image-recovery-error { top: 80px; right: 24px; }
 .workspace-image-viewport > .recoverable-image { display: contents; }
+/* A file preview that cannot show its image: a themed placeholder where the
+   image would be, saying so, with the reason's mark right beside it (§11). */
+.workspace-image-viewport > .recoverable-image[data-image-state="failed"] { display: inline-flex; position: relative; align-items: center; gap: 6px; }
+.workspace-image-viewport > .recoverable-image[data-image-state="failed"] > .image-recovery-error { position: static; }
+.image-unavailable.is-labelled { flex-direction: column; gap: 8px; min-width: 160px; min-height: 104px; padding: 16px 22px !important; border: 1px dashed var(--theme-border-strong, var(--theme-border)); border-radius: 10px; font-size: 13px; }
+.image-unavailable.is-labelled > svg { width: 30px; height: 30px; }

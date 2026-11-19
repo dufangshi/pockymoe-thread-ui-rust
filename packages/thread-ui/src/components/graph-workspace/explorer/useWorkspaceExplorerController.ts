@@ -13,7 +13,6 @@ import {
   collectAncestorPaths,
   collectWorkspaceItems,
   findFirstPreviewNode,
-  findFirstWorkspaceFile,
   flattenWorkspaceNodes,
   hasWorkspacePath,
   workspaceRelativeFocusPath,
@@ -261,10 +260,8 @@ export function useWorkspaceExplorerController({
             nextModel = mergeWorkspaceExplorerSubtree(nextModel, refreshedNode);
           }
         }
-        const nextTree = workspaceExplorerModelToTree(nextModel);
         adapterModelRef.current = nextModel;
         setAdapterModel(nextModel);
-        const firstFile = findFirstWorkspaceFile(nextTree);
         setSelectedNodeId((current) => {
           const fallbackPath =
             currentSelectedPath ??
@@ -275,7 +272,9 @@ export function useWorkspaceExplorerController({
           ) {
             return `workspace:${fallbackPath}`;
           }
-          return firstFile?.id ?? null;
+          // Nothing is opened for the reader: the first file in the tree may
+          // be a large log, and a selection also becomes the ask-bar target.
+          return null;
         });
       } catch (error) {
         if (
@@ -299,6 +298,38 @@ export function useWorkspaceExplorerController({
     },
     [restoreExpandedDirectories, workspaceAdapter, workspaceIdentity],
   );
+
+  /** Load the folders the reader has not opened, so the filter covers the whole
+      workspace. Dependency, build and VCS folders stay closed, and a large
+      workspace stops after a bounded number of folders. */
+  const [workspaceSearch, setWorkspaceSearch] = useState<'idle' | 'loading' | 'done' | 'limited'>('idle');
+  const searchWholeWorkspace = useCallback(async () => {
+    if (!workspaceAdapter || !adapterModelRef.current) return;
+    const workspaceGeneration = workspaceGenerationRef.current;
+    const attempted = new Set<string>();
+    let loaded = 0;
+    setWorkspaceSearch('loading');
+    for (;;) {
+      const model = adapterModelRef.current;
+      if (!model || workspaceGenerationRef.current !== workspaceGeneration) return;
+      const pending = [...model.nodes.values()].filter(node =>
+        node.kind === 'directory' && node.childrenState !== 'resolved'
+        && !attempted.has(node.path) && !node.path.split('/').some(part => WORKSPACE_SEARCH_SKIP.has(part)));
+      if (!pending.length) { setWorkspaceSearch('done'); return; }
+      if (loaded >= WORKSPACE_SEARCH_MAX_FOLDERS) { setWorkspaceSearch('limited'); return; }
+      const batch = pending.slice(0, Math.min(8, WORKSPACE_SEARCH_MAX_FOLDERS - loaded));
+      batch.forEach(node => attempted.add(node.path));
+      loaded += batch.length;
+      const listed = await Promise.all(batch.map(node =>
+        workspaceAdapter.listTree({ ...workspaceIdentity, path: node.path }).then(workspaceTreeNodeToGraphNode, () => null)));
+      if (workspaceGenerationRef.current !== workspaceGeneration) return;
+      let next: WorkspaceExplorerModel = adapterModelRef.current ?? model;
+      for (const node of listed) if (node) next = mergeWorkspaceExplorerSubtree(next, node);
+      adapterModelRef.current = next;
+      setAdapterModel(next);
+    }
+  }, [workspaceAdapter, workspaceIdentity]);
+  useEffect(() => setWorkspaceSearch('idle'), [workspaceIdentity]);
 
   const loadDirectoryChildren = useCallback(
     async (path: string) => {
@@ -666,6 +697,8 @@ export function useWorkspaceExplorerController({
     nodeMap,
     refreshWorkspaceTree,
     retryDirectory: loadDirectoryChildren,
+    searchWholeWorkspace,
+    workspaceSearch,
     selectedNodeId,
     setFilterMode,
     setFilterQuery,
@@ -686,6 +719,9 @@ export function useWorkspaceExplorerController({
     workspaceIdentity,
   };
 }
+
+const WORKSPACE_SEARCH_MAX_FOLDERS = 400;
+const WORKSPACE_SEARCH_SKIP = new Set(['.git', 'node_modules', 'target', 'dist', 'build', '.next', '.venv', 'venv', '__pycache__', '.cache']);
 
 class MissingTargetError extends Error {}
 

@@ -68,6 +68,8 @@ export function GraphWorkspaceExplorer({
     missingPath,
     refreshWorkspaceTree,
     retryDirectory,
+    searchWholeWorkspace,
+    workspaceSearch,
     setLoadingTree,
     setFilterMode,
     setFilterQuery,
@@ -484,6 +486,8 @@ export function GraphWorkspaceExplorer({
       onFilterModeChange={setFilterMode}
       onFilterQueryChange={setFilterQuery}
       onRetryDirectory={(path) => void retryDirectory(path)}
+      onSearchWholeWorkspace={() => void searchWholeWorkspace()}
+      workspaceSearch={workspaceSearch}
       onPreview={handlePreview}
       onPin={handlePin}
       onSelect={(nodeId) => {

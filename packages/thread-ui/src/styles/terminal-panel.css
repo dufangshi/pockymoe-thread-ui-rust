@@ -274,10 +274,13 @@
   background: var(--terminal-bg, var(--theme-panel));
   color: var(--terminal-fg, var(--theme-fg));
 }
-/* The bar floats over the text, so the text keeps xterm's exact rows. */
+/* The bar floats over the text, so the text keeps xterm's exact rows. It sits at
+   the foot, near the thumb and the key row; the text's bottom padding lets the
+   last lines scroll above it, so no line stays hidden (the top lines are often
+   the command to copy). */
 .terminal-selection-bar {
   position: absolute;
-  inset: 6px 6px auto;
+  inset: auto 6px 6px;
   z-index: 1;
   display: flex;
   align-items: center;

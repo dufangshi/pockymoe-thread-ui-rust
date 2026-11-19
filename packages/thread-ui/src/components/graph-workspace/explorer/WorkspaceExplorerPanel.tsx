@@ -4,8 +4,6 @@ import {
   FileCode2,
   FilePlus2,
   ListCollapse,
-  Maximize2,
-  Minus,
   MoreHorizontal,
   RefreshCw,
   Search,
@@ -63,6 +61,8 @@ export function WorkspaceExplorerPanel({
   onPin,
   onRefresh,
   onRetryDirectory,
+  onSearchWholeWorkspace,
+  workspaceSearch = 'idle',
   onSelect,
   onSelectNode,
   onToggle,
@@ -98,6 +98,8 @@ export function WorkspaceExplorerPanel({
   onPin?: (node: WorkspaceTreeNode) => void;
   onRefresh?: () => void;
   onRetryDirectory?: (path: string) => void;
+  onSearchWholeWorkspace?: () => void;
+  workspaceSearch?: 'idle' | 'loading' | 'done' | 'limited';
   onSelect: (nodeId: string) => void;
   onSelectNode?: (node: WorkspaceTreeNode) => void;
   onToggle: (path: string) => void;
@@ -138,6 +140,10 @@ export function WorkspaceExplorerPanel({
     }
   }, [filterOpen]);
 
+  // After a whole-workspace search only dependency, build and VCS folders stay
+  // unopened, and they are left out on purpose: the result is the workspace's.
+  const partial = filterResult.hasUnresolvedDirectories && workspaceSearch !== 'done' && workspaceSearch !== 'limited';
+
   function closeFilter() {
     onFilterQueryChange('');
     setFilterOpen(false);
@@ -149,17 +155,7 @@ export function WorkspaceExplorerPanel({
         <h2 className="text-[11px] font-semibold uppercase text-slate-600 dark:text-slate-300">
           {translate("files.explorer")}</h2>
         <div className="thread-graph-explorer-toolbar flex items-center gap-1">
-          {/* Window controls, as on a Mac: close the files view, or minimize it to its tree. */}
-          {filePanel?.setMinimized ? (
-            <span className="thread-graph-window-controls">
-              <button type="button" data-testid="workbench-close-files" className="is-close" onClick={filePanel.close}
-                aria-label={translate('workbench.closeFiles')} title={translate('workbench.closeFiles')}><X aria-hidden="true" /></button>
-              <button type="button" className="is-minimize" aria-pressed={Boolean(filePanel.minimized)}
-                onClick={() => filePanel.setMinimized?.(!filePanel.minimized)}
-                aria-label={translate(filePanel.minimized ? 'workbench.restoreFiles' : 'workbench.minimizeFiles')}
-                title={translate(filePanel.minimized ? 'workbench.restoreFiles' : 'workbench.minimizeFiles')}>{filePanel.minimized ? <Maximize2 aria-hidden="true" /> : <Minus aria-hidden="true" />}</button>
-            </span>
-          ) : filePanel && onExpandViewer && <button type="button" data-testid="workbench-close-files" className={iconButtonClassName} onClick={filePanel.close} aria-label={translate('workbench.closeFiles')} title={translate('workbench.closeFiles')}><X data-icon="close" size={16} /></button>}
+          {/* Closing and minimizing the files view live in the dock's head. */}
           {onCreateFile && <button type="button" onClick={onCreateFile}
             className={iconButtonClassName} title={translate('files.newFile')}
             aria-label={translate('files.newFile')}>
@@ -309,16 +305,19 @@ export function WorkspaceExplorerPanel({
             </div>
           </div>
           {filterQuery ? (
-            <div
-              className="mt-1.5 text-xs text-[var(--theme-fg-muted)]"
-              aria-live="polite"
-            >
-              {filterResult.matchCount}{' '}
-              {filterResult.matchCount === 1 ? translate("files.match") : translate("files.matches")}
-              {filterResult.hasUnresolvedDirectories
-                ? translate("files.inLoadedFolders")
-                : ''}
+            <div className="thread-graph-explorer-filter-result mt-1.5 text-xs text-[var(--theme-fg-muted)]" aria-live="polite">
+              {/* The result sits under the field it answers, empty or not. */}
+              {filterResult.matchCount === 0
+                ? translate(partial ? 'files.noMatchesInOpenedFolders' : 'files.noMatches', { query: filterQuery })
+                : translate(partial ? 'files.matchesInOpenedFolders' : 'files.matchCount', { count: filterResult.matchCount })}
+              {workspaceSearch === 'limited' ? <span className="block">{translate('files.workspaceSearchLimited')}</span> : null}
             </div>
+          ) : null}
+          {filterQuery && onSearchWholeWorkspace && (partial || workspaceSearch === 'loading') ? (
+            <button type="button" className="thread-graph-explorer-search-all" disabled={workspaceSearch === 'loading'} onClick={onSearchWholeWorkspace}>
+              <Search aria-hidden="true" className="h-3.5 w-3.5" />
+              {translate(workspaceSearch === 'loading' ? 'files.searchingWorkspace' : 'files.searchWholeWorkspace')}
+            </button>
           ) : null}
         </div>
       ) : null}
@@ -393,14 +392,7 @@ export function WorkspaceExplorerPanel({
           onToggle={onToggle}
         />
       )}
-      {!initialLoading &&
-      !rootError &&
-      filterQuery &&
-      filterMode === 'filter' &&
-      filterResult.matchCount === 0 ? (
-        <p className="thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400">
-          {translate("files.noMatchesInLoadedFolders")}</p>
-      ) : !rootError && visibleTree.children.length === 0 ? (
+      {!rootError && !filterQuery && visibleTree.children.length === 0 ? (
         <p className="thread-graph-workspace-empty mx-4 mb-4 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400">
           {translate("files.thisWorkspaceIsEmptyAgentToolRuns")}</p>
       ) : null}

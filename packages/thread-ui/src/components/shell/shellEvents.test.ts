@@ -34,7 +34,7 @@ describe('shellEvents utilities', () => {
     const englishAction = deriveShellAttachTimeoutAction(input);
     expect(englishAction?.connectionError).toBe('Shell connection timed out. Reconnecting...');
     setLocale('zh-CN', false);
-    expect(deriveShellAttachTimeoutAction(input)?.connectionError).toBe('Shell 连接超时，正在重新连接…');
+    expect(deriveShellAttachTimeoutAction(input)?.connectionError).toBe('终端连接超时，正在重新连接…');
     expect(englishAction?.connectionError).toBe('Shell connection timed out. Reconnecting...');
   });
   it('normalizes output payload fields and prompt labels', () => {

@@ -25,10 +25,24 @@ it('pinches, clamps, pans with the remaining finger and recovers from cancellati
     act(() => { pointer(stage, 'pointerdown', 2, 300); pointer(stage, 'pointermove', 2, 2000); });
     expect(container.textContent).toContain('500%');
     act(() => { pointer(stage, 'pointercancel', 1, 120); pointer(stage, 'pointercancel', 2, 2000); });
-    act(() => container.querySelector<HTMLButtonElement>('[aria-label="Reset zoom"]')!.click());
+    act(() => container.querySelector<HTMLButtonElement>('[title="Reset zoom"]')!.click());
     expect(container.textContent).toContain('100%');
     act(() => { pointer(stage, 'pointerdown', 3, 100); pointer(stage, 'pointerdown', 4, 300); pointer(stage, 'pointermove', 4, 105); });
     expect(container.textContent).toContain('50%');
+  } finally { act(() => root.unmount()); container.remove(); }
+});
+
+it('labels a fitted image with its real scale, not 100%', () => {
+  const container = document.createElement('div'); document.body.append(container);
+  const root = createRoot(container);
+  try {
+    act(() => root.render(<WorkspaceImagePreview src="/wide.png" alt="Banner" />));
+    const image = container.querySelector('img')!;
+    Object.defineProperty(image, 'naturalWidth', { configurable: true, value: 4000 });
+    Object.defineProperty(image, 'offsetWidth', { configurable: true, value: 240 });
+    act(() => { image.dispatchEvent(new Event('load')); });
+    expect(container.textContent).toContain('Fit · 6%');
+    expect(container.textContent).not.toContain('100%');
   } finally { act(() => root.unmount()); container.remove(); }
 });
 

@@ -192,6 +192,7 @@
 }
 
 .thread-ui-shell .thread-graph-explorer {
+  --thread-graph-explorer-background: var(--theme-surface);
   container-type: inline-size;
 }
 
@@ -296,10 +297,26 @@
 }
 
 .thread-ui-shell
-  .thread-graph-tree-row:is(:focus-visible, :has(:focus-visible))
+  .thread-graph-tree-row:is(:focus-visible, :has(:focus-visible), :has([aria-expanded='true']))
   .thread-graph-tree-actions {
   opacity: 1;
   pointer-events: auto;
+}
+/* With a pointer the ⋯ shows only on hover or focus, so it takes no width from
+   the name: it floats over the row's end on the row's own colour (§8). Touch
+   keeps it as a column of its own, always shown. */
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-tree-row .thread-graph-tree-actions {
+    position: absolute;
+    inset-block: 0;
+    right: 0;
+    margin-right: 0;
+    padding-left: 14px;
+    padding-right: 3px;
+    background:
+      linear-gradient(90deg, transparent, var(--thread-graph-tree-row-background) 14px),
+      linear-gradient(90deg, transparent, var(--thread-graph-explorer-background) 14px);
+  }
 }
 @media (hover: hover) {
   .thread-ui-shell .thread-graph-tree-row:hover .thread-graph-tree-actions {
@@ -333,9 +350,29 @@
 @media (hover: hover) {
   .workspace-node-menu button:hover { background: var(--theme-hover); }
 }
+/* Delete is dangerous in how it looks, as the terminal's Terminate is (§11). */
+.workspace-node-menu button.is-danger { color: var(--status-danger-fg); }
+.workspace-node-menu button.is-danger:is(:active, :focus-visible) { background: var(--status-danger-bg); }
+@media (hover: hover) {
+  .workspace-node-menu button.is-danger:hover { background: var(--status-danger-bg); }
+}
 @media (hover: none) {
   .thread-ui-shell .thread-graph-tree-actions { opacity: 1; pointer-events: auto; }
 }
+
+/* Past the opened folders: one tap searches the whole workspace. */
+.thread-ui-shell .thread-graph-explorer .thread-graph-explorer-search-all {
+  display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; min-height: 30px; margin-top: 6px;
+  border: 1px solid var(--theme-border); border-radius: 6px; background: var(--theme-surface-strong, var(--theme-surface));
+  color: var(--theme-accent-solid); font-size: 12px;
+}
+.thread-ui-shell .thread-graph-explorer .thread-graph-explorer-search-all:disabled { color: var(--theme-fg-muted); cursor: default; }
+.thread-ui-shell .thread-graph-explorer .thread-graph-explorer-search-all:active:not(:disabled) { background: var(--theme-hover); }
+.thread-ui-shell .thread-graph-explorer .thread-graph-explorer-search-all:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
+@media (hover: hover) {
+  .thread-ui-shell .thread-graph-explorer .thread-graph-explorer-search-all:hover:not(:disabled) { background: var(--theme-hover); }
+}
+@media (max-width: 639px) { .thread-ui-shell .thread-graph-explorer .thread-graph-explorer-search-all { min-height: 40px; } }
 
 .thread-ui-shell .thread-graph-explorer-filter-mode button {
   color: var(--theme-fg-muted);

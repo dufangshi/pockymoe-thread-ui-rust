@@ -152,6 +152,8 @@ export interface GraphWorkspaceMonacoEditorProps {
   language: string;
   onChange?: (content: string) => void;
   onSave?: () => void;
+  /** Typing into the read-only view: the caller explains how to edit. */
+  onReadOnlyEdit?: () => void;
   path: string;
   readOnly: boolean;
 }
@@ -174,6 +176,7 @@ export default function GraphWorkspaceMonacoEditor({
   language,
   onChange,
   onSave,
+  onReadOnlyEdit,
   path,
   readOnly,
 }: GraphWorkspaceMonacoEditorProps) {
@@ -190,8 +193,10 @@ export default function GraphWorkspaceMonacoEditor({
   const initialReadOnlyRef = useRef(readOnly);
   const onChangeRef = useRef(onChange);
   const onSaveRef = useRef(onSave);
+  const onReadOnlyEditRef = useRef(onReadOnlyEdit);
   onChangeRef.current = onChange;
   onSaveRef.current = onSave;
+  onReadOnlyEditRef.current = onReadOnlyEdit;
 
   useEffect(() => {
     const host = hostRef.current;
@@ -252,8 +257,10 @@ export default function GraphWorkspaceMonacoEditor({
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       onSaveRef.current?.();
     });
+    const readOnlySubscription = editor.onDidAttemptReadOnlyEdit(() => onReadOnlyEditRef.current?.());
     return () => {
       changeSubscription.dispose();
+      readOnlySubscription.dispose();
       if (retainModel && !releasedKeys.has(modelKey)) retainedModels.set(modelKey,{model,view:editor.saveViewState()});
       editor.dispose();
       editorRef.current = null;

@@ -111,6 +111,11 @@
   grid-template-rows: minmax(0, 1fr);
   background: var(--matter-chrome);
   font-size: 13px;
+  /* A phone on its side has its notch at the left or right: the rail, the
+     composer and the top bar stay inside the safe area (UI §3). */
+  box-sizing: border-box;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 .thread-ui-shell .matter-workbench svg {
   stroke-width: 1.65;

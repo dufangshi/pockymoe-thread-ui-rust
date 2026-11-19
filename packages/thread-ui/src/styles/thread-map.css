@@ -213,6 +213,31 @@
 .thread-map-section > button.thread-map-section-head { cursor: zoom-in; }
 .thread-map-section[data-zoomable] > .thread-map-section-head { color: var(--theme-fg); }
 .thread-map-dialog[data-swiped] { animation: none !important; }
+.thread-map-skeleton {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.4fr;
+  grid-template-rows: 1.4fr 1fr 1fr;
+  gap: 6px;
+  height: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+}
+.thread-map-skeleton > span { border-radius: 6px; background: color-mix(in srgb, var(--theme-fg) 7%, transparent); }
+.thread-map-skeleton > span:first-child { grid-row: span 2; }
+.thread-map-skeleton > span:nth-child(4) { grid-row: span 3; }
+.thread-map-skeleton > p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--theme-panel);
+  color: var(--theme-fg-muted);
+  font-size: 12px;
+  transform: translate(-50%, -50%);
+}
 .thread-map-empty {
   display: grid;
   place-items: center;

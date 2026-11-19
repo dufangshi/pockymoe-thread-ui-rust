@@ -612,7 +612,8 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       {page && <div className="thread-map-bar thread-map-dense-toolbar">
         {breadcrumb}
         <span className="thread-map-dense-summary">
-          <span title={translate('workbench.threadMapThreads',{count:root.threads})}><Layers aria-hidden="true"/>{root.threads}</span>
+          {/* Nothing read yet is not "0 threads". */}
+          <span title={translate('workbench.threadMapThreads',{count:root.threads})}><Layers aria-hidden="true"/>{root.threads === 0 && devices.some(device => device.state === 'loading') ? '—' : root.threads}</span>
           {root.running>0&&<span title={translate('workbench.threadMapRunningCount',{count:root.running})}><Activity aria-hidden="true"/>{root.running}</span>}
           {root.usd>0&&<span title={translate('workbench.threadMapCost',{usd:formatCompactUsd(root.usd)})}><DollarSign aria-hidden="true"/>{formatCompactUsd(root.usd).replace(/^\$/, '')}</span>}
         </span>
@@ -689,7 +690,13 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
             version={`${scope}:${layoutRevision}`} query={query} matches={hasMatch} extras={deviceExtras} cached={cachedDevices}
             navigate={navigate} expand={expand} onOpen={open} onQuickLook={onQuickLook ? quickLook : undefined} hover={hover}
             register={items => { spatial.current = items; }} onRetry={onRetry} /> : phone && phoneList ? <MapScrollList label={current.label}><div className="thread-map-phone-list">{children.map(node => <button type="button" key={node.id} onClick={() => node.thread ? onOpen(node.thread) : navigate(node)}>{describe(node, hours).join(' · ')}</button>)}</div></MapScrollList> : size.width > 0 && render(children, bounds, 0)}</div>
-          : phone && query.trim() ? <div className="thread-map-empty" role="status">{translate('workbench.threadMapNoMatches', { query })}<button type="button" onClick={() => setFilter('')}>{translate('workbench.threadMapClearSearch')}</button></div> : <p className="thread-map-empty" role="status">{current.device && cachedDevices.has(current.device.id) ? translate('workbench.threadMapNoCache') : devices.some(device => device.state === 'loading') ? translate('workbench.threadMapLoading') : translate('workbench.threadMapEmpty')}</p>}
+          : phone && query.trim() ? <div className="thread-map-empty" role="status">{translate('workbench.threadMapNoMatches', { query })}<button type="button" onClick={() => setFilter('')}>{translate('workbench.threadMapClearSearch')}</button></div> : !(current.device && cachedDevices.has(current.device.id)) && devices.some(device => device.state === 'loading')
+            // A short read: placeholder tiles where the map will be (ui-principles §6 loading skeleton).
+            ? <div className="thread-map-skeleton" role="status" aria-label={translate('workbench.threadMapLoading')}>
+              {Array.from({ length: 9 }, (_, index) => <span key={index} className="request-pulse" aria-hidden="true" />)}
+              <p>{translate('workbench.threadMapLoading')}</p>
+            </div>
+            : <p className="thread-map-empty" role="status">{current.device && cachedDevices.has(current.device.id) ? translate('workbench.threadMapNoCache') : translate('workbench.threadMapEmpty')}</p>}
         {tip && <MapTooltip anchor={tip.target} trigger={tip.trigger} lines={tip.lines} node={tip.nodeId ? nodes.get(tip.nodeId) : undefined} hours={hours}
           extra={tip.nodeId && nodes.get(tip.nodeId)?.device ? deviceExtras?.[nodes.get(tip.nodeId)!.device!.id] : undefined}
           onHold={holdTip} onLeave={leaveTip} onClose={dismissTip} />}

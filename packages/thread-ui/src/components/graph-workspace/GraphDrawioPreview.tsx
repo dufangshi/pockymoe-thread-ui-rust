@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 /** The hosting app serves the pinned official viewer locally, like 3Dmol. */
 export const DRAWIO_VIEWER_PATH = '/vendor/drawio/viewer-static.v32.3.0.min.js';
-export const DRAWIO_BOOTSTRAP_PATH = '/vendor/drawio/bootstrap.v1.js';
+export const DRAWIO_BOOTSTRAP_PATH = '/vendor/drawio/bootstrap.v2.js';
 
 export function drawioPreviewDocument(xml: string, origin: string) {
   const viewerUrl = new URL(DRAWIO_VIEWER_PATH, origin).href;

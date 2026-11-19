@@ -296,13 +296,21 @@ function ContextPanelSurface({ phone, label, subtitle, tabs, trigger, onClose, f
   // from under the pointer (docs/ui-principles.md §5). So it holds the room its
   // rows may need up front; past that they scroll inside. A panel with nothing to
   // open takes only what it shows.
+  // Switching views keeps the tallest height the window has had while open, from a
+  // common floor, so the view tabs never jump away from the pointer or thumb.
+  const held = useRef(0);
+  const hasTabs = Boolean(tabs);
   useLayoutEffect(() => {
     const node = root.current;
     if (!node) return;
     node.style.height = 'auto';
     const natural = node.scrollHeight;
-    if (natural > 0 && expandableItems > 0) node.style.height = `${natural + Math.min(expandableItems * (phone ? 36 : 22), phone ? 288 : 176)}px`;
-  }, [expandableItems, layoutKey, phone]);
+    if (natural <= 0) return;
+    let height = expandableItems > 0 ? natural + Math.min(expandableItems * (phone ? 36 : 22), phone ? 288 : 176) : natural;
+    if (hasTabs) height = Math.max(height, held.current, phone ? Math.round(window.innerHeight * 0.5) : 420);
+    held.current = height;
+    if (height > natural || expandableItems > 0) node.style.height = `${height}px`;
+  }, [expandableItems, layoutKey, phone, hasTabs]);
   const panel = (
     <div ref={root} className="thread-context-panel thread-context-palette" tabIndex={-1}>
       <header className="thread-context-header">
@@ -429,7 +437,8 @@ export function ComposerContextControl({
   const arranged = snapshot && analyzed ? arrangeContextCategories(snapshot) : null;
   const usedSegments = arranged?.used.map(segmentOf) ?? [];
 
-  const percentText = reading ? formatContextPercent(reading.used, reading.window) : '—';
+  // The same figure the window shows, so the name and the number agree.
+  const percentText = reading ? formatContextPercent(reading.used, reading.window, true) : '—';
   const tone = reading ? contextTone(reading.used, reading.window) : 'normal';
   const usage = reading
     ? translate('chat.contextMeterLabel', { percent: percentText, used: formatContextTokens(reading.used), total: formatContextTokens(reading.window) })
@@ -502,7 +511,9 @@ export function ComposerContextControl({
           layoutKey={[view, state.status, state.response?.availability, snapshot?.source, snapshot?.categories.length, steps.data?.steps.length].join('|')}>
           {view !== 'current' ? (
             steps.data
-              ? (view === 'trend' ? <ContextTrend data={steps.data} /> : <ContextStats data={steps.data} />)
+              ? (view === 'trend' ? <ContextTrend data={steps.data} /> : <ContextStats data={steps.data}
+                inspectionOff={state.response ? !state.response.enabled || state.response.availability === 'disabled' : false}
+                openSettings={inspector?.openSettings} />)
               : steps.unsupported
                 ? <p className="thread-context-note" data-context-note="unsupported">{translate('chat.contextStepsNeedUpdate')}</p>
               : steps.error

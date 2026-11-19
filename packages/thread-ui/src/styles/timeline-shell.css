@@ -593,6 +593,7 @@
 /* The agent's answer after a wake, outside its fold: a few lines that fade,
    opening in place. */
 .thread-peer-wake-reply { margin: 2px 0 6px; min-width: 0; }
+.thread-peer-wake-prompt { margin: 6px 0; min-width: 0; }
 .thread-peer-wake-reply-body:not([data-open]) { max-height: calc(4 * 1.75em); overflow: hidden; }
 .thread-peer-wake-reply-body[data-clipped] { -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent); mask-image: linear-gradient(to bottom, #000 55%, transparent); }
 .thread-ui-shell .thread-graph-show-more.thread-peer-wake-reply-toggle { display: inline-flex; align-items: center; gap: 4px; margin-top: 2px; }

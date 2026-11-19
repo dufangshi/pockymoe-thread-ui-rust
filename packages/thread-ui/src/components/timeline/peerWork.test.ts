@@ -29,3 +29,19 @@ describe('peer work', () => {
     expect(peerWorkPreview({...child,items:[...child.items,{...progress,responsePhase:'final'}]})?.text).toBe('Checking');
   });
 });
+
+describe('wake prompts', () => {
+  it('tells the system wake prompt from what the reader sent into the wake turn', async () => {
+    const { isWakeEnvelope, wakeAddedPrompts } = await import('./peerWork');
+    const envelope = { id: 'wake:user', kind: 'userMessage' as const, origin: 'system', text: '[Pockymoe wake]', peerWork: { taskTurnId: 'task', messages: [] } };
+    const legacy = { id: 'legacy', kind: 'userMessage' as const, origin: 'system', text: '[Pockymoe wake]' };
+    const steer = { id: 'steer:1', kind: 'userMessage' as const, origin: 'user', text: 'Is it released?' };
+    const reply = { id: 'reply', kind: 'agentMessage' as const, text: 'Checking' };
+    expect(isWakeEnvelope(envelope)).toBe(true);
+    expect(isWakeEnvelope(legacy)).toBe(true);
+    expect(isWakeEnvelope(steer)).toBe(false);
+    expect(wakeAddedPrompts({ items: [envelope, reply, steer] as never }).map(item => item.id)).toEqual(['steer:1']);
+    const live = { id: 'steer:2', kind: 'userMessage' as const, origin: 'user', text: 'Still there?' };
+    expect(wakeAddedPrompts({ items: [envelope, steer] as never }, [live] as never).map(item => item.id)).toEqual(['steer:1', 'steer:2']);
+  });
+});

@@ -1,6 +1,20 @@
 import type { TimelineTurn } from './timelineItems';
 import type { ThreadPeerWorkDto, ThreadTurnDto, ThreadHistoryItemDto, ThreadTurnTokenBreakdownDto } from '@pockymoe/shared';
 
+/** The wake prompt the Supervisor writes to start a wake turn: the system's, not the reader's. */
+export function isWakeEnvelope(item: Pick<ThreadHistoryItemDto, 'kind' | 'origin' | 'peerWork'>) {
+  return item.kind === 'userMessage' && (Boolean(item.peerWork) || item.origin === 'system');
+}
+
+/** What the reader sent into a wake turn while it worked (steers, added prompts):
+    every user message of the turn except the wake prompt itself. */
+export function wakeAddedPrompts(turn: Pick<ThreadTurnDto, 'items'>, liveItems?: ThreadHistoryItemDto[] | null) {
+  const items = new Map(turn.items.map(item => [item.id, item]));
+  for (const item of liveItems ?? []) items.set(item.id, item);
+  return [...items.values()].filter((item): item is ThreadHistoryItemDto & { kind: 'userMessage' } =>
+    item.kind === 'userMessage' && !isWakeEnvelope(item) && Boolean(item.text?.trim()));
+}
+
 export function peerWorkForTurn(turn: Pick<ThreadTurnDto, 'items'>): ThreadPeerWorkDto | null {
   const context = turn.items.find(item => item.kind === 'userMessage' && item.peerWork)?.peerWork;
   return context?.messages.length ? context : null;

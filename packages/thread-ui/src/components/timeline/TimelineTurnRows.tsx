@@ -63,6 +63,7 @@ import { TurnTokenSummary } from './tokenFormatting';
 import { TurnStatusBar } from './turnStatus';
 import { Collapse } from './Collapse';
 import { ErrorMark } from '../copy/ErrorMark';
+import { isWakeEnvelope } from './peerWork';
 import { describeTurnError } from './turnErrors';
 import { TurnFailureNote } from './TurnFailureNote';
 import { activityParts, hasActivity, logStatus, storySegments, stretchBetween, stretchFromItems, turnActivity, turnChangedFiles } from './activity';
@@ -408,6 +409,11 @@ interface ThreadTurnRowProps {
   summaryAgentOverride?: (ThreadHistoryItemDto & { kind: 'agentMessage' }) | null;
   nestedPeerWork?: boolean;
   omitAgentId?: string | undefined;
+  /** Items shown elsewhere (a wake turn's prompts stand outside its fold). */
+  omitItemIds?: ReadonlySet<string> | undefined;
+  /** Prompts the reader sent into this task's wake turns: a folded task lists
+      them under its work line, like prompts added to a turn while it worked. */
+  peerWorkPrompts?: Array<ThreadHistoryItemDto & { kind: 'userMessage' }> | undefined;
   revealTarget?: { itemId: string; key: number } | undefined;
   threadId: string | undefined;
   adapter?: ThreadTimelineAdapter | undefined;
@@ -562,6 +568,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   summaryAgentOverride,
   nestedPeerWork = false,
   omitAgentId,
+  omitItemIds,
+  peerWorkPrompts,
   threadId,
   revealTarget,
   adapter,
@@ -629,9 +637,11 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const preparedItems = useMemo(
     () => prepareTurnItemsForRendering(mergedItems, activeForRendering).filter(item =>
       (showReasoningSummaries || item.kind !== 'reasoning') &&
-      (!nestedPeerWork || item.kind !== 'userMessage') && item.id !== omitAgentId &&
+      // A wake turn hides only the wake prompt the system wrote; the reader's own
+      // prompts in it are kept (they render outside the wake's fold).
+      !(nestedPeerWork && isWakeEnvelope(item)) && item.id !== omitAgentId && !omitItemIds?.has(item.id) &&
       !(failedWith && item.kind === 'agentMessage' && echoesFailure(failedWith, item.text))),
-    [activeForRendering, mergedItems, showReasoningSummaries, nestedPeerWork, omitAgentId, failedWith],
+    [activeForRendering, mergedItems, showReasoningSummaries, nestedPeerWork, omitAgentId, omitItemIds, failedWith],
   );
   // The first prompt started the turn; any later one was added while it worked.
   const prompts = preparedItems.filter(item => item.kind === 'userMessage');
@@ -987,7 +997,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           />
         </div>
         <Collapse open={filesOpen}><ChangedFiles files={changedFiles} total={activityCounts?.fileCount} /></Collapse>
-        {effectiveCollapsed ? collapsedSummary.users.slice(leadingPrompts).map(renderPrompt) : null}
+        {effectiveCollapsed ? [...collapsedSummary.users.slice(leadingPrompts), ...(peerWorkPrompts ?? [])].map(renderPrompt) : null}
         {/* The work: folded into the line above when the turn ends, unfolded on request. */}
         <Collapse open={!effectiveCollapsed}>
           {story ? (

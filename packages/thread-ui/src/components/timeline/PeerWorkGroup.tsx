@@ -90,13 +90,24 @@ function PeerReport({ message, source, scrollRootRef }: {
   );
 }
 
-export function PeerWorkGroup({ turn, context, expanded, loading, error, onToggle, children, scrollRootRef, reply }: {
+/** Earliest first; items without a time keep their place after timed ones. */
+function byTime(a: ThreadHistoryItemDto, b: ThreadHistoryItemDto) {
+  const at = Date.parse(a.createdAt ?? ''), bt = Date.parse(b.createdAt ?? '');
+  if (Number.isFinite(at) && Number.isFinite(bt) && at !== bt) return at - bt;
+  return (a.sequence ?? 0) - (b.sequence ?? 0);
+}
+
+export function PeerWorkGroup({ turn, context, expanded, loading, error, onToggle, children, scrollRootRef, reply, prompts, renderPrompt }: {
   turn: ThreadTurnDto; context: ThreadPeerWorkDto; expanded: boolean;
   scrollRootRef: RefObject<HTMLDivElement | null>; loading: boolean; error?: string | undefined; onToggle: () => void; children?: ReactNode;
   /** The agent's reply after this wake. It stands outside the fold, so a folded
       wake still shows what the agent made of it (not passed when the reply is
       already the task's closing answer below). */
   reply?: ThreadHistoryItemDto | null | undefined;
+  /** What the reader sent into this wake turn (steers, added prompts): outside
+      the fold too, in time order with the reply, drawn like a turn's added prompt. */
+  prompts?: ThreadHistoryItemDto[] | undefined;
+  renderPrompt?: ((item: ThreadHistoryItemDto) => ReactNode) | undefined;
 }) {
   useI18n();
   const messages = delegateWakeMessages(turn, context);
@@ -125,6 +136,8 @@ export function PeerWorkGroup({ turn, context, expanded, loading, error, onToggl
       <div className="thread-peer-processing-label">{translate(wake ? 'chat.peerAfterWake' : 'chat.peerQuestionHandling')}</div>
       <div className="thread-peer-work-operations">{children}</div>
     </div> : null}
-    {reply?.text.trim() ? <WakeReply reply={reply} scrollRootRef={scrollRootRef} /> : null}
+    {[...(renderPrompt ? prompts ?? [] : []), ...(reply?.text.trim() ? [reply] : [])].sort(byTime).map(item => item === reply
+      ? <WakeReply key={item.id} reply={item} scrollRootRef={scrollRootRef} />
+      : <div key={item.id} className="thread-peer-wake-prompt">{renderPrompt!(item)}</div>)}
   </section>;
 }

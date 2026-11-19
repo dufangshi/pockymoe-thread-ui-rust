@@ -451,6 +451,39 @@ describe('ThreadTimeline', () => {
     expect(el.querySelector('.thread-peer-processing-label')?.textContent).toBe('唤醒后的处理');
   });
 
+  it('keeps the reader\'s steers in a wake turn visible outside the folds and never shows the wake prompt as theirs', () => {
+    const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Original task'}]),id:'task'} as ThreadTurnDto;
+    const wake: ThreadTurnDto = {...completedTurn([
+      {id:'wake:user',kind:'userMessage',origin:'system',text:'[Pockymoe wake: the delegates you registered a wake for have settled]',
+        peerWork:{taskTurnId:'task',messages:[{id:'delegate',kind:'result',name:'b-lab',subject:'idle',text:'All done.'}]},createdAt:'2026-11-19T20:19:13Z'},
+      {id:'wake:assistant:1',kind:'agentMessage',text:'Merging the branches',responsePhase:'commentary',createdAt:'2026-11-19T20:19:16Z'},
+      {id:'steer:one',kind:'userMessage',origin:'user',text:'How is it going?',createdAt:'2026-11-19T20:48:02Z'},
+      {id:'wake:assistant:2',kind:'agentMessage',text:'Checking why CI did not start',responsePhase:'commentary',createdAt:'2026-11-19T20:48:11Z'},
+      {id:'steer:two',kind:'userMessage',origin:'user',text:'Is it released?',createdAt:'2026-11-19T20:48:39Z'},
+    ]),id:'wake',status:'interrupted'};
+    const el = render(<ThreadTimeline turns={[task,wake]} liveOutput="" autoCollapseCompletedTurns />);
+    const userTexts = () => [...el.querySelectorAll('[data-role="user"]')].map(node => node.textContent ?? '');
+    // The task is folded: its work line keeps the steers below it, like prompts added to a turn.
+    expect(el.querySelector('.thread-peer-work-toggle')).toBeNull();
+    expect(userTexts().filter(text => /How is it going\?|Is it released\?/.test(text))).toHaveLength(2);
+    expect(el.textContent).not.toContain('[Pockymoe wake');
+    // The task opened, the wake still folded: the steers stand outside the wake's fold.
+    flushSync(() => (el.querySelector('.thread-graph-worked-summary button[aria-expanded]') as HTMLButtonElement).click());
+    const group = el.querySelector('.thread-peer-work')!;
+    expect(group.querySelector('.thread-peer-work-toggle')?.getAttribute('aria-expanded')).toBe('false');
+    expect([...group.querySelectorAll('.thread-peer-wake-prompt')].map(node => node.textContent)).toEqual([
+      expect.stringContaining('How is it going?'), expect.stringContaining('Is it released?'),
+    ]);
+    expect(el.textContent).not.toContain('[Pockymoe wake');
+    // The wake opened: its work shows, the steers are not repeated inside it.
+    flushSync(() => (group.querySelector('.thread-peer-work-toggle') as HTMLButtonElement).click());
+    expect(group.querySelector('.thread-peer-work-operations')?.textContent).toContain('Checking why CI did not start');
+    expect(group.querySelector('.thread-peer-work-operations')?.textContent).not.toContain('How is it going?');
+    expect(el.textContent?.split('How is it going?')).toHaveLength(2);
+    expect(el.textContent?.split('Is it released?')).toHaveLength(2);
+    expect(el.textContent).not.toContain('[Pockymoe wake');
+  });
+
   it('keeps the latest peer progress and final outside the task fold without exposing old replies', () => {
     const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Task'}]),id:'task'} as ThreadTurnDto;
     const peer: ThreadTurnDto = {...completedTurn([

@@ -17,9 +17,11 @@ import { useAppShellNav } from '../app-shell/AppShellNavContext';
 import { LongTextDialog } from './LongTextDialog';
 import { PeerWorkGroup } from './timeline/PeerWorkGroup';
 import { markSearchHits } from './timeline/searchHits';
-import { aggregatePeerWorkTurn, groupPeerWorkTurns, peerWorkForTurn, peerWorkPreview } from './timeline/peerWork';
+import { aggregatePeerWorkTurn, groupPeerWorkTurns, isWakeEnvelope, peerWorkForTurn, peerWorkPreview, wakeAddedPrompts } from './timeline/peerWork';
 import type { ThreadTimelineAdapter } from '../adapters';
 import { GraphChatCompactMessageItem as CompactMessageItem } from './graph-chat/GraphChatCompactMessageItem';
+import { TurnPromptContext } from './graph-chat/turnPrompts';
+import { formatLongTimestamp } from './threadPresentation';
 import {
   isRunningHistoryStatus,
   countTurnSteps,
@@ -828,19 +830,32 @@ function ThreadTimelineComponent({
     // What the agent answered after this wake stands outside the wake's fold,
     // so a folded wake still shows it (its first lines). The last wake's answer
     // is already the task's closing answer below the wakes: not twice.
-    const reply = peerWorkPreview(peerTurn, liveItemsTargetTurnId === turn.id ? liveItems?.items : null);
+    const rowLiveItems = liveItemsTargetTurnId === turn.id ? liveItems?.items : null;
+    const reply = peerWorkPreview(peerTurn, rowLiveItems);
     const outsideReply = reply && reply.id !== omitAgentId ? reply : null;
+    // The reader's own prompts in a wake turn (steers sent while it worked) stand
+    // outside the fold with the reply, so a folded wake never hides them; the
+    // fold leaves them out, and the wake prompt the system wrote is never shown.
+    const prompts = wakeAddedPrompts(peerTurn, rowLiveItems);
+    const envelopeId = peerTurn.items.find(isWakeEnvelope)?.id ?? '';
     return <PeerWorkGroup key={turn.id} turn={peerTurn} context={context} expanded={expanded}
       loading={loadingTurnDetailIds.has(turn.id)} error={turnDetailErrors[turn.id]}
-      onToggle={() => handleToggleCollapse(turn, !expanded)} scrollRootRef={scrollContainerRef} reply={outsideReply}>
-      {renderWorkTurn(turn, visibleTurns.indexOf(turn), [], true, outsideReply?.id ?? omitAgentId)}
+      onToggle={() => handleToggleCollapse(turn, !expanded)} scrollRootRef={scrollContainerRef} reply={outsideReply}
+      prompts={prompts} renderPrompt={(item) => (
+        // Same item and "added while it worked" mark as a turn's later prompt.
+        <TurnPromptContext.Provider value={{ firstPromptId: envelopeId, error: null, turnId: turn.id }}>
+          <CompactMessageItem threadId={threadId} item={item as ThreadHistoryItemDto & { kind: 'userMessage' }} scrollRootRef={scrollContainerRef}
+            timeTitle={item.createdAt ? formatLongTimestamp(item.createdAt) : null} {...(adapter ? { adapter } : {})} />
+        </TurnPromptContext.Provider>
+      )}>
+      {renderWorkTurn(turn, visibleTurns.indexOf(turn), [], true, outsideReply?.id ?? omitAgentId, new Set(prompts.map(item => item.id)))}
       {(requestEntryAnchors.notesByTurnId.get(turn.id)?.length) ? <RequestEntrySectionForTurn
         notes={requestEntryAnchors.notesByTurnId.get(turn.id) ?? []} requests={[]}
         respondingRequestId={respondingRequestId} onRespondToRequest={onRespondToRequest ?? undefined} /> : null}
     </PeerWorkGroup>;
 
   };
-  const renderWorkTurn = (turn: ThreadTurnDto, visibleIndex: number, continuations: ThreadTurnDto[] = [], nested = false, omitAgentId?: string): React.ReactNode => {
+  const renderWorkTurn = (turn: ThreadTurnDto, visibleIndex: number, continuations: ThreadTurnDto[] = [], nested = false, omitAgentId?: string, omitItemIds?: ReadonlySet<string>): React.ReactNode => {
     const loadedTurn = loadedTurnDetails[turn.id];
     // Detail loaded while the turn worked is behind it once it ends; the
     // summary then says what is still deferred.
@@ -909,6 +924,10 @@ function ThreadTimelineComponent({
         {...(continuations.length ? { summaryAgentOverride: preview } : {})}
         nestedPeerWork={nested}
         omitAgentId={omitAgentId}
+        omitItemIds={omitItemIds}
+        {...(continuations.length ? { peerWorkPrompts: continuations.flatMap(continuation => wakeAddedPrompts(
+          { items: loadedTurnDetails[continuation.id]?.items ?? continuation.items },
+          liveItemsTargetTurnId === continuation.id ? liveItems?.items : null)) } : {})}
         {...(adapter ? { adapter } : {})}
         turn={displayTurn}
         revealTarget={searchTarget?.turnId === displayTurn.id ? searchTarget : undefined}

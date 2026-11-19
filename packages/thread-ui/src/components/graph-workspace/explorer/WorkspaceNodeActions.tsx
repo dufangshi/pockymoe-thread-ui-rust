@@ -208,10 +208,12 @@ export function WorkspaceNodeActions({
               >
                 <Pencil data-icon="rename" size={14} /> {translate("files.rename_d3f4cb")}</button>
             )}
+            {onDelete && <div role="separator" className="workspace-node-menu-separator" />}
             {onDelete && (
               <button
                 role="menuitem"
                 type="button"
+                className="is-danger"
                 onClick={() => {
                   setError(null);
                   setDialog('delete');
@@ -229,7 +231,7 @@ export function WorkspaceNodeActions({
       <WorkspaceNodeProperties node={node} open={dialog === 'properties'} onOpenChange={(next) => { if (!next) { setDialog(null); trigger.current?.focus(); } }} />
       <RenameDialog
         open={dialog === 'rename'}
-        title={translate("files.rename", { value1: translate(node.kind === 'directory' ? 'files.kindFolder' : 'files.kindFile') })}
+        title={translate("files.rename", { value1: node.name })}
         label={translate("files.name")}
         value={name}
         onChange={setName}
@@ -240,8 +242,8 @@ export function WorkspaceNodeActions({
       />
       <ConfirmDialog
         open={dialog === 'delete'}
-        title={translate("files.delete_c93ae0", { value1: translate(node.kind === 'directory' ? 'files.kindFolder' : 'files.kindFile') })}
-        description={translate("files.permanentlyDelete", { value1: node.path, value2: node.kind === 'directory' ? translate("files.andItsContents") : '' })}
+        title={translate("files.delete_c93ae0", { value1: node.name })}
+        description={translate(node.kind === 'directory' ? 'files.deleteFolderCannotUndo' : 'files.deleteFileCannotUndo', { value1: node.path })}
         onCancel={() => setDialog(null)}
         onConfirm={mutate}
         busy={busy}

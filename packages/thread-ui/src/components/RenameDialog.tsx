@@ -71,8 +71,7 @@ export function RenameDialog({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium">{title}</p>
-            <p className="mt-1 text-sm text-[var(--theme-fg-muted)]">
-              {description ?? translate("workbench.changesAreSavedOnlyAfterConfirmation")}</p>
+            {description ? <p className="mt-1 text-sm text-[var(--theme-fg-muted)]">{description}</p> : null}
           </div>
           <button
             type="button"

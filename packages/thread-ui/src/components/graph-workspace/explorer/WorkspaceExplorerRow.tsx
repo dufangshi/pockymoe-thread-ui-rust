@@ -11,7 +11,7 @@ import {
   FolderSymlink,
   LoaderCircle,
 } from 'lucide-react';
-import type { KeyboardEvent, ReactNode, Ref } from 'react';
+import type { KeyboardEvent, Ref } from 'react';
 
 import { extensionOf, type WorkspaceTreeNode } from '../workspaceTree';
 import type { WorkspaceExplorerRowProjection } from './workspaceExplorerTypes';
@@ -119,33 +119,6 @@ export function WorkspaceExplorerRow({
   const expanded = Boolean(row.expanded);
   const paddingLeft = `${row.depth * 0.5 + 0.5}rem`;
   const displayName = row.compactPathSegments?.join('/') ?? node.name;
-  const label = row.matchRanges?.length ? (
-    <>
-      {row.matchRanges.reduce<ReactNode[]>((parts, range, index) => {
-        const previousEnd = row.matchRanges?.[index - 1]?.end ?? 0;
-        if (range.start > previousEnd) {
-          parts.push(displayName.slice(previousEnd, range.start));
-        }
-        parts.push(
-          <span
-            key={`${range.start}:${range.end}`}
-            className="font-semibold text-[var(--theme-fg)]"
-          >
-            {displayName.slice(range.start, range.end)}
-          </span>,
-        );
-        if (
-          index === row.matchRanges!.length - 1 &&
-          range.end < displayName.length
-        ) {
-          parts.push(displayName.slice(range.end));
-        }
-        return parts;
-      }, [])}
-    </>
-  ) : (
-    displayName
-  );
 
   return (
     <div
@@ -232,7 +205,7 @@ export function WorkspaceExplorerRow({
           </span>
         ) : (
           <span ref={nameBubble.label} className="explorer-name flex min-w-0 flex-1" {...nameBubble.handlers}>
-            {row.matchRanges?.length ? <span className="min-w-0 truncate">{label}</span> : <MiddleName name={displayName} />}
+            <MiddleName name={displayName} ranges={row.matchRanges} />
           </span>
         )}
       </button>

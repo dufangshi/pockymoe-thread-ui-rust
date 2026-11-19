@@ -18,6 +18,17 @@ export function useExplorerNameBubble(name: string) {
   const [place, setPlace] = useState<{ style: CSSProperties; theme: ReturnType<typeof shellThemeProps> } | null>(null);
   const clear = () => window.clearTimeout(timer.current);
   const hide = useCallback(() => { clear(); press.current = null; shown.current = false; setPlace(null); }, []);
+  // The click that follows a hold comes after touchend has hidden the bubble;
+  // remember the hold until that click is swallowed (or briefly, if none comes).
+  const held = useRef<number | undefined>(undefined);
+  const release = useCallback(() => {
+    if (shown.current) {
+      window.clearTimeout(held.current);
+      held.current = window.setTimeout(() => { held.current = undefined; }, 600);
+    }
+    hide();
+  }, [hide]);
+  useEffect(() => () => window.clearTimeout(held.current), []);
   useEffect(() => hide, [hide]);
   const show = () => {
     const element = label.current;
@@ -56,10 +67,14 @@ export function useExplorerNameBubble(name: string) {
       const touch = event.touches[0];
       if (press.current && touch && Math.hypot(touch.clientX - press.current.x, touch.clientY - press.current.y) > MOVE_SLOP_PX) hide();
     },
-    onTouchEnd: hide,
-    onTouchCancel: hide,
+    onTouchEnd: release,
+    onTouchCancel: release,
     // A hold that showed the name is only a look: no tap, no system menu.
-    onClickCapture: (event: MouseEvent) => { if (shown.current) { event.preventDefault(); event.stopPropagation(); } },
+    onClickCapture: (event: MouseEvent) => {
+      if (!shown.current && held.current === undefined) return;
+      window.clearTimeout(held.current); held.current = undefined;
+      event.preventDefault(); event.stopPropagation();
+    },
     onContextMenu: (event: MouseEvent) => { if (press.current) event.preventDefault(); },
   };
   const bubble = place ? createPortal(

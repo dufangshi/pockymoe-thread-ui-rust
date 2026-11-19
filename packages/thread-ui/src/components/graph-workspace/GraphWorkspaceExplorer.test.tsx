@@ -249,7 +249,7 @@ describe('GraphWorkspaceExplorer', () => {
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:test/1');
   });
 
-  it('loads the root, previews the first file, and preserves expanded directories on refresh', async () => {
+  it('loads the root without opening a file, previews a chosen one, and preserves expanded directories on refresh', async () => {
     const { adapter, listTree, readFile } = createAdapter();
     await renderExplorer(adapter);
 
@@ -259,6 +259,13 @@ describe('GraphWorkspaceExplorer', () => {
         workspaceId: 'workspace-1',
         path: '',
       });
+      expect(buttonNamed('README.md')).not.toBeUndefined();
+    });
+    // Nothing opens by itself: the first file may be a large log.
+    expect(readFile).not.toHaveBeenCalled();
+    expect(host?.querySelector('[data-testid="preview-file"]')?.textContent).toBe('none');
+    await act(async () => buttonNamed('README.md')?.click());
+    await vi.waitFor(() => {
       expect(readFile).toHaveBeenCalledWith({
         threadId: 'thread-1',
         workspaceId: 'workspace-1',
@@ -356,7 +363,7 @@ describe('GraphWorkspaceExplorer', () => {
   it('loads missing ancestors and selects a deep focus request', async () => {
     const { adapter, listTree, readFile } = createAdapter();
     await renderExplorer(adapter);
-    await vi.waitFor(() => expect(readFile).toHaveBeenCalled());
+    await vi.waitFor(() => expect(buttonNamed('README.md')).not.toBeUndefined());
 
     await renderExplorer(adapter, {
       path: '/workspace/demo/src/index.ts',
@@ -418,10 +425,8 @@ describe('GraphWorkspaceExplorer', () => {
     });
     await vi.waitFor(() => {
       expect(host?.textContent).toContain('latest.ts');
-      expect(readFile).toHaveBeenCalledWith(
-        expect.objectContaining({ path: 'latest.ts' }),
-      );
     });
+    expect(readFile).not.toHaveBeenCalled();
 
     await act(async () => {
       firstRoot.resolve(directory('', [file('stale.ts')]));
@@ -490,9 +495,9 @@ describe('GraphWorkspaceExplorer', () => {
 
   it('opens the mobile Viewer when a file row is selected', async () => {
     mobileViewport = true;
-    const { adapter, readFile } = createAdapter();
+    const { adapter } = createAdapter();
     await renderExplorer(adapter);
-    await vi.waitFor(() => expect(readFile).toHaveBeenCalled());
+    await vi.waitFor(() => expect(buttonNamed('README.md')).not.toBeUndefined());
 
     expect(host?.querySelector('[data-testid="preview-file"]')).toBeNull();
     await act(async () => buttonNamed('README.md')?.click());
@@ -509,6 +514,8 @@ describe('GraphWorkspaceExplorer', () => {
   it('restores split view after either pane is hidden', async () => {
     const { adapter, readFile } = createAdapter();
     await renderExplorer(adapter);
+    await vi.waitFor(() => expect(buttonNamed('README.md')).not.toBeUndefined());
+    await act(async () => buttonNamed('README.md')?.click());
     await vi.waitFor(() => expect(readFile).toHaveBeenCalled());
 
     await act(async () => {
@@ -584,6 +591,25 @@ describe('GraphWorkspaceExplorer', () => {
 
     expect(buttonNamed('index.ts')).not.toBeUndefined();
     expect(host?.textContent).toContain('1 match');
+  });
+
+  it('searches the folders it has not opened when asked', async () => {
+    const { adapter, listTree } = createAdapter();
+    await renderExplorer(adapter);
+    await vi.waitFor(() => expect(buttonNamed('README.md')).not.toBeUndefined());
+    await act(async () => {
+      host?.querySelector<HTMLButtonElement>('[aria-label="Filter workspace"]')?.click();
+    });
+    const filter = host?.querySelector<HTMLInputElement>('[aria-label="Filter workspace files"]');
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set?.call(filter, 'index');
+      filter?.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    expect(host?.textContent).toContain('No “index” in the opened folders');
+    await act(async () => buttonNamed('Search the whole workspace')?.click());
+    await vi.waitFor(() => expect(buttonNamed('index.ts')).not.toBeUndefined());
+    expect(listTree.mock.calls.some(([input]) => input.path === 'src')).toBe(true);
+    expect(buttonNamed('Search the whole workspace')).toBeUndefined();
   });
 
   it('coalesces workspace change notifications into a refresh', async () => {

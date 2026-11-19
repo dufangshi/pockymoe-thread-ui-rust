@@ -65,6 +65,9 @@
 }
 .path-chip-head { min-width: 1.5em; overflow: hidden; text-overflow: ellipsis; }
 .path-chip-tail { flex: none; max-width: 75%; overflow: hidden; text-overflow: ellipsis; }
+/* A path of one segment (a file at the root) has no head to give way: the name
+   takes the whole chip, or it would stop at three quarters of its own width. */
+.path-chip-text > .path-chip-tail:only-child { max-width: 100%; }
 .path-chip.is-whole .path-chip-text { display: inline; white-space: normal; overflow-wrap: anywhere; }
 .path-chip.is-whole :is(.path-chip-head, .path-chip-tail) { max-width: none; overflow: visible; }
 
@@ -77,6 +80,7 @@
 .middle-name { display: inline-flex; min-width: 0; max-width: 100%; white-space: nowrap; }
 .middle-name-head { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .middle-name-tail { flex: none; }
+.middle-name-match { background: none; color: var(--theme-fg); font-weight: 600; }
 
 /* A failure or an unavailable control: a small, quiet mark; the reason opens on a
    tap (ErrorMark). Never a paragraph of red text in the page. */

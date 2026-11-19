@@ -146,10 +146,11 @@ export function PromptNotice({ envelope, actions }: { envelope: PromptEnvelope &
   return (
     <div className="prompt-notice" data-notice={envelope.notice} data-open={open || undefined}>
       <button type="button" className="prompt-notice-head" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+        {/* The chevron leads the row, then the kind's glyph (ui-principles §5). */}
+        <ChevronRight className="prompt-notice-chev" aria-hidden="true" />
         <span className="prompt-envelope-glyph" aria-hidden="true">{NOTICE[envelope.notice].glyph}</span>
         <span className="prompt-envelope-kind">{translate(NOTICE[envelope.notice].label)}</span>
         <span className="prompt-notice-preview">{envelope.preview}</span>
-        <ChevronRight className="prompt-notice-chev" aria-hidden="true" />
       </button>
       {open ? <div className="prompt-notice-body"><GraphChatLinkifiedPlainText text={envelope.body} />{actions}</div> : null}
     </div>

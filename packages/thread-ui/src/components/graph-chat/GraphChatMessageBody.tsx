@@ -1,6 +1,6 @@
 import { hasWorkspacePathSyntax } from '../workspacePathLinks';
-import { translate, useI18n } from '../../i18n';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { getLocale, translate, useI18n } from '../../i18n';
+import { ChevronRight } from 'lucide-react';
 import {
   memo,
   createContext,
@@ -31,6 +31,14 @@ const LARGE_MESSAGE_PREVIEW_CHARS = 1_200;
  * limit rather than inside a word, and never inside bold or code (an unmatched
  * marker would show as raw text).
  */
+
+/** "Show all (about 1,400 more characters)": a fold says how much it hides.
+    The chevron points right while folded and down while open (ui-principles §5). */
+function moreLabel(hidden: number) {
+  if (hidden < 200) return translate('chat.showMore');
+  const rounded = hidden < 1000 ? Math.round(hidden / 100) * 100 : Math.round(hidden / 1000) * 1000;
+  return translate('chat.showMoreChars', { count: rounded.toLocaleString(getLocale()) });
+}
 export function foldReply(text: string, limit: number) {
   let cut = text.slice(0, limit);
   const floor = Math.floor(limit * 0.6);
@@ -331,8 +339,8 @@ export const GraphChatMarkdownAwareBody = memo(
             aria-expanded={expanded}
             className="thread-graph-show-more timeline-meta-text mt-1 inline-flex w-fit items-center gap-1 rounded px-1 text-xs transition"
           >
-            {expanded ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
-            <span>{expanded ? translate("chat.showLess") : translate("chat.showMore")}</span>
+            <ChevronRight size={14} aria-hidden="true" className={expanded ? 'rotate-90' : undefined} />
+            <span>{expanded ? translate("chat.showLess") : moreLabel(text.length - displayText.length)}</span>
           </button>
         ) : null}
       </div>
@@ -473,8 +481,8 @@ export const GraphChatUserMessageBody = memo(
         })}
         {isLong ? <button ref={toggleRef} type="button" onClick={event => {event.stopPropagation(); toggle();}} aria-expanded={expanded}
           className="thread-graph-show-more timeline-meta-text mt-1 flex w-fit items-center gap-1 rounded px-1 text-xs transition">
-          {expanded ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
-          <span>{expanded ? translate('chat.showLess') : translate('chat.showMore')}</span>
+          <ChevronRight size={14} aria-hidden="true" className={expanded ? 'rotate-90' : undefined} />
+          <span>{expanded ? translate('chat.showLess') : moreLabel(narrative.length - previewEnd)}</span>
         </button> : null}
       </div>
     );

@@ -43,6 +43,11 @@
   max-height: 10.5em; margin: 0; padding: 6px 10px; overflow: auto; border-left: 3px solid var(--theme-border);
   color: var(--theme-fg); font-size: 13px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere;
 }
+/* Cut off: the last lines fade, and the button under them says how many are left. */
+.quote-card-text[data-clipped] { overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent); mask-image: linear-gradient(to bottom, #000 60%, transparent); }
+.quote-card-text[data-expanded] { max-height: min(50vh, 28em); }
+.quote-card-more { justify-self: start; margin-top: -4px; padding: 2px 4px; border: 0; background: none; color: var(--theme-accent-solid, var(--theme-accent)); font-size: 12px; }
+@media (max-width: 639px) { .quote-card-more { min-height: 36px; } }
 
 /* The shell class brings the theme only: no page background, no layout, no size. */
 .thread-ui-shell.quote-selection-layer { position: fixed; top: 0; left: 0; z-index: 120; width: 0; height: 0; overflow: visible; background: none; pointer-events: none; }

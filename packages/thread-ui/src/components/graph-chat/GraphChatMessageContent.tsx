@@ -1,4 +1,5 @@
 import { translate, useI18n } from '../../i18n';
+import { MarkdownCell, MarkdownTable } from './MarkdownTable';
 import { externalLinkProps } from '../externalLinkProps';
 import {
   memo,
@@ -370,8 +371,9 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
       }
 
       return (
-        // The frame holds the copy key floating over the code's corner; the code
-        // scrolls inside it, so the key never scrolls away or takes a line.
+        // A thin head row names the language and holds the copy key, so the key
+        // never covers the first line of code (ui-principles §8); the code
+        // scrolls under it.
         <div className="thread-graph-code-block not-prose"
           data-touch-actions={touchCode === id ? 'true' : 'false'}
           onPointerEnter={(event) => { if (event.pointerType === 'mouse') setTouchCode(null); }}
@@ -382,7 +384,10 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
             }
           }}
         >
-          {!readOnly && <CopyButton value={textContent} label={translate("chat.copyCode")} className="thread-graph-code-copy" />}
+          <div className="thread-graph-code-head">
+            <span className="thread-graph-code-lang">{language && language !== 'text' ? language : ''}</span>
+            {!readOnly && <CopyButton value={textContent} label={translate("chat.copyCode")} className="thread-graph-code-copy" />}
+          </div>
           <div className="thread-graph-code-scroll">
             {html ? (
               <div dangerouslySetInnerHTML={{ __html: html }} />
@@ -457,6 +462,9 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
           },
           code: StableCodeRenderer,
           pre: PreRenderer,
+          table: ({ node: _node, ...props }) => <MarkdownTable {...props} />,
+          th: ({ node: _node, ...props }) => <MarkdownCell as="th" {...props} />,
+          td: ({ node: _node, ...props }) => <MarkdownCell as="td" {...props} />,
         }}
       >
         {processedContent}

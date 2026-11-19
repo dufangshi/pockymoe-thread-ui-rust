@@ -56,7 +56,7 @@ export const chatEn = {
   "chat.of": "of",
   "chat.turns": "turns",
   "chat.earlierHidden": " · {{value1}} earlier hidden{{value2}}",
-  "chat.sendTheFirstPromptToStartThe": "Send the first prompt to start the thread.",
+  "chat.sendTheFirstPromptToStartThe": "Type the first prompt below to start.",
   "chat.canceling": "Canceling...",
   "chat.cancel": "Cancel",
   "chat.fullText": "Full text",

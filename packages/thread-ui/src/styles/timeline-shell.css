@@ -57,6 +57,12 @@
 .thread-ui-shell .thread-graph-empty-state {
   color: var(--theme-fg-muted);
 }
+.thread-ui-shell .thread-graph-empty-state.is-new-thread {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  min-height: 60vh; text-align: center;
+}
+.thread-ui-shell .thread-graph-empty-state.is-new-thread > svg { width: 30px; height: 30px; margin-bottom: 4px; opacity: .8; }
+.thread-ui-shell .thread-graph-empty-state.is-new-thread > strong { color: var(--theme-fg); font-size: 15px; font-weight: 600; }
 
 .thread-ui-shell .thread-graph-history-button,
 .thread-ui-shell .thread-graph-turn-index {

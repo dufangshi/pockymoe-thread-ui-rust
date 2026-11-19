@@ -56,7 +56,7 @@ export const chatZhCN = {
   "chat.of": "共",
   "chat.turns": "轮次",
   "chat.earlierHidden": " · 隐藏了 {{value1}} 个更早轮次{{value2}}",
-  "chat.sendTheFirstPromptToStartThe": "发送首条提示词以启动线程。",
+  "chat.sendTheFirstPromptToStartThe": "在下方输入第一条提示词开始。",
   "chat.canceling": "正在取消…",
   "chat.cancel": "取消",
   "chat.fullText": "全文",

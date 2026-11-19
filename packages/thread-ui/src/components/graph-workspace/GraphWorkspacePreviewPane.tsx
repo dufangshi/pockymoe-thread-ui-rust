@@ -12,6 +12,7 @@ import {
   lazy,
   memo,
   Suspense,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -79,6 +80,16 @@ export type GraphWorkspacePreviewTarget =
 
 // Linked host files are opened by absolute path; they never use safe editing.
 const isHostFilePath = (path: string) => path.startsWith('/') || /^[a-z]:[\\/]/i.test(path);
+
+/** The document facts a reader can use: why it is read only (a large file says
+    how much is shown of how much), UTF-8 when it is, and its line endings. No
+    internal revision, and no "unknown encoding" guess for plain ASCII. */
+function documentFacts(snapshot: { readOnlyReason: string | null; size: number; encoding: string; bom: boolean; eol: string }, state: string) {
+  const head = snapshot.readOnlyReason === 'fileTooLarge'
+    ? translate('files.largePreviewStatus', { total: fileSizeLabel(snapshot.size) ?? '' })
+    : state;
+  return [head, snapshot.encoding === 'utf-8' ? `UTF-8${snapshot.bom ? ' BOM' : ''}` : null, snapshot.eol.toUpperCase()].filter(Boolean).join(' · ');
+}
 
 function fileSizeLabel(size: number | undefined) {
   return size === undefined ? null : size < 1024 ? `${size} B`
@@ -699,6 +710,27 @@ export function GraphWorkspacePreviewPane({
     window.addEventListener('keydown', escape, true);
     return () => window.removeEventListener('keydown', escape, true);
   }, [actionsOpen]);
+  // Success shows where the reader saved (§11), and typing into the read-only
+  // view says how to edit instead of doing nothing.
+  const [savedFlash, setSavedFlash] = useState(false);
+  const [readOnlyHint, setReadOnlyHint] = useState(false);
+  const previousPhase = useRef(document?.phase);
+  useEffect(() => {
+    const before = previousPhase.current;
+    previousPhase.current = document?.phase;
+    if (before !== 'saving' || document?.phase !== 'clean') return;
+    setSavedFlash(true);
+    const timer = window.setTimeout(() => setSavedFlash(false), 1500);
+    return () => window.clearTimeout(timer);
+  }, [document?.phase]);
+  const hintTimer = useRef<number | undefined>(undefined);
+  const showReadOnlyHint = useCallback(() => {
+    setReadOnlyHint(true);
+    window.clearTimeout(hintTimer.current);
+    hintTimer.current = window.setTimeout(() => setReadOnlyHint(false), 2500);
+  }, []);
+  useEffect(() => () => window.clearTimeout(hintTimer.current), []);
+  useEffect(() => { if (editing) setReadOnlyHint(false); }, [editing]);
   async function handleSaveFile() {
     if (previewFile) await documents?.save(previewFile.path);
   }
@@ -759,7 +791,7 @@ export function GraphWorkspacePreviewPane({
       </div>
     ) : null;
   const documentState = document ? translate(document.snapshot.readOnlyReason ? 'files.safeReadOnly' : document.needsVerification && document.phase==='clean' ? 'files.safeAdoptedSnapshot' : `files.safePhase.${document.phase}`, { reason: document.snapshot.readOnlyReason ? translateReadOnly(document.snapshot.readOnlyReason) : '' }) : null;
-  const documentMetadata = document ? `${documentState} · ${document.snapshot.encoding==='utf-8' ? 'UTF-8' : translate('files.safeUnknownEncoding')}${document.snapshot.bom ? ' BOM' : ''} · ${document.snapshot.eol.toUpperCase()}` : undefined;
+  const documentMetadata = document && documentState ? documentFacts(document.snapshot, documentState) : undefined;
   const inlineStatus = document && <span role="status" data-testid="workspace-document-status" className="sr-only" data-phase={document.phase}>{documentState}</span>;
   const backLabel = previousFilePath ? translate('files.backToDocument', { name: previousFilePath.split('/').pop() ?? previousFilePath }) : translate('workbench.goBack');
   const navigationControls = <>
@@ -809,8 +841,16 @@ export function GraphWorkspacePreviewPane({
       ? <AlertDownloadButton name={selectedTarget.node.name} onDownload={onDownloadFile} /> : null}
   </> : null;
   const fileHeaderShown = fileTabs.length === 0 || Boolean(onCloseFileTab && onSelectFileTab);
+  // Editing is one labelled tap away, not only inside the ⋯ actions.
+  const editEntry = previewFile && canEditFile ? (editing
+    ? <button type="button" className="workspace-edit-entry" onClick={() => void handleSaveFile()}
+        disabled={saving || document?.phase === 'unknown' || draftContent === document?.baseContent}>
+        <Save aria-hidden="true" size={13} />{translate(savedFlash ? 'files.savedShort' : 'files.saveShort')}</button>
+    : <button type="button" className="workspace-edit-entry" onClick={() => { setMarkdownView('source'); setEditing(true); }}>
+        <Pencil aria-hidden="true" size={13} />{translate(savedFlash ? 'files.savedShort' : 'files.editShort')}</button>) : null;
   const previewActions = <>
     {failureMarks}
+    {editEntry}
     <button ref={actionTrigger} type="button" className="thread-graph-editor-toolbar-button workspace-file-more" aria-label={translate('files.fileActions')} title={translate('files.fileActions')} aria-expanded={actionsOpen} onClick={() => setActionsOpen(open => !open)}><MoreHorizontal data-icon="more" size={18}/></button>
   </>;
 
@@ -828,7 +868,9 @@ export function GraphWorkspacePreviewPane({
           {viewerPaneToggle}
         </div>
       ) : null}
-      {fileTabs.length === 0 && <div className="workspace-file-toolbar flex min-h-9 shrink-0 items-center justify-between border-b px-1">
+      {/* With no file open there is nothing to act on: no empty ⋯ row (a phone
+          keeps it for its way back to the list). */}
+      {fileTabs.length === 0 && (selectedTarget || mobileNavigation) && <div className="workspace-file-toolbar flex min-h-9 shrink-0 items-center justify-between border-b px-1">
         <div className="workspace-file-navigation flex items-center">{previewNavigation}</div><span className="min-w-0 flex-1 truncate text-xs" title={filePanel?.label}>{title}</span><div className="flex shrink-0 items-center">{previewActions}</div>
       </div>}
       {fileTabs.length > 0 && onCloseFileTab && onSelectFileTab ? (
@@ -875,17 +917,18 @@ export function GraphWorkspacePreviewPane({
         ) : selectedTarget.kind === 'workspace-file' && pdfUrl ? (
           <WorkspacePdfPreview key={pdfUrl} src={pdfUrl} node={selectedTarget.node} />
         ) : selectedTarget.kind === 'workspace-file' && previewFile ? (
-          <div className="flex min-h-0 flex-1 flex-col">
+          <div className="relative flex min-h-0 flex-1 flex-col">
+            {readOnlyHint ? <div className="workspace-readonly-hint" role="status">{translate('files.readOnlyEditHint')}</div> : null}
             {document && (document.snapshot.readOnlyReason || ['conflict','unknown','error'].includes(document.phase)) ? (
               <div className="workspace-document-status" role="status">
-                <span>{document.snapshot.readOnlyReason ? translate('files.safeReadOnly', {reason: translateReadOnly(document.snapshot.readOnlyReason)}) : translate(document.needsVerification && document.phase==='clean' ? 'files.safeAdoptedSnapshot':`files.safePhase.${document.phase}`)} · {document.snapshot.encoding==='utf-8' ? 'UTF-8':translate('files.safeUnknownEncoding')}{document.snapshot.bom ? ' BOM' : ''} · {document.snapshot.eol.toUpperCase()} · r{document.revision}</span>
+                <span>{documentFacts(document.snapshot, document.snapshot.readOnlyReason ? translate('files.safeReadOnly', {reason: translateReadOnly(document.snapshot.readOnlyReason)}) : translate(document.needsVerification && document.phase==='clean' ? 'files.safeAdoptedSnapshot':`files.safePhase.${document.phase}`))}</span>
                 <div className="workspace-document-actions">
                   {document.phase === 'unknown' ? <button type="button" onClick={() => void documents?.reconcile(document.snapshot.path)}>{translate('files.safeVerifySave')}</button> : null}
                   {document.phase === 'unknown' && document.conflict ? <button type="button" disabled={document.operationPending} onClick={async () => {if(await confirmAsync({ title: translate('files.safeUseCheckedBase'), description: translate('files.safeManualRebase'), confirmLabel: translate('files.safeUseCheckedBase') })) documents?.acceptVerifiedDisk(document.snapshot.path);}}>{translate('files.safeUseCheckedBase')}</button> : null}
                   {document.phase === 'conflict' && !showConflict ? <button type="button" onClick={() => setShowConflict(true)}>{translate('files.safeViewConflict')}</button> : null}
                 </div>
               </div>
-            ) : !document && canSaveDocument ? <div className="workspace-document-status">{translate(isHostFilePath(previewFile.path) ? 'files.linkedFileReadOnly' : 'files.safeUnavailable')}</div> : null}
+            ) : !document && canSaveDocument ? <div className="workspace-document-status">{translate(isDrawioFile ? 'files.drawioReadOnly' : isHostFilePath(previewFile.path) ? 'files.linkedFileReadOnly' : 'files.safeUnavailable')}</div> : null}
             {document && (document.phase === 'conflict' || (document.phase === 'unknown' && document.conflict)) && showConflict ? (
               <div className="workspace-document-conflict" data-testid="workspace-document-conflict">
                 <strong>{translate(document.phase==='unknown' ? 'files.safePhase.unknown':'files.safeConflictTitle')}</strong>
@@ -953,12 +996,18 @@ export function GraphWorkspacePreviewPane({
                   language={fileLanguage}
                   onChange={setDraftContent}
                   onSave={() => void handleSaveFile()}
+                  {...(canEditFile ? { onReadOnlyEdit: showReadOnlyHint } : {})}
                   path={previewFile.path}
                   readOnly={!editing}
                 />
               </Suspense>
             )}
-            {previewFile.truncated && !onLoadMore ? <div className="workspace-document-status">{translate("files.safeFirstPreview")}</div> : null}
+            {/* Only the first part is read: the way to the whole file is right here. */}
+            {previewFile.truncated && !onLoadMore ? <div className="workspace-document-status workspace-preview-partial">
+              <span>{translate("files.previewFirstPart")}</span>
+              {onDownloadFile ? <button type="button" className="workspace-edit-entry" onClick={() => void onDownloadFile()}>
+                <Download aria-hidden="true" size={13} />{translate('files.downloadWholeFile')}</button> : null}
+            </div> : null}
             {previewFile.truncated && onLoadMore ? (
               <div className="thread-graph-file-preview-footer flex justify-center border-t px-4 py-3">
                 <button

@@ -36,6 +36,17 @@ export function WorkspaceFileTabs({
   useI18n();
   const tabsRef = useRef<HTMLDivElement>(null);
   const scrollEdges = useTabScrollEdges(tabsRef);
+  // The open file's tab, with its ×, is always whole in view.
+  useEffect(() => {
+    const strip = tabsRef.current;
+    const tab = strip?.querySelector<HTMLElement>('.thread-graph-editor-tab.is-active');
+    if (!strip || !tab) return;
+    const left = tab.getBoundingClientRect().left - strip.getBoundingClientRect().left + strip.scrollLeft;
+    const right = left + tab.offsetWidth;
+    if (left < strip.scrollLeft) strip.scrollLeft = left;
+    else if (right > strip.scrollLeft + strip.clientWidth) strip.scrollLeft = right - strip.clientWidth;
+    // Paging buttons take room when the strip overflows: check again then.
+  }, [activePath, tabs.length, scrollEdges['data-overflow-start'], scrollEdges['data-overflow-end']]);
   useEffect(() => { tabsRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' }); }, [activePath, tabs.length]);
   const [pendingClosePath, setPendingClosePath] = useState<string | null>(null);
   const [savingClose, setSavingClose] = useState(false);
@@ -113,8 +124,8 @@ export function WorkspaceFileTabs({
           keep editing (Esc), save and close, or discard. */}
       <ConfirmDialog
         open={Boolean(pendingTab)}
-        title={pendingTab ? `${translate("files.discardUnsavedChangesIn")} ${pendingTab.name}?` : ''}
-        description={translate('files.safeDiscard')}
+        title={pendingTab ? translate('files.closeWithDraftTitle', { value1: pendingTab.name }) : ''}
+        description={translate('files.closeWithDraftBody')}
         cancelLabel={translate("files.keepEditing")}
         confirmLabel={translate("files.discard")}
         busy={savingClose}

@@ -1,6 +1,6 @@
 import {
   useI18n
-} from "./chunk-YCPNQG5Q.js";
+} from "./chunk-26NJDTYG.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/graph-chat/GraphVisualization.tsx

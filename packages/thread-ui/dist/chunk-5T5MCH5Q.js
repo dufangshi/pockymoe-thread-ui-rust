@@ -6,7 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-YCPNQG5Q.js";
+} from "./chunk-26NJDTYG.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {
@@ -125,13 +125,33 @@ function PathChip({ path, display, copyValue, label, className }) {
 
 // src/components/copy/MiddleName.tsx
 import { jsx as jsx3, jsxs as jsxs3 } from "react/jsx-runtime";
-function MiddleName({ name, className }) {
+function MiddleName({ name, className, ranges }) {
+  const part = (start, end) => {
+    if (!ranges?.length) return name.slice(start, end);
+    const out = [];
+    let at = start;
+    for (const range of ranges) {
+      const from = Math.max(range.start, start), to = Math.min(range.end, end);
+      if (to <= from) continue;
+      if (from > at) out.push(name.slice(at, from));
+      out.push(/* @__PURE__ */ jsx3("mark", { className: "middle-name-match", children: name.slice(from, to) }, from));
+      at = to;
+    }
+    if (at < end) out.push(name.slice(at, end));
+    return out;
+  };
   const dot = name.lastIndexOf(".");
   const keep = Math.min(name.length, dot > 0 && name.length - dot <= 12 ? Math.max(8, name.length - dot + 5) : 8);
-  if (name.length <= keep + 2) return /* @__PURE__ */ jsx3("span", { className: `middle-name${className ? ` ${className}` : ""}`, children: /* @__PURE__ */ jsx3("span", { className: "middle-name-head", children: name }) });
+  if (name.length <= keep + 2) {
+    const split = dot > 0 && name.length > 8 && name.length - dot <= 12 ? dot : name.length;
+    return /* @__PURE__ */ jsxs3("span", { className: `middle-name${className ? ` ${className}` : ""}`, children: [
+      /* @__PURE__ */ jsx3("span", { className: "middle-name-head", children: part(0, split) }),
+      split < name.length ? /* @__PURE__ */ jsx3("span", { className: "middle-name-tail", children: part(split, name.length) }) : null
+    ] });
+  }
   return /* @__PURE__ */ jsxs3("span", { className: `middle-name${className ? ` ${className}` : ""}`, children: [
-    /* @__PURE__ */ jsx3("span", { className: "middle-name-head", children: name.slice(0, -keep) }),
-    /* @__PURE__ */ jsx3("span", { className: "middle-name-tail", children: name.slice(-keep) })
+    /* @__PURE__ */ jsx3("span", { className: "middle-name-head", children: part(0, name.length - keep) }),
+    /* @__PURE__ */ jsx3("span", { className: "middle-name-tail", children: part(name.length - keep, name.length) })
   ] });
 }
 
@@ -525,7 +545,7 @@ var ImageDiagnosisProvider = ImageDiagnosisContext.Provider;
 function RecoverableImage(props) {
   return /* @__PURE__ */ jsx7(ImageAttempt, { ...props }, props.src);
 }
-function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) => image, ...props }) {
+function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) => image, labelledPlaceholder, ...props }) {
   useI18n();
   const refresh = useContext(ImageRecoveryContext);
   const diagnose = useContext(ImageDiagnosisContext);
@@ -612,7 +632,10 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) 
   }, [state.phase, state.url]);
   const unavailable = state.phase === "failed";
   return /* @__PURE__ */ jsxs6("span", { className: "recoverable-image", "data-image-state": state.phase, children: [
-    renderImage(unavailable || !state.url ? /* @__PURE__ */ jsx7("span", { className: "image-unavailable", role: "img", "aria-label": props.alt || translate("chat.imageUnavailable"), children: /* @__PURE__ */ jsx7(ImageOff, { "aria-hidden": "true" }) }) : /* @__PURE__ */ createElement(
+    renderImage(unavailable || !state.url ? /* @__PURE__ */ jsxs6("span", { className: `image-unavailable${labelledPlaceholder ? " is-labelled" : ""}`, role: "img", "aria-label": props.alt || translate("chat.imageUnavailable"), children: [
+      /* @__PURE__ */ jsx7(ImageOff, { "aria-hidden": "true" }),
+      props.alt ? /* @__PURE__ */ jsx7("span", { className: "image-unavailable-caption", "aria-hidden": "true", children: translate("chat.imageAltUnavailable", { alt: props.alt }) }) : labelledPlaceholder ? /* @__PURE__ */ jsx7("span", { className: "image-unavailable-caption", "aria-hidden": "true", children: translate("chat.imageUnavailable") }) : null
+    ] }) : /* @__PURE__ */ createElement(
       "img",
       {
         ...props,
@@ -1087,7 +1110,7 @@ function RenameDialog({
             /* @__PURE__ */ jsxs9("div", { className: "flex items-start justify-between gap-3", children: [
               /* @__PURE__ */ jsxs9("div", { className: "min-w-0 flex-1", children: [
                 /* @__PURE__ */ jsx10("p", { className: "text-sm font-medium", children: title }),
-                /* @__PURE__ */ jsx10("p", { className: "mt-1 text-sm text-[var(--theme-fg-muted)]", children: description ?? translate("workbench.changesAreSavedOnlyAfterConfirmation") })
+                description ? /* @__PURE__ */ jsx10("p", { className: "mt-1 text-sm text-[var(--theme-fg-muted)]", children: description }) : null
               ] }),
               /* @__PURE__ */ jsx10(
                 "button",
@@ -1315,18 +1338,6 @@ function workspaceTreeNodeToGraphNode(node) {
     workspaceNode: { ...node, path },
     children
   };
-}
-function findFirstWorkspaceFile(node) {
-  if (node.kind === "file") {
-    return node;
-  }
-  for (const child of node.children) {
-    const found = findFirstWorkspaceFile(child);
-    if (found) {
-      return found;
-    }
-  }
-  return null;
 }
 function normalizeWorkspacePath(path) {
   return path.trim().replace(/\\/g, "/").replace(/^\.\/+/, "").replace(/^\/+/, "");
@@ -1660,25 +1671,89 @@ function useImageViewport() {
 }
 
 // src/components/ZoomableImage.tsx
-import { Maximize2, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { ChevronLeft as ChevronLeft2, ChevronRight as ChevronRight2, Maximize2, Minus, Plus, RotateCcw, X } from "lucide-react";
 import { Fragment as Fragment3, jsx as jsx13, jsxs as jsxs11 } from "react/jsx-runtime";
 var MarkdownImageLinkContext = createContext2(false);
+function galleryAround(image) {
+  const scope = image?.closest("[data-image-gallery]");
+  if (!image || !scope) return void 0;
+  const images = [...scope.querySelectorAll(".thread-graph-zoomable-image-trigger img")];
+  const index = images.indexOf(image);
+  if (images.length < 2 || index < 0) return void 0;
+  return { images: images.map((item) => ({ src: item.currentSrc || item.src, alt: item.alt })), index };
+}
 var IMAGE_LIGHTBOX_MIN_SCALE = 0.5;
 var IMAGE_LIGHTBOX_MAX_SCALE = 5;
 var IMAGE_LIGHTBOX_SCALE_STEP = 0.25;
+function useFitRatio(viewportRef) {
+  const [fit, setFit] = useState7(1);
+  useEffect5(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const measure = () => {
+      const image = viewport.querySelector("img");
+      if (image && image.naturalWidth > 0 && image.offsetWidth > 0) setFit(image.offsetWidth / image.naturalWidth);
+    };
+    measure();
+    viewport.addEventListener("load", measure, true);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    observer?.observe(viewport);
+    return () => {
+      viewport.removeEventListener("load", measure, true);
+      observer?.disconnect();
+    };
+  }, [viewportRef]);
+  return fit;
+}
+function zoomLabel(scale, fit) {
+  const percent = Math.max(1, Math.round(scale * fit * 100));
+  return scale === 1 && Math.abs(fit - 1) > 5e-3 ? translate("files.zoomFit", { value1: percent }) : `${percent}%`;
+}
 function GraphWorkspaceImageLightbox({
-  alt,
+  alt: firstAlt,
   backgroundColor,
   onClose,
-  src,
-  resolveSrc
+  src: firstSrc,
+  resolveSrc,
+  gallery
 }) {
+  const [position, setPosition] = useState7(gallery?.index ?? 0);
+  const shown = gallery?.images[position];
+  const src = shown?.src ?? firstSrc;
+  const alt = shown?.alt ?? firstAlt;
   const { locale: i18nLocale } = useI18n();
   const { viewportRef, scale, dragging, transform, reset: resetView, updateScale, handlers, moved } = useImageViewport();
+  const fit = useFitRatio(viewportRef);
   const closeButtonRef = useRef9(null);
   const backdropPointer = useRef9(true);
   const windowRef = useRef9(null);
   useModalFocus(windowRef, true, onClose, ".thread-graph-image-lightbox-close");
+  const count = gallery?.images.length ?? 0;
+  const step = (direction) => {
+    if (!gallery) return;
+    const next = position + direction;
+    if (next < 0 || next >= count) return;
+    setPosition(next);
+    resetView();
+  };
+  const stepRef = useRef9(step);
+  stepRef.current = step;
+  useEffect5(() => {
+    if (!gallery) return;
+    const onKey = (event) => {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        stepRef.current(-1);
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        stepRef.current(1);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [gallery]);
   useEffect5(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -1704,6 +1779,10 @@ function GraphWorkspaceImageLightbox({
               role: "toolbar",
               "aria-label": translate("files.imageZoomControls"),
               children: [
+                gallery ? /* @__PURE__ */ jsxs11(Fragment3, { children: [
+                  /* @__PURE__ */ jsx13("span", { className: "thread-graph-image-lightbox-position", "aria-live": "polite", children: translate("files.imagePosition", { value1: position + 1, value2: count }) }),
+                  /* @__PURE__ */ jsx13("span", { className: "thread-graph-image-lightbox-divider", "aria-hidden": "true" })
+                ] }) : null,
                 /* @__PURE__ */ jsx13(
                   "button",
                   {
@@ -1722,13 +1801,10 @@ function GraphWorkspaceImageLightbox({
                     onClick: resetView,
                     className: "thread-graph-image-lightbox-scale",
                     title: translate("files.resetZoom"),
-                    "aria-label": translate("files.resetZoomCurrently", { value1: Math.round(scale * 100) }),
+                    "aria-label": translate("files.resetZoomCurrently", { value1: zoomLabel(scale, fit) }),
                     children: [
                       /* @__PURE__ */ jsx13(RotateCcw, { className: "h-3.5 w-3.5" }),
-                      /* @__PURE__ */ jsxs11("span", { children: [
-                        Math.round(scale * 100),
-                        "%"
-                      ] })
+                      /* @__PURE__ */ jsx13("span", { children: zoomLabel(scale, fit) })
                     ]
                   }
                 ),
@@ -1782,7 +1858,7 @@ function GraphWorkspaceImageLightbox({
               children: /* @__PURE__ */ jsx13(
                 RecoverableImage,
                 {
-                  resolveSrc,
+                  resolveSrc: gallery && position !== gallery.index ? void 0 : resolveSrc,
                   src,
                   alt,
                   draggable: false,
@@ -1793,7 +1869,35 @@ function GraphWorkspaceImageLightbox({
                 }
               )
             }
-          )
+          ),
+          gallery ? /* @__PURE__ */ jsxs11(Fragment3, { children: [
+            /* @__PURE__ */ jsx13(
+              "button",
+              {
+                type: "button",
+                className: "thread-graph-image-lightbox-step",
+                "data-edge": "start",
+                disabled: position === 0,
+                onClick: () => step(-1),
+                "aria-label": translate("files.previousImage"),
+                title: translate("files.previousImage"),
+                children: /* @__PURE__ */ jsx13(ChevronLeft2, { "aria-hidden": "true" })
+              }
+            ),
+            /* @__PURE__ */ jsx13(
+              "button",
+              {
+                type: "button",
+                className: "thread-graph-image-lightbox-step",
+                "data-edge": "end",
+                disabled: position >= count - 1,
+                onClick: () => step(1),
+                "aria-label": translate("files.nextImage"),
+                title: translate("files.nextImage"),
+                children: /* @__PURE__ */ jsx13(ChevronRight2, { "aria-hidden": "true" })
+              }
+            )
+          ] }) : null
         ]
       }
     ),
@@ -1812,13 +1916,14 @@ function ZoomableImage({
   const { locale: i18nLocale } = useI18n();
   const triggerRef = useRef9(null);
   const [open, setOpen] = useState7(false);
+  const [gallery, setGallery] = useState7();
   const insideLink = useContext2(MarkdownImageLinkContext);
   const dimension = (value) => typeof value === "number" ? value : value && /^\d+(?:\.\d+)?%?$/.test(value) ? value.endsWith("%") ? value : Number(value) : void 0;
   const imageStyle = { width: dimension(width), height: dimension(height) };
   const imageProps = { src, alt, className, loading: loading2, style: imageStyle };
   function closeLightbox() {
     setOpen(false);
-    window.requestAnimationFrame(() => triggerRef.current?.focus());
+    window.requestAnimationFrame(() => triggerRef.current?.focus({ preventScroll: true }));
   }
   if (insideLink) return /* @__PURE__ */ jsx13(RecoverableImage, { ...imageProps });
   return /* @__PURE__ */ jsxs11(Fragment3, { children: [
@@ -1829,7 +1934,10 @@ function ZoomableImage({
         type: "button",
         className: "thread-graph-zoomable-image-trigger",
         style: { width: dimension(width) },
-        onClick: () => setOpen(true),
+        onClick: () => {
+          setGallery(galleryAround(triggerRef.current?.querySelector("img")));
+          setOpen(true);
+        },
         title: translate("files.openImagePreview"),
         "aria-label": translate("files.openImagePreview_bdac35", { value1: alt || translate("files.workspaceImage") }),
         children: image
@@ -1840,6 +1948,7 @@ function ZoomableImage({
       {
         src: fullSrc || src,
         alt,
+        gallery,
         onClose: closeLightbox
       }
     ) : null
@@ -1848,18 +1957,16 @@ function ZoomableImage({
 function WorkspaceImagePreview({ src, alt }) {
   useI18n();
   const { viewportRef, scale, dragging, transform, reset, updateScale, handlers } = useImageViewport();
+  const fit = useFitRatio(viewportRef);
   const [open, setOpen] = useState7(false);
   return /* @__PURE__ */ jsxs11("div", { className: "workspace-image-preview", children: [
     /* @__PURE__ */ jsxs11("div", { className: "workspace-image-controls", role: "toolbar", "aria-label": translate("files.imageZoomControls"), children: [
       /* @__PURE__ */ jsx13("button", { type: "button", onClick: () => updateScale(scale - 0.25), disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE, "aria-label": translate("files.zoomOut"), children: /* @__PURE__ */ jsx13(Minus, { size: 14 }) }),
-      /* @__PURE__ */ jsx13("button", { type: "button", onClick: reset, "aria-label": translate("files.resetZoom"), children: /* @__PURE__ */ jsxs11("span", { children: [
-        Math.round(scale * 100),
-        "%"
-      ] }) }),
+      /* @__PURE__ */ jsx13("button", { type: "button", onClick: reset, "aria-label": translate("files.resetZoomCurrently", { value1: zoomLabel(scale, fit) }), title: translate("files.resetZoom"), children: /* @__PURE__ */ jsx13("span", { children: zoomLabel(scale, fit) }) }),
       /* @__PURE__ */ jsx13("button", { type: "button", onClick: () => updateScale(scale + 0.25), disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE, "aria-label": translate("files.zoomIn"), children: /* @__PURE__ */ jsx13(Plus, { size: 14 }) }),
       /* @__PURE__ */ jsx13("button", { type: "button", onClick: () => setOpen(true), "aria-label": translate("files.openImagePreview"), children: /* @__PURE__ */ jsx13(Maximize2, { size: 14 }) })
     ] }),
-    /* @__PURE__ */ jsx13("div", { ref: viewportRef, className: "workspace-image-viewport", ...handlers, children: /* @__PURE__ */ jsx13(RecoverableImage, { src, alt, draggable: false, className: dragging ? "is-dragging" : "", style: { transform } }) }),
+    /* @__PURE__ */ jsx13("div", { ref: viewportRef, className: "workspace-image-viewport", ...handlers, children: /* @__PURE__ */ jsx13(RecoverableImage, { src, alt, draggable: false, className: dragging ? "is-dragging" : "", style: { transform }, labelledPlaceholder: true }) }),
     open && /* @__PURE__ */ jsx13(GraphWorkspaceImageLightbox, { src, alt, onClose: () => setOpen(false) })
   ] });
 }
@@ -2214,7 +2321,6 @@ export {
   collectArtifacts,
   extensionOf,
   workspaceTreeNodeToGraphNode,
-  findFirstWorkspaceFile,
   workspaceRelativeFocusPath,
   ancestorDirectoryPaths,
   hasWorkspacePath,

@@ -1,8 +1,8 @@
 import * as react from 'react';
-import { ButtonHTMLAttributes, ReactNode, RefObject, TouchEvent, MouseEvent, Dispatch, SetStateAction, Component, ErrorInfo, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps } from 'react';
-import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-BpXtYCb3.js';
-export { D as DescribeThread, i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as SendPromptInput, m as ShellSocketConnection, n as ShellSocketHandlers, o as ThreadImageAssetVariant, p as ThreadLinkInfo, W as WorkspaceDocumentSaveInput, q as WorkspaceDocumentSnapshot, r as WorkspaceSaveReceipt, s as WorkspaceTab, t as createDefaultPluginContextValue, u as mergePluginState } from './workspace-panel-BpXtYCb3.js';
-import { ContextInspectionDetailDto, ThreadContextInspectionDto, ThreadContextStepsDto, ReasoningEffortDto, CollaborationModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadPendingWakeDto, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
+import { ButtonHTMLAttributes, ReactNode, RefObject, TouchEvent, MouseEvent, Dispatch, SetStateAction, Component, ErrorInfo, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps, CSSProperties } from 'react';
+import { ReasoningEffortDto, ContextInspectionDetailDto, ThreadContextInspectionDto, ThreadContextStepsDto, CollaborationModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadPendingWakeDto, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
+import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-CG3ljPRt.js';
+export { D as DescribeThread, i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as SendPromptInput, m as ShellSocketConnection, n as ShellSocketHandlers, o as ThreadImageAssetVariant, p as ThreadLinkInfo, W as WorkspaceDocumentSaveInput, q as WorkspaceDocumentSnapshot, r as WorkspaceSaveReceipt, s as WorkspaceTab, t as createDefaultPluginContextValue, u as mergePluginState } from './workspace-panel-CG3ljPRt.js';
 import { P as PluginActionOutputContext, T as ThreadPluginAdapter } from './plugin-types-gLBkjCue.js';
 export { A as ArtifactRenderContext, F as FrontendPluginModule, I as InlineCodeRenderContext, M as MessagePresentation, a as MessagePresentationContext, b as PluginSettingsContext, c as PluginSettingsContribution, d as PluginSettingsSnapshot, e as ThreadPanelContribution, f as ThreadPluginDto, g as ThreadPluginSettingsInput, h as ThreadPluginSettingsSnapshot, U as UpstreamConnectionHost, i as UpstreamConnectionPickerProps, j as UpstreamConnectionPickerValue, k as UpstreamConnectionProtocol } from './plugin-types-gLBkjCue.js';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
@@ -26,6 +26,11 @@ declare function CopyButton({ value, label, className, onCopied }: {
 
 declare function formatFileSize(bytes: number): string;
 
+type ComposerSendShortcut = 'ctrlEnter' | 'enter';
+/** A reasoning effort in the reader's language (docs/ui-principles.md §13);
+    a level this build does not know keeps the harness's own word. */
+declare function formatReasoningEffortLabel(value: ReasoningEffortDto | null | undefined): string;
+
 /** A large attachment on its way to the device, before its prompt is sent. */
 interface ComposerUploadProgressState {
     name: string;
@@ -36,6 +41,9 @@ interface ComposerUploadProgressState {
     count: number;
     /** The connection dropped and it will continue by itself. */
     retrying?: boolean;
+    /** The prompt that goes once the files are there, on one line, with each
+        attachment named. The composer itself is empty meanwhile. */
+    preview?: string;
 }
 
 /** Clipboard access for the terminal. The async API needs a secure page (https
@@ -59,9 +67,13 @@ declare function PathChip({ path, display, copyValue, label, className }: {
 /** A file name that shortens in the middle only when it must, keeping its end
     and extension: `very-long-report-na…draft-3.md`. Used by the tree, the file
     tabs and attachments (docs/ui-principles.md §14). */
-declare function MiddleName({ name, className }: {
+declare function MiddleName({ name, className, ranges }: {
     name: string;
     className?: string;
+    ranges?: ReadonlyArray<{
+        start: number;
+        end: number;
+    }> | undefined;
 }): react.JSX.Element;
 
 /**
@@ -163,13 +175,17 @@ declare function StatusMark({ status, label }: {
     label?: string | undefined;
 }): react.JSX.Element;
 
+/** The Supervisor's placeholder title for a thread nobody has written to yet. */
+declare const DEFAULT_THREAD_TITLE = "New thread";
+/** A thread's title as shown: the Supervisor's English placeholder in the reader's language. */
+declare function displayThreadTitle(title: string): string;
+declare function displayThreadTitle(title: string | null | undefined): string | undefined;
+
 interface SlashPanelState<T> {
     status: 'idle' | 'loading' | 'ready' | 'failed';
     data: T | null;
     error: string | null;
 }
-
-type ComposerSendShortcut = 'ctrlEnter' | 'enter';
 
 /** How the host reads a thread's context analysis, on the thread's own device. */
 interface ThreadContextInspector {
@@ -219,6 +235,9 @@ interface ThreadComposerProps {
     shellAvailable?: boolean;
     disabled?: boolean;
     disabledPlaceholder?: string | undefined;
+    /** Why sending cannot work right now (the device's connection dropped): the
+        send key greys out and says so, while the draft stays editable. */
+    sendUnavailableReason?: string | null | undefined;
     shellControlState?: ThreadShellControlState$1 | null;
     draftPrompt?: string | undefined;
     draftAttachments?: PromptAttachmentUpload[] | undefined;
@@ -290,7 +309,7 @@ interface ThreadComposerProps {
     onCancelPendingPrompt?: (pendingPromptId: string) => Promise<void> | void;
     pendingWakes?: ThreadPendingWakeDto[];
 }
-declare function ThreadComposer({ activeView, sendShortcut, edgeToEdgeMobile, busy, settingsBusy, compactBusy, uploadProgress, onCancelUpload, error, model, agentLabel, reasoningEffort, fastMode, collaborationMode, modelOptions, contextUsage, contextInspector, capabilities, toolboxItems, hookCommandTemplates, mcpConfigFormat, followTail, threadConnected, shellAvailable, disabled, disabledPlaceholder, shellControlState, draftPrompt, draftAttachments, onPickAttachment, skillsState, mcpState, hooksState, goalState, goalHistory, forkTurnOptionsState, onDraftChange, onSubmit, onInterrupt, onCompact, onOpenSkills, onOpenMcp, onOpenHooks, onOpenHarness, onCreateHook, onUpdateHook, onTrustHook, onUntrustHook, onOpenGoal, onPrepareGoalSubmit, onUpdateGoal, onOpenForkTurns, onForkLatest, onForkTurn, onReadProviderConfig, onWriteProviderConfig, onToggleFollow, canJumpToPreviousTurn, onJumpToPreviousTurn, canJumpToNextTurn, onJumpToNextTurn, subscriptionUsage, onUpdateSettings, onModelMenuOpen, onToggleView, onShellCopy, onShellControl, canInterrupt, pendingPrompts, onSteerPendingPrompt, onCancelPendingPrompt, pendingWakes, }: ThreadComposerProps): react.JSX.Element;
+declare function ThreadComposer({ activeView, sendShortcut, edgeToEdgeMobile, busy, settingsBusy, compactBusy, uploadProgress, onCancelUpload, error, model, agentLabel, reasoningEffort, fastMode, collaborationMode, modelOptions, contextUsage, contextInspector, capabilities, toolboxItems, hookCommandTemplates, mcpConfigFormat, followTail, threadConnected, shellAvailable, disabled, disabledPlaceholder, sendUnavailableReason, shellControlState, draftPrompt, draftAttachments, onPickAttachment, skillsState, mcpState, hooksState, goalState, goalHistory, forkTurnOptionsState, onDraftChange, onSubmit, onInterrupt, onCompact, onOpenSkills, onOpenMcp, onOpenHooks, onOpenHarness, onCreateHook, onUpdateHook, onTrustHook, onUntrustHook, onOpenGoal, onPrepareGoalSubmit, onUpdateGoal, onOpenForkTurns, onForkLatest, onForkTurn, onReadProviderConfig, onWriteProviderConfig, onToggleFollow, canJumpToPreviousTurn, onJumpToPreviousTurn, canJumpToNextTurn, onJumpToNextTurn, subscriptionUsage, onUpdateSettings, onModelMenuOpen, onToggleView, onShellCopy, onShellControl, canInterrupt, pendingPrompts, onSteerPendingPrompt, onCancelPendingPrompt, pendingWakes, }: ThreadComposerProps): react.JSX.Element;
 
 interface TokenUsageCostProps {
     usage?: ThreadTurnTokenBreakdownDto | null;
@@ -405,6 +424,12 @@ interface ThreadMenuContext {
     /** Takes focus back when the menu closes from the keyboard. */
     returnFocus?: HTMLElement | undefined;
     onClose: () => void;
+    /** Opened from an editor tab: closing it and its neighbours, as an editor does. */
+    tab?: {
+        close: () => void;
+        closeOthers?: (() => void) | undefined;
+        closeRight?: (() => void) | undefined;
+    } | undefined;
 }
 interface WorkbenchThread {
     key: string;
@@ -420,6 +445,8 @@ interface WorkbenchThread {
     agent?: string;
     /** A shortcut's place in the account's own order; unordered ones follow by recency. */
     shortcutOrder?: number;
+    /** The start of a prompt written here and not sent: the row and tab say so. */
+    draft?: string;
 }
 interface WorkbenchNotification {
     id: string;
@@ -572,6 +599,8 @@ interface AppShellNavContextValue {
     setShowReasoningSummaries?: (enabled: boolean) => void;
     sendShortcut?: ComposerSendShortcut;
     setSendShortcut?: (shortcut: ComposerSendShortcut) => Promise<void>;
+    /** Where the choice is kept: the Relay account, or (local mode) this browser. */
+    sendShortcutScope?: 'account' | 'browser';
     sendShortcutLoading?: boolean;
     sendShortcutSaving?: boolean;
     sendShortcutError?: string | null;
@@ -942,7 +971,7 @@ declare function LongTextDialog({ open, title, text, kind, onClose, }: LongTextD
 declare function formatShortTimestamp(value: string | null): string;
 declare function formatLongTimestamp(value: string | null): string;
 declare function threadStatusLabel(status: ThreadDto['status']): string;
-declare function threadStatusClassName(status: ThreadDto['status']): "ui-status-warning" | "ui-status-neutral" | "ui-status-info" | "ui-status-danger";
+declare function threadStatusClassName(status: ThreadDto['status']): "ui-status-neutral" | "ui-status-info" | "ui-status-warning" | "ui-status-danger";
 declare function turnStatusLabel(status: ThreadTurnDto['status'] | 'sending'): string;
 declare function historyItemAccentClassName(kind: ThreadHistoryItemDto['kind']): "ui-status-neutral" | "timeline-kind-user" | "timeline-kind-agent" | "timeline-kind-action" | "timeline-kind-command" | "timeline-kind-search" | "timeline-kind-file-read" | "timeline-kind-reasoning" | "timeline-kind-agent-tool" | "timeline-kind-skill-tool" | "timeline-kind-plan" | "timeline-kind-file";
 declare function historyItemLabel(kind: ThreadHistoryItemDto['kind']): string;
@@ -1327,6 +1356,15 @@ declare function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, 
     };
 }): react.JSX.Element;
 
+/**
+ * Where a phone's bottom sheet fits: on the visible part of the page. A
+ * software keyboard (and, on iOS, the scroll that keeps a field in view) only
+ * shrinks the visual viewport, so a sheet anchored to the page bottom ends up
+ * under the keyboard, its top above the screen. The sheet's CSS reads these
+ * variables on phones (docs/ui-principles.md §3 floating layers, §4 phone sheets).
+ */
+declare function useSheetViewport(enabled?: boolean): CSSProperties | undefined;
+
 type WorkspacePathResolver = (path: string) => Promise<boolean>;
 /** A resolver belongs to one adapter/device/workspace; never cache across scopes. */
 declare function createWorkspacePathResolver(adapter: Pick<ThreadWorkspaceAdapter, 'listTree' | 'statLinkedFile'>, identity: {
@@ -1404,4 +1442,4 @@ declare const ImageDiagnosisProvider: react.Provider<ImageFailureDiagnoser | und
  * Electron's rendering gate is separate from visibility so activity stays live. */
 declare function useVisibleClock(enabled: boolean, interval?: number, element?: Element | null): number;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, type ComposerUploadProgressState, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, ImageDiagnosisProvider, ImageFallbackProvider, ImageRecoveryProvider, LongTextDialog, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, PersistentWorkbenchNavigation, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchInspector, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, approveWorkspaceDocumentUnloadOnce, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatShortTimestamp, getDirtyWorkspaceDocumentCount, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useThemeFeature, useVisibleClock, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, type ComposerUploadProgressState, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, DEFAULT_THREAD_TITLE, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, ImageDiagnosisProvider, ImageFallbackProvider, ImageRecoveryProvider, LongTextDialog, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, PersistentWorkbenchNavigation, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchInspector, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, approveWorkspaceDocumentUnloadOnce, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, displayThreadTitle, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatReasoningEffortLabel, formatShortTimestamp, getDirtyWorkspaceDocumentCount, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useSheetViewport, useThemeFeature, useVisibleClock, useWorkbenchPresentation };

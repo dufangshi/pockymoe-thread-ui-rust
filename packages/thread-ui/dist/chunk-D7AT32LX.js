@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-YCPNQG5Q.js";
+} from "./chunk-26NJDTYG.js";
 import {
   KeyCode,
   KeyMod,
@@ -304,6 +304,7 @@ function GraphWorkspaceMonacoEditor({
   language,
   onChange,
   onSave,
+  onReadOnlyEdit,
   path,
   readOnly
 }) {
@@ -320,8 +321,10 @@ function GraphWorkspaceMonacoEditor({
   const initialReadOnlyRef = useRef(readOnly);
   const onChangeRef = useRef(onChange);
   const onSaveRef = useRef(onSave);
+  const onReadOnlyEditRef = useRef(onReadOnlyEdit);
   onChangeRef.current = onChange;
   onSaveRef.current = onSave;
+  onReadOnlyEditRef.current = onReadOnlyEdit;
   useEffect(() => {
     const host = hostRef.current;
     if (!host) {
@@ -376,8 +379,10 @@ function GraphWorkspaceMonacoEditor({
     editor2.addCommand(KeyMod.CtrlCmd | KeyCode.KeyS, () => {
       onSaveRef.current?.();
     });
+    const readOnlySubscription = editor2.onDidAttemptReadOnlyEdit(() => onReadOnlyEditRef.current?.());
     return () => {
       changeSubscription.dispose();
+      readOnlySubscription.dispose();
       if (retainModel && !releasedKeys.has(modelKey)) retainedModels.set(modelKey, { model, view: editor2.saveViewState() });
       editor2.dispose();
       editorRef.current = null;

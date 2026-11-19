@@ -4,19 +4,31 @@
 .settings-workspace { display: grid; grid-template-columns: 168px minmax(0, 1fr); min-height: 0; flex: 1; overflow: clip; color: var(--theme-fg); }
 .settings-navigation { display: flex; flex-direction: column; gap: 5px; padding: 20px 12px; border-right: 1px solid var(--theme-border); background: var(--theme-surface); overflow: auto; scrollbar-width: none; }
 .settings-navigation::-webkit-scrollbar { display: none; }
-.settings-navigation button { display: flex; align-items: center; min-height: 40px; padding: 9px 13px; border-radius: 9px; font-size: 13px; font-weight: 500; text-align: left; color: var(--theme-fg-muted); white-space: nowrap; transition: background .15s, color .15s; }
+.settings-navigation button { display: flex; align-items: center; min-height: 40px; padding: 9px 13px; border-radius: 9px; font-size: 13px; font-weight: 500; text-align: left; color: var(--theme-fg-muted); /* The desktop column wraps a long name ("Isolated environments"); the phone row never does. */ overflow-wrap: anywhere; transition: background .15s, color .15s; }
 .settings-navigation button:active { background: var(--theme-hover); color: var(--theme-fg); }
 @media (hover: hover) {
   .settings-navigation button:hover { background: var(--theme-hover); color: var(--theme-fg); }
 }
 .settings-navigation button[aria-selected='true'] { background: var(--theme-panel); color: var(--theme-accent-strong); box-shadow: inset 0 0 0 1px var(--theme-border), 0 2px 4px rgb(0 0 0 / 3%); }
 .settings-navigation button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
+.settings-navigation-more { display: none; }
 .settings-panel { min-width: 0; min-height: 0; padding: 26px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; }
 .settings-panel-heading { margin-bottom: 16px; }
 .settings-panel-heading h3 { font-size: 18px; font-weight: 600; letter-spacing: -.025em; }
 .settings-panel-heading p { margin-top: 5px; font-size: 12px; line-height: 1.65; color: var(--theme-fg-muted); }
+/* A legend draws in its fieldset's top border and ignores the padding, so a
+   group heading sat on the divider. Floated, it flows inside like every other heading. */
+.settings-panel fieldset > legend { float: left; width: 100%; padding: 0; }
+.settings-panel fieldset > legend + * { clear: both; }
 .settings-detail { margin-top: 12px; border: 1px solid var(--theme-border); border-radius: 10px; }
-.settings-detail > summary { padding: 13px 15px; cursor: pointer; font-size: 12px; font-weight: 500; }
+.settings-detail > summary { padding: 13px 15px; cursor: pointer; font-size: 13px; font-weight: 600; }
+/* A settings fold opens with the app's chevron, not the browser marker: right when
+   folded, down when open (docs/ui-principles.md §5). */
+:is(.settings-detail > summary, summary.settings-summary) { display: flex; align-items: center; gap: 8px; list-style: none; }
+:is(.settings-detail > summary, summary.settings-summary)::-webkit-details-marker { display: none; }
+:is(.settings-detail > summary, summary.settings-summary)::before { content: ''; flex: none; width: 6px; height: 6px; margin: 0 3px 0 1px; border-right: 1.5px solid var(--theme-fg-muted); border-bottom: 1.5px solid var(--theme-fg-muted); transform: rotate(-45deg); transition: transform .15s; }
+details[open] > summary.settings-summary::before, .settings-detail[open] > summary::before { transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) { :is(.settings-detail > summary, summary.settings-summary)::before { transition: none; } }
 .settings-detail > div { padding: 0 15px 15px; }
 .plugin-settings-form { display: grid; gap: 18px; max-width: 640px; }
 .plugin-settings-fields { display: grid; gap: 20px; min-width: 0; margin: 0; padding: 0; border: 0; }
@@ -45,7 +57,15 @@
   .thread-graph-settings-dialog [data-slot='dialog-description'] { margin-top: 2px; overflow: hidden; font-size: 11.5px; text-overflow: ellipsis; white-space: nowrap; }
   .settings-workspace { display: flex; flex-direction: column; }
   .settings-navigation { flex-direction: row; flex-shrink: 0; gap: 2px; padding: 6px 10px; border-right: 0; border-bottom: 1px solid var(--theme-border); overflow-x: auto; overflow-y: hidden; }
-  .settings-navigation button { flex-shrink: 0; min-height: 34px; padding: 6px 11px; font-size: 12.5px; }
+  .settings-navigation button { flex-shrink: 0; min-height: 34px; padding: 6px 11px; font-size: 12.5px; white-space: nowrap; }
+  /* Tabs past the edge fade out, and a chip says how many are left (+N). */
+  .settings-workspace { position: relative; }
+  .settings-navigation[data-more-after] { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 56px), transparent calc(100% - 8px)); mask-image: linear-gradient(90deg, #000 calc(100% - 56px), transparent calc(100% - 8px)); }
+  .settings-navigation[data-more-before] { -webkit-mask-image: linear-gradient(90deg, transparent, #000 28px); mask-image: linear-gradient(90deg, transparent, #000 28px); }
+  .settings-navigation[data-more-before][data-more-after] { -webkit-mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 56px), transparent calc(100% - 8px)); mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 56px), transparent calc(100% - 8px)); }
+  .settings-navigation-more { position: absolute; right: 8px; z-index: 1; transform: translateY(-50%); display: grid; place-items: center; min-width: 32px; height: 32px; padding: 0 8px; border: 1px solid var(--theme-border); border-radius: 999px; background: var(--theme-panel); color: var(--theme-fg-soft, var(--theme-fg)); font-size: 12px; font-variant-numeric: tabular-nums; box-shadow: 0 1px 3px rgb(0 0 0 / 10%); }
+  .settings-navigation-more::after { content: ''; position: absolute; inset: -4px; }
+  .settings-navigation-more:active { background: var(--theme-hover); }
   .settings-panel { flex: 1; padding: 14px 14px max(16px, env(safe-area-inset-bottom)); scrollbar-width: none; }
   .settings-panel::-webkit-scrollbar { display: none; }
   .settings-panel-heading { margin-bottom: 12px; }
@@ -112,13 +132,7 @@
 .thread-plugins-state.is-on { background: var(--theme-accent-soft); color: var(--theme-accent-strong); }
 .thread-plugins-state.is-off { background: var(--theme-hover); color: var(--theme-fg-muted); }
 /* Global plugin settings: an enabled plugin's default for conversations, a small two-way switch. */
-.plugin-default-row { display: flex; align-items: center; gap: 2px; margin-top: 8px; font-size: 12px; color: var(--theme-fg-muted); }
-.plugin-default-row > span { margin-right: 8px; }
-.plugin-default-row > button { min-width: 44px; min-height: 28px; padding: 0 10px; border: 1px solid var(--theme-border); background: transparent; color: var(--theme-fg-muted); font-size: 12px; }
-.plugin-default-row > button:first-of-type { border-radius: 7px 0 0 7px; }
-.plugin-default-row > button:last-of-type { border-radius: 0 7px 7px 0; border-left: 0; }
-.plugin-default-row > button[aria-checked='true'] { background: var(--theme-hover); color: var(--theme-accent-strong, var(--theme-fg)); font-weight: 500; }
-.plugin-default-row > button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
+.plugin-default-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; color: var(--theme-fg-muted); }
 .thread-plugins-choice { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 2px; border-radius: 9px; background: var(--theme-hover); }
 .thread-plugins-choice label { position: relative; display: flex; min-height: 32px; align-items: center; justify-content: center; border-radius: 7px; font-size: 12px; color: var(--theme-fg-muted); cursor: pointer; }
 .thread-plugins-choice input { position: absolute; inset: 0; opacity: 0; cursor: inherit; }

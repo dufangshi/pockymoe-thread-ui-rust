@@ -284,7 +284,12 @@ function GroupBar({ groups, total, label }: { groups: GroupTokens; total: number
 
 /** What the thread's requests read and cost so far: cache hits, the makeup of
     everything read, and where the time went. */
-export function ContextStats({ data }: { data: ThreadContextStepsDto }) {
+export function ContextStats({ data, inspectionOff = false, openSettings }: {
+  data: ThreadContextStepsDto;
+  /** Context analysis is off on the device: say so and offer the setting. */
+  inspectionOff?: boolean;
+  openSettings?: (() => void) | undefined;
+}) {
   useI18n();
   const stats = useMemo(() => contextStatistics(data), [data]);
   const time = stats.modelMs + stats.otherMs;
@@ -330,7 +335,12 @@ export function ContextStats({ data }: { data: ThreadContextStepsDto }) {
           <p className="thread-context-footnote">{translate('chat.contextCumulativeNote', { steps: stats.cumulativeSteps, total: formatContextTokens(stats.cumulativeTotal) })}</p>
         </div>
       ) : (
-        <p className="thread-context-note">{translate('chat.contextCumulativeEmpty')}</p>
+        inspectionOff ? (
+          <div className="thread-context-note" data-context-note="disabled">
+            <span>{translate('chat.contextCumulativeOff')}</span>
+            {openSettings ? <button type="button" className="thread-context-link" onClick={openSettings}>{translate('chat.contextOpenSettings')}</button> : null}
+          </div>
+        ) : <p className="thread-context-note">{translate('chat.contextCumulativeEmpty')}</p>
       )}
       {time > 0 ? (
         <div className="thread-context-stat">

@@ -237,6 +237,7 @@ export const workbenchEn = {
   "workbench.shareAsLink": "Share as link",
   "workbench.createAndCopyReadOnlyLink": "Create and copy read-only link",
   "workbench.sharingPermissions": "Sharing permissions",
+  "workbench.sharingNeedsRelay": "Sharing goes through a Relay: open this device with a Relay account to share.",
   "workbench.downloadTranscript": "Download transcript",
   "workbench.onlyTheOwnerCanCreateAPublic": "Only the owner can create a public link for this thread.",
   "workbench.openThisDeviceThroughYourRelayAccount": "Open this device through your Relay account to create a read-only share link.",

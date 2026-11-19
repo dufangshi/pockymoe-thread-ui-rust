@@ -1882,17 +1882,20 @@
 .thread-ui-shell .matter-thread-tools-panels::before { content: ''; position: absolute; top: 0; left: 4px; right: 4px; height: 1px; background: var(--theme-border); }
 .thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) { display: flex; flex-direction: column; }
 .thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(div, span):has(> :is(button, a)) { display: contents; }
-.thread-ui-shell .matter-thread-tools-menu :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label] {
+.thread-ui-shell .matter-thread-tools-menu :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:not(.error-mark) {
   display: flex; align-items: center; justify-content: flex-start; gap: 10px; width: 100%; height: auto; min-height: 36px; padding: 0 10px;
   border: 0; border-radius: 8px; background: transparent; color: var(--theme-fg); font-size: 13px; text-align: left;
 }
-.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]::after { content: attr(aria-label); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label] > svg { flex: none; width: 16px; height: 16px; color: var(--theme-fg-soft, var(--theme-fg-muted)); }
-.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:is(:active, :focus-visible):not(:disabled) { background: var(--theme-hover); outline: none; }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:not(.error-mark)::after { content: attr(aria-label); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:not(.error-mark) > svg { flex: none; width: 16px; height: 16px; color: var(--theme-fg-soft, var(--theme-fg-muted)); }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:not(.error-mark):is(:active, :focus-visible):not(:disabled) { background: var(--theme-hover); outline: none; }
 @media (hover: hover) {
-  .thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:is(:hover, :focus-visible):not(:disabled) { background: var(--theme-hover); outline: none; }
+  .thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:not(.error-mark):is(:hover, :focus-visible):not(:disabled) { background: var(--theme-hover); outline: none; }
 }
-.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:disabled { opacity: .45; }
+.thread-ui-shell :is(.matter-thread-tools-items, .matter-thread-tools-panels) :is(button, a)[aria-label]:not(.error-mark):disabled { opacity: .45; }
+/* An action this connection cannot take stays in place, greyed, with the reason on a mark after it (docs/ui-principles.md §11). */
+.thread-ui-shell .matter-thread-tools-items .matter-thread-tools-unavailable.matter-thread-tools-unavailable { display: flex; align-items: center; padding-right: 8px; }
+.thread-ui-shell .matter-thread-tools-unavailable > button:first-child { flex: 1; min-width: 0; }
 /* Port mappings (remote devices only) last, set apart. */
 .thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports']) { order: 10; margin-top: 5px; position: relative; }
 .thread-ui-shell .matter-thread-tools-items :is(button, a):has([data-icon='ports'])::before { content: ''; position: absolute; top: -3px; left: 4px; right: 4px; height: 1px; background: var(--theme-border); }

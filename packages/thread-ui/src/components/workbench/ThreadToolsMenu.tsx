@@ -77,7 +77,7 @@ export function ThreadToolsMenu({ id, open, anchorRef, path, title, favorite, fa
       onClick={(event) => {
         // An action opens its window; the menu steps aside. The head's controls keep it open.
         const target = event.target instanceof Element ? event.target : null;
-        if (target?.closest('.matter-thread-tools-items, .matter-thread-tools-panels') && target.closest('button, a')) window.setTimeout(() => close.current(false), 0);
+        if (target?.closest('.matter-thread-tools-items, .matter-thread-tools-panels') && target.closest('button, a') && !target.closest('.error-mark')) window.setTimeout(() => close.current(false), 0);
       }}>
       <div className="matter-thread-tools-head">
         <div className="matter-thread-tools-path" title={path}>

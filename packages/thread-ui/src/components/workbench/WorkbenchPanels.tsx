@@ -203,6 +203,10 @@ export function WorkbenchPanels({
   const panelHeight = clampToolPanelHeight(toolPanel.height, columnHeight, compact);
   const panelBounds = toolPanelBounds(columnHeight, compact);
   const panelMaximized = toolPanel.maximized && !toolPanel.collapsed;
+  // While the terminal holds a phone's keyboard it fills the column, instead of
+  // keeping its share above an empty conversation; the stored layout is unchanged.
+  const keyboardFill = compact && keyboardInset > 0 && !toolPanel.collapsed;
+  const panelFills = panelMaximized || keyboardFill;
   const toolPanelControls: WorkbenchToolPanelControls = {
     maximized: panelMaximized,
     collapsed: toolPanel.collapsed,
@@ -423,12 +427,12 @@ export function WorkbenchPanels({
         </nav>
       )}
       <div className="workbench-content">
-      <div ref={mainColumn} className={`workbench-main-column ${o.toolsOpen && panelMaximized ? 'has-maximized-panel' : ''}`}>
+      <div ref={mainColumn} className={`workbench-main-column ${o.toolsOpen && panelFills ? 'has-maximized-panel' : ''}`}>
       <div
         className={`workbench-pane-grid ${showReference ? 'has-reference' : ''}`}
         // A maximized terminal covers the conversations without unmounting
         // them (scroll and drafts survive); keep them out of the tab order.
-        inert={o.toolsOpen && panelMaximized ? true : undefined}
+        inert={o.toolsOpen && panelFills ? true : undefined}
       >
         <section
           className="workbench-primary matter-chat"
@@ -570,12 +574,12 @@ export function WorkbenchPanels({
         <section
           role="region"
           aria-label={o.toolTitle ?? t('workbench.terminal')}
-          className={`workbench-bottom-panel ${panelMaximized ? 'is-maximized' : ''} ${toolPanel.collapsed ? 'is-collapsed' : ''}`}
+          className={`workbench-bottom-panel ${panelFills ? 'is-maximized' : ''} ${toolPanel.collapsed ? 'is-collapsed' : ''}`}
           data-testid="workbench-bottom-panel"
           hidden={!o.toolsOpen}
           style={{ '--workbench-panel-height': `${panelHeight}px` } as CSSProperties}
         >
-          {!panelMaximized && !toolPanel.collapsed && panelSash}
+          {!panelFills && !toolPanel.collapsed && panelSash}
           {typeof o.toolContent === 'function' ? o.toolContent(toolPanelControls) : o.toolContent}
         </section>
       )}

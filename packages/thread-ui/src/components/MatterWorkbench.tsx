@@ -379,7 +379,8 @@ export function MatterWorkbench({
     // The keyboard needs the room: hide the navigation row while a field has focus.
     const editing = () => {
       const target = document.activeElement;
-      return target instanceof HTMLElement && !target.closest('.matter-phone-sheet, .matter-topbar')
+      // The terminal has its own key row above the keyboard; the dock stays down.
+      return target instanceof HTMLElement && !target.closest('.matter-phone-sheet, .matter-topbar, [data-testid="workbench-bottom-panel"]')
         && target.matches('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]), [contenteditable]:not([contenteditable="false"])');
     };
     let timer = 0;

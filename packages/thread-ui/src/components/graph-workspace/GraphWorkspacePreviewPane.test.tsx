@@ -189,6 +189,34 @@ describe('GraphWorkspacePreviewPane', () => {
     act(() => element.querySelector('a')!.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })));
     expect(onOpenWorkspaceFile).toHaveBeenCalledWith('README.zh-CN.md');
   });
+  it('opens an image that links to itself in the lightbox in place, steps through the document images, and keeps other image links as links', () => {
+    const onOpenWorkspaceFile = vi.fn();
+    const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
+      selectedTarget={{ kind: 'workspace-file', node: { id: 'summary', path: 'SUMMARY.md', name: 'SUMMARY.md', kind: 'file', children: [] } }}
+      previewFile={{ path: 'SUMMARY.md', name: 'SUMMARY.md', language: 'markdown', size: 300, truncated: false, nextOffset: 300,
+        content: '| Before | After |\n| --- | --- |\n| <a href="shots/a.png"><img src="shots/a.png" alt="A" width="360"></a> | <a href="after/b.png"><img src="after/b.png" alt="B"></a> |\n\n[![C](c.png)](docs/next.md)' }}
+      workspaceRootPath="/home/u/treer" onOpenWorkspaceFile={onOpenWorkspaceFile}
+      resolveWorkspaceFileUrl={path => `/raw?path=${encodeURIComponent(path)}`} />);
+    // Self-links are the image itself: a lightbox trigger, not a link to leave by.
+    expect(element.querySelector('a img[alt="A"]')).toBeNull();
+    act(() => element.querySelector<HTMLButtonElement>('[aria-label="Open image preview: A"]')!.click());
+    expect(onOpenWorkspaceFile).not.toHaveBeenCalled();
+    let dialog = document.body.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(dialog.querySelector('.thread-graph-image-lightbox-viewport img')?.getAttribute('src')).toContain('shots%2Fa.png');
+    expect(dialog.textContent).toContain('1 / 2');
+    act(() => dialog.querySelector<HTMLButtonElement>('[aria-label="Next image"]')!.click());
+    dialog = document.body.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(dialog.querySelector('.thread-graph-image-lightbox-viewport img')?.getAttribute('src')).toContain('after%2Fb.png');
+    expect(dialog.querySelector<HTMLButtonElement>('[aria-label="Next image"]')!.disabled).toBe(true);
+    act(() => { window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' })); });
+    expect(document.body.querySelector('[role="dialog"] .thread-graph-image-lightbox-viewport img')?.getAttribute('src')).toContain('shots%2Fa.png');
+    act(() => document.body.querySelector<HTMLButtonElement>('[aria-label="Close image preview"]')!.click());
+    expect(document.body.querySelector('[role="dialog"]')).toBeNull();
+    // A link to something else wraps its image and still goes there.
+    const other = element.querySelector<HTMLElement>('img[alt="C"]')!.closest('a')!;
+    act(() => other.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })));
+    expect(onOpenWorkspaceFile).toHaveBeenCalledWith('docs/next.md');
+  });
   it('explains a refused symbolic link instead of showing the error code', () => {
     const element = render(<GraphWorkspacePreviewPane plugins={createDefaultPluginContextValue()}
       selectedTarget={{ kind: 'workspace-file', node: { id: 'link', path: 'link', name: 'link', kind: 'file', children: [] } }}

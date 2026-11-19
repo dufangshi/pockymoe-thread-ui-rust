@@ -141,6 +141,9 @@ export interface ThreadComposerProps {
   shellAvailable?: boolean;
   disabled?: boolean;
   disabledPlaceholder?: string | undefined;
+  /** Why sending cannot work right now (the device's connection dropped): the
+      send key greys out and says so, while the draft stays editable. */
+  sendUnavailableReason?: string | null | undefined;
   shellControlState?: ThreadShellControlState | null;
   draftPrompt?: string | undefined;
   draftAttachments?: PromptAttachmentUpload[] | undefined;
@@ -248,6 +251,7 @@ export function ThreadComposer({
   shellAvailable = true,
   disabled = false,
   disabledPlaceholder,
+  sendUnavailableReason = null,
   shellControlState = null,
   draftPrompt,
   draftAttachments,
@@ -769,6 +773,10 @@ export function ThreadComposer({
     if (submitInFlightRef.current) {
       return;
     }
+    // Disconnected: keep the draft and do not try (the key says why).
+    if (sendUnavailableReason && !isShellView) {
+      return;
+    }
     submitInFlightRef.current = true;
 
     try {
@@ -1045,6 +1053,7 @@ export function ThreadComposer({
     busy,
   });
   const toolbarProps = useComposerToolbarProps({
+    sendUnavailable: !isShellView ? sendUnavailableReason : null,
     sendProgress: uploadProgress
       ? ((uploadProgress.index - 1) + (uploadProgress.total > 0 ? Math.min(1, uploadProgress.loaded / uploadProgress.total) : 1)) / Math.max(1, uploadProgress.count)
       : null,
@@ -1283,7 +1292,10 @@ export function ThreadComposer({
           canInterrupt={!isShellView && canInterrupt}
           interruptLabel={interruptLabel}
           onInterrupt={onInterrupt}
-          sendError={sendFailure && error ? (
+          sendError={sendUnavailableReason && !isShellView ? (
+            // The unavailable reason follows the greyed key (ui-principles §11).
+            <ErrorMark kind="unavailable" className="composer-send-error" message={sendUnavailableReason} />
+          ) : sendFailure && error ? (
             <ErrorMark
               className="composer-send-error"
               message={translate('chat.promptNotSent')}

@@ -77,6 +77,7 @@ function renderToolbar({
   promptEmpty = false,
   contextUsage = null,
   sending = false,
+  sendUnavailable = null,
   onOpenHarness,
 }: {
   initialOpenMenu?: SettingsMenu;
@@ -97,6 +98,7 @@ function renderToolbar({
   promptEmpty?: boolean;
   contextUsage?: ThreadContextUsageDto | null;
   sending?: boolean;
+  sendUnavailable?: string | null;
   onOpenHarness?: () => void;
 } = {}) {
   function Harness() {
@@ -127,6 +129,7 @@ function renderToolbar({
           fastMode={false}
           sendButtonLabel="Send"
           sending={sending}
+          sendUnavailable={sendUnavailable}
           sendButtonClassName="send-state"
           modelControlsDisabled={modelControlsDisabled}
           effortControlsDisabled={effortControlsDisabled}
@@ -152,6 +155,19 @@ function buttonByText(view: HTMLElement, text: string) {
 }
 
 describe('ComposerSettingsToolbar', () => {
+  it('greys the send key and says why while the device is unreachable', () => {
+    const view = renderToolbar({ sendUnavailable: 'The device is not answering.' });
+    const send = view.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    expect(send.getAttribute('aria-disabled')).toBe('true');
+    expect(send.dataset.unavailable).toBe('true');
+    expect(send.title).toBe('The device is not answering.');
+    expect(send.getAttribute('aria-label')).toContain('The device is not answering.');
+    const back = renderToolbar();
+    const ready = back.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    expect(ready.dataset.unavailable).toBeUndefined();
+    expect(ready.getAttribute('aria-disabled')).toBeNull();
+  });
+
   it('turns the send key into a spinner while a prompt is on its way', () => {
     const view = renderToolbar({ sending: true });
     const send = view.querySelector<HTMLButtonElement>('button[type="submit"]')!;

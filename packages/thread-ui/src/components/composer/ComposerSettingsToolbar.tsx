@@ -54,6 +54,7 @@ export function ComposerSettingsToolbar({
   sendButtonLabel,
   sending = false,
   sendProgress = null,
+  sendUnavailable = null,
   sendButtonClassName,
   sendButtonBaseClassName,
   beforeSend,
@@ -93,6 +94,9 @@ export function ComposerSettingsToolbar({
   /** Files of this prompt still uploading, 0–1: the send key shows a ring that
       fills instead of a spinner, since this can take minutes (§6). */
   sendProgress?: number | null;
+  /** Why sending cannot work now (a dropped connection): the key greys out,
+      says why on hover and to screen readers, and the draft stays editable. */
+  sendUnavailable?: string | null;
   sendButtonClassName: string;
   modelControlsDisabled: boolean;
   effortControlsDisabled: boolean;
@@ -241,11 +245,12 @@ export function ComposerSettingsToolbar({
         size="icon-xs"
         data-send-intent={goalComposeMode ? 'goal' : sendLater ? 'queue' : 'send'}
         data-empty={sendEmpty ? 'true' : undefined}
-        aria-label={sendIntentLabel}
-        aria-disabled={sendEmpty || undefined}
+        data-unavailable={sendUnavailable ? 'true' : undefined}
+        aria-label={sendUnavailable ? translate('chat.sendUnavailableLabel', { value1: sendIntentLabel, value2: sendUnavailable }) : sendIntentLabel}
+        aria-disabled={sendEmpty || Boolean(sendUnavailable) || undefined}
         aria-busy={sending || undefined}
         data-sending={sending ? 'true' : undefined}
-        title={sendEmpty ? translate('chat.typeToSend') : sendLater || goalComposeMode ? sendIntentLabel : sendButtonLabel}
+        title={sendUnavailable ?? (sendEmpty ? translate('chat.typeToSend') : sendLater || goalComposeMode ? sendIntentLabel : sendButtonLabel)}
         disabled={goalBusy || (activeView === 'chat' ? disabled : false)}
         className={`${sendButtonBaseClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
       >

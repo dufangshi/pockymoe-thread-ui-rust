@@ -782,4 +782,5 @@ export const chatZhCN = {
   "chat.uploadFileOf": "第 {{value1}} 个，共 {{value2}} 个",
   "chat.uploadStarting": "正在开始上传…",
   "chat.uploadWaitingToSend": "上传完成后自动发送：",
+  "chat.sendUnavailableLabel": "{{value1}}：{{value2}}",
 } as const;

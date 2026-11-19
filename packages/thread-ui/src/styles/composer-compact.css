@@ -340,3 +340,7 @@
   position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; gap: 8px;
   pointer-events: none; font-size: 13px; font-weight: 600; color: var(--theme-accent-strong, var(--theme-accent));
 }
+
+/* The device's connection dropped: the send key greys out like an empty
+   prompt, keeps its place and says why (title, name, the mark beside it). */
+.thread-ui-shell .thread-graph-composer-send-button[data-unavailable='true'] { opacity: .45; cursor: not-allowed; }

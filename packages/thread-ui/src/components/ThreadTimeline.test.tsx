@@ -399,13 +399,18 @@ describe('ThreadTimeline', () => {
     flushSync(() => (el.querySelector('.thread-graph-worked-summary button[aria-expanded]') as HTMLButtonElement).click());
     expect(el.querySelectorAll('.thread-peer-work-toggle')).toHaveLength(2);
     expect(load).not.toHaveBeenCalled();
+    // A folded wake still shows what the agent answered after it, outside the
+    // fold; the last wake's answer is the task's closing answer, shown once.
+    expect([...el.querySelectorAll('.thread-peer-wake-reply')].map(node => node.textContent)).toEqual(['Reply for first']);
+    expect(el.textContent?.split('Reply for second')).toHaveLength(2);
     const toggle = el.querySelector('.thread-peer-work-toggle') as HTMLButtonElement;
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
     flushSync(() => toggle.click());
     await vi.waitFor(() => expect(el.textContent).toContain('Full question: does the registration remain valid tomorrow?'));
     expect(load).toHaveBeenCalledExactlyOnceWith('first');
     expect(el.querySelector('.thread-peer-work-operations')?.textContent).toContain('verify-session');
-    expect(el.querySelector('.thread-peer-work-operations')?.textContent).toContain('Reply for first');
+    expect(el.querySelector('.thread-peer-work-operations')?.textContent).not.toContain('Reply for first');
+    expect(el.querySelector('.thread-peer-wake-reply')?.textContent).toBe('Reply for first');
     expect(el.querySelectorAll('[data-role="user"]')).toHaveLength(1);
     flushSync(() => toggle.click());
     flushSync(() => toggle.click());
@@ -434,8 +439,15 @@ describe('ThreadTimeline', () => {
     expect(toggle.textContent).toContain('b-lab');
     expect(toggle.textContent).not.toContain('idle');
     flushSync(() => toggle.click());
-    expect(el.querySelector('.thread-peer-report')?.textContent).toContain('已结束执行');
-    expect(el.querySelector('.thread-peer-report')?.textContent).toContain('Full E2E report: all tests passed.');
+    // Each report is one row (name, state, first line); a tap opens the whole message.
+    const report = el.querySelector('.thread-peer-report')!;
+    const head = report.querySelector<HTMLButtonElement>('.thread-peer-report-head')!;
+    expect(head.getAttribute('aria-expanded')).toBe('false');
+    expect(head.textContent).toContain('已结束执行');
+    expect(report.querySelector('.thread-peer-report-line')?.textContent).toBe('Full E2E report: all tests passed.');
+    expect(report.querySelector('.thread-peer-report-body')).toBeNull();
+    flushSync(() => head.click());
+    expect(report.querySelector('.thread-peer-report-body .is-assistant')?.textContent).toContain('Full E2E report: all tests passed.');
     expect(el.querySelector('.thread-peer-processing-label')?.textContent).toBe('唤醒后的处理');
   });
 

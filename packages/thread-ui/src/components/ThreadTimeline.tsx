@@ -825,10 +825,15 @@ function ThreadTimelineComponent({
     const peerTurn = { ...turn, items: loadedTurnDetails[turn.id]?.items ?? turn.items };
     const context = peerWorkForTurn(peerTurn)!;
     const expanded = collapsedTurnOverrides[turn.id] === false;
+    // What the agent answered after this wake stands outside the wake's fold,
+    // so a folded wake still shows it (its first lines). The last wake's answer
+    // is already the task's closing answer below the wakes: not twice.
+    const reply = peerWorkPreview(peerTurn, liveItemsTargetTurnId === turn.id ? liveItems?.items : null);
+    const outsideReply = reply && reply.id !== omitAgentId ? reply : null;
     return <PeerWorkGroup key={turn.id} turn={peerTurn} context={context} expanded={expanded}
       loading={loadingTurnDetailIds.has(turn.id)} error={turnDetailErrors[turn.id]}
-      onToggle={() => handleToggleCollapse(turn, !expanded)} scrollRootRef={scrollContainerRef}>
-      {renderWorkTurn(turn, visibleTurns.indexOf(turn), [], true, omitAgentId)}
+      onToggle={() => handleToggleCollapse(turn, !expanded)} scrollRootRef={scrollContainerRef} reply={outsideReply}>
+      {renderWorkTurn(turn, visibleTurns.indexOf(turn), [], true, outsideReply?.id ?? omitAgentId)}
       {(requestEntryAnchors.notesByTurnId.get(turn.id)?.length) ? <RequestEntrySectionForTurn
         notes={requestEntryAnchors.notesByTurnId.get(turn.id) ?? []} requests={[]}
         respondingRequestId={respondingRequestId} onRespondToRequest={onRespondToRequest ?? undefined} /> : null}

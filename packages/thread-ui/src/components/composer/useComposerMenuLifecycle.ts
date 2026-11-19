@@ -92,7 +92,10 @@ export function useComposerMenuLifecycle({
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !event.defaultPrevented) {
+        // Captured before anything else sees it: this Esc belongs to the open
+        // menu, so a surrounding split pane must not close as well (§4).
+        event.preventDefault();
         // Removing a focused menu item otherwise sends focus to the document.
         // Return to its composer trigger before closing the surface.
         const surface = document.activeElement?.closest('[data-composer-menu-surface]');
@@ -102,10 +105,10 @@ export function useComposerMenuLifecycle({
     }
 
     if (openMenu) {
-      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keydown', handleKeyDown, true);
       window.addEventListener('pointerdown', handleWindowPointerDown);
       return () => {
-        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('keydown', handleKeyDown, true);
         window.removeEventListener('pointerdown', handleWindowPointerDown);
       };
     }

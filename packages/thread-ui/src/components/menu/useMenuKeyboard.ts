@@ -19,7 +19,9 @@ export function useMenuKeyboard(menuRef: RefObject<HTMLElement | null>, open: bo
     const key = (event: KeyboardEvent) => {
       const list = items();
       const index = list.indexOf(document.activeElement as HTMLElement);
-      const move = (to: number) => { event.preventDefault(); list[(to + list.length) % list.length]?.focus(); };
+      // A slider among the items (the composer's effort) keeps left and right;
+      // up and down move between items and must not also step the slider.
+      const move = (to: number) => { event.preventDefault(); if ((event.target as HTMLElement | null)?.getAttribute?.('role') === 'slider') event.stopPropagation(); list[(to + list.length) % list.length]?.focus(); };
       if (event.key === 'ArrowDown') move(index + 1);
       else if (event.key === 'ArrowUp') move(index < 0 ? -1 : index - 1);
       else if (event.key === 'Home') move(0);

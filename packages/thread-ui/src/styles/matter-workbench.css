@@ -111,6 +111,11 @@
   grid-template-rows: minmax(0, 1fr);
   background: var(--matter-chrome);
   font-size: 13px;
+  /* A phone on its side has its notch at the left or right: the rail, the
+     composer and the top bar stay inside the safe area (UI §3). */
+  box-sizing: border-box;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 .thread-ui-shell .matter-workbench svg {
   stroke-width: 1.65;
@@ -506,6 +511,23 @@
 .thread-graph-settings-dialog.matter-settings-dialog :is(button, input, select, textarea):focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 2px; }
 @media (max-width: 639px) {
   .thread-graph-dialog.matter-settings-dialog { padding: 18px; }
+  /* Phones: a bottom sheet like every other secondary window (UI §4), on the
+     visible part of the page (useSheetViewport) and below the notch. Clear the
+     centring variables, not only the property: the production minifier folds
+     `transform: none` and `translate: none` into one `transform`. */
+  .thread-graph-dialog.matter-settings-dialog {
+    top: auto; left: 0; right: 0; bottom: var(--sheet-bottom, 0px);
+    --tw-translate-x: 0; --tw-translate-y: 0; transform: none;
+    width: 100%; max-width: 100%;
+    max-height: calc(var(--sheet-height, 100dvh) - max(env(safe-area-inset-top), 0px) - 12px);
+    padding-bottom: 0;
+    border-width: 1px 0 0; border-radius: 18px 18px 0 0;
+  }
+  .thread-graph-dialog.matter-settings-dialog::before {
+    content: ''; position: absolute; top: 8px; left: 50%; width: 36px; height: 4px; margin-left: -18px;
+    border-radius: 2px; background: var(--theme-border-strong);
+  }
+  .matter-settings-dialog [data-slot='dialog-close'] { width: 40px; height: 40px; top: 12px; right: 8px; border-radius: 10px; }
   .thread-graph-settings-dialog.matter-settings-dialog .thread-graph-settings-body dl > div { grid-template-columns: 80px minmax(0, 1fr); }
 }
 .matter-thread-copy {
@@ -961,6 +983,17 @@
   border-radius: 12px;
   background: var(--theme-panel);
   box-shadow: var(--matter-composer-shadow);
+}
+/* In a phone sheet the list is the sheet's content, not a floating card. */
+.matter-notifications.is-sheet {
+  position: static;
+  width: auto;
+  max-height: none;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .matter-notifications-heading {
   display: flex;

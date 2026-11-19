@@ -74,6 +74,15 @@ describe('phone top bar without the dock', () => {
     expect(topbar().querySelector('button[aria-label="Open settings"]')).not.toBeNull();
   });
 
+  it('folds this workspace in the drawer once more than three conversations are open', () => {
+    localStorage.clear();
+    const open = ['a', 'b', 'c', 'd'].map(id => ({ ...thread(id), key: `local:${id}` }));
+    options = { ...baseOptions, onCloseTab: vi.fn(), openTabs: open, threads: [thread('x')], workspaceThreads: [thread('a'), thread('c')] };
+    render();
+    expect(drawer().querySelector('[data-testid="open-conversations"]')).not.toBeNull();
+    expect(drawer().querySelector('[data-testid="workspace-threads"]')).toBeNull();
+  });
+
   it('opens the drawer with the open conversations, each closable, and folds the other lists', () => {
     localStorage.clear();
     const onCloseTab = vi.fn(), onNavigate = vi.fn();
@@ -83,8 +92,9 @@ describe('phone top bar without the dock', () => {
     expect(drawer().querySelector('.matter-sidebar-heading')).toBeNull();
     const list = drawer().querySelector('[data-testid="open-conversations"]')!;
     expect([...list.querySelectorAll('.matter-thread-row')].map(row => row.getAttribute('href'))).toEqual(['/threads/a', '/threads/b']);
-    // This workspace and recent chats wait folded, one line each.
-    expect(drawer().querySelector('[data-testid="workspace-threads"]')).toBeNull();
+    // With only a few open, this workspace starts open (the drawer would be mostly
+    // empty otherwise); recent chats wait folded to one line.
+    expect(drawer().querySelector('[data-testid="workspace-threads"]')).not.toBeNull();
     expect(drawer().querySelector('[data-testid="recent-chats"]')).toBeNull();
     expect(drawer().querySelector('.matter-sidebar-recents.is-folded')).not.toBeNull();
     // ✕ takes a conversation off the list without leaving the current one.
@@ -379,7 +389,11 @@ describe('one-handed phone dock', () => {
     ] };
     render();
     act(() => button('Notifications')!.click());
-    const panel = host.querySelector('section.matter-notifications')!;
+    // On a phone the list is a bottom sheet's content (UI §4).
+    const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Notifications"]')!;
+    expect(sheet.hasAttribute('data-open')).toBe(true);
+    expect(sheet.querySelector('.matter-phone-sheet-close')?.getAttribute('aria-label')).toBe('Close');
+    const panel = sheet.querySelector('.matter-notifications')!;
     const group = panel.querySelector('.matter-notification-group')!;
     expect(group.querySelector('.matter-notification-root')?.textContent).toBe('Main task');
     expect([...group.querySelectorAll(':scope > a:not(.matter-notification-root)')].map(item => item.textContent?.slice(0, 11))).toEqual(['Worker done', 'Helper done']);

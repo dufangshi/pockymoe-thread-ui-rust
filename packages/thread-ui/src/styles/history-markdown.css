@@ -3541,10 +3541,14 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:active,htm
 @media (max-width: 639px) {
   .thread-ui-shell .thread-graph-explorer-header { min-height: 48px; padding: 0 6px; }
   .thread-ui-shell .thread-graph-explorer-icon-button,
-  .thread-ui-shell .thread-graph-explorer-collapse-button { width: 36px; height: 44px; }
+  .thread-ui-shell .thread-graph-explorer-collapse-button { width: 40px; height: 44px; }
   .thread-ui-shell .thread-graph-tree-row { min-height: 44px; }
   .thread-ui-shell .thread-graph-tree-actions { opacity: 1; }
-  .thread-ui-shell .thread-graph-tree-action { width: 32px; height: 36px; }
+  /* Row controls are 40px touch targets (UI §10): the menu by size, the
+     folder toggle by a hit area over the indent and the row's height. */
+  .thread-ui-shell .thread-graph-tree-action { width: 40px; height: 44px; }
+  .thread-ui-shell .thread-graph-tree-toggle { position: relative; z-index: 1; }
+  .thread-ui-shell .thread-graph-tree-toggle::after { content: ''; position: absolute; inset: -8px -6px; }
   .thread-ui-shell .workspace-node-quick-action { display: none; }
   .workspace-node-menu button { min-height: 44px; height: auto; white-space: normal; }
   .thread-ui-shell .thread-graph-editor-tab { height: 44px; }

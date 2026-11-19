@@ -379,7 +379,8 @@ export function MatterWorkbench({
     // The keyboard needs the room: hide the navigation row while a field has focus.
     const editing = () => {
       const target = document.activeElement;
-      return target instanceof HTMLElement && !target.closest('.matter-phone-sheet, .matter-topbar')
+      // The terminal has its own key row above the keyboard; the dock stays down.
+      return target instanceof HTMLElement && !target.closest('.matter-phone-sheet, .matter-topbar, [data-testid="workbench-bottom-panel"]')
         && target.matches('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]), [contenteditable]:not([contenteditable="false"])');
     };
     let timer = 0;
@@ -581,10 +582,12 @@ export function MatterWorkbench({
   // chats wait folded, since the tabs hold the recently opened ones. A phone's
   // drawer opens with its open conversations (the desktop's tabs) and keeps the
   // other lists folded to one line each; without open ones it lists this
-  // workspace and recent chats. Each fold is remembered per form factor.
+  // workspace and recent chats. With only a few open (≤3) the drawer would be
+  // mostly empty, so this workspace starts open too. Each fold is remembered per
+  // form factor, and a fold the reader chose wins over these defaults.
   const sectionsKey = `${SIDEBAR_SECTIONS_KEY}:${mobile ? (phoneOpenTabs ? 'phone-open' : 'phone') : 'desktop'}`;
   const sectionDefaults = !mobile ? { open: true, shortcuts: true, workspace: true, recents: false }
-    : phoneOpenTabs ? { open: true, shortcuts: false, workspace: false, recents: false }
+    : phoneOpenTabs ? { open: true, shortcuts: false, workspace: groupThreads(phoneOpenTabs).length <= 3, recents: false }
     : { open: true, shortcuts: false, workspace: true, recents: true };
   const readSections = () => { try { return { ...sectionDefaults, ...JSON.parse(localStorage.getItem(sectionsKey) ?? '{}') }; } catch { return sectionDefaults; } };
   const [sections, setSections] = useState<{ open: boolean; shortcuts: boolean; workspace: boolean; recents: boolean }>(readSections);
@@ -887,6 +890,19 @@ export function MatterWorkbench({
     navigationHost!.publish({ options: o, title, homeHref, settings, newThread, actions, threadMenu, connection, deviceMonitor, explorer: null, revealExplorer: 0,
       navigationActions: { showChat, toggleExplorer: () => setExplorerOpen(open => !open), explorerOpen, chatPressed: o.panels ? !chatCovered : o.activeView === 'chat' } });
   });
+  const notificationList = o.notifications.length ? (
+              notificationGroups(o.notifications).map(group => group.title
+                ? <div key={group.key} className="matter-notification-group">
+                  <a className="matter-notification-root" href={group.href} onClick={(e) => { e.preventDefault(); navigate(group.href!); }}>
+                    <MessagesSquare aria-hidden="true" /><span>{group.title}</span>
+                  </a>
+                  {group.items.map(renderNotification)}
+                </div>
+                : group.items.map(renderNotification))
+            ) : (
+              <p>{translate("workbench.allCaughtUpCompletedThreadsWillAppear")}</p>
+            );
+
   return (
     <div
       ref={rootRef}
@@ -960,7 +976,8 @@ export function MatterWorkbench({
         {runningCount > 0 && <button className="matter-running-chip" aria-expanded={runningOpen}
           aria-label={translate('workbench.runningChip', { count: runningCount })} title={translate('workbench.runningChip', { count: runningCount })}
           onClick={() => { setThreadsOpen(false); setMoreOpen(false); setRunningOpen(true); }}>
-          <span className="matter-running-icon" aria-hidden="true"><MessagesSquare /><i /></span>
+          {/* The running mark itself (UI §6), not a chat bubble, which reads as "waiting for you". */}
+          <span className="matter-running-icon" aria-hidden="true"><StatusMark status="running" /></span>
           <span>{runningCount}</span><span className="matter-running-label">{translate('workbench.running')}</span>
         </button>}
         <div className="matter-connection">{connection}</div>
@@ -1251,7 +1268,7 @@ export function MatterWorkbench({
           terminalEnabled={o.terminalEnabled} onPane={choosePane}
           onOpenThreads={() => { setMoreOpen(false); setThreadsOpen(true); }} onOpenMore={() => { setThreadsOpen(false); setMoreOpen(true); }}
           threadsOpen={threadsOpen} moreOpen={moreOpen} />
-        <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
+        <PhoneSheet open={threadsOpen} label={translate('workbench.threadSheet')} title={translate('workbench.threadSheet')} onClose={() => setThreadsOpen(false)}
           footer={newThread}>
           {/* Both sections fold; this workspace's conversations keep the order dragged into them. */}
           <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={sheetWorkspaceOpen} onClick={() => setSheetWorkspaceOpen(!sheetWorkspaceOpen)}>
@@ -1269,7 +1286,7 @@ export function MatterWorkbench({
             {sheetRecentsOpen && <div className="matter-thread-section">{renderThreadGroups(o.threads.filter(thread => !tabs.some(tab => tab.key === thread.key)))}</div>}
           </>}
         </PhoneSheet>
-        <PhoneSheet open={runningOpen} label={translate('workbench.runningSheet')} onClose={() => setRunningOpen(false)}
+        <PhoneSheet open={runningOpen} label={translate('workbench.runningSheet')} title={translate('workbench.runningSheet')} onClose={() => setRunningOpen(false)}
           footer={<button type="button" className="matter-phone-sheet-all" onClick={() => { setRunningOpen(false); setThreadsOpen(true); }}>
             <MessagesSquare aria-hidden="true" /><span>{translate('workbench.allThreads')}</span>
           </button>}>
@@ -1283,7 +1300,7 @@ export function MatterWorkbench({
           </>}
         </PhoneSheet>
         {/* The app's destinations sit in the footer, so Settings shows however many tools there are. */}
-        <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} onClose={() => setMoreOpen(false)}
+        <PhoneSheet open={moreOpen} label={translate('workbench.moreActions')} title={title} onClose={() => setMoreOpen(false)}
           footer={<nav className="matter-phone-sheet-apps" aria-label={translate('workbench.app')}>
             {openThreadMap && <button type="button" onClick={() => { setMoreOpen(false); openThreadMap(); }}><LayoutDashboard data-icon="thread-map" /><span>{translate('workbench.threadMap')}</span></button>}
             <button type="button" aria-label={translate('workbench.workspaceAndShortcuts')} onClick={() => setSidebarOpen(true)}><PanelLeft data-icon="sidebar" /><span>{translate('workbench.drawerShort')}</span></button>
@@ -1293,7 +1310,6 @@ export function MatterWorkbench({
           </nav>}>
           {/* Copying the path keeps the sheet open, so its check mark shows. */}
           <div className="matter-phone-sheet-head" data-sheet-keep="">
-            <h3 className="matter-phone-sheet-title">{title}</h3>
             {!o.emptyWorkspace && o.workspacePath ? <PathChip path={o.workspacePath} display={homeRelativePath(o.workspacePath)} className="matter-phone-sheet-path" /> : null}
           </div>
           <div className="matter-phone-sheet-tools">
@@ -1309,7 +1325,13 @@ export function MatterWorkbench({
         x: contextMenu.x, y: contextMenu.y, returnFocus: contextMenu.returnFocus,
         onClose: () => setContextMenu(current => current?.id === contextMenu.id ? null : current),
       })}</Fragment>}
-      {bellOpen && (
+      {/* Phones: notifications rise from the bottom like every secondary window (UI §4). */}
+      {mobile ? (
+        <PhoneSheet open={bellOpen} label={translate("workbench.notifications")} title={translate("workbench.notifications")}
+          onClose={() => setBellOpen(false)}>
+          <div className="matter-notifications is-sheet">{notificationList}</div>
+        </PhoneSheet>
+      ) : bellOpen && (
         <>
           <button
             className="matter-popover-scrim"
@@ -1331,18 +1353,7 @@ export function MatterWorkbench({
                 <X data-icon="close" />
               </button>
             </div>
-            {o.notifications.length ? (
-              notificationGroups(o.notifications).map(group => group.title
-                ? <div key={group.key} className="matter-notification-group">
-                  <a className="matter-notification-root" href={group.href} onClick={(e) => { e.preventDefault(); navigate(group.href!); }}>
-                    <MessagesSquare aria-hidden="true" /><span>{group.title}</span>
-                  </a>
-                  {group.items.map(renderNotification)}
-                </div>
-                : group.items.map(renderNotification))
-            ) : (
-              <p>{translate("workbench.allCaughtUpCompletedThreadsWillAppear")}</p>
-            )}
+            {notificationList}
           </section>
         </>
       )}

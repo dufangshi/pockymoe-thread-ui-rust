@@ -1,6 +1,6 @@
 import { useExclusiveSecondary } from '../menu/useExclusiveSecondary';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ChevronsUpDown, Ellipsis, FolderOpen, MessageSquare, Terminal } from 'lucide-react';
+import { ChevronsUpDown, Ellipsis, FolderOpen, MessageSquare, Terminal, X } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
 import type { WorkbenchThread } from '../MatterWorkbench';
 import { threadGroupActivity } from '../GroupedThreadTabs';
@@ -94,9 +94,11 @@ function PinnedThreads({ value, threadsOpen, onOpenThreads }: {
 /** A bottom sheet that stays mounted while closed, so host controls inside it
     (settings, automations, split picker) keep their dialogs open after it hides.
     Dragging it down from the top of its list closes it. */
-export function PhoneSheet({ open, label, onClose, children, footer }: {
+export function PhoneSheet({ open, label, title, onClose, children, footer }: {
   open: boolean;
   label: string;
+  /** Shown in the header row beside the close button (UI §4). */
+  title?: ReactNode;
   onClose: () => void;
   children: ReactNode;
   footer?: ReactNode;
@@ -108,7 +110,11 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
   useExclusiveSecondary(sheet, open, () => close.current(), 'sheet');
   useEffect(() => {
     if (!open) return;
-    sheet.current?.querySelector<HTMLElement>('[data-sheet-autofocus], button, a')?.focus({ preventScroll: true });
+    // The first control in the sheet's content, not the header's close button.
+    const node = sheet.current;
+    (node?.querySelector<HTMLElement>('[data-sheet-autofocus]')
+      ?? node?.querySelector<HTMLElement>(':is(.matter-phone-sheet-body, .matter-phone-sheet-footer) :is(button, a)')
+      ?? node?.querySelector<HTMLElement>('button, a'))?.focus({ preventScroll: true });
   }, [open]);
   useEffect(() => {
     const node = sheet.current;
@@ -191,7 +197,14 @@ export function PhoneSheet({ open, label, onClose, children, footer }: {
           if (target?.closest('a[href], button:not([aria-expanded]), [data-slot="dialog-trigger"]')) window.setTimeout(onClose, 0);
         }}
       >
-        <div className="matter-phone-sheet-grabber" aria-hidden="true" />
+        {/* Every sheet names itself and has a close button, not only a drag down (UI §4). */}
+        <div className="matter-phone-sheet-header">
+          <div className="matter-phone-sheet-grabber" aria-hidden="true" />
+          {title ? <h2 className="matter-phone-sheet-heading">{title}</h2> : <span />}
+          <button type="button" className="matter-phone-sheet-close" aria-label={translate('workbench.closeSheet')} onClick={onClose}>
+            <X aria-hidden="true" />
+          </button>
+        </div>
         <div className="matter-phone-sheet-body">{children}</div>
         {footer && <div className="matter-phone-sheet-footer">{footer}</div>}
       </section>

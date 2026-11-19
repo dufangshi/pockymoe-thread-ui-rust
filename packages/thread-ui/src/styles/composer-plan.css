@@ -901,7 +901,7 @@
 @media (max-width: 639px) {
   /* Touch: 36px row, 44px-wide targets through their hit areas. */
   .thread-ui-shell .thread-jump-nav { height: 36px; }
-  .thread-ui-shell .thread-jump-nav > button { width: 36px; height: 30px; }
+  .thread-ui-shell .thread-jump-nav > button { width: 40px; height: 30px; }
   .thread-ui-shell .thread-jump-nav > .thread-jump-latest { width: auto; height: 30px; }
   /* A phone keeps the reading area clear: no turn arrows, only "Latest" when away. */
   .thread-ui-shell .thread-jump-nav > .thread-jump-turn { display: none; }

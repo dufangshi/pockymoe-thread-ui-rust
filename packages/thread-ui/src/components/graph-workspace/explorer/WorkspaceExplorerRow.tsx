@@ -198,7 +198,7 @@ export function WorkspaceExplorerRow({
           type="button"
           tabIndex={-1}
           aria-label={`${expanded ? translate("files.collapse") : translate("files.expand")} ${node.name}`}
-          className="inline-flex h-7 w-7 shrink-0 items-center justify-center sm:h-6 sm:w-6"
+          className="thread-graph-tree-toggle inline-flex h-7 w-7 shrink-0 items-center justify-center sm:h-6 sm:w-6"
           onClick={() => {
             if (node.path) {
               onToggle(node.path);

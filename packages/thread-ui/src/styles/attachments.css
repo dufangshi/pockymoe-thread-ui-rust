@@ -165,9 +165,14 @@ button.attachment-card-preview:focus-visible { outline: 2px solid var(--theme-ac
    positioned wrapper preserves ErrorMark's standard appearance and hit area. */
 .recoverable-image { position: relative; display: inline-grid; max-width: 100%; }
 .image-recovery-error { position: absolute; right: 0; top: 0; z-index: 2; }
-.image-unavailable { display: grid; place-items: center; min-width: 64px; min-height: 40px; color: var(--theme-fg-muted); background: var(--theme-surface); }
+.image-unavailable { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 64px; min-height: 40px; padding: 0 10px; color: var(--theme-fg-muted); background: var(--theme-surface); border-radius: 6px; }
+/* The reason mark sits at the placeholder's top right: keep the caption clear of it. */
+.image-unavailable:has(> .image-unavailable-caption) { padding-right: 24px; }
+.image-unavailable-caption { font-size: 12px; line-height: 1.3; max-width: 32ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A tile already prints the file name under its thumbnail. */
+.attachment-tile-icon .image-unavailable-caption { display: none; }
 .image-unavailable > svg { width: 22px; height: 22px; }
-.attachment-tile-icon > .image-unavailable { width: 100%; height: 100%; }
+.attachment-tile-icon > .image-unavailable { width: 100%; height: 100%; min-width: 0; padding: 0; border-radius: 0; }
 .attachment-card > .recoverable-image { display: grid; width: 100%; }
 .thread-graph-image-lightbox-viewport > .recoverable-image { display: contents; }
 .thread-graph-image-lightbox-viewport > .recoverable-image > .image-recovery-error { top: 80px; right: 24px; }

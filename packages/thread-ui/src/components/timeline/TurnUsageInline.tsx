@@ -64,7 +64,8 @@ export function TurnUsageInline({
           </span>
         ) : null}
       </span>
-      {usage ? (
+      {/* Without a price the cost button itself shows the total, once. */}
+      {usage && price ? (
         <span
           className="thread-turn-usage-tokens"
           aria-label={translate("chat.totalTokens", { value1: usage.totalTokens.toLocaleString(getLocale()) })}
@@ -80,7 +81,8 @@ export function TurnUsageInline({
         </span>
       ) : null}
       <TokenUsageCost usage={usage} price={price} readOnly={readOnly} />
-      {active || speed ? (
+      {/* No speed yet: nothing, rather than an unlabelled dash. */}
+      {rate != null && Number.isFinite(rate) && rate >= 0 ? (
         <span
           className="thread-turn-token-speed"
           data-testid="turn-token-speed"
@@ -94,12 +96,10 @@ export function TurnUsageInline({
           title={`${translate("chat.tokenSpeedUnits")} · ${speedTitle}${rate == null ? translate("chat.waitingForTheFirstOutputTokenUsage") : ''}`}
         >
           <TokenMetricIcon speed />
-          {rate != null && Number.isFinite(rate) && rate >= 0
-            ? rate.toLocaleString(getLocale(), {
-                maximumFractionDigits: 1,
-                minimumFractionDigits: 1,
-              })
-            : '—'}
+          {rate.toLocaleString(getLocale(), {
+            maximumFractionDigits: 1,
+            minimumFractionDigits: 1,
+          })}
         </span>
       ) : null}
     </span>

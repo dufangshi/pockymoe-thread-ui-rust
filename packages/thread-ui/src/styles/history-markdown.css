@@ -2379,18 +2379,36 @@
 }
 
 /* A wide table scrolls sideways instead of squeezing short columns into one
-   character per line on phones. */
+   character per line on phones. Its own box (MarkdownTable) fades at an edge
+   with more columns past it and names how many; a tall table scrolls inside
+   the box so its header row stays in view. */
+.thread-ui-shell .thread-graph-markdown .thread-table-frame { position: relative; width: max-content; max-width: 100%; margin: 0.75rem 0; }
+.thread-ui-shell .thread-graph-markdown .thread-table-scroll { max-width: 100%; max-height: min(70vh, 640px); overflow: auto; }
+.thread-ui-shell .thread-graph-markdown .thread-table-frame[data-more-right] .thread-table-scroll { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); }
+.thread-ui-shell .thread-graph-markdown .thread-table-frame[data-more-left][data-more-right] .thread-table-scroll { -webkit-mask-image: linear-gradient(to right, transparent, #000 32px, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, transparent, #000 32px, #000 calc(100% - 40px), transparent); }
+.thread-ui-shell .thread-graph-markdown .thread-table-frame[data-more-left]:not([data-more-right]) .thread-table-scroll { -webkit-mask-image: linear-gradient(to right, transparent, #000 32px); mask-image: linear-gradient(to right, transparent, #000 32px); }
+.thread-ui-shell .thread-graph-markdown .thread-table-more {
+  position: absolute; top: 6px; right: 4px; z-index: 3; pointer-events: none;
+  padding: 1px 8px; border: 1px solid var(--theme-border); border-radius: 999px;
+  background: var(--theme-panel); color: var(--theme-fg-muted); font-size: 11px; line-height: 18px; white-space: nowrap;
+}
 .thread-ui-shell .thread-graph-markdown :where(table) {
-  display: block;
+  /* Fit the column when the words can wrap; scroll only past the cells' minimum. */
   width: max-content;
   max-width: 100%;
-  overflow-x: auto;
-  border-collapse: collapse;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
 }
+.thread-ui-shell .thread-graph-markdown thead :where(th) { position: sticky; top: 0; z-index: 2; }
+.thread-ui-shell .thread-graph-markdown :where(td.is-figure, th.is-figure) { white-space: nowrap; }
 
+/* Separate borders (a sticky header keeps its edges): each cell draws its right
+   and bottom edge, the first row and column add the outer ones. */
 .thread-ui-shell .thread-graph-markdown :where(th, td) {
   min-width: 4em;
-  border: 1px solid var(--theme-border);
+  border: 0 solid var(--theme-border);
+  border-width: 0 1px 1px 0;
   padding: 0.4rem 0.55rem;
   text-align: left;
 }
@@ -2398,6 +2416,9 @@
 .thread-ui-shell .thread-graph-markdown :where(th) {
   white-space: nowrap;
 }
+.thread-ui-shell .thread-graph-markdown :where(tr:first-child > th, tr:first-child > td) { border-top-width: 1px; }
+.thread-ui-shell .thread-graph-markdown :where(tr > :first-child) { border-left-width: 1px; }
+.thread-ui-shell .thread-graph-markdown tbody :where(tr:first-child > td) { border-top-width: 0; }
 
 .thread-ui-shell .thread-graph-markdown :where(th) {
   background: var(--theme-surface-strong);
@@ -3324,6 +3345,11 @@
 .thread-ui-shell .thread-graph-message-bubble.is-user[data-actions-beside] .thread-graph-message-copy-desktop {
   right: 100%; padding: 0 6px 0 0; background: none;
 }
+/* An opened notice card fills its bubble: its time and copy take their own
+   line under the card instead of sitting on the card's bottom edge. */
+.thread-ui-shell .thread-graph-message-bubble:has(.prompt-notice[data-open]):not([data-actions-beside]) .thread-graph-message-copy-desktop {
+  position: static; justify-content: flex-end; margin-top: 4px; padding-left: 0; background: none;
+}
 /* The failure mark stays above the actions, so it can always be pressed. */
 .thread-ui-shell .thread-graph-message-bubble .thread-graph-message-failure { position: relative; z-index: 11; }
 /* The surface the fade blends into: the prompt bubble's own color, else the page. */
@@ -3501,6 +3527,7 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:active,htm
 .thread-ui-shell .thread-graph-turn-footer .thread-turn-usage { flex: 1; flex-wrap: nowrap; gap: 6px; }
 .thread-ui-shell .thread-graph-turn-footer .thread-turn-usage-model { display: flex; flex: 1 1 auto; white-space: nowrap; overflow: hidden; }
 .thread-ui-shell .thread-graph-turn-footer .thread-turn-usage-model-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.thread-ui-shell .thread-graph-turn-footer .thread-turn-usage-effort { white-space: pre; } /* the flex row would drop its leading space ("opus· high") */
 .thread-ui-shell .thread-graph-turn-footer .thread-turn-usage-effort { flex-shrink: 0; }
 .thread-ui-shell .thread-graph-turn-footer-meta { flex: none; }
 @media (max-width: 639px) {
@@ -3633,3 +3660,66 @@ html[data-theme-effective="light"] .thread-workspace-link-menu button:active,htm
   line-height: 1.5;
 }
 .thread-ui-shell .thread-graph-turn-empty-reason { margin-top: 2px; color: var(--theme-fg-soft); }
+
+/* A failed, empty turn: one readable sentence, Retry and the original error folded away. */
+.thread-ui-shell .thread-graph-turn-empty-note[data-failed] { border-left-color: var(--theme-danger, #d56b62); }
+.thread-ui-shell .thread-turn-failure { display: grid; gap: 6px; }
+.thread-ui-shell .thread-turn-failure-message { margin: 0; color: var(--theme-fg); font-size: 13px; }
+.thread-ui-shell .thread-turn-failure-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.thread-ui-shell :is(.thread-turn-failure-retry, .thread-turn-failure-raw-toggle) {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 0 10px;
+  border-radius: 6px; font-size: 12px; color: var(--theme-fg-soft);
+}
+.thread-ui-shell .thread-turn-failure-retry { border: 1px solid var(--theme-border); background: var(--theme-panel); color: var(--theme-fg); }
+.thread-ui-shell .thread-turn-failure-raw-toggle { border: 0; background: none; padding: 0 4px; }
+.thread-ui-shell :is(.thread-turn-failure-retry, .thread-turn-failure-raw-toggle) svg { width: 13px; height: 13px; transition: transform 140ms ease; }
+.thread-ui-shell .thread-turn-failure-retry:active { background: var(--theme-surface); }
+@media (hover: hover) { .thread-ui-shell .thread-turn-failure-retry:hover { background: var(--theme-surface); } }
+.thread-ui-shell .thread-turn-failure-raw {
+  margin: 2px 0 0; padding: 6px 8px; max-height: calc(6 * 1.5em); overflow: auto;
+  white-space: pre-wrap; overflow-wrap: anywhere; font: 11px/1.5 var(--tlog-font-mono, ui-monospace, monospace);
+  color: var(--theme-fg-muted); background: var(--theme-surface); border-radius: 6px;
+}
+@media (max-width: 639px) { .thread-ui-shell :is(.thread-turn-failure-retry, .thread-turn-failure-raw-toggle) { min-height: 36px; } }
+/* An interrupted turn's reason mark takes the amber of its "Interrupted". */
+button.error-mark.error-mark.error-mark.thread-interrupted-mark { color: var(--status-interrupted, #c08a3e) !important; }
+
+/* A workspace file link and a web link look different before the click: a file
+   reads like a path (mono, file glyph, dashed underline), a web link carries ↗
+   because it leaves the page. Themes may restyle both, not merge them. */
+.thread-ui-shell .thread-inline-link[data-file-link] {
+  font-family: var(--tlog-font-mono, ui-monospace, monospace);
+  font-size: 0.88em;
+  text-decoration-style: dashed;
+}
+.thread-ui-shell .thread-inline-link[data-file-link]::before {
+  content: '';
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 3px;
+  vertical-align: -0.1em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/%3E%3Cpath d='M14 2v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/%3E%3Cpath d='M14 2v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.thread-ui-shell .thread-inline-link[target='_blank']::after {
+  content: '↗' / '';
+  margin-left: 2px;
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+/* The code block's head row: language on the left, copy on the right, never
+   over the code. Copy keeps its hover / focus / tap visibility rules. */
+.thread-ui-shell .thread-graph-code-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  min-height: 26px; padding: 0 3px 0 12px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 9%, transparent);
+  font: 11px/1 var(--tlog-font-mono, ui-monospace, monospace);
+  color: color-mix(in srgb, currentColor 55%, transparent);
+}
+.thread-ui-shell .thread-graph-code-head .thread-graph-code-copy {
+  position: static; width: 24px; height: 24px; box-shadow: none; background: transparent;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}

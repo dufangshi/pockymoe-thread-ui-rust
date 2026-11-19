@@ -34,12 +34,12 @@ describe('ActivityCount hints', () => {
     vi.useRealTimers();
   });
 
-  it('waits a full second and portals the phrase, explanation and example into the shell', () => {
+  it('waits a moment and portals the phrase, explanation and example into the shell', () => {
     expect(count.getAttribute('role')).toBe('img');
     expect(count.getAttribute('aria-label')).toBe('2 commands');
     expect(count.getAttribute('data-kind')).toBe('commands');
     pointer('pointerover');
-    advance(999);
+    advance(399);
     expect(shell.querySelector('[role=tooltip]')).toBeNull();
     advance(1);
     const hint = shell.querySelector('[role=tooltip]')!;
@@ -65,15 +65,26 @@ describe('ActivityCount hints', () => {
 
   it('cancels a pending hint when the pointer leaves before the delay', () => {
     pointer('pointerover');
-    advance(999);
+    advance(399);
     pointer('pointerout');
     advance(1000);
     expect(shell.querySelector('[role=tooltip]')).toBeNull();
   });
 
-  it('never opens for a touch pointer', () => {
+  it('never opens for a resting touch pointer', () => {
     pointer('pointerover', 'touch');
     advance(3000);
+    expect(shell.querySelector('[role=tooltip]')).toBeNull();
+  });
+
+  it('pins the explanation on a tap without folding the line it sits in, and a tap elsewhere closes it', () => {
+    const toggle = vi.fn();
+    shell.addEventListener('click', toggle);
+    pointer('pointerdown', 'touch');
+    act(() => count.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+    expect(shell.querySelector('[role=tooltip] .tlog-hint-title')?.textContent).toBe('2 commands');
+    expect(toggle).not.toHaveBeenCalled();
+    act(() => document.body.dispatchEvent(new Event('pointerdown', { bubbles: true })));
     expect(shell.querySelector('[role=tooltip]')).toBeNull();
   });
 });

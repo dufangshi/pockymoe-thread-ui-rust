@@ -110,7 +110,11 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = image =>
   const unavailable = state.phase === 'failed';
   return <span className="recoverable-image" data-image-state={state.phase}>
     {renderImage(unavailable || !state.url
-      ? <span className="image-unavailable" role="img" aria-label={props.alt || translate('chat.imageUnavailable')}><ImageOff aria-hidden="true" /></span>
+      // The placeholder names the picture it stands for, so a reader knows what is missing.
+      ? <span className="image-unavailable" role="img" aria-label={props.alt || translate('chat.imageUnavailable')}>
+          <ImageOff aria-hidden="true" />
+          {props.alt ? <span className="image-unavailable-caption" aria-hidden="true">{translate('chat.imageAltUnavailable', { alt: props.alt })}</span> : null}
+        </span>
       : <img {...props} key={state.generation} src={state.url}
           style={{ ...props.style, visibility: state.phase === 'ready' ? props.style?.visibility : 'hidden' }}
           onLoad={() => setState(current => ({ ...current, phase: 'ready' }))}

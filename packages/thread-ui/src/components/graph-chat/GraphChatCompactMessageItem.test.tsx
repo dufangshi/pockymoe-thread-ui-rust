@@ -61,8 +61,9 @@ describe("GraphChatCompactMessageItem", () => {
     expect(container.textContent).not.toContain(source);
     const button = (name: string) => [...container.querySelectorAll<HTMLButtonElement>('button')].find(element => element.textContent === name || element.getAttribute('aria-label') === name)!;
     expect(button('Polished').getAttribute('aria-pressed')).toBe('true');
-    expect(button('Show more')).toBeTruthy();
-    await act(async () => button('Show more').click());
+    const more = [...container.querySelectorAll<HTMLButtonElement>('button')].find(element => /^Show (more|all)/.test(element.textContent ?? ''))!;
+    expect(more).toBeTruthy();
+    await act(async () => more.click());
     expect(button('Show less')).toBeTruthy();
     await act(async () => button('Copy agent reply').click());
     expect(navigator.clipboard.writeText).toHaveBeenLastCalledWith(reply.text);

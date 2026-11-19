@@ -882,9 +882,14 @@
 }
 .thread-ui-shell .thread-jump-nav > button:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
 .thread-ui-shell .thread-jump-nav > button:disabled { opacity: 0.32; cursor: default; }
-/* The latest reply: a quiet circle at the tail, an accent tint once the reader
-   is away. Tinted, not filled: the filled accent is Send's, right beside it. */
-.thread-ui-shell .thread-jump-nav > .thread-jump-latest { width: 24px; height: 24px; margin-left: 3px; }
+/* Buttons that cannot act are not shown (the group shrinks to what can); an
+   empty group disappears. */
+.thread-ui-shell .thread-jump-nav > button[hidden] { display: none; }
+.thread-ui-shell .thread-jump-nav:not(:has(> button:not([hidden]))) { display: none; }
+/* The latest reply, away from the tail: an accent-tinted pill that says
+   "Latest". Tinted, not filled: the filled accent is Send's, right beside it. */
+.thread-ui-shell .thread-jump-nav > .thread-jump-latest { display: inline-flex; align-items: center; gap: 3px; width: auto; height: 24px; margin-left: 3px; padding: 0 9px 0 7px; font-size: 12px; }
+.thread-ui-shell .thread-jump-latest-label { line-height: 1; }
 .thread-ui-shell .thread-jump-nav:not([data-following]) > .thread-jump-latest {
   background: color-mix(in oklch, var(--theme-accent-solid) 16%, transparent);
   color: var(--theme-accent-strong, var(--theme-accent-solid));
@@ -897,7 +902,9 @@
   /* Touch: 36px row, 44px-wide targets through their hit areas. */
   .thread-ui-shell .thread-jump-nav { height: 36px; }
   .thread-ui-shell .thread-jump-nav > button { width: 36px; height: 30px; }
-  .thread-ui-shell .thread-jump-nav > .thread-jump-latest { width: 30px; height: 30px; }
+  .thread-ui-shell .thread-jump-nav > .thread-jump-latest { width: auto; height: 30px; }
+  /* A phone keeps the reading area clear: no turn arrows, only "Latest" when away. */
+  .thread-ui-shell .thread-jump-nav > .thread-jump-turn { display: none; }
   .thread-ui-shell .thread-jump-nav > button::after { content: ''; position: absolute; inset: -6px -4px; }
 }
 @media (prefers-reduced-transparency: reduce) {
@@ -1123,3 +1130,12 @@
 
 /* The toolbox row Enter would run while a typed `/command` filters it. */
 .thread-ui-shell [data-slash-row][data-active] { background: var(--theme-hover); box-shadow: inset 0 0 0 1px var(--theme-accent-border, var(--theme-border-strong)); }
+
+/* The floating composer leaves a strip of transcript under it on a wide
+   screen: the transcript fades out there instead of showing cut-off lines. */
+@media (min-width: 640px) {
+  .thread-ui-shell .thread-graph-scroll-container {
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 60px), transparent calc(100% - 28px));
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 60px), transparent calc(100% - 28px));
+  }
+}

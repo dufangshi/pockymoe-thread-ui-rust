@@ -1106,7 +1106,18 @@
   }
 }
 
-.thread-history-earlier { margin-inline: auto; border: 0; background: none; color: var(--theme-fg-muted); }
+.thread-graph-history-control {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; max-width: var(--matter-reading-width, 52rem); margin: 0 auto; padding: 10px 28px 2px;
+  font-size: 12px; color: var(--theme-fg-muted);
+}
+.thread-history-rule { flex: 1; height: 1px; background: var(--theme-border); }
+.thread-history-earlier, .thread-history-all {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 12px;
+  border: 1px solid var(--theme-border); border-radius: 999px; background: var(--theme-panel); color: var(--theme-fg-soft);
+}
+.thread-history-all { border-color: transparent; background: none; }
+@media (max-width: 639px) { .thread-graph-history-control { padding-inline: 9px; } .thread-history-earlier, .thread-history-all { min-height: 36px; } }
 .thread-history-earlier:active { color: var(--theme-fg); }
 @media (hover: hover) {
   .thread-history-earlier:hover { color: var(--theme-fg); }

@@ -115,19 +115,19 @@ export function formatCompactTokenCount(value: number) {
   if (value >= 1_000_000_000) {
     const rounded =
       value >= 10_000_000_000 ? Math.round(value / 1_000_000_000) : value / 1_000_000_000;
-    return `${String(rounded.toFixed(1)).replace(/\.0$/, '')}b`;
+    return `${String(rounded.toFixed(1)).replace(/\.0$/, '')}B`;
   }
 
   if (value >= 1_000_000) {
     const rounded =
       value >= 10_000_000 ? Math.round(value / 1_000_000) : value / 1_000_000;
-    return `${String(rounded.toFixed(1)).replace(/\.0$/, '')}m`;
+    return `${String(rounded.toFixed(1)).replace(/\.0$/, '')}M`;
   }
 
   if (value >= 1_000) {
     const rounded =
       value >= 10_000 ? Math.round(value / 1_000) : value / 1_000;
-    return `${String(rounded.toFixed(1)).replace(/\.0$/, '')}k`;
+    return `${String(rounded.toFixed(1)).replace(/\.0$/, '')}K`;
   }
 
   return String(Math.round(value));

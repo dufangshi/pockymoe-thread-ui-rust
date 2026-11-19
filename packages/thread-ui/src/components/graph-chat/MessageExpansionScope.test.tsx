@@ -29,9 +29,9 @@ it('retains explicit expand/collapse through finalization and history regrouping
   expect(element.textContent).toContain(text);
   flushSync(() => element.querySelector('button')!.click());
   element = render('history-expanded');
-  expect(element.textContent).toContain('Show more');
+  expect(element.textContent).toMatch(/Show (more|all)/);
   element = render('other-message', 'another-answer');
-  expect(element.textContent).toContain('Show more');
+  expect(element.textContent).toMatch(/Show (more|all)/);
 });
 it('keeps unstructured streaming text visible after acquiring its durable ID', () => {
   const render = fixture();

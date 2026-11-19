@@ -63,7 +63,24 @@ export function searchHighlightParts(text: string, query: string) {
   };
 }
 
+/** A message's Markdown as the words a reader sees: link and image text without
+    their URLs, no emphasis, code or heading marks, one line. Search excerpts show
+    this, so a result never reads as `**raw**` or `[label](https://…)`. */
+export function plainSearchText(markdown: string) {
+  return markdown
+    .replace(/^```[^\n]*$/gm, ' ')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]+)\]\((?:[^()\s]|\([^)]*\))+\)/g, '$1')
+    .replace(/^\s{0,3}(?:#{1,6}|>)\s*/gm, '')
+    .replace(/(\*\*|__|~~)(?=\S)([\s\S]*?\S)\1/g, '$2')
+    .replace(/(^|[\s(（「])\*(?=\S)([^*\n]*?\S)\*/g, '$1$2')
+    .replace(/`+([^`]*)`+/g, '$1')
+    .replace(/<\/?pockymoe-[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export function ConversationSearchExcerpt({ text, query }: { text: string; query: string }) {
-  const parts = searchHighlightParts(text, query);
+  const parts = searchHighlightParts(plainSearchText(text), query);
   return <p>{parts.before}{parts.match && <mark>{parts.match}</mark>}{parts.after}</p>;
 }

@@ -394,7 +394,8 @@ function ThreadTimelineComponent({
     workspaceRoot: adapter?.workspaceRootPath,
     openText: handleOpenExpandedText,
     anchor: preserveScrollPositionForResize,
-  }), [loadHistoryItemDetail, adapter?.workspaceRootPath, handleOpenExpandedText, preserveScrollPositionForResize]);
+    retryPrompt: adapter?.onRetryPrompt,
+  }), [loadHistoryItemDetail, adapter?.workspaceRootPath, adapter?.onRetryPrompt, handleOpenExpandedText, preserveScrollPositionForResize]);
   const scrollAnchor = useMemo(() => ({ hold: holdAnchorNow }), [holdAnchorNow]);
   const openThreadLink = onOpenThread ?? adapter?.onOpenLinkedThread;
   const threadLinks = useMemo(() => ({
@@ -455,17 +456,31 @@ function ThreadTimelineComponent({
   useEffect(() => {
     if (!searchTarget || lastSearchKeyRef.current === searchTarget.key || collapsedTurnOverrides[searchTarget.turnId] !== false) return;
     preserveScrollPositionForResize();
-    const frame = requestAnimationFrame(() => {
+    // The opened turn mounts its work over a few frames (and its detail may
+    // still be loading): look for the message each frame for a moment instead
+    // of landing on the turn's start and letting the work push the hit away.
+    const deadline = performance.now() + 1500;
+    let frame = 0;
+    const land = () => {
       const container = scrollContainerRef.current;
       const turn = Array.from(container?.querySelectorAll<HTMLElement>('[data-turn-id]') ?? []).find(node => node.dataset.turnId === searchTarget.turnId);
       const message = Array.from(turn?.querySelectorAll<HTMLElement>('[data-message-id]') ?? []).find(node => node.dataset.messageId === searchTarget.itemId);
+      // A folded turn's work arrives after it opens: wait for the message (this
+      // runs again when the turn's detail lands) instead of landing on the
+      // turn's start and letting the loaded work push the hit off screen.
+      const loadedTurn = loadedTurnDetails[searchTarget.turnId] ?? turns.find(candidate => candidate.id === searchTarget.turnId);
+      if (!message && !turnDetailErrors[searchTarget.turnId] && (loadingTurnDetailIds.has(searchTarget.turnId) || loadedTurn?.hasDeferredItems)) return;
+      if (!message && performance.now() < deadline) { frame = requestAnimationFrame(land); return; }
       const target = message ?? turn;
       if (!container || !target) return;
-      lastSearchKeyRef.current = searchTarget.key;
       // The open turn's work line rides at the top; land below it, not under it.
       const workLine = turn?.querySelector('.thread-worked-toggle[aria-expanded="true"]')?.closest<HTMLElement>('.thread-graph-worked-summary');
       const covered = workLine && workLine.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING ? workLine.getBoundingClientRect().height : 0;
-      container.scrollTo({ top: container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - 24 - covered, behavior: 'instant' });
+      const top = container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - 24 - covered;
+      // Still unfolding (the page is not yet tall enough to bring the hit up): wait a frame.
+      if (top > container.scrollHeight - container.clientHeight + 1 && performance.now() < deadline) { frame = requestAnimationFrame(land); return; }
+      lastSearchKeyRef.current = searchTarget.key;
+      container.scrollTo({ top, behavior: 'instant' });
       target.animate([{ backgroundColor: 'var(--theme-accent-soft)' }, { backgroundColor: 'transparent' }], { duration: 1400 });
       // A long message may hold the words far below its start: bring the first into view.
       if (searchTarget.query) markSearchHits(target, searchTarget.query, (first) => {
@@ -475,9 +490,12 @@ function ThreadTimelineComponent({
         if (hit.top >= top && hit.bottom <= view.bottom - 96) return;
         container.scrollTo({ top: container.scrollTop + hit.top - top - Math.max(0, (view.bottom - top) / 4), behavior: 'instant' });
       });
-    });
+      // Whatever still settles above (opening rows, images) keeps the hit in place.
+      preserveScrollPositionForResize(target);
+    };
+    frame = requestAnimationFrame(land);
     return () => cancelAnimationFrame(frame);
-  }, [searchTarget, collapsedTurnOverrides, preserveScrollPositionForResize]);
+  }, [searchTarget, collapsedTurnOverrides, preserveScrollPositionForResize, turns, loadedTurnDetails, loadingTurnDetailIds, turnDetailErrors]);
 
   const handleToggleCollapse = useCallback((
     turn: TimelineTurn,
@@ -936,37 +954,30 @@ function ThreadTimelineComponent({
         >
           <div ref={scrollContentRef} className="thread-graph-scroll-content">
           <div ref={topSentinelRef} aria-hidden="true" className="h-px" />
-          {turns.length > 0 && (
-            <div className="thread-graph-history-control px-3 pb-1 pt-2 sm:px-5 sm:pb-1.5 sm:pt-3">
-              <div className="flex flex-wrap items-center gap-2.5 text-xs sm:text-sm">
-                {hiddenCount > 0 && (
-                  <button
-                    type="button"
-                    onClick={handleLoadEarlierClick}
-                    disabled={loadingEarlier}
-                    aria-busy={loadingEarlier}
-                    className="thread-history-earlier flex items-center gap-2 px-2 py-2 text-xs transition"
-                  >
-                    <span className="thread-history-arrow" aria-hidden="true">↑</span>
-                    {loadingEarlier ? translate("chat.loadingEarlier") : translate("chat.earlierMessages")}
-                  </button>
-                )}
-                {showLoadAll && (
-                  <button
-                    type="button"
-                    onClick={handleLoadAllClick}
-                    className="rounded-full border border-amber-300/40 px-2.5 py-1.5 text-amber-200 transition hover:bg-amber-300/10"
-                  >
-                    {translate("chat.loadFullHistory")}</button>
-                )}
-                <p className="timeline-meta-text">
-                  {translate("chat.showing")} {visibleTurns.length} {translate("chat.of")} {effectiveTotalTurnCount} {translate("chat.turns")}{hiddenCount > 0
-                    ? translate("chat.earlierHidden", { value1: hiddenCount, value2: loadedHiddenCount > 0 && unloadedHiddenCount > 0
-                          ? ` (${loadedHiddenCount} loaded)`
-                          : '' })
-                    : ''}
-                </p>
-              </div>
+          {/* One row in the reading column, only while there is more above: the
+              button names how many turns are left; the loaded/total count
+              line ("Showing 3 of 155 turns") is gone. */}
+          {turns.length > 0 && (hiddenCount > 0 || showLoadAll) && (
+            <div className="thread-graph-history-control">
+              <span className="thread-history-rule" aria-hidden="true" />
+              {hiddenCount > 0 && (
+                <button
+                  type="button"
+                  onClick={handleLoadEarlierClick}
+                  disabled={loadingEarlier}
+                  aria-busy={loadingEarlier}
+                  className="thread-history-earlier"
+                >
+                  <span className="thread-history-arrow" aria-hidden="true">↑</span>
+                  {loadingEarlier ? translate("chat.loadingEarlier") : translate("chat.earlierTurns", { count: hiddenCount })}
+                </button>
+              )}
+              {showLoadAll && (
+                <button type="button" onClick={handleLoadAllClick} className="thread-history-all">
+                  {translate("chat.loadFullHistory")}
+                </button>
+              )}
+              <span className="thread-history-rule" aria-hidden="true" />
             </div>
           )}
 

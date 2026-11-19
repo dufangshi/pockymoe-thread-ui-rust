@@ -32,11 +32,11 @@ describe('timeline token formatting', () => {
   it('formats token counts compactly', () => {
     expect(formatCompactTokenCount(0)).toBe('0');
     expect(formatCompactTokenCount(999.4)).toBe('999');
-    expect(formatCompactTokenCount(1_250)).toBe('1.3k');
-    expect(formatCompactTokenCount(12_500)).toBe('13k');
-    expect(formatCompactTokenCount(1_250_000)).toBe('1.3m');
-    expect(formatCompactTokenCount(4_207_000_000)).toBe('4.2b');
-    expect(formatCompactTokenCount(12_500_000)).toBe('13m');
+    expect(formatCompactTokenCount(1_250)).toBe('1.3K');
+    expect(formatCompactTokenCount(12_500)).toBe('13K');
+    expect(formatCompactTokenCount(1_250_000)).toBe('1.3M');
+    expect(formatCompactTokenCount(4_207_000_000)).toBe('4.2B');
+    expect(formatCompactTokenCount(12_500_000)).toBe('13M');
   });
 
   it('formats compact and detailed USD values', () => {
@@ -96,7 +96,7 @@ describe('timeline token formatting', () => {
       {
         id: 'in',
         label: 'Uncached input',
-        tokenCompactValue: '1k',
+        tokenCompactValue: '1K',
         tokenRawValue: 1_000,
         usdCompactValue: '$0.0300',
         className: 'token-badge-in',
@@ -114,7 +114,7 @@ describe('timeline token formatting', () => {
       {
         id: 'out',
         label: 'Output',
-        tokenCompactValue: '1.2k',
+        tokenCompactValue: '1.2K',
         tokenRawValue: 1_200,
         usdCompactValue: '$0.1200',
         className: 'token-badge-out',

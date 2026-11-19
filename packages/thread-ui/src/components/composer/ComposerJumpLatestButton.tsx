@@ -21,10 +21,12 @@ export function ComposerJumpLatestButton({
   return activeView === 'chat' ? <JumpLatestStrip {...props} /> : null;
 }
 
-/** Turn navigation above the composer, at its right edge: previous and next
-    turn, and the latest reply, which stands out only when the reader is away
-    from it. A phone split's conversation switches sit on the left, unless the
-    phone dock holds them. */
+/** Turn navigation above the composer, at its right edge. Only what can act
+    shows: at the tail just "previous turn"; away from it, previous and next
+    turn and a labelled "Latest". A phone shows only "Latest", and only away
+    from the tail, so nothing sits over the text while reading the newest reply.
+    A phone split's conversation switches sit on the left, unless the phone
+    dock holds them. */
 function JumpLatestStrip({
   followTail,
   onToggleFollow,
@@ -49,6 +51,8 @@ function JumpLatestStrip({
           <button
             type="button"
             className="thread-jump-turn"
+            data-turn="previous"
+            hidden={!canJumpToPreviousTurn}
             aria-label={translate("chat.jumpToPreviousTurn")}
             title={canJumpToPreviousTurn ? translate("chat.jumpToTheStartOfThePrevious") : translate("chat.noEarlierTurn")}
             disabled={!canJumpToPreviousTurn}
@@ -59,6 +63,8 @@ function JumpLatestStrip({
           <button
             type="button"
             className="thread-jump-turn"
+            data-turn="next"
+            hidden={!canJumpToNextTurn}
             aria-label={translate("chat.jumpToNextTurn")}
             title={canJumpToNextTurn ? translate("chat.jumpToTheStartOfTheNext") : translate("chat.noLaterTurn")}
             disabled={!canJumpToNextTurn}
@@ -72,9 +78,11 @@ function JumpLatestStrip({
             data-action="jump-latest"
             aria-label={translate("chat.jumpToLatest")}
             title={followTail ? translate("chat.latestMessagesAreInView") : translate("chat.jumpToTheBottom")}
+            hidden={followTail}
             onClick={() => onToggleFollow?.()}
           >
             <ArrowDown data-icon="latest" aria-hidden="true" />
+            <span className="thread-jump-latest-label" aria-hidden="true">{translate('chat.latestShort')}</span>
           </button>
         </div>
       </div>

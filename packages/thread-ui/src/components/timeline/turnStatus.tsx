@@ -1,4 +1,5 @@
 import { translate, useI18n } from '../../i18n';
+import { formatDurationSeconds } from './durationFormatting';
 import { Bot, Hourglass } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useVisibleClock } from '../../visibleClock';
@@ -15,29 +16,13 @@ import {
 } from '../threadPresentation';
 import { TranscriptAgentByline } from '../graph-chat/TranscriptAgent';
 
-function RunningDots({
-  tone = 'amber',
-  color,
-}: {
-  tone?: 'amber' | 'emerald' | 'sky';
-  color?: string;
-}) {
-  useI18n();
-  const dotClassName =
-    tone === 'emerald'
-      ? 'bg-sky-200/90'
-      : tone === 'sky'
-        ? 'bg-sky-300/90'
-        : 'bg-amber-200/90';
-
+/** Three still dots. Their colours come from the theme (styles/transcript-log.css),
+    never inline: a theme pack may redraw them, and red is kept for failure. */
+function RunningDots() {
   return (
     <span className="ml-1.5 inline-flex items-center gap-1" aria-hidden="true">
       {[0, 1, 2].map((index) => (
-        <span
-          key={index}
-          className={`h-1.5 w-1.5 rounded-full thread-live-progress-dot ${dotClassName}`}
-          style={{ backgroundColor: color }}
-        />
+        <span key={index} className="h-1.5 w-1.5 rounded-full thread-live-progress-dot" />
       ))}
     </span>
   );
@@ -48,8 +33,12 @@ function ProgressIndicator({ age, at }: { age: number | null; at: string | null 
   const openAtPointerDown = useRef(false);
   const validAge = age !== null && Number.isFinite(age);
   const freshness = !validAge ? 'unknown' : age <= 5 ? 'recent' : age <= 20 ? 'quiet' : 'stale';
-  const color = { recent: '#10b981', quiet: '#eab308', stale: '#ef4444', unknown: '#94a3b8' }[freshness];
-  const ageLabel = validAge ? `${translate('chat.lastProgress')} ${age}${translate('chat.sAgo')}` : translate('chat.timeSinceTheLastTurnProgressUpdate');
+  // A long command is normal work, not an error: a quiet turn turns its dots
+  // hollow (shape, not colour) and says for how long nothing new arrived.
+  const quietFor = freshness === 'stale' && validAge
+    ? age < 60 ? translate('chat.quietSeconds', { count: age }) : translate('chat.quietMinutes', { count: Math.floor(age / 60) })
+    : null;
+  const ageLabel = validAge ? translate('chat.lastProgressAgo', { duration: formatDurationSeconds(age) }) : translate('chat.timeSinceTheLastTurnProgressUpdate');
   const timeLabel = at && Number.isFinite(Date.parse(at)) ? translate('chat.lastActivity', { value1: formatLongTimestamp(at) }) : null;
   return (
     <Tooltip open={open} onOpenChange={setOpen}>
@@ -61,7 +50,8 @@ function ProgressIndicator({ age, at }: { age: number | null; at: string | null 
             event.preventDefault(); event.stopPropagation();
             setOpen(current => !(event.detail !== 0 ? openAtPointerDown.current : current));
           }}>
-          <RunningDots color={color} />
+          <RunningDots />
+          {quietFor ? <span className="thread-progress-quiet">{quietFor}</span> : null}
         </button>
       </TooltipTrigger>
       <TooltipContent side="top" sideOffset={6} collisionPadding={12}
@@ -123,19 +113,7 @@ export function formatElapsedDuration(
   if (!Number.isFinite(startedAtMillis) || !Number.isFinite(now)) {
     return null;
   }
-
-  const totalSeconds = Math.max(0, Math.floor((now - startedAtMillis) / 1_000));
-  const hours = Math.floor(totalSeconds / 3_600);
-  const minutes = Math.floor((totalSeconds % 3_600) / 60);
-  const seconds = totalSeconds % 60;
-
-  if (hours > 0) {
-    return `${hours}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
-  }
-  if (minutes > 0) {
-    return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
-  }
-  return `${seconds}s`;
+  return formatDurationSeconds(Math.max(0, Math.floor((now - startedAtMillis) / 1_000)));
 }
 
 function TurnStatusIndicator({
@@ -215,7 +193,7 @@ function TurnStatusIndicator({
       title={label}
       className="inline-flex min-w-[1.25rem] items-center justify-center text-sky-200"
     >
-      <RunningDots tone="emerald" />
+      <RunningDots />
     </span>
   );
 }

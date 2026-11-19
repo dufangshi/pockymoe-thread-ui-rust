@@ -1,4 +1,4 @@
-import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, memo, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { BellRing, ChevronRight, Maximize2 } from 'lucide-react';
 import { CopyButton } from '../copy/CopyButton';
 import { ErrorMark } from '../copy/ErrorMark';
@@ -37,6 +37,8 @@ export interface TranscriptLogActions {
   openText: (title: string, text: string, kind?: string) => void;
   /** Keeps the control the reader used in place while what it toggles resizes. */
   anchor?: ((element?: Element | null) => void) | undefined;
+  /** Sends a failed turn's prompt again (TurnFailureNote's Retry). */
+  retryPrompt?: ((prompt: string) => Promise<unknown> | unknown) | undefined;
 }
 
 export const TranscriptLogContext = createContext<TranscriptLogActions | null>(null);
@@ -282,7 +284,10 @@ function Viewable({ className, label, onOpen, more, children }: {
   );
 }
 
-function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: { full: string; text: string }; path?: string }) {
+function RowDetail({ item, title, path, titleClipped = false }: { item: ThreadHistoryItemDto; title: { full: string; text: string }; path?: string; titleClipped?: boolean }) {
+  // The open row shows the whole command whenever its title is cut, by the
+  // log (several lines) or by the row's width: a title tooltip is not enough (§14).
+  const fullCommand = item.kind === 'commandExecution' && title.full && (titleClipped || title.full !== title.text.replace(/ …$/, '')) ? title.full : null;
   const actions = useContext(TranscriptLogContext);
   const isReasoning = item.kind === 'reasoning';
   // Storage cleanup removed the output or diff: there is nothing to fetch.
@@ -301,7 +306,7 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
     const date = new Date(item.outputPrunedAt!);
     return (
       <div className="tlog-detail">
-        {item.kind === 'commandExecution' && title.full !== title.text.replace(/ …$/, '') ? <pre className="tlog-command">{title.full}</pre> : null}
+        {fullCommand ? <pre className="tlog-command">{fullCommand}</pre> : null}
         {textNote}
         <p className="tlog-empty is-pruned">{translate(item.kind === 'fileChange' ? 'chat.logDiffPruned' : 'chat.logOutputPruned', {
           date: Number.isNaN(date.getTime()) ? item.outputPrunedAt! : date.toLocaleDateString(getLocale()),
@@ -327,7 +332,7 @@ function RowDetail({ item, title, path }: { item: ThreadHistoryItemDto; title: {
     );
   }
 
-  const command = item.kind === 'commandExecution' && title.full !== title.text.replace(/ …$/, '') ? title.full : null;
+  const command = fullCommand;
   if (detail.error) {
     // Nothing loaded: a muted line in the output's place, the reason and Retry behind the mark.
     return (
@@ -376,19 +381,26 @@ function OperationRow({ item, defaultOpen = false, path }: { item: ThreadHistory
   const open = chosen ?? defaultOpen;
   const status = rowStatus(item);
   const title = rowTitle(item, actions?.workspaceRoot);
+  const titleRef = useRef<HTMLSpanElement | null>(null);
+  const [titleClipped, setTitleClipped] = useState(false);
   return (
     <div className="tlog-row" data-kind={item.kind} data-status={status} data-open={open || undefined}>
       <div className="tlog-row-line">
-        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={(event) => { actions?.anchor?.(event.currentTarget); setChosen(!open); }} title={title.full}>
+        <button type="button" className="tlog-row-head" aria-expanded={open} onClick={(event) => {
+          actions?.anchor?.(event.currentTarget);
+          const node = titleRef.current;
+          setTitleClipped(Boolean(node && node.scrollWidth > node.clientWidth + 1));
+          setChosen(!open);
+        }} title={title.full}>
           <ChevronRight className="tlog-chev tlog-row-chev" aria-hidden="true" />
           <span className="tlog-glyph" aria-hidden="true">{GLYPH[item.kind] ?? '·'}</span>
-          <span className={`tlog-title${title.mono ? ' is-mono' : ''}`}>{title.text}</span>
+          <span ref={titleRef} className={`tlog-title${title.mono ? ' is-mono' : ''}`}>{title.text}</span>
           {item.kind === 'fileChange' ? <DeltaBadges added={item.addedLines} removed={item.removedLines} /> : null}
           {statusTag(status)}
         </button>
         {item.kind === 'commandExecution' && title.full ? <CopyCommand text={title.full} /> : null}
       </div>
-      <Collapse open={open}><RowDetail item={item} title={title} {...(path ? { path } : {})} /></Collapse>
+      <Collapse open={open}><RowDetail item={item} title={title} titleClipped={titleClipped} {...(path ? { path } : {})} /></Collapse>
     </div>
   );
 }

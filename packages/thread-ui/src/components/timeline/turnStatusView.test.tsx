@@ -36,7 +36,7 @@ describe('TurnStatusBar footer', () => {
     vi.setSystemTime(new Date('2026-10-08T18:00:00Z'));
     const render = (props = {}) => renderToStaticMarkup(<TurnStatusBar turn={activeTurn()}
       variant="footer" lastActivityAt={new Date(Date.now() - 20_000).toISOString()} {...props} />);
-    expect(render()).toContain('aria-label="Last progress · 20s ago');
+    expect(render()).toContain('aria-label="Last progress 20s ago');
     expect(render()).not.toContain('thread-progress-age');
     for (const [age, freshness] of [[0, 'recent'], [5, 'recent'], [6, 'quiet'], [20, 'quiet'], [21, 'stale']] as const) {
       expect(render({ lastActivityAt: new Date(Date.now() - age * 1000).toISOString() })).toContain(`data-progress-freshness="${freshness}"`);
@@ -44,7 +44,9 @@ describe('TurnStatusBar footer', () => {
     expect(render({ lastActivityAt: 'invalid' })).toContain('data-progress-freshness="unknown"');
     expect(render()).not.toContain('animate-');
     expect(render()).not.toContain('Waiting for turn to finish');
-    expect(render({ lastActivityAt: new Date().toISOString() })).toContain('Last progress · 0s ago');
+    expect(render({ lastActivityAt: new Date().toISOString() })).toContain('Last progress 0s ago');
+    expect(render({ lastActivityAt: new Date(Date.now() - 174_000).toISOString() })).toContain('2 min without new output');
+    expect(render({ lastActivityAt: new Date(Date.now() - 174_000).toISOString() })).not.toContain('background-color');
     expect(render({ backgroundAgentCount: 1 })).toContain('1 background agent running');
     expect(render({ turn: activeTurn({ status: 'completed' }) })).not.toContain('Last progress');
     expect(render({ turn: activeTurn({ status: 'recovering' }) })).not.toContain('Last progress');
@@ -127,11 +129,11 @@ describe('TurnStatusBar footer', () => {
       />,
     );
     expect(html).toContain('gpt-5.4 · medium');
-    expect(html).toContain('Total tokens: 3,500');
-    expect(html).not.toContain('1k in');
-    expect(html).not.toContain('2k out');
+    // No price: the cost button shows the total once, and says the price is unknown.
+    expect(html).toContain('3.5K tokens, API price unknown');
+    expect(html).not.toContain('1K in');
+    expect(html).not.toContain('2K out');
     expect(html).not.toContain('500 cached');
-    expect(html).toContain('Price unavailable');
     expect(html).not.toContain('$0');
   });
 });

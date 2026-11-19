@@ -108,7 +108,7 @@ describe('turn usage in the visible timeline', () => {
       // The head pulses with the time so far and shows the speed of the model
       // calls already reported; with none reported yet it shows no speed.
       expect(container.querySelector('.thread-turn-head[data-active]')).not.toBeNull();
-      expect(container.querySelector('.thread-turn-head-main')?.getAttribute('aria-label')).toMatch(/^running \d.*s$/);
+      expect(container.querySelector('.thread-turn-head-main')?.getAttribute('aria-label')).toMatch(/^running \d/);
       flushSync(() => container.querySelector<HTMLButtonElement>('.thread-turn-head-main')!.click());
       expect(container.querySelector('.thread-turn-head-speed')?.textContent ?? null).toBe(measured ? '120.0 tok/s' : null);
       expect(footer?.textContent).toBe(`${measured ? '150.0' : '80.0'}`);
@@ -256,9 +256,9 @@ describe('turn usage in the visible timeline', () => {
       expect(details.textContent).toContain('First token');
       expect(details.textContent).toContain('1.5 s average · 2 requests');
       expect(details.textContent).toContain('Prefill');
-      expect(details.textContent).toContain('1,667 tok/s · 5k uncached');
+      expect(details.textContent).toContain('1,667 tok/s · 5K uncached');
       expect(details.textContent).toContain('Decode');
-      expect(details.textContent).toContain('150.0 tok/s · 1.8k in 12 s');
+      expect(details.textContent).toContain('150.0 tok/s · 1.8K in 12 s');
       expect(details.textContent).toContain('3 requests that arrived in one piece are left out.');
     } finally { flushSync(() => root.unmount()); container.remove(); vi.unstubAllGlobals(); }
   });

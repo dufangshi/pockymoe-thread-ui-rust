@@ -119,12 +119,12 @@ export const GraphChatCompactMessageItem = memo(
       setReasoningOpen((value) => !value);
     }
 
-    const copyLabel = item.kind === 'agentMessage' ? translate("chat.agentReply") : 'prompt';
+    const copyLabel = item.kind === 'agentMessage' ? translate('chat.copyAgentReply') : translate('chat.copyPrompt');
     // Fork sits beside copy and appears with it (hover, focus or a tap).
     const copyButton = (
       <>
         {onForkTurn && forkTurnId ? <ForkTurnButton onFork={() => onForkTurn(forkTurnId)} /> : null}
-        <CopyButton value={text} label={translate("chat.copy_6b0f10", { value1: copyLabel })} className="thread-graph-message-copy" />
+        <CopyButton value={text} label={copyLabel} className="thread-graph-message-copy" />
       </>
     );
 

@@ -15,6 +15,7 @@ import type {
 } from '@pockymoe/shared';
 import { Tooltip, TooltipTrigger, TooltipContent } from '../graph-ui/Tooltip';
 import { formatCompactTokenCount, formatCompactUsd } from './tokenFormatting';
+import { TokenMetricIcon } from './TokenMetricIcon';
 
 export interface TokenUsageCostProps {
   usage?: ThreadTurnTokenBreakdownDto | null;
@@ -60,7 +61,6 @@ export function TokenUsageCost({
       : 0;
   const hasPrice =
     price && Number.isFinite(price.totalUsd) && price.totalUsd >= 0;
-  const priceTitle = translate("chat.aPIPriceUnavailableForThisModelOr");
   const details = usage
     ? [
         {
@@ -107,7 +107,7 @@ export function TokenUsageCost({
         <span className="thread-turn-usage-price">
           {formatCompactUsd(price.totalUsd)}
         </span>
-      ) : hasPrice || usage ? (
+      ) : hasPrice || (usage && usage.totalTokens > 0) ? (
         <Tooltip open={detailsOpen} onOpenChange={setDetailsOpen}>
           <TooltipTrigger asChild>
             <button
@@ -117,7 +117,7 @@ export function TokenUsageCost({
                   ? 'thread-turn-usage-price'
                   : 'thread-turn-usage-unavailable'
               }
-              aria-label={translate("chat.showTokenDetails", { value1: hasPrice ? `${costLabel} ${formatCompactUsd(price.totalUsd)}` : translate("chat.aPIPriceUnavailable") })}
+              aria-label={translate("chat.showTokenDetails", { value1: hasPrice ? `${costLabel} ${formatCompactUsd(price.totalUsd)}` : usage ? translate('chat.inputTokensPriceUnknown', { value: formatCompactTokenCount(usage.totalTokens) }) : translate("chat.aPIPriceUnavailable") })}
               aria-expanded={detailsOpen}
               onPointerDown={() => {
                 openAtPointerDown.current = detailsOpen;
@@ -135,7 +135,11 @@ export function TokenUsageCost({
             >
               {hasPrice
                 ? formatCompactUsd(price.totalUsd)
-                : translate("chat.priceUnavailable")}
+                // Without a price the button shows what is known, the tokens,
+                // rather than a lone "$ —".
+                : usage
+                  ? <><TokenMetricIcon />{formatCompactTokenCount(usage.totalTokens)}</>
+                  : translate("chat.priceUnavailable")}
             </button>
           </TooltipTrigger>
           <TooltipContent
@@ -152,7 +156,7 @@ export function TokenUsageCost({
               <DollarSign size={14} aria-hidden="true" />
               <span>{costLabel}</span>
               <span style={{ marginLeft: 'auto', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
-                {hasPrice ? formatCompactUsd(price.totalUsd) : priceTitle}
+                {hasPrice ? formatCompactUsd(price.totalUsd) : translate('chat.priceUnknownShort')}
               </span>
             </div>
             {usage && <div className="thread-usage-details-total" style={{ display: 'flex', justifyContent: 'space-between', gap: 12, paddingBottom: 8, marginBottom: 8 }}>
@@ -164,7 +168,8 @@ export function TokenUsageCost({
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: '16px minmax(0, 1fr) auto auto',
+                // No price: no cost column, rather than a column of dashes.
+                gridTemplateColumns: hasPrice ? '16px minmax(0, 1fr) auto auto' : '16px minmax(0, 1fr) auto',
                 gap: '6px 8px',
                 alignItems: 'center',
                 fontVariantNumeric: 'tabular-nums',
@@ -182,7 +187,7 @@ export function TokenUsageCost({
                   >
                     {formatCompactTokenCount(value)}
                   </span>
-                  <span
+                  {hasPrice ? <span
                     aria-label={translate("chat.cost", { value1: label })}
                     title={
                       Icon === Brain
@@ -192,7 +197,7 @@ export function TokenUsageCost({
                     style={{ textAlign: 'right', whiteSpace: 'nowrap' }}
                   >
                     {usd == null ? '—' : formatCompactUsd(usd)}
-                  </span>
+                  </span> : null}
                 </span>
               ))}
             </div>

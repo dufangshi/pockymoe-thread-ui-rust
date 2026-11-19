@@ -1,4 +1,5 @@
 import type { ThreadHistoryItemDto, ThreadTurnActivityDto, ThreadTurnActivitySegmentDto, ThreadTurnChangedFileDto } from '@pockymoe/shared';
+import { formatDurationMs } from './durationFormatting';
 import { translate } from '../../i18n';
 
 export type ActivityCounts = Required<Omit<ThreadTurnActivityDto, 'files' | 'segments'>>;
@@ -99,12 +100,9 @@ export function activityParts(counts: ActivityCounts, { lines = true }: { lines?
   return parts;
 }
 
-/** Compact elapsed time: 8s, 1m 12s, 2h 5m. */
+/** Compact elapsed time, in the one duration format (durationFormatting). */
 export function compactDuration(ms: number): string {
-  const seconds = Math.max(0, Math.round(ms / 1000));
-  if (seconds >= 3600) return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`;
-  if (seconds >= 60) return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
-  return `${seconds}s`;
+  return formatDurationMs(ms, { pad: false });
 }
 
 /** Elapsed time covered by a run of items, when their timestamps allow it. */

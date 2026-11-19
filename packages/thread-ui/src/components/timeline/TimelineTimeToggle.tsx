@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../../i18n';
 import { useState } from 'react';
 import { formatLongTimestamp, formatShortTimestamp } from '../threadPresentation';
+import { formatDurationSeconds } from './durationFormatting';
 function formatRelativeTurnTime(
   startedAt: string | null | undefined,
   timestamp: string | null | undefined,
@@ -11,21 +12,7 @@ function formatRelativeTurnTime(
     return timestamp ? formatShortTimestamp(timestamp) : translate("chat.timeUnavailable");
   }
 
-  const totalSeconds = Math.max(
-    0,
-    Math.round((itemMillis - startMillis) / 1000),
-  );
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`;
-  }
-  if (minutes > 0) {
-    return `${minutes}m ${seconds}s`;
-  }
-  return `${seconds}s`;
+  return formatDurationSeconds(Math.round((itemMillis - startMillis) / 1000));
 }
 
 export function TimelineTimeToggle({
@@ -56,7 +43,8 @@ export function TimelineTimeToggle({
     ? absoluteLabel + (hasRange ? ` – ${formatShortTimestamp(endTimestamp)}` : '')
     : displayMode === 'duration' && endTimestamp
       ? formatRelativeTurnTime(timestamp, endTimestamp)
-      : relativeLabel + (hasRange ? ` – ${formatRelativeTurnTime(turnStartedAt, endTimestamp)}` : '');
+      // An offset says what it is measured from, so a lone "0s" never reads as a duration.
+      : translate('chat.turnOffset', { duration: relativeLabel + (hasRange ? ` – ${formatRelativeTurnTime(turnStartedAt, endTimestamp)}` : '') });
 
   return (
     <span

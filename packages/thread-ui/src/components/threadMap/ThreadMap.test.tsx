@@ -354,8 +354,8 @@ describe('ThreadTile', () => {
       priceEstimate: { totalUsd: 4.55, inputUsd: 0.5, cachedInputUsd: 3.42, outputUsd: 0.63 } });
     const usage = tile.querySelector('.thread-map-stats .thread-map-usage')!;
     expect(usage.querySelector('button.thread-turn-usage-price')!.textContent).toBe('$4.55');
-    expect(text(usage, '.thread-map-tokens')).toBe('17m');
-    expect(tile.querySelector('a')!.getAttribute('aria-label')).toContain('17m tokens · API 费用 $4.55');
+    expect(text(usage, '.thread-map-tokens')).toBe('17M');
+    expect(tile.querySelector('a')!.getAttribute('aria-label')).toContain('17M tokens · API 费用 $4.55');
     // A narrower card has them on a row of their own; a small tile leaves them out.
     expect(show({ width: 200, height: 200 }, { ...busy, priceEstimate: { totalUsd: 4.55, inputUsd: 0, cachedInputUsd: 0, outputUsd: 0 } })
       .querySelector(':scope > .thread-map-usage')).not.toBeNull();

@@ -161,6 +161,12 @@ export function ComposerPromptEditor({
           contentEditable={disabled ? false : 'plaintext-only'}
           inputMode="text"
           suppressContentEditableWarning
+          // Lines scrolled out above fade at the top edge (§17: hidden, not missing).
+          onScroll={event => {
+            const box = event.currentTarget;
+            if (box.scrollTop > 0) box.dataset.scrolled = 'true';
+            else delete box.dataset.scrolled;
+          }}
           onClick={event => {
             const tile = attachmentTile(event.target);
             if (tile) { event.preventDefault(); setDetails(current => current === tile ? null : tile); }

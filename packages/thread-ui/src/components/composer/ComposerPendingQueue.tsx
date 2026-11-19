@@ -54,8 +54,8 @@ export function ComposerPendingQueue({
       className="thread-composer-pending-queue mx-auto mb-2 w-full max-w-4xl overflow-hidden rounded-xl border"
     >
       <div className="flex items-center justify-between px-3 py-1.5 text-[11px] font-medium text-[var(--theme-fg-muted)]">
-        <span>{translate("chat.queued")}</span>
-        <span>{prompts.length}</span>
+        {/* The count is said in words, never a bare figure. */}
+        <span>{translate("chat.queuedCount", { count: prompts.length })}</span>
       </div>
       <div className="max-h-36 overflow-y-auto">
         {prompts.map((prompt) => {
@@ -93,15 +93,16 @@ export function ComposerPendingQueue({
                   {translate("chat.queueing")}</span>
               ) : (
                 <>
-                  {open && onEdit ? (
+                  {onEdit ? (
                     <button
                       type="button"
                       disabled={busy}
                       onClick={() => void runAction(prompt.id, onEdit)}
-                      className="thread-composer-queue-edit inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition disabled:cursor-wait disabled:opacity-60"
+                      aria-label={translate("chat.edit")}
+                      title={translate("chat.edit")}
+                      className="thread-composer-queue-edit inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border text-xs font-medium transition disabled:cursor-wait disabled:opacity-60 sm:h-8 sm:w-8"
                     >
                       <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
-                      {translate("chat.edit")}
                     </button>
                   ) : null}
                   {onSteer ? (
@@ -109,7 +110,7 @@ export function ComposerPendingQueue({
                       type="button"
                       disabled={busy}
                       onClick={() => void runAction(prompt.id, onSteer)}
-                      className="thread-composer-steer-button inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition disabled:cursor-wait disabled:opacity-60"
+                      className="thread-composer-steer-button inline-flex h-10 shrink-0 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition disabled:cursor-wait disabled:opacity-60 sm:h-8"
                     >
                       {busy ? (
                         <Loader2
@@ -132,7 +133,7 @@ export function ComposerPendingQueue({
                       aria-label={translate("chat.removeQueuedPrompt")}
                       title={translate("chat.removeFromQueue")}
                       onClick={() => void runAction(prompt.id, onCancel)}
-                      className="thread-composer-queue-remove inline-flex h-8 w-8 items-center justify-center rounded-lg transition disabled:cursor-wait disabled:opacity-60"
+                      className="thread-composer-queue-remove ml-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition disabled:cursor-wait disabled:opacity-60 sm:h-8 sm:w-8"
                     >
                       <X className="h-4 w-4" aria-hidden="true" />
                     </button>

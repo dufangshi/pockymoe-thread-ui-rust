@@ -1,4 +1,4 @@
-import { translate, useI18n } from '../../i18n';
+import { translate, useI18n, type TranslationKey } from '../../i18n';
 import type {
   CollaborationModeDto,
   ModelOptionDto,
@@ -415,19 +415,27 @@ export function draftSignature(draft: ComposerDraft) {
     .join('\u001d')}`;
 }
 
+const EFFORT_LABELS: Record<string, TranslationKey> = {
+  none: 'chat.effortLevel.none',
+  minimal: 'chat.effortLevel.minimal',
+  low: 'chat.effortLevel.low',
+  medium: 'chat.effortLevel.medium',
+  high: 'chat.effortLevel.high',
+  xhigh: 'chat.effortLevel.xhigh',
+  max: 'chat.effortLevel.max',
+  ultra: 'chat.effortLevel.ultra',
+};
+
+/** A reasoning effort in the reader's language (docs/ui-principles.md §13);
+    a level this build does not know keeps the harness's own word. */
 export function formatReasoningEffortLabel(
   value: ReasoningEffortDto | null | undefined,
 ) {
   if (!value) {
     return translate("chat.auto");
   }
-
-  switch (value) {
-    case 'xhigh':
-      return 'xhigh';
-    default:
-      return value;
-  }
+  const key = EFFORT_LABELS[value];
+  return key ? translate(key) : value;
 }
 
 /** The `data-agent` key a theme uses for the harness avatar ("Claude Code" -> "claude"). */

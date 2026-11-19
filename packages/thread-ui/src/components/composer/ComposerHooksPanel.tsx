@@ -16,6 +16,7 @@ import {
   hookTrustLabel,
 } from './composerPresentation';
 import { ErrorMark } from '../copy/ErrorMark';
+import { PathChip } from '../copy/PathChip';
 import type { HookScope, HooksPanelMode, SlashPanelState } from './types';
 
 interface ComposerHooksPanelProps {
@@ -99,9 +100,11 @@ export function ComposerHooksPanel({
             <span>{translate("chat.hookConfigSources")}</span>
             {headingErrors.map((message) => <ErrorMark key={message} message={message} />)}
           </p>
-          <p className="truncate text-[11px] text-stone-500">
-            {hooksState.data?.projectHooksPath ?? translate("chat.workspaceHooksConfig")}
-          </p>
+          {hooksState.data?.projectHooksPath ? (
+            <PathChip path={hooksState.data.projectHooksPath} className="mt-0.5 max-w-full text-[11px]" />
+          ) : (
+            <p className="truncate text-[11px] text-stone-500">{translate("chat.workspaceHooksConfig")}</p>
+          )}
         </div>
         {hooksPanelMode === 'list' && hostConfigFilesAvailable ? (
           <button
@@ -261,7 +264,7 @@ export function ComposerHooksPanel({
               key={`${entry.path}:${entry.message}`}
               className="flex items-center gap-1 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2 text-xs text-stone-400"
             >
-              <p className="min-w-0 break-all">{entry.path}</p>
+              <PathChip path={entry.path} className="min-w-0 text-[11px]" />
               <ErrorMark message={entry.message} />
             </div>
           ))}
@@ -279,7 +282,8 @@ export function ComposerHooksPanel({
                   {hookEventLabel(hook.eventName)}
                   {hook.matcher ? ` · ${hook.matcher}` : ''}
                 </p>
-                <p className="mt-0.5 truncate font-mono text-[11px] text-stone-400">
+                {/* The whole command, wrapped: it is what will run (§14). */}
+                <p className="mt-0.5 whitespace-pre-wrap break-all font-mono text-[11px] text-stone-400">
                   {hook.command ?? hook.handlerType}
                 </p>
                 {hook.statusMessage ? (
@@ -288,7 +292,7 @@ export function ComposerHooksPanel({
                   </p>
                 ) : null}
               </div>
-              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] text-stone-500">
+              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-stone-500">
                 {editableHookTarget(hook) ? (
                   <button
                     type="button"
@@ -333,7 +337,7 @@ export function ComposerHooksPanel({
                   {hookTrustLabel(hook.trustStatus)}
                 </span>
               </div>
-              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-stone-500">
+              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-stone-500">
                 <span className="rounded-full border border-stone-700 px-2 py-1">
                   {hookSourceLabel(hook.source)}
                 </span>

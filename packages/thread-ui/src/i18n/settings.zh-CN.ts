@@ -645,4 +645,5 @@ export const settingsZhCN = {
   "settings.runManual": "手动",
   "settings.runCompleted": "完成",
   "settings.runFailed": "失败",
+  "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。Mac 上也可用 Command 代替 Ctrl。",
 } as const;

@@ -525,7 +525,12 @@ export function WorkbenchPanels({
           }}
           hidden={!showReference || (compact && mobileView !== 'reference')}
           onKeyDown={(e) => {
-            if (e.key === 'Escape' && !e.defaultPrevented) {
+            // Esc closes only the topmost layer (docs/ui-principles.md §4): a
+            // menu inside the pane closes first, and an Esc typed in the
+            // conversation's prompt or a field is the field's own, as in the dock.
+            const target = e.target as HTMLElement | null;
+            const editing = target?.closest?.('[contenteditable]:not([contenteditable="false"]), input, textarea, select');
+            if (e.key === 'Escape' && !e.defaultPrevented && !editing) {
               e.preventDefault();
               close();
             }

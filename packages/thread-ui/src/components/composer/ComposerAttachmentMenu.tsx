@@ -11,6 +11,7 @@ export function ComposerAttachmentMenu({
   menuClassName,
   menuItemClassName,
   onToggle,
+  onClose,
   onPickPhoto,
   onPickFile,
 }: {
@@ -19,6 +20,7 @@ export function ComposerAttachmentMenu({
   menuClassName: string;
   menuItemClassName: string;
   onToggle: () => void;
+  onClose?: () => void;
   onPickPhoto: () => void;
   onPickFile: () => void;
 }) {
@@ -43,11 +45,14 @@ export function ComposerAttachmentMenu({
       {open && (
         <ComposerMenuSurface
           align="start"
+          menu={{ onClose: onClose ?? onToggle }}
+          aria-label={translate("chat.addAttachment")}
           className={`${menuClassName} w-32 rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20`}
         >
           <div className="p-2">
             <button
               type="button"
+              role="menuitem"
               onClick={onPickPhoto}
               className={`${menuItemClassName} block w-full rounded-xl px-3 py-2 text-left text-sm transition`}
             >
@@ -55,6 +60,7 @@ export function ComposerAttachmentMenu({
               {translate("chat.photo")}</button>
             <button
               type="button"
+              role="menuitem"
               onClick={onPickFile}
               className={`${menuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition`}
             >

@@ -688,4 +688,5 @@ export const settingsEn = {
   "settings.runManual": "Manual",
   "settings.runCompleted": "Done",
   "settings.runFailed": "Failed",
+  "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.",
 } as const;

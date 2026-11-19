@@ -300,7 +300,7 @@ export const workbenchEn = {
   "workbench.createThread": "Create thread",
   "workbench.chooseAnAvailableBackendBeforeCreatingA": "Choose an available backend before creating a thread.",
   "workbench.loadingCreationForm": "Loading creation form...",
-  "workbench.createNewChat": "Create New Chat",
+  "workbench.createNewChat": "New thread",
   "workbench.chooseTheWorkspaceAndAgentForThis": "Choose the workspace and agent for this thread.",
   "workbench.notAvailable": " (not available)",
   "workbench.aCPAgentEnableOnDevice": "ACP Agent (enable on device)",
@@ -693,4 +693,9 @@ export const workbenchEn = {
   "workbench.splitDropLeft": "Open on the left",
   "workbench.splitDropRight": "Open on the right",
   "workbench.runningForHours": "running {{hours}} h {{minutes}} min",
+  "workbench.draftLabel": "Draft: ",
+  "workbench.hasUnsentDraft": "Has an unsent draft",
+  "workbench.firstPrompt": "First prompt (optional)",
+  "workbench.firstPromptPlaceholder": "Write the first prompt to send it as the thread starts, or leave it empty",
+  "workbench.createAndSend": "Create and send",
 } as const;

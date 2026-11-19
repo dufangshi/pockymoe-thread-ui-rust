@@ -1,10 +1,18 @@
-import { useLayoutEffect, useRef, type ComponentPropsWithoutRef } from 'react';
+import { useCallback, useLayoutEffect, useRef, type ComponentPropsWithoutRef } from 'react';
+import { useMenuKeyboard } from '../menu/useMenuKeyboard';
 
 type ComposerMenuSurfaceProps = ComponentPropsWithoutRef<'div'> & {
   align?: 'start' | 'end';
   /** Optional surrounding surface to keep a detail panel clear of the controls. */
   anchorSelector?: string;
+  /** A real menu (docs/ui-principles.md §3): role=menu, the first item takes
+      focus, arrows move, Esc closes and returns focus to the trigger. Leave it
+      out for forms (hooks, MCP) and for the list typed `/` opens, where focus
+      stays in the prompt. */
+  menu?: { onClose: () => void; itemSelector?: string };
 };
+
+const MENU_ITEMS = '[role^="menuitem"]:not([disabled])';
 
 // Keep the menu in its themed DOM subtree, but paint it above the composer,
 // stop button and timeline navigation using the browser's top layer.
@@ -13,9 +21,20 @@ export function ComposerMenuSurface({
   anchorSelector,
   children,
   className = '',
+  menu: menuBehaviour,
   ...props
 }: ComposerMenuSurfaceProps) {
   const menuRef = useRef<HTMLDivElement>(null);
+  const onMenuClose = menuBehaviour?.onClose;
+  const closeMenu = useCallback((restoreFocus: boolean) => {
+    if (restoreFocus) {
+      menuRef.current?.parentElement
+        ?.querySelector<HTMLElement>('[data-composer-menu-trigger="true"]')
+        ?.focus({ preventScroll: true });
+    }
+    onMenuClose?.();
+  }, [onMenuClose]);
+  useMenuKeyboard(menuRef, Boolean(menuBehaviour), closeMenu, menuBehaviour?.itemSelector ?? MENU_ITEMS);
 
   useLayoutEffect(() => {
     const menu = menuRef.current;
@@ -44,17 +63,21 @@ export function ComposerMenuSurface({
       const right = left + width - gutter * 2;
       const bottom = top + height - gutter * 2;
       const anchor = (anchorSelector ? trigger.closest(anchorSelector) ?? trigger : trigger).getBoundingClientRect();
+      // Open above or below the whole composer frame, not the toolbar key:
+      // a menu anchored on the key covers the line being typed (§12).
+      const composerFrame = anchorSelector ? null : trigger.closest('.thread-graph-composer-shell');
+      const vertical = composerFrame ? composerFrame.getBoundingClientRect() : anchor;
 
       menu.style.maxWidth = `${Math.max(0, right - left)}px`;
-      const above = Math.max(0, anchor.top - gutter - top);
-      const below = Math.max(0, bottom - anchor.bottom - gutter);
+      const above = Math.max(0, vertical.top - gutter - top);
+      const below = Math.max(0, bottom - vertical.bottom - gutter);
       const naturalHeight = menu.scrollHeight + menu.offsetHeight - menu.clientHeight;
       const openAbove = naturalHeight <= above || above >= below;
       menu.style.maxHeight = `${Math.min(bottom - top, openAbove ? above : below)}px`;
 
       const bounds = menu.getBoundingClientRect();
       const preferredLeft = align === 'end' ? anchor.right - bounds.width : anchor.left;
-      const preferredTop = openAbove ? anchor.top - gutter - bounds.height : anchor.bottom + gutter;
+      const preferredTop = openAbove ? vertical.top - gutter - bounds.height : vertical.bottom + gutter;
       const parent = !topLayer ? menu.offsetParent as HTMLElement | null : null;
       const origin = parent?.getBoundingClientRect();
       menu.style.left = `${Math.max(left, Math.min(preferredLeft, right - bounds.width)) - (origin?.left ?? 0) - (parent?.clientLeft ?? 0) + (parent?.scrollLeft ?? 0)}px`;
@@ -96,6 +119,7 @@ export function ComposerMenuSurface({
 
   return (
     <div
+      {...(menuBehaviour ? { role: 'menu' } : {})}
       {...props}
       ref={menuRef}
       popover="manual"

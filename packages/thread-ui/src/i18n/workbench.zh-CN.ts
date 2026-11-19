@@ -300,7 +300,7 @@ export const workbenchZhCN = {
   "workbench.createThread": "创建线程",
   "workbench.chooseAnAvailableBackendBeforeCreatingA": "创建线程前请选择可用的 Harness。",
   "workbench.loadingCreationForm": "正在加载创建表单…",
-  "workbench.createNewChat": "创建新对话",
+  "workbench.createNewChat": "新建线程",
   "workbench.chooseTheWorkspaceAndAgentForThis": "为此线程选择工作区和智能体。",
   "workbench.notAvailable": "（不可用）",
   "workbench.aCPAgentEnableOnDevice": "ACP 智能体（在设备上启用）",
@@ -693,4 +693,9 @@ export const workbenchZhCN = {
   "workbench.splitDropLeft": "在左侧分屏打开",
   "workbench.splitDropRight": "在右侧分屏打开",
   "workbench.runningForHours": "已运行 {{hours}} 小时 {{minutes}} 分钟",
+  "workbench.draftLabel": "草稿：",
+  "workbench.hasUnsentDraft": "有未发送的草稿",
+  "workbench.firstPrompt": "首条提示词（可选）",
+  "workbench.firstPromptPlaceholder": "写下第一条提示词，创建后立即发送；也可以留空",
+  "workbench.createAndSend": "创建并发送",
 } as const;

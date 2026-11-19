@@ -93,6 +93,15 @@ export function toolboxItemActionDecision(
   }
 }
 
+/** What the right edge of a toolbox row says. Toggles are switches, rows that
+    open a panel end in a chevron, actions that run at once say nothing unless
+    they are busy, and a goal says its state (docs/ui-principles.md §12). */
+export type ToolboxItemStatus =
+  | { kind: 'switch'; on: boolean }
+  | { kind: 'text'; text: string; active?: boolean }
+  | { kind: 'more' }
+  | null;
+
 export function toolboxItemStatus(
   item: AgentBackendToolboxItemSchemaDto,
   {
@@ -108,31 +117,31 @@ export function toolboxItemStatus(
     goalStatus: ThreadGoalStatusDto | null | undefined;
     busy: boolean;
   },
-) {
+): ToolboxItemStatus {
   switch (item.action) {
     case 'fast':
-      return fastMode ? translate("chat.on") : translate("chat.off");
+      return { kind: 'switch', on: fastMode };
     case 'compact':
-      return compactBusy ? translate("chat.busy") : translate("chat.run");
+      return compactBusy ? { kind: 'text', text: translate("chat.busy") } : null;
     case 'goal':
       return goalComposeMode
-        ? translate("chat.composing")
+        ? { kind: 'text', text: translate("chat.composing"), active: true }
         : goalStatus
-          ? goalStatusLabel(goalStatus)
-          : translate("chat.open");
+          ? { kind: 'text', text: goalStatusLabel(goalStatus), active: goalStatus === 'active' }
+          : null;
     case 'fork':
-      return busy ? translate("chat.idleOnly") : translate("chat.open");
+      return busy ? { kind: 'text', text: translate("chat.idleOnly") } : { kind: 'more' };
     case 'skills':
     case 'mcp':
     case 'hooks':
     case 'harness':
-      return translate("chat.view");
+      return { kind: 'more' };
     case 'prompt':
-      return translate("chat.compose");
+      return null;
     case 'unsupported':
-      return translate("chat.unavailable_2c9c1f");
+      return { kind: 'text', text: translate("chat.unavailable_2c9c1f") };
     default:
-      return '';
+      return null;
   }
 }
 
@@ -164,23 +173,26 @@ export function toolboxItemDisabled(
   }
 }
 
-export function toolboxItemClassName(
+/** True for an active toggle or goal; the row says so with data-active and its
+    switch or state, not with a warning colour (being on is not a problem). */
+export function toolboxItemActive(
   item: AgentBackendToolboxItemSchemaDto,
   {
     fastMode,
     goalComposeMode,
     goalStatus,
-    menuItemClassName,
   }: {
     fastMode: boolean;
     goalComposeMode: boolean;
     goalStatus: ThreadGoalStatusDto | null | undefined;
-    menuItemClassName: string;
   },
 ) {
-  const active =
+  return (
     (item.action === 'fast' && fastMode) ||
-    (item.action === 'goal' &&
-      (goalComposeMode || goalStatus === 'active'));
-  return `${active ? 'ui-status-warning' : menuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`;
+    (item.action === 'goal' && (goalComposeMode || goalStatus === 'active'))
+  );
+}
+
+export function toolboxItemClassName(menuItemClassName: string) {
+  return `${menuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`;
 }

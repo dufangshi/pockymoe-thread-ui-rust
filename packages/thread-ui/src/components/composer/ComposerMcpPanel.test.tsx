@@ -8,6 +8,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ComposerMcpPanel } from './ComposerMcpPanel';
 import type { McpPanelMode } from './types';
 
+// The panel's own buttons, not the copy and expand buttons of its path chips.
+const panelButtons = (view: Element) =>
+  Array.from(view.querySelectorAll<HTMLButtonElement>('button')).filter((button) => !button.closest('.path-chip'));
+
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
 
@@ -113,7 +117,7 @@ describe('ComposerMcpPanel', () => {
     expect(view.textContent).toContain('Search Docs');
     expect(view.textContent).toContain('Public');
 
-    view.querySelector<HTMLButtonElement>('button')?.click();
+    panelButtons(view)[0]?.click();
     expect(onSetMcpPanelMode).toHaveBeenCalledWith('add');
     expect(onClearMcpConfigStatus).toHaveBeenCalledTimes(1);
   });
@@ -133,7 +137,7 @@ describe('ComposerMcpPanel', () => {
       />,
     );
 
-    const buttons = view.querySelectorAll<HTMLButtonElement>('button');
+    const buttons = panelButtons(view);
     buttons[0]?.click();
     buttons[1]?.click();
 
@@ -158,7 +162,7 @@ describe('ComposerMcpPanel', () => {
     const inputs = view.querySelectorAll<HTMLInputElement>('input');
     expect(inputs[0]?.value).toBe('docs');
     expect(inputs[1]?.value).toBe('https://example.test/mcp');
-    view.querySelectorAll<HTMLButtonElement>('button')[1]?.click();
+    panelButtons(view)[1]?.click();
 
     expect(onSaveHttpMcp).toHaveBeenCalledTimes(1);
   });
@@ -177,7 +181,7 @@ describe('ComposerMcpPanel', () => {
 
     const textarea = view.querySelector<HTMLTextAreaElement>('textarea')!;
     expect(textarea.value).toBe('[mcp_servers.docs]');
-    view.querySelectorAll<HTMLButtonElement>('button')[1]?.click();
+    panelButtons(view)[1]?.click();
 
     expect(onSaveRawMcpBlock).toHaveBeenCalledTimes(1);
   });

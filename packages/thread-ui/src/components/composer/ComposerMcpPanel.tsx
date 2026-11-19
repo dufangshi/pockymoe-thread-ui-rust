@@ -2,6 +2,7 @@ import { translate, useI18n } from '../../i18n';
 import type { ThreadMcpServersDto } from '@pockymoe/shared';
 
 import { ErrorMark } from '../copy/ErrorMark';
+import { PathChip } from '../copy/PathChip';
 import { authStatusLabel } from './composerPresentation';
 import type { McpPanelMode, SlashPanelState } from './types';
 
@@ -70,9 +71,11 @@ export function ComposerMcpPanel({
             <span>{translate("chat.mCPConfigSource")}</span>
             {headingErrors.map((message) => <ErrorMark key={message} message={message} />)}
           </p>
-          <p className="truncate text-[11px] text-stone-500">
-            {mcpConfigPath ?? translate("chat.providerConfig")}
-          </p>
+          {mcpConfigPath ? (
+            <PathChip path={mcpConfigPath} className="mt-0.5 max-w-full text-[11px]" />
+          ) : (
+            <p className="truncate text-[11px] text-stone-500">{translate("chat.providerConfig")}</p>
+          )}
         </div>
         {mcpPanelMode === 'list' && mcpConfigEditing ? (
           <button
@@ -228,14 +231,14 @@ export function ComposerMcpPanel({
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-stone-100">
+                  <p className="break-all text-sm font-medium text-stone-100">
                     {server.name}
                   </p>
                   <p className="mt-0.5 text-xs text-stone-400">
                     {server.tools.length} {translate("chat.tools")} {server.resourceCount}{' '}
                     {translate("chat.resources")} {server.resourceTemplateCount} {translate("chat.templates")}</p>
                 </div>
-                <span className="shrink-0 rounded-full border border-stone-700 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-stone-300">
+                <span className="shrink-0 whitespace-nowrap rounded-full border border-stone-700 px-2 py-1 text-[10px] text-stone-300">
                   {authStatusLabel(server.authStatus)}
                 </span>
               </div>

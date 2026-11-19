@@ -1978,3 +1978,9 @@
 
 /* A running agent badge stays lit in every motion preference. */
 .matter-group-toggle.is-badge[data-running] > svg { color: var(--matter-agents-glow, #20bc87); }
+
+/* A prompt written in a thread and not sent: a pencil on its tab and the draft's
+   start in its sidebar row (docs/ui-principles.md §4, unsaved input is visible). */
+.thread-ui-shell .matter-tab-draft { flex: none; width: 12px; height: 12px; margin-left: 2px; color: var(--theme-accent-strong, var(--theme-accent)); }
+.thread-ui-shell .matter-thread-draft { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.thread-ui-shell .matter-thread-draft > b { margin-right: 3px; font-weight: 600; color: var(--theme-accent-strong, var(--theme-accent)); }

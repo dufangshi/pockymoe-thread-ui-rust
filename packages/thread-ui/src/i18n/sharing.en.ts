@@ -196,7 +196,7 @@ export const sharingEn = {
   "sharing.threadControl": "Read, send messages and control",
   "sharing.reviewFiles": "Files",
   "sharing.filesNone": "No access",
-  "sharing.reviewNewThreads": "New conversations",
+  "sharing.reviewNewThreads": "New threads",
   "sharing.allowed": "Allowed",
   "sharing.notAllowed": "Not allowed",
   "sharing.reviewExpiry": "Expires",

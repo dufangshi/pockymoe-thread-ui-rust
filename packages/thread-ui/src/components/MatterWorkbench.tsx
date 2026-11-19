@@ -61,6 +61,8 @@ export interface ThreadMenuContext {
   /** Takes focus back when the menu closes from the keyboard. */
   returnFocus?: HTMLElement | undefined;
   onClose: () => void;
+  /** Opened from an editor tab: closing it and its neighbours, as an editor does. */
+  tab?: { close: () => void; closeOthers?: (() => void) | undefined; closeRight?: (() => void) | undefined } | undefined;
 }
 
 export interface WorkbenchThread {
@@ -753,6 +755,9 @@ export function MatterWorkbench({
   // The sidebar and the thread sheet list this workspace's threads apart from
   // the recent ones elsewhere.
   const workspaceThreads = o.workspaceThreads ? tabs : [];
+  // The workspace these threads share: named once, in the sidebar heading.
+  const workspacePlace = workspaceThreads.length && workspaceThreads.every(thread => thread.subtitle === workspaceThreads[0]!.subtitle)
+    ? workspaceThreads[0]!.subtitle || undefined : undefined;
   const recentThreads = o.threads.filter(thread => !workspaceThreads.some(tab => tab.key === thread.key));
   const attention = (thread: WorkbenchThread) => thread.status === 'running' ? 0 : thread.status === 'unread' || thread.status === 'failed' ? 1 : 2;
   // The thread sheet lists the current thread's group first, then by attention.
@@ -774,9 +779,29 @@ export function MatterWorkbench({
   );
   // Right-click (or the menu key) on a tab or a row opens the thread's own ⋯ menu
   // there instead of the browser's. Touch keeps the ⋯ button and the long-press drag.
-  const [contextMenu, setContextMenu] = useState<{ thread: WorkbenchThread; x: number; y: number; returnFocus?: HTMLElement; id: number } | null>(null);
-  const openThreadMenuAt = (thread: WorkbenchThread, x: number, y: number, returnFocus?: HTMLElement) => {
-    setContextMenu({ thread, x, y, ...(returnFocus ? { returnFocus } : {}), id: Date.now() });
+  const [contextMenu, setContextMenu] = useState<{ thread: WorkbenchThread; x: number; y: number; returnFocus?: HTMLElement; id: number; fromTab?: boolean } | null>(null);
+  const openThreadMenuAt = (thread: WorkbenchThread, x: number, y: number, returnFocus?: HTMLElement, fromTab = false) => {
+    setContextMenu({ thread, x, y, ...(returnFocus ? { returnFocus } : {}), id: Date.now(), ...(fromTab ? { fromTab } : {}) });
+  };
+  // Close, Close others and Close to the right for an editor tab's menu.
+  const tabMenuActions = (thread: WorkbenchThread): ThreadMenuContext['tab'] => {
+    if (!editorTabs || !o.onCloseTab) return undefined;
+    const roots = groupThreads(tabStrip).map(group => group.root.key);
+    const root = rootOfOpen(thread);
+    const at = roots.indexOf(root);
+    if (at < 0) return undefined;
+    const others = roots.filter(key => key !== root);
+    const right = roots.slice(at + 1);
+    const closeMany = (keys: string[]) => {
+      const current = groupThreads(tabStrip).find(group => group.root.key === o.currentKey || group.children.some(child => child.key === o.currentKey));
+      if (current && keys.includes(current.root.key)) navigate(thread.href);
+      for (const key of keys) o.onCloseTab?.(key);
+    };
+    return {
+      close: () => closeTab(root),
+      ...(others.length ? { closeOthers: () => closeMany(others) } : {}),
+      ...(right.length ? { closeRight: () => closeMany(right) } : {}),
+    };
   };
   const openThreadMenuFrom = (event: ReactMouseEvent<HTMLElement>, thread: WorkbenchThread) => {
     if (!o.renderThreadMenu || mobile || event.defaultPrevented) return;
@@ -834,7 +859,11 @@ export function MatterWorkbench({
     while (scroller && !(scroller.scrollHeight > scroller.clientHeight && /auto|scroll/.test(getComputedStyle(scroller).overflowY))) scroller = scroller.parentElement;
     if (scroller) scroller.scrollTop += drift;
   }, [agentsOpen]);
-  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { count: number; running: number; open: boolean }, onClose?: () => void) => (
+  // With every agent thread closed the count is hidden, and the name says why.
+  const agentsLabel = (title: string, count: number) => count > 0
+    ? translate('workbench.agentThreads', { value1: title, value2: count })
+    : translate('workbench.agentThreadsAllClosed', { value1: title });
+  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { count: number; running: number; open: boolean }, onClose?: () => void, place?: string) => (
     <div key={thread.key} className={`matter-thread-entry ${onClose ? 'is-closable' : ''}`}>
     <a
       href={thread.href}
@@ -859,14 +888,15 @@ export function MatterWorkbench({
       />
       <span className="matter-thread-copy">
         <span>{thread.title}</span>
-        {/* An unsent prompt takes the subtitle's place, so it is not forgotten. */}
+        {/* An unsent prompt takes the subtitle's place, so it is not forgotten.
+            Under "This workspace" the workspace's name would repeat on every row. */}
         {thread.draft && thread.key !== o.currentKey
           ? <small className="matter-thread-draft"><b>{translate('workbench.draftLabel')}</b>{thread.draft}</small>
-          : <small>{thread.subtitle}</small>}
+          : thread.subtitle && thread.subtitle !== place ? <small>{thread.subtitle}</small> : null}
       </span>
     </a>
     {agents && <button type="button" className="matter-agent-toggle" aria-expanded={agents.open} data-running={agents.running > 0 || undefined}
-      aria-label={translate('workbench.agentThreads', { value1: thread.title, value2: agents.count })} title={translate('workbench.agentThreads', { value1: thread.title, value2: agents.count })}
+      aria-label={agentsLabel(thread.title, agents.count)} title={agentsLabel(thread.title, agents.count)}
       onClick={event => {
         const row = event.currentTarget.closest<HTMLElement>('.matter-thread-entry');
         const sheet = event.currentTarget.closest<HTMLElement>('.matter-phone-sheet');
@@ -881,12 +911,12 @@ export function MatterWorkbench({
       title={translate('workbench.closeTab', { title: thread.title })} onClick={onClose}><X aria-hidden="true" /></button>}
     </div>
   );
-  const renderThreadGroups = (threads: WorkbenchThread[], reorder = false, onClose?: (rootKey: string) => void) => groupThreads(threads).map(({ root, children }) => {
+  const renderThreadGroups = (threads: WorkbenchThread[], reorder = false, onClose?: (rootKey: string) => void, place?: string) => groupThreads(threads).map(({ root, children }) => {
     const open = agentsOpen[root.key] ?? children.some(child => child.key === o.currentKey);
     return <div key={root.key} className="matter-thread-group-entry" data-reorder-key={reorder ? root.key : undefined}>
-      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.filter(child => !child.closedAt).length, running: children.filter(child => !child.closedAt && child.status === 'running').length, open } : undefined, onClose ? () => onClose(root.key) : undefined)}
+      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.filter(child => !child.closedAt).length, running: children.filter(child => !child.closedAt && child.status === 'running').length, open } : undefined, onClose ? () => onClose(root.key) : undefined, place)}
       {children.length > 0 && open && <div className="matter-agent-children" role="group" aria-label={translate('workbench.agentThreads_187f89', { value1: root.title })}>
-        {children.map(child => renderThread(child))}
+        {children.map(child => renderThread(child, undefined, undefined, undefined, place))}
       </div>}
     </div>;
   });
@@ -1065,7 +1095,7 @@ export function MatterWorkbench({
         {(!mobile || o.sidebarHeader) && <div className="matter-sidebar-heading">
           {o.sidebarHeader ?? (dock
             ? <span className="matter-drawer-brand"><b aria-hidden="true">p<i>m</i></b>Pockymoe</span>
-            : <span>{translate("workbench.workspace")}</span>)}
+            : <span title={workspacePlace}>{workspacePlace ?? translate("workbench.workspace")}</span>)}
           <button
             className="matter-mobile-close"
             aria-label={translate("workbench.closeSidebar")}
@@ -1111,9 +1141,8 @@ export function MatterWorkbench({
             <ShortcutList threads={favorites} onReorder={o.onReorderShortcuts}
               renderRow={thread => renderThread(thread, threadGroupActivity(thread, o.threads.filter(child => child.rootKey === thread.key && child.key !== thread.key)))} />
             {!o.threads.some((t) => t.favorite) && (
-              <p className="matter-sidebar-hint">
-                {translate("workbench.starAThreadToKeepItClose")}<br />
-                {translate("workbench.acrossWorkspacesAndDevices")}</p>
+              <p className="matter-sidebar-hint is-shortcuts-empty" title={translate("workbench.acrossWorkspacesAndDevices")}>
+                <Star data-icon="shortcuts" aria-hidden="true" />{translate("workbench.starAThreadToKeepItClose")}</p>
             )}
           </div>
         )}
@@ -1133,7 +1162,7 @@ export function MatterWorkbench({
           </div>
           {workspaceOpen && (
             <div ref={workspaceListRef} className="matter-thread-section" data-testid="workspace-threads">
-              {renderThreadGroups(workspaceThreads, reorderable)}
+              {renderThreadGroups(workspaceThreads, reorderable, undefined, workspacePlace)}
             </div>
           )}
         </>}
@@ -1193,7 +1222,7 @@ export function MatterWorkbench({
         <div className="tab-scroll-surface matter-tab-scroll" {...tabScrollEdges}>
         <nav ref={tabsRef} className="matter-thread-tabs" aria-label={translate("workbench.workspaceThreads")}>
           <GroupedThreadTabs threads={tabStrip} currentKey={o.currentKey} onNavigate={navigate}
-            onThreadMenu={o.renderThreadMenu && !mobile ? openThreadMenuAt : undefined}
+            onThreadMenu={o.renderThreadMenu && !mobile ? (thread, x, y, returnFocus) => openThreadMenuAt(thread, x, y, returnFocus, true) : undefined}
             onPrefetch={o.onPrefetchThread}
             onClose={editorTabs && o.onCloseTab ? closeTab : undefined} />
         </nav>
@@ -1229,7 +1258,7 @@ export function MatterWorkbench({
                 ? <div className="matter-workspace-home">
                     {children}
                     <section className="matter-workspace-home-list matter-thread-section" aria-label={translate('workbench.thisWorkspace')} data-testid="workspace-home-threads">
-                      {renderThreadGroups(workspaceThreads, reorderable)}
+                      {renderThreadGroups(workspaceThreads, reorderable, undefined, workspacePlace)}
                     </section>
                   </div>
                 : children}
@@ -1278,10 +1307,11 @@ export function MatterWorkbench({
           {/* Both sections fold; this workspace's conversations keep the order dragged into them. */}
           <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={sheetWorkspaceOpen} onClick={() => setSheetWorkspaceOpen(!sheetWorkspaceOpen)}>
             {sheetWorkspaceOpen ? <ChevronDown /> : <ChevronRight />}
-            <span>{translate('workbench.thisWorkspace')}</span>
+            {/* The sheet has no sidebar heading: the workspace is named here, once. */}
+            <span className="matter-sheet-workspace-label">{workspacePlace ? `${translate('workbench.thisWorkspace')} · ${workspacePlace}` : translate('workbench.thisWorkspace')}</span>
             <span className="matter-section-count">{groupThreads(tabs).length}</span>
           </button>
-          {sheetWorkspaceOpen && <div ref={sheetListRef} className="matter-thread-section" data-testid="sheet-workspace-threads">{renderThreadGroups(reorderable ? tabs : [...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)), reorderable)}</div>}
+          {sheetWorkspaceOpen && <div ref={sheetListRef} className="matter-thread-section" data-testid="sheet-workspace-threads">{renderThreadGroups(reorderable ? tabs : [...tabs].sort((a, b) => Number(inCurrentGroup(b)) - Number(inCurrentGroup(a)) || attention(a) - attention(b)), reorderable, undefined, workspacePlace)}</div>}
           {o.threads.some(thread => !tabs.some(tab => tab.key === thread.key)) && <>
             <button type="button" className="matter-section-heading matter-sheet-section-heading" aria-expanded={sheetRecentsOpen} onClick={() => setSheetRecentsOpen(!sheetRecentsOpen)}>
               {sheetRecentsOpen ? <ChevronDown /> : <ChevronRight />}
@@ -1328,6 +1358,7 @@ export function MatterWorkbench({
       </>}
       {contextMenu && o.renderThreadMenu && <Fragment key={contextMenu.id}>{o.renderThreadMenu(contextMenu.thread, {
         x: contextMenu.x, y: contextMenu.y, returnFocus: contextMenu.returnFocus,
+        ...(contextMenu.fromTab ? { tab: tabMenuActions(contextMenu.thread) } : {}),
         onClose: () => setContextMenu(current => current?.id === contextMenu.id ? null : current),
       })}</Fragment>}
       {/* Phones: notifications rise from the bottom like every secondary window (UI §4). */}

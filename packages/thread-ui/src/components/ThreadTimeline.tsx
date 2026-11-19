@@ -1,6 +1,7 @@
 import { translate, useI18n } from '../i18n';
 import { mergeThreadHistoryItem } from '@pockymoe/shared';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MessageSquare } from 'lucide-react';
 
 import type {
   RespondThreadActionRequestInput,
@@ -982,8 +983,12 @@ function ThreadTimelineComponent({
           )}
 
           {turns.length === 0 && !liveOutput && !optimisticTurn && (
-            <div className="thread-graph-empty-state px-3 py-8 text-sm sm:px-5">
-              {translate("chat.sendTheFirstPromptToStartThe")}</div>
+            // The same centered empty state as an unselected workspace.
+            <div className="thread-graph-empty-state is-new-thread px-3 py-8 text-sm sm:px-5" role="status">
+              <MessageSquare aria-hidden="true" />
+              <strong>{translate("workbench.newThreadTitle")}</strong>
+              <span>{translate("chat.sendTheFirstPromptToStartThe")}</span>
+            </div>
           )}
 
           {(visibleTurns.length > 0 ||

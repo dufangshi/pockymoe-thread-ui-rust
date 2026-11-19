@@ -416,7 +416,12 @@
     line-height: 1.2;
     text-align: center;
   }
-  .matter-phone-sheet-host :is(button, a)[aria-label]:not(.matter-phone-sheet-host [role=dialog] *)::after { content: attr(aria-label); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* Labels wrap to two lines rather than end in "…": a tap target's name must be
+     readable on touch (ui-principles §14), and English names run longer. */
+  .matter-phone-sheet-host :is(button, a)[aria-label]:not(.matter-phone-sheet-host [role=dialog] *)::after {
+    content: attr(aria-label); display: -webkit-box; max-width: 100%; overflow: hidden;
+    -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: normal; overflow-wrap: break-word;
+  }
   .thread-ui-shell .matter-workbench .matter-phone-sheet-host svg { width: 22px; height: 22px; }
   .thread-ui-shell .matter-workbench .matter-phone-sheet-tools :is(button, a)[aria-pressed='true'] {
     background: var(--theme-surface-strong);

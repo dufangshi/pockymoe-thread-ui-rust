@@ -76,7 +76,9 @@
   --matter-chrome: oklch(0.885 0.008 145);
   --matter-composer-shadow: 0 18px 44px rgb(25 40 33 / 19%), 0 4px 12px rgb(25 40 33 / 10%);
   --matter-glass-highlight: oklch(0.98 0.005 145 / 75%);
-  font-family: 'DM Sans', Inter, ui-sans-serif, system-ui, sans-serif;
+  /* Chinese text names its fonts: left to the browser, an English page falls back
+     to Japanese glyphs (centered 。and ，). */
+  font-family: 'DM Sans', Inter, ui-sans-serif, system-ui, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif;
 }
 .thread-ui-shell.thread-ui-shell[data-theme-effective='dark'],
 .thread-graph-dialog.matter-settings-dialog[data-theme-effective='dark'] {
@@ -325,6 +327,9 @@
   padding: 0 8px;
   font-weight: 600;
 }
+/* A long workspace name stays on one line, in the sidebar heading and the phone sheet. */
+.matter-sheet-workspace-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.matter-sidebar-heading > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* This workspace takes what it needs, at most half the height; recent chats
    follow right after it. Each scrolls on its own. */
 .matter-sidebar-upper {
@@ -360,7 +365,7 @@
 }
 .matter-sidebar-resize:focus-visible { outline: none; }
 /* Desktop sidebar, denser: lists scroll against the very edge, rows are shorter
-   and longer, and each row's menu is a vertical ⋯ shown when pointed at. */
+   and longer, and each row's menu is the same ⋯ as everywhere, shown when pointed at. */
 @media (min-width: 640px) {
   .thread-ui-shell .matter-workbench .matter-sidebar { padding: 0 0 8px; }
   .thread-ui-shell .matter-workbench .matter-sidebar > .matter-nav-strip { margin-bottom: 10px; }
@@ -368,7 +373,10 @@
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-sidebar-scroll { padding: 0 4px 0 8px; }
   .thread-ui-shell .matter-workbench .matter-sidebar-recents > .matter-section-heading { width: auto; margin: 0 4px 0 8px; }
   .thread-ui-shell .matter-workbench .matter-sidebar :is(.matter-drawer-tools, .matter-drawer-home, .matter-sidebar-error) { margin-inline: 8px; }
-  .thread-ui-shell .matter-workbench .matter-sidebar-footer { padding: 14px 16px 0; }
+  .thread-ui-shell .matter-workbench /* Empty shortcuts: one muted line with the star it asks for. */
+.matter-sidebar-hint.is-shortcuts-empty { display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.matter-sidebar-hint.is-shortcuts-empty > svg { flex: none; width: 13px; height: 13px; }
+.matter-sidebar-footer { padding: 14px 16px 0; }
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-section { margin-bottom: 8px; }
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-row { gap: 8px; margin: 1px 0; padding: 4px 8px; }
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-copy { gap: 0; line-height: 16px; }
@@ -377,7 +385,6 @@
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 58px; }
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-agent-toggle { right: 24px; height: 22px; }
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions { right: 2px; width: 22px; height: 26px; }
-  .thread-ui-shell .matter-workbench .matter-sidebar .recent-thread-actions svg { transform: rotate(90deg); }
 }
 @media (min-width: 640px) and (hover: hover) {
   .thread-ui-shell .matter-workbench .matter-sidebar .matter-thread-entry > .recent-thread-actions { opacity: 0; transition: opacity 120ms; }
@@ -593,6 +600,12 @@
 .matter-status-dot[data-status='unknown'] { border-style: dotted; opacity: .6; }
 /* Interrupted is the stop sign: a solid amber square, unlike the hollow idle ring. */
 .matter-status-dot[data-status='interrupted'] { border-color: #c08a3e; background: #c08a3e; border-radius: 1.5px; }
+/* In a list every mark sits in one 12px slot (the running ring's width), so a
+   running thread's title lines up with the rest. Theme packs that resize marks
+   set their own margins. */
+:is(.matter-thread-row, .matter-agent-threads-item) > .matter-status-dot { margin-inline: 2.5px; }
+:is(.matter-thread-row, .matter-agent-threads-item) > .matter-status-dot:is([data-status='running'], [data-status='waiting']) { margin-inline: 0; }
+:is(.matter-thread-row, .matter-agent-threads-item) > .matter-status-dot[data-status='agents-running'] { margin-inline: 1px; }
 
 
 @media (prefers-reduced-motion: reduce) { .matter-status-dot:is([data-status='running'], [data-status='agents-running']) { animation: none; } }

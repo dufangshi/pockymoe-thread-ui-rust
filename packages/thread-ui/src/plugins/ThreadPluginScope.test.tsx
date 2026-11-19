@@ -229,7 +229,7 @@ const byText = (text: string, tag = 'button') =>
   ) as HTMLElement | undefined;
 async function openPanel() {
   await act(async () =>
-    q('button[aria-label^="Plugins in this conversation"]').click(),
+    q('button[aria-label^="Plugins in this thread"]').click(),
   );
 }
 const radio = (label: string) =>

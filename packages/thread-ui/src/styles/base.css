@@ -1173,3 +1173,10 @@
 .thread-ui-shell .workspace-tab-scroll > .tab-scroll-button { width: 22px; background: var(--theme-panel); }
 .thread-ui-shell .workspace-tab-scroll > .tab-scroll-button[data-edge="start"] { border-right: 1px solid var(--theme-border); }
 .thread-ui-shell .workspace-tab-scroll > .tab-scroll-button[data-edge="end"] { border-left: 1px solid var(--theme-border); }
+/* The workspace thread tabs give their paging buttons room of their own, with a
+   divider, so no title runs under an arrow and the strip still scrolls by swipe. */
+.thread-ui-shell .matter-tab-scroll[data-overflow-start="true"] { padding-left: 24px; }
+.thread-ui-shell .matter-tab-scroll[data-overflow-end="true"] { padding-right: 24px; }
+.thread-ui-shell .matter-tab-scroll > .tab-scroll-button { background: none; }
+.thread-ui-shell .matter-tab-scroll > .tab-scroll-button[data-edge="start"] { border-right: 1px solid var(--theme-border); }
+.thread-ui-shell .matter-tab-scroll > .tab-scroll-button[data-edge="end"] { border-left: 1px solid var(--theme-border); }

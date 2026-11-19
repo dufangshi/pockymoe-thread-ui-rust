@@ -212,7 +212,7 @@
   --export-accent-border: #bee9d8;
   --theme-bg: var(--export-panel);
   --theme-border: var(--export-border);
-  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'DM Sans', ui-sans-serif, system-ui, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif;
 }
 .thread-export-dialog-root.matter-actions-dialog[data-theme-effective='dark'] {
   --export-bg: #0c0f11;

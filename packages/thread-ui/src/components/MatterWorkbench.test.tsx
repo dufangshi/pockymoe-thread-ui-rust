@@ -169,7 +169,7 @@ describe('one-handed phone dock', () => {
     expect(topbar().classList.contains('is-status-only')).toBe(true);
     expect(topbar().querySelector('button[aria-label="Device monitor"]')).not.toBeNull();
     expect(topbar().querySelector('button[aria-label="Notifications"]')).not.toBeNull();
-    expect(topbar().querySelector('.matter-running-chip')?.getAttribute('aria-label')).toBe('2 conversations are running on this account. Show them');
+    expect(topbar().querySelector('.matter-running-chip')?.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
     for (const label of ['Chat', 'Terminal', 'Toggle Explorer', 'Open settings', 'Go back']) {
       expect(topbar().querySelector(`button[aria-label="${label}"]`)).toBeNull();
     }
@@ -213,7 +213,7 @@ describe('one-handed phone dock', () => {
     act(() => host.querySelector<HTMLButtonElement>('.matter-phone-thread')!.click());
     expect(sheet.hasAttribute('data-open')).toBe(true);
     // Unread threads come before idle ones.
-    expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['Bws', 'Aws']);
+    expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['B', 'A']);
     act(() => sheet.querySelector<HTMLAnchorElement>('a[href="/threads/b"]')!.click());
     expect(onNavigate).toHaveBeenCalledWith('/threads/b');
     expect(sheet.hasAttribute('data-open')).toBe(false);
@@ -224,7 +224,8 @@ describe('one-handed phone dock', () => {
     options = { ...baseOptions, emptyWorkspace: true, currentKey: '', onNavigate, workspaceThreads: [thread('a'), thread('b', 'unread')] };
     render();
     const list = host.querySelector('[data-testid="workspace-home-threads"]')!;
-    expect([...list.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['Aws', 'Bws']);
+    // The workspace is named once, so its rows carry no subtitle.
+    expect([...list.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['A', 'B']);
     expect(host.querySelector('.matter-phone-thread .matter-status-dot')).toBeNull();
     act(() => list.querySelector<HTMLAnchorElement>('a[href="/threads/b"]')!.click());
     expect(onNavigate).toHaveBeenCalledWith('/threads/b');
@@ -234,7 +235,7 @@ describe('one-handed phone dock', () => {
     options = { ...baseOptions, currentKey: 'c', workspaceThreads: [thread('a'), thread('b', 'running'), thread('c')] };
     render();
     const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Threads"]')!;
-    expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['Cws', 'Bws', 'Aws']);
+    expect([...sheet.querySelectorAll('.matter-thread-row')].map(row => row.textContent)).toEqual(['C', 'B', 'A']);
   });
 
   it('opens a drawer with no heading row, all workspaces at its foot and ordered shortcuts, without a Files button', () => {
@@ -339,7 +340,7 @@ describe('one-handed phone dock', () => {
     render();
     const chip = topbar().querySelector<HTMLButtonElement>('.matter-running-chip')!;
     expect(chip.textContent).toContain('2');
-    expect(chip.getAttribute('aria-label')).toBe('2 conversations are running on this account. Show them');
+    expect(chip.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
     act(() => chip.click());
     const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Running threads"]')!;
     expect(sheet.hasAttribute('data-open')).toBe(true);
@@ -362,7 +363,7 @@ describe('one-handed phone dock', () => {
     };
     render();
     const chip = topbar().querySelector<HTMLButtonElement>('.matter-running-chip')!;
-    expect(chip.getAttribute('aria-label')).toBe('2 conversations are running on this account. Show them');
+    expect(chip.getAttribute('aria-label')).toBe('2 threads are running on this account. Show them');
     act(() => chip.click());
     const sheet = host.querySelector('section.matter-phone-sheet[aria-label="Running threads"]')!;
     expect([...sheet.querySelectorAll('h3')].map(heading => heading.textContent)).toEqual(['Running 2', 'Finished, not read yet 1']);

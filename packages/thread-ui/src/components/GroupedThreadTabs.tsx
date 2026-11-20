@@ -94,10 +94,13 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
       const selected = children.find(child => child.key === currentKey);
       const active = root.key === currentKey || !!selected;
       const activity = threadGroupActivity(root, children);
+      // The open tab's draft is in its composer; marking it there would only
+      // make the tab change width while typing.
+      const showDraft = !!root.draft && !active;
       return <div key={root.key} ref={node => { if (node) groupNodes.current.set(root.key, node); else groupNodes.current.delete(root.key); }}
         className="matter-thread-group" data-reorder-key={root.key} style={{ display: 'flex', flexShrink: 0, minWidth: 0 }}>
         <a className="matter-group-tab" href={root.href} aria-current={active ? 'page' : undefined}
-          title={`${selected ? `${root.title} · ${selected.title}` : root.title}\n${activity.label}`}
+          title={`${selected ? `${root.title} · ${selected.title}` : root.title}\n${activity.label}${showDraft ? `\n${translate('workbench.hasUnsentDraft')}` : ''}`}
           onClick={event => { event.preventDefault(); onNavigate(root.href); }}
           onPointerEnter={onPrefetch ? () => onPrefetch(root.href) : undefined}
           onPointerDown={onPrefetch ? () => onPrefetch(root.href) : undefined}
@@ -112,8 +115,8 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
           {root.agent && <span className="matter-thread-avatar" data-agent={root.agent} aria-hidden="true" />}
           <span className="matter-status-dot" role="img" aria-label={activity.label} data-status={activity.status} />
           {children.length > 0 && <span className="matter-tab-agents-slot" aria-hidden="true" />}
-          <span>{root.title}{selected ? ` · ${selected.title}` : ''}</span>
-          {root.draft ? <PencilLine className="matter-tab-draft" role="img" aria-label={translate('workbench.hasUnsentDraft')} /> : null}
+          <span className="matter-tab-title">{root.title}{selected ? ` · ${selected.title}` : ''}</span>
+          {showDraft ? <PencilLine className="matter-tab-draft" role="img" aria-label={translate('workbench.hasUnsentDraft')} /> : null}
         </a>
         {children.length > 0 && <button className="matter-group-toggle is-badge" data-closed-only={openChildren.length ? undefined : true} aria-label={translate("workbench.agentThreads", { value1: root.title, value2: openChildren.length })}
           aria-expanded={menu?.key === root.key} aria-controls="matter-agent-threads" data-running={openChildren.some(child => child.status === 'running') || undefined} onClick={event => {

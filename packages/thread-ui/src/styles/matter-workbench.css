@@ -731,7 +731,7 @@
   color: var(--theme-fg-soft);
 }
 .matter-thread-tabs > a > span:last-child,
-.matter-group-tab > span:last-child {
+.matter-group-tab > .matter-tab-title {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -816,7 +816,7 @@
    name gives way, ended with an ellipsis. */
 .matter-thread-group { max-width: 200px; }
 .matter-thread-group > .matter-group-tab { flex: 0 1 auto; min-width: 0; max-width: none; }
-.matter-thread-group > .matter-group-tab > span:last-child { min-width: 0; }
+.matter-thread-group > .matter-group-tab > .matter-tab-title { min-width: 0; }
 .matter-thread-group > :is(.matter-group-toggle, .matter-tab-close) { flex: none; }
 .thread-ui-shell .matter-workbench .matter-tab-close {
   display: flex; flex: none; align-items: center; justify-content: center; align-self: center; width: 22px; height: 22px;

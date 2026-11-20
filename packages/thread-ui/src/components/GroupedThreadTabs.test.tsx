@@ -34,6 +34,19 @@ describe('agent thread groups', () => {
       expect(container.querySelector('.matter-group-toggle')?.hasAttribute('data-running')).toBe(false);
     } finally { flushSync(() => root.unmount()); container.remove(); }
   });
+  it('marks a draft only on tabs that are not open, and keeps the title in its truncating span', () => {
+    const container = document.createElement('nav'); document.body.append(container);
+    const root = createRoot(container);
+    try {
+      flushSync(() => root.render(<GroupedThreadTabs threads={[{ ...thread('open'), draft: 'typing' }, { ...thread('other'), draft: 'later' }]} currentKey="open" onNavigate={vi.fn()} />));
+      const [open, other] = Array.from(container.querySelectorAll('a'));
+      expect(open.querySelector('.matter-tab-draft')).toBeNull();
+      expect(open.querySelector('.matter-tab-title')?.textContent).toBe('open');
+      expect(other.querySelector('.matter-tab-draft')?.getAttribute('aria-label')).toBe('Has an unsent draft');
+      expect(other.querySelector('.matter-tab-title')?.textContent).toBe('other');
+      expect(other.getAttribute('title')).toContain('Has an unsent draft');
+    } finally { flushSync(() => root.unmount()); container.remove(); }
+  });
   it('groups children and grandchildren by the device-scoped root while preserving unrelated and missing-root threads', () => {
     const groups = groupThreads([thread('mac:child', 'mac:root'), thread('mac:root'), thread('mac:grandchild', 'mac:root'), thread('wsl:root'), thread('wsl:orphan', 'wsl:missing')]);
     expect(groups.map(g => g.root.key)).toEqual(['mac:root', 'wsl:root', 'wsl:orphan']);

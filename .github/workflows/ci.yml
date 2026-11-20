@@ -1,0 +1,45 @@
+name: Shared UI checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shared-ui-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck, test and committed dist
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.1
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: pnpm
+      - name: Install dependencies
+        run: |
+          for attempt in 1 2; do
+            timeout 300 pnpm install --frozen-lockfile && break
+            [ "$attempt" = 2 ] && exit 1
+          done
+      - name: Typecheck
+        run: pnpm --filter @pockymoe/thread-ui typecheck
+      - name: Test
+        run: pnpm --filter @pockymoe/thread-ui test
+      # Pockymoe consumes the committed dist; it must be the build of these sources.
+      - name: Committed dist matches the sources
+        run: |
+          rm -rf packages/thread-ui/dist
+          pnpm --filter @pockymoe/thread-ui build
+          git status --porcelain packages/thread-ui/dist | tee /tmp/dist-diff
+          test ! -s /tmp/dist-diff || { echo "::error::packages/thread-ui/dist is stale; rebuild and commit it"; exit 1; }

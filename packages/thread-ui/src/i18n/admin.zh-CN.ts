@@ -429,6 +429,7 @@ export const adminZhCN = {
   "admin.eventShareApproved": "以安全码批准共享",
   "admin.eventSharedAccessLeft": "退出共享",
   "admin.eventRegistrationSubmitted": "提交注册",
+  "admin.eventLoginKeyAdded": "开启密码登录",
   "admin.actionRegistrationApproved": "批准注册",
   "admin.actionRegistrationRejected": "拒绝注册",
   "admin.actionRegistrationSettings": "修改注册设置",

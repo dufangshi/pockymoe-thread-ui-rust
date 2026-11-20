@@ -429,6 +429,7 @@ export const adminEn = {
   "admin.eventShareApproved": "Share approved with the safety code",
   "admin.eventSharedAccessLeft": "Left a share",
   "admin.eventRegistrationSubmitted": "Asked to register",
+  "admin.eventLoginKeyAdded": "Added password sign-in",
   "admin.actionRegistrationApproved": "Approved a registration",
   "admin.actionRegistrationRejected": "Rejected a registration",
   "admin.actionRegistrationSettings": "Changed registration settings",

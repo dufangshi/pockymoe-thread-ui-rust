@@ -4140,8 +4140,8 @@ declare const en: {
     readonly "auth.ui.backToSignIn": "Back to sign in";
     readonly "auth.ui.secureTitle": "Secure your account";
     readonly "auth.ui.secureBody": "Your password now encrypts access to your devices. Choose one with at least 12 characters.";
-    readonly "auth.ui.unlockPasswordTitle": "Create an unlock password";
-    readonly "auth.ui.unlockPasswordBody": "You sign in with Google or GitHub. This extra password unlocks your devices and never leaves your browser.";
+    readonly "auth.ui.unlockPasswordTitle": "Create a password";
+    readonly "auth.ui.unlockPasswordBody": "Use it with your email or username to sign in, and to unlock your devices.";
     readonly "auth.ui.securing": "Securing your account…";
     readonly "auth.ui.recoveryTitle": "Save your recovery code";
     readonly "auth.ui.recoveryBody": "It's the only way back in if you forget your password. It's shown once.";
@@ -4168,8 +4168,8 @@ declare const en: {
     readonly "auth.unlockAction.changePassword": "change your password";
     readonly "auth.unlockAction.recoveryCode": "create a new recovery code";
     readonly "auth.unlockCause.copy": "Copy details for support";
-    readonly "auth.ui.unlockBodyOAuth": "Enter your unlock password to connect to your devices.";
-    readonly "auth.ui.unlockPasswordLabel": "Unlock password";
+    readonly "auth.ui.unlockBodyOAuth": "Enter your password to connect to your devices.";
+    readonly "auth.ui.unlockPasswordLabel": "Password";
     readonly "auth.ui.unlock": "Unlock";
     readonly "auth.ui.useRecoveryCode": "Use recovery code";
     readonly "auth.ui.usePassword": "Use password";
@@ -4442,7 +4442,7 @@ declare const en: {
     readonly "auth.browser_limit": "This account has registered too many browsers. Remove old browsers in Account security on a device that is signed in.";
     readonly "auth.registration_password_invalid": "The registration invite code is incorrect.";
     readonly "auth.accountRecover": "Recover account";
-    readonly "auth.accountOAuthFactorRequired": "Use an existing authenticator or passkey to confirm this change. Your OAuth unlock password stays in this browser.";
+    readonly "auth.accountOAuthFactorRequired": "Confirm with an authenticator or passkey, or sign in again with Google or GitHub.";
     readonly "auth.accountTemporaryLogin": "Use an admin reset password";
     readonly "auth.accountTemporaryPassword": "Temporary reset password";
     readonly "auth.accountTemporaryHelp": "Use only the temporary password supplied by your administrator here. Then recover your account key with your recovery code, or start over.";
@@ -4482,7 +4482,7 @@ declare const en: {
     readonly "auth.accountKeysHelp": "Use these to verify your sharing identity across devices.";
     readonly "auth.accountBrowsersHelp": "These browsers hold device access certificates. Removed browsers must be authorized again.";
     readonly "auth.dangerZone": "Danger zone";
-    readonly "auth.oauthUnlockPasswordHelp": "OAuth accounts have no sign-in password. This changes the password that unlocks your account key; it does not enable password sign-in.";
+    readonly "auth.oauthUnlockPasswordHelp": "Changing it also lets you sign in with your email or username.";
     readonly "auth.dangerZoneHelp": "Reset your account key and authorize devices again.";
     readonly 'quality.report.reviewed': "Reviewed";
     readonly 'quality.report.connected': "Connection succeeded";
@@ -5129,6 +5129,7 @@ declare const en: {
     readonly "admin.eventShareApproved": "Share approved with the safety code";
     readonly "admin.eventSharedAccessLeft": "Left a share";
     readonly "admin.eventRegistrationSubmitted": "Asked to register";
+    readonly "admin.eventLoginKeyAdded": "Added password sign-in";
     readonly "admin.actionRegistrationApproved": "Approved a registration";
     readonly "admin.actionRegistrationRejected": "Rejected a registration";
     readonly "admin.actionRegistrationSettings": "Changed registration settings";
@@ -9613,8 +9614,8 @@ declare const zhCN: {
     "auth.ui.backToSignIn": "返回登录";
     "auth.ui.secureTitle": "保护你的账号";
     "auth.ui.secureBody": "现在由密码加密保护你对设备的访问，请设置至少 12 个字符的密码。";
-    "auth.ui.unlockPasswordTitle": "设置解锁密码";
-    "auth.ui.unlockPasswordBody": "你通过 Google 或 GitHub 登录。这个密码用于解锁设备，只在浏览器中使用。";
+    "auth.ui.unlockPasswordTitle": "设置密码";
+    "auth.ui.unlockPasswordBody": "可用它和邮箱或用户名登录，也用它解锁设备。";
     "auth.ui.securing": "正在保护你的账号…";
     "auth.ui.recoveryTitle": "保存恢复码";
     "auth.ui.recoveryBody": "忘记密码时只能用它找回，只显示这一次。";
@@ -9641,8 +9642,8 @@ declare const zhCN: {
     "auth.unlockAction.changePassword": "修改密码";
     "auth.unlockAction.recoveryCode": "生成新的恢复码";
     "auth.unlockCause.copy": "复制诊断信息";
-    "auth.ui.unlockBodyOAuth": "输入解锁密码以连接你的设备。";
-    "auth.ui.unlockPasswordLabel": "解锁密码";
+    "auth.ui.unlockBodyOAuth": "输入密码以连接你的设备。";
+    "auth.ui.unlockPasswordLabel": "密码";
     "auth.ui.unlock": "解锁";
     "auth.ui.useRecoveryCode": "使用恢复码";
     "auth.ui.usePassword": "使用密码";
@@ -9915,7 +9916,7 @@ declare const zhCN: {
     "auth.browser_limit": "此账号登记的浏览器已达上限，请在已登录的设备上到「账号安全」移除旧浏览器。";
     "auth.registration_password_invalid": "注册邀请码不正确。";
     "auth.accountRecover": "恢复账户";
-    "auth.accountOAuthFactorRequired": "请使用已有的身份验证器或通行密钥确认此更改。OAuth 解锁密码仅在此浏览器中使用。";
+    "auth.accountOAuthFactorRequired": "请用身份验证器或通行密钥确认，或重新用 Google 或 GitHub 登录。";
     "auth.accountTemporaryLogin": "使用管理员重置密码";
     "auth.accountTemporaryPassword": "临时重置密码";
     "auth.accountTemporaryHelp": "此处仅用于输入管理员提供的临时密码。随后使用恢复码恢复账户密钥，或重新开始。";
@@ -9955,7 +9956,7 @@ declare const zhCN: {
     "auth.accountKeysHelp": "核对分享身份时使用，所有设备通用。";
     "auth.accountBrowsersHelp": "这些浏览器持有可访问设备的证书。移除后需重新授权。";
     "auth.dangerZone": "危险操作";
-    "auth.oauthUnlockPasswordHelp": "第三方登录账号没有登录密码。此处修改的是用于解锁账户密钥的密码，不会新增密码登录。";
+    "auth.oauthUnlockPasswordHelp": "修改后也可用邮箱或用户名加此密码登录。";
     "auth.dangerZoneHelp": "重置账户密钥并重新授权所有设备。";
     'quality.report.reviewed': "已审阅";
     'quality.report.connected': "连接成功";
@@ -10602,6 +10603,7 @@ declare const zhCN: {
     "admin.eventShareApproved": "以安全码批准共享";
     "admin.eventSharedAccessLeft": "退出共享";
     "admin.eventRegistrationSubmitted": "提交注册";
+    "admin.eventLoginKeyAdded": "开启密码登录";
     "admin.actionRegistrationApproved": "批准注册";
     "admin.actionRegistrationRejected": "拒绝注册";
     "admin.actionRegistrationSettings": "修改注册设置";
@@ -15108,8 +15110,8 @@ declare const resources: {
         readonly "auth.ui.backToSignIn": "Back to sign in";
         readonly "auth.ui.secureTitle": "Secure your account";
         readonly "auth.ui.secureBody": "Your password now encrypts access to your devices. Choose one with at least 12 characters.";
-        readonly "auth.ui.unlockPasswordTitle": "Create an unlock password";
-        readonly "auth.ui.unlockPasswordBody": "You sign in with Google or GitHub. This extra password unlocks your devices and never leaves your browser.";
+        readonly "auth.ui.unlockPasswordTitle": "Create a password";
+        readonly "auth.ui.unlockPasswordBody": "Use it with your email or username to sign in, and to unlock your devices.";
         readonly "auth.ui.securing": "Securing your account…";
         readonly "auth.ui.recoveryTitle": "Save your recovery code";
         readonly "auth.ui.recoveryBody": "It's the only way back in if you forget your password. It's shown once.";
@@ -15136,8 +15138,8 @@ declare const resources: {
         readonly "auth.unlockAction.changePassword": "change your password";
         readonly "auth.unlockAction.recoveryCode": "create a new recovery code";
         readonly "auth.unlockCause.copy": "Copy details for support";
-        readonly "auth.ui.unlockBodyOAuth": "Enter your unlock password to connect to your devices.";
-        readonly "auth.ui.unlockPasswordLabel": "Unlock password";
+        readonly "auth.ui.unlockBodyOAuth": "Enter your password to connect to your devices.";
+        readonly "auth.ui.unlockPasswordLabel": "Password";
         readonly "auth.ui.unlock": "Unlock";
         readonly "auth.ui.useRecoveryCode": "Use recovery code";
         readonly "auth.ui.usePassword": "Use password";
@@ -15410,7 +15412,7 @@ declare const resources: {
         readonly "auth.browser_limit": "This account has registered too many browsers. Remove old browsers in Account security on a device that is signed in.";
         readonly "auth.registration_password_invalid": "The registration invite code is incorrect.";
         readonly "auth.accountRecover": "Recover account";
-        readonly "auth.accountOAuthFactorRequired": "Use an existing authenticator or passkey to confirm this change. Your OAuth unlock password stays in this browser.";
+        readonly "auth.accountOAuthFactorRequired": "Confirm with an authenticator or passkey, or sign in again with Google or GitHub.";
         readonly "auth.accountTemporaryLogin": "Use an admin reset password";
         readonly "auth.accountTemporaryPassword": "Temporary reset password";
         readonly "auth.accountTemporaryHelp": "Use only the temporary password supplied by your administrator here. Then recover your account key with your recovery code, or start over.";
@@ -15450,7 +15452,7 @@ declare const resources: {
         readonly "auth.accountKeysHelp": "Use these to verify your sharing identity across devices.";
         readonly "auth.accountBrowsersHelp": "These browsers hold device access certificates. Removed browsers must be authorized again.";
         readonly "auth.dangerZone": "Danger zone";
-        readonly "auth.oauthUnlockPasswordHelp": "OAuth accounts have no sign-in password. This changes the password that unlocks your account key; it does not enable password sign-in.";
+        readonly "auth.oauthUnlockPasswordHelp": "Changing it also lets you sign in with your email or username.";
         readonly "auth.dangerZoneHelp": "Reset your account key and authorize devices again.";
         readonly 'quality.report.reviewed': "Reviewed";
         readonly 'quality.report.connected': "Connection succeeded";
@@ -16097,6 +16099,7 @@ declare const resources: {
         readonly "admin.eventShareApproved": "Share approved with the safety code";
         readonly "admin.eventSharedAccessLeft": "Left a share";
         readonly "admin.eventRegistrationSubmitted": "Asked to register";
+        readonly "admin.eventLoginKeyAdded": "Added password sign-in";
         readonly "admin.actionRegistrationApproved": "Approved a registration";
         readonly "admin.actionRegistrationRejected": "Rejected a registration";
         readonly "admin.actionRegistrationSettings": "Changed registration settings";
@@ -20580,8 +20583,8 @@ declare const resources: {
         "auth.ui.backToSignIn": "返回登录";
         "auth.ui.secureTitle": "保护你的账号";
         "auth.ui.secureBody": "现在由密码加密保护你对设备的访问，请设置至少 12 个字符的密码。";
-        "auth.ui.unlockPasswordTitle": "设置解锁密码";
-        "auth.ui.unlockPasswordBody": "你通过 Google 或 GitHub 登录。这个密码用于解锁设备，只在浏览器中使用。";
+        "auth.ui.unlockPasswordTitle": "设置密码";
+        "auth.ui.unlockPasswordBody": "可用它和邮箱或用户名登录，也用它解锁设备。";
         "auth.ui.securing": "正在保护你的账号…";
         "auth.ui.recoveryTitle": "保存恢复码";
         "auth.ui.recoveryBody": "忘记密码时只能用它找回，只显示这一次。";
@@ -20608,8 +20611,8 @@ declare const resources: {
         "auth.unlockAction.changePassword": "修改密码";
         "auth.unlockAction.recoveryCode": "生成新的恢复码";
         "auth.unlockCause.copy": "复制诊断信息";
-        "auth.ui.unlockBodyOAuth": "输入解锁密码以连接你的设备。";
-        "auth.ui.unlockPasswordLabel": "解锁密码";
+        "auth.ui.unlockBodyOAuth": "输入密码以连接你的设备。";
+        "auth.ui.unlockPasswordLabel": "密码";
         "auth.ui.unlock": "解锁";
         "auth.ui.useRecoveryCode": "使用恢复码";
         "auth.ui.usePassword": "使用密码";
@@ -20882,7 +20885,7 @@ declare const resources: {
         "auth.browser_limit": "此账号登记的浏览器已达上限，请在已登录的设备上到「账号安全」移除旧浏览器。";
         "auth.registration_password_invalid": "注册邀请码不正确。";
         "auth.accountRecover": "恢复账户";
-        "auth.accountOAuthFactorRequired": "请使用已有的身份验证器或通行密钥确认此更改。OAuth 解锁密码仅在此浏览器中使用。";
+        "auth.accountOAuthFactorRequired": "请用身份验证器或通行密钥确认，或重新用 Google 或 GitHub 登录。";
         "auth.accountTemporaryLogin": "使用管理员重置密码";
         "auth.accountTemporaryPassword": "临时重置密码";
         "auth.accountTemporaryHelp": "此处仅用于输入管理员提供的临时密码。随后使用恢复码恢复账户密钥，或重新开始。";
@@ -20922,7 +20925,7 @@ declare const resources: {
         "auth.accountKeysHelp": "核对分享身份时使用，所有设备通用。";
         "auth.accountBrowsersHelp": "这些浏览器持有可访问设备的证书。移除后需重新授权。";
         "auth.dangerZone": "危险操作";
-        "auth.oauthUnlockPasswordHelp": "第三方登录账号没有登录密码。此处修改的是用于解锁账户密钥的密码，不会新增密码登录。";
+        "auth.oauthUnlockPasswordHelp": "修改后也可用邮箱或用户名加此密码登录。";
         "auth.dangerZoneHelp": "重置账户密钥并重新授权所有设备。";
         'quality.report.reviewed': "已审阅";
         'quality.report.connected': "连接成功";
@@ -21569,6 +21572,7 @@ declare const resources: {
         "admin.eventShareApproved": "以安全码批准共享";
         "admin.eventSharedAccessLeft": "退出共享";
         "admin.eventRegistrationSubmitted": "提交注册";
+        "admin.eventLoginKeyAdded": "开启密码登录";
         "admin.actionRegistrationApproved": "批准注册";
         "admin.actionRegistrationRejected": "拒绝注册";
         "admin.actionRegistrationSettings": "修改注册设置";

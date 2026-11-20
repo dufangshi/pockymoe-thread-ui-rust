@@ -2917,12 +2917,11 @@ styleInject(`.thread-ui-shell .thread-graph-panel-expand-fab.left-3 {
   right: 0;
   bottom: 0;
   z-index: 10;
-  padding-left: 26px;
-  background:
-    linear-gradient(
-      to right,
-      transparent,
-      var(--message-surface, var(--theme-bg)) 22px);
+  padding: 0 2px 0 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--message-surface, var(--theme-bg)) 62%, transparent);
+  -webkit-backdrop-filter: blur(1.5px);
+  backdrop-filter: blur(1.5px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 140ms ease;
@@ -5985,7 +5984,7 @@ function createWorkspacePathResolver(adapter, identity, workspaceRoot) {
   let active = 0;
   const queue2 = [];
   const run = async (load) => {
-    if (active >= 4) await new Promise((resolve) => queue2.push(resolve));
+    if (active >= 4) await new Promise((resolve2) => queue2.push(resolve2));
     else active++;
     try {
       return await load();
@@ -5995,7 +5994,8 @@ function createWorkspacePathResolver(adapter, identity, workspaceRoot) {
       else active--;
     }
   };
-  return async (path) => {
+  const settled = /* @__PURE__ */ new Map();
+  const resolve = async (path) => {
     const relative = relativeWorkspacePath(path, workspaceRoot);
     const parent = relative === null ? `host:${path}` : relative.split("/").slice(0, -1).join("/");
     let entry = cache.get(parent);
@@ -6013,8 +6013,13 @@ function createWorkspacePathResolver(adapter, identity, workspaceRoot) {
       if (cache.size >= 64) cache.delete(cache.keys().next().value);
       cache.set(parent, entry);
     }
-    return (await entry.result).has(relative ?? path);
+    const exists = (await entry.result).has(relative ?? path);
+    if (settled.size >= 512) settled.delete(settled.keys().next().value);
+    settled.set(path, exists);
+    return exists;
   };
+  resolve.peek = (path) => settled.get(path);
+  return resolve;
 }
 function parseWorkspacePathText(value, root) {
   if (value.length > 4096 || /[\n\r\0]/.test(value) || !/[\\/]|\.[a-z\d]{1,12}(?:(?:#L|:)\d+)?$/i.test(value)) return null;
@@ -6521,19 +6526,22 @@ import "katex/dist/katex.min.css";
 import { useEffect as useEffect8, useState as useState7 } from "react";
 import { Fragment as Fragment4, jsx as jsx13 } from "react/jsx-runtime";
 function VerifiedWorkspacePath({ target, resolve, onOpen, children: children2 }) {
-  const [verified, setVerified] = useState7(null);
+  const [verified, setVerified] = useState7(() => {
+    const known3 = resolve.peek?.(target.path);
+    return known3 === void 0 ? null : { path: target.path, exists: known3 };
+  });
   useEffect8(() => {
     let current = true;
     void resolve(target.path).then((exists) => {
-      if (current) setVerified(exists ? { path: target.path, resolve } : null);
+      if (current) setVerified((previous) => previous?.path === target.path && previous.exists === exists ? previous : { path: target.path, exists });
     }).catch(() => {
-      if (current) setVerified(null);
+      if (current) setVerified({ path: target.path, exists: false });
     });
     return () => {
       current = false;
     };
   }, [target.path, resolve]);
-  return verified?.path === target.path && verified.resolve === resolve ? /* @__PURE__ */ jsx13(WorkspaceFileLink, { ...target, onOpen, children: children2 }) : /* @__PURE__ */ jsx13(Fragment4, { children: children2 });
+  return verified?.path === target.path && verified.exists ? /* @__PURE__ */ jsx13(WorkspaceFileLink, { ...target, onOpen, children: children2 }) : /* @__PURE__ */ jsx13(Fragment4, { children: children2 });
 }
 
 // src/plugins/usePlugins.ts
@@ -31890,6 +31898,21 @@ function ThreadDetailSurface({
     openThread,
     cancelPendingSteer
   } = adapter;
+  const workspaceAdapterRef = useRef57(adapter.workspace);
+  workspaceAdapterRef.current = adapter.workspace;
+  const hasWorkspaceAdapter = Boolean(adapter.workspace);
+  const resolveWorkspacePath = useMemo20(
+    () => {
+      if (!hasWorkspaceAdapter || !detail?.thread.id || !detail.workspace.absPath) return void 0;
+      const workspace = {
+        listTree: (input) => workspaceAdapterRef.current.listTree(input),
+        ...adapter.workspace?.statLinkedFile ? { statLinkedFile: (input) => workspaceAdapterRef.current.statLinkedFile(input) } : {}
+      };
+      return createWorkspacePathResolver(workspace, { threadId: detail.thread.id, workspaceId: detail.workspace.id }, detail.workspace.absPath);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [hasWorkspaceAdapter, Boolean(adapter.workspace?.statLinkedFile), detail?.thread.id, detail?.workspace.id, detail?.workspace.absPath]
+  );
   const timelineAdapter = useMemo20(
     () => ({
       ...getImageAssetUrl ? {
@@ -31903,7 +31926,7 @@ function ThreadDetailSurface({
         return adapter.workspace.getRawFileUrl({ threadId: detail.thread.id, workspaceId: detail.workspace.id, path: relative ?? path });
       },
       workspaceRootPath: detail?.workspace.absPath,
-      ...detail && adapter.workspace ? { resolveWorkspacePath: createWorkspacePathResolver(adapter.workspace, { threadId: detail.thread.id, workspaceId: detail.workspace.id }, detail.workspace.absPath) } : {},
+      ...resolveWorkspacePath ? { resolveWorkspacePath } : {},
       onOpenLinkedThread: openThread,
       ...adapter.getThreadHref ? { getThreadHref: adapter.getThreadHref } : {},
       ...adapter.describeThread ? { describeThread: adapter.describeThread } : {},
@@ -31917,6 +31940,7 @@ function ThreadDetailSurface({
     [
       adapter.forkTurn,
       adapter.sendPrompt,
+      resolveWorkspacePath,
       detail?.workspace.absPath,
       detail?.workspace.id,
       detail?.thread.id,

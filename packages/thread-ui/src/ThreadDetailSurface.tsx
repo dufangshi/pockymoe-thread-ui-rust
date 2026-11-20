@@ -22,7 +22,7 @@ import type {
   ThreadHistoryItemDto,
   ThreadDto,
 } from "@pockymoe/shared";
-import type { ThreadDetailUiAdapter, ThreadImageAssetVariant } from "./adapters";
+import type { ThreadDetailUiAdapter, ThreadImageAssetVariant, ThreadWorkspaceAdapter } from "./adapters";
 import type { ThemeMode } from "./app-shell/AppShellNavContext";
 import {
   createDefaultPluginContextValue,
@@ -325,6 +325,26 @@ export function ThreadDetailSurface({
     openThread,
     cancelPendingSteer,
   } = adapter;
+  // One resolver (and its cache) per thread workspace. Rebuilding it with the
+  // timeline adapter, whose callbacks change while the user types, made every
+  // verified path link drop and come back.
+  const workspaceAdapterRef = useRef(adapter.workspace);
+  workspaceAdapterRef.current = adapter.workspace;
+  const hasWorkspaceAdapter = Boolean(adapter.workspace);
+  const resolveWorkspacePath = useMemo(
+    () => {
+      if (!hasWorkspaceAdapter || !detail?.thread.id || !detail.workspace.absPath) return undefined;
+      const workspace: Pick<ThreadWorkspaceAdapter, 'listTree' | 'statLinkedFile'> = {
+        listTree: input => workspaceAdapterRef.current!.listTree(input),
+        ...(adapter.workspace?.statLinkedFile
+          ? { statLinkedFile: input => workspaceAdapterRef.current!.statLinkedFile!(input) }
+          : {}),
+      };
+      return createWorkspacePathResolver(workspace, { threadId: detail.thread.id, workspaceId: detail.workspace.id }, detail.workspace.absPath);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [hasWorkspaceAdapter, Boolean(adapter.workspace?.statLinkedFile), detail?.thread.id, detail?.workspace.id, detail?.workspace.absPath],
+  );
   const timelineAdapter = useMemo(
     () => ({
       ...(getImageAssetUrl
@@ -347,7 +367,7 @@ export function ThreadDetailSurface({
         return adapter.workspace.getRawFileUrl({threadId: detail.thread.id, workspaceId: detail.workspace.id, path: relative ?? path});
       },
       workspaceRootPath: detail?.workspace.absPath,
-      ...(detail && adapter.workspace ? { resolveWorkspacePath: createWorkspacePathResolver(adapter.workspace, { threadId: detail.thread.id, workspaceId: detail.workspace.id }, detail.workspace.absPath) } : {}),
+      ...(resolveWorkspacePath ? { resolveWorkspacePath } : {}),
       onOpenLinkedThread: openThread,
       ...(adapter.getThreadHref ? { getThreadHref: adapter.getThreadHref } : {}),
       ...(adapter.describeThread ? { describeThread: adapter.describeThread } : {}),
@@ -363,6 +383,7 @@ export function ThreadDetailSurface({
     [
       adapter.forkTurn,
       adapter.sendPrompt,
+      resolveWorkspacePath,
       detail?.workspace.absPath,
       detail?.workspace.id,
       detail?.thread.id,

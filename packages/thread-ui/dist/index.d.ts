@@ -1365,7 +1365,10 @@ declare function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, 
  */
 declare function useSheetViewport(enabled?: boolean): CSSProperties | undefined;
 
-type WorkspacePathResolver = (path: string) => Promise<boolean>;
+type WorkspacePathResolver = ((path: string) => Promise<boolean>) & {
+    /** The last settled answer for `path`, if any, so a link can draw without waiting. */
+    peek?: (path: string) => boolean | undefined;
+};
 /** A resolver belongs to one adapter/device/workspace; never cache across scopes. */
 declare function createWorkspacePathResolver(adapter: Pick<ThreadWorkspaceAdapter, 'listTree' | 'statLinkedFile'>, identity: {
     threadId: string;

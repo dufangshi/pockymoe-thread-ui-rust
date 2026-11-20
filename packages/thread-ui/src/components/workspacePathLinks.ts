@@ -1,7 +1,10 @@
 import type { ThreadWorkspaceAdapter } from '../adapters';
 import { localFileHref, relativeWorkspacePath } from './workspacePaths';
 
-export type WorkspacePathResolver = (path: string) => Promise<boolean>;
+export type WorkspacePathResolver = ((path: string) => Promise<boolean>) & {
+  /** The last settled answer for `path`, if any, so a link can draw without waiting. */
+  peek?: (path: string) => boolean | undefined;
+};
 
 /** A resolver belongs to one adapter/device/workspace; never cache across scopes. */
 export function createWorkspacePathResolver(
@@ -22,7 +25,8 @@ export function createWorkspacePathResolver(
       else active--;
     }
   };
-  return async path => {
+  const settled = new Map<string, boolean>();
+  const resolve: WorkspacePathResolver = async path => {
     const relative = relativeWorkspacePath(path, workspaceRoot);
     // Parent listings verify files and directories without reading file content.
     const parent = relative === null ? `host:${path}` : relative.split('/').slice(0, -1).join('/');
@@ -41,8 +45,13 @@ export function createWorkspacePathResolver(
       if (cache.size >= 64) cache.delete(cache.keys().next().value!);
       cache.set(parent, entry);
     }
-    return (await entry.result).has(relative ?? path);
+    const exists = (await entry.result).has(relative ?? path);
+    if (settled.size >= 512) settled.delete(settled.keys().next().value!);
+    settled.set(path, exists);
+    return exists;
   };
+  resolve.peek = path => settled.get(path);
+  return resolve;
 }
 
 export function parseWorkspacePathText(value: string, root?: string) {

@@ -142,6 +142,10 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
   };
   const [searchFocus, setSearchFocus] = useState<string | null>(null);
   const focused = (phone && query.trim() ? nodes.get(searchFocus ?? 'root') ?? root : focusId ? nodes.get(focusId) : undefined) ?? root;
+  // The summary counts what the map shows: all devices at the top, else the device or
+  // workspace in view (a thread opened up into its agent threads counts as its workspace).
+  let summary: MapNode = focused;
+  while (summary.kind === 'thread' || summary.kind === 'compressed') summary = summary.parent ?? root;
   const current = page && focused.thread?.children?.length ? { ...focused, children: focused.thread.children.flatMap(child => { const node = nodes.get(`thread:${child.key}`); return node ? [node] : []; }) } : focused;
   const canvas = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -613,9 +617,9 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         {breadcrumb}
         <span className="thread-map-dense-summary">
           {/* Nothing read yet is not "0 threads". */}
-          <span title={translate('workbench.threadMapThreads',{count:root.threads})}><Layers aria-hidden="true"/>{root.threads === 0 && devices.some(device => device.state === 'loading') ? '—' : root.threads}</span>
-          {root.running>0&&<span title={translate('workbench.threadMapRunningCount',{count:root.running})}><Activity aria-hidden="true"/>{root.running}</span>}
-          {root.usd>0&&<span title={translate('workbench.threadMapCost',{usd:formatCompactUsd(root.usd)})}><DollarSign aria-hidden="true"/>{formatCompactUsd(root.usd).replace(/^\$/, '')}</span>}
+          <span title={translate('workbench.threadMapThreads',{count:summary.threads})}><Layers aria-hidden="true"/>{summary.threads === 0 && devices.some(device => device.state === 'loading') ? '—' : summary.threads}</span>
+          {summary.running>0&&<span title={translate('workbench.threadMapRunningCount',{count:summary.running})}><Activity aria-hidden="true"/>{summary.running}</span>}
+          {summary.usd>0&&<span title={translate('workbench.threadMapCost',{usd:formatCompactUsd(summary.usd)})}><DollarSign aria-hidden="true"/>{formatCompactUsd(summary.usd).replace(/^\$/, '')}</span>}
         </span>
         <label className="thread-map-filter"><input ref={filter} type="search" value={query} placeholder={translate('workbench.threadMapFilter')} aria-label={translate('workbench.threadMapFilter')} onChange={event=>setFilter(event.target.value)}/>{query.trim()?<span role="status">{translate('workbench.threadMapMatches',{count:matches.size})}</span>:<kbd>/</kbd>}</label>
         <div className="thread-map-scope" role="group" aria-label={translate('workbench.threadMapScope')}>
@@ -630,9 +634,9 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
         <div className="thread-map-phone-header">
           {current !== root ? <button type="button" className="thread-map-icon-button" aria-label={translate('workbench.threadMapBack')} onClick={() => navigate(current.parent)}><ArrowLeft aria-hidden="true" /></button> : actions}
           <span className="thread-map-phone-title"><span>{current === root ? heading : current.label}</span><small>
-            {translate('workbench.threadMapThreads', { count: root.threads })}
-            {root.running > 0 && <> · <i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapRunningCount', { count: root.running })}</>}
-            {root.usd > 0 && <> · {translate('workbench.threadMapCost', { usd: formatCompactUsd(root.usd) })}</>}
+            {translate('workbench.threadMapThreads', { count: summary.threads })}
+            {summary.running > 0 && <> · <i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapRunningCount', { count: summary.running })}</>}
+            {summary.usd > 0 && <> · {translate('workbench.threadMapCost', { usd: formatCompactUsd(summary.usd) })}</>}
           </small></span>
           <PhoneMapMenu scope={scope} setScope={setScope} onRefresh={() => setLayoutRevision(n => n + 1)} list={phoneList} onToggleList={() => setPhoneList(value => !value)}
             destinations={children.map(node => ({ id: node.id, label: describe(node, hours).join(' · ') }))} onGoTo={id => {
@@ -646,9 +650,9 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
       {!page && !phone && <div className="thread-map-bar">
         {heading}
         <span className="thread-map-summary">
-          {translate('workbench.threadMapThreads', { count: root.threads })}
-          {root.running > 0 && <> · <i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapRunningCount', { count: root.running })}</>}
-          {root.usd > 0 && <> · {translate('workbench.threadMapCost', { usd: formatCompactUsd(root.usd) })}</>}
+          {translate('workbench.threadMapThreads', { count: summary.threads })}
+          {summary.running > 0 && <> · <i className="thread-map-running-dot" aria-hidden="true" />{translate('workbench.threadMapRunningCount', { count: summary.running })}</>}
+          {summary.usd > 0 && <> · {translate('workbench.threadMapCost', { usd: formatCompactUsd(summary.usd) })}</>}
         </span>
         {(enhanced || onFilterChange) && <label className="thread-map-filter">
           <input ref={filter} type="search" value={query} placeholder={translate('workbench.threadMapFilter')} aria-label={translate('workbench.threadMapFilter')}

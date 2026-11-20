@@ -769,15 +769,14 @@
   position: absolute; top: 50%; left: var(--tab-agents-x, 0); z-index: 1; transform: translateY(-50%);
   display: inline-flex; align-items: center; gap: 1px; height: 17px; padding: 0 1px;
   border: 0; border-radius: 4px; background: transparent;
-  color: var(--theme-fg-muted); font-size: 10.5px; font-variant-numeric: tabular-nums; line-height: 1;
+  /* Row metadata at normal contrast: the soft text colour, not the muted one. */
+  color: var(--theme-fg-soft, var(--theme-fg)); font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1;
 }
 .thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:active, [aria-expanded='true']) { background: var(--theme-hover); color: var(--theme-fg); }
 @media (hover: hover) {
   .thread-ui-shell .matter-workbench .matter-thread-group > .matter-group-toggle.is-badge:is(:hover, [aria-expanded='true']) { background: var(--theme-hover); color: var(--theme-fg); }
 }
-.matter-thread-group > .matter-group-toggle.is-badge > svg { width: 11px; height: 11px; }
-/* Every agent thread closed: the way back to them stays, and counts for nothing. */
-.matter-thread-group > .matter-group-toggle.is-badge[data-closed-only] > svg { opacity: .6; }
+.matter-thread-group > .matter-group-toggle.is-badge > svg { width: 12px; height: 12px; }
 /* Agents at work: the robot slowly brightens into the running colour and fades back. */
 .matter-thread-group > .matter-group-toggle.is-badge[data-running] > svg { animation: none; }
 
@@ -1167,20 +1166,22 @@
 .thread-ui-shell .matter-workbench .matter-drawer-foot > :is(a, button):active { background: var(--theme-hover); color: var(--theme-fg); }
 .matter-drawer-foot > :is(a, button) > svg { width: 20px; height: 20px; }
 .thread-ui-shell .matter-workbench .matter-drawer-foot > .matter-sidebar-host-actions { margin-left: auto; padding: 0; }
-/* A conversation's agent threads: a small robot and count inside its row, left
-   of its menu; they open under the row, on a guide line. */
+/* A conversation's agent threads: a small robot and the count of all of them
+   (closed ones too) inside its row, left of its menu; they open under the row,
+   on a guide line. It reads like the row's other metadata, in the soft text colour. */
 .matter-thread-entry:has(> .matter-agent-toggle) > .matter-thread-row { padding-right: 70px; }
 .thread-ui-shell .matter-workbench .matter-agent-toggle {
   position: absolute; right: 34px; display: inline-flex; align-items: center; gap: 1px; height: 22px; padding: 0 2px;
-  border: 0; border-radius: 4px; background: transparent; color: var(--theme-fg-muted);
-  font-size: 11px; font-variant-numeric: tabular-nums; line-height: 1;
+  border: 0; border-radius: 4px; background: transparent; color: var(--theme-fg-soft, var(--theme-fg));
+  font-size: 11.5px; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1;
 }
 .thread-ui-shell .matter-workbench .matter-agent-toggle:active { background: var(--theme-hover); color: var(--theme-fg); }
 @media (hover: hover) {
   .thread-ui-shell .matter-workbench .matter-agent-toggle:hover { background: var(--theme-hover); color: var(--theme-fg); }
 }
-.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded='true'] { color: var(--theme-fg-soft, var(--theme-fg)); }
-.thread-ui-shell .matter-workbench .matter-agent-toggle > svg { width: 12px; height: 12px; }
+.thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded='true'] { color: var(--theme-fg); }
+.thread-ui-shell .matter-workbench .matter-agent-toggle > svg { width: 13px; height: 13px; }
+.thread-ui-shell .matter-workbench .matter-agent-toggle > span { margin-left: 1px; }
 .thread-ui-shell .matter-workbench .matter-agent-toggle > .matter-agent-toggle-chevron { width: 10px; height: 10px; transition: transform 140ms ease; }
 .thread-ui-shell .matter-workbench .matter-agent-toggle[aria-expanded='true'] > .matter-agent-toggle-chevron { transform: rotate(90deg); }
 /* Agents still running: the robot takes the running colour. */

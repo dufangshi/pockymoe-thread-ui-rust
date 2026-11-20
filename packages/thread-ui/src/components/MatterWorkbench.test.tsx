@@ -231,6 +231,24 @@ describe('one-handed phone dock', () => {
     expect(onNavigate).toHaveBeenCalledWith('/threads/b');
   });
 
+  it('counts every agent thread of a conversation in its row, closed ones too, and names how many run', () => {
+    const agent = (key: string, status: string, closedAt: string | null = null) => ({ ...thread(key, status), rootKey: 'root', parentKey: 'root', closedAt });
+    options = { ...baseOptions, currentKey: 'root', workspaceThreads: [thread('root'), agent('w1', 'idle', '2026-11-01'), agent('w2', 'idle', '2026-11-02'), agent('w3', 'running')] };
+    render();
+    const toggle = host.querySelector<HTMLButtonElement>('section.matter-phone-sheet[aria-label="Threads"] .matter-agent-toggle')!;
+    expect(toggle.textContent).toBe('3');
+    expect(toggle.getAttribute('aria-label')).toBe('ROOT: 3 agent threads, 1 running');
+    expect(toggle.title).toBe('ROOT: 3 agent threads, 1 running');
+    expect(toggle.hasAttribute('data-running')).toBe(true);
+    // All closed: the number stays, nothing runs.
+    options = { ...baseOptions, currentKey: 'root', workspaceThreads: [thread('root'), agent('w1', 'idle', '2026-11-01'), agent('w2', 'idle', '2026-11-02')] };
+    render();
+    const closed = host.querySelector<HTMLButtonElement>('section.matter-phone-sheet[aria-label="Threads"] .matter-agent-toggle')!;
+    expect(closed.textContent).toBe('2');
+    expect(closed.getAttribute('aria-label')).toBe('ROOT: 2 agent threads');
+    expect(closed.hasAttribute('data-running')).toBe(false);
+  });
+
   it('lists the current thread first in the sheet, then by attention', () => {
     options = { ...baseOptions, currentKey: 'c', workspaceThreads: [thread('a'), thread('b', 'running'), thread('c')] };
     render();

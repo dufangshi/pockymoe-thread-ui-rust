@@ -2,7 +2,7 @@
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import { describe, expect, it, vi } from 'vitest';
-import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
+import { GroupedThreadTabs, agentThreadCounts, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
 import type { WorkbenchThread } from './MatterWorkbench';
 const thread = (key: string, rootKey?: string): WorkbenchThread => ({key, rootKey, title: key, href: `/threads/${key}`, status: 'running', subtitle: '', favorite: false});
 
@@ -77,21 +77,35 @@ describe('agent thread groups', () => {
   });
 });
 
-it('counts only open agents, lists closed agents last and retains an icon-only history entry', () => {
+it('counts every agent thread, closed ones too, names how many run and lists closed ones last', () => {
   const container = document.createElement('nav'); document.body.append(container);
   const root = createRoot(container), parent = { ...thread('root'), status: 'idle' };
+  // A closed agent thread never counts as running, whatever status it kept.
   const closed = { ...thread('closed', 'root'), closedAt: '2026-11-01T00:00:00Z' };
+  const idle = { ...thread('open', 'root'), status: 'idle' };
+  const running = { ...thread('busy', 'root'), status: 'running' };
   try {
-    flushSync(() => root.render(<GroupedThreadTabs threads={[parent, closed, thread('open', 'root')]} currentKey="root" onNavigate={vi.fn()} />));
+    flushSync(() => root.render(<GroupedThreadTabs threads={[parent, closed, idle]} currentKey="root" onNavigate={vi.fn()} />));
     const button = container.querySelector<HTMLButtonElement>('.matter-group-toggle')!;
-    expect(button.textContent).toBe('1'); expect(button.getAttribute('aria-label')).toBe('root: 1 agent threads');
+    expect(button.textContent).toBe('2'); expect(button.getAttribute('aria-label')).toBe('root: 2 agent threads');
+    expect(button.title).toBe('root: 2 agent threads'); expect(button.hasAttribute('data-running')).toBe(false);
     flushSync(() => button.click());
     const links = [...document.querySelectorAll<HTMLAnchorElement>('#matter-agent-threads a')];
     expect(links.map(link => link.textContent)).toEqual(['root', 'open', 'closed']);
     expect(links[2].style.color).toBe('var(--theme-fg-muted)');
+    // Every agent thread closed: the count stays.
     flushSync(() => root.render(<GroupedThreadTabs threads={[parent, closed]} currentKey="root" onNavigate={vi.fn()} />));
-    expect(button.textContent).toBe(''); expect(button.classList.contains('is-badge')).toBe(true); expect(button.hasAttribute('data-closed-only')).toBe(true);
+    expect(button.textContent).toBe('1'); expect(button.classList.contains('is-badge')).toBe(true);
     expect(container.querySelector('[role="img"]')?.getAttribute('data-status')).toBe('idle');
     expect(document.querySelector('#matter-agent-threads a[href="/threads/closed"]')).not.toBeNull();
+    // A running one lights the robot and is named.
+    flushSync(() => root.render(<GroupedThreadTabs threads={[parent, closed, running]} currentKey="root" onNavigate={vi.fn()} />));
+    expect(button.textContent).toBe('2'); expect(button.getAttribute('aria-label')).toBe('root: 2 agent threads, 1 running');
+    expect(button.hasAttribute('data-running')).toBe(true);
   } finally { flushSync(() => root.unmount()); container.remove(); }
+});
+
+it('agentThreadCounts counts closed agent threads and only open running ones', () => {
+  expect(agentThreadCounts([{ status: 'idle', closedAt: '2026-11-01' }, { status: 'running' }, { status: 'idle' }])).toEqual({ total: 3, running: 1 });
+  expect(agentThreadCounts([])).toEqual({ total: 0, running: 0 });
 });

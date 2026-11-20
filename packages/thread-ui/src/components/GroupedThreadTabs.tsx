@@ -20,6 +20,21 @@ export function threadGroupActivity(root: WorkbenchThread, children: WorkbenchTh
   return { status: root.status, label };
 }
 
+/**
+ * A conversation's agent threads, as its robot badge counts them: every agent
+ * thread of the root, closed ones included, and how many of them run. The
+ * same numbers in the sidebar, the tabs and the thread map.
+ */
+export function agentThreadCounts(children: readonly Pick<WorkbenchThread, 'status' | 'closedAt'>[]) {
+  return { total: children.length, running: children.filter(child => !child.closedAt && child.status === 'running').length };
+}
+/** The badge's name: the conversation, its agent threads and how many run. */
+export function agentThreadsLabel(title: string, counts: { total: number; running: number }) {
+  return counts.running > 0
+    ? translate('workbench.agentThreadCountRunning', { title, count: counts.total, running: counts.running })
+    : translate('workbench.agentThreadCount', { title, count: counts.total });
+}
+
 export function groupThreads(threads: WorkbenchThread[]) {
   const keys = new Set(threads.map(t => t.key));
   const groups = threads.filter(t => !t.rootKey || t.rootKey === t.key || !keys.has(t.rootKey))
@@ -90,7 +105,8 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
   });
   return <>
     {groups.map(({ root, children }) => {
-      const openChildren = children.filter(child => !child.closedAt);
+      const agents = agentThreadCounts(children);
+      const agentsLabel = agentThreadsLabel(root.title, agents);
       const selected = children.find(child => child.key === currentKey);
       const active = root.key === currentKey || !!selected;
       const activity = threadGroupActivity(root, children);
@@ -118,11 +134,11 @@ export function GroupedThreadTabs({ threads, currentKey, onNavigate, onClose, on
           <span className="matter-tab-title">{root.title}{selected ? ` · ${selected.title}` : ''}</span>
           {showDraft ? <PencilLine className="matter-tab-draft" role="img" aria-label={translate('workbench.hasUnsentDraft')} /> : null}
         </a>
-        {children.length > 0 && <button className="matter-group-toggle is-badge" data-closed-only={openChildren.length ? undefined : true} aria-label={translate("workbench.agentThreads", { value1: root.title, value2: openChildren.length })}
-          aria-expanded={menu?.key === root.key} aria-controls="matter-agent-threads" data-running={openChildren.some(child => child.status === 'running') || undefined} onClick={event => {
+        {children.length > 0 && <button type="button" className="matter-group-toggle is-badge" aria-label={agentsLabel} title={agentsLabel}
+          aria-expanded={menu?.key === root.key} aria-controls="matter-agent-threads" data-running={agents.running > 0 || undefined} onClick={event => {
             const bounds = event.currentTarget.getBoundingClientRect(); trigger.current = event.currentTarget;
             setMenu(menu?.key === root.key ? null : { key: root.key, left: Math.max(8, Math.min(bounds.left, window.innerWidth - 296)), top: bounds.bottom + 4 });
-          }}><Bot aria-hidden="true" />{openChildren.length || null}</button>}
+          }}><Bot aria-hidden="true" /><span>{agents.total}</span></button>}
         {onClose && <button type="button" className="matter-tab-close" aria-label={translate('workbench.closeTab', { title: root.title })}
           title={translate('workbench.closeTab', { title: root.title })} onClick={() => onClose(root.key)}><X aria-hidden="true" /></button>}
       </div>;

@@ -91,6 +91,19 @@ describe('ThreadMap page', () => {
     expect(tile('archive')).toBeTruthy();
   });
 
+  it('counts the level in view in its summary, not the whole account', () => {
+    const devices = makeDevices();
+    devices[0]!.workspaces[0]!.threads[0] = thread('a', 0, { running: true, priceEstimate: { totalUsd: 2, inputUsd: 1, cachedInputUsd: 0, cacheWriteInputUsd: 0, outputUsd: 1 },
+      children: [thread('agent-1'), thread('agent-2')], agentThreads: 2 });
+    devices[0]!.workspaces[1]!.threads[0] = thread('archive', 60, { priceEstimate: { totalUsd: 5, inputUsd: 5, cachedInputUsd: 0, cacheWriteInputUsd: 0, outputUsd: 0 } });
+    show({ devices, stableLayout: true });
+    const summary = () => [...host.querySelectorAll('.thread-map-dense-summary > span')].map(item => item.getAttribute('title'));
+    // All devices: four conversations; agent threads are inside theirs, not counted beside them.
+    expect(summary()).toEqual(['4 threads', '1 running', expect.stringMatching(/^API cost \$7/)]);
+    click(host.querySelector('[data-map-id="workspace:d:other"] .thread-map-section-head')!);
+    expect(summary()).toEqual(['1 thread', expect.stringMatching(/^API cost \$5/)]);
+  });
+
   it('groups dense workspace rows in priority order and navigates across headers', () => {
     const onOpen = vi.fn(), onQuickLook = vi.fn();
     const threads = Array.from({ length: 600 }, (_, i) => ({ ...thread(`dense${i}`, 0, i < 2 ? { needsInput: { kind: 'input' } } : i === 2 ? { running: true } : i === 3 ? { unread: true, failed: true } : i === 4 ? { unread: true } : {}), agent: 'codex' }));

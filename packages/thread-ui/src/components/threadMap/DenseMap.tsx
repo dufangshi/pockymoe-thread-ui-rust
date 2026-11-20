@@ -133,6 +133,10 @@ const DenseTileContent = memo(
                   count: t.children.length,
                   title: t.title,
                 })}
+                title={translate('workbench.threadMapShowChildren', {
+                  count: t.children.length,
+                  title: t.title,
+                })}
               >
                 <Bot aria-hidden="true" />
                 {t.children.length}

@@ -818,7 +818,14 @@ declare const en: {
     readonly "workbench.reconnectThisThreadBeforeCreatingOrAttaching": "Reconnect this thread before creating or attaching a shell.";
     readonly "workbench.selectAThreadToInspect": "Select a thread to inspect.";
     readonly "workbench.agentThreads": "{{value1}}: {{value2}} agent threads";
-    readonly "workbench.agentThreadsAllClosed": "{{value1}}: all agent threads closed";
+    readonly "workbench.agentThreadCount": {
+        readonly one: "{{title}}: {{count}} agent thread";
+        readonly other: "{{title}}: {{count}} agent threads";
+    };
+    readonly "workbench.agentThreadCountRunning": {
+        readonly one: "{{title}}: {{count}} agent thread, {{running}} running";
+        readonly other: "{{title}}: {{count}} agent threads, {{running}} running";
+    };
     readonly "workbench.agentThreads_187f89": "{{value1}} agent threads";
     readonly "workbench.agentThreads_655dcc": "agent threads";
     readonly "workbench.workspaceTools": "Workspace tools";
@@ -6292,7 +6299,14 @@ declare const zhCN: {
     "workbench.reconnectThisThreadBeforeCreatingOrAttaching": "创建或附加终端前请重新连接此线程。";
     "workbench.selectAThreadToInspect": "请选择要查看的线程。";
     "workbench.agentThreads": "{{value1}}：{{value2}} 个智能体线程";
-    "workbench.agentThreadsAllClosed": "{{value1}}：智能体线程已全部关闭";
+    "workbench.agentThreadCount": {
+        readonly one: "{{title}}：{{count}} 个智能体线程";
+        readonly other: "{{title}}：{{count}} 个智能体线程";
+    };
+    "workbench.agentThreadCountRunning": {
+        readonly one: "{{title}}：{{count}} 个智能体线程，{{running}} 个在运行";
+        readonly other: "{{title}}：{{count}} 个智能体线程，{{running}} 个在运行";
+    };
     "workbench.agentThreads_187f89": "{{value1}} 的智能体线程";
     "workbench.agentThreads_655dcc": "智能体线程";
     "workbench.workspaceTools": "工作区工具";
@@ -6604,8 +6618,8 @@ declare const zhCN: {
     "workbench.threadMapMinutes": "{{count}} 分钟";
     "workbench.threadMapHoursMinutes": "{{hours}} 小时 {{minutes}} 分钟";
     "workbench.threadMapAgentThreads": {
-        readonly one: "含 {{count}} 个 Agent 线程";
-        readonly other: "含 {{count}} 个 Agent 线程";
+        readonly one: "含 {{count}} 个智能体线程";
+        readonly other: "含 {{count}} 个智能体线程";
     };
     "workbench.threadMapOffline": "离线";
     "workbench.threadMapLoading": "加载中…";
@@ -6650,10 +6664,10 @@ declare const zhCN: {
     "workbench.threadMapPricePartialShort": "部分轮次无价格";
     "workbench.threadMapStatCost": "API 费用";
     "workbench.threadMapShowChildren": {
-        readonly one: "展开 {{title}} 的 {{count}} 个子线程";
-        readonly other: "展开 {{title}} 的 {{count}} 个子线程";
+        readonly one: "展开 {{title}} 的 {{count}} 个智能体线程";
+        readonly other: "展开 {{title}} 的 {{count}} 个智能体线程";
     };
-    "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
+    "workbench.threadMapHideChildren": "把智能体线程收回 {{title}}";
     "workbench.threadMapOpenThread": "打开 {{title}}";
     "workbench.threadMapFrom": "由 {{title}} 创建";
     "workbench.runningChip": {
@@ -11788,7 +11802,14 @@ declare const resources: {
         readonly "workbench.reconnectThisThreadBeforeCreatingOrAttaching": "Reconnect this thread before creating or attaching a shell.";
         readonly "workbench.selectAThreadToInspect": "Select a thread to inspect.";
         readonly "workbench.agentThreads": "{{value1}}: {{value2}} agent threads";
-        readonly "workbench.agentThreadsAllClosed": "{{value1}}: all agent threads closed";
+        readonly "workbench.agentThreadCount": {
+            readonly one: "{{title}}: {{count}} agent thread";
+            readonly other: "{{title}}: {{count}} agent threads";
+        };
+        readonly "workbench.agentThreadCountRunning": {
+            readonly one: "{{title}}: {{count}} agent thread, {{running}} running";
+            readonly other: "{{title}}: {{count}} agent threads, {{running}} running";
+        };
         readonly "workbench.agentThreads_187f89": "{{value1}} agent threads";
         readonly "workbench.agentThreads_655dcc": "agent threads";
         readonly "workbench.workspaceTools": "Workspace tools";
@@ -17261,7 +17282,14 @@ declare const resources: {
         "workbench.reconnectThisThreadBeforeCreatingOrAttaching": "创建或附加终端前请重新连接此线程。";
         "workbench.selectAThreadToInspect": "请选择要查看的线程。";
         "workbench.agentThreads": "{{value1}}：{{value2}} 个智能体线程";
-        "workbench.agentThreadsAllClosed": "{{value1}}：智能体线程已全部关闭";
+        "workbench.agentThreadCount": {
+            readonly one: "{{title}}：{{count}} 个智能体线程";
+            readonly other: "{{title}}：{{count}} 个智能体线程";
+        };
+        "workbench.agentThreadCountRunning": {
+            readonly one: "{{title}}：{{count}} 个智能体线程，{{running}} 个在运行";
+            readonly other: "{{title}}：{{count}} 个智能体线程，{{running}} 个在运行";
+        };
         "workbench.agentThreads_187f89": "{{value1}} 的智能体线程";
         "workbench.agentThreads_655dcc": "智能体线程";
         "workbench.workspaceTools": "工作区工具";
@@ -17573,8 +17601,8 @@ declare const resources: {
         "workbench.threadMapMinutes": "{{count}} 分钟";
         "workbench.threadMapHoursMinutes": "{{hours}} 小时 {{minutes}} 分钟";
         "workbench.threadMapAgentThreads": {
-            readonly one: "含 {{count}} 个 Agent 线程";
-            readonly other: "含 {{count}} 个 Agent 线程";
+            readonly one: "含 {{count}} 个智能体线程";
+            readonly other: "含 {{count}} 个智能体线程";
         };
         "workbench.threadMapOffline": "离线";
         "workbench.threadMapLoading": "加载中…";
@@ -17619,10 +17647,10 @@ declare const resources: {
         "workbench.threadMapPricePartialShort": "部分轮次无价格";
         "workbench.threadMapStatCost": "API 费用";
         "workbench.threadMapShowChildren": {
-            readonly one: "展开 {{title}} 的 {{count}} 个子线程";
-            readonly other: "展开 {{title}} 的 {{count}} 个子线程";
+            readonly one: "展开 {{title}} 的 {{count}} 个智能体线程";
+            readonly other: "展开 {{title}} 的 {{count}} 个智能体线程";
         };
-        "workbench.threadMapHideChildren": "把子线程收回 {{title}}";
+        "workbench.threadMapHideChildren": "把智能体线程收回 {{title}}";
         "workbench.threadMapOpenThread": "打开 {{title}}";
         "workbench.threadMapFrom": "由 {{title}} 创建";
         "workbench.runningChip": {

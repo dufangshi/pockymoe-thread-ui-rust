@@ -33,7 +33,7 @@ import { PathChip } from './copy/PathChip';
 import { ThreadToolsMenu } from './workbench/ThreadToolsMenu';
 import { StatusMark } from './StatusMark';
 import { ErrorMark } from './copy/ErrorMark';
-import { GroupedThreadTabs, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
+import { GroupedThreadTabs, agentThreadCounts, agentThreadsLabel, groupThreads, threadGroupActivity } from './GroupedThreadTabs';
 import { useThemeFeature } from './themeHooks';
 import { PhoneDock, PhoneSheet, type PhonePane } from './workbench/PhoneDock';
 import { PhoneDockContext } from './workbench/phoneDockContext';
@@ -859,11 +859,7 @@ export function MatterWorkbench({
     while (scroller && !(scroller.scrollHeight > scroller.clientHeight && /auto|scroll/.test(getComputedStyle(scroller).overflowY))) scroller = scroller.parentElement;
     if (scroller) scroller.scrollTop += drift;
   }, [agentsOpen]);
-  // With every agent thread closed the count is hidden, and the name says why.
-  const agentsLabel = (title: string, count: number) => count > 0
-    ? translate('workbench.agentThreads', { value1: title, value2: count })
-    : translate('workbench.agentThreadsAllClosed', { value1: title });
-  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { count: number; running: number; open: boolean }, onClose?: () => void, place?: string) => (
+  const renderThread = (thread: WorkbenchThread, activity = threadGroupActivity(thread), agents?: { total: number; running: number; open: boolean }, onClose?: () => void, place?: string) => (
     <div key={thread.key} className={`matter-thread-entry ${onClose ? 'is-closable' : ''}`}>
     <a
       href={thread.href}
@@ -896,7 +892,7 @@ export function MatterWorkbench({
       </span>
     </a>
     {agents && <button type="button" className="matter-agent-toggle" aria-expanded={agents.open} data-running={agents.running > 0 || undefined}
-      aria-label={agentsLabel(thread.title, agents.count)} title={agentsLabel(thread.title, agents.count)}
+      aria-label={agentThreadsLabel(thread.title, agents)} title={agentThreadsLabel(thread.title, agents)}
       onClick={event => {
         const row = event.currentTarget.closest<HTMLElement>('.matter-thread-entry');
         const sheet = event.currentTarget.closest<HTMLElement>('.matter-phone-sheet');
@@ -904,7 +900,7 @@ export function MatterWorkbench({
         if (row) agentToggle.current = { row, top: row.getBoundingClientRect().top };
         setAgentsOpen(open => ({ ...open, [thread.key]: !agents.open }));
       }}>
-      <Bot aria-hidden="true" />{agents.count > 0 && <span>{agents.count}</span>}<ChevronRight className="matter-agent-toggle-chevron" aria-hidden="true" />
+      <Bot aria-hidden="true" /><span>{agents.total}</span><ChevronRight className="matter-agent-toggle-chevron" aria-hidden="true" />
     </button>}
     {o.renderThreadMenu?.(thread)}
     {onClose && <button type="button" className="matter-thread-close" aria-label={translate('workbench.closeTab', { title: thread.title })}
@@ -914,7 +910,7 @@ export function MatterWorkbench({
   const renderThreadGroups = (threads: WorkbenchThread[], reorder = false, onClose?: (rootKey: string) => void, place?: string) => groupThreads(threads).map(({ root, children }) => {
     const open = agentsOpen[root.key] ?? children.some(child => child.key === o.currentKey);
     return <div key={root.key} className="matter-thread-group-entry" data-reorder-key={reorder ? root.key : undefined}>
-      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { count: children.filter(child => !child.closedAt).length, running: children.filter(child => !child.closedAt && child.status === 'running').length, open } : undefined, onClose ? () => onClose(root.key) : undefined, place)}
+      {renderThread(root, threadGroupActivity(root, children), children.length > 0 ? { ...agentThreadCounts(children), open } : undefined, onClose ? () => onClose(root.key) : undefined, place)}
       {children.length > 0 && open && <div className="matter-agent-children" role="group" aria-label={translate('workbench.agentThreads_187f89', { value1: root.title })}>
         {children.map(child => renderThread(child, undefined, undefined, undefined, place))}
       </div>}

@@ -11,11 +11,23 @@ export function wakeEntries(body: string) {
   return [...body.matchAll(/^- (.+) \(([0-9a-f-]{36})\): ([^\n]*)$/gmi)];
 }
 
+/** The messages a mail wake previews (runtime interaction/wakes.rs):
+    `- KIND "SUBJECT" from SENDER [ADDRESS] · message ID`. */
+export function mailWakeEntries(body: string) {
+  return [...body.matchAll(/^- (\w+) "(.*)" from (.+?) · message (\S+)$/gm)].map((entry) => ({
+    kind: entry[1]!,
+    subject: entry[2]!,
+    from: entry[3]!.replace(/ \[[^\]]*\]$/, ''),
+    id: entry[4]!,
+  }));
+}
+
 /** A delegate's state as the wake reported it, in the reader's language. */
 export function wakeState(state?: string) {
   switch (state) {
     case 'idle': case 'completed': case 'closed': return translate('chat.peerExecutionEnded');
     case 'blocked': return translate('chat.peerWaitingForAnswer');
+    case 'stalled': return translate('chat.peerStalled');
     case 'failed': return translate('chat.peerExecutionFailed');
     case 'interrupted': return translate('chat.peerExecutionInterrupted');
     case 'running': return translate('chat.peerStillRunning');

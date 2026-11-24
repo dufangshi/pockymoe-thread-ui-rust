@@ -891,7 +891,9 @@ interface ThreadPendingSteerDto {
     /** Set when someone other than the device owner sent it. */
     sender?: MessageSenderDto | null;
 }
-/** A `thread wait --wake` registration that has not fired yet. */
+/** A `thread wait --wake` (`kind: "threads"`) or `inbox wait --wake` (`kind: "mail"`)
+    registration that has not fired yet. Older Supervisors omit `kind`; a mail wake
+    repeats its local senders in `members` for clients that predate it. */
 interface ThreadPendingWakeDto {
     id: string;
     createdAt: string | null;
@@ -900,6 +902,17 @@ interface ThreadPendingWakeDto {
         name: string | null;
         status: string | null;
     }>;
+    kind?: string;
+    mail?: {
+        /** Empty: mail from anyone. */
+        from: Array<{
+            threadId: string;
+            name: string | null;
+            status: string | null;
+        }>;
+        kinds: string[];
+        inReplyTo?: string | null;
+    } | null;
 }
 interface ThreadSubagentDto {
     id: string;

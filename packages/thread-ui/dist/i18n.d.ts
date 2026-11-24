@@ -3292,6 +3292,18 @@ declare const en: {
         readonly other: "{{count}} agent threads";
     };
     readonly "chat.waitingForWake": "Waiting for wake";
+    readonly "chat.pendingMailWakeCount": {
+        readonly one: "{{count}} mail wake";
+        readonly other: "{{count}} mail wakes";
+    };
+    readonly "chat.pendingWakeSeparator": ", ";
+    readonly "chat.pendingMailWakeHint": "A turn starts for this agent when that mail arrives: the mail joins a running turn as an interjection, or starts the next turn.";
+    readonly "chat.mailWakeFrom": "Waiting for mail from {{names}}";
+    readonly "chat.mailWakeAny": "Waiting for mail";
+    readonly "chat.mailWakeReply": "Waiting for a reply";
+    readonly "chat.mailWakeReplyFrom": "Waiting for a reply from {{names}}";
+    readonly "chat.envelopeMailWake": "Mail wake";
+    readonly "chat.peerStalled": "Cannot start";
     readonly "chat.backgroundAwakened": "Awakened";
     readonly "chat.backgroundWaitEnded": "Waiting ended";
     readonly "chat.backgroundWaitingHint": "Background tasks are running. Updates will continue here.";
@@ -8773,6 +8785,18 @@ declare const zhCN: {
         readonly other: "{{count}} 个智能体线程";
     };
     "chat.waitingForWake": "等待唤醒";
+    "chat.pendingMailWakeCount": {
+        readonly one: "{{count}} 个邮件唤醒";
+        readonly other: "{{count}} 个邮件唤醒";
+    };
+    "chat.pendingWakeSeparator": "，";
+    "chat.pendingMailWakeHint": "这封邮件到达时会唤醒本智能体：邮件以插话加入正在运行的一轮，否则作为下一轮开始。";
+    "chat.mailWakeFrom": "等待来自 {{names}} 的邮件";
+    "chat.mailWakeAny": "等待邮件";
+    "chat.mailWakeReply": "等待回复";
+    "chat.mailWakeReplyFrom": "等待 {{names}} 的回复";
+    "chat.envelopeMailWake": "邮件唤醒";
+    "chat.peerStalled": "无法启动";
     "chat.backgroundAwakened": "已唤醒";
     "chat.backgroundWaitEnded": "等待已结束";
     "chat.backgroundWaitingHint": "后台任务运行中，后续进展会继续显示在这里。";
@@ -14276,6 +14300,18 @@ declare const resources: {
             readonly other: "{{count}} agent threads";
         };
         readonly "chat.waitingForWake": "Waiting for wake";
+        readonly "chat.pendingMailWakeCount": {
+            readonly one: "{{count}} mail wake";
+            readonly other: "{{count}} mail wakes";
+        };
+        readonly "chat.pendingWakeSeparator": ", ";
+        readonly "chat.pendingMailWakeHint": "A turn starts for this agent when that mail arrives: the mail joins a running turn as an interjection, or starts the next turn.";
+        readonly "chat.mailWakeFrom": "Waiting for mail from {{names}}";
+        readonly "chat.mailWakeAny": "Waiting for mail";
+        readonly "chat.mailWakeReply": "Waiting for a reply";
+        readonly "chat.mailWakeReplyFrom": "Waiting for a reply from {{names}}";
+        readonly "chat.envelopeMailWake": "Mail wake";
+        readonly "chat.peerStalled": "Cannot start";
         readonly "chat.backgroundAwakened": "Awakened";
         readonly "chat.backgroundWaitEnded": "Waiting ended";
         readonly "chat.backgroundWaitingHint": "Background tasks are running. Updates will continue here.";
@@ -19756,6 +19792,18 @@ declare const resources: {
             readonly other: "{{count}} 个智能体线程";
         };
         "chat.waitingForWake": "等待唤醒";
+        "chat.pendingMailWakeCount": {
+            readonly one: "{{count}} 个邮件唤醒";
+            readonly other: "{{count}} 个邮件唤醒";
+        };
+        "chat.pendingWakeSeparator": "，";
+        "chat.pendingMailWakeHint": "这封邮件到达时会唤醒本智能体：邮件以插话加入正在运行的一轮，否则作为下一轮开始。";
+        "chat.mailWakeFrom": "等待来自 {{names}} 的邮件";
+        "chat.mailWakeAny": "等待邮件";
+        "chat.mailWakeReply": "等待回复";
+        "chat.mailWakeReplyFrom": "等待 {{names}} 的回复";
+        "chat.envelopeMailWake": "邮件唤醒";
+        "chat.peerStalled": "无法启动";
         "chat.backgroundAwakened": "已唤醒";
         "chat.backgroundWaitEnded": "等待已结束";
         "chat.backgroundWaitingHint": "后台任务运行中，后续进展会继续显示在这里。";

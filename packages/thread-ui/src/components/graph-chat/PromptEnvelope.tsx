@@ -4,7 +4,7 @@ import { BellRing, ChevronRight } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
 import type { DescribeThread } from '../../adapters';
 import { GraphChatLinkifiedPlainText } from './GraphChatMessageBody';
-import { wakeEntries, wakeState } from '../timeline/delegateWake';
+import { mailWakeEntries, wakeEntries, wakeState } from '../timeline/delegateWake';
 
 /* Prompts the Supervisor writes on an agent's behalf (runtime interaction/mod.rs,
    inbox_reminder.rs, agents.rs wakes) start with a bracketed header. They are
@@ -12,7 +12,7 @@ import { wakeEntries, wakeState } from '../timeline/delegateWake';
 
 export type PromptEnvelope =
   | { type: 'peer'; kind: string; from: string; fromThreadId: string | null; subject: string | null; urgent: string | null; body: string }
-  | { type: 'notice'; notice: 'inbox' | 'turn' | 'resume' | 'wake'; preview: string; body: string };
+  | { type: 'notice'; notice: 'inbox' | 'turn' | 'resume' | 'wake' | 'mailWake'; preview: string; body: string };
 
 // runtime service/update.rs RESUME_PROMPT
 const RESUME_PREFIX = 'The Supervisor was restarted for device maintenance, interrupting this task.';
@@ -41,6 +41,11 @@ export function parsePromptEnvelope(text: string): PromptEnvelope | null {
     const lines = rest.split('\n').map((line) => line.trim()).filter(Boolean);
     const first = lines.find((line) => line.startsWith('- '))?.slice(2) ?? lines[0] ?? '';
     return { type: 'notice', notice: 'inbox', preview: shortIds(first), body: rest.trim() };
+  }
+  if (inner.startsWith('wake: mail ')) {
+    // The mail that arrived: sender and subject of each previewed message.
+    const preview = mailWakeEntries(rest).map((entry) => `${shortIds(entry.from)}: ${entry.subject}`).join(' · ');
+    return { type: 'notice', notice: 'mailWake', preview, body: rest.trim() };
   }
   if (inner.startsWith('wake: ')) {
     // Each delegate the wake reports on, with its state.
@@ -130,6 +135,7 @@ const NOTICE = {
   turn: { glyph: '⚑', label: 'chat.envelopeTurn' },
   resume: { glyph: '↻', label: 'chat.envelopeResume' },
   wake: { glyph: <BellRing className="prompt-envelope-icon" />, label: 'chat.peerRegisteredWake' },
+  mailWake: { glyph: <BellRing className="prompt-envelope-icon" />, label: 'chat.envelopeMailWake' },
 } as const;
 
 /** Where a queued prompt came from and its gist, for one-line lists. */

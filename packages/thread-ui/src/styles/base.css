@@ -964,6 +964,10 @@
 .thread-ui-shell .thread-composer-wakes-group + .thread-composer-wakes-group { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--theme-border); }
 .thread-ui-shell .thread-composer-wakes-group li { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .thread-ui-shell .thread-composer-wakes-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+/* A mail wake's line names its senders; it wraps rather than hide one (ui-principles §14). */
+.thread-ui-shell .thread-composer-wakes-group[data-kind='mail'] li { align-items: flex-start; }
+.thread-ui-shell .thread-composer-wakes-group[data-kind='mail'] .thread-composer-wakes-name { white-space: normal; overflow-wrap: anywhere; }
+.thread-ui-shell .thread-composer-wakes-mail { width: 12px; height: 12px; flex: none; margin-top: 2px; color: var(--theme-fg-muted); }
 .thread-ui-shell .thread-composer-wakes-state { margin-left: auto; padding-left: 8px; flex: none; color: var(--theme-fg-muted); }
 .thread-ui-shell .thread-composer-wakes-hint { margin: 8px 0 0; color: var(--theme-fg-muted); font-size: 11px; }
 

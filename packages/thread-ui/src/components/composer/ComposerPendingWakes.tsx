@@ -1,5 +1,5 @@
 import type { ThreadPendingWakeDto } from "@pockymoe/shared";
-import { BellRing } from "lucide-react";
+import { BellRing, Mail } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { translate, useI18n } from '../../i18n';
 import { navigationStatusLabel, StatusMark } from "../StatusMark";
@@ -17,24 +17,39 @@ function memberLabel(mark: string) {
   return mark === "idle" ? translate("chat.peerExecutionEnded") : navigationStatusLabel(mark);
 }
 
-/** Wakes this thread registered (`thread wait --wake`): a small bell above the
-    composer counting the agent threads whose report will reach it. A tap lists
-    them with their state and explains when the wake comes. */
+/** What a mail wake (`inbox wait --wake`) waits for, in one short line. */
+function mailLabel(mail: NonNullable<ThreadPendingWakeDto["mail"]>) {
+  const names = mail.from.map((sender) => sender.name ?? sender.threadId.slice(0, 8)).join(", ");
+  if (mail.inReplyTo) return names ? translate("chat.mailWakeReplyFrom", { names }) : translate("chat.mailWakeReply");
+  return names ? translate("chat.mailWakeFrom", { names }) : translate("chat.mailWakeAny");
+}
+
+/** Wakes this thread registered: a small bell above the composer counting the
+    agent threads whose report will reach it (`thread wait --wake`) and the mail
+    it waits for (`inbox wait --wake`). A tap lists them with their state and
+    explains when the wake comes. A wake of a kind this client does not know is
+    listed by its members, like a delegate wake. */
 export function ComposerPendingWakes({ wakes }: { wakes: ThreadPendingWakeDto[] }) {
   useI18n();
   const [open, setOpen] = useState(false);
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
-  const groups = wakes.map((wake) => ({
+  const mailWakes = wakes.filter((wake) => wake.kind === "mail" && wake.mail).map((wake) => ({ id: wake.id, label: mailLabel(wake.mail!) }));
+  const groups = wakes.filter((wake) => !(wake.kind === "mail" && wake.mail)).map((wake) => ({
     id: wake.id,
     members: wake.members.map((member) => {
       const mark = markStatus(member.status);
       return { threadId: member.threadId, label: member.name ?? member.threadId.slice(0, 8), mark, state: memberLabel(mark) };
     }),
   }));
-  const count = groups.reduce((sum, group) => sum + group.members.length, 0);
-  const name = `${translate("chat.waitingForWake")}: ${translate("chat.pendingWakeCount", { count })}`;
+  const threads = groups.reduce((sum, group) => sum + group.members.length, 0);
+  const count = threads + mailWakes.length;
+  const parts = [
+    ...(threads || !mailWakes.length ? [translate("chat.pendingWakeCount", { count: threads })] : []),
+    ...(mailWakes.length ? [translate("chat.pendingMailWakeCount", { count: mailWakes.length })] : []),
+  ];
+  const name = `${translate("chat.waitingForWake")}: ${parts.join(translate("chat.pendingWakeSeparator"))}`;
 
   useEffect(() => {
     if (!open) return;
@@ -79,7 +94,18 @@ export function ComposerPendingWakes({ wakes }: { wakes: ThreadPendingWakeDto[] 
               ))}
             </ul>
           ))}
-          <p className="thread-composer-wakes-hint">{translate("chat.pendingWakeHint")}</p>
+          {mailWakes.length ? (
+            <ul className="thread-composer-wakes-group" data-kind="mail">
+              {mailWakes.map((wake) => (
+                <li key={wake.id}>
+                  <Mail className="thread-composer-wakes-mail" aria-hidden="true" />
+                  <span className="thread-composer-wakes-name">{wake.label}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          {groups.length ? <p className="thread-composer-wakes-hint">{translate("chat.pendingWakeHint")}</p> : null}
+          {mailWakes.length ? <p className="thread-composer-wakes-hint">{translate("chat.pendingMailWakeHint")}</p> : null}
         </section>
       ) : null}
     </div>

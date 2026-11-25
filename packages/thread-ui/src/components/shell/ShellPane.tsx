@@ -772,13 +772,50 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
       const nativeScroll = (event: Event) => {
         if (terminalRef.current?.buffer.active.type === 'normal') event.stopPropagation();
       };
+      // A full-screen program (Codex, Claude Code, less, vim) uses the alternate
+      // screen, which has no scrollback: xterm 5 turns the mouse wheel into its
+      // mouse reports or arrow keys there, but ignores touch. A vertical drag
+      // becomes wheel events for xterm's own wheel handling, one row at a time.
+      let lastY: number | null = null;
+      let carried = 0;
+      const altStart = (event: TouchEvent) => {
+        lastY = event.touches.length === 1 && terminalRef.current?.buffer.active.type === 'alternate'
+          ? event.touches[0]!.clientY : null;
+        carried = 0;
+      };
+      const altMove = (event: TouchEvent) => {
+        const terminal = terminalRef.current;
+        if (lastY === null || !terminal || !screen || event.touches.length !== 1) return;
+        const y = event.touches[0]!.clientY;
+        const row = Math.max(8, screen.clientHeight / Math.max(1, terminal.rows));
+        carried += lastY - y;
+        lastY = y;
+        while (Math.abs(carried) >= row) {
+          const step = Math.sign(carried) * row;
+          carried -= step;
+          const touch = event.touches[0]!;
+          screen.dispatchEvent(new WheelEvent('wheel', {
+            deltaY: step, deltaMode: WheelEvent.DOM_DELTA_PIXEL, clientX: touch.clientX, clientY: touch.clientY,
+            bubbles: true, cancelable: true,
+          }));
+        }
+      };
+      const altEnd = () => { lastY = null; };
       const removeLinkTaps = screen ? installViewportLinkTaps(viewport, screen) : undefined;
       viewport.addEventListener('touchstart', nativeScroll, {passive: true});
       viewport.addEventListener('touchmove', nativeScroll, {passive: true});
+      viewport.addEventListener('touchstart', altStart, {passive: true});
+      viewport.addEventListener('touchmove', altMove, {passive: true});
+      viewport.addEventListener('touchend', altEnd, {passive: true});
+      viewport.addEventListener('touchcancel', altEnd, {passive: true});
       return () => {
         removeLinkTaps?.();
         viewport.removeEventListener('touchstart', nativeScroll);
         viewport.removeEventListener('touchmove', nativeScroll);
+        viewport.removeEventListener('touchstart', altStart);
+        viewport.removeEventListener('touchmove', altMove);
+        viewport.removeEventListener('touchend', altEnd);
+        viewport.removeEventListener('touchcancel', altEnd);
       };
     }, [isMobileShell, terminalReady, terminalHostNode]);
 

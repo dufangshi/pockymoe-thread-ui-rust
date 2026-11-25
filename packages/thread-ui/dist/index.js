@@ -59,7 +59,11 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
+<<<<<<< HEAD
 } from "./chunk-SHS2CKRU.js";
+=======
+} from "./chunk-M3NWHISK.js";
+>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -96,7 +100,11 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
+<<<<<<< HEAD
 } from "./chunk-R2LITDNV.js";
+=======
+} from "./chunk-PV62C22N.js";
+>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";

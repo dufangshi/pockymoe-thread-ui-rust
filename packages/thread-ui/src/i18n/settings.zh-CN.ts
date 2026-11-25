@@ -229,7 +229,6 @@ export const settingsZhCN = {
   'settings.upstreamsTab': '上游',
   'settings.upstreamsDescription':
     '保存一次 API 连接，再应用到 harness 或在插件中选择。',
-  'settings.upstreamsChooseDevice': '请打开设备以管理其上游。',
   'settings.upstreamsInventoryError': '无法检查已安装的 harness，请刷新重试。',
   'settings.upstreamsRefresh': '刷新',
   'settings.upstreamsNoInstalled':
@@ -583,7 +582,6 @@ export const settingsZhCN = {
   'settings.storageThreadCleaning': '清理中 {{done}} / {{total}}',
   'settings.treerDeviceDescription': '检查、更新或重启这台机器上的 Pockymoe hub。',
   'settings.resourcesDescription': '这台设备的运行内存与磁盘占用。',
-  'settings.resourcesChooseDevice': '请打开设备以管理其资源。',
   'settings.resourcesUnavailable': '请更新此设备的 Supervisor 以修改资源设置。',
   'settings.idleRelease': '空闲释放',
   'settings.idleReleaseHint':
@@ -648,4 +646,7 @@ export const settingsZhCN = {
   "settings.runCompleted": "完成",
   "settings.runFailed": "失败",
   "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。{{keys}}",
+  "settings.deviceScope": "这些设置作用的设备",
+  "settings.deviceScopeChoose": "这些设置属于某一台设备。请选择要管理的设备。",
+  "settings.deviceScopeNone": "还没有可管理的设备。",
 } as const;

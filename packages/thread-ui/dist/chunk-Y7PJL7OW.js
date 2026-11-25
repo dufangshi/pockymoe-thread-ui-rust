@@ -5,7 +5,11 @@ import {
 import {
   translate,
   useI18n
+<<<<<<<< HEAD:packages/thread-ui/dist/chunk-Y7PJL7OW.js
 } from "./chunk-R2LITDNV.js";
+========
+} from "./chunk-PV62C22N.js";
+>>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/chunk-OL27POSN.js
 import {
   KeyCode,
   KeyMod,

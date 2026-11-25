@@ -113,8 +113,6 @@ export const devicesEn = {
   "devices.opening": "Opening…",
   "devices.enableAndOpen": "Enable and open",
   "devices.runtimeManagement": "Runtime management",
-  "devices.deviceRuntimes": "Device runtimes",
-  "devices.openADeviceToViewAndManage": "Open a device to view and manage its Supervisor and harness versions.",
   "devices.upgradeThisDeviceTo01217": "Upgrade this device to 0.12.17 or later with its existing installer to enable runtime management.",
   "devices.unableToManageHarness": "Unable to manage harness",
   "devices.unableToUpdateSupervisor": "Unable to update Supervisor",

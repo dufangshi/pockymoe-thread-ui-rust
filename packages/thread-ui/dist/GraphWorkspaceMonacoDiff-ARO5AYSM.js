@@ -1,12 +1,20 @@
 import {
   editorThemeFor
+<<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-ARO5AYSM.js
 } from "./chunk-Y7PJL7OW.js";
+========
+} from "./chunk-OL27POSN.js";
+>>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-HLHCHLMM.js
 import {
   useDocumentThemeRevision
 } from "./chunk-JIPNJR2N.js";
 import {
   translate
+<<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-ARO5AYSM.js
 } from "./chunk-R2LITDNV.js";
+========
+} from "./chunk-PV62C22N.js";
+>>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-HLHCHLMM.js
 import {
   editor
 } from "./chunk-PEHPFHY2.js";

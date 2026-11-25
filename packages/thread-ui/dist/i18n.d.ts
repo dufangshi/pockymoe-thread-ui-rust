@@ -1747,7 +1747,6 @@ declare const en: {
     readonly 'settings.connErrorChanged': "The connection changed elsewhere. Refresh and try again.";
     readonly 'settings.upstreamsTab': "Upstreams";
     readonly 'settings.upstreamsDescription': "Save API connections once, then apply them to harnesses or choose them in plugins.";
-    readonly 'settings.upstreamsChooseDevice': "Open a device to manage its upstreams.";
     readonly 'settings.upstreamsInventoryError': "Unable to check installed harnesses. Refresh to try again.";
     readonly 'settings.upstreamsRefresh': "Refresh";
     readonly 'settings.upstreamsNoInstalled': "No harnesses are installed on this device. Install one in Harnesses to manage its upstreams.";
@@ -2059,7 +2058,6 @@ declare const en: {
     readonly 'settings.storageThreadCleaning': "Cleaning up {{done}} / {{total}}";
     readonly 'settings.treerDeviceDescription': "Check, update or restart this machine's Pockymoe hub.";
     readonly 'settings.resourcesDescription': "Memory and disk use on this device.";
-    readonly 'settings.resourcesChooseDevice': "Open a device to manage its resources.";
     readonly 'settings.resourcesUnavailable': "Update this device's Supervisor to change resource settings.";
     readonly 'settings.idleRelease': "Release idle threads";
     readonly 'settings.idleReleaseHint': "Ends a thread's harness once no page shows it and it has been idle this long.";
@@ -2117,7 +2115,14 @@ declare const en: {
     readonly "settings.runManual": "Manual";
     readonly "settings.runCompleted": "Done";
     readonly "settings.runFailed": "Failed";
+<<<<<<< HEAD
     readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}";
+=======
+    readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.";
+    readonly "settings.deviceScope": "Device these settings apply to";
+    readonly "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.";
+    readonly "settings.deviceScopeNone": "No device to manage yet.";
+>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
     readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
     readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
     readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -2918,8 +2923,6 @@ declare const en: {
     readonly "devices.opening": "Opening…";
     readonly "devices.enableAndOpen": "Enable and open";
     readonly "devices.runtimeManagement": "Runtime management";
-    readonly "devices.deviceRuntimes": "Device runtimes";
-    readonly "devices.openADeviceToViewAndManage": "Open a device to view and manage its Supervisor and harness versions.";
     readonly "devices.upgradeThisDeviceTo01217": "Upgrade this device to 0.12.17 or later with its existing installer to enable runtime management.";
     readonly "devices.unableToManageHarness": "Unable to manage harness";
     readonly "devices.unableToUpdateSupervisor": "Unable to update Supervisor";
@@ -7243,7 +7246,6 @@ declare const zhCN: {
     'settings.connErrorChanged': "连接已在别处被修改。请刷新后重试。";
     'settings.upstreamsTab': "上游";
     'settings.upstreamsDescription': "保存一次 API 连接，再应用到 harness 或在插件中选择。";
-    'settings.upstreamsChooseDevice': "请打开设备以管理其上游。";
     'settings.upstreamsInventoryError': "无法检查已安装的 harness，请刷新重试。";
     'settings.upstreamsRefresh': "刷新";
     'settings.upstreamsNoInstalled': "此设备尚未安装 harness。请先在「Harnesses」中安装，再管理其上游。";
@@ -7555,7 +7557,6 @@ declare const zhCN: {
     'settings.storageThreadCleaning': "清理中 {{done}} / {{total}}";
     'settings.treerDeviceDescription': "检查、更新或重启这台机器上的 Pockymoe hub。";
     'settings.resourcesDescription': "这台设备的运行内存与磁盘占用。";
-    'settings.resourcesChooseDevice': "请打开设备以管理其资源。";
     'settings.resourcesUnavailable': "请更新此设备的 Supervisor 以修改资源设置。";
     'settings.idleRelease': "空闲释放";
     'settings.idleReleaseHint': "没有页面显示、且空闲满这么久后，结束这个线程的 Harness 进程。";
@@ -7613,7 +7614,14 @@ declare const zhCN: {
     "settings.runManual": "手动";
     "settings.runCompleted": "完成";
     "settings.runFailed": "失败";
+<<<<<<< HEAD
     "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。{{keys}}";
+=======
+    "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。Mac 上也可用 Command 代替 Ctrl。";
+    "settings.deviceScope": "这些设置作用的设备";
+    "settings.deviceScopeChoose": "这些设置属于某一台设备。请选择要管理的设备。";
+    "settings.deviceScopeNone": "还没有可管理的设备。";
+>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
     "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
     "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
     "files.pluginUnsupportedPlatform": "此平台不支持终端。";
@@ -8414,8 +8422,6 @@ declare const zhCN: {
     "devices.opening": "正在打开…";
     "devices.enableAndOpen": "启用并打开";
     "devices.runtimeManagement": "运行时管理";
-    "devices.deviceRuntimes": "设备运行时";
-    "devices.openADeviceToViewAndManage": "打开设备以查看和管理其 Supervisor 和 Harness 版本。";
     "devices.upgradeThisDeviceTo01217": "使用现有安装程序将此设备升级到 0.12.17 或更高版本以启用运行时管理。";
     "devices.unableToManageHarness": "无法管理 Harness";
     "devices.unableToUpdateSupervisor": "无法更新 Supervisor";
@@ -12761,7 +12767,6 @@ declare const resources: {
         readonly 'settings.connErrorChanged': "The connection changed elsewhere. Refresh and try again.";
         readonly 'settings.upstreamsTab': "Upstreams";
         readonly 'settings.upstreamsDescription': "Save API connections once, then apply them to harnesses or choose them in plugins.";
-        readonly 'settings.upstreamsChooseDevice': "Open a device to manage its upstreams.";
         readonly 'settings.upstreamsInventoryError': "Unable to check installed harnesses. Refresh to try again.";
         readonly 'settings.upstreamsRefresh': "Refresh";
         readonly 'settings.upstreamsNoInstalled': "No harnesses are installed on this device. Install one in Harnesses to manage its upstreams.";
@@ -13073,7 +13078,6 @@ declare const resources: {
         readonly 'settings.storageThreadCleaning': "Cleaning up {{done}} / {{total}}";
         readonly 'settings.treerDeviceDescription': "Check, update or restart this machine's Pockymoe hub.";
         readonly 'settings.resourcesDescription': "Memory and disk use on this device.";
-        readonly 'settings.resourcesChooseDevice': "Open a device to manage its resources.";
         readonly 'settings.resourcesUnavailable': "Update this device's Supervisor to change resource settings.";
         readonly 'settings.idleRelease': "Release idle threads";
         readonly 'settings.idleReleaseHint': "Ends a thread's harness once no page shows it and it has been idle this long.";
@@ -13131,7 +13135,14 @@ declare const resources: {
         readonly "settings.runManual": "Manual";
         readonly "settings.runCompleted": "Done";
         readonly "settings.runFailed": "Failed";
+<<<<<<< HEAD
         readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}";
+=======
+        readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.";
+        readonly "settings.deviceScope": "Device these settings apply to";
+        readonly "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.";
+        readonly "settings.deviceScopeNone": "No device to manage yet.";
+>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
         readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
         readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
         readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -13932,8 +13943,6 @@ declare const resources: {
         readonly "devices.opening": "Opening…";
         readonly "devices.enableAndOpen": "Enable and open";
         readonly "devices.runtimeManagement": "Runtime management";
-        readonly "devices.deviceRuntimes": "Device runtimes";
-        readonly "devices.openADeviceToViewAndManage": "Open a device to view and manage its Supervisor and harness versions.";
         readonly "devices.upgradeThisDeviceTo01217": "Upgrade this device to 0.12.17 or later with its existing installer to enable runtime management.";
         readonly "devices.unableToManageHarness": "Unable to manage harness";
         readonly "devices.unableToUpdateSupervisor": "Unable to update Supervisor";
@@ -18256,7 +18265,6 @@ declare const resources: {
         'settings.connErrorChanged': "连接已在别处被修改。请刷新后重试。";
         'settings.upstreamsTab': "上游";
         'settings.upstreamsDescription': "保存一次 API 连接，再应用到 harness 或在插件中选择。";
-        'settings.upstreamsChooseDevice': "请打开设备以管理其上游。";
         'settings.upstreamsInventoryError': "无法检查已安装的 harness，请刷新重试。";
         'settings.upstreamsRefresh': "刷新";
         'settings.upstreamsNoInstalled': "此设备尚未安装 harness。请先在「Harnesses」中安装，再管理其上游。";
@@ -18568,7 +18576,6 @@ declare const resources: {
         'settings.storageThreadCleaning': "清理中 {{done}} / {{total}}";
         'settings.treerDeviceDescription': "检查、更新或重启这台机器上的 Pockymoe hub。";
         'settings.resourcesDescription': "这台设备的运行内存与磁盘占用。";
-        'settings.resourcesChooseDevice': "请打开设备以管理其资源。";
         'settings.resourcesUnavailable': "请更新此设备的 Supervisor 以修改资源设置。";
         'settings.idleRelease': "空闲释放";
         'settings.idleReleaseHint': "没有页面显示、且空闲满这么久后，结束这个线程的 Harness 进程。";
@@ -18626,7 +18633,14 @@ declare const resources: {
         "settings.runManual": "手动";
         "settings.runCompleted": "完成";
         "settings.runFailed": "失败";
+<<<<<<< HEAD
         "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。{{keys}}";
+=======
+        "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。Mac 上也可用 Command 代替 Ctrl。";
+        "settings.deviceScope": "这些设置作用的设备";
+        "settings.deviceScopeChoose": "这些设置属于某一台设备。请选择要管理的设备。";
+        "settings.deviceScopeNone": "还没有可管理的设备。";
+>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
         "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
         "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
         "files.pluginUnsupportedPlatform": "此平台不支持终端。";
@@ -19427,8 +19441,6 @@ declare const resources: {
         "devices.opening": "正在打开…";
         "devices.enableAndOpen": "启用并打开";
         "devices.runtimeManagement": "运行时管理";
-        "devices.deviceRuntimes": "设备运行时";
-        "devices.openADeviceToViewAndManage": "打开设备以查看和管理其 Supervisor 和 Harness 版本。";
         "devices.upgradeThisDeviceTo01217": "使用现有安装程序将此设备升级到 0.12.17 或更高版本以启用运行时管理。";
         "devices.unableToManageHarness": "无法管理 Harness";
         "devices.unableToUpdateSupervisor": "无法更新 Supervisor";

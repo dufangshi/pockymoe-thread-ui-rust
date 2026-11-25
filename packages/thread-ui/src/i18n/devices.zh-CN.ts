@@ -113,8 +113,6 @@ export const devicesZhCN = {
   "devices.opening": "正在打开…",
   "devices.enableAndOpen": "启用并打开",
   "devices.runtimeManagement": "运行时管理",
-  "devices.deviceRuntimes": "设备运行时",
-  "devices.openADeviceToViewAndManage": "打开设备以查看和管理其 Supervisor 和 Harness 版本。",
   "devices.upgradeThisDeviceTo01217": "使用现有安装程序将此设备升级到 0.12.17 或更高版本以启用运行时管理。",
   "devices.unableToManageHarness": "无法管理 Harness",
   "devices.unableToUpdateSupervisor": "无法更新 Supervisor",

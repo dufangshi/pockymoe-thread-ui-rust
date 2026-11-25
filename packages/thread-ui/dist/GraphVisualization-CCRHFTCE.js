@@ -1,6 +1,10 @@
 import {
   useI18n
+<<<<<<<< HEAD:packages/thread-ui/dist/GraphVisualization-CCRHFTCE.js
 } from "./chunk-R2LITDNV.js";
+========
+} from "./chunk-PV62C22N.js";
+>>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/GraphVisualization-GFZOGOSV.js
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/graph-chat/GraphVisualization.tsx

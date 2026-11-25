@@ -252,7 +252,6 @@ export const settingsEn = {
   'settings.upstreamsTab': 'Upstreams',
   'settings.upstreamsDescription':
     'Save API connections once, then apply them to harnesses or choose them in plugins.',
-  'settings.upstreamsChooseDevice': 'Open a device to manage its upstreams.',
   'settings.upstreamsInventoryError':
     'Unable to check installed harnesses. Refresh to try again.',
   'settings.upstreamsRefresh': 'Refresh',
@@ -624,7 +623,6 @@ export const settingsEn = {
   'settings.storageThreadCleaning': 'Cleaning up {{done}} / {{total}}',
   'settings.treerDeviceDescription': "Check, update or restart this machine's Pockymoe hub.",
   'settings.resourcesDescription': "Memory and disk use on this device.",
-  'settings.resourcesChooseDevice': 'Open a device to manage its resources.',
   'settings.resourcesUnavailable':
     "Update this device's Supervisor to change resource settings.",
   'settings.idleRelease': 'Release idle threads',
@@ -691,4 +689,7 @@ export const settingsEn = {
   "settings.runCompleted": "Done",
   "settings.runFailed": "Failed",
   "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}",
+  "settings.deviceScope": "Device these settings apply to",
+  "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.",
+  "settings.deviceScopeNone": "No device to manage yet.",
 } as const;

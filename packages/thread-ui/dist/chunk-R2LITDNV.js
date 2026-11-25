@@ -2892,8 +2892,6 @@ var devicesEn = {
   "devices.opening": "Opening\u2026",
   "devices.enableAndOpen": "Enable and open",
   "devices.runtimeManagement": "Runtime management",
-  "devices.deviceRuntimes": "Device runtimes",
-  "devices.openADeviceToViewAndManage": "Open a device to view and manage its Supervisor and harness versions.",
   "devices.upgradeThisDeviceTo01217": "Upgrade this device to 0.12.17 or later with its existing installer to enable runtime management.",
   "devices.unableToManageHarness": "Unable to manage harness",
   "devices.unableToUpdateSupervisor": "Unable to update Supervisor",
@@ -4106,7 +4104,6 @@ var settingsEn = {
   "settings.connErrorChanged": "The connection changed elsewhere. Refresh and try again.",
   "settings.upstreamsTab": "Upstreams",
   "settings.upstreamsDescription": "Save API connections once, then apply them to harnesses or choose them in plugins.",
-  "settings.upstreamsChooseDevice": "Open a device to manage its upstreams.",
   "settings.upstreamsInventoryError": "Unable to check installed harnesses. Refresh to try again.",
   "settings.upstreamsRefresh": "Refresh",
   "settings.upstreamsNoInstalled": "No harnesses are installed on this device. Install one in Harnesses to manage its upstreams.",
@@ -4418,7 +4415,6 @@ var settingsEn = {
   "settings.storageThreadCleaning": "Cleaning up {{done}} / {{total}}",
   "settings.treerDeviceDescription": "Check, update or restart this machine's Pockymoe hub.",
   "settings.resourcesDescription": "Memory and disk use on this device.",
-  "settings.resourcesChooseDevice": "Open a device to manage its resources.",
   "settings.resourcesUnavailable": "Update this device's Supervisor to change resource settings.",
   "settings.idleRelease": "Release idle threads",
   "settings.idleReleaseHint": "Ends a thread's harness once no page shows it and it has been idle this long.",
@@ -4476,7 +4472,14 @@ var settingsEn = {
   "settings.runManual": "Manual",
   "settings.runCompleted": "Done",
   "settings.runFailed": "Failed",
+<<<<<<<< HEAD:packages/thread-ui/dist/chunk-R2LITDNV.js
   "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}"
+========
+  "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.",
+  "settings.deviceScope": "Device these settings apply to",
+  "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.",
+  "settings.deviceScopeNone": "No device to manage yet."
+>>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/chunk-PV62C22N.js
 };
 
 // src/i18n/sharing.en.ts
@@ -8289,8 +8292,6 @@ var devicesZhCN = {
   "devices.opening": "\u6B63\u5728\u6253\u5F00\u2026",
   "devices.enableAndOpen": "\u542F\u7528\u5E76\u6253\u5F00",
   "devices.runtimeManagement": "\u8FD0\u884C\u65F6\u7BA1\u7406",
-  "devices.deviceRuntimes": "\u8BBE\u5907\u8FD0\u884C\u65F6",
-  "devices.openADeviceToViewAndManage": "\u6253\u5F00\u8BBE\u5907\u4EE5\u67E5\u770B\u548C\u7BA1\u7406\u5176 Supervisor \u548C Harness \u7248\u672C\u3002",
   "devices.upgradeThisDeviceTo01217": "\u4F7F\u7528\u73B0\u6709\u5B89\u88C5\u7A0B\u5E8F\u5C06\u6B64\u8BBE\u5907\u5347\u7EA7\u5230 0.12.17 \u6216\u66F4\u9AD8\u7248\u672C\u4EE5\u542F\u7528\u8FD0\u884C\u65F6\u7BA1\u7406\u3002",
   "devices.unableToManageHarness": "\u65E0\u6CD5\u7BA1\u7406 Harness",
   "devices.unableToUpdateSupervisor": "\u65E0\u6CD5\u66F4\u65B0 Supervisor",
@@ -9503,7 +9504,6 @@ var settingsZhCN = {
   "settings.connErrorChanged": "\u8FDE\u63A5\u5DF2\u5728\u522B\u5904\u88AB\u4FEE\u6539\u3002\u8BF7\u5237\u65B0\u540E\u91CD\u8BD5\u3002",
   "settings.upstreamsTab": "\u4E0A\u6E38",
   "settings.upstreamsDescription": "\u4FDD\u5B58\u4E00\u6B21 API \u8FDE\u63A5\uFF0C\u518D\u5E94\u7528\u5230 harness \u6216\u5728\u63D2\u4EF6\u4E2D\u9009\u62E9\u3002",
-  "settings.upstreamsChooseDevice": "\u8BF7\u6253\u5F00\u8BBE\u5907\u4EE5\u7BA1\u7406\u5176\u4E0A\u6E38\u3002",
   "settings.upstreamsInventoryError": "\u65E0\u6CD5\u68C0\u67E5\u5DF2\u5B89\u88C5\u7684 harness\uFF0C\u8BF7\u5237\u65B0\u91CD\u8BD5\u3002",
   "settings.upstreamsRefresh": "\u5237\u65B0",
   "settings.upstreamsNoInstalled": "\u6B64\u8BBE\u5907\u5C1A\u672A\u5B89\u88C5 harness\u3002\u8BF7\u5148\u5728\u300CHarnesses\u300D\u4E2D\u5B89\u88C5\uFF0C\u518D\u7BA1\u7406\u5176\u4E0A\u6E38\u3002",
@@ -9815,7 +9815,6 @@ var settingsZhCN = {
   "settings.storageThreadCleaning": "\u6E05\u7406\u4E2D {{done}} / {{total}}",
   "settings.treerDeviceDescription": "\u68C0\u67E5\u3001\u66F4\u65B0\u6216\u91CD\u542F\u8FD9\u53F0\u673A\u5668\u4E0A\u7684 Pockymoe hub\u3002",
   "settings.resourcesDescription": "\u8FD9\u53F0\u8BBE\u5907\u7684\u8FD0\u884C\u5185\u5B58\u4E0E\u78C1\u76D8\u5360\u7528\u3002",
-  "settings.resourcesChooseDevice": "\u8BF7\u6253\u5F00\u8BBE\u5907\u4EE5\u7BA1\u7406\u5176\u8D44\u6E90\u3002",
   "settings.resourcesUnavailable": "\u8BF7\u66F4\u65B0\u6B64\u8BBE\u5907\u7684 Supervisor \u4EE5\u4FEE\u6539\u8D44\u6E90\u8BBE\u7F6E\u3002",
   "settings.idleRelease": "\u7A7A\u95F2\u91CA\u653E",
   "settings.idleReleaseHint": "\u6CA1\u6709\u9875\u9762\u663E\u793A\u3001\u4E14\u7A7A\u95F2\u6EE1\u8FD9\u4E48\u4E45\u540E\uFF0C\u7ED3\u675F\u8FD9\u4E2A\u7EBF\u7A0B\u7684 Harness \u8FDB\u7A0B\u3002",
@@ -9873,7 +9872,14 @@ var settingsZhCN = {
   "settings.runManual": "\u624B\u52A8",
   "settings.runCompleted": "\u5B8C\u6210",
   "settings.runFailed": "\u5931\u8D25",
+<<<<<<<< HEAD:packages/thread-ui/dist/chunk-R2LITDNV.js
   "settings.savedInThisBrowserShortcut": "\u4FDD\u5B58\u5728\u6B64\u6D4F\u89C8\u5668\uFF1B\u767B\u5F55 Relay \u540E\u53EF\u4FDD\u5B58\u5230\u8D26\u53F7\u5E76\u5728\u8BBE\u5907\u95F4\u540C\u6B65\u3002{{keys}}"
+========
+  "settings.savedInThisBrowserShortcut": "\u4FDD\u5B58\u5728\u6B64\u6D4F\u89C8\u5668\uFF1B\u767B\u5F55 Relay \u540E\u53EF\u4FDD\u5B58\u5230\u8D26\u53F7\u5E76\u5728\u8BBE\u5907\u95F4\u540C\u6B65\u3002Mac \u4E0A\u4E5F\u53EF\u7528 Command \u4EE3\u66FF Ctrl\u3002",
+  "settings.deviceScope": "\u8FD9\u4E9B\u8BBE\u7F6E\u4F5C\u7528\u7684\u8BBE\u5907",
+  "settings.deviceScopeChoose": "\u8FD9\u4E9B\u8BBE\u7F6E\u5C5E\u4E8E\u67D0\u4E00\u53F0\u8BBE\u5907\u3002\u8BF7\u9009\u62E9\u8981\u7BA1\u7406\u7684\u8BBE\u5907\u3002",
+  "settings.deviceScopeNone": "\u8FD8\u6CA1\u6709\u53EF\u7BA1\u7406\u7684\u8BBE\u5907\u3002"
+>>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/chunk-PV62C22N.js
 };
 
 // src/i18n/sharing.zh-CN.ts

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ThreadTurnDto } from '@pockymoe/shared';
-import { aggregatePeerWorkTurn, groupPeerWorkTurns, peerWorkPreview } from './peerWork';
+import { aggregatePeerWorkTurn, groupPeerWorkTurns, peerTurnItems, peerWorkPreview } from './peerWork';
 const task: ThreadTurnDto = {id:'task',error:null,status:'completed',startedAt:'2026-10-12T00:00:00Z',items:[{id:'user',kind:'userMessage',text:'Task'}]};
 const child: ThreadTurnDto = {...task,id:'child',items:[{id:'wake',kind:'userMessage',text:'System envelope',peerWork:{taskTurnId:'task',messages:[{id:'q',kind:'question',subject:'Question?'}]}}]};
 describe('peer work', () => {
@@ -43,5 +43,22 @@ describe('wake prompts', () => {
     expect(wakeAddedPrompts({ items: [envelope, reply, steer] as never }).map(item => item.id)).toEqual(['steer:1']);
     const live = { id: 'steer:2', kind: 'userMessage' as const, origin: 'user', text: 'Still there?' };
     expect(wakeAddedPrompts({ items: [envelope, steer] as never }, [live] as never).map(item => item.id)).toEqual(['steer:1', 'steer:2']);
+  });
+});
+
+describe('a wake row built from loaded detail', () => {
+  const wake = { id: 'w', kind: 'userMessage', text: '[Pockymoe wake: ...]', origin: 'system' } as const;
+  const reply = { id: 'a', kind: 'agentMessage', text: 'working' } as const;
+  it('keeps a steer the summary has and the loaded detail does not yet', () => {
+    const steer = { id: 'steer:1', kind: 'userMessage', text: 'Stop and run 5 only', origin: 'user' } as const;
+    expect(peerTurnItems(undefined, [wake, steer])).toEqual([wake, steer]);
+    expect(peerTurnItems([wake, reply], [wake, steer]).map(item => item.id)).toEqual(['w', 'a', 'steer:1']);
+    const loaded = [wake, reply];
+    expect(peerTurnItems(loaded, [wake])).toBe(loaded);
+  });
+  it('does not repeat a steer once history records it under its own id', () => {
+    const steer = { id: 'steer:1', kind: 'userMessage', text: 'Stop and run 5 only', origin: 'user' } as const;
+    const recorded = { id: 'item-9', kind: 'userMessage', text: 'Stop and run 5 only', origin: 'user' } as const;
+    expect(peerTurnItems([wake, recorded, reply], [wake, steer]).map(item => item.id)).toEqual(['w', 'item-9', 'a']);
   });
 });

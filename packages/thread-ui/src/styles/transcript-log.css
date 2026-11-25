@@ -675,31 +675,34 @@
 }
 
 /* An opened long message keeps "Show less" in reach: it rides just above the
-   composer until the message's end scrolls into view, then rests in place. */
+   composer until the message's end scrolls into view, then rests in place.
+   Its chevron points up, the way the text will fold. */
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true'] {
   position: sticky;
   /* Just above the composer, or above what stands over it at this spot. */
   bottom: calc(var(--sticky-inset, var(--timeline-bottom-inset, 0px)) + 6px);
   z-index: 6;
-  /* A solid pill with an edge at the right of the column: it reads as a control
-     riding over the text, not as a stray word printed on a table row. */
+  /* A small translucent chip where "Show more" was, at the left of the column:
+     the control does not jump sides, and the message's time and copy keep the
+     bottom right corner. It rides over the text without hiding it. */
   display: flex;
-  margin-left: auto;
-  min-height: 26px;
-  padding: 0 10px 0 6px;
-  border: 1px solid var(--theme-border);
+  margin-left: 0;
+  min-height: 24px;
+  padding: 0 9px 0 6px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 70%, transparent);
   border-radius: 999px;
-  background: var(--theme-panel);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
+  background: color-mix(in srgb, var(--theme-bg) 72%, transparent);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  font-size: 11.5px;
   opacity: 1;
 }
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:active,
 .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:focus-visible {
-  background: color-mix(in srgb, var(--theme-panel) 96%, transparent);
+  background: color-mix(in srgb, var(--theme-bg) 92%, transparent);
 }
 @media (hover: hover) {
   .thread-ui-shell .thread-graph-show-more[aria-expanded='true']:hover {
-    background: color-mix(in srgb, var(--theme-panel) 96%, transparent);
+    background: color-mix(in srgb, var(--theme-bg) 92%, transparent);
   }
 }
 

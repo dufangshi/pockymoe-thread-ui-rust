@@ -1,6 +1,6 @@
 import { hasWorkspacePathSyntax } from '../workspacePathLinks';
 import { getLocale, translate, useI18n } from '../../i18n';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ChevronUp } from 'lucide-react';
 import {
   memo,
   createContext,
@@ -339,7 +339,7 @@ export const GraphChatMarkdownAwareBody = memo(
             aria-expanded={expanded}
             className="thread-graph-show-more timeline-meta-text mt-1 inline-flex w-fit items-center gap-1 rounded px-1 text-xs transition"
           >
-            <ChevronRight size={14} aria-hidden="true" className={expanded ? 'rotate-90' : undefined} />
+            {expanded ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronRight size={14} aria-hidden="true" />}
             <span>{expanded ? translate("chat.showLess") : moreLabel(text.length - displayText.length)}</span>
           </button>
         ) : null}
@@ -481,7 +481,7 @@ export const GraphChatUserMessageBody = memo(
         })}
         {isLong ? <button ref={toggleRef} type="button" onClick={event => {event.stopPropagation(); toggle();}} aria-expanded={expanded}
           className="thread-graph-show-more timeline-meta-text mt-1 flex w-fit items-center gap-1 rounded px-1 text-xs transition">
-          <ChevronRight size={14} aria-hidden="true" className={expanded ? 'rotate-90' : undefined} />
+          {expanded ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronRight size={14} aria-hidden="true" />}
           <span>{expanded ? translate('chat.showLess') : moreLabel(narrative.length - previewEnd)}</span>
         </button> : null}
       </div>

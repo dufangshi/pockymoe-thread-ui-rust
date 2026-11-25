@@ -17,7 +17,7 @@ import { useAppShellNav } from '../app-shell/AppShellNavContext';
 import { LongTextDialog } from './LongTextDialog';
 import { PeerWorkGroup } from './timeline/PeerWorkGroup';
 import { markSearchHits } from './timeline/searchHits';
-import { aggregatePeerWorkTurn, groupPeerWorkTurns, isWakeEnvelope, peerWorkForTurn, peerWorkPreview, wakeAddedPrompts } from './timeline/peerWork';
+import { aggregatePeerWorkTurn, groupPeerWorkTurns, isWakeEnvelope, peerTurnItems, peerWorkForTurn, peerWorkPreview, wakeAddedPrompts } from './timeline/peerWork';
 import type { ThreadTimelineAdapter } from '../adapters';
 import { GraphChatCompactMessageItem as CompactMessageItem } from './graph-chat/GraphChatCompactMessageItem';
 import { TurnPromptContext } from './graph-chat/turnPrompts';
@@ -824,7 +824,7 @@ function ThreadTimelineComponent({
   const renderPeerWork = (turn: ThreadTurnDto, omitAgentId?: string) => {
     // Hydrate the wake envelope without freezing live status or billing at
     // the time its details were opened.
-    const peerTurn = { ...turn, items: loadedTurnDetails[turn.id]?.items ?? turn.items };
+    const peerTurn = { ...turn, items: peerTurnItems(loadedTurnDetails[turn.id]?.items, turn.items) };
     const context = peerWorkForTurn(peerTurn)!;
     const expanded = collapsedTurnOverrides[turn.id] === false;
     // What the agent answered after this wake stands outside the wake's fold,

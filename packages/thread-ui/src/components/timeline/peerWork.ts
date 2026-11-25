@@ -15,6 +15,21 @@ export function wakeAddedPrompts(turn: Pick<ThreadTurnDto, 'items'>, liveItems?:
     item.kind === 'userMessage' && !isWakeEnvelope(item) && Boolean(item.text?.trim()));
 }
 
+/** A wake turn's items for its row: the detail loaded for it, plus the reader's
+    messages the summary already has and that detail does not yet (a steer just
+    delivered into the running turn). Without them a folded wake hid a new steer
+    until it was opened, which reloads the detail. */
+export function peerTurnItems(loaded: ThreadHistoryItemDto[] | undefined, summary: ThreadHistoryItemDto[]) {
+  if (!loaded) return summary;
+  const known = new Set(loaded.map(item => item.id));
+  const texts = new Set(loaded.filter(item => item.kind === 'userMessage').map(item => item.text?.trim()));
+  // A delivered steer is drawn as `steer:ID` until history records it under
+  // its own id; the same words in the loaded detail are that record.
+  const missing = summary.filter(item => item.kind === 'userMessage' && !isWakeEnvelope(item)
+    && !known.has(item.id) && !texts.has(item.text?.trim()));
+  return missing.length ? [...loaded, ...missing] : loaded;
+}
+
 export function peerWorkForTurn(turn: Pick<ThreadTurnDto, 'items'>): ThreadPeerWorkDto | null {
   const context = turn.items.find(item => item.kind === 'userMessage' && item.peerWork)?.peerWork;
   return context?.messages.length ? context : null;

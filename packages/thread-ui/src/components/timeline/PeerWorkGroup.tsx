@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import type { ThreadHistoryItemDto, ThreadPeerWorkDto, ThreadTurnDto } from '@pockymoe/shared';
-import { BellRing, ChevronRight, MessageCircle, LoaderCircle } from 'lucide-react';
+import { BellRing, ChevronRight, ChevronUp, MessageCircle, LoaderCircle } from 'lucide-react';
 import { translate, useI18n } from '../../i18n';
 import { ErrorMark } from '../copy/ErrorMark';
 import { plainSearchText } from '../ConversationSearchControls';
@@ -44,7 +44,7 @@ function WakeReply({ reply, scrollRootRef }: { reply: ThreadHistoryItemDto; scro
       </div>
       {clipped || open ? (
         <button type="button" className="thread-graph-show-more timeline-meta-text thread-peer-wake-reply-toggle" aria-expanded={open} onClick={() => setOpen(value => !value)}>
-          <ChevronRight size={14} aria-hidden="true" className={open ? 'rotate-90' : undefined} />
+          {open ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronRight size={14} aria-hidden="true" />}
           <span>{open ? translate('chat.showLess') : translate('chat.showMore')}</span>
         </button>
       ) : null}

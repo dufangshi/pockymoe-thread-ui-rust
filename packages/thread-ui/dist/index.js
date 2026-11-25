@@ -59,7 +59,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-J2AI2BEI.js";
+} from "./chunk-VHHLARH3.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -7255,6 +7255,51 @@ function useSteadyText(text) {
   }, [long, shown, text]);
   return long ? shown : text;
 }
+var MarkdownRenderContext = createContext7({ readOnly: false });
+function MarkdownLink({ href, children: originalChildren, node: _node, ...props }) {
+  const { readOnly, resolveHref, workspaceRootPath, resolveWorkspacePath, onOpenWorkspaceFile } = useContext6(MarkdownRenderContext);
+  const children2 = /* @__PURE__ */ jsx17(MarkdownLinkContext.Provider, { value: true, children: /* @__PURE__ */ jsx17(MarkdownImageLinkContext.Provider, { value: true, children: originalChildren }) });
+  if (href?.startsWith("workspace-auto:")) {
+    let value = "";
+    try {
+      value = decodeURIComponent(href.slice("workspace-auto:".length));
+    } catch {
+    }
+    const target = parseWorkspacePathText(value, workspaceRootPath);
+    return !readOnly && target && resolveWorkspacePath && onOpenWorkspaceFile ? /* @__PURE__ */ jsx17(VerifiedWorkspacePath, { target, resolve: resolveWorkspacePath, onOpen: onOpenWorkspaceFile, children: children2 }) : /* @__PURE__ */ jsx17(Fragment5, { children: children2 });
+  }
+  if (readOnly && (!href || !/^https?:\/\//i.test(href))) return /* @__PURE__ */ jsx17("span", { children: children2 });
+  const workspaceTarget = parseWorkspaceFileHref(href, workspaceRootPath);
+  if (workspaceTarget && onOpenWorkspaceFile) {
+    return /* @__PURE__ */ jsx17(WorkspaceFileLink, { ...workspaceTarget, onOpen: onOpenWorkspaceFile, children: children2 });
+  }
+  const resolvedHref = href ? resolveHref?.(href) ?? href : href;
+  return /* @__PURE__ */ jsx17(
+    "a",
+    {
+      ...props,
+      ...externalLinkProps(resolvedHref),
+      href: resolvedHref,
+      className: "thread-inline-link",
+      children: children2
+    }
+  );
+}
+function MarkdownImage({ src, alt, width, height }) {
+  const { readOnly, resolveHref } = useContext6(MarkdownRenderContext);
+  const resolved = src ? resolveHref?.(src) ?? src : void 0;
+  if (readOnly && !resolved?.startsWith("data:image/") && !/^https?:\/\//i.test(resolved ?? "")) return /* @__PURE__ */ jsx17("span", { children: alt || translate("chat.imageUnavailable") });
+  return resolved ? /* @__PURE__ */ jsx17(ZoomableImage, { src: resolved, alt: alt ?? "", width, height }) : /* @__PURE__ */ jsx17("span", { children: alt || translate("chat.imageUnavailable") });
+}
+var chatMarkdownComponents = {
+  a: MarkdownLink,
+  img: MarkdownImage,
+  code: StableCodeRenderer,
+  pre: PreRenderer,
+  table: ({ node: _node, ...props }) => /* @__PURE__ */ jsx17(MarkdownTable, { ...props }),
+  th: ({ node: _node, ...props }) => /* @__PURE__ */ jsx17(MarkdownCell, { as: "th", ...props }),
+  td: ({ node: _node, ...props }) => /* @__PURE__ */ jsx17(MarkdownCell, { as: "td", ...props })
+};
 var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
   className = "thread-graph-markdown",
   content: latestContent,
@@ -7452,55 +7497,20 @@ var GraphChatMessageContent = memo2(function GraphChatMessageContent2({
     const target = parseWorkspacePathText(inlineDisplayText, workspaceRootPath);
     return !readOnly && !insideMarkdownLink && target && resolveWorkspacePath && onOpenWorkspaceFile ? /* @__PURE__ */ jsx17(VerifiedWorkspacePath, { target, resolve: resolveWorkspacePath, onOpen: onOpenWorkspaceFile, children: inlineCode }) : inlineCode;
   };
-  return /* @__PURE__ */ jsx17("div", { ref: rootRef, "data-markdown-ready": highlighter ? "true" : "false", className: `thread-graph-message-markdown ${className}`, children: /* @__PURE__ */ jsx17(CodeRendererContext.Provider, { value: CodeBlockRenderer, children: /* @__PURE__ */ jsx17(
+  const markdownRender = useMemo2(
+    () => ({ readOnly, resolveHref, workspaceRootPath, resolveWorkspacePath, onOpenWorkspaceFile }),
+    [readOnly, resolveHref, workspaceRootPath, resolveWorkspacePath, onOpenWorkspaceFile]
+  );
+  return /* @__PURE__ */ jsx17("div", { ref: rootRef, "data-markdown-ready": highlighter ? "true" : "false", className: `thread-graph-message-markdown ${className}`, children: /* @__PURE__ */ jsx17(CodeRendererContext.Provider, { value: CodeBlockRenderer, children: /* @__PURE__ */ jsx17(MarkdownRenderContext.Provider, { value: markdownRender, children: /* @__PURE__ */ jsx17(
     ReactMarkdown,
     {
       urlTransform: (url) => !readOnly && url.startsWith("workspace-auto:") ? url : !readOnly && localFileHref(url, typeof window === "undefined" ? void 0 : window.location.origin) ? url : defaultUrlTransform(url),
       remarkPlugins: [remarkGfm, remarkMath, remarkLatex, remarkCjkFriendly, ...!readOnly && resolveWorkspacePath ? [remarkWorkspacePaths] : []],
       rehypePlugins: [...markdownHtmlPlugins, rehypeKatex],
-      components: {
-        a({ href, children: originalChildren, node: _node, ...props }) {
-          const children2 = /* @__PURE__ */ jsx17(MarkdownLinkContext.Provider, { value: true, children: /* @__PURE__ */ jsx17(MarkdownImageLinkContext.Provider, { value: true, children: originalChildren }) });
-          if (href?.startsWith("workspace-auto:")) {
-            let value = "";
-            try {
-              value = decodeURIComponent(href.slice("workspace-auto:".length));
-            } catch {
-            }
-            const target = parseWorkspacePathText(value, workspaceRootPath);
-            return !readOnly && target && resolveWorkspacePath && onOpenWorkspaceFile ? /* @__PURE__ */ jsx17(VerifiedWorkspacePath, { target, resolve: resolveWorkspacePath, onOpen: onOpenWorkspaceFile, children: children2 }) : /* @__PURE__ */ jsx17(Fragment5, { children: children2 });
-          }
-          if (readOnly && (!href || !/^https?:\/\//i.test(href))) return /* @__PURE__ */ jsx17("span", { children: children2 });
-          const workspaceTarget = parseWorkspaceFileHref(href, workspaceRootPath);
-          if (workspaceTarget && onOpenWorkspaceFile) {
-            return /* @__PURE__ */ jsx17(WorkspaceFileLink, { ...workspaceTarget, onOpen: onOpenWorkspaceFile, children: children2 });
-          }
-          const resolvedHref = href ? resolveHref?.(href) ?? href : href;
-          return /* @__PURE__ */ jsx17(
-            "a",
-            {
-              ...props,
-              ...externalLinkProps(resolvedHref),
-              href: resolvedHref,
-              className: "thread-inline-link",
-              children: children2
-            }
-          );
-        },
-        img({ src, alt, width, height }) {
-          const resolved = src ? resolveHref?.(src) ?? src : void 0;
-          if (readOnly && !resolved?.startsWith("data:image/") && !/^https?:\/\//i.test(resolved ?? "")) return /* @__PURE__ */ jsx17("span", { children: alt || translate("chat.imageUnavailable") });
-          return resolved ? /* @__PURE__ */ jsx17(ZoomableImage, { src: resolved, alt: alt ?? "", width, height }) : /* @__PURE__ */ jsx17("span", { children: alt || translate("chat.imageUnavailable") });
-        },
-        code: StableCodeRenderer,
-        pre: PreRenderer,
-        table: ({ node: _node, ...props }) => /* @__PURE__ */ jsx17(MarkdownTable, { ...props }),
-        th: ({ node: _node, ...props }) => /* @__PURE__ */ jsx17(MarkdownCell, { as: "th", ...props }),
-        td: ({ node: _node, ...props }) => /* @__PURE__ */ jsx17(MarkdownCell, { as: "td", ...props })
-      },
+      components: chatMarkdownComponents,
       children: processedContent
     }
-  ) }) });
+  ) }) }) });
 });
 
 // src/components/quotes/SentQuoteMark.tsx

@@ -32,6 +32,16 @@ afterEach(() => {
 });
 
 describe('GraphChatMessageContent', () => {
+  it('keeps an image mounted while the message re-renders, so it does not blink', () => {
+    const first = '![chart](https://example.com/chart.png)\n\nStill';
+    const element = render(<GraphChatMessageContent content={first} resolveHref={href => href} />);
+    const image = element.querySelector('img');
+    expect(image).not.toBeNull();
+    // A streamed word and a new resolver identity are ordinary re-renders.
+    act(() => root!.render(<GraphChatMessageContent content={`${first} writing`} resolveHref={href => href} />));
+    expect(element.querySelector('img')).toBe(image);
+  });
+
   it('reveals code actions only for touch/pen taps and clears them when switching to a mouse', () => {
     const element = render(<GraphChatMessageContent content={'```js\nconst value = 1;\n```'} />);
     const block = element.querySelector('.thread-graph-code-block')!;

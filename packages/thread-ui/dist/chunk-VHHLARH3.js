@@ -532,7 +532,7 @@ function confirmAsync({ title, description, confirmLabel, cancelLabel, tone, sig
 }
 
 // src/components/RecoverableImage.tsx
-import { createContext, useContext, useEffect as useEffect4, useRef as useRef6, useState as useState4 } from "react";
+import { createContext, useContext, useEffect as useEffect4, useLayoutEffect as useLayoutEffect2, useRef as useRef6, useState as useState4 } from "react";
 import { ImageOff } from "lucide-react";
 import { jsx as jsx7, jsxs as jsxs6 } from "react/jsx-runtime";
 import { createElement } from "react";
@@ -630,6 +630,13 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) 
       cancelled = true;
     };
   }, [state.phase, state.url]);
+  const imageRef = useRef6(null);
+  useLayoutEffect2(() => {
+    const image = imageRef.current;
+    if (state.phase === "loading" && image?.complete && image.naturalWidth > 0) {
+      setState((current) => current.phase === "loading" ? { ...current, phase: "ready" } : current);
+    }
+  }, [state.phase, state.url, state.generation]);
   const unavailable = state.phase === "failed";
   return /* @__PURE__ */ jsxs6("span", { className: "recoverable-image", "data-image-state": state.phase, children: [
     renderImage(unavailable || !state.url ? /* @__PURE__ */ jsxs6("span", { className: `image-unavailable${labelledPlaceholder ? " is-labelled" : ""}`, role: "img", "aria-label": props.alt || translate("chat.imageUnavailable"), children: [
@@ -640,6 +647,7 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = (image) 
       {
         ...props,
         key: state.generation,
+        ref: imageRef,
         src: state.url,
         style: { ...props.style, visibility: state.phase === "ready" ? props.style?.visibility : "hidden" },
         onLoad: () => setState((current) => ({ ...current, phase: "ready" })),
@@ -1169,10 +1177,10 @@ function RenameDialog({
 }
 
 // src/components/useTabScrollEdges.ts
-import { useLayoutEffect as useLayoutEffect2, useState as useState5 } from "react";
+import { useLayoutEffect as useLayoutEffect3, useState as useState5 } from "react";
 function useTabScrollEdges(ref) {
   const [edges, setEdges] = useState5({ start: false, end: false });
-  useLayoutEffect2(() => {
+  useLayoutEffect3(() => {
     const element = ref.current;
     if (!element) return;
     const update = () => {

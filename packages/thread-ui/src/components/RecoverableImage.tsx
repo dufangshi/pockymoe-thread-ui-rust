@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState, type ImgHTMLAttributes, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type ImgHTMLAttributes, type ReactNode } from 'react';
 import { ImageOff } from 'lucide-react';
 import { translate, useI18n } from '../i18n';
 import { ErrorMark } from './copy/ErrorMark';
@@ -110,6 +110,15 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = image =>
     }).catch(() => { /* Diagnosis cannot prevent manual recovery. */ });
     return () => { cancelled = true; };
   }, [state.phase, state.url]);
+  // A remounted image whose bytes are already decoded (browser cache) shows in
+  // the same frame; waiting for onLoad hid it for a frame, a visible blink.
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  useLayoutEffect(() => {
+    const image = imageRef.current;
+    if (state.phase === 'loading' && image?.complete && image.naturalWidth > 0) {
+      setState(current => current.phase === 'loading' ? { ...current, phase: 'ready' } : current);
+    }
+  }, [state.phase, state.url, state.generation]);
   const unavailable = state.phase === 'failed';
   return <span className="recoverable-image" data-image-state={state.phase}>
     {renderImage(unavailable || !state.url
@@ -119,7 +128,7 @@ function ImageAttempt({ src, resolveSrc, resolveFallback, renderImage = image =>
           {props.alt ? <span className="image-unavailable-caption" aria-hidden="true">{translate('chat.imageAltUnavailable', { alt: props.alt })}</span>
             : labelledPlaceholder ? <span className="image-unavailable-caption" aria-hidden="true">{translate('chat.imageUnavailable')}</span> : null}
         </span>
-      : <img {...props} key={state.generation} src={state.url}
+      : <img {...props} key={state.generation} ref={imageRef} src={state.url}
           style={{ ...props.style, visibility: state.phase === 'ready' ? props.style?.visibility : 'hidden' }}
           onLoad={() => setState(current => ({ ...current, phase: 'ready' }))}
           onError={() => setState(current => current.phase === 'waiting' || current.phase === 'failed' ? current : { ...current, phase: 'waiting' })} />)}

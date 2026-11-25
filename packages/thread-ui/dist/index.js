@@ -59,7 +59,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-VHHLARH3.js";
+} from "./chunk-SHS2CKRU.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -69,6 +69,13 @@ import {
   useDocumentThemeRevision,
   useThemeFeature
 } from "./chunk-JIPNJR2N.js";
+import {
+  formatShortcut,
+  isMacPlatform,
+  matchesModKey,
+  matchesSendModKey,
+  setHostPlatform
+} from "./chunk-5ZKJOMAI.js";
 import {
   DEFAULT_LOCALE,
   I18nProvider,
@@ -89,7 +96,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-Z5L7CHPD.js";
+} from "./chunk-R2LITDNV.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -4205,7 +4212,7 @@ function derivePromptKeyDownAction({
   busy,
   disabled
 }) {
-  const modifier = metaKey || ctrlKey;
+  const modifier = matchesSendModKey({ metaKey, ctrlKey });
   const steer = modifier && (sendShortcut === "enter" ? !shiftKey : shiftKey);
   const send = sendShortcut === "enter" ? !modifier && !shiftKey : modifier && !shiftKey;
   const isSubmitShortcut = key === "Enter" && !altKey && (send || steer);
@@ -4485,7 +4492,7 @@ function buildComposerControlState({
   turnRunning = false
 }) {
   const promptPlaceholder = goalComposeMode ? translate("chat.describeTheGoalTheBackendShouldContinue") : disabledPlaceholder ?? (isShellView ? translate("chat.sendShellInputToTheAttachedTerminal") : turnRunning ? translate("chat.queueNextPrompt") : translate("chat.typeMessage"));
-  const promptPlaceholderHint = goalComposeMode || disabledPlaceholder || isShellView ? "" : turnRunning ? translate(sendShortcut === "enter" ? "chat.enterToQueueCtrlEnterToSteer" : "chat.ctrlEnterToQueueCtrlShiftEnterToSteer") : translate(sendShortcut === "enter" ? "chat.enterToSend" : "chat.ctrlEnterToSend");
+  const promptPlaceholderHint = goalComposeMode || disabledPlaceholder || isShellView ? "" : turnRunning ? sendShortcut === "enter" ? translate("chat.enterToQueueCtrlEnterToSteer", { steer: formatShortcut("Mod+Enter") }) : translate("chat.ctrlEnterToQueueCtrlShiftEnterToSteer", { queue: formatShortcut("Mod+Enter"), steer: formatShortcut("Mod+Shift+Enter") }) : sendShortcut === "enter" ? translate("chat.enterToSend") : translate("chat.ctrlEnterToSend", { shortcut: formatShortcut("Mod+Enter") });
   const sendButtonLabel = goalComposeMode ? goalBusy ? translate("chat.setting") : translate("chat.setGoal") : !threadConnected && busy ? translate("chat.connecting") : !threadConnected ? translate("chat.send") : busy && !isShellView ? translate("chat.sending") : translate("chat.send");
   const sendButtonClassName = !threadConnected ? "ui-action-danger" : goalComposeMode ? "ui-action-info" : "ui-action-primary";
   const modelControlsDisabled = settingsBusy;
@@ -17481,7 +17488,7 @@ function MatterWorkbench({
   useEffect35(() => {
     if (navigationFrame) return;
     const find = (event) => {
-      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || event.key.toLowerCase() !== "f") return;
+      if (!matchesModKey(event) || event.altKey || event.shiftKey || event.key.toLowerCase() !== "f") return;
       const target = event.target instanceof Element ? event.target : null;
       if (target?.closest(".xterm, .monaco-editor, .cm-editor, [data-native-find]")) return;
       const { open, available, searchOpen } = searchKey.current;
@@ -17948,7 +17955,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
               disabled: !o.terminalEnabled,
               "aria-label": translate("workbench.terminal"),
               "aria-pressed": o.activeView === "shell",
-              title: `${translate("workbench.terminal")} (Ctrl+\`)`,
+              title: `${translate("workbench.terminal")} (${formatShortcut("Ctrl+`")})`,
               onClick: () => o.onViewChange("shell"),
               children: /* @__PURE__ */ jsx55(Terminal2, { "data-icon": "terminal" })
             }
@@ -18224,7 +18231,7 @@ ${thread.subtitle} \xB7 ${activity.label}`,
                 {
                   className: "matter-search-trigger",
                   "aria-label": translate("workbench.searchConversation"),
-                  title: `${translate("workbench.searchConversation")} (Ctrl+F)`,
+                  title: `${translate("workbench.searchConversation")} (${formatShortcut("Mod+F")})`,
                   disabled: o.emptyWorkspace,
                   onClick: o.onSearch,
                   children: [
@@ -28545,7 +28552,6 @@ async function activateTerminalLink(_event, uri) {
 
 // src/components/shell/ShellPane.tsx
 import { jsx as jsx87, jsxs as jsxs76 } from "react/jsx-runtime";
-var MAC = typeof navigator !== "undefined" && /Mac|iP(?:hone|ad|od)/.test(navigator.platform);
 var LONG_PRESS_MS = 550;
 var SHELL_RESIZE_SETTLE_MS = 160;
 function refValue2(ref) {
@@ -28646,7 +28652,7 @@ var ShellPane = forwardRef(
       const text = await readClipboardText();
       if (text === null) {
         if (isMobileShellRef.current || window.matchMedia?.("(pointer: coarse)").matches) setPasteField(true);
-        else onFeedbackRef.current?.("failed", translate("files.terminalClipboardBlocked"));
+        else onFeedbackRef.current?.("failed", translate("files.terminalClipboardBlocked", { shortcut: formatShortcut("Mod+V") }));
         return;
       }
       pasteText(text);
@@ -28889,7 +28895,7 @@ var ShellPane = forwardRef(
           if (event.type !== "keydown") {
             return true;
           }
-          if (!MAC && event.ctrlKey && !event.altKey && !event.metaKey) {
+          if (!isMacPlatform() && event.ctrlKey && !event.altKey && !event.metaKey) {
             const key = event.key.toLowerCase();
             if (key === "c" && terminal.hasSelection()) {
               event.preventDefault();
@@ -29490,6 +29496,13 @@ function ShellTouchControls({ enabled, ctrl, onCtrl, onInput, onFocus, onPaste, 
     onPaste && /* @__PURE__ */ jsx88("button", { type: "button", className: "shell-touch-clipboard", "aria-label": translate("files.terminalPaste"), title: translate("files.terminalPaste"), disabled: !enabled, onClick: onPaste, children: /* @__PURE__ */ jsx88(ClipboardPaste2, { size: 17 }) }),
     onSelect && /* @__PURE__ */ jsx88("button", { type: "button", "aria-label": translate("files.terminalSelectText"), title: translate("files.terminalSelectText"), onMouseDown: (e) => e.preventDefault(), onClick: onSelect, children: /* @__PURE__ */ jsx88(TextSelect2, { size: 17 }) })
   ] });
+}
+
+// src/components/shell/splitPaneKey.ts
+function isSplitPaneKey(event) {
+  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return false;
+  if (isMacPlatform()) return event.altKey && !event.shiftKey && matchesModKey(event);
+  return event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
 }
 
 // src/components/shell/TerminalTabs.tsx
@@ -30375,8 +30388,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
               className: "terminal-groups",
               "data-orientation": vertical ? "vertical" : "horizontal",
               onKeyDownCapture: (event) => {
-                if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-                if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+                if (!isSplitPaneKey(event)) return;
                 const next = adjacentTerminal(layout, event.key === "ArrowLeft" ? -1 : 1);
                 if (!next) return;
                 event.preventDefault();
@@ -37404,20 +37416,25 @@ export {
   formatNumber,
   formatReasoningEffortLabel,
   formatShortTimestamp,
+  formatShortcut,
   getDirtyWorkspaceDocumentCount,
   getLocale,
   hasLikelyMarkdownSyntax,
   historyItemAccentClassName,
   historyItemLabel,
   initializeI18n,
+  isMacPlatform,
   isStaleBuildError,
   isThemeFeature,
+  matchesModKey,
+  matchesSendModKey,
   mergePluginState,
   navigationStatusLabel,
   normalizeLocale,
   openFilesPatch,
   prepareWorkspaceDocumentUnloadApproval,
   revokeWorkspaceDocumentUnloadApproval,
+  setHostPlatform,
   setLocale,
   splitShown,
   t,

@@ -223,6 +223,8 @@ export function WorkspaceExplorerTree({
         key: event.key,
         metaKey: event.metaKey,
         ctrlKey: event.ctrlKey,
+        altKey: event.altKey,
+        shiftKey: event.shiftKey,
         focusedId,
         rows,
       });
@@ -279,6 +281,8 @@ export function WorkspaceExplorerTree({
       ref={scrollerRef}
       role="tree"
       aria-label={translate("files.workspaceFiles")}
+      // Mod+F here opens the tree's filter, not the conversation search.
+      data-native-find
       className="thread-graph-workspace-tree-scroll min-h-0 flex-1 overflow-y-auto py-1 outline-none"
       onScroll={(event) => {
         if (event.currentTarget.clientHeight > 0) {

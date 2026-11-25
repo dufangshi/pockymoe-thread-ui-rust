@@ -30,6 +30,7 @@ export { PathChip } from './components/copy/PathChip';
 export { MiddleName } from './components/copy/MiddleName';
 export { ErrorMark } from './components/copy/ErrorMark';
 export { Select, type SelectProps, type SelectOption } from './components/Select';
+export { formatShortcut, isMacPlatform, matchesModKey, matchesSendModKey, setHostPlatform, type ShortcutModifiers } from './components/shortcuts';
 export { useMenuKeyboard } from './components/menu/useMenuKeyboard';
 export { useModalFocus } from './components/menu/useModalFocus';
 export { useLongPress } from './components/menu/useLongPress';

@@ -1,4 +1,5 @@
 import { translate, useI18n } from '../../i18n';
+import { formatShortcut } from '../shortcuts';
 import type {
   AgentHookDto,
   AgentHookEventNameDto,
@@ -68,8 +69,10 @@ export function buildComposerControlState({
   const promptPlaceholderHint = goalComposeMode || disabledPlaceholder || isShellView
     ? ''
     : turnRunning
-      ? translate(sendShortcut === 'enter' ? "chat.enterToQueueCtrlEnterToSteer" : "chat.ctrlEnterToQueueCtrlShiftEnterToSteer")
-      : translate(sendShortcut === 'enter' ? "chat.enterToSend" : "chat.ctrlEnterToSend");
+      ? sendShortcut === 'enter'
+        ? translate("chat.enterToQueueCtrlEnterToSteer", { steer: formatShortcut('Mod+Enter') })
+        : translate("chat.ctrlEnterToQueueCtrlShiftEnterToSteer", { queue: formatShortcut('Mod+Enter'), steer: formatShortcut('Mod+Shift+Enter') })
+      : sendShortcut === 'enter' ? translate("chat.enterToSend") : translate("chat.ctrlEnterToSend", { shortcut: formatShortcut('Mod+Enter') });
   const sendButtonLabel = goalComposeMode
     ? goalBusy
       ? translate("chat.setting")

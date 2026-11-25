@@ -61,9 +61,8 @@ import { installViewportLinkTaps } from './viewportLinkTaps';
 import { terminalPreferences, useTerminalPreferences } from './terminalPreferences';
 import { activateTerminalLink } from './terminalLinks';
 import { copyText, isRiskyPaste, pastedLineCount, readClipboardText } from './terminalClipboard';
+import { formatShortcut, isMacPlatform } from '../shortcuts';
 
-/** Mac keeps ⌘C / ⌘V for the clipboard and Ctrl for the terminal. */
-const MAC = typeof navigator !== 'undefined' && /Mac|iP(?:hone|ad|od)/.test(navigator.platform);
 /** A press this long on a touch screen opens text selection. */
 const LONG_PRESS_MS = 550;
 
@@ -231,7 +230,7 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
       if (text === null) {
         // Plain http or a denied permission: a field the system paste can reach.
         if (isMobileShellRef.current || window.matchMedia?.('(pointer: coarse)').matches) setPasteField(true);
-        else onFeedbackRef.current?.('failed', translate('files.terminalClipboardBlocked'));
+        else onFeedbackRef.current?.('failed', translate('files.terminalClipboardBlocked', { shortcut: formatShortcut('Mod+V') }));
         return;
       }
       pasteText(text);
@@ -526,7 +525,8 @@ export const ShellPane = forwardRef<ShellPaneHandle, ShellPaneProps>(
             return true;
           }
 
-          if (!MAC && event.ctrlKey && !event.altKey && !event.metaKey) {
+          // A Mac keeps ⌘C / ⌘V for the clipboard and Ctrl for the terminal.
+          if (!isMacPlatform() && event.ctrlKey && !event.altKey && !event.metaKey) {
             const key = event.key.toLowerCase();
             // Ctrl+C copies a selection and interrupts only without one.
             if (key === 'c' && terminal.hasSelection()) {

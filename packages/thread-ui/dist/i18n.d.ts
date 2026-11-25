@@ -367,7 +367,7 @@ declare const en: {
     readonly "tour.threads.search.title": "Find earlier messages";
     readonly "tour.threads.search.body": "Search this conversation's history; scroll up for the full transcript.";
     readonly "tour.terminal.open.title": "Open the terminal";
-    readonly "tour.terminal.open.body": "The bottom panel runs shells in this thread's workspace. Shortcut: Ctrl+`.";
+    readonly "tour.terminal.open.body": "The bottom panel runs shells in this thread's workspace. Shortcut: {{terminalShortcut}}.";
     readonly "tour.terminal.openMobile.body": "Opens the terminal for this thread's workspace. On a phone it takes the lower part of the screen.";
     readonly "tour.terminal.needsPanel": "Open the terminal with the highlighted button.";
     readonly "tour.terminal.type.title": "Type a command";
@@ -1758,11 +1758,13 @@ declare const en: {
     readonly 'settings.upstreamsHarness': "Harness";
     readonly 'settings.savedToAccount': "Saved to your account and applied across devices and browsers.";
     readonly 'settings.messageShortcuts': "Message shortcuts";
-    readonly 'settings.savedToYourAccountAndAppliedAcross': "Saved to your account and applied across devices and browsers. On Mac, Command also works in place of Ctrl.";
-    readonly 'settings.ctrlEnterToSend': "Ctrl+Enter to send";
-    readonly 'settings.enterInsertsANewLineCtrlShift': "Enter inserts a new line. Ctrl+Shift+Enter sends directly as steer.";
+    readonly 'settings.savedToYourAccountAndAppliedAcross': "Saved to your account and applied across devices and browsers. {{keys}}";
+    readonly 'settings.ctrlEnterToSend': "{{shortcut}} to send";
+    readonly 'settings.sendKeysOnMac': "Ctrl works in place of ⌘ too.";
+    readonly 'settings.sendKeysElsewhere': "On a Mac, ⌘ takes the place of Ctrl.";
+    readonly 'settings.enterInsertsANewLineCtrlShift': "Enter inserts a new line. {{steer}} sends directly as steer.";
     readonly 'settings.enterToSend': "Enter to send";
-    readonly 'settings.shiftEnterInsertsANewLineCtrl': "Shift+Enter inserts a new line. Ctrl+Enter sends directly as steer.";
+    readonly 'settings.shiftEnterInsertsANewLineCtrl': "{{newline}} inserts a new line. {{steer}} sends directly as steer.";
     readonly 'settings.saving': "Saving...";
     readonly 'settings.loading': "Loading...";
     readonly 'settings.signInThroughRelayToChangeYour': "Sign in through Relay to change your account shortcuts.";
@@ -2115,7 +2117,7 @@ declare const en: {
     readonly "settings.runManual": "Manual";
     readonly "settings.runCompleted": "Done";
     readonly "settings.runFailed": "Failed";
-    readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.";
+    readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}";
     readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
     readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
     readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -2758,7 +2760,7 @@ declare const en: {
     readonly "files.terminalPasteAnyway": "Paste";
     readonly "files.terminalPasteField": "Long-press here to paste; edit before sending if needed";
     readonly "files.terminalPasteSend": "Send to terminal";
-    readonly "files.terminalClipboardBlocked": "This page cannot read the clipboard. Use Ctrl+V to paste.";
+    readonly "files.terminalClipboardBlocked": "This page cannot read the clipboard. Use {{shortcut}} to paste.";
     readonly "files.terminalSettingsDescription": "Copy and paste in the terminal. Kept in this browser.";
     readonly "files.terminalCopyOnSelect": "Copy on select";
     readonly "files.terminalCopyOnSelectHint": "Text you select with the mouse is copied right away.";
@@ -2769,7 +2771,8 @@ declare const en: {
     readonly "files.terminalRightClickCopyPaste": "Copy the selection, otherwise paste";
     readonly "files.terminalPasteWarning": "Confirm multi-line pastes";
     readonly "files.terminalPasteWarningHint": "Only when the shell would run the lines right away.";
-    readonly "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a Mac, ⌘C and ⌘V copy and paste and Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select.";
+    readonly "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a phone, long-press the terminal to select text; the key bar has Paste and Select.";
+    readonly "files.terminalKeysNoteMac": "⌘C and ⌘V copy and paste; Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select.";
     readonly "files.askAttachments": {
         readonly one: "{{count}} attached file goes with it";
         readonly other: "{{count}} attached files go with it";
@@ -3458,7 +3461,7 @@ declare const en: {
     readonly "chat.steerNow": "Steer";
     readonly "chat.typeToSend": "Type a message first";
     readonly "chat.typeMessage": "Message";
-    readonly "chat.ctrlEnterToSend": " · Ctrl+Enter to send";
+    readonly "chat.ctrlEnterToSend": " · {{shortcut}} to send";
     readonly "chat.enterToSend": " · Enter to send";
     readonly "chat.moreLines": "+{{value1}} lines";
     readonly "chat.planModeOn": "Plan mode";
@@ -4109,8 +4112,8 @@ declare const en: {
     readonly "chat.effortLevel.max": "max";
     readonly "chat.effortLevel.ultra": "ultra";
     readonly "chat.queueNextPrompt": "Queue the next prompt";
-    readonly "chat.ctrlEnterToQueueCtrlShiftEnterToSteer": ", Ctrl+Enter to queue · Ctrl+Shift+Enter to steer";
-    readonly "chat.enterToQueueCtrlEnterToSteer": ", Enter to queue · Ctrl+Enter to steer";
+    readonly "chat.ctrlEnterToQueueCtrlShiftEnterToSteer": ", {{queue}} to queue · {{steer}} to steer";
+    readonly "chat.enterToQueueCtrlEnterToSteer": ", Enter to queue · {{steer}} to steer";
     readonly "chat.promptNotSent": "Not sent; the draft is kept";
     readonly "chat.dropToAttach": "Drop to attach";
     readonly "chat.queuedCount": {
@@ -5860,7 +5863,7 @@ declare const zhCN: {
     "tour.threads.search.title": "查找历史消息";
     "tour.threads.search.body": "在当前对话的历史中搜索，向上滚动查看完整记录。";
     "tour.terminal.open.title": "打开终端";
-    "tour.terminal.open.body": "底部面板在当前对话的工作区里运行 Shell。快捷键 Ctrl+`。";
+    "tour.terminal.open.body": "底部面板在当前对话的工作区里运行 Shell。快捷键 {{terminalShortcut}}。";
     "tour.terminal.openMobile.body": "打开当前对话工作区的终端；手机上它占据屏幕下半部分。";
     "tour.terminal.needsPanel": "先用高亮的按钮打开终端。";
     "tour.terminal.type.title": "直接输入命令";
@@ -7251,11 +7254,13 @@ declare const zhCN: {
     'settings.upstreamsHarness': "Harness";
     'settings.savedToAccount': "保存到账号，在设备和浏览器间同步。";
     'settings.messageShortcuts': "消息快捷键";
-    'settings.savedToYourAccountAndAppliedAcross': "保存到账号并在设备和浏览器间同步。Mac 上也可用 Command 代替 Ctrl。";
-    'settings.ctrlEnterToSend': "Ctrl+Enter 发送";
-    'settings.enterInsertsANewLineCtrlShift': "Enter 换行。Ctrl+Shift+Enter 立即插话。";
+    'settings.savedToYourAccountAndAppliedAcross': "保存到账号并在设备和浏览器间同步。{{keys}}";
+    'settings.ctrlEnterToSend': "{{shortcut}} 发送";
+    'settings.sendKeysOnMac': "也可用 Ctrl 代替 ⌘。";
+    'settings.sendKeysElsewhere': "Mac 上用 ⌘ 代替 Ctrl。";
+    'settings.enterInsertsANewLineCtrlShift': "Enter 换行。{{steer}} 立即插话。";
     'settings.enterToSend': "Enter 发送";
-    'settings.shiftEnterInsertsANewLineCtrl': "Shift+Enter 换行。Ctrl+Enter 立即插话。";
+    'settings.shiftEnterInsertsANewLineCtrl': "{{newline}} 换行。{{steer}} 立即插话。";
     'settings.saving': "正在保存…";
     'settings.loading': "正在加载…";
     'settings.signInThroughRelayToChangeYour': "通过 Relay 登录后可修改账号快捷键。";
@@ -7608,7 +7613,7 @@ declare const zhCN: {
     "settings.runManual": "手动";
     "settings.runCompleted": "完成";
     "settings.runFailed": "失败";
-    "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。Mac 上也可用 Command 代替 Ctrl。";
+    "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。{{keys}}";
     "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
     "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
     "files.pluginUnsupportedPlatform": "此平台不支持终端。";
@@ -8251,7 +8256,7 @@ declare const zhCN: {
     "files.terminalPasteAnyway": "粘贴";
     "files.terminalPasteField": "长按这里粘贴，发送前可以先修改";
     "files.terminalPasteSend": "发送到终端";
-    "files.terminalClipboardBlocked": "这个页面无法读取剪贴板，请用 Ctrl+V 粘贴。";
+    "files.terminalClipboardBlocked": "这个页面无法读取剪贴板，请用 {{shortcut}} 粘贴。";
     "files.terminalSettingsDescription": "终端里的复制和粘贴，只对这个浏览器生效。";
     "files.terminalCopyOnSelect": "选中即复制";
     "files.terminalCopyOnSelectHint": "用鼠标选中的文字会立刻复制。";
@@ -8262,7 +8267,8 @@ declare const zhCN: {
     "files.terminalRightClickCopyPaste": "有选中就复制，否则粘贴";
     "files.terminalPasteWarning": "粘贴多行前确认";
     "files.terminalPasteWarningHint": "只在 shell 会立刻逐行执行时提示。";
-    "files.terminalKeysNote": "Ctrl+C：有选中时复制，没有时中断；Ctrl+Shift+V 始终粘贴。Mac 上用 ⌘C / ⌘V 复制粘贴，Ctrl 留给终端。手机上长按终端选择文字，按键条里有粘贴和选择。";
+    "files.terminalKeysNote": "Ctrl+C：有选中时复制，没有时中断；Ctrl+Shift+V 始终粘贴。手机上长按终端选择文字，按键条里有粘贴和选择。";
+    "files.terminalKeysNoteMac": "用 ⌘C / ⌘V 复制粘贴，Ctrl 留给终端。手机上长按终端选择文字，按键条里有粘贴和选择。";
     "files.askAttachments": {
         readonly one: "将一并发送 {{count}} 个附件";
         readonly other: "将一并发送 {{count}} 个附件";
@@ -8951,7 +8957,7 @@ declare const zhCN: {
     "chat.steerNow": "插话";
     "chat.typeToSend": "先输入消息";
     "chat.typeMessage": "输入消息";
-    "chat.ctrlEnterToSend": "，Ctrl+Enter 发送";
+    "chat.ctrlEnterToSend": "，{{shortcut}} 发送";
     "chat.enterToSend": "，Enter 发送";
     "chat.moreLines": "+{{value1}} 行";
     "chat.planModeOn": "计划模式";
@@ -9602,8 +9608,8 @@ declare const zhCN: {
     "chat.effortLevel.max": "最高";
     "chat.effortLevel.ultra": "极高";
     "chat.queueNextPrompt": "排队下一条";
-    "chat.ctrlEnterToQueueCtrlShiftEnterToSteer": "，Ctrl+Enter 排队 · Ctrl+Shift+Enter 插话";
-    "chat.enterToQueueCtrlEnterToSteer": "，Enter 排队 · Ctrl+Enter 插话";
+    "chat.ctrlEnterToQueueCtrlShiftEnterToSteer": "，{{queue}} 排队 · {{steer}} 插话";
+    "chat.enterToQueueCtrlEnterToSteer": "，Enter 排队 · {{steer}} 插话";
     "chat.promptNotSent": "没有发出，草稿还在";
     "chat.dropToAttach": "松开以添加文件";
     "chat.queuedCount": {
@@ -11375,7 +11381,7 @@ declare const resources: {
         readonly "tour.threads.search.title": "Find earlier messages";
         readonly "tour.threads.search.body": "Search this conversation's history; scroll up for the full transcript.";
         readonly "tour.terminal.open.title": "Open the terminal";
-        readonly "tour.terminal.open.body": "The bottom panel runs shells in this thread's workspace. Shortcut: Ctrl+`.";
+        readonly "tour.terminal.open.body": "The bottom panel runs shells in this thread's workspace. Shortcut: {{terminalShortcut}}.";
         readonly "tour.terminal.openMobile.body": "Opens the terminal for this thread's workspace. On a phone it takes the lower part of the screen.";
         readonly "tour.terminal.needsPanel": "Open the terminal with the highlighted button.";
         readonly "tour.terminal.type.title": "Type a command";
@@ -12766,11 +12772,13 @@ declare const resources: {
         readonly 'settings.upstreamsHarness': "Harness";
         readonly 'settings.savedToAccount': "Saved to your account and applied across devices and browsers.";
         readonly 'settings.messageShortcuts': "Message shortcuts";
-        readonly 'settings.savedToYourAccountAndAppliedAcross': "Saved to your account and applied across devices and browsers. On Mac, Command also works in place of Ctrl.";
-        readonly 'settings.ctrlEnterToSend': "Ctrl+Enter to send";
-        readonly 'settings.enterInsertsANewLineCtrlShift': "Enter inserts a new line. Ctrl+Shift+Enter sends directly as steer.";
+        readonly 'settings.savedToYourAccountAndAppliedAcross': "Saved to your account and applied across devices and browsers. {{keys}}";
+        readonly 'settings.ctrlEnterToSend': "{{shortcut}} to send";
+        readonly 'settings.sendKeysOnMac': "Ctrl works in place of ⌘ too.";
+        readonly 'settings.sendKeysElsewhere': "On a Mac, ⌘ takes the place of Ctrl.";
+        readonly 'settings.enterInsertsANewLineCtrlShift': "Enter inserts a new line. {{steer}} sends directly as steer.";
         readonly 'settings.enterToSend': "Enter to send";
-        readonly 'settings.shiftEnterInsertsANewLineCtrl': "Shift+Enter inserts a new line. Ctrl+Enter sends directly as steer.";
+        readonly 'settings.shiftEnterInsertsANewLineCtrl': "{{newline}} inserts a new line. {{steer}} sends directly as steer.";
         readonly 'settings.saving': "Saving...";
         readonly 'settings.loading': "Loading...";
         readonly 'settings.signInThroughRelayToChangeYour': "Sign in through Relay to change your account shortcuts.";
@@ -13123,7 +13131,7 @@ declare const resources: {
         readonly "settings.runManual": "Manual";
         readonly "settings.runCompleted": "Done";
         readonly "settings.runFailed": "Failed";
-        readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.";
+        readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}";
         readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
         readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
         readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -13766,7 +13774,7 @@ declare const resources: {
         readonly "files.terminalPasteAnyway": "Paste";
         readonly "files.terminalPasteField": "Long-press here to paste; edit before sending if needed";
         readonly "files.terminalPasteSend": "Send to terminal";
-        readonly "files.terminalClipboardBlocked": "This page cannot read the clipboard. Use Ctrl+V to paste.";
+        readonly "files.terminalClipboardBlocked": "This page cannot read the clipboard. Use {{shortcut}} to paste.";
         readonly "files.terminalSettingsDescription": "Copy and paste in the terminal. Kept in this browser.";
         readonly "files.terminalCopyOnSelect": "Copy on select";
         readonly "files.terminalCopyOnSelectHint": "Text you select with the mouse is copied right away.";
@@ -13777,7 +13785,8 @@ declare const resources: {
         readonly "files.terminalRightClickCopyPaste": "Copy the selection, otherwise paste";
         readonly "files.terminalPasteWarning": "Confirm multi-line pastes";
         readonly "files.terminalPasteWarningHint": "Only when the shell would run the lines right away.";
-        readonly "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a Mac, ⌘C and ⌘V copy and paste and Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select.";
+        readonly "files.terminalKeysNote": "Ctrl+C copies a selection and interrupts without one; Ctrl+Shift+V always pastes. On a phone, long-press the terminal to select text; the key bar has Paste and Select.";
+        readonly "files.terminalKeysNoteMac": "⌘C and ⌘V copy and paste; Ctrl stays with the terminal. On a phone, long-press the terminal to select text; the key bar has Paste and Select.";
         readonly "files.askAttachments": {
             readonly one: "{{count}} attached file goes with it";
             readonly other: "{{count}} attached files go with it";
@@ -14466,7 +14475,7 @@ declare const resources: {
         readonly "chat.steerNow": "Steer";
         readonly "chat.typeToSend": "Type a message first";
         readonly "chat.typeMessage": "Message";
-        readonly "chat.ctrlEnterToSend": " · Ctrl+Enter to send";
+        readonly "chat.ctrlEnterToSend": " · {{shortcut}} to send";
         readonly "chat.enterToSend": " · Enter to send";
         readonly "chat.moreLines": "+{{value1}} lines";
         readonly "chat.planModeOn": "Plan mode";
@@ -15117,8 +15126,8 @@ declare const resources: {
         readonly "chat.effortLevel.max": "max";
         readonly "chat.effortLevel.ultra": "ultra";
         readonly "chat.queueNextPrompt": "Queue the next prompt";
-        readonly "chat.ctrlEnterToQueueCtrlShiftEnterToSteer": ", Ctrl+Enter to queue · Ctrl+Shift+Enter to steer";
-        readonly "chat.enterToQueueCtrlEnterToSteer": ", Enter to queue · Ctrl+Enter to steer";
+        readonly "chat.ctrlEnterToQueueCtrlShiftEnterToSteer": ", {{queue}} to queue · {{steer}} to steer";
+        readonly "chat.enterToQueueCtrlEnterToSteer": ", Enter to queue · {{steer}} to steer";
         readonly "chat.promptNotSent": "Not sent; the draft is kept";
         readonly "chat.dropToAttach": "Drop to attach";
         readonly "chat.queuedCount": {
@@ -16867,7 +16876,7 @@ declare const resources: {
         "tour.threads.search.title": "查找历史消息";
         "tour.threads.search.body": "在当前对话的历史中搜索，向上滚动查看完整记录。";
         "tour.terminal.open.title": "打开终端";
-        "tour.terminal.open.body": "底部面板在当前对话的工作区里运行 Shell。快捷键 Ctrl+`。";
+        "tour.terminal.open.body": "底部面板在当前对话的工作区里运行 Shell。快捷键 {{terminalShortcut}}。";
         "tour.terminal.openMobile.body": "打开当前对话工作区的终端；手机上它占据屏幕下半部分。";
         "tour.terminal.needsPanel": "先用高亮的按钮打开终端。";
         "tour.terminal.type.title": "直接输入命令";
@@ -18258,11 +18267,13 @@ declare const resources: {
         'settings.upstreamsHarness': "Harness";
         'settings.savedToAccount': "保存到账号，在设备和浏览器间同步。";
         'settings.messageShortcuts': "消息快捷键";
-        'settings.savedToYourAccountAndAppliedAcross': "保存到账号并在设备和浏览器间同步。Mac 上也可用 Command 代替 Ctrl。";
-        'settings.ctrlEnterToSend': "Ctrl+Enter 发送";
-        'settings.enterInsertsANewLineCtrlShift': "Enter 换行。Ctrl+Shift+Enter 立即插话。";
+        'settings.savedToYourAccountAndAppliedAcross': "保存到账号并在设备和浏览器间同步。{{keys}}";
+        'settings.ctrlEnterToSend': "{{shortcut}} 发送";
+        'settings.sendKeysOnMac': "也可用 Ctrl 代替 ⌘。";
+        'settings.sendKeysElsewhere': "Mac 上用 ⌘ 代替 Ctrl。";
+        'settings.enterInsertsANewLineCtrlShift': "Enter 换行。{{steer}} 立即插话。";
         'settings.enterToSend': "Enter 发送";
-        'settings.shiftEnterInsertsANewLineCtrl': "Shift+Enter 换行。Ctrl+Enter 立即插话。";
+        'settings.shiftEnterInsertsANewLineCtrl': "{{newline}} 换行。{{steer}} 立即插话。";
         'settings.saving': "正在保存…";
         'settings.loading': "正在加载…";
         'settings.signInThroughRelayToChangeYour': "通过 Relay 登录后可修改账号快捷键。";
@@ -18615,7 +18626,7 @@ declare const resources: {
         "settings.runManual": "手动";
         "settings.runCompleted": "完成";
         "settings.runFailed": "失败";
-        "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。Mac 上也可用 Command 代替 Ctrl。";
+        "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。{{keys}}";
         "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
         "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
         "files.pluginUnsupportedPlatform": "此平台不支持终端。";
@@ -19258,7 +19269,7 @@ declare const resources: {
         "files.terminalPasteAnyway": "粘贴";
         "files.terminalPasteField": "长按这里粘贴，发送前可以先修改";
         "files.terminalPasteSend": "发送到终端";
-        "files.terminalClipboardBlocked": "这个页面无法读取剪贴板，请用 Ctrl+V 粘贴。";
+        "files.terminalClipboardBlocked": "这个页面无法读取剪贴板，请用 {{shortcut}} 粘贴。";
         "files.terminalSettingsDescription": "终端里的复制和粘贴，只对这个浏览器生效。";
         "files.terminalCopyOnSelect": "选中即复制";
         "files.terminalCopyOnSelectHint": "用鼠标选中的文字会立刻复制。";
@@ -19269,7 +19280,8 @@ declare const resources: {
         "files.terminalRightClickCopyPaste": "有选中就复制，否则粘贴";
         "files.terminalPasteWarning": "粘贴多行前确认";
         "files.terminalPasteWarningHint": "只在 shell 会立刻逐行执行时提示。";
-        "files.terminalKeysNote": "Ctrl+C：有选中时复制，没有时中断；Ctrl+Shift+V 始终粘贴。Mac 上用 ⌘C / ⌘V 复制粘贴，Ctrl 留给终端。手机上长按终端选择文字，按键条里有粘贴和选择。";
+        "files.terminalKeysNote": "Ctrl+C：有选中时复制，没有时中断；Ctrl+Shift+V 始终粘贴。手机上长按终端选择文字，按键条里有粘贴和选择。";
+        "files.terminalKeysNoteMac": "用 ⌘C / ⌘V 复制粘贴，Ctrl 留给终端。手机上长按终端选择文字，按键条里有粘贴和选择。";
         "files.askAttachments": {
             readonly one: "将一并发送 {{count}} 个附件";
             readonly other: "将一并发送 {{count}} 个附件";
@@ -19958,7 +19970,7 @@ declare const resources: {
         "chat.steerNow": "插话";
         "chat.typeToSend": "先输入消息";
         "chat.typeMessage": "输入消息";
-        "chat.ctrlEnterToSend": "，Ctrl+Enter 发送";
+        "chat.ctrlEnterToSend": "，{{shortcut}} 发送";
         "chat.enterToSend": "，Enter 发送";
         "chat.moreLines": "+{{value1}} 行";
         "chat.planModeOn": "计划模式";
@@ -20609,8 +20621,8 @@ declare const resources: {
         "chat.effortLevel.max": "最高";
         "chat.effortLevel.ultra": "极高";
         "chat.queueNextPrompt": "排队下一条";
-        "chat.ctrlEnterToQueueCtrlShiftEnterToSteer": "，Ctrl+Enter 排队 · Ctrl+Shift+Enter 插话";
-        "chat.enterToQueueCtrlEnterToSteer": "，Enter 排队 · Ctrl+Enter 插话";
+        "chat.ctrlEnterToQueueCtrlShiftEnterToSteer": "，{{queue}} 排队 · {{steer}} 插话";
+        "chat.enterToQueueCtrlEnterToSteer": "，Enter 排队 · {{steer}} 插话";
         "chat.promptNotSent": "没有发出，草稿还在";
         "chat.dropToAttach": "松开以添加文件";
         "chat.queuedCount": {

@@ -1,3 +1,4 @@
+import { matchesModKey } from '../../shortcuts';
 import type { WorkspaceExplorerRowProjection } from './workspaceExplorerTypes';
 
 export type WorkspaceExplorerCommand =
@@ -12,6 +13,8 @@ export function workspaceExplorerCommandForKey(input: {
   key: string;
   metaKey?: boolean;
   ctrlKey?: boolean;
+  altKey?: boolean;
+  shiftKey?: boolean;
   focusedId: string | null;
   rows: WorkspaceExplorerRowProjection[];
 }): WorkspaceExplorerCommand | null {
@@ -24,7 +27,8 @@ export function workspaceExplorerCommandForKey(input: {
     return row ? { type: 'focus', id: row.id } : null;
   };
 
-  if ((input.metaKey || input.ctrlKey) && input.key.toLowerCase() === 'f') {
+  // Mod+F: ⌘F on a Mac, Ctrl+F elsewhere (§19).
+  if (matchesModKey(input) && !input.altKey && !input.shiftKey && input.key.toLowerCase() === 'f') {
     return { type: 'open-filter' };
   }
   switch (input.key) {

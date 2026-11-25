@@ -1,6 +1,7 @@
 import {
   GraphWorkspaceMonacoEditor,
   editorThemeFor
+<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoEditor-7E3YO5HZ.js
 <<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoEditor-GIBOXW74.js
 } from "./chunk-Y7PJL7OW.js";
 import "./chunk-JIPNJR2N.js";
@@ -10,6 +11,11 @@ import "./chunk-R2LITDNV.js";
 import "./chunk-JIPNJR2N.js";
 import "./chunk-PV62C22N.js";
 >>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/GraphWorkspaceMonacoEditor-7E3YO5HZ.js
+=======
+} from "./chunk-YWGORNY5.js";
+import "./chunk-JIPNJR2N.js";
+import "./chunk-QQRECI3Q.js";
+>>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu):packages/thread-ui/dist/GraphWorkspaceMonacoEditor-NCF2X2M4.js
 import "./chunk-PEHPFHY2.js";
 import "./chunk-SSOM5P4O.js";
 import "./chunk-7O5E2ZHX.js";

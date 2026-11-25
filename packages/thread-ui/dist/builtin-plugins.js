@@ -11,10 +11,14 @@ import {
   translate,
   useI18n
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-R2LITDNV.js";
 =======
 } from "./chunk-PV62C22N.js";
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
+=======
+} from "./chunk-QQRECI3Q.js";
+>>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
 import "./chunk-7O5E2ZHX.js";
 
 // src/plugins/builtin-plugin-modules.tsx

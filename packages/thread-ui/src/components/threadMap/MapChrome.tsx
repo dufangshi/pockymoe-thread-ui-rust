@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { MoreVertical, Info } from 'lucide-react';
+import { Ellipsis, Info } from 'lucide-react';
 import { getLocale, translate } from '../../i18n';
 import { ErrorMark } from '../copy/ErrorMark';
 import { StatusMark } from '../StatusMark';
@@ -53,7 +53,7 @@ export function DeviceMenu({ device, items }: { device: ThreadMapDevice; items: 
       if (anchor) { close(false); return; }
       const box = trigger.current!.getBoundingClientRect();
       setAnchor({ top: Math.max(8, Math.min(box.bottom + 4, window.innerHeight - items.length * 36 - 16)), left: Math.max(8, Math.min(box.right - 220, window.innerWidth - 228)) });
-    }}><MoreVertical aria-hidden="true" /></button>
+    }}><Ellipsis aria-hidden="true" /></button>
     {anchor && createPortal(<div ref={menu} data-theme-effective={document.documentElement.dataset.themeEffective} className="thread-graph-dialog thread-map-device-menu" role="menu"
       aria-label={device.name} style={{ position: 'fixed', ...anchor }}>
       {items.map(item => <div key={item.id} className="thread-map-device-menu-row" data-separated={item.separator || undefined}>

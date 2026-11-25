@@ -1,20 +1,28 @@
 import {
   editorThemeFor
+<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-HLHCHLMM.js
 <<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-ARO5AYSM.js
 } from "./chunk-Y7PJL7OW.js";
 ========
 } from "./chunk-OL27POSN.js";
 >>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-HLHCHLMM.js
+=======
+} from "./chunk-YWGORNY5.js";
+>>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-3HWU7ITO.js
 import {
   useDocumentThemeRevision
 } from "./chunk-JIPNJR2N.js";
 import {
   translate
+<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-HLHCHLMM.js
 <<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-ARO5AYSM.js
 } from "./chunk-R2LITDNV.js";
 ========
 } from "./chunk-PV62C22N.js";
 >>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-HLHCHLMM.js
+=======
+} from "./chunk-QQRECI3Q.js";
+>>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-3HWU7ITO.js
 import {
   editor
 } from "./chunk-PEHPFHY2.js";

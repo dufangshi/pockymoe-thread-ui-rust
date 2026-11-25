@@ -1,6 +1,6 @@
 export const tourEn = {
   // Keep keys consumed by Web clients pinned before the tutorial redesign.
-  "tour.devices.relayWorkspaces.prereq": "Workspaces belong to a device. Connect to an online device first.",
+  "tour.devices.relayWorkspaces.prereq": "Workspaces belong to a device. Open an online device first.",
   "tour.openWorkspaces": "Open workspaces",
   "tour.openDevices": "Open devices",
   "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.",
@@ -60,7 +60,7 @@ export const tourEn = {
   "tour.devices.relayForm.body": "Name the device and click Create token. You then get a macOS/Linux and a Windows command; run it on that computer to connect its Supervisor. The tutorial never creates tokens for you.",
   "tour.devices.relayForm.prereq": "Click Add device to open the form.",
   "tour.devices.relayList.title": "Your devices",
-  "tour.devices.relayList.body": "Connected devices are listed here: a green dot means online, Connect opens its workspaces, ⋯ copies setup commands, shares or replaces the token. No device yet? The tour continues on a sample device.",
+  "tour.devices.relayList.body": "Connected devices are listed here: a solid dot means online, Open goes to its workspaces, and ⋯ renames, shares or isolates it. Its Settings… hold the setup commands and the token. No device yet? The tour continues on a sample device.",
   "tour.devices.sample.title": "The sample device",
   "tour.devices.sample.body": "This Sample device exists only for the tutorial: its workspaces, threads, terminal and files are demo data, and changes stay in this page. Your own devices work exactly the same way.",
   "tour.devices.local.title": "Local mode: this computer is the device",

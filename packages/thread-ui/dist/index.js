@@ -60,10 +60,14 @@ import {
   useModalFocus,
   useTabScrollEdges
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-SHS2CKRU.js";
 =======
 } from "./chunk-M3NWHISK.js";
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
+=======
+} from "./chunk-HYKJ7YFG.js";
+>>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -101,10 +105,14 @@ import {
   useI18n,
   useMenuKeyboard
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-R2LITDNV.js";
 =======
 } from "./chunk-PV62C22N.js";
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
+=======
+} from "./chunk-QQRECI3Q.js";
+>>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -34366,7 +34374,7 @@ import {
 // src/components/threadMap/MapChrome.tsx
 import { useEffect as useEffect63, useRef as useRef65, useState as useState85 } from "react";
 import { createPortal as createPortal11 } from "react-dom";
-import { MoreVertical, Info as Info2 } from "lucide-react";
+import { Ellipsis as Ellipsis3, Info as Info2 } from "lucide-react";
 import { Fragment as Fragment43, jsx as jsx111, jsxs as jsxs98 } from "react/jsx-runtime";
 function DeviceStateMark({ offline = false }) {
   return /* @__PURE__ */ jsx111(
@@ -34430,7 +34438,7 @@ function DeviceMenu({ device, items }) {
           const box = trigger.current.getBoundingClientRect();
           setAnchor({ top: Math.max(8, Math.min(box.bottom + 4, window.innerHeight - items.length * 36 - 16)), left: Math.max(8, Math.min(box.right - 220, window.innerWidth - 228)) });
         },
-        children: /* @__PURE__ */ jsx111(MoreVertical, { "aria-hidden": "true" })
+        children: /* @__PURE__ */ jsx111(Ellipsis3, { "aria-hidden": "true" })
       }
     ),
     anchor && createPortal11(/* @__PURE__ */ jsx111(

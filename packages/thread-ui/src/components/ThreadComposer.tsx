@@ -88,7 +88,7 @@ import { useComposerAttachments } from './composer/useComposerAttachments';
 import { useAttachmentPreviewUrls } from './composer/useAttachmentPreviewUrls';
 import { useComposerDraft } from './composer/useComposerDraft';
 import { useComposerForkActions } from './composer/useComposerForkActions';
-import type { ComposerModelPickerSource } from './composer/modelPicker/modelPickerLogic';
+import { orderPickerAgents, type ComposerModelPickerSource } from './composer/modelPicker/modelPickerLogic';
 import { useComposerGoal } from './composer/useComposerGoal';
 import { useComposerHookConfig } from './composer/useComposerHookConfig';
 import { useComposerMcpConfig } from './composer/useComposerMcpConfig';
@@ -436,7 +436,7 @@ export function ThreadComposer({
     closeMenu: () => setOpenMenu(null),
   });
   const forkAgents = switching && crossAgentFork && forkAgentId ? {
-    agents: switching.agents.filter((entry) => nativeFork || entry.id !== switching.currentAgentId),
+    agents: orderPickerAgents(switching.agents, switching.currentAgentId).filter((entry) => nativeFork || entry.id !== switching.currentAgentId),
     value: forkAgentId,
     currentAgentId: switching.currentAgentId,
     onChange: setForkAgentId,

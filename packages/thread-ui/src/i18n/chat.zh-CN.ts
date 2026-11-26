@@ -820,4 +820,6 @@ export const chatZhCN = {
   "chat.modelPickerSwitchFailed": "没有切换",
   "chat.modelPickerClose": "关闭模型选择",
   "chat.forkInto": "分叉到",
+  "chat.modelPickerResumeCurrent": "恢复它的会话 · 没有新内容要交接",
+  "chat.modelPickerNoHistory": "还没有要交接的历史",
 } as const;

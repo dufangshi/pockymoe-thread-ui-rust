@@ -100,7 +100,7 @@
   color: var(--theme-fg-muted);
   cursor: text;
 }
-.model-picker-search-box:focus-within { border-color: var(--theme-accent-border, var(--theme-accent-solid)); }
+.model-picker-search-box:has(input:focus) { border-color: var(--theme-accent-border, var(--theme-accent-solid)); }
 .model-picker-search-box > svg { flex: none; width: 13px; height: 13px; }
 .thread-ui-shell .model-picker .model-picker-search {
   flex: 1;
@@ -139,7 +139,7 @@
   column-gap: 8px;
 }
 .model-picker-list[data-facts] :is(.model-picker-head, .model-picker-row) {
-  grid-template-columns: minmax(0, 1fr) 2.6rem 5.1rem 14px;
+  grid-template-columns: minmax(0, 1fr) 3.2rem 5.6rem 14px;
 }
 .model-picker-head {
   position: sticky;
@@ -157,6 +157,7 @@
 .model-picker-head-name { overflow: hidden; color: var(--theme-fg-soft, var(--theme-fg)); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .model-picker-head-tag {
   flex: none;
+  white-space: nowrap;
   padding: 0 5px;
   border-radius: 999px;
   background: var(--theme-accent-soft, color-mix(in oklab, var(--theme-accent-solid) 14%, transparent));
@@ -297,7 +298,10 @@
 .model-picker-harness:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
 
 /* ── Phone sheet ──────────────────────────────────────────────────────────── */
+/* One height whatever the view shows (search results, a preview), so the sheet
+   does not jump under the finger; a keyboard shrinks it with the visible page. */
 .thread-context-surface.is-sheet.model-picker-sheet .model-picker {
+  height: min(80dvh, calc(var(--sheet-height, 100dvh) - 3rem));
   max-height: min(80dvh, calc(var(--sheet-height, 100dvh) - 3rem));
   font-size: 13px;
   line-height: 18px;
@@ -316,7 +320,7 @@
 .model-picker[data-phone] .model-picker-list { height: auto; max-height: none; min-height: 12rem; }
 .model-picker[data-phone] .model-picker-row { min-height: 44px; font-size: 13px; }
 .model-picker[data-phone] .model-picker-list[data-facts] :is(.model-picker-head, .model-picker-row) {
-  grid-template-columns: minmax(0, 1fr) 2.5rem 4.9rem 14px;
+  grid-template-columns: minmax(0, 1fr) 3.1rem 5.5rem 14px;
 }
 .model-picker[data-phone] .model-picker-foot { padding: 0 10px calc(8px + env(safe-area-inset-bottom)); }
 .model-picker[data-phone] .model-picker-harness { min-height: 44px; font-size: 13px; }

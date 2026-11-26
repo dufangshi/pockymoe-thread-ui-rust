@@ -116,7 +116,8 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
     const key = `history\u0000${agentId}\u0000${model ?? ''}`;
     if (asked.current.has(key) && !force) return;
     asked.current.add(key);
-    setPreviews((current) => ({ ...current, [agentId]: { status: 'loading' } }));
+    // Another model of the same agent keeps the last count until the new one arrives.
+    setPreviews((current) => (current[agentId]?.status === 'ready' && !force ? current : { ...current, [agentId]: { status: 'loading' } }));
     void switching.preview({ agentId, model }).then(
       (data) => { if (live.current) setPreviews((next) => ({ ...next, [agentId]: { status: 'ready', data } })); },
       (error) => {
@@ -167,18 +168,40 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
   };
 
   const root = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const queryRef = useRef(query);
+  queryRef.current = query;
+  // Esc in a search with text clears it and keeps the picker open. The composer
+  // closes its menus on Esc from a window capture listener (and a phone sheet's
+  // focus trap does too); a layout effect registers this one before both.
+  useLayoutEffect(() => {
+    const clear = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || !queryRef.current || document.activeElement !== searchRef.current) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      setQuery('');
+    };
+    window.addEventListener('keydown', clear, true);
+    return () => window.removeEventListener('keydown', clear, true);
+  }, []);
   useAgentArt(root, [agents, view, searching, phone]);
   // The chosen model in view, not under the fold: scroll the list (never the page) to it.
   const viewReady = viewModels?.status === 'ready';
   useLayoutEffect(() => {
-    const list = root.current?.querySelector<HTMLElement>('.model-picker-list');
-    const row = list?.querySelector<HTMLElement>('.model-picker-row[aria-checked="true"]');
-    if (!list || !row) return;
-    const head = list.querySelector<HTMLElement>('.model-picker-head')?.offsetHeight ?? 0;
-    const top = row.offsetTop;
-    if (top < list.scrollTop + head || top + row.offsetHeight > list.scrollTop + list.clientHeight) {
-      list.scrollTop = Math.max(0, top - head - (list.clientHeight - head - row.offsetHeight) / 2);
-    }
+    const reveal = () => {
+      const list = root.current?.querySelector<HTMLElement>('.model-picker-list');
+      const row = list?.querySelector<HTMLElement>('.model-picker-row[aria-checked="true"]');
+      if (!list || !row) return;
+      const head = list.querySelector<HTMLElement>('.model-picker-head')?.offsetHeight ?? 0;
+      const top = row.offsetTop;
+      if (top < list.scrollTop + head || top + row.offsetHeight > list.scrollTop + list.clientHeight) {
+        list.scrollTop = Math.max(0, top - head - (list.clientHeight - head - row.offsetHeight) / 2);
+      }
+    };
+    reveal();
+    // A sheet or popover settles its size after the first paint: look again then.
+    const frame = requestAnimationFrame(reveal);
+    return () => cancelAnimationFrame(frame);
   }, [view, viewReady, showPreview]);
   const focusRow = () => requestAnimationFrame(() => {
     const rows = root.current?.querySelectorAll<HTMLElement>('.model-picker-row:not([disabled])');
@@ -244,12 +267,11 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
     );
   };
 
-  const listHead = (agent: ModelPickerAgent | null, isCurrent: boolean) => (
+  const listHead = (agent: ModelPickerAgent | null) => (
     <div className="model-picker-head" aria-live={agent && !searching ? 'polite' : undefined}>
       <span className="model-picker-head-agent">
         {agent ? <AgentChip agent={themeAgentKey(agent.id)} /> : null}
         <span className="model-picker-head-name">{agent?.name ?? translate('chat.model')}</span>
-        {agent && isCurrent && showRail ? <span className="model-picker-head-tag">{translate('chat.modelPickerCurrent')}</span> : null}
       </span>
       {showFacts ? (
         <>
@@ -269,7 +291,7 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
   if (searching) {
     list = groups.length ? groups.map((group) => (
       <div key={group.agent.id} role="group" aria-label={group.agent.name || translate('chat.model')} className="model-picker-group">
-        {listHead(showRail ? group.agent : null, group.agent.id === currentAgentId)}
+        {listHead(showRail ? group.agent : null)}
         {group.models.map((option) => row(group.agent.id, option))}
       </div>
     )) : <p className="model-picker-status">{searchLoading ? translate('chat.modelPickerLoading') : translate('chat.modelPickerEmpty')}</p>;
@@ -294,9 +316,13 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
         {preview?.status === 'ready' ? (
           <span>
             {preview.data.resumesSession
-              ? translate('chat.modelPickerResume', { count: preview.data.turns })
-              : translate('chat.modelPickerHandoff', { count: preview.data.turns })}
-            {preview.data.estimatedTokens > 0 ? ` · ≈${formatCompactTokenCount(preview.data.estimatedTokens)} tokens` : ''}
+              ? preview.data.turns > 0
+                ? translate('chat.modelPickerResume', { count: preview.data.turns })
+                : translate('chat.modelPickerResumeCurrent')
+              : preview.data.turns > 0
+                ? translate('chat.modelPickerHandoff', { count: preview.data.turns })
+                : translate('chat.modelPickerNoHistory')}
+            {preview.data.turns > 0 && preview.data.estimatedTokens > 0 ? ` · ≈${formatCompactTokenCount(preview.data.estimatedTokens)} tokens` : ''}
           </span>
         ) : preview?.status === 'error' ? (
           <span className="model-picker-note-muted">
@@ -306,7 +332,7 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
         ) : (
           <span className="model-picker-note-muted">{translate('chat.modelPickerHandoffChecking')}</span>
         )}
-        {preview?.status === 'ready' && preview.data.text ? (
+        {preview?.status === 'ready' && preview.data.text && preview.data.turns > 0 ? (
           <button type="button" className="model-picker-link model-picker-action" onClick={() => setShowPreview(true)}>
             {translate('chat.modelPickerPreview')}
           </button>
@@ -368,22 +394,26 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
       <label className="model-picker-search-box">
         <Search aria-hidden="true" />
         <input
+          ref={searchRef}
           type="search"
           className="model-picker-search"
           value={query}
           placeholder={translate('chat.modelPickerSearch')}
           aria-label={translate('chat.modelPickerSearch')}
           onChange={(event) => setQuery(event.target.value)}
-          onKeyDown={(event) => {
-            // Home and End move the caret, not the menu; ←/→ change agents only while empty.
+          // The menu's own keys listen on the menu element, before React's bubbling
+          // handlers: capture here, so Home and End move the caret.
+          onKeyDownCapture={(event) => {
             if (event.key === 'Home' || event.key === 'End') event.stopPropagation();
+          }}
+          // ←/→ change agents only while the search is empty.
+          onKeyDown={(event) => {
             if (query && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) event.stopPropagation();
-            if (event.key === 'Escape' && query) { event.preventDefault(); event.stopPropagation(); setQuery(''); }
           }}
         />
       </label>
       <div className="model-picker-list" data-facts={showFacts || undefined}>
-        {!searching ? listHead(viewAgent, view === currentAgentId) : null}
+        {!searching ? listHead(viewAgent) : null}
         {list}
       </div>
     </div>
@@ -457,7 +487,7 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
 function PhonePicker({ onClose, root, children }: { onClose: () => void; root: RefObject<HTMLDivElement | null>; children: ReactNode }) {
   const trigger = useRef<HTMLElement | null>(typeof document === 'undefined' ? null : (document.activeElement as HTMLElement | null));
   // The keyboard stays down until the search is tapped: focus starts on the current model.
-  useModalFocus(root, true, onClose, '.model-picker-row[aria-checked="true"], .model-picker-row');
+  useModalFocus(root, true, onClose, '.model-picker-row[aria-checked="true"]');
   return (
     <ComposerSheet label={translate('chat.model')} closeLabel={translate('chat.modelPickerClose')} trigger={trigger.current} onClose={onClose} className="model-picker-sheet">
       {children}

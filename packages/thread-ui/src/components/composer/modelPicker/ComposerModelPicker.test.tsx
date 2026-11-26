@@ -238,4 +238,21 @@ describe('ComposerModelPicker', () => {
     expect(props.onClose).toHaveBeenCalled();
     expect(onOpenHarness).toHaveBeenCalled();
   });
+
+  it('says when nothing new would be handed over', async () => {
+    const resumed = switching({ preview: vi.fn(async () => ({ ...summary, turns: 0, resumesSession: true })) });
+    await render({ source: { switching: resumed } });
+    await click(tab('Claude Agent'));
+    await settle();
+    expect(document.querySelector('.model-picker-note-line')!.textContent).toBe('Resumes its session · nothing new to hand over');
+    expect(document.querySelector('.model-picker-link')).toBeNull();
+  });
+
+  it('says a new thread has no history to hand over', async () => {
+    const fresh = switching({ preview: vi.fn(async () => ({ ...summary, turns: 0, estimatedTokens: 40 })) });
+    await render({ source: { switching: fresh } });
+    await click(tab('Claude Agent'));
+    await settle();
+    expect(document.querySelector('.model-picker-note-line')!.textContent).toBe('No history to hand over yet');
+  });
 });

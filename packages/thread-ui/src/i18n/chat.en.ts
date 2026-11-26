@@ -820,4 +820,6 @@ export const chatEn = {
   "chat.modelPickerSwitchFailed": "Did not switch",
   "chat.modelPickerClose": "Close model picker",
   "chat.forkInto": "Fork into",
+  "chat.modelPickerResumeCurrent": "Resumes its session · nothing new to hand over",
+  "chat.modelPickerNoHistory": "No history to hand over yet",
 } as const;

@@ -4,6 +4,50 @@ import * as _pockymoe_shared from '@pockymoe/shared';
 import { PromptAttachmentManifestEntryDto, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, ShellEventEnvelope, PluginDto, ImportPluginInput, UpdatePluginInput, PluginRunDto, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@pockymoe/shared';
 import { U as UpstreamConnectionHost, T as ThreadPluginAdapter, d as PluginSettingsSnapshot, F as FrontendPluginModule, A as ArtifactRenderContext, I as InlineCodeRenderContext, e as ThreadPanelContribution, a as MessagePresentationContext, M as MessagePresentation, P as PluginActionOutputContext, f as ThreadPluginDto, h as ThreadPluginSettingsSnapshot, g as ThreadPluginSettingsInput } from './plugin-types-gLBkjCue.js';
 
+/**
+ * Quotes in a prompt: passages of earlier messages the person refers to. In the
+ * composer each is a tile whose hidden text is `[QUOTE n]`; sent, the passages
+ * go first, each in a tagged block, and the prompt keeps `[QUOTE n]` where it
+ * refers to them, so order and position survive and the model cannot mistake a
+ * quote for the person's own words:
+ *
+ *   <pockymoe-quotes>
+ *   <quote id="1" from="assistant" turn="12" ref="TURN/ITEM">…</quote>
+ *   </pockymoe-quotes>
+ *
+ *   About [QUOTE 1]: …
+ *
+ * The text is all there is: history read back from a harness, forks, exports and
+ * another agent reading the thread see the same quotes.
+ */
+interface PromptQuote {
+    /** The passage as it read when quoted (at most QUOTE_LIMIT characters). */
+    text: string;
+    from: 'assistant' | 'user';
+    path?: string;
+    startLine?: number;
+    endLine?: number;
+    comment?: string;
+    /** The turn's number as the conversation shows it, when known. */
+    turn: number | null;
+    turnId: string | null;
+    itemId: string | null;
+}
+
+/**
+ * One conversation pane's quoting: its composer takes quotes in, and anything in
+ * the pane (a tile in the composer, a quote in a sent prompt) can show where a
+ * quote came from. Each pane of a split has its own scope.
+ */
+interface QuoteScope {
+    /** The composer that takes quotes registers here; it returns the release. */
+    connect: (insert: (quote: PromptQuote) => void) => () => void;
+    /** Adds a quote to this pane's composer; false when it has none. */
+    insert: (quote: PromptQuote) => boolean;
+    /** Shows the quoted passage where it was, over the conversation. */
+    preview: (quote: PromptQuote) => void;
+}
+
 interface PromptAttachmentUpload extends PromptAttachmentManifestEntryDto {
     file: File;
 }
@@ -48,6 +92,8 @@ interface ThreadLinkInfo {
  */
 type DescribeThread = (threadId: string) => ThreadLinkInfo | null | undefined;
 interface ThreadTimelineAdapter {
+    onEditTurn?: (turnId: string) => void;
+    renderTurnChanges?: (turnId: string) => ReactNode;
     resolveWorkspacePath?: (path: string) => Promise<boolean>;
     workspaceRootPath?: string | undefined;
     getImageAssetUrl?: (input: {
@@ -246,6 +292,9 @@ interface ThreadShellAdapter {
     connectSocket(handlers: ShellSocketHandlers): ShellSocketConnection;
 }
 interface ThreadDetailUiAdapter {
+    editTurn?: (turnId: string) => void;
+    renderTurnChanges?: (turnId: string) => ReactNode;
+    onQuoteScope?: (scope: QuoteScope | null) => void;
     openThread(threadId: string): void;
     /** Forks at a finished turn of the open thread; see ThreadTimelineAdapter.onForkTurn. */
     forkTurn?: (turnId: string) => Promise<void>;
@@ -448,4 +497,4 @@ interface ThreadGraphWorkspaceFeatures {
 declare function ThreadGraphWorkspacePanel({ detail, status, plugins, workspaceAdapter, metaContent, settingsContent, activeView, features: featureConfig, focusPathRequest, onActiveFileChange, }: ThreadGraphWorkspacePanelProps): react.JSX.Element | null;
 declare const MemoizedThreadGraphWorkspacePanel: react.MemoExoticComponent<typeof ThreadGraphWorkspacePanel>;
 
-export { type DescribeThread as D, MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type SettingsSection as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, SettingsPanels as g, type ThreadWorkspaceAdapter as h, PluginContext as i, PluginProvider as j, type PluginProviderAdapter as k, type SendPromptInput as l, type ShellSocketConnection as m, type ShellSocketHandlers as n, type ThreadImageAssetVariant as o, type ThreadLinkInfo as p, type WorkspaceDocumentSnapshot as q, type WorkspaceSaveReceipt as r, type WorkspaceTab as s, createDefaultPluginContextValue as t, mergePluginState as u, ThreadGraphWorkspacePanel as v };
+export { type DescribeThread as D, MemoizedThreadGraphWorkspacePanel as M, type PromptAttachmentUpload as P, type QuoteScope as Q, type SettingsSection as S, type ThreadShellControlState as T, type WorkspaceDocumentSaveInput as W, type ThreadTimelineAdapter as a, type ThreadShellAdapter as b, type ThreadGraphWorkspacePanelProps as c, type PluginContextValue as d, type ThreadDetailUiAdapter as e, type ThreadGraphWorkspaceFeatures as f, SettingsPanels as g, type ThreadWorkspaceAdapter as h, PluginContext as i, PluginProvider as j, type PluginProviderAdapter as k, type PromptQuote as l, type SendPromptInput as m, type ShellSocketConnection as n, type ShellSocketHandlers as o, type ThreadImageAssetVariant as p, type ThreadLinkInfo as q, type WorkspaceDocumentSnapshot as r, type WorkspaceSaveReceipt as s, type WorkspaceTab as t, createDefaultPluginContextValue as u, mergePluginState as v, ThreadGraphWorkspacePanel as w };

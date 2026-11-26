@@ -19,7 +19,7 @@ import {
   translate,
   useI18n,
   zhCN
-} from "./chunk-Z5L7CHPD.js";
+} from "./chunk-2K4EZWZO.js";
 import "./chunk-7O5E2ZHX.js";
 export {
   DEFAULT_LOCALE,

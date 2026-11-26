@@ -310,9 +310,9 @@ describe('ComposerSettingsToolbar', () => {
       model: 'gpt-5-mini',
       reasoningEffort: 'minimal',
     });
-    // The level names belong to the slider, which steps a level at a time from the keyboard.
-    const thumb = view.querySelector<HTMLElement>('.composer-reasoning-thumb')!;
-    act(() => { thumb.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); });
+    // The level names are one row of chips; the arrows step a level at a time.
+    const chip = view.querySelector<HTMLElement>('.model-picker-effort-chip[aria-checked="true"]')!;
+    act(() => { chip.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); });
     expect(onUpdateSettings).toHaveBeenCalledWith({ reasoningEffort: 'low' });
     expect(buttonByText(view, 'Plan')).toBeUndefined();
   });
@@ -340,8 +340,8 @@ it.each([false, true])('keeps harness settings reachable without models or model
   const key = view.querySelector<HTMLButtonElement>('[data-testid="composer-model-label"]')!;
   expect(key.disabled).toBe(false);
   act(() => key.click());
-  const item = document.querySelector<HTMLButtonElement>('.composer-model-menu [role="menuitem"]')!;
-  expect(item.textContent).toBe('Harness settings');
+  const item = document.querySelector<HTMLButtonElement>('.composer-model-menu .model-picker-settings')!;
+  expect(item.getAttribute('aria-label')).toBe('Harness settings');
   act(() => item.click());
   expect(open).toHaveBeenCalledOnce();
   expect(document.querySelector('.composer-model-menu')).toBeNull();

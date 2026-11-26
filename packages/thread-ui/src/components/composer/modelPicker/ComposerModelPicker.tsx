@@ -9,8 +9,8 @@ import { useModalFocus } from '../../menu/useModalFocus';
 import { themeAgentKey, themeAgentName } from '../../themeAgent';
 import { formatCompactTokenCount } from '../../timeline/tokenFormatting';
 import { ComposerMenuSurface } from '../ComposerMenuSurface';
-import { ComposerReasoningSlider } from '../ComposerReasoningSlider';
 import { ComposerSheet, useIsPhone } from '../ComposerSheet';
+import { EffortChips } from './EffortChips';
 import {
   adjacentPickerAgent,
   defaultPickerModel,
@@ -18,6 +18,7 @@ import {
   formatModelPrice,
   formatUsdPerMillion,
   orderPickerAgents,
+  readableHandoffText,
   searchPickerGroups,
   visiblePickerModels,
   type ComposerModelPickerSource,
@@ -34,7 +35,7 @@ const message = (error: unknown) => (error instanceof Error ? error.message : St
 
 /* Rows, the search, the effort thumb and the foot's buttons, in reading order.
    The agent rail is not in the arrow order: ←/→ move between agents. */
-const ITEMS = '.model-picker-search, .model-picker-row:not([disabled]), .composer-reasoning-thumb:not([data-disabled]), .model-picker-action:not([disabled])';
+const ITEMS = '.model-picker-search, .model-picker-row:not([disabled]), .model-picker-effort-chip[aria-checked="true"]:not([disabled]), .model-picker-action:not([disabled])';
 
 export interface ComposerModelPickerProps {
   model: string | null | undefined;
@@ -74,6 +75,8 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
   const [busy, setBusy] = useState<Pick | null>(null);
   const [switchError, setSwitchError] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  // The effort for another agent's model, applied with the switch; null is the model's default.
+  const [targetEffort, setTargetEffort] = useState<ReasoningEffortDto | null>(null);
   const live = useRef(true);
   useEffect(() => {
     live.current = true;
@@ -81,8 +84,6 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
   }, []);
 
   const searching = query.trim().length > 0;
-  // A short list of one agent's models needs no search (docs/model-settings.md).
-  const showSearch = agents.length > 1 || visiblePickerModels(props.modelOptions, props.model).length > 8;
   const currentModels = useMemo(() => visiblePickerModels(props.modelOptions, props.model), [props.modelOptions, props.model]);
   const modelsOf = useCallback((agentId: string): Load<ModelOptionDto[]> | undefined => {
     if (!switching || agentId === currentAgentId) return { status: 'ready', data: currentModels };
@@ -136,18 +137,26 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
   useEffect(() => { if (!props.running) setPending(null); }, [props.running]);
   const agentName = (agentId: string) => agents.find((agent) => agent.id === agentId)?.name ?? themeAgentName(agentId);
   const changeView = (agentId: string) => {
-    if (agentId !== view) setPending(null);
+    if (agentId !== view) {
+      setPending(null);
+      setTargetEffort(null);
+    }
     setView(agentId);
     setShowPreview(false);
     setSwitchError(null);
   };
 
+  // The effort chosen for the target applies when the picked model offers it; else its default.
+  const effortFor = (option: ModelOptionDto) =>
+    targetEffort && option.supportedReasoningEfforts.some((entry) => entry.reasoningEffort === targetEffort)
+      ? targetEffort
+      : option.defaultReasoningEffort ?? null;
   const switchTo = async (agentId: string, option: ModelOptionDto, stop: boolean) => {
     if (!switching || busy) return;
     setBusy({ agentId, model: option.model });
     setSwitchError(null);
     try {
-      await switching.switchTo({ agentId, model: option.model, reasoningEffort: option.defaultReasoningEffort ?? null, stop });
+      await switching.switchTo({ agentId, model: option.model, reasoningEffort: effortFor(option), stop });
       if (live.current) props.onClose();
     } catch (error) {
       if (live.current) setSwitchError(message(error));
@@ -198,8 +207,10 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
     const reveal = () => {
       const list = root.current?.querySelector<HTMLElement>('.model-picker-list');
       const row = list?.querySelector<HTMLElement>('.model-picker-row[aria-checked="true"]');
+      // The header sits outside the list: line its columns up past the list's scrollbar.
+      list?.parentElement?.style.setProperty('--model-picker-gutter', `${list ? list.offsetWidth - list.clientWidth : 0}px`);
       if (!list || !row) return;
-      const head = list.querySelector<HTMLElement>('.model-picker-head')?.offsetHeight ?? 0;
+      const head = 0;
       const top = row.offsetTop;
       if (top < list.scrollTop + head || top + row.offsetHeight > list.scrollTop + list.clientHeight) {
         list.scrollTop = Math.max(0, top - head - (list.clientHeight - head - row.offsetHeight) / 2);
@@ -219,8 +230,8 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
     if (!showRail || searching || showPreview || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     const target = event.target as HTMLElement;
-    // The effort slider keeps ←/→; the search box keeps them once it has text.
-    if (target.getAttribute('role') === 'slider') return;
+    // The effort chips keep ←/→; the search box keeps them once it has text.
+    if (target.getAttribute('role') === 'slider' || target.getAttribute('role') === 'radio') return;
     event.preventDefault();
     changeView(adjacentPickerAgent(agents, view, event.key === 'ArrowRight' ? 1 : -1));
     if (target.classList.contains('model-picker-row')) focusRow();
@@ -298,7 +309,12 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
   if (searching) {
     list = groups.length ? groups.map((group) => (
       <div key={group.agent.id} role="group" aria-label={group.agent.name || translate('chat.model')} className="model-picker-group">
-        {listHead(showRail ? group.agent : null)}
+        {showRail ? (
+          <div className="model-picker-group-head">
+            <AgentChip agent={themeAgentKey(group.agent.id)} />
+            <span>{group.agent.name}</span>
+          </div>
+        ) : null}
         {group.models.map((option) => row(group.agent.id, option))}
       </div>
     )) : <p className="model-picker-status">{searchLoading ? translate('chat.modelPickerLoading') : translate('chat.modelPickerEmpty')}</p>;
@@ -354,7 +370,10 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
           <ErrorMark message={switchError} />
         </p>
       ) : null}
-      {pending && pendingOption && props.running ? (
+    </div>
+  ) : null;
+
+  const stopButton = crossView ? (pending && pendingOption && props.running ? (
         <button
           type="button"
           className="model-picker-stop model-picker-action"
@@ -365,18 +384,30 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
           {translate('chat.modelPickerStopAndSwitch')}
           <span className="model-picker-stop-target">{agentName(pending.agentId)} · {pendingOption.displayName || pendingOption.model}</span>
         </button>
-      ) : null}
-    </div>
-  ) : null;
-
-  const effort = !crossView && !searching && props.supportedEfforts.length > 0 ? (
-    <ComposerReasoningSlider
+      ) : null) : null;
+  // Another agent's target: the pending pick, else the model a pick of the agent lands on.
+  const targetOption = crossView && viewModels?.status === 'ready'
+    ? (pendingOption ?? defaultPickerModel(viewModels.data))
+    : undefined;
+  const effort = searching ? null : crossView ? (
+    targetOption && targetOption.supportedReasoningEfforts.length > 0 ? (
+      <EffortChips
+        key={`${view}\u0000${targetOption.model}`}
+        efforts={targetOption.supportedReasoningEfforts}
+        value={effortFor(targetOption)}
+        defaultEffort={targetOption.defaultReasoningEffort}
+        disabled={Boolean(busy)}
+        onChange={setTargetEffort}
+      />
+    ) : null
+  ) : props.supportedEfforts.length > 0 ? (
+    <EffortChips
       key={props.model ?? ''}
       efforts={props.supportedEfforts}
-      effort={props.reasoningEffort}
+      value={props.reasoningEffort}
       defaultEffort={props.modelOptions.find((option) => option.model === props.model)?.defaultReasoningEffort}
       disabled={props.effortDisabled}
-      onCommit={(next) => props.onUpdateSettings({ reasoningEffort: next })}
+      onChange={(next) => props.onUpdateSettings({ reasoningEffort: next })}
     />
   ) : null;
   const applies = props.running && !crossView ? (
@@ -394,11 +425,13 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
         <span className="model-picker-head-name">{translate('chat.modelPickerPreviewTitle', { agent: agentName(view) })}</span>
         <CopyButton value={preview.data.text} label={translate('chat.copyAll')} className="model-picker-copy" />
       </div>
-      <pre className="model-picker-preview" tabIndex={0}>{preview.data.text}</pre>
+      {/* Readable Git state for people; Copy all and the agent keep the exact text. */}
+      <pre className="model-picker-preview" tabIndex={0}>{readableHandoffText(preview.data.text)}</pre>
     </div>
   ) : (
-    <div className="model-picker-column">
-      {showSearch ? <label className="model-picker-search-box">
+    <div className="model-picker-column" data-facts={showFacts || undefined}>
+      <div className="model-picker-bar">
+      <label className="model-picker-search-box">
         <Search aria-hidden="true" />
         <input
           ref={searchRef}
@@ -418,9 +451,22 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
             if (query && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) event.stopPropagation();
           }}
         />
-      </label> : null}
-      <div className="model-picker-list" data-facts={showFacts || undefined}>
-        {!searching ? listHead(viewAgent) : null}
+      </label>
+      {props.onOpenHarness ? (
+        <button
+          type="button"
+          className="model-picker-settings model-picker-action"
+          aria-label={translate('settings.harnessSettings')}
+          title={translate('settings.harnessSettings')}
+          onClick={() => { props.onClose(); props.onOpenHarness?.(); }}
+        >
+          <SlidersHorizontal aria-hidden="true" />
+        </button>
+      ) : null}
+      </div>
+      {/* Outside the scrolling list, so it never covers a row. */}
+      {searching ? (showFacts ? listHead(null) : null) : listHead(viewAgent)}
+      <div className="model-picker-list">
         {list}
       </div>
     </div>
@@ -460,17 +506,12 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
         {rail}
         {column}
       </div>
-      {!showPreview && (handoffNote || effort || applies || props.onOpenHarness) ? (
+      {!showPreview && (handoffNote || effort || applies || stopButton) ? (
         <div className="model-picker-foot">
           {handoffNote}
           {effort}
+          {stopButton}
           {applies}
-          {props.onOpenHarness ? (
-            <button type="button" role="menuitem" className="model-picker-harness model-picker-action" onClick={() => { props.onClose(); props.onOpenHarness?.(); }}>
-              <SlidersHorizontal aria-hidden="true" />
-              {translate('settings.harnessSettings')}
-            </button>
-          ) : null}
         </div>
       ) : null}
     </div>

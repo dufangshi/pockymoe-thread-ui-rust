@@ -9,7 +9,6 @@ import './styles/export-dialog.css';
 import './styles/matter-workbench.css';
 import './styles/phone-dock.css';
 import './styles/composer-compact.css';
-import './styles/composer-reasoning.css';
 import './styles/composer-context.css';
 import './styles/composer-model-picker.css';
 import './styles/mermaid-diagrams.css';

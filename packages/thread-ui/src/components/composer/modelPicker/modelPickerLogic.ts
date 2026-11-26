@@ -191,3 +191,38 @@ export function modelFactsFromCatalog(catalog: { models?: Record<string, PriceRa
   };
   return facts.contextWindow === undefined && facts.inputUsdPerMillion === undefined && facts.outputUsdPerMillion === undefined ? null : facts;
 }
+
+type GitStateFile = { path?: unknown };
+/**
+ * The handoff text for reading: its `Current Git state:` JSON becomes a short
+ * summary (branch, ahead/behind, changed files). Display only: the text handed
+ * to the agent, and the one copied, stays as the device wrote it.
+ */
+export function readableHandoffText(text: string) {
+  return text.replace(/^(Current Git state:)[ \t]*\n?[ \t]*(\{[^\n]*\})[ \t]*$/m, (whole, label: string, raw: string) => {
+    let state: Record<string, unknown>;
+    try {
+      state = JSON.parse(raw) as Record<string, unknown>;
+    } catch {
+      return whole;
+    }
+    const files = (Array.isArray(state.files) ? state.files as GitStateFile[] : [])
+      .map((file) => (typeof file.path === 'string' ? file.path : null))
+      .filter((path): path is string => Boolean(path));
+    const conflicted = Array.isArray(state.conflicted) ? state.conflicted.filter((path): path is string => typeof path === 'string') : [];
+    const ahead = Number(state.ahead) || 0;
+    const behind = Number(state.behind) || 0;
+    const branch = typeof state.branch === 'string' ? state.branch : typeof state.head === 'string' ? `detached at ${state.head.slice(0, 8)}` : 'no branch';
+    const upstream = typeof state.upstream === 'string' ? ` → ${state.upstream}` : '';
+    const list = (paths: string[]) => `${paths.slice(0, 5).join(', ')}${paths.length > 5 ? ` (+${paths.length - 5} more)` : ''}`;
+    const lines = [
+      // Ahead and behind mean something only against an upstream.
+      `Branch ${branch}${upstream}${upstream ? ` · ${ahead || behind ? `ahead ${ahead} · behind ${behind}` : 'in sync'}` : ''}`,
+      files.length ? `${files.length} changed ${files.length === 1 ? 'file' : 'files'}${state.truncated === true ? '+' : ''}: ${list(files)}` : 'No uncommitted changes',
+      conflicted.length ? `Conflicts: ${list(conflicted)}` : '',
+      typeof state.operation === 'string' && state.operation ? `In progress: ${state.operation}` : '',
+      Number(state.stashCount) > 0 ? `Stashes: ${Number(state.stashCount)}` : '',
+    ].filter(Boolean);
+    return `${label}\n${lines.join('\n')}`;
+  });
+}

@@ -9,6 +9,7 @@ import {
   matchPricedModel,
   modelFactsFromCatalog,
   modelSearchScore,
+  readableHandoffText,
   orderPickerAgents,
   searchPickerGroups,
   visiblePickerModels,
@@ -95,5 +96,25 @@ describe('model picker logic', () => {
     expect(modelFactsFromCatalog({ models }, model('haiku', 'Haiku 5.5'))?.contextWindow).toBe(200_000);
     expect(modelFactsFromCatalog({ models }, model('unknown'))).toBeNull();
     expect(modelFactsFromCatalog(null, model('haiku'))).toBeNull();
+  });
+
+  it('summarises the Git state in handoff text and leaves the rest alone', () => {
+    const state = { ahead: 0, behind: 0, branch: 'main', conflicted: ['x.rs'], files: Array.from({ length: 7 }, (_, n) => ({ path: `f${n}` })), operation: 'rebase', stashCount: 1, truncated: true, upstream: null };
+    const text = `Read omitted history: pockymoe transcript T\nCurrent Git state:\n${JSON.stringify(state)}\nTurn A`;
+    expect(readableHandoffText(text)).toBe([
+      'Read omitted history: pockymoe transcript T',
+      'Current Git state:',
+      'Branch main',
+      '7 changed files+: f0, f1, f2, f3, f4 (+2 more)',
+      'Conflicts: x.rs',
+      'In progress: rebase',
+      'Stashes: 1',
+      'Turn A',
+    ].join('\n'));
+    expect(readableHandoffText('Current Git state:\n{not json}')).toBe('Current Git state:\n{not json}');
+    // As the device writes it: the JSON on the label's own line.
+    expect(readableHandoffText('Current Git state: {"ahead":0,"behind":1,"branch":"master","files":[],"upstream":"origin/master"}\n\nTurn B'))
+      .toBe('Current Git state:\nBranch master → origin/master · ahead 0 · behind 1\nNo uncommitted changes\n\nTurn B');
+    expect(readableHandoffText('no git here')).toBe('no git here');
   });
 });

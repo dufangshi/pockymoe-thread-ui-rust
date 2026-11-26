@@ -1,5 +1,5 @@
 export const chatZhCN = {
-  "chat.handoffTurnCount": "已交接 {{count}} 轮",
+  "chat.handoffTurnCount": { one: "已交接 {{count}} 轮", other: "已交接 {{count}} 轮" },
   "chat.handoffSettingsReset": "计划、沙箱、快速模式及推理强度已重置；审批模式保留。",
   "chat.switchedHarness": "已从 {{from}} 切换到 {{to}}",
   "chat.turnNotificationOn": "结束时通知你",

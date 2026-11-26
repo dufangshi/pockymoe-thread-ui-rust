@@ -18,3 +18,10 @@ describe('harness switch divider',()=>{
   expect(renderToStaticMarkup(<HarnessSwitchDivider turn={{...turn,items:[]}} previous={{...turn,items:[]}}/>)).toBe('');
  });
 });
+
+it('renders two independent switch entries without a following turn',()=>{
+ const entries=['one','two'].map(id=>({id,kind:'harnessSwitch' as const,text:'',harnessSwitch:turn.items[0]!.harnessSwitch!}));
+ const html=renderToStaticMarkup(<>{entries.map(entry=><HarnessSwitchDivider key={entry.id} turn={{...turn,items:[]}} entry={entry}/>)}</>);
+ expect(html.match(/class="thread-harness-switch"/g)).toHaveLength(2);
+ expect(html).not.toContain('approval mode retained');
+});

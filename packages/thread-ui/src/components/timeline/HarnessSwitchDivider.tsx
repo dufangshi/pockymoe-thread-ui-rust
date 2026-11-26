@@ -7,11 +7,11 @@ import { MiddleName } from '../copy/MiddleName';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../graph-ui/Tooltip';
 
 export type DescribeHandoffModel = (agentId: string, model: string) => string | undefined;
-export function HarnessSwitchDivider({ turn, previous, describeModel }: { turn: ThreadTurnDto; previous?: ThreadTurnDto; describeModel?: DescribeHandoffModel | undefined }) {
+export function HarnessSwitchDivider({ turn, previous, describeModel, entry }: { entry?: import('@pockymoe/shared').ThreadHistoryItemDto; turn: ThreadTurnDto; previous?: ThreadTurnDto; describeModel?: DescribeHandoffModel | undefined }) {
   useI18n();
   const [open, setOpen] = useState(false);
   const openAtPointerDown = useRef(false);
-  const change = turn.items.find(item => item.harnessSwitch)?.harnessSwitch;
+  const change = entry?.harnessSwitch ?? turn.items.find(item => item.harnessSwitch)?.harnessSwitch;
   const from = change?.fromAgentId ?? previous?.agentId;
   const to = change?.agentId ?? turn.agentId;
   if (!from || !to || (!change && from === to)) return null;

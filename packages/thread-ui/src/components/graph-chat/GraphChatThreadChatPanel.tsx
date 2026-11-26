@@ -393,6 +393,7 @@ export function GraphChatThreadChatPanel({
     return (
       <TimelineComponent
         threadId={detail.thread.id}
+        harnessSwitches={detail.harnessSwitches}
         turns={detail.turns}
         totalTurnCount={detail.totalTurnCount ?? detail.turns.length}
         pendingRequests={detail.pendingRequests}

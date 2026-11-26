@@ -368,3 +368,7 @@
 }
 .terminal-paste-field > div { display: flex; justify-content: flex-end; gap: 8px; }
 .terminal-paste-field button:disabled { opacity: .45; }
+
+/* One terminal outside a thread's panel (a harness sign-in window): no
+   header, tabs or splits; the host gives it its height. */
+.single-shell-terminal { height: 100%; min-height: 0; }

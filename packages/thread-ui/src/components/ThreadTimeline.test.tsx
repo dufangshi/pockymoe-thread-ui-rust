@@ -1731,7 +1731,7 @@ it('renders turn changes and offers Edit from here on the starting user message'
   setLocale('en', false);
   const edit = vi.fn(), open = vi.fn();
   const node = render(<ThreadTimeline liveOutput="" turns={[completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Fix parser' }, { id: 'reply', kind: 'agentMessage', text: 'Done' }])]} adapter={{ onEditTurn: edit, renderTurnChanges: turnId => <button onClick={() => open(turnId)}>1 file +2 −1</button> }} />);
-  const button = Array.from(node.querySelectorAll('button')).find(button => button.textContent === 'Edit from here');
+  const button = Array.from(node.querySelectorAll('button')).find(button => button.getAttribute('aria-label') === 'Edit from here');
   expect(button).toBeTruthy();
   flushSync(() => button!.click());
   expect(edit).toHaveBeenCalledWith('turn-1');

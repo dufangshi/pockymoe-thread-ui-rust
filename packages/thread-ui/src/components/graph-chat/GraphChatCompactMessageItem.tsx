@@ -5,7 +5,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { Brain } from 'lucide-react';
+import { Brain, PencilLine } from 'lucide-react';
 import { CopyButton } from '../copy/CopyButton';
 import { ForkTurnButton } from './ForkTurnButton';
 
@@ -121,7 +121,7 @@ export const GraphChatCompactMessageItem = memo(
     // Fork sits beside copy and appears with it (hover, focus or a tap).
     const copyButton = (
       <>
-        {item.kind === 'userMessage' && editTurnId && adapter?.onEditTurn && <button type="button" className="thread-graph-message-copy" onClick={() => adapter.onEditTurn?.(editTurnId)}>{i18nLocale === 'zh-CN' ? '从这里编辑' : 'Edit from here'}</button>}
+        {item.kind === 'userMessage' && editTurnId && adapter?.onEditTurn && <button type="button" className="thread-graph-message-copy" aria-label={i18nLocale === 'zh-CN' ? '从这里编辑' : 'Edit from here'} title={i18nLocale === 'zh-CN' ? '从这里编辑' : 'Edit from here'} onClick={() => adapter.onEditTurn?.(editTurnId)}><PencilLine data-icon="edit-from-here" className="h-3.5 w-3.5" aria-hidden="true" /></button>}
         {onForkTurn && forkTurnId ? <ForkTurnButton onFork={() => onForkTurn(forkTurnId)} /> : null}
         <CopyButton value={text} label={copyLabel} className="thread-graph-message-copy" />
       </>

@@ -22,7 +22,8 @@ export function transcriptAgentFor(thread: { provider?: string | null; agentId?:
 }
 
 export function TranscriptAgentProvider({ agent, children }: { agent: TranscriptAgent | null; children: ReactNode }) {
-  return <TranscriptAgentContext.Provider value={agent}>{children}</TranscriptAgentContext.Provider>;
+  const inherited = useContext(TranscriptAgentContext);
+  return <TranscriptAgentContext.Provider value={agent ?? inherited}>{children}</TranscriptAgentContext.Provider>;
 }
 
 /** True when the applied theme presents replies with the agent's identity. */

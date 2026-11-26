@@ -756,3 +756,5 @@
      conversation's empty top edge rather than up into the top bar. */
   .thread-relation-back::before { content: ''; position: absolute; inset: -2px -7px -14px; }
 }
+
+.thread-harness-switch { margin: 1rem 0; padding: .5rem; border-block: 1px solid var(--theme-border); color: var(--theme-fg-muted); text-align: center; font-size: .75rem; overflow-wrap: anywhere; }

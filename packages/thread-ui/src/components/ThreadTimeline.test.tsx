@@ -15,7 +15,6 @@ const shellSettings = vi.hoisted(() => ({ showReasoningSummaries: true }));
 vi.mock('../app-shell/AppShellNavContext', () => ({ useAppShellNav: () => shellSettings }));
 import {
   formatLongTimestamp,
-  formatShortTimestamp,
 } from './threadPresentation';
 
 let root: Root | null = null;

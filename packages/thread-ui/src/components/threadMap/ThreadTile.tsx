@@ -2,6 +2,7 @@ import { memo, type CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import { formatDate, getLocale, translate, useI18n } from '../../i18n';
 import { StatusMark } from '../StatusMark';
 import { themeAgentName } from '../themeAgent';
+import { AgentChip } from '../AgentChip';
 import { Network } from 'lucide-react';
 import { TokenMetricIcon } from '../timeline/TokenMetricIcon';
 import { TokenUsageCost } from '../timeline/TokenUsageCost';
@@ -14,16 +15,7 @@ const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
-/** Monograms for agents a theme gives no art. */
-const MONOGRAMS: Record<string, string> = {
-  claude: 'Cl', codex: 'Cx', copilot: 'Co', cursor: 'Cu', deepseek: 'DS', gemini: 'Ge', grok: 'Gk', kimi: 'Ki', opencode: 'OC', qwen: 'Qw',
-};
-const monogram = (agent: string) => MONOGRAMS[agent] ?? agent.replace(/[^a-z0-9]/gi, '').slice(0, 2).replace(/^./, c => c.toUpperCase());
-
-/** An agent's mark: the theme's art for it (filled in by the map), else a monogram. */
-export function AgentChip({ agent }: { agent: string | undefined }) {
-  return agent ? <span className="thread-map-agent" data-agent={agent} aria-hidden="true">{monogram(agent)}</span> : null;
-}
+export { AgentChip } from '../AgentChip';
 
 /** A duration in words, for sentences: "4 h 12 min". */
 export function formatRunTime(ms: number) {

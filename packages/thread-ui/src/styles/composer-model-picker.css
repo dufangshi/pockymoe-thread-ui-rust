@@ -1,0 +1,358 @@
+/* The composer's model picker (ComposerModelPicker): an agent rail, a search, the
+   agent in view's models with their facts, and a foot with effort or the
+   handoff note. A popover on desktop, a bottom sheet on phones. */
+
+.thread-ui-shell .model-picker-surface.thread-composer-menu-surface {
+  --composer-menu-surface-bg: var(--theme-panel);
+  width: min(23rem, calc(100vw - 1rem));
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--theme-border-strong, var(--theme-border));
+  border-radius: 12px;
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: var(--theme-shadow, 0 12px 32px rgb(0 0 0 / 0.22));
+}
+.thread-ui-shell .model-picker-surface.thread-composer-menu-surface[data-rail] { width: min(27rem, calc(100vw - 1rem)); }
+
+.model-picker {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: inherit;
+  font-size: 12px;
+  line-height: 16px;
+}
+.model-picker-main { display: flex; flex: 1 1 auto; min-height: 0; }
+
+/* ── Agents ───────────────────────────────────────────────────────────────── */
+.model-picker-rail {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 4px;
+  width: 46px;
+  padding: 6px 5px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  border-right: 1px solid var(--theme-border);
+  background: color-mix(in oklab, var(--theme-fg) 3.5%, transparent);
+}
+.model-picker-rail::-webkit-scrollbar { display: none; }
+.model-picker-agent-tab {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  color: inherit;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .model-picker-agent-tab:hover { background: var(--theme-hover); }
+}
+.model-picker-agent-tab[aria-pressed='true'] {
+  background: var(--theme-panel);
+  box-shadow: inset 0 0 0 1px var(--theme-border-strong, var(--theme-border));
+}
+/* The agent in view: a bar on the rail's edge, like a selected tab. */
+.model-picker-agent-tab[aria-pressed='true']::before {
+  content: '';
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  left: -5px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--theme-accent-solid);
+}
+.model-picker-agent-tab .thread-map-agent { width: 22px; height: 22px; border-radius: 6px; font-size: 9.5px; }
+/* The thread's own agent: a small dot on its mark. */
+.model-picker-agent-tab[data-current]::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--theme-accent-solid);
+  box-shadow: 0 0 0 2px var(--theme-panel);
+}
+.model-picker-agent-tab:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
+
+/* ── Search and list ──────────────────────────────────────────────────────── */
+.model-picker-column { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; min-height: 0; }
+.model-picker-column > .model-picker-list:first-child { padding-top: 4px; }
+.model-picker-search-box {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  margin: 8px 8px 2px;
+  padding: 0 8px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  /* The menu's inputs are painted with the panel colour (composer-plan.css). */
+  background: var(--theme-panel);
+  color: var(--theme-fg-muted);
+  cursor: text;
+}
+.model-picker-search-box:has(input:focus) { border-color: var(--theme-accent-border, var(--theme-accent-solid)); }
+.model-picker-search-box > svg { flex: none; width: 13px; height: 13px; }
+.thread-ui-shell .model-picker .model-picker-search {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+  color: var(--theme-fg);
+  font: inherit;
+  font-size: 12px;
+}
+.model-picker-search::-webkit-search-cancel-button { cursor: pointer; }
+
+.model-picker-list {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 16rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 4px 6px;
+}
+/* With agents to switch between, the list keeps one height so the window does
+   not jump as the rail changes agents. */
+.model-picker-surface[data-rail] .model-picker-list { height: 16rem; }
+
+.model-picker-head,
+.model-picker-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 14px;
+  align-items: center;
+  column-gap: 8px;
+}
+.model-picker-list[data-facts] :is(.model-picker-head, .model-picker-row) {
+  grid-template-columns: minmax(0, 1fr) 3.2rem 5.6rem 14px;
+}
+.model-picker-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-height: 22px;
+  padding: 4px 8px 2px;
+  background: var(--theme-panel);
+  color: var(--theme-fg-muted);
+  font-size: 10.5px;
+  line-height: 14px;
+}
+.model-picker-head-agent { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.model-picker-head-agent .thread-map-agent { width: 14px; height: 14px; border-radius: 4px; font-size: 7px; }
+.model-picker-head-name { overflow: hidden; color: var(--theme-fg-soft, var(--theme-fg)); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.model-picker-head-tag {
+  flex: none;
+  white-space: nowrap;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--theme-accent-soft, color-mix(in oklab, var(--theme-accent-solid) 14%, transparent));
+  color: var(--theme-fg-soft, var(--theme-fg));
+  font-size: 10px;
+  line-height: 15px;
+}
+.model-picker-group + .model-picker-group { margin-top: 4px; }
+
+.model-picker-row {
+  width: 100%;
+  min-height: 30px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  color: var(--theme-fg);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .model-picker-row:hover:not(:disabled) { background: var(--theme-hover); }
+}
+.model-picker-row:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
+.model-picker-row[aria-checked='true'] { background: var(--theme-accent-soft, var(--theme-hover)); }
+.model-picker-row[data-pending] { box-shadow: inset 0 0 0 1.5px var(--theme-accent-border, var(--theme-accent-solid)); }
+.model-picker-row:disabled { cursor: not-allowed; opacity: 0.55; }
+.model-picker-row-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.model-picker-fact {
+  overflow: hidden;
+  color: var(--theme-fg-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.model-picker-head .model-picker-fact { font-size: 10.5px; }
+.model-picker-row-mark { display: grid; place-items: center; width: 14px; height: 14px; color: var(--theme-accent-solid); }
+.model-picker-row-mark > svg { width: 14px; height: 14px; stroke-width: 2.5; }
+.model-picker-status { display: flex; align-items: center; gap: 4px; margin: 0; padding: 10px 8px; color: var(--theme-fg-muted); }
+
+/* ── Preview of what is handed over ───────────────────────────────────────── */
+.model-picker-preview-head { display: flex; flex: none; align-items: center; gap: 6px; padding: 6px 6px 4px; }
+.model-picker-preview-head .model-picker-head-name { flex: 1; min-width: 0; font-size: 12px; }
+.model-picker-back,
+.thread-ui-shell .model-picker .model-picker-copy {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  color: var(--theme-fg-muted);
+}
+.model-picker-back > svg { width: 15px; height: 15px; }
+@media (hover: hover) {
+  .model-picker-back:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
+.model-picker-preview {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 18rem;
+  margin: 0 8px 8px;
+  padding: 8px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-bg);
+  color: var(--theme-fg-soft, var(--theme-fg));
+  font-family: var(--theme-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 11px;
+  line-height: 15px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ── Foot: effort, the handoff note, harness settings ─────────────────────── */
+.model-picker-foot { flex: none; padding: 0 6px 6px; border-top: 1px solid var(--theme-border); }
+.model-picker-foot > .composer-reasoning { margin-top: 0; border-top: 0; }
+.model-picker-note { display: grid; gap: 3px; padding: 8px 4px 4px; }
+.model-picker-note p { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin: 0; }
+.model-picker-note-line { color: var(--theme-fg); }
+.model-picker-note-muted { display: inline-flex; align-items: center; gap: 4px; color: var(--theme-fg-muted); font-size: 11px; }
+.model-picker-note-error { color: var(--theme-fg); }
+.model-picker-link {
+  padding: 0;
+  border-radius: 4px;
+  color: var(--theme-accent-solid);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+:root[data-theme-effective='light'] .model-picker-link { color: color-mix(in oklab, var(--theme-accent-solid) 78%, black); }
+.model-picker-link:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 2px; }
+.model-picker-stop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  margin-top: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--theme-accent-solid);
+  color: var(--theme-accent-solid-fg, #fff);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.model-picker-stop:disabled { cursor: progress; opacity: 0.7; }
+.model-picker-stop:focus-visible { outline: 2px solid var(--theme-fg); outline-offset: 2px; }
+.model-picker-stop > svg { width: 14px; height: 14px; }
+.model-picker-stop-target { overflow: hidden; font-weight: 400; opacity: 0.85; text-overflow: ellipsis; white-space: nowrap; }
+.model-picker-applies { padding: 2px 4px; }
+.model-picker-harness {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 30px;
+  margin-top: 4px;
+  padding: 5px 6px;
+  border-top: 1px solid var(--theme-border);
+  border-radius: 0 0 7px 7px;
+  color: var(--theme-fg-muted);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.model-picker-harness > svg { width: 14px; height: 14px; flex: none; }
+@media (hover: hover) {
+  .model-picker-harness:hover { background: var(--theme-hover); color: var(--theme-fg); }
+}
+.model-picker-harness:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: -2px; }
+
+/* ── Phone sheet ──────────────────────────────────────────────────────────── */
+/* One height whatever the view shows (search results, a preview), so the sheet
+   does not jump under the finger; a keyboard shrinks it with the visible page. */
+.thread-context-surface.is-sheet.model-picker-sheet .model-picker {
+  height: min(80dvh, calc(var(--sheet-height, 100dvh) - 3rem));
+  max-height: min(80dvh, calc(var(--sheet-height, 100dvh) - 3rem));
+  font-size: 13px;
+  line-height: 18px;
+}
+.model-picker-sheet-head { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px 4px 16px; }
+.model-picker-sheet-title { margin: 0; font-size: 14px; font-weight: 600; line-height: 20px; }
+.model-picker-close { display: inline-grid; flex: none; place-items: center; width: 40px; height: 40px; border-radius: 8px; color: var(--theme-fg-muted); }
+.model-picker-close > svg { width: 18px; height: 18px; }
+.model-picker-close:active { background: var(--theme-hover); }
+.model-picker[data-phone] .model-picker-rail { width: 54px; padding: 6px 5px; }
+.model-picker[data-phone] .model-picker-agent-tab { width: 44px; height: 44px; }
+.model-picker[data-phone] .model-picker-agent-tab[aria-pressed='true']::before { left: -5px; }
+.model-picker[data-phone] .model-picker-agent-tab .thread-map-agent { width: 26px; height: 26px; font-size: 11px; }
+.model-picker[data-phone] .model-picker-search-box { height: 38px; }
+.thread-ui-shell .model-picker[data-phone] .model-picker-search { font-size: 16px; }
+.model-picker[data-phone] .model-picker-list { height: auto; max-height: none; min-height: 12rem; }
+.model-picker[data-phone] .model-picker-row { min-height: 44px; font-size: 13px; }
+.model-picker[data-phone] .model-picker-list[data-facts] :is(.model-picker-head, .model-picker-row) {
+  grid-template-columns: minmax(0, 1fr) 3.1rem 5.5rem 14px;
+}
+.model-picker[data-phone] .model-picker-foot { padding: 0 10px calc(8px + env(safe-area-inset-bottom)); }
+.model-picker[data-phone] .model-picker-harness { min-height: 44px; font-size: 13px; }
+.model-picker[data-phone] .model-picker-stop { min-height: 44px; width: 100%; font-size: 13px; }
+.model-picker[data-phone] .model-picker-link { min-height: 32px; }
+.model-picker[data-phone] .model-picker-back,
+.thread-ui-shell .model-picker[data-phone] .model-picker-copy { width: 40px; height: 40px; }
+.model-picker[data-phone] .model-picker-preview { height: auto; min-height: 14rem; }
+
+/* ── Fork panel: which agent the fork goes to ─────────────────────────────── */
+.composer-fork-agents { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 2px 4px 8px; }
+.composer-fork-agents-label { margin-right: 2px; color: var(--theme-fg-muted); font-size: 11px; }
+.composer-fork-agent {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 3px 9px 3px 5px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  color: var(--theme-fg);
+  font-size: 12px;
+  cursor: pointer;
+}
+.composer-fork-agent .thread-map-agent { width: 18px; height: 18px; border-radius: 5px; font-size: 8px; }
+.composer-fork-agent[aria-checked='true'] {
+  border-color: var(--theme-accent-border, var(--theme-accent-solid));
+  background: var(--theme-accent-soft, var(--theme-hover));
+}
+.composer-fork-agent:disabled { cursor: not-allowed; opacity: 0.55; }
+.composer-fork-agent:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
+@media (pointer: coarse) {
+  .composer-fork-agent { min-height: 40px; padding-right: 12px; }
+}

@@ -11,10 +11,10 @@ import { InputGroupButton } from '../graph-ui/InputGroup';
 import type { SettingsMenu } from './types';
 import { formatReasoningEffortLabel, reasoningEffortColor } from './composerUtils';
 import { ComposerContextControl, type ThreadContextInspector } from './ComposerContextControl';
-import { ComposerMenuSurface } from './ComposerMenuSurface';
-import { Check, ChevronDown, Loader2, Send, Target } from 'lucide-react';
+import { ComposerModelPicker } from './modelPicker/ComposerModelPicker';
+import type { ComposerModelPickerSource } from './modelPicker/modelPickerLogic';
+import { ChevronDown, Loader2, Send, Target } from 'lucide-react';
 import { useThemeFeature } from '../themeHooks';
-import { ComposerReasoningSlider } from './ComposerReasoningSlider';
 
 /** Send, but later: an up arrow with a small clock. */
 function SendLaterIcon() {
@@ -39,6 +39,7 @@ export function ComposerSettingsToolbar({
   contextInspector,
   onCompact,
   onOpenHarness,
+  modelPicker,
   compactBusy = false,
   compactDisabled = false,
   reasoningEffort,
@@ -76,6 +77,8 @@ export function ComposerSettingsToolbar({
   /** Present where this thread can be compacted. */
   onCompact?: (() => Promise<void> | void) | undefined;
   onOpenHarness?: (() => void) | undefined;
+  /** Model facts and, for an owner, switching the thread to another agent. */
+  modelPicker?: ComposerModelPickerSource | undefined;
   compactBusy?: boolean;
   compactDisabled?: boolean;
   reasoningEffort: ReasoningEffortDto | null | undefined;
@@ -179,62 +182,20 @@ export function ComposerSettingsToolbar({
           />
         ) : null}
         {openMenu === 'model' && (
-          <ComposerMenuSurface
-            align="end"
-            aria-label={translate('chat.model')}
-            // The effort slider joins the arrow order; left and right still move it.
-            menu={{ onClose: () => onSetOpenMenu(() => null), itemSelector: '[role^="menuitem"]:not([disabled]), .composer-reasoning-thumb:not([data-disabled])' }}
-            className="composer-model-menu w-[min(19rem,calc(100vw-2rem))] rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel)] p-1.5 text-[var(--theme-fg)] shadow-xl"
-          >
-            <p className="composer-model-menu-heading flex items-baseline justify-between gap-3 px-2 py-1 text-xs text-[var(--theme-fg-muted)]">
-              <span>{translate('chat.model')}</span>
-              {/* While a turn runs, say when a change takes effect. */}
-              {queueing ? (
-                <span className="composer-model-menu-note text-[11px]">
-                  {translate(liveModelSwitch ? 'chat.modelSwitchNextCall' : 'chat.modelSwitchNextTurn')}
-                </span>
-              ) : null}
-            </p>
-            {modelOptions.map((entry) => (
-              <button
-                key={entry.id}
-                type="button"
-                role="menuitemradio"
-                aria-checked={entry.model === model}
-                disabled={modelControlsDisabled || settingsBusy}
-                onClick={() =>
-                  onUpdateSettings({
-                    model: entry.model,
-                    reasoningEffort: entry.defaultReasoningEffort ?? null,
-                  })
-                }
-                className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-left text-xs hover:bg-[var(--theme-hover)] disabled:cursor-not-allowed"
-              >
-                <span>{entry.displayName}</span>
-                {entry.model === model && (
-                  <Check size={14} className="shrink-0" />
-                )}
-              </button>
-            ))}
-            {supportedEfforts.length > 0 && (
-              <ComposerReasoningSlider
-                key={model}
-                efforts={supportedEfforts}
-                effort={reasoningEffort}
-                defaultEffort={
-                  modelOptions.find((entry) => entry.model === model)
-                    ?.defaultReasoningEffort
-                }
-                disabled={effortControlsDisabled || settingsBusy}
-                onCommit={(next) => onUpdateSettings({ reasoningEffort: next })}
-              />
-            )}
-            {onOpenHarness && <button type="button" role="menuitem"
-              className="mt-1 flex min-h-10 w-full items-center rounded-lg border-t border-[var(--theme-border)] px-2 py-2 text-left text-xs"
-              onClick={() => { onSetOpenMenu(() => null); onOpenHarness(); }}>
-              {translate('settings.harnessSettings')}
-            </button>}
-          </ComposerMenuSurface>
+          <ComposerModelPicker
+            model={model}
+            modelOptions={modelOptions}
+            reasoningEffort={reasoningEffort}
+            supportedEfforts={supportedEfforts}
+            running={queueing}
+            liveModelSwitch={liveModelSwitch}
+            modelDisabled={modelControlsDisabled || settingsBusy}
+            effortDisabled={effortControlsDisabled || settingsBusy}
+            source={modelPicker}
+            onUpdateSettings={onUpdateSettings}
+            onOpenHarness={onOpenHarness}
+            onClose={() => onSetOpenMenu(() => null)}
+          />
         )}
       </div>
 

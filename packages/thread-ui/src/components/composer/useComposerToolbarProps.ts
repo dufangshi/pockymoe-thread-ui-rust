@@ -14,6 +14,8 @@ import type {
 
 import type { ThreadShellControlState } from '../../types';
 import type { ThreadContextInspector } from './ComposerContextControl';
+import type { ComposerForkAgentChoice } from './ComposerForkPanels';
+import type { ComposerModelPickerSource } from './modelPicker/modelPickerLogic';
 import {
   toolboxItemClassName,
   toolboxItemActive,
@@ -86,6 +88,8 @@ export interface UseComposerToolbarPropsInput {
   contextInspector?: ThreadContextInspector | null | undefined;
   onCompact?: (() => Promise<void> | void) | undefined;
   onOpenHarness?: (() => void) | undefined;
+  modelPicker?: ComposerModelPickerSource | undefined;
+  forkAgents?: ComposerForkAgentChoice | null | undefined;
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
   displayedCollaborationMode: CollaborationModeDto;
@@ -202,6 +206,8 @@ export function useComposerToolbarProps({
   contextInspector,
   onCompact,
   onOpenHarness,
+  modelPicker,
+  forkAgents,
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
@@ -293,6 +299,7 @@ export function useComposerToolbarProps({
         availableToolboxItems,
         planModeAvailable: capabilities.planMode,
         forkFromTurnAvailable: capabilities.forkFromTurn,
+        forkAgents,
         displayedCollaborationMode,
         settingsBusy,
         busy,
@@ -415,6 +422,7 @@ export function useComposerToolbarProps({
         contextUsage,
         contextInspector,
         onOpenHarness,
+        modelPicker,
         // Native capability or the current session's advertised command enables it.
         ...(onCompact && (capabilities.compact || availableToolboxItems.some((item) => item.action === 'compact')) ? { onCompact } : {}),
         compactBusy,

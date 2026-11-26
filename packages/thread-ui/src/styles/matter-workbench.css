@@ -67,11 +67,13 @@
   --thread-gc-fg: #121416;
   --thread-gc-fg-soft: #5b6269;
   --thread-gc-fg-muted: oklch(0.47 0.013 155);
-  --thread-gc-primary: #00a764;
-  --thread-gc-primary-hover: #00975a;
+  /* White on the primary fill and accent text on the light surfaces reach WCAG
+     4.5:1, the same values as the native app (#00a764 / #008b53 did not). */
+  --thread-gc-primary: #008650;
+  --thread-gc-primary-hover: #007244;
   --thread-gc-primary-fg: #fff;
   --thread-gc-accent-soft: #e5f8f0;
-  --thread-gc-accent-strong: #008b53;
+  --thread-gc-accent-strong: #007244;
   --thread-gc-accent-border: #bee9d8;
   --matter-chrome: oklch(0.885 0.008 145);
   --matter-composer-shadow: 0 18px 44px rgb(25 40 33 / 19%), 0 4px 12px rgb(25 40 33 / 10%);

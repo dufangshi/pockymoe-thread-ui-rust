@@ -354,6 +354,11 @@
 .thread-ui-shell.thread-context-sheet-layer {
   position: fixed;
   inset: 0;
+  /* On the visible part of the page (useSheetViewport): a software keyboard
+     shrinks only the visual viewport. */
+  top: auto;
+  bottom: var(--sheet-bottom, 0px);
+  height: var(--sheet-height, 100dvh);
   z-index: 95;
   display: flex;
   flex-direction: column;
@@ -366,7 +371,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-height: calc(100dvh - 3rem);
+  max-height: calc(var(--sheet-height, 100dvh) - 3rem);
   overflow: hidden;
   border: 1px solid var(--theme-border-strong, var(--theme-border));
   border-bottom: 0;

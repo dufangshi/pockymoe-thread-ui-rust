@@ -147,4 +147,25 @@ describe('ComposerForkPanels', () => {
 
     expect(view.textContent).toContain('No turns available to fork yet.');
   });
+
+  it('chooses the agent a fork goes to', () => {
+    const onChange = vi.fn();
+    const view = renderNode(
+      <ComposerForkPanel
+        busy={false}
+        forkBusy={false}
+        forkFromTurnAvailable={false}
+        composerMenuItemClassName="menu-item"
+        forkAgents={{ agents: [{ id: 'codex', name: 'Codex' }, { id: 'claude', name: 'Claude Agent' }], value: 'codex', currentAgentId: 'codex', onChange }}
+        onForkLatest={vi.fn()}
+        onSelectForkTurnPanel={vi.fn()}
+      />,
+    );
+    const group = view.querySelector('[role="radiogroup"]')!;
+    expect(group.getAttribute('aria-label')).toBe('Fork into');
+    const radios = [...group.querySelectorAll<HTMLButtonElement>('[role="radio"]')];
+    expect(radios.map((radio) => [radio.textContent, radio.getAttribute('aria-checked')])).toEqual([['CxCodex', 'true'], ['ClClaude Agent', 'false']]);
+    flushSync(() => radios[1]!.click());
+    expect(onChange).toHaveBeenCalledWith('claude');
+  });
 });

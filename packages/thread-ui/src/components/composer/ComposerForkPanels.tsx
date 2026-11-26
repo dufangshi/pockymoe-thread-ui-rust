@@ -1,14 +1,28 @@
 import { translate, useI18n } from '../../i18n';
 import type { ThreadForkTurnOptionDto } from '@pockymoe/shared';
 
+import { useRef } from 'react';
+import { AgentChip, useAgentArt } from '../AgentChip';
 import { ErrorMark } from '../copy/ErrorMark';
+import { themeAgentKey } from '../themeAgent';
+import type { ModelPickerAgent } from './modelPicker/modelPickerLogic';
 import type { SlashPanelState } from './types';
+
+/** The fork panel's agent row: fork into this agent or another one. */
+export interface ComposerForkAgentChoice {
+  /** Agents a fork can go to; the current one only when it forks natively. */
+  agents: ModelPickerAgent[];
+  value: string;
+  currentAgentId: string;
+  onChange: (agentId: string) => void;
+}
 
 interface ComposerForkPanelProps {
   busy: boolean;
   forkBusy: boolean;
   forkFromTurnAvailable: boolean;
   composerMenuItemClassName: string;
+  forkAgents?: ComposerForkAgentChoice | null | undefined;
   onForkLatest: () => Promise<void> | void;
   onSelectForkTurnPanel: () => Promise<void> | void;
 }
@@ -18,10 +32,13 @@ export function ComposerForkPanel({
   forkBusy,
   forkFromTurnAvailable,
   composerMenuItemClassName,
+  forkAgents,
   onForkLatest,
   onSelectForkTurnPanel,
 }: ComposerForkPanelProps) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
+  const agentRow = useRef<HTMLDivElement>(null);
+  useAgentArt(agentRow, [forkAgents?.agents]);
   const forkLatest = (
     <button
       type="button"
@@ -39,6 +56,26 @@ export function ComposerForkPanel({
   );
   return (
     <div className="p-2">
+      {forkAgents && forkAgents.agents.length > 1 ? (
+        // Another agent gets the history handed over in a new thread (docs/harness-switching.md).
+        <div ref={agentRow} className="composer-fork-agents" role="radiogroup" aria-label={translate('chat.forkInto')}>
+          <span className="composer-fork-agents-label">{translate('chat.forkInto')}</span>
+          {forkAgents.agents.map((agent) => (
+            <button
+              key={agent.id}
+              type="button"
+              role="radio"
+              aria-checked={agent.id === forkAgents.value}
+              disabled={forkBusy}
+              className="composer-fork-agent"
+              onClick={(event) => { event.stopPropagation(); forkAgents.onChange(agent.id); }}
+            >
+              <AgentChip agent={themeAgentKey(agent.id)} />
+              <span>{agent.name}</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
       {/* While a turn runs the fork rows stay, greyed; the mark says why. */}
       {busy ? (
         <div className="flex items-center gap-1">
@@ -83,7 +120,7 @@ export function ComposerForkTurnsPanel({
   onForkTurn,
   onRetry,
 }: ComposerForkTurnsPanelProps) {
-  const { locale: i18nLocale } = useI18n();
+  useI18n();
   return (
     <div className="p-2">
       {forkTurnOptionsState.status === 'loading' &&

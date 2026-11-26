@@ -39,7 +39,7 @@ function useMenuKeyboard(menuRef, open, onClose, itemSelector = '[role^="menuite
     const items = () => [...menu.querySelectorAll(itemSelector)];
     items()[0]?.focus({ preventScroll: true });
     const key = (event) => {
-      if ((event.key === "Home" || event.key === "End") && event.target?.getAttribute?.("role") === "slider") return;
+      if ((event.key === "Home" || event.key === "End") && ["slider", "radio"].includes(event.target?.getAttribute?.("role") ?? "")) return;
       const list = items();
       const index = list.indexOf(document.activeElement);
       const move = (to) => {

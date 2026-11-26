@@ -1,3 +1,5 @@
+import { HarnessSwitchDivider } from './timeline/HarnessSwitchDivider';
+import { TranscriptAgentProvider, transcriptAgentFor } from './graph-chat/TranscriptAgent';
 import { translate, useI18n } from '../i18n';
 import { mergeThreadHistoryItem } from '@pockymoe/shared';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -1041,7 +1043,10 @@ function ThreadTimelineComponent({
                       onRespondToRequest={onRespondToRequest ?? undefined}
                     />
                   ) : null}
-                  {peerWorkForTurn(turn) && !continuations.length ? renderPeerWork(turn) : renderWorkTurn(turn, visibleIndex, continuations)}
+                  <HarnessSwitchDivider turn={turn} {...(visibleTurns[visibleIndex - 1] ? {previous:visibleTurns[visibleIndex - 1]} : {})} />
+                  <TranscriptAgentProvider agent={transcriptAgentFor(turn)}>
+                    {peerWorkForTurn(turn) && !continuations.length ? renderPeerWork(turn) : renderWorkTurn(turn, visibleIndex, continuations)}
+                  </TranscriptAgentProvider>
                   {turn.status !== 'inProgress' && adapter?.renderTurnChanges?.(turn.id)}
                   {continuations.map(child => <div key={`peer-requests:${child.id}`}>
                     {(activityNoteAnchors.beforeTurnId.get(child.id)?.length ?? 0) > 0 ? <ActivityNoteSection

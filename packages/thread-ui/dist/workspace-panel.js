@@ -55,7 +55,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-SHS2CKRU.js";
+} from "./chunk-42B3CTAE.js";
 import {
   shellThemeProps,
   surfaceBehind,
@@ -71,7 +71,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-R2LITDNV.js";
+} from "./chunk-Z2VPGCZD.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
@@ -4344,7 +4344,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment5, jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-GIBOXW74.js")
+  () => import("./GraphWorkspaceMonacoEditor-SZMFO2XN.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function documentFacts(snapshot, state) {
@@ -4473,7 +4473,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-ARO5AYSM.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-IQA5YVAF.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -5848,7 +5848,7 @@ function GraphWorkspaceExplorer({
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { jsx as jsx21, jsxs as jsxs16 } from "react/jsx-runtime";
-var GraphVisualization = lazy2(() => import("./GraphVisualization-CCRHFTCE.js").then((module) => ({ default: module.GraphVisualization })));
+var GraphVisualization = lazy2(() => import("./GraphVisualization-KA3STU6V.js").then((module) => ({ default: module.GraphVisualization })));
 var DEFAULT_WORKSPACE_FEATURES = {
   workspace: true,
   toolUsage: false,

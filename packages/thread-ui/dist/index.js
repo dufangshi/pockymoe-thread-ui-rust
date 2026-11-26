@@ -59,7 +59,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-} from "./chunk-SHS2CKRU.js";
+} from "./chunk-42B3CTAE.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -96,7 +96,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-} from "./chunk-R2LITDNV.js";
+} from "./chunk-Z2VPGCZD.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -15234,7 +15234,7 @@ function useSheetViewport(enabled = true) {
 
 // src/components/SettingsDialog.tsx
 import { jsx as jsx48, jsxs as jsxs42 } from "react/jsx-runtime";
-function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId = "preferences", section, onSectionChange, panelScroll, contentProps, ...rootProps }) {
+function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, title, description, initialId = "preferences", section, onSectionChange, panelScroll, contentProps, ...rootProps }) {
   useI18n();
   const sheet = useSheetViewport(rootProps.open !== false);
   return /* @__PURE__ */ jsxs42(Dialog, { ...rootProps, children: [
@@ -15250,8 +15250,8 @@ function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraCon
         overlayClassName: "matter-settings-overlay",
         children: [
           /* @__PURE__ */ jsxs42(DialogHeader, { children: [
-            /* @__PURE__ */ jsx48(DialogTitle, { children: translate("files.settings") }),
-            /* @__PURE__ */ jsx48(DialogDescription, { children: translate("files.yourWorkspaceConnectedDeviceAndPersonalPreferences") })
+            /* @__PURE__ */ jsx48(DialogTitle, { children: title ?? translate("files.settings") }),
+            /* @__PURE__ */ jsx48(DialogDescription, { children: description ?? translate("files.yourWorkspaceConnectedDeviceAndPersonalPreferences") })
           ] }),
           extraContent,
           /* @__PURE__ */ jsx48(SettingsPanels, { sections, initialId, selected: section, onSelect: onSectionChange, scroll: panelScroll })
@@ -18897,6 +18897,9 @@ function ThreadWorkspaceLayout({
   settingsContent,
   globalSettingsContent,
   settingsSections,
+  settingsExtraContent,
+  settingsTitle,
+  settingsDescription,
   restrictedNavigation = false,
   scopedSettings = false,
   workspaceLabels = {},
@@ -19247,7 +19250,9 @@ function ThreadWorkspaceLayout({
               children: /* @__PURE__ */ jsx57(Settings, { "data-icon": "settings", className: "h-4 w-4" })
             }
           ),
-          extraContent: canUpdateThemeMode && !settingsSections ? /* @__PURE__ */ jsx57("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs50("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
+          title: settingsTitle,
+          description: settingsDescription,
+          extraContent: settingsSections && settingsExtraContent ? settingsExtraContent(() => changeSettingsOpen(false)) : canUpdateThemeMode && !settingsSections ? /* @__PURE__ */ jsx57("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs50("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
             /* @__PURE__ */ jsxs50("div", { className: "min-w-0", children: [
               /* @__PURE__ */ jsx57("p", { className: "font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
               /* @__PURE__ */ jsxs50("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
@@ -31937,6 +31942,9 @@ function ThreadDetailSurface({
   settingsContent,
   globalSettingsContent,
   settingsSections,
+  settingsExtraContent,
+  settingsTitle,
+  settingsDescription,
   renderRailSettings,
   settingsDialogOpen,
   onSettingsDialogOpenChange,
@@ -32190,6 +32198,9 @@ ${pageMark}` : pageMark } : composerProps,
       settingsContent,
       globalSettingsContent,
       settingsSections,
+      settingsExtraContent,
+      settingsTitle,
+      settingsDescription,
       renderRailSettings,
       ...settingsDialogOpen !== void 0 ? { settingsDialogOpen } : {},
       ...onSettingsDialogOpenChange ? { onSettingsDialogOpenChange } : {},
@@ -34358,7 +34369,7 @@ import {
 // src/components/threadMap/MapChrome.tsx
 import { useEffect as useEffect63, useRef as useRef65, useState as useState85 } from "react";
 import { createPortal as createPortal11 } from "react-dom";
-import { MoreVertical, Info as Info2 } from "lucide-react";
+import { Ellipsis as Ellipsis3, Info as Info2 } from "lucide-react";
 import { Fragment as Fragment43, jsx as jsx111, jsxs as jsxs98 } from "react/jsx-runtime";
 function DeviceStateMark({ offline = false }) {
   return /* @__PURE__ */ jsx111(
@@ -34422,7 +34433,7 @@ function DeviceMenu({ device, items }) {
           const box = trigger.current.getBoundingClientRect();
           setAnchor({ top: Math.max(8, Math.min(box.bottom + 4, window.innerHeight - items.length * 36 - 16)), left: Math.max(8, Math.min(box.right - 220, window.innerWidth - 228)) });
         },
-        children: /* @__PURE__ */ jsx111(MoreVertical, { "aria-hidden": "true" })
+        children: /* @__PURE__ */ jsx111(Ellipsis3, { "aria-hidden": "true" })
       }
     ),
     anchor && createPortal11(/* @__PURE__ */ jsx111(

@@ -24,7 +24,14 @@ const codexModels = [
   }),
   option('gpt-5.6-luna', '5.6 Luna', { defaultReasoningEffort: 'medium' }),
 ];
-const claudeModels = [option('opus', 'Opus 5.5', { isDefault: true, defaultReasoningEffort: 'high' }), option('haiku', 'Haiku 5.5')];
+const claudeModels = [
+  option('opus', 'Opus 5.5', {
+    isDefault: true,
+    defaultReasoningEffort: 'high',
+    supportedReasoningEfforts: [{ reasoningEffort: 'low', description: '' }, { reasoningEffort: 'medium', description: '' }, { reasoningEffort: 'high', description: '' }],
+  }),
+  option('haiku', 'Haiku 5.5'),
+];
 const summary: HandoffSummary = { turns: 3, estimatedTokens: 1200, resumesSession: false, text: '[Pockymoe portable history]\nTurn 1' };
 
 function deferred<T>() {
@@ -94,11 +101,11 @@ describe('ComposerModelPicker', () => {
   it('without switching shows only the current models, with no rail', async () => {
     await render();
     expect(document.querySelector('.model-picker-rail')).toBeNull();
-    // A short list of one agent's models needs no search.
-    expect(document.querySelector('.model-picker-search')).toBeNull();
     expect(rowNames()).toEqual(['6.1 Sol', '5.6 Luna']);
     expect(rows()[0]!.getAttribute('aria-checked')).toBe('true');
-    expect(document.querySelector('.composer-reasoning')).not.toBeNull();
+    // Effort is one row of chips, the current level chosen.
+    expect([...document.querySelectorAll('.model-picker-effort-chip')].map((chip) => [chip.textContent, chip.getAttribute('aria-checked')]))
+      .toEqual([['low', 'true'], ['high', 'false']]);
   });
 
   it('lists ACP Codex next to native Codex with its mark tagged and switches by agent key', async () => {
@@ -144,8 +151,8 @@ describe('ComposerModelPicker', () => {
     const note = document.querySelector('.model-picker-note')!.textContent;
     expect(note).toContain('Hands over 3 turns');
     expect(note).toContain('Resets plan, sandbox, fast mode and effort');
-    // The current model's effort belongs to the current agent's view only.
-    expect(document.querySelector('.composer-reasoning')).toBeNull();
+    // The target model's levels, its default chosen.
+    expect(document.querySelector('.model-picker-effort-chip[aria-checked="true"]')!.textContent).toBe('high');
     expect(rows()[1]!.getAttribute('aria-label')).toBe('Switch to Claude Agent · Haiku 5.5');
     await click(rows()[1]!);
     await settle();
@@ -246,10 +253,12 @@ describe('ComposerModelPicker', () => {
     expect(tab('Codex').getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('opens harness settings from its foot', async () => {
+  it('opens harness settings from the icon beside the search', async () => {
     const onOpenHarness = vi.fn();
     const props = await render({ onOpenHarness });
-    await click(document.querySelector('.model-picker-harness')!);
+    const settings = document.querySelector<HTMLButtonElement>('.model-picker-bar .model-picker-settings')!;
+    expect(settings.getAttribute('aria-label')).toBe('Harness settings');
+    await click(settings);
     expect(props.onClose).toHaveBeenCalled();
     expect(onOpenHarness).toHaveBeenCalled();
   });
@@ -286,5 +295,45 @@ describe('ComposerModelPicker', () => {
     expect(tab('Claude Agent').getAttribute('aria-pressed')).toBe('true');
     expect(document.querySelector('.model-picker-stop')!.textContent).toContain('Claude Agent · Haiku 5.5');
     expect(source.switchTo).not.toHaveBeenCalled();
+  });
+
+  it('applies the effort chosen for another agent with the switch', async () => {
+    const source = switching();
+    await render({ source: { switching: source } });
+    await click(tab('Claude Agent'));
+    await settle();
+    await click([...document.querySelectorAll('.model-picker-effort-chip')].find((chip) => chip.textContent === 'low')!);
+    expect(document.querySelector('.model-picker-effort-chip[aria-checked="true"]')!.textContent).toBe('low');
+    await click(rows()[0]!);
+    await settle();
+    expect(source.switchTo).toHaveBeenCalledWith({ agentId: 'claude', model: 'opus', reasoningEffort: 'low', stop: false });
+  });
+
+  it('changes the current effort with the arrow keys on its chips', async () => {
+    const props = await render();
+    const chip = document.querySelector<HTMLButtonElement>('.model-picker-effort-chip[aria-checked="true"]')!;
+    await act(async () => { chip.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); });
+    expect(props.onUpdateSettings).toHaveBeenCalledWith({ reasoningEffort: 'high' });
+  });
+
+  it('keeps the column header out of the scrolling list', async () => {
+    await render({ source: { facts: () => ({ contextWindow: 200_000 }) } });
+    const head = document.querySelector('.model-picker-head')!;
+    expect(head.closest('.model-picker-list')).toBeNull();
+    expect(head.textContent).toContain('Context');
+  });
+
+  it('shows the Git state in a preview as a summary, and copies the exact text', async () => {
+    const git = JSON.stringify({ ahead: 2, behind: 0, branch: 'master', conflicted: [], files: [{ path: 'a.txt' }, { path: 'src/b.rs' }], head: 'abc', operation: null, stashCount: 0, truncated: false, upstream: 'origin/master' });
+    const text = `[Pockymoe portable history]\nCurrent Git state:\n${git}\nTurn 1`;
+    await render({ source: { switching: switching({ preview: vi.fn(async () => ({ ...summary, text })) }) } });
+    await click(tab('Claude Agent'));
+    await settle();
+    await click(document.querySelector('.model-picker-link')!);
+    const shown = document.querySelector('.model-picker-preview')!.textContent!;
+    expect(shown).toContain('Branch master → origin/master · ahead 2 · behind 0');
+    expect(shown).toContain('2 changed files: a.txt, src/b.rs');
+    expect(shown).not.toContain('"files"');
+    expect(shown).toContain('Turn 1');
   });
 });

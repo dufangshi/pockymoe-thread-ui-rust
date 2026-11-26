@@ -32,8 +32,6 @@
     .matter-notifications-heading > button,
     .workspace-file-actions > button
   )::after { content: ''; position: absolute; inset: -6px; }
-  /* Menus' rows and the model list are finger-sized. */
-  .thread-ui-shell .composer-model-menu-heading ~ div > [role='menuitemradio'] { min-height: 44px; font-size: 13px; }
   /* Every dialog's close button. */
   [data-slot='dialog-close'] { min-width: 40px; min-height: 40px; display: grid; place-items: center; }
   /* Composer keys stay 34px and widen their touch area (composer-compact.css). */

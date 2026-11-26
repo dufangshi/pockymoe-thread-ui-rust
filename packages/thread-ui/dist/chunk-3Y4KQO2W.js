@@ -1949,9 +1949,10 @@ var authEn = {
 
 // src/i18n/chat.en.ts
 var chatEn = {
+  "chat.handoffDetails": "Handoff details",
   "chat.handoffTurnCount": { one: "{{count}} turn handed over", other: "{{count}} turns handed over" },
   "chat.handoffSettingsReset": "Plan, sandbox, fast mode and reasoning effort reset; approval mode retained.",
-  "chat.switchedHarness": "Switched from {{from}} to {{to}}",
+  "chat.switchedHarness": "{{from}} \u2192 {{to}}",
   "chat.turnNotificationOn": "Notify you when this turn ends",
   "chat.turnNotificationOff": "Subscribe to this turn",
   "chat.replyVersion": "Reply version",
@@ -7346,9 +7347,10 @@ var authZhCN = {
 
 // src/i18n/chat.zh-CN.ts
 var chatZhCN = {
+  "chat.handoffDetails": "\u4EA4\u63A5\u8BE6\u60C5",
   "chat.handoffTurnCount": { one: "\u5DF2\u4EA4\u63A5 {{count}} \u8F6E", other: "\u5DF2\u4EA4\u63A5 {{count}} \u8F6E" },
   "chat.handoffSettingsReset": "\u8BA1\u5212\u3001\u6C99\u7BB1\u3001\u5FEB\u901F\u6A21\u5F0F\u53CA\u63A8\u7406\u5F3A\u5EA6\u5DF2\u91CD\u7F6E\uFF1B\u5BA1\u6279\u6A21\u5F0F\u4FDD\u7559\u3002",
-  "chat.switchedHarness": "\u5DF2\u4ECE {{from}} \u5207\u6362\u5230 {{to}}",
+  "chat.switchedHarness": "{{from}} \u2192 {{to}}",
   "chat.turnNotificationOn": "\u7ED3\u675F\u65F6\u901A\u77E5\u4F60",
   "chat.turnNotificationOff": "\u8BA2\u9605\u8FD9\u4E00\u8F6E\u7684\u901A\u77E5",
   "chat.replyVersion": "\u56DE\u590D\u7248\u672C",

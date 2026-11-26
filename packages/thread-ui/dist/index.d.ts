@@ -780,9 +780,10 @@ interface ThreadTimelineProps {
         detail: ThreadHistoryItemDetailDto;
     }) => void;
     adapter?: ThreadTimelineAdapter | undefined;
+    describeHandoffModel?: ((agentId: string, model: string) => string | undefined) | undefined;
     autoCollapseCompletedTurns?: boolean;
 }
-declare function ThreadTimelineComponent({ threadId, turns: loadedTurns, totalTurnCount, pendingRequests, activeTurnId, threadRunning, backgroundAgentCount, renderTurnNotification, pendingSteers, livePlan, liveItems, backendProgress, respondingRequestId, onRespondToRequest, liveOutput, scrollRequestKey, searchTarget, previousTurnScrollRequestKey, nextTurnScrollRequestKey, bottomSpacer, className, onTailVisibilityChange, onPreviousTurnAvailabilityChange, onNextTurnAvailabilityChange, loadingEarlier, onLoadEarlier, ephemeralUserNote, answeredRequestNotes, activityNotes, optimisticSteers, optimisticTurn, onLoadHistoryItemDetail, onLoadTurnDetail, onOpenThread, onSelectArtifact, onSelectHistoryItemDetail, adapter, autoCollapseCompletedTurns, }: ThreadTimelineProps): react.JSX.Element;
+declare function ThreadTimelineComponent({ threadId, turns: loadedTurns, totalTurnCount, pendingRequests, activeTurnId, threadRunning, backgroundAgentCount, renderTurnNotification, pendingSteers, livePlan, liveItems, backendProgress, respondingRequestId, onRespondToRequest, liveOutput, scrollRequestKey, searchTarget, previousTurnScrollRequestKey, nextTurnScrollRequestKey, bottomSpacer, className, onTailVisibilityChange, onPreviousTurnAvailabilityChange, onNextTurnAvailabilityChange, loadingEarlier, onLoadEarlier, ephemeralUserNote, answeredRequestNotes, activityNotes, optimisticSteers, optimisticTurn, onLoadHistoryItemDetail, onLoadTurnDetail, onOpenThread, onSelectArtifact, onSelectHistoryItemDetail, adapter, autoCollapseCompletedTurns, describeHandoffModel, }: ThreadTimelineProps): react.JSX.Element;
 declare const ThreadTimeline: react.MemoExoticComponent<typeof ThreadTimelineComponent>;
 
 interface ThreadShellControlState {

@@ -3268,12 +3268,13 @@ declare const en: {
         readonly one: "{{count}} item";
         readonly other: "{{count}} items";
     };
+    readonly "chat.handoffDetails": "Handoff details";
     readonly "chat.handoffTurnCount": {
         readonly one: "{{count}} turn handed over";
         readonly other: "{{count}} turns handed over";
     };
     readonly "chat.handoffSettingsReset": "Plan, sandbox, fast mode and reasoning effort reset; approval mode retained.";
-    readonly "chat.switchedHarness": "Switched from {{from}} to {{to}}";
+    readonly "chat.switchedHarness": "{{from}} → {{to}}";
     readonly "chat.turnNotificationOn": "Notify you when this turn ends";
     readonly "chat.turnNotificationOff": "Subscribe to this turn";
     readonly 'chat.replyVersion': "Reply version";
@@ -8767,12 +8768,13 @@ declare const zhCN: {
         readonly one: "{{count}} 项";
         readonly other: "{{count}} 项";
     };
+    "chat.handoffDetails": "交接详情";
     "chat.handoffTurnCount": {
         readonly one: "已交接 {{count}} 轮";
         readonly other: "已交接 {{count}} 轮";
     };
     "chat.handoffSettingsReset": "计划、沙箱、快速模式及推理强度已重置；审批模式保留。";
-    "chat.switchedHarness": "已从 {{from}} 切换到 {{to}}";
+    "chat.switchedHarness": "{{from}} → {{to}}";
     "chat.turnNotificationOn": "结束时通知你";
     "chat.turnNotificationOff": "订阅这一轮的通知";
     'chat.replyVersion': "回复版本";
@@ -14288,12 +14290,13 @@ declare const resources: {
             readonly one: "{{count}} item";
             readonly other: "{{count}} items";
         };
+        readonly "chat.handoffDetails": "Handoff details";
         readonly "chat.handoffTurnCount": {
             readonly one: "{{count}} turn handed over";
             readonly other: "{{count}} turns handed over";
         };
         readonly "chat.handoffSettingsReset": "Plan, sandbox, fast mode and reasoning effort reset; approval mode retained.";
-        readonly "chat.switchedHarness": "Switched from {{from}} to {{to}}";
+        readonly "chat.switchedHarness": "{{from}} → {{to}}";
         readonly "chat.turnNotificationOn": "Notify you when this turn ends";
         readonly "chat.turnNotificationOff": "Subscribe to this turn";
         readonly 'chat.replyVersion': "Reply version";
@@ -19786,12 +19789,13 @@ declare const resources: {
             readonly one: "{{count}} 项";
             readonly other: "{{count}} 项";
         };
+        "chat.handoffDetails": "交接详情";
         "chat.handoffTurnCount": {
             readonly one: "已交接 {{count}} 轮";
             readonly other: "已交接 {{count}} 轮";
         };
         "chat.handoffSettingsReset": "计划、沙箱、快速模式及推理强度已重置；审批模式保留。";
-        "chat.switchedHarness": "已从 {{from}} 切换到 {{to}}";
+        "chat.switchedHarness": "{{from}} → {{to}}";
         "chat.turnNotificationOn": "结束时通知你";
         "chat.turnNotificationOff": "订阅这一轮的通知";
         'chat.replyVersion': "回复版本";

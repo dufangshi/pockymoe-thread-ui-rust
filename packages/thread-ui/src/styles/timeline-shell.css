@@ -512,22 +512,28 @@
 
 /* Keep the last reply close to its work summary, on both pointer layouts. */
 .thread-ui-shell .thread-graph-worked-summary + .thread-graph-message { margin-top: 2px; }
-.thread-ui-shell .shell-direct-input.shell-is-mobile { padding-bottom: 48px; }
-/* The keys share the row with no gaps between them: each is at least 40px wide
+.thread-ui-shell .shell-direct-input.shell-is-mobile,
+.single-shell-terminal.shell-is-mobile { padding-bottom: 48px; }
+/* The keys share the row with no gaps (also under a single sign-in terminal) between them: each is at least 40px wide
    and 44px tall, so a thumb pressing between two still hits one (UI §10). */
-.thread-ui-shell .shell-touch-controls {
+.thread-ui-shell .shell-touch-controls,
+.single-shell-terminal .shell-touch-controls {
   position: absolute; bottom: 0; left: 0; right: 0; z-index: 30;
   display: flex; align-items: center; gap: 0;
   min-height: 48px; padding: 2px 2px; border-top: 1px solid var(--theme-border);
   background: var(--theme-bg); color: var(--theme-fg); touch-action: manipulation;
 }
-.thread-ui-shell .shell-touch-controls > button {
+.thread-ui-shell .shell-touch-controls > button,
+.single-shell-terminal .shell-touch-controls > button {
   display: inline-flex; flex: 1 1 0; align-items: center; justify-content: center; min-width: 40px;
   height: 44px; border-radius: 6px; font-size: 12px;
 }
-.thread-ui-shell .shell-touch-controls > button:active { background: var(--theme-hover); }
-.thread-ui-shell .shell-touch-controls button:disabled { opacity: .35; }
-.thread-ui-shell .shell-touch-controls button[aria-pressed="true"] { background: var(--theme-border); color: var(--theme-accent, #e6ba63); }
+.thread-ui-shell .shell-touch-controls > button:active,
+.single-shell-terminal .shell-touch-controls > button:active { background: var(--theme-hover); }
+.thread-ui-shell .shell-touch-controls button:disabled,
+.single-shell-terminal .shell-touch-controls button:disabled { opacity: .35; }
+.thread-ui-shell .shell-touch-controls button[aria-pressed="true"],
+.single-shell-terminal .shell-touch-controls button[aria-pressed="true"] { background: var(--theme-border); color: var(--theme-accent, #e6ba63); }
 .thread-ui-shell .shell-session-popover {
   position: absolute; right: 8px; bottom: calc(100% + 6px); width: min(280px, 85vw);
   max-height: 40vh; overflow-y: auto; padding: 6px; border-radius: 12px;

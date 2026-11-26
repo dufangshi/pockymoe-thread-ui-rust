@@ -3,11 +3,14 @@ import {
   useTerminalPreferences
 } from "./chunk-BXVFLUI2.js";
 import {
+  isMacPlatform
+} from "./chunk-5ZKJOMAI.js";
+import {
   Select,
   formatNumber,
   translate,
   useI18n
-} from "./chunk-4645P43B.js";
+} from "./chunk-IAOITMN2.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/plugins/builtin-plugin-modules.tsx
@@ -729,6 +732,7 @@ import { jsx as jsx4, jsxs as jsxs3 } from "react/jsx-runtime";
 function TerminalSettings() {
   useI18n();
   const preferences = useTerminalPreferences();
+  const mac = isMacPlatform();
   const choice = (key, label, options) => /* @__PURE__ */ jsxs3("fieldset", { className: "terminal-settings-choice", children: [
     /* @__PURE__ */ jsx4("legend", { children: label }),
     options.map(([value, text2]) => /* @__PURE__ */ jsxs3("label", { children: [
@@ -754,7 +758,7 @@ function TerminalSettings() {
   return /* @__PURE__ */ jsxs3("div", { className: "terminal-settings", children: [
     toggle("copyOnSelect", translate("files.terminalCopyOnSelect"), translate("files.terminalCopyOnSelectHint")),
     toggle("allowProgramClipboard", translate("files.terminalProgramClipboard"), translate("files.terminalProgramClipboardHint")),
-    choice("ctrlV", "Ctrl+V", [
+    !mac && choice("ctrlV", "Ctrl+V", [
       ["smart", translate("files.terminalCtrlVSmart")],
       ["paste", translate("files.terminalCtrlVPaste")]
     ]),
@@ -763,7 +767,7 @@ function TerminalSettings() {
       ["copyPaste", translate("files.terminalRightClickCopyPaste")]
     ]),
     toggle("pasteWarning", translate("files.terminalPasteWarning"), translate("files.terminalPasteWarningHint")),
-    /* @__PURE__ */ jsx4("p", { className: "terminal-settings-note", children: translate("files.terminalKeysNote") })
+    /* @__PURE__ */ jsx4("p", { className: "terminal-settings-note", children: translate(mac ? "files.terminalKeysNoteMac" : "files.terminalKeysNote") })
   ] });
 }
 

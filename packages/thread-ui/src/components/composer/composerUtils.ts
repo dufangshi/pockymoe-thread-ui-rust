@@ -6,6 +6,7 @@ import type {
   ReasoningEffortDto,
 } from '@pockymoe/shared';
 import { themeAgentKey } from '../themeAgent';
+import { matchesSendModKey } from '../shortcuts';
 import { clipQuote, composeQuotedPrompt, QUOTE_TOKEN, quotePlaceholder, type PromptQuote } from './promptQuotes';
 
 export type ComposerFileAttachmentDraft = {
@@ -373,7 +374,7 @@ export function derivePromptKeyDownAction({
   busy: boolean;
   disabled: boolean;
 }): PromptKeyDownAction {
-  const modifier = metaKey || ctrlKey;
+  const modifier = matchesSendModKey({ metaKey, ctrlKey });
   const steer = modifier && (sendShortcut === 'enter' ? !shiftKey : shiftKey);
   const send = sendShortcut === 'enter'
     ? !modifier && !shiftKey

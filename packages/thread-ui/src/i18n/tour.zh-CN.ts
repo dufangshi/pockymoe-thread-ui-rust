@@ -1,6 +1,6 @@
 export const tourZhCN = {
   // Keep keys consumed by Web clients pinned before the tutorial redesign.
-  "tour.devices.relayWorkspaces.prereq": "工作区属于某台设备，请先连接一台在线设备。",
+  "tour.devices.relayWorkspaces.prereq": "工作区属于某台设备，请先打开一台在线设备。",
   "tour.openWorkspaces": "前往工作区",
   "tour.openDevices": "前往设备管理",
   "tour.devices.relayList.prereq": "还没有设备。请先添加设备并运行安装命令。",
@@ -54,13 +54,9 @@ export const tourZhCN = {
   "tour.chapter.moreHint": "计划、子智能体、提醒",
 
   "tour.devices.relayAdd.title": "添加设备",
-  "tour.devices.relayAdd.body": "每台运行 Agent 的电脑都有自己的设备令牌。点击「添加设备」打开表单。",
   "tour.devices.relayAddDesktop.body": "点击「添加设备」，在弹出的窗口里填写设备名称并创建令牌，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。关闭窗口后教程继续。教程不会替你创建令牌。",
-  "tour.devices.relayForm.title": "创建令牌，运行安装命令",
-  "tour.devices.relayForm.body": "填写设备名称并点击「创建令牌」，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。教程不会替你创建令牌。",
-  "tour.devices.relayForm.prereq": "先点击「添加设备」打开表单。",
   "tour.devices.relayList.title": "你的设备",
-  "tour.devices.relayList.body": "接入后设备列在这里：绿点表示在线，「连接」进入它的工作区，⋯ 可复制安装命令、分享或更换令牌。还没有设备也没关系，接下来用一台样例设备演示。",
+  "tour.devices.relayList.body": "接入后设备列在这里：实心圆点表示在线，箭头进入它的工作区，⋯ 可重命名、共享或隔离。点设备名进入设备页，它的「设置」标签里有安装命令、令牌和这台设备的其他设置。还没有设备也没关系，接下来用一台样例设备演示。",
   "tour.devices.sample.title": "样例设备",
   "tour.devices.sample.body": "这台「样例设备」只为教程存在：工作区、对话、终端和文件都是演示数据，改动只留在这个页面里。你自己的设备用起来一模一样。",
   "tour.devices.local.title": "本地模式：这台电脑就是设备",
@@ -105,7 +101,7 @@ export const tourZhCN = {
   "tour.threads.search.body": "在当前对话的历史中搜索，向上滚动查看完整记录。",
 
   "tour.terminal.open.title": "打开终端",
-  "tour.terminal.open.body": "底部面板在当前对话的工作区里运行 Shell。快捷键 Ctrl+`。",
+  "tour.terminal.open.body": "底部面板在当前对话的工作区里运行 Shell。快捷键 {{terminalShortcut}}。",
   "tour.terminal.openMobile.body": "打开当前对话工作区的终端；手机上它占据屏幕下半部分。",
   "tour.terminal.needsPanel": "先用高亮的按钮打开终端。",
   "tour.terminal.type.title": "直接输入命令",

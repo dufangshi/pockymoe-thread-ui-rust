@@ -4,6 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppShellNavContext, type AppShellNavContextValue } from '../app-shell/AppShellNavContext';
 import { setLocale } from '../i18n';
+import { setHostPlatform } from './shortcuts';
 import { canStartPhoneSidebarSwipe, MatterWorkbench, PersistentWorkbenchNavigation, PHONE_SYSTEM_EDGE_GUARD, type MatterWorkbenchOptions, type WorkbenchThread } from './MatterWorkbench';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
@@ -559,6 +560,64 @@ describe('icon hooks', () => {
     expect(icon('.matter-toolbar-toggle')).toBe('thread-tools');
     // The hook is an attribute only: Classic renders the same lucide glyph.
     expect(host.querySelector('[data-icon="back"]')?.classList.contains('lucide')).toBe(true);
+  });
+});
+
+describe('search key', () => {
+  // Mod+F (docs/ui-principles.md §19): ⌘F on a Mac, Ctrl+F elsewhere.
+  let onSearch: ReturnType<typeof vi.fn>, field: HTMLTextAreaElement;
+  const press = (target: Element, init: KeyboardEventInit) => {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'f', ...init });
+    act(() => { target.dispatchEvent(event); });
+    return event.defaultPrevented;
+  };
+  beforeEach(() => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {} }));
+    onSearch = vi.fn();
+    options = { ...baseOptions, onSearch };
+    render(null, <textarea aria-label="Prompt" />);
+    field = host.querySelector('textarea')!;
+  });
+  afterEach(() => setHostPlatform(null));
+
+  it('opens the search with Ctrl+F on Windows and Linux, and names that key on the button', () => {
+    setHostPlatform('win32');
+    render(null, <textarea aria-label="Prompt" />);
+    expect(press(field, { ctrlKey: true })).toBe(true);
+    expect(onSearch).toHaveBeenCalledTimes(1);
+    expect(press(field, { metaKey: true })).toBe(false);
+    expect(press(field, { ctrlKey: true, shiftKey: true })).toBe(false);
+    expect(press(field, { ctrlKey: true, altKey: true })).toBe(false);
+    expect(onSearch).toHaveBeenCalledTimes(1);
+    expect(host.querySelector('.matter-tabs-search .matter-search-trigger')?.getAttribute('title')).toBe('Search thread (Ctrl+F)');
+    expect(host.querySelector('.matter-rail button[aria-label="Terminal"]')?.getAttribute('title')).toBe('Terminal (Ctrl+`)');
+  });
+
+  it('opens the search with ⌘F on a Mac and leaves Ctrl+F to the text field', () => {
+    setHostPlatform('darwin');
+    render(null, <textarea aria-label="Prompt" />);
+    expect(press(field, { ctrlKey: true })).toBe(false);
+    expect(onSearch).not.toHaveBeenCalled();
+    expect(press(field, { metaKey: true })).toBe(true);
+    expect(onSearch).toHaveBeenCalledTimes(1);
+    expect(press(field, { metaKey: true, ctrlKey: true })).toBe(false);
+    expect(onSearch).toHaveBeenCalledTimes(1);
+    expect(host.querySelector('.matter-tabs-search .matter-search-trigger')?.getAttribute('title')).toBe('Search thread (⌘F)');
+    expect(host.querySelector('.matter-rail button[aria-label="Terminal"]')?.getAttribute('title')).toBe('Terminal (⌃`)');
+  });
+
+  it('leaves the key to a terminal, a code editor and the file tree', () => {
+    for (const [platform, modifier] of [['win32', { ctrlKey: true }], ['darwin', { metaKey: true }]] as const) {
+      setHostPlatform(platform);
+      for (const markup of ['<div class="xterm"><textarea></textarea></div>', '<div class="monaco-editor"><textarea></textarea></div>', '<div role="tree" data-native-find><div tabindex="0" class="row"></div></div>']) {
+        const holder = document.createElement('div');
+        holder.innerHTML = markup;
+        host.append(holder);
+        expect(press(holder.querySelector('textarea, .row')!, modifier)).toBe(false);
+        holder.remove();
+      }
+    }
+    expect(onSearch).not.toHaveBeenCalled();
   });
 });
 

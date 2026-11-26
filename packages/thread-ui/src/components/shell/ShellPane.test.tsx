@@ -17,6 +17,7 @@ import {
 } from './ShellPane';
 import { SHELL_ATTACH_TIMEOUT_MS } from './shellEvents';
 import { DEFAULT_TERMINAL_PREFERENCES, setTerminalPreferences } from './terminalPreferences';
+import { setHostPlatform } from '../shortcuts';
 
 const terminalInstances: FakeTerminal[] = [];
 
@@ -499,6 +500,22 @@ describe('ShellPane', () => {
       Object.defineProperty(navigator, 'clipboard', { value: { writeText, readText }, configurable: true });
       localStorage.clear();
       setTerminalPreferences(DEFAULT_TERMINAL_PREFERENCES);
+      setHostPlatform('linux');
+    });
+    afterEach(() => setHostPlatform(null));
+
+    it('leaves Ctrl+C and Ctrl+V to the terminal on a Mac, where ⌘C and ⌘V are the clipboard', async () => {
+      setHostPlatform('darwin');
+      const { adapter, sockets } = makeShellAdapter();
+      renderShellPane({ adapter });
+      const socket = await attachShell(adapter, sockets);
+      const terminal = terminalInstances[0]!;
+      terminal.selection = 'README.md';
+      expect(terminal.keyHandler!(key({ key: 'c', ctrlKey: true }))).toBe(false);
+      expect(writeText).not.toHaveBeenCalled();
+      expect(socket.sentMessages).toContainEqual(expect.objectContaining({ type: 'shell.input', data: '\x03' }));
+      terminal.keyHandler!(key({ key: 'v', ctrlKey: true }));
+      expect(socket.sentMessages).toContainEqual(expect.objectContaining({ type: 'shell.input', data: '\x16' }));
     });
 
     it('copies a selection with Ctrl+C and interrupts without one', async () => {

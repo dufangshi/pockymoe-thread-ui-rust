@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
+
+import { setHostPlatform } from '../../shortcuts';
 
 import type { WorkspaceExplorerRowProjection } from './workspaceExplorerTypes';
 import { workspaceExplorerCommandForKey } from './workspaceExplorerCommands';
@@ -109,20 +111,32 @@ describe('workspaceExplorerCommandForKey', () => {
     ).toEqual({ type: 'focus', id: 'src' });
   });
 
-  it('activates, selects, and opens find', () => {
+  it('activates and selects', () => {
     expect(
       workspaceExplorerCommandForKey({ key: 'Enter', focusedId: 'file', rows }),
     ).toEqual({ type: 'activate', id: 'file' });
     expect(
       workspaceExplorerCommandForKey({ key: ' ', focusedId: 'file', rows }),
     ).toEqual({ type: 'select', id: 'file' });
-    expect(
-      workspaceExplorerCommandForKey({
-        key: 'f',
-        ctrlKey: true,
-        focusedId: 'file',
-        rows,
-      }),
-    ).toEqual({ type: 'open-filter' });
+  });
+
+  describe('find', () => {
+    afterEach(() => setHostPlatform(null));
+    const find = (modifiers: { ctrlKey?: boolean; metaKey?: boolean; altKey?: boolean; shiftKey?: boolean }) =>
+      workspaceExplorerCommandForKey({ key: 'f', focusedId: 'file', rows, ...modifiers });
+
+    it('opens the filter with Ctrl+F on Windows and Linux', () => {
+      setHostPlatform('linux');
+      expect(find({ ctrlKey: true })).toEqual({ type: 'open-filter' });
+      expect(find({ metaKey: true })).toBeNull();
+      expect(find({ ctrlKey: true, shiftKey: true })).toBeNull();
+      expect(find({ ctrlKey: true, altKey: true })).toBeNull();
+    });
+
+    it('opens the filter with ⌘F on a Mac and leaves Ctrl+F alone', () => {
+      setHostPlatform('darwin');
+      expect(find({ metaKey: true })).toEqual({ type: 'open-filter' });
+      expect(find({ ctrlKey: true })).toBeNull();
+    });
   });
 });

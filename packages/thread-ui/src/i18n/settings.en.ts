@@ -252,7 +252,6 @@ export const settingsEn = {
   'settings.upstreamsTab': 'Upstreams',
   'settings.upstreamsDescription':
     'Save API connections once, then apply them to harnesses or choose them in plugins.',
-  'settings.upstreamsChooseDevice': 'Open a device to manage its upstreams.',
   'settings.upstreamsInventoryError':
     'Unable to check installed harnesses. Refresh to try again.',
   'settings.upstreamsRefresh': 'Refresh',
@@ -266,13 +265,15 @@ export const settingsEn = {
   'settings.savedToAccount': 'Saved to your account and applied across devices and browsers.',
   'settings.messageShortcuts': 'Message shortcuts',
   'settings.savedToYourAccountAndAppliedAcross':
-    'Saved to your account and applied across devices and browsers. On Mac, Command also works in place of Ctrl.',
-  'settings.ctrlEnterToSend': 'Ctrl+Enter to send',
+    'Saved to your account and applied across devices and browsers. {{keys}}',
+  'settings.ctrlEnterToSend': '{{shortcut}} to send',
+  'settings.sendKeysOnMac': 'Ctrl works in place of ⌘ too.',
+  'settings.sendKeysElsewhere': 'On a Mac, ⌘ takes the place of Ctrl.',
   'settings.enterInsertsANewLineCtrlShift':
-    'Enter inserts a new line. Ctrl+Shift+Enter sends directly as steer.',
+    'Enter inserts a new line. {{steer}} sends directly as steer.',
   'settings.enterToSend': 'Enter to send',
   'settings.shiftEnterInsertsANewLineCtrl':
-    'Shift+Enter inserts a new line. Ctrl+Enter sends directly as steer.',
+    '{{newline}} inserts a new line. {{steer}} sends directly as steer.',
   'settings.saving': 'Saving...',
   'settings.loading': 'Loading...',
   'settings.signInThroughRelayToChangeYour':
@@ -622,7 +623,6 @@ export const settingsEn = {
   'settings.storageThreadCleaning': 'Cleaning up {{done}} / {{total}}',
   'settings.treerDeviceDescription': "Check, update or restart this machine's Pockymoe hub.",
   'settings.resourcesDescription': "Memory and disk use on this device.",
-  'settings.resourcesChooseDevice': 'Open a device to manage its resources.',
   'settings.resourcesUnavailable':
     "Update this device's Supervisor to change resource settings.",
   'settings.idleRelease': 'Release idle threads',
@@ -688,5 +688,11 @@ export const settingsEn = {
   "settings.runManual": "Manual",
   "settings.runCompleted": "Done",
   "settings.runFailed": "Failed",
-  "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.",
+  "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}",
+  "settings.deviceScope": "Device these settings apply to",
+  "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.",
+  "settings.deviceScopeNone": "No device to manage yet.",
+  // The settings window names the device settings that left it for the device page (issue #115).
+  "settings.deviceSettingsLink": "Device settings · {{device}}",
+  "settings.windowDescriptionRelay": "This browser and your account: preferences, notifications and plugins. A device's settings are on its own page.",
 } as const;

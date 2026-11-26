@@ -1,7 +1,7 @@
 import * as react from 'react';
 import { ButtonHTMLAttributes, ReactNode, RefObject, TouchEvent, MouseEvent, Dispatch, SetStateAction, Component, ErrorInfo, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps, CSSProperties } from 'react';
 import * as _pockymoe_shared from '@pockymoe/shared';
-import { ReasoningEffortDto, ContextInspectionDetailDto, ThreadContextInspectionDto, ThreadContextStepsDto, ModelOptionDto, CollaborationModeDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadPendingWakeDto, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadHistoryItemDto, ThreadActionRequestDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
+import { ReasoningEffortDto, ContextInspectionDetailDto, ThreadContextInspectionDto, ThreadContextStepsDto, ModelOptionDto, CollaborationModeDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadPendingWakeDto, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadHistoryItemDto, ThreadActionRequestDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ShellSessionDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
 import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-4xn6Hbh9.js';
 export { D as DescribeThread, i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as PromptQuote, Q as QuoteScope, m as SendPromptInput, n as ShellSocketConnection, o as ShellSocketHandlers, p as ThreadImageAssetVariant, q as ThreadLinkInfo, W as WorkspaceDocumentSaveInput, r as WorkspaceDocumentSnapshot, s as WorkspaceSaveReceipt, t as WorkspaceTab, u as createDefaultPluginContextValue, v as mergePluginState } from './workspace-panel-4xn6Hbh9.js';
 import { P as PluginActionOutputContext, T as ThreadPluginAdapter } from './plugin-types-gLBkjCue.js';
@@ -127,6 +127,46 @@ interface SelectProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'val
 /** Single-value app select. It retains form/label semantics while all option
  * rendering, focus and keyboard behavior belong to the shared menu system. */
 declare function Select({ value, defaultValue, onValueChange, options, children, name, required, placeholder, className, disabled, form, onKeyDown, onClick, ...buttonProps }: SelectProps): react.JSX.Element;
+
+/**
+ * Keyboard shortcuts by platform (docs/ui-principles.md §19, in the Pockymoe
+ * repository). "Mod" is ⌘ on Apple keyboards and Ctrl everywhere else: on a
+ * Mac, Ctrl with a letter is a text-editing or terminal key (Ctrl+F moves the
+ * caret, Ctrl+K kills the line) and must reach the field untouched.
+ */
+/** What a key or pointer event says about its modifiers. */
+interface ShortcutModifiers {
+    metaKey?: boolean;
+    ctrlKey?: boolean;
+}
+/**
+ * The desktop client reports its operating system through the host bridge
+ * (`capabilities.platform`); that answer wins over the browser's. `null`
+ * returns to asking the browser.
+ */
+declare function setHostPlatform(platform: string | null | undefined): void;
+/** macOS, and iOS/iPadOS with a hardware keyboard: the platforms whose command key is ⌘. */
+declare function isMacPlatform(): boolean;
+/**
+ * The platform's command modifier, and not the other platform's: ⌘ without
+ * Ctrl on a Mac, Ctrl without ⌘ elsewhere. The caller checks the key, Alt and
+ * Shift.
+ */
+declare function matchesModKey(event: ShortcutModifiers): boolean;
+/**
+ * The composer's send modifier. The one binding that takes Ctrl or ⌘ on every
+ * platform: Ctrl+Enter has no other meaning in a text field on a Mac, and the
+ * send setting follows the account across machines
+ * (docs/account-composer-shortcuts.md). Labels still name the platform's key.
+ */
+declare function matchesSendModKey(event: ShortcutModifiers): boolean;
+/**
+ * A shortcut as this platform writes it: `Mod+F` is ⌘F on a Mac and Ctrl+F
+ * elsewhere, `Mod+Shift+Enter` is ⇧⌘Enter and Ctrl+Shift+Enter. Modifiers are
+ * `Mod`, `Ctrl`, `Alt` and `Shift`; the last part is the key, written as it
+ * should be shown (a single letter is capitalized).
+ */
+declare function formatShortcut(shortcut: string): string;
 
 /**
  * The keyboard of every app menu (see docs/ui-principles.md §3): focus goes to
@@ -641,7 +681,8 @@ interface AppShellNavContextValue {
     settingsOpen: boolean;
     openSettings: () => void;
     /** Opens settings on one section, such as `resources`. */
-    openSettingsSection?: (sectionId: string) => void;
+    /** `deviceId`: the device a device-level section is for, where the caller knows it. */
+    openSettingsSection?: (sectionId: string, deviceId?: string | null) => void;
     /** The section the settings dialog opens on; the first one when unset. */
     settingsSection?: string | null;
     closeSettings: () => void;
@@ -709,6 +750,11 @@ interface ThreadWorkspaceLayoutProps {
     settingsContent?: ReactNode;
     globalSettingsContent?: ReactNode;
     settingsSections?: SettingsSection[];
+    /** Above the settings sections: what the owner adds to the window (a link to a
+        device's own settings page), given the way to close the window. */
+    settingsExtraContent?: ((close: () => void) => ReactNode) | undefined;
+    settingsTitle?: string | undefined;
+    settingsDescription?: string | undefined;
     appMenuButton?: ReactNode;
     appNavigationMenu?: ReactNode;
     workspaceReturnHref?: string;
@@ -761,7 +807,7 @@ interface ThreadCardsProps {
     collapsed?: boolean;
 }
 declare function ThreadCards({ threads, currentThreadId, currentWorkspaceId, workspaceLabels, onOpenThread, getThreadHref, renderThreadLink, onBeginRenameThread, onDeleteThread, scrollable, maxHeightClassName, showDeleteButton, showSessionCopyButton, collapsed, }: ThreadCardsProps): react.JSX.Element;
-declare function ThreadWorkspaceLayout({ workbench, threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, hideRoomsRail, renderRailSettings, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, harnessLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, deviceMonitor, metaContent, settingsContent, globalSettingsContent, settingsSections, restrictedNavigation, scopedSettings, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, workspaceRevealRequestKey, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
+declare function ThreadWorkspaceLayout({ workbench, threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, hideRoomsRail, renderRailSettings, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, harnessLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, deviceMonitor, metaContent, settingsContent, globalSettingsContent, settingsSections, settingsExtraContent, settingsTitle, settingsDescription, restrictedNavigation, scopedSettings, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, workspaceRevealRequestKey, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
 
 type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
     status: ThreadTurnDto["status"] | "sending";
@@ -911,6 +957,20 @@ interface ThreadShellPanelHandle {
 }
 declare const ThreadShellPanel: react.ForwardRefExoticComponent<ThreadShellPanelProps & react.RefAttributes<ThreadShellPanelHandle>>;
 
+/**
+ * One terminal that is not part of a thread's terminal panel: the same pane,
+ * socket, replay and phone key bar, without tabs, splits or "New terminal".
+ * A harness sign-in window runs its login command here. `onExit` is called
+ * once, when the device reports that the process ended.
+ */
+declare function SingleShellTerminal({ shell: initialShell, shellAdapter, effectiveTheme, onExit, }: {
+    shell: ShellSessionDto;
+    /** Only `connectSocket` is used. */
+    shellAdapter: Pick<ThreadShellAdapter, 'connectSocket'>;
+    effectiveTheme?: 'light' | 'dark';
+    onExit?: () => void;
+}): react.JSX.Element;
+
 declare function ThreadGraphWorkspacePanel(props: ThreadGraphWorkspacePanelProps): react.JSX.Element;
 declare const MemoizedThreadGraphWorkspacePanel: react.MemoExoticComponent<typeof ThreadGraphWorkspacePanel>;
 
@@ -1059,6 +1119,9 @@ interface ThreadDetailSurfaceProps {
     settingsContent?: ReactNode;
     globalSettingsContent?: ReactNode;
     settingsSections?: SettingsSection[];
+    settingsExtraContent?: ((close: () => void) => ReactNode) | undefined;
+    settingsTitle?: string | undefined;
+    settingsDescription?: string | undefined;
     renderRailSettings?: ((openSettings: () => void) => ReactNode) | undefined;
     settingsDialogOpen?: boolean;
     onSettingsDialogOpenChange?: (open: boolean) => void;
@@ -1125,7 +1188,7 @@ interface ThreadDetailSurfaceProps {
     loadingContent?: ReactNode;
     emptyContent?: ReactNode;
 }
-declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsSections, renderRailSettings, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, restrictedNavigation, scopedSettings, onWorkspaceReturn, threadActionsButton, surfaceActions, workbench, deviceMonitor, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, presentation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
+declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsSections, settingsExtraContent, settingsTitle, settingsDescription, renderRailSettings, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, restrictedNavigation, scopedSettings, onWorkspaceReturn, threadActionsButton, surfaceActions, workbench, deviceMonitor, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, presentation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
 
 declare function usePlugins(): PluginContextValue;
 
@@ -1410,8 +1473,12 @@ declare function revokeWorkspaceDocumentUnloadApproval(): void;
 declare function confirmWorkspaceDocumentLeave(): boolean;
 
 /** One settings shell for the workbench and pages outside conversations. */
-declare function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId, section, onSectionChange, panelScroll, contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
+declare function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, title, description, initialId, section, onSectionChange, panelScroll, contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
     sections: SettingsSection[];
+    /** The window's title; "Settings" unless the owner names what they act on ("Settings · mac"). */
+    title?: string | undefined;
+    /** The line under the title; what the window holds where the owner knows better. */
+    description?: string | undefined;
     section?: string | undefined;
     onSectionChange?: ((id: string) => void) | undefined;
     panelScroll?: ComponentProps<typeof SettingsPanels>['scroll'];
@@ -1532,4 +1599,4 @@ declare const ImageDiagnosisProvider: react.Provider<ImageFailureDiagnoser | und
  * Electron's rendering gate is separate from visibility so activity stays live. */
 declare function useVisibleClock(enabled: boolean, interval?: number, element?: Element | null): number;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerModelPickerSource, type ComposerModelSwitching, type ComposerSendShortcut, type ComposerUploadProgressState, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, DEFAULT_THREAD_TITLE, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, type HandoffSummary, type HarnessProtocol, ImageDiagnosisProvider, ImageFallbackProvider, ImageRecoveryProvider, LongTextDialog, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, type ModelFacts, type ModelPickerAgent, PathChip, PersistentWorkbenchNavigation, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchInspector, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, agentDisplayName, agentKeyBase, agentKeyOf, approveWorkspaceDocumentUnloadOnce, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, displayThreadTitle, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatReasoningEffortLabel, formatShortTimestamp, getDirtyWorkspaceDocumentCount, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isAcpAgentKey, isStaleBuildError, isThemeFeature, modelFactsFromCatalog, navigationStatusLabel, openFilesPatch, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval, splitShown, themeAgentKey, themeAgentName, threadAgentKey, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useSheetViewport, useThemeFeature, useVisibleClock, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerModelPickerSource, type ComposerModelSwitching, type ComposerSendShortcut, type ComposerUploadProgressState, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, DEFAULT_THREAD_TITLE, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, type HandoffSummary, type HarnessProtocol, ImageDiagnosisProvider, ImageFallbackProvider, ImageRecoveryProvider, LongTextDialog, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, type ModelFacts, type ModelPickerAgent, PathChip, PersistentWorkbenchNavigation, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, type ShortcutModifiers, SingleShellTerminal, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchInspector, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, agentDisplayName, agentKeyBase, agentKeyOf, approveWorkspaceDocumentUnloadOnce, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, displayThreadTitle, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatReasoningEffortLabel, formatShortTimestamp, formatShortcut, getDirtyWorkspaceDocumentCount, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isAcpAgentKey, isMacPlatform, isStaleBuildError, isThemeFeature, matchesModKey, matchesSendModKey, modelFactsFromCatalog, navigationStatusLabel, openFilesPatch, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval, setHostPlatform, splitShown, themeAgentKey, themeAgentName, threadAgentKey, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useSheetViewport, useThemeFeature, useVisibleClock, useWorkbenchPresentation };

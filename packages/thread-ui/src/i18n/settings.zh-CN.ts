@@ -229,7 +229,6 @@ export const settingsZhCN = {
   'settings.upstreamsTab': '上游',
   'settings.upstreamsDescription':
     '保存一次 API 连接，再应用到 harness 或在插件中选择。',
-  'settings.upstreamsChooseDevice': '请打开设备以管理其上游。',
   'settings.upstreamsInventoryError': '无法检查已安装的 harness，请刷新重试。',
   'settings.upstreamsRefresh': '刷新',
   'settings.upstreamsNoInstalled':
@@ -242,13 +241,15 @@ export const settingsZhCN = {
   'settings.savedToAccount': '保存到账号，在设备和浏览器间同步。',
   'settings.messageShortcuts': '消息快捷键',
   'settings.savedToYourAccountAndAppliedAcross':
-    '保存到账号并在设备和浏览器间同步。Mac 上也可用 Command 代替 Ctrl。',
-  'settings.ctrlEnterToSend': 'Ctrl+Enter 发送',
+    '保存到账号并在设备和浏览器间同步。{{keys}}',
+  'settings.ctrlEnterToSend': '{{shortcut}} 发送',
+  'settings.sendKeysOnMac': '也可用 Ctrl 代替 ⌘。',
+  'settings.sendKeysElsewhere': 'Mac 上用 ⌘ 代替 Ctrl。',
   'settings.enterInsertsANewLineCtrlShift':
-    'Enter 换行。Ctrl+Shift+Enter 立即插话。',
+    'Enter 换行。{{steer}} 立即插话。',
   'settings.enterToSend': 'Enter 发送',
   'settings.shiftEnterInsertsANewLineCtrl':
-    'Shift+Enter 换行。Ctrl+Enter 立即插话。',
+    '{{newline}} 换行。{{steer}} 立即插话。',
   'settings.saving': '正在保存…',
   'settings.loading': '正在加载…',
   'settings.signInThroughRelayToChangeYour':
@@ -581,7 +582,6 @@ export const settingsZhCN = {
   'settings.storageThreadCleaning': '清理中 {{done}} / {{total}}',
   'settings.treerDeviceDescription': '检查、更新或重启这台机器上的 Pockymoe hub。',
   'settings.resourcesDescription': '这台设备的运行内存与磁盘占用。',
-  'settings.resourcesChooseDevice': '请打开设备以管理其资源。',
   'settings.resourcesUnavailable': '请更新此设备的 Supervisor 以修改资源设置。',
   'settings.idleRelease': '空闲释放',
   'settings.idleReleaseHint':
@@ -645,5 +645,11 @@ export const settingsZhCN = {
   "settings.runManual": "手动",
   "settings.runCompleted": "完成",
   "settings.runFailed": "失败",
-  "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。Mac 上也可用 Command 代替 Ctrl。",
+  "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。{{keys}}",
+  "settings.deviceScope": "这些设置作用的设备",
+  "settings.deviceScopeChoose": "这些设置属于某一台设备。请选择要管理的设备。",
+  "settings.deviceScopeNone": "还没有可管理的设备。",
+  // The settings window names the device settings that left it for the device page (issue #115).
+  "settings.deviceSettingsLink": "设备设置 · {{device}}",
+  "settings.windowDescriptionRelay": "这个浏览器和你的账号：偏好、通知与插件。设备的设置在它的设备页。",
 } as const;

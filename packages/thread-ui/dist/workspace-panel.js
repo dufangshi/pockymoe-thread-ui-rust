@@ -55,12 +55,15 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-} from "./chunk-DSQFWRKK.js";
+} from "./chunk-T4MO57RZ.js";
 import {
   shellThemeProps,
   surfaceBehind,
   useThemeFeature
 } from "./chunk-JIPNJR2N.js";
+import {
+  matchesModKey
+} from "./chunk-5ZKJOMAI.js";
 import {
   Select,
   en,
@@ -68,7 +71,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-} from "./chunk-4645P43B.js";
+} from "./chunk-IAOITMN2.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
@@ -1685,7 +1688,7 @@ function workspaceExplorerCommandForKey(input) {
     const row = input.rows[index];
     return row ? { type: "focus", id: row.id } : null;
   };
-  if ((input.metaKey || input.ctrlKey) && input.key.toLowerCase() === "f") {
+  if (matchesModKey(input) && !input.altKey && !input.shiftKey && input.key.toLowerCase() === "f") {
     return { type: "open-filter" };
   }
   switch (input.key) {
@@ -2523,6 +2526,8 @@ function WorkspaceExplorerTree({
         key: event.key,
         metaKey: event.metaKey,
         ctrlKey: event.ctrlKey,
+        altKey: event.altKey,
+        shiftKey: event.shiftKey,
         focusedId,
         rows
       });
@@ -2576,6 +2581,7 @@ function WorkspaceExplorerTree({
       ref: scrollerRef,
       role: "tree",
       "aria-label": translate("files.workspaceFiles"),
+      "data-native-find": true,
       className: "thread-graph-workspace-tree-scroll min-h-0 flex-1 overflow-y-auto py-1 outline-none",
       onScroll: (event) => {
         if (event.currentTarget.clientHeight > 0) {
@@ -4338,7 +4344,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment5, jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-  () => import("./GraphWorkspaceMonacoEditor-WMYYBTB5.js")
+  () => import("./GraphWorkspaceMonacoEditor-2UBMTHDT.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function documentFacts(snapshot, state) {
@@ -4467,7 +4473,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-KGD4LMUR.js"));
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-MYDHRWUN.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -5842,7 +5848,7 @@ function GraphWorkspaceExplorer({
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { jsx as jsx21, jsxs as jsxs16 } from "react/jsx-runtime";
-var GraphVisualization = lazy2(() => import("./GraphVisualization-55X476TB.js").then((module) => ({ default: module.GraphVisualization })));
+var GraphVisualization = lazy2(() => import("./GraphVisualization-7EBDKUDC.js").then((module) => ({ default: module.GraphVisualization })));
 var DEFAULT_WORKSPACE_FEATURES = {
   workspace: true,
   toolUsage: false,

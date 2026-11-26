@@ -1,6 +1,6 @@
 export const tourEn = {
   // Keep keys consumed by Web clients pinned before the tutorial redesign.
-  "tour.devices.relayWorkspaces.prereq": "Workspaces belong to a device. Connect to an online device first.",
+  "tour.devices.relayWorkspaces.prereq": "Workspaces belong to a device. Open an online device first.",
   "tour.openWorkspaces": "Open workspaces",
   "tour.openDevices": "Open devices",
   "tour.devices.relayList.prereq": "No device yet. Add one and run its setup command first.",
@@ -54,13 +54,9 @@ export const tourEn = {
   "tour.chapter.moreHint": "Schedules, subagents, alerts",
 
   "tour.devices.relayAdd.title": "Add a device",
-  "tour.devices.relayAdd.body": "Each computer that runs agents gets its own device token. Click Add device to open the form.",
   "tour.devices.relayAddDesktop.body": "Click Add device; in the window that opens, name the device and create a token to get a macOS/Linux and a Windows command. Run it on that computer to connect it. Close the window and the tour goes on. The tutorial never creates tokens for you.",
-  "tour.devices.relayForm.title": "Create a token, run the command",
-  "tour.devices.relayForm.body": "Name the device and click Create token. You then get a macOS/Linux and a Windows command; run it on that computer to connect its Supervisor. The tutorial never creates tokens for you.",
-  "tour.devices.relayForm.prereq": "Click Add device to open the form.",
   "tour.devices.relayList.title": "Your devices",
-  "tour.devices.relayList.body": "Connected devices are listed here: a green dot means online, Connect opens its workspaces, ⋯ copies setup commands, shares or replaces the token. No device yet? The tour continues on a sample device.",
+  "tour.devices.relayList.body": "Connected devices are listed here: a solid dot means online, the arrow opens its workspaces, and ⋯ renames, shares or isolates it. Its name opens the device's own page, whose Settings tab holds the setup commands, the token and everything else about it. No device yet? The tour continues on a sample device.",
   "tour.devices.sample.title": "The sample device",
   "tour.devices.sample.body": "This Sample device exists only for the tutorial: its workspaces, threads, terminal and files are demo data, and changes stay in this page. Your own devices work exactly the same way.",
   "tour.devices.local.title": "Local mode: this computer is the device",
@@ -105,7 +101,7 @@ export const tourEn = {
   "tour.threads.search.body": "Search this conversation's history; scroll up for the full transcript.",
 
   "tour.terminal.open.title": "Open the terminal",
-  "tour.terminal.open.body": "The bottom panel runs shells in this thread's workspace. Shortcut: Ctrl+`.",
+  "tour.terminal.open.body": "The bottom panel runs shells in this thread's workspace. Shortcut: {{terminalShortcut}}.",
   "tour.terminal.openMobile.body": "Opens the terminal for this thread's workspace. On a phone it takes the lower part of the screen.",
   "tour.terminal.needsPanel": "Open the terminal with the highlighted button.",
   "tour.terminal.type.title": "Type a command",

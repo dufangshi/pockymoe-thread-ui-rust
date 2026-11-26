@@ -54,6 +54,7 @@ import { controlSequenceForLetter } from './shell/shellSnapshot';
 import { TerminalMenu } from './shell/TerminalMenu';
 import { confirmAsync } from './menu/confirmAsync';
 import { ErrorMark } from './copy/ErrorMark';
+import { isSplitPaneKey } from './shell/splitPaneKey';
 import {
   TERMINAL_TABS_DEFAULT,
   TERMINAL_TABS_MAX,
@@ -813,9 +814,8 @@ export const ThreadShellPanel = forwardRef<
           className="terminal-groups"
           data-orientation={vertical ? 'vertical' : 'horizontal'}
           onKeyDownCapture={(event) => {
-            // VS Code: Alt+Left/Right moves between split panes of the visible group.
-            if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-            if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+            // VS Code's keys move between split panes of the visible group.
+            if (!isSplitPaneKey(event)) return;
             const next = adjacentTerminal(layout, event.key === 'ArrowLeft' ? -1 : 1);
             if (!next) return;
             event.preventDefault();

@@ -13,6 +13,7 @@ import {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-R2LITDNV.js";
 =======
 } from "./chunk-PV62C22N.js";
@@ -23,6 +24,9 @@ import {
 =======
 } from "./chunk-3MN5ZQZP.js";
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+} from "./chunk-PGKFLZWD.js";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
 import "./chunk-7O5E2ZHX.js";
 
 // src/plugins/builtin-plugin-modules.tsx

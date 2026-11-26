@@ -651,4 +651,5 @@ export const settingsZhCN = {
   "settings.deviceScopeNone": "还没有可管理的设备。",
   // The settings window names the device settings that left it for the device page (issue #115).
   "settings.deviceSettingsLink": "设备设置 · {{device}}",
+  "settings.windowDescriptionRelay": "这个浏览器和你的账号：偏好、通知与插件。设备的设置在它的设备页。",
 } as const;

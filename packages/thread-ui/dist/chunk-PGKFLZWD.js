@@ -4500,8 +4500,13 @@ var settingsEn = {
 =======
   "settings.deviceScopeNone": "No device to manage yet.",
   // The settings window names the device settings that left it for the device page (issue #115).
+<<<<<<< HEAD:packages/thread-ui/dist/chunk-3MN5ZQZP.js
   "settings.deviceSettingsLink": "Device settings \xB7 {{device}}"
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/chunk-3MN5ZQZP.js
+=======
+  "settings.deviceSettingsLink": "Device settings \xB7 {{device}}",
+  "settings.windowDescriptionRelay": "This browser and your account: preferences, notifications and plugins. A device's settings are on its own page."
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle):packages/thread-ui/dist/chunk-PGKFLZWD.js
 };
 
 // src/i18n/sharing.en.ts
@@ -9911,8 +9916,13 @@ var settingsZhCN = {
 =======
   "settings.deviceScopeNone": "\u8FD8\u6CA1\u6709\u53EF\u7BA1\u7406\u7684\u8BBE\u5907\u3002",
   // The settings window names the device settings that left it for the device page (issue #115).
+<<<<<<< HEAD:packages/thread-ui/dist/chunk-3MN5ZQZP.js
   "settings.deviceSettingsLink": "\u8BBE\u5907\u8BBE\u7F6E \xB7 {{device}}"
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/chunk-3MN5ZQZP.js
+=======
+  "settings.deviceSettingsLink": "\u8BBE\u5907\u8BBE\u7F6E \xB7 {{device}}",
+  "settings.windowDescriptionRelay": "\u8FD9\u4E2A\u6D4F\u89C8\u5668\u548C\u4F60\u7684\u8D26\u53F7\uFF1A\u504F\u597D\u3001\u901A\u77E5\u4E0E\u63D2\u4EF6\u3002\u8BBE\u5907\u7684\u8BBE\u7F6E\u5728\u5B83\u7684\u8BBE\u5907\u9875\u3002"
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle):packages/thread-ui/dist/chunk-PGKFLZWD.js
 };
 
 // src/i18n/sharing.zh-CN.ts

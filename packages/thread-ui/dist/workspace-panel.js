@@ -58,6 +58,7 @@ import {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-SHS2CKRU.js";
 =======
 } from "./chunk-M3NWHISK.js";
@@ -68,6 +69,9 @@ import {
 =======
 } from "./chunk-MOKG2ALY.js";
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+} from "./chunk-H3ELB2EG.js";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
 import {
   shellThemeProps,
   surfaceBehind,
@@ -86,6 +90,7 @@ import {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-R2LITDNV.js";
 =======
 } from "./chunk-PV62C22N.js";
@@ -96,6 +101,9 @@ import {
 =======
 } from "./chunk-3MN5ZQZP.js";
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+} from "./chunk-PGKFLZWD.js";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
@@ -4371,6 +4379,7 @@ var GraphWorkspaceMonacoEditor = lazy(
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   () => import("./GraphWorkspaceMonacoEditor-GIBOXW74.js")
 =======
   () => import("./GraphWorkspaceMonacoEditor-7E3YO5HZ.js")
@@ -4381,6 +4390,9 @@ var GraphWorkspaceMonacoEditor = lazy(
 =======
   () => import("./GraphWorkspaceMonacoEditor-KR7GE2FQ.js")
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+  () => import("./GraphWorkspaceMonacoEditor-R44W75BH.js")
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function documentFacts(snapshot, state) {
@@ -4512,6 +4524,7 @@ function translateReadOnly(reason) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-ARO5AYSM.js"));
 =======
 var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-HLHCHLMM.js"));
@@ -4522,6 +4535,9 @@ var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-3HWU7I
 =======
 var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-ILWP45QN.js"));
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-5MS4I325.js"));
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -5899,6 +5915,7 @@ import { jsx as jsx21, jsxs as jsxs16 } from "react/jsx-runtime";
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 var GraphVisualization = lazy2(() => import("./GraphVisualization-CCRHFTCE.js").then((module) => ({ default: module.GraphVisualization })));
 =======
 var GraphVisualization = lazy2(() => import("./GraphVisualization-GFZOGOSV.js").then((module) => ({ default: module.GraphVisualization })));
@@ -5909,6 +5926,9 @@ var GraphVisualization = lazy2(() => import("./GraphVisualization-HZKN6IKU.js").
 =======
 var GraphVisualization = lazy2(() => import("./GraphVisualization-ICKTUXVX.js").then((module) => ({ default: module.GraphVisualization })));
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+var GraphVisualization = lazy2(() => import("./GraphVisualization-HJCYVFWW.js").then((module) => ({ default: module.GraphVisualization })));
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
 var DEFAULT_WORKSPACE_FEATURES = {
   workspace: true,
   toolUsage: false,

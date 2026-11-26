@@ -2111,7 +2111,11 @@ declare const en: {
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
 =======
     readonly "settings.deviceSettingsLink": "Device settings · {{device}}";
+<<<<<<< HEAD
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+    readonly "settings.windowDescriptionRelay": "This browser and your account: preferences, notifications and plugins. A device's settings are on its own page.";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
     readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
     readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
     readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -7618,7 +7622,11 @@ declare const zhCN: {
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
 =======
     "settings.deviceSettingsLink": "设备设置 · {{device}}";
+<<<<<<< HEAD
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+    "settings.windowDescriptionRelay": "这个浏览器和你的账号：偏好、通知与插件。设备的设置在它的设备页。";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
     "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
     "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
     "files.pluginUnsupportedPlatform": "此平台不支持终端。";
@@ -13147,7 +13155,11 @@ declare const resources: {
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
 =======
         readonly "settings.deviceSettingsLink": "Device settings · {{device}}";
+<<<<<<< HEAD
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+        readonly "settings.windowDescriptionRelay": "This browser and your account: preferences, notifications and plugins. A device's settings are on its own page.";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
         readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
         readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
         readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -18653,7 +18665,11 @@ declare const resources: {
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
 =======
         "settings.deviceSettingsLink": "设备设置 · {{device}}";
+<<<<<<< HEAD
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+        "settings.windowDescriptionRelay": "这个浏览器和你的账号：偏好、通知与插件。设备的设置在它的设备页。";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
         "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
         "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
         "files.pluginUnsupportedPlatform": "此平台不支持终端。";

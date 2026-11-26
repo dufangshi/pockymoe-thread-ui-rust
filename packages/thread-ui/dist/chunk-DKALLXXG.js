@@ -5,6 +5,7 @@ import {
 import {
   translate,
   useI18n
+<<<<<<< HEAD:packages/thread-ui/dist/chunk-TCPGS7EA.js
 <<<<<<< HEAD:packages/thread-ui/dist/chunk-YWGORNY5.js
 <<<<<<< HEAD:packages/thread-ui/dist/chunk-OL27POSN.js
 <<<<<<<< HEAD:packages/thread-ui/dist/chunk-Y7PJL7OW.js
@@ -18,6 +19,9 @@ import {
 =======
 } from "./chunk-3MN5ZQZP.js";
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/chunk-TCPGS7EA.js
+=======
+} from "./chunk-PGKFLZWD.js";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle):packages/thread-ui/dist/chunk-DKALLXXG.js
 import {
   KeyCode,
   KeyMod,

@@ -6,6 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
+<<<<<<< HEAD:packages/thread-ui/dist/chunk-MOKG2ALY.js
 <<<<<<< HEAD:packages/thread-ui/dist/chunk-HYKJ7YFG.js
 <<<<<<< HEAD:packages/thread-ui/dist/chunk-M3NWHISK.js
 <<<<<<<< HEAD:packages/thread-ui/dist/chunk-SHS2CKRU.js
@@ -19,6 +20,9 @@ import {
 =======
 } from "./chunk-3MN5ZQZP.js";
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/chunk-MOKG2ALY.js
+=======
+} from "./chunk-PGKFLZWD.js";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle):packages/thread-ui/dist/chunk-H3ELB2EG.js
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {

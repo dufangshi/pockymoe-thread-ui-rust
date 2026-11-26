@@ -1,5 +1,6 @@
 import {
   useI18n
+<<<<<<< HEAD:packages/thread-ui/dist/GraphVisualization-ICKTUXVX.js
 <<<<<<< HEAD:packages/thread-ui/dist/GraphVisualization-HZKN6IKU.js
 <<<<<<< HEAD:packages/thread-ui/dist/GraphVisualization-GFZOGOSV.js
 <<<<<<<< HEAD:packages/thread-ui/dist/GraphVisualization-CCRHFTCE.js
@@ -13,6 +14,9 @@ import {
 =======
 } from "./chunk-3MN5ZQZP.js";
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/GraphVisualization-ICKTUXVX.js
+=======
+} from "./chunk-PGKFLZWD.js";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle):packages/thread-ui/dist/GraphVisualization-HJCYVFWW.js
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/graph-chat/GraphVisualization.tsx

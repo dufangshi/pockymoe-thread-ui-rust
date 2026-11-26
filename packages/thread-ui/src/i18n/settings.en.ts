@@ -694,4 +694,5 @@ export const settingsEn = {
   "settings.deviceScopeNone": "No device to manage yet.",
   // The settings window names the device settings that left it for the device page (issue #115).
   "settings.deviceSettingsLink": "Device settings · {{device}}",
+  "settings.windowDescriptionRelay": "This browser and your account: preferences, notifications and plugins. A device's settings are on its own page.",
 } as const;

@@ -62,6 +62,7 @@ import {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-SHS2CKRU.js";
 =======
 } from "./chunk-M3NWHISK.js";
@@ -72,6 +73,9 @@ import {
 =======
 } from "./chunk-MOKG2ALY.js";
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+} from "./chunk-H3ELB2EG.js";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -111,6 +115,7 @@ import {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-R2LITDNV.js";
 =======
 } from "./chunk-PV62C22N.js";
@@ -121,6 +126,9 @@ import {
 =======
 } from "./chunk-3MN5ZQZP.js";
 >>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
+=======
+} from "./chunk-PGKFLZWD.js";
+>>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -15258,7 +15266,7 @@ function useSheetViewport(enabled = true) {
 
 // src/components/SettingsDialog.tsx
 import { jsx as jsx48, jsxs as jsxs42 } from "react/jsx-runtime";
-function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, title, initialId = "preferences", section, onSectionChange, panelScroll, contentProps, ...rootProps }) {
+function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, title, description, initialId = "preferences", section, onSectionChange, panelScroll, contentProps, ...rootProps }) {
   useI18n();
   const sheet = useSheetViewport(rootProps.open !== false);
   return /* @__PURE__ */ jsxs42(Dialog, { ...rootProps, children: [
@@ -15275,7 +15283,7 @@ function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraCon
         children: [
           /* @__PURE__ */ jsxs42(DialogHeader, { children: [
             /* @__PURE__ */ jsx48(DialogTitle, { children: title ?? translate("files.settings") }),
-            /* @__PURE__ */ jsx48(DialogDescription, { children: translate("files.yourWorkspaceConnectedDeviceAndPersonalPreferences") })
+            /* @__PURE__ */ jsx48(DialogDescription, { children: description ?? translate("files.yourWorkspaceConnectedDeviceAndPersonalPreferences") })
           ] }),
           extraContent,
           /* @__PURE__ */ jsx48(SettingsPanels, { sections, initialId, selected: section, onSelect: onSectionChange, scroll: panelScroll })
@@ -18923,6 +18931,7 @@ function ThreadWorkspaceLayout({
   settingsSections,
   settingsExtraContent,
   settingsTitle,
+  settingsDescription,
   restrictedNavigation = false,
   scopedSettings = false,
   workspaceLabels = {},
@@ -19274,6 +19283,7 @@ function ThreadWorkspaceLayout({
             }
           ),
           title: settingsTitle,
+          description: settingsDescription,
           extraContent: settingsSections && settingsExtraContent ? settingsExtraContent(() => changeSettingsOpen(false)) : canUpdateThemeMode && !settingsSections ? /* @__PURE__ */ jsx57("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs50("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
             /* @__PURE__ */ jsxs50("div", { className: "min-w-0", children: [
               /* @__PURE__ */ jsx57("p", { className: "font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
@@ -31966,6 +31976,7 @@ function ThreadDetailSurface({
   settingsSections,
   settingsExtraContent,
   settingsTitle,
+  settingsDescription,
   renderRailSettings,
   settingsDialogOpen,
   onSettingsDialogOpenChange,
@@ -32221,6 +32232,7 @@ ${pageMark}` : pageMark } : composerProps,
       settingsSections,
       settingsExtraContent,
       settingsTitle,
+      settingsDescription,
       renderRailSettings,
       ...settingsDialogOpen !== void 0 ? { settingsDialogOpen } : {},
       ...onSettingsDialogOpenChange ? { onSettingsDialogOpenChange } : {},

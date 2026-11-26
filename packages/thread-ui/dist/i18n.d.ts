@@ -3430,8 +3430,8 @@ declare const en: {
     readonly "chat.writeHTTPMCP": "Write HTTP MCP";
     readonly "chat.mCPBlockForProviderConfig": "MCP block for provider config";
     readonly "chat.writeRawBlock": "Write raw block";
-    readonly "chat.tools": "tools ·";
-    readonly "chat.resources": "resources ·";
+    readonly "chat.tools": "tools";
+    readonly "chat.resources": "resources";
     readonly "chat.templates": "templates";
     readonly "chat.noMCPServersAvailableRightNow": "No MCP servers available right now.";
     readonly "chat.queuedPrompts": "Queued prompts";
@@ -8962,8 +8962,8 @@ declare const zhCN: {
     "chat.writeHTTPMCP": "写入 HTTP MCP";
     "chat.mCPBlockForProviderConfig": "提供商配置的 MCP 配置块";
     "chat.writeRawBlock": "写入原始配置块";
-    "chat.tools": "个工具 ·";
-    "chat.resources": "个资源 ·";
+    "chat.tools": "个工具";
+    "chat.resources": "个资源";
     "chat.templates": "模板";
     "chat.noMCPServersAvailableRightNow": "当前无可用 MCP 服务器。";
     "chat.queuedPrompts": "排队的提示词";
@@ -14516,8 +14516,8 @@ declare const resources: {
         readonly "chat.writeHTTPMCP": "Write HTTP MCP";
         readonly "chat.mCPBlockForProviderConfig": "MCP block for provider config";
         readonly "chat.writeRawBlock": "Write raw block";
-        readonly "chat.tools": "tools ·";
-        readonly "chat.resources": "resources ·";
+        readonly "chat.tools": "tools";
+        readonly "chat.resources": "resources";
         readonly "chat.templates": "templates";
         readonly "chat.noMCPServersAvailableRightNow": "No MCP servers available right now.";
         readonly "chat.queuedPrompts": "Queued prompts";
@@ -20047,8 +20047,8 @@ declare const resources: {
         "chat.writeHTTPMCP": "写入 HTTP MCP";
         "chat.mCPBlockForProviderConfig": "提供商配置的 MCP 配置块";
         "chat.writeRawBlock": "写入原始配置块";
-        "chat.tools": "个工具 ·";
-        "chat.resources": "个资源 ·";
+        "chat.tools": "个工具";
+        "chat.resources": "个资源";
         "chat.templates": "模板";
         "chat.noMCPServersAvailableRightNow": "当前无可用 MCP 服务器。";
         "chat.queuedPrompts": "排队的提示词";

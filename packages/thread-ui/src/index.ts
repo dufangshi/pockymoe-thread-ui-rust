@@ -74,6 +74,7 @@ export {
   ThreadShellPanel,
   type ThreadShellPanelHandle,
 } from './components/ThreadShellPanel';
+export { SingleShellTerminal } from './components/shell/SingleShellTerminal';
 export {
   MemoizedThreadGraphWorkspacePanel,
   ThreadGraphWorkspacePanel,

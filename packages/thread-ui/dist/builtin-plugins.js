@@ -10,7 +10,7 @@ import {
   formatNumber,
   translate,
   useI18n
-} from "./chunk-Z2VPGCZD.js";
+} from "./chunk-IMDAQ4X3.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/plugins/builtin-plugin-modules.tsx

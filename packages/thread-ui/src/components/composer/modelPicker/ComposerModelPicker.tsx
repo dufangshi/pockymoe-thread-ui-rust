@@ -132,8 +132,11 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
     if (view !== currentAgentId && viewModels?.status === 'ready') countHistory(view, previewTarget);
   }, [view, currentAgentId, viewModels?.status, previewTarget, countHistory]);
 
+  // A turn that ends on its own leaves nothing to stop: a pick then switches directly.
+  useEffect(() => { if (!props.running) setPending(null); }, [props.running]);
   const agentName = (agentId: string) => agents.find((agent) => agent.id === agentId)?.name ?? themeAgentName(agentId);
   const changeView = (agentId: string) => {
+    if (agentId !== view) setPending(null);
     setView(agentId);
     setShowPreview(false);
     setSwitchError(null);
@@ -161,7 +164,9 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
       }
       return;
     }
+    // From search results: show that agent, so its handoff note (and Stop and switch) is in view.
     if (agentId !== view) changeView(agentId);
+    if (searching) setQuery('');
     if (props.running) {
       setPending({ agentId, model: option.model });
       return;

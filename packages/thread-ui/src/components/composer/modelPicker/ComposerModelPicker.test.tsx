@@ -257,4 +257,21 @@ describe('ComposerModelPicker', () => {
     await settle();
     expect(document.querySelector('.model-picker-note-line')!.textContent).toBe('No history to hand over yet');
   });
+
+  it('shows Stop and switch for a pick from search results while a turn runs', async () => {
+    const source = switching();
+    await render({ running: true, source: { switching: source } });
+    const search = document.querySelector<HTMLInputElement>('.model-picker-search')!;
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(search, 'haiku');
+      search.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await settle();
+    await click(rows()[0]!);
+    await settle();
+    expect(search.value).toBe('');
+    expect(tab('Claude Agent').getAttribute('aria-pressed')).toBe('true');
+    expect(document.querySelector('.model-picker-stop')!.textContent).toContain('Claude Agent · Haiku 5.5');
+    expect(source.switchTo).not.toHaveBeenCalled();
+  });
 });

@@ -104,6 +104,10 @@ interface ThreadWorkspaceLayoutProps {
   settingsContent?: ReactNode;
   globalSettingsContent?: ReactNode;
   settingsSections?: import("./SettingsPanels").SettingsSection[];
+  /** Above the settings sections: what the owner adds to the window (a link to a
+      device's own settings page), given the way to close the window. */
+  settingsExtraContent?: ((close: () => void) => ReactNode) | undefined;
+  settingsTitle?: string | undefined;
   appMenuButton?: ReactNode;
   appNavigationMenu?: ReactNode;
   workspaceReturnHref?: string;
@@ -441,6 +445,8 @@ export function ThreadWorkspaceLayout({
   settingsContent,
   globalSettingsContent,
   settingsSections,
+  settingsExtraContent,
+  settingsTitle,
   restrictedNavigation = false,
   scopedSettings = false,
   workspaceLabels = {},
@@ -850,7 +856,8 @@ export function ThreadWorkspaceLayout({
           className="thread-icon-button inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full">
           <Settings data-icon="settings" className="h-4 w-4" />
         </button>}
-        extraContent={canUpdateThemeMode && !settingsSections ? (
+        title={settingsTitle}
+        extraContent={settingsSections && settingsExtraContent ? settingsExtraContent(() => changeSettingsOpen(false)) : canUpdateThemeMode && !settingsSections ? (
             <div className="thread-graph-settings-card rounded-lg border p-3">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">

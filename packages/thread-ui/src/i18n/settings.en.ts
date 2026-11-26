@@ -692,4 +692,6 @@ export const settingsEn = {
   "settings.deviceScope": "Device these settings apply to",
   "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.",
   "settings.deviceScopeNone": "No device to manage yet.",
+  // The settings window names the device settings that left it for the device page (issue #115).
+  "settings.deviceSettingsLink": "Device settings · {{device}}",
 } as const;

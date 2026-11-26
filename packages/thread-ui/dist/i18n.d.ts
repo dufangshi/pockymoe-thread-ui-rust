@@ -165,7 +165,10 @@ declare const en: {
     readonly "desktopDevices.renameFailed": "Could not save the device name.";
     readonly "desktopDevices.statistics": "Usage statistics";
     readonly "desktopDevices.timeRange": "Statistics time range";
-    readonly "desktopDevices.statsDevice": "Statistics device";
+    readonly "desktopDevices.statsScope": "Statistics scope";
+    readonly "desktopDevices.devicePage": "Device page";
+    readonly "desktopDevices.tabOverview": "Overview";
+    readonly "desktopDevices.tabSettings": "Settings";
     readonly "desktopDevices.sevenDays": "7 days";
     readonly "desktopDevices.thirtyDays": "30 days";
     readonly "desktopDevices.dateBasis": "{{timeZone}} · by turn start date";
@@ -305,13 +308,9 @@ declare const en: {
     readonly "tour.chapter.more": "Automation & notifications";
     readonly "tour.chapter.moreHint": "Schedules, subagents, alerts";
     readonly "tour.devices.relayAdd.title": "Add a device";
-    readonly "tour.devices.relayAdd.body": "Each computer that runs agents gets its own device token. Click Add device to open the form.";
     readonly "tour.devices.relayAddDesktop.body": "Click Add device; in the window that opens, name the device and create a token to get a macOS/Linux and a Windows command. Run it on that computer to connect it. Close the window and the tour goes on. The tutorial never creates tokens for you.";
-    readonly "tour.devices.relayForm.title": "Create a token, run the command";
-    readonly "tour.devices.relayForm.body": "Name the device and click Create token. You then get a macOS/Linux and a Windows command; run it on that computer to connect its Supervisor. The tutorial never creates tokens for you.";
-    readonly "tour.devices.relayForm.prereq": "Click Add device to open the form.";
     readonly "tour.devices.relayList.title": "Your devices";
-    readonly "tour.devices.relayList.body": "Connected devices are listed here: a solid dot means online, Open goes to its workspaces, and ⋯ renames, shares or isolates it. Its Settings… hold the setup commands and the token. No device yet? The tour continues on a sample device.";
+    readonly "tour.devices.relayList.body": "Connected devices are listed here: a solid dot means online, the arrow opens its workspaces, and ⋯ renames, shares or isolates it. Its name opens the device's own page, whose Settings tab holds the setup commands, the token and everything else about it. No device yet? The tour continues on a sample device.";
     readonly "tour.devices.sample.title": "The sample device";
     readonly "tour.devices.sample.body": "This Sample device exists only for the tutorial: its workspaces, threads, terminal and files are demo data, and changes stay in this page. Your own devices work exactly the same way.";
     readonly "tour.devices.local.title": "Local mode: this computer is the device";
@@ -859,7 +858,6 @@ declare const en: {
     readonly "workbench.relaySetup": "Relay Setup";
     readonly "workbench.relayAdmin": "Relay Admin";
     readonly "workbench.account": "Account";
-    readonly "workbench.devicesAndSharedSessions": "Devices and shared threads";
     readonly "workbench.settings": "Settings";
     readonly "workbench.newWorkspace": "New Workspace";
     readonly "workbench.threads": "Threads";
@@ -2109,7 +2107,11 @@ declare const en: {
     readonly "settings.deviceScope": "Device these settings apply to";
     readonly "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.";
     readonly "settings.deviceScopeNone": "No device to manage yet.";
+<<<<<<< HEAD
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
+=======
+    readonly "settings.deviceSettingsLink": "Device settings · {{device}}";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
     readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
     readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
     readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -2973,7 +2975,6 @@ declare const en: {
     readonly "devices.threadsByMe": "Threads by me";
     readonly "devices.latestDeviceStatusCouldNotBeRefreshed": "Latest device status could not be refreshed:";
     readonly "devices.retryingAutomatically": " Retrying automatically.";
-    readonly "devices.yourRelaySupervisorsAndTheirCurrentAvailability": "Your relay supervisors and their current availability.";
     readonly "devices.close": "Close";
     readonly "devices.addDevice": "Add device";
     readonly "devices.activity": "Activity";
@@ -3232,8 +3233,6 @@ declare const en: {
     readonly "devices.manageViewPath": "View path";
     readonly "devices.manageRemove": "Remove…";
     readonly "devices.manageOffline": "The device is offline. This is available once it is back online.";
-    readonly "devices.settingsTitle": "Device settings";
-    readonly "devices.settingsDescription": "Its Supervisor version and its connection to the relay.";
     readonly "devices.settingsConnection": "Connection";
     readonly "devices.settingsConnectionHint": "The setup command installs or updates Pockymoe on the device and connects it to your account with its token.";
     readonly "devices.settingsToken": "Token";
@@ -3244,6 +3243,15 @@ declare const en: {
     readonly "devices.jobRolledBack": "Last {{value1}} failed; previous service restored. {{value2}}";
     readonly "devices.jobRollbackFailed": "Last {{value1}} and recovery failed: {{value2}}";
     readonly "devices.removing": "Removing…";
+    readonly "devices.switcherMenu": "Switch device";
+    readonly "devices.switcherLabel": "Switch device, current: {{device}}, {{state}}";
+    readonly "devices.switcherLabelAll": "Switch device, current: {{device}}";
+    readonly "devices.sharedMark": "Shared";
+    readonly "devices.sharedBy": "shared by {{owner}}";
+    readonly "devices.manageThisDevice": "Manage this device…";
+    readonly "devices.settingsGeneral": "General";
+    readonly "devices.settingsName": "Name";
+    readonly "devices.settingsGeneralDescription": "Its name, its connection to the relay and its isolation.";
     readonly "common.language": "Language";
     readonly "common.languageDescription": "Choose the interface language for this browser.";
     readonly "common.errorTitle": "Something went wrong";
@@ -5664,7 +5672,10 @@ declare const zhCN: {
     "desktopDevices.renameFailed": string;
     "desktopDevices.statistics": string;
     "desktopDevices.timeRange": string;
-    "desktopDevices.statsDevice": string;
+    "desktopDevices.statsScope": string;
+    "desktopDevices.devicePage": string;
+    "desktopDevices.tabOverview": string;
+    "desktopDevices.tabSettings": string;
     "desktopDevices.sevenDays": string;
     "desktopDevices.thirtyDays": string;
     "desktopDevices.dateBasis": string;
@@ -5804,13 +5815,9 @@ declare const zhCN: {
     "tour.chapter.more": "自动化与通知";
     "tour.chapter.moreHint": "计划、子智能体、提醒";
     "tour.devices.relayAdd.title": "添加设备";
-    "tour.devices.relayAdd.body": "每台运行 Agent 的电脑都有自己的设备令牌。点击「添加设备」打开表单。";
     "tour.devices.relayAddDesktop.body": "点击「添加设备」，在弹出的窗口里填写设备名称并创建令牌，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。关闭窗口后教程继续。教程不会替你创建令牌。";
-    "tour.devices.relayForm.title": "创建令牌，运行安装命令";
-    "tour.devices.relayForm.body": "填写设备名称并点击「创建令牌」，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。教程不会替你创建令牌。";
-    "tour.devices.relayForm.prereq": "先点击「添加设备」打开表单。";
     "tour.devices.relayList.title": "你的设备";
-    "tour.devices.relayList.body": "接入后设备列在这里：实心圆点表示在线，「打开」进入它的工作区，⋯ 可重命名、共享或隔离，「设置…」里有安装命令和令牌。还没有设备也没关系，接下来用一台样例设备演示。";
+    "tour.devices.relayList.body": "接入后设备列在这里：实心圆点表示在线，箭头进入它的工作区，⋯ 可重命名、共享或隔离。点设备名进入设备页，它的「设置」标签里有安装命令、令牌和这台设备的其他设置。还没有设备也没关系，接下来用一台样例设备演示。";
     "tour.devices.sample.title": "样例设备";
     "tour.devices.sample.body": "这台「样例设备」只为教程存在：工作区、对话、终端和文件都是演示数据，改动只留在这个页面里。你自己的设备用起来一模一样。";
     "tour.devices.local.title": "本地模式：这台电脑就是设备";
@@ -6358,7 +6365,6 @@ declare const zhCN: {
     "workbench.relaySetup": "Relay 设置";
     "workbench.relayAdmin": "Relay 管理员";
     "workbench.account": "账号";
-    "workbench.devicesAndSharedSessions": "设备与共享线程";
     "workbench.settings": "设置";
     "workbench.newWorkspace": "新建工作区";
     "workbench.threads": "线程";
@@ -7608,7 +7614,11 @@ declare const zhCN: {
     "settings.deviceScope": "这些设置作用的设备";
     "settings.deviceScopeChoose": "这些设置属于某一台设备。请选择要管理的设备。";
     "settings.deviceScopeNone": "还没有可管理的设备。";
+<<<<<<< HEAD
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
+=======
+    "settings.deviceSettingsLink": "设备设置 · {{device}}";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
     "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
     "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
     "files.pluginUnsupportedPlatform": "此平台不支持终端。";
@@ -8472,7 +8482,6 @@ declare const zhCN: {
     "devices.threadsByMe": "我共享的线程";
     "devices.latestDeviceStatusCouldNotBeRefreshed": "无法刷新最新设备状态：";
     "devices.retryingAutomatically": " 正在自动重试。";
-    "devices.yourRelaySupervisorsAndTheirCurrentAvailability": "你的 Relay Supervisor 及其当前可用状态。";
     "devices.close": "关闭";
     "devices.addDevice": "添加设备";
     "devices.activity": "活动";
@@ -8731,8 +8740,6 @@ declare const zhCN: {
     "devices.manageViewPath": "查看路径";
     "devices.manageRemove": "移除…";
     "devices.manageOffline": "设备离线，上线后可用。";
-    "devices.settingsTitle": "设备设置";
-    "devices.settingsDescription": "这台设备的 Supervisor 版本，以及它与 Relay 的连接。";
     "devices.settingsConnection": "连接";
     "devices.settingsConnectionHint": "设置命令会在设备上安装或更新 Pockymoe，并用令牌把它连到你的账号。";
     "devices.settingsToken": "令牌";
@@ -8743,6 +8750,15 @@ declare const zhCN: {
     "devices.jobRolledBack": "上次{{value1}}失败，已恢复之前的服务。{{value2}}";
     "devices.jobRollbackFailed": "上次{{value1}}和恢复都失败了：{{value2}}";
     "devices.removing": "正在移除…";
+    "devices.switcherMenu": "切换设备";
+    "devices.switcherLabel": "切换设备，当前：{{device}}，{{state}}";
+    "devices.switcherLabelAll": "切换设备，当前：{{device}}";
+    "devices.sharedMark": "共享";
+    "devices.sharedBy": "{{owner}} 共享";
+    "devices.manageThisDevice": "管理此设备…";
+    "devices.settingsGeneral": "通用";
+    "devices.settingsName": "名称";
+    "devices.settingsGeneralDescription": "名称、与 Relay 的连接，以及隔离。";
     "common.language": "语言";
     "common.languageDescription": "选择此浏览器的界面语言。";
     "common.errorTitle": "页面出错了";
@@ -11185,7 +11201,10 @@ declare const resources: {
         readonly "desktopDevices.renameFailed": "Could not save the device name.";
         readonly "desktopDevices.statistics": "Usage statistics";
         readonly "desktopDevices.timeRange": "Statistics time range";
-        readonly "desktopDevices.statsDevice": "Statistics device";
+        readonly "desktopDevices.statsScope": "Statistics scope";
+        readonly "desktopDevices.devicePage": "Device page";
+        readonly "desktopDevices.tabOverview": "Overview";
+        readonly "desktopDevices.tabSettings": "Settings";
         readonly "desktopDevices.sevenDays": "7 days";
         readonly "desktopDevices.thirtyDays": "30 days";
         readonly "desktopDevices.dateBasis": "{{timeZone}} · by turn start date";
@@ -11325,13 +11344,9 @@ declare const resources: {
         readonly "tour.chapter.more": "Automation & notifications";
         readonly "tour.chapter.moreHint": "Schedules, subagents, alerts";
         readonly "tour.devices.relayAdd.title": "Add a device";
-        readonly "tour.devices.relayAdd.body": "Each computer that runs agents gets its own device token. Click Add device to open the form.";
         readonly "tour.devices.relayAddDesktop.body": "Click Add device; in the window that opens, name the device and create a token to get a macOS/Linux and a Windows command. Run it on that computer to connect it. Close the window and the tour goes on. The tutorial never creates tokens for you.";
-        readonly "tour.devices.relayForm.title": "Create a token, run the command";
-        readonly "tour.devices.relayForm.body": "Name the device and click Create token. You then get a macOS/Linux and a Windows command; run it on that computer to connect its Supervisor. The tutorial never creates tokens for you.";
-        readonly "tour.devices.relayForm.prereq": "Click Add device to open the form.";
         readonly "tour.devices.relayList.title": "Your devices";
-        readonly "tour.devices.relayList.body": "Connected devices are listed here: a solid dot means online, Open goes to its workspaces, and ⋯ renames, shares or isolates it. Its Settings… hold the setup commands and the token. No device yet? The tour continues on a sample device.";
+        readonly "tour.devices.relayList.body": "Connected devices are listed here: a solid dot means online, the arrow opens its workspaces, and ⋯ renames, shares or isolates it. Its name opens the device's own page, whose Settings tab holds the setup commands, the token and everything else about it. No device yet? The tour continues on a sample device.";
         readonly "tour.devices.sample.title": "The sample device";
         readonly "tour.devices.sample.body": "This Sample device exists only for the tutorial: its workspaces, threads, terminal and files are demo data, and changes stay in this page. Your own devices work exactly the same way.";
         readonly "tour.devices.local.title": "Local mode: this computer is the device";
@@ -11879,7 +11894,6 @@ declare const resources: {
         readonly "workbench.relaySetup": "Relay Setup";
         readonly "workbench.relayAdmin": "Relay Admin";
         readonly "workbench.account": "Account";
-        readonly "workbench.devicesAndSharedSessions": "Devices and shared threads";
         readonly "workbench.settings": "Settings";
         readonly "workbench.newWorkspace": "New Workspace";
         readonly "workbench.threads": "Threads";
@@ -13129,7 +13143,11 @@ declare const resources: {
         readonly "settings.deviceScope": "Device these settings apply to";
         readonly "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.";
         readonly "settings.deviceScopeNone": "No device to manage yet.";
+<<<<<<< HEAD
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
+=======
+        readonly "settings.deviceSettingsLink": "Device settings · {{device}}";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
         readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
         readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
         readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -13993,7 +14011,6 @@ declare const resources: {
         readonly "devices.threadsByMe": "Threads by me";
         readonly "devices.latestDeviceStatusCouldNotBeRefreshed": "Latest device status could not be refreshed:";
         readonly "devices.retryingAutomatically": " Retrying automatically.";
-        readonly "devices.yourRelaySupervisorsAndTheirCurrentAvailability": "Your relay supervisors and their current availability.";
         readonly "devices.close": "Close";
         readonly "devices.addDevice": "Add device";
         readonly "devices.activity": "Activity";
@@ -14252,8 +14269,6 @@ declare const resources: {
         readonly "devices.manageViewPath": "View path";
         readonly "devices.manageRemove": "Remove…";
         readonly "devices.manageOffline": "The device is offline. This is available once it is back online.";
-        readonly "devices.settingsTitle": "Device settings";
-        readonly "devices.settingsDescription": "Its Supervisor version and its connection to the relay.";
         readonly "devices.settingsConnection": "Connection";
         readonly "devices.settingsConnectionHint": "The setup command installs or updates Pockymoe on the device and connects it to your account with its token.";
         readonly "devices.settingsToken": "Token";
@@ -14264,6 +14279,15 @@ declare const resources: {
         readonly "devices.jobRolledBack": "Last {{value1}} failed; previous service restored. {{value2}}";
         readonly "devices.jobRollbackFailed": "Last {{value1}} and recovery failed: {{value2}}";
         readonly "devices.removing": "Removing…";
+        readonly "devices.switcherMenu": "Switch device";
+        readonly "devices.switcherLabel": "Switch device, current: {{device}}, {{state}}";
+        readonly "devices.switcherLabelAll": "Switch device, current: {{device}}";
+        readonly "devices.sharedMark": "Shared";
+        readonly "devices.sharedBy": "shared by {{owner}}";
+        readonly "devices.manageThisDevice": "Manage this device…";
+        readonly "devices.settingsGeneral": "General";
+        readonly "devices.settingsName": "Name";
+        readonly "devices.settingsGeneralDescription": "Its name, its connection to the relay and its isolation.";
         readonly "common.language": "Language";
         readonly "common.languageDescription": "Choose the interface language for this browser.";
         readonly "common.errorTitle": "Something went wrong";
@@ -16683,7 +16707,10 @@ declare const resources: {
         "desktopDevices.renameFailed": string;
         "desktopDevices.statistics": string;
         "desktopDevices.timeRange": string;
-        "desktopDevices.statsDevice": string;
+        "desktopDevices.statsScope": string;
+        "desktopDevices.devicePage": string;
+        "desktopDevices.tabOverview": string;
+        "desktopDevices.tabSettings": string;
         "desktopDevices.sevenDays": string;
         "desktopDevices.thirtyDays": string;
         "desktopDevices.dateBasis": string;
@@ -16823,13 +16850,9 @@ declare const resources: {
         "tour.chapter.more": "自动化与通知";
         "tour.chapter.moreHint": "计划、子智能体、提醒";
         "tour.devices.relayAdd.title": "添加设备";
-        "tour.devices.relayAdd.body": "每台运行 Agent 的电脑都有自己的设备令牌。点击「添加设备」打开表单。";
         "tour.devices.relayAddDesktop.body": "点击「添加设备」，在弹出的窗口里填写设备名称并创建令牌，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。关闭窗口后教程继续。教程不会替你创建令牌。";
-        "tour.devices.relayForm.title": "创建令牌，运行安装命令";
-        "tour.devices.relayForm.body": "填写设备名称并点击「创建令牌」，会得到 macOS/Linux 与 Windows 安装命令；在那台电脑上运行即可接入。教程不会替你创建令牌。";
-        "tour.devices.relayForm.prereq": "先点击「添加设备」打开表单。";
         "tour.devices.relayList.title": "你的设备";
-        "tour.devices.relayList.body": "接入后设备列在这里：实心圆点表示在线，「打开」进入它的工作区，⋯ 可重命名、共享或隔离，「设置…」里有安装命令和令牌。还没有设备也没关系，接下来用一台样例设备演示。";
+        "tour.devices.relayList.body": "接入后设备列在这里：实心圆点表示在线，箭头进入它的工作区，⋯ 可重命名、共享或隔离。点设备名进入设备页，它的「设置」标签里有安装命令、令牌和这台设备的其他设置。还没有设备也没关系，接下来用一台样例设备演示。";
         "tour.devices.sample.title": "样例设备";
         "tour.devices.sample.body": "这台「样例设备」只为教程存在：工作区、对话、终端和文件都是演示数据，改动只留在这个页面里。你自己的设备用起来一模一样。";
         "tour.devices.local.title": "本地模式：这台电脑就是设备";
@@ -17377,7 +17400,6 @@ declare const resources: {
         "workbench.relaySetup": "Relay 设置";
         "workbench.relayAdmin": "Relay 管理员";
         "workbench.account": "账号";
-        "workbench.devicesAndSharedSessions": "设备与共享线程";
         "workbench.settings": "设置";
         "workbench.newWorkspace": "新建工作区";
         "workbench.threads": "线程";
@@ -18627,7 +18649,11 @@ declare const resources: {
         "settings.deviceScope": "这些设置作用的设备";
         "settings.deviceScopeChoose": "这些设置属于某一台设备。请选择要管理的设备。";
         "settings.deviceScopeNone": "还没有可管理的设备。";
+<<<<<<< HEAD
 >>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
+=======
+        "settings.deviceSettingsLink": "设备设置 · {{device}}";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
         "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
         "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
         "files.pluginUnsupportedPlatform": "此平台不支持终端。";
@@ -19491,7 +19517,6 @@ declare const resources: {
         "devices.threadsByMe": "我共享的线程";
         "devices.latestDeviceStatusCouldNotBeRefreshed": "无法刷新最新设备状态：";
         "devices.retryingAutomatically": " 正在自动重试。";
-        "devices.yourRelaySupervisorsAndTheirCurrentAvailability": "你的 Relay Supervisor 及其当前可用状态。";
         "devices.close": "关闭";
         "devices.addDevice": "添加设备";
         "devices.activity": "活动";
@@ -19750,8 +19775,6 @@ declare const resources: {
         "devices.manageViewPath": "查看路径";
         "devices.manageRemove": "移除…";
         "devices.manageOffline": "设备离线，上线后可用。";
-        "devices.settingsTitle": "设备设置";
-        "devices.settingsDescription": "这台设备的 Supervisor 版本，以及它与 Relay 的连接。";
         "devices.settingsConnection": "连接";
         "devices.settingsConnectionHint": "设置命令会在设备上安装或更新 Pockymoe，并用令牌把它连到你的账号。";
         "devices.settingsToken": "令牌";
@@ -19762,6 +19785,15 @@ declare const resources: {
         "devices.jobRolledBack": "上次{{value1}}失败，已恢复之前的服务。{{value2}}";
         "devices.jobRollbackFailed": "上次{{value1}}和恢复都失败了：{{value2}}";
         "devices.removing": "正在移除…";
+        "devices.switcherMenu": "切换设备";
+        "devices.switcherLabel": "切换设备，当前：{{device}}，{{state}}";
+        "devices.switcherLabelAll": "切换设备，当前：{{device}}";
+        "devices.sharedMark": "共享";
+        "devices.sharedBy": "{{owner}} 共享";
+        "devices.manageThisDevice": "管理此设备…";
+        "devices.settingsGeneral": "通用";
+        "devices.settingsName": "名称";
+        "devices.settingsGeneralDescription": "名称、与 Relay 的连接，以及隔离。";
         "common.language": "语言";
         "common.languageDescription": "选择此浏览器的界面语言。";
         "common.errorTitle": "页面出错了";

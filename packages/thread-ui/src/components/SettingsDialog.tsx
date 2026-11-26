@@ -5,8 +5,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useSheetViewport } from './useSheetViewport';
 
 /** One settings shell for the workbench and pages outside conversations. */
-export function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId = 'preferences', section, onSectionChange, panelScroll, contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
+export function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, title, initialId = 'preferences', section, onSectionChange, panelScroll, contentProps, ...rootProps }: ComponentProps<typeof Dialog> & {
   sections: SettingsSection[];
+  /** The window's title; "Settings" unless the owner names what they act on ("Settings · mac"). */
+  title?: string | undefined;
   section?: string | undefined;
   onSectionChange?: ((id: string) => void) | undefined;
   panelScroll?: ComponentProps<typeof SettingsPanels>['scroll'];
@@ -26,7 +28,7 @@ export function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, e
       className="thread-graph-settings-dialog thread-graph-dialog matter-settings-dialog"
       overlayClassName="matter-settings-overlay">
       <DialogHeader>
-        <DialogTitle>{translate('files.settings')}</DialogTitle>
+        <DialogTitle>{title ?? translate('files.settings')}</DialogTitle>
         <DialogDescription>{translate('files.yourWorkspaceConnectedDeviceAndPersonalPreferences')}</DialogDescription>
       </DialogHeader>
       {extraContent}

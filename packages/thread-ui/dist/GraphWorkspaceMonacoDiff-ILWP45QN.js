@@ -1,5 +1,6 @@
 import {
   editorThemeFor
+<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-3HWU7ITO.js
 <<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-HLHCHLMM.js
 <<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-ARO5AYSM.js
 } from "./chunk-Y7PJL7OW.js";
@@ -9,11 +10,15 @@ import {
 =======
 } from "./chunk-YWGORNY5.js";
 >>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-3HWU7ITO.js
+=======
+} from "./chunk-TCPGS7EA.js";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-ILWP45QN.js
 import {
   useDocumentThemeRevision
 } from "./chunk-JIPNJR2N.js";
 import {
   translate
+<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-3HWU7ITO.js
 <<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-HLHCHLMM.js
 <<<<<<<< HEAD:packages/thread-ui/dist/GraphWorkspaceMonacoDiff-ARO5AYSM.js
 } from "./chunk-R2LITDNV.js";
@@ -23,6 +28,9 @@ import {
 =======
 } from "./chunk-QQRECI3Q.js";
 >>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-3HWU7ITO.js
+=======
+} from "./chunk-3MN5ZQZP.js";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/GraphWorkspaceMonacoDiff-ILWP45QN.js
 import {
   editor
 } from "./chunk-PEHPFHY2.js";

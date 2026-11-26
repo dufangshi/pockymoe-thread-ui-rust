@@ -649,4 +649,6 @@ export const settingsZhCN = {
   "settings.deviceScope": "这些设置作用的设备",
   "settings.deviceScopeChoose": "这些设置属于某一台设备。请选择要管理的设备。",
   "settings.deviceScopeNone": "还没有可管理的设备。",
+  // The settings window names the device settings that left it for the device page (issue #115).
+  "settings.deviceSettingsLink": "设备设置 · {{device}}",
 } as const;

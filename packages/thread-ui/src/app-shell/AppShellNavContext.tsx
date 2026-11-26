@@ -15,7 +15,8 @@ export interface AppShellNavContextValue {
   settingsOpen: boolean;
   openSettings: () => void;
   /** Opens settings on one section, such as `resources`. */
-  openSettingsSection?: (sectionId: string) => void;
+  /** `deviceId`: the device a device-level section is for, where the caller knows it. */
+  openSettingsSection?: (sectionId: string, deviceId?: string | null) => void;
   /** The section the settings dialog opens on; the first one when unset. */
   settingsSection?: string | null;
   closeSettings: () => void;

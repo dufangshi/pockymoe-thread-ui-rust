@@ -5,6 +5,7 @@ import {
 import {
   translate,
   useI18n
+<<<<<<< HEAD:packages/thread-ui/dist/chunk-YWGORNY5.js
 <<<<<<< HEAD:packages/thread-ui/dist/chunk-OL27POSN.js
 <<<<<<<< HEAD:packages/thread-ui/dist/chunk-Y7PJL7OW.js
 } from "./chunk-R2LITDNV.js";
@@ -14,6 +15,9 @@ import {
 =======
 } from "./chunk-QQRECI3Q.js";
 >>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu):packages/thread-ui/dist/chunk-YWGORNY5.js
+=======
+} from "./chunk-3MN5ZQZP.js";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/chunk-TCPGS7EA.js
 import {
   KeyCode,
   KeyMod,

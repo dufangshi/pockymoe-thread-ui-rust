@@ -387,7 +387,6 @@ export const workbenchZhCN = {
   "workbench.relaySetup": "Relay 设置",
   "workbench.relayAdmin": "Relay 管理员",
   "workbench.account": "账号",
-  "workbench.devicesAndSharedSessions": "设备与共享线程",
   "workbench.settings": "设置",
   "workbench.newWorkspace": "新建工作区",
   "workbench.threads": "线程",

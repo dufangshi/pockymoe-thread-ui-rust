@@ -61,6 +61,7 @@ import {
   useTabScrollEdges
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-SHS2CKRU.js";
 =======
 } from "./chunk-M3NWHISK.js";
@@ -68,6 +69,9 @@ import {
 =======
 } from "./chunk-HYKJ7YFG.js";
 >>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
+=======
+} from "./chunk-MOKG2ALY.js";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -106,6 +110,7 @@ import {
   useMenuKeyboard
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-R2LITDNV.js";
 =======
 } from "./chunk-PV62C22N.js";
@@ -113,6 +118,9 @@ import {
 =======
 } from "./chunk-QQRECI3Q.js";
 >>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
+=======
+} from "./chunk-3MN5ZQZP.js";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";
@@ -15250,7 +15258,7 @@ function useSheetViewport(enabled = true) {
 
 // src/components/SettingsDialog.tsx
 import { jsx as jsx48, jsxs as jsxs42 } from "react/jsx-runtime";
-function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, initialId = "preferences", section, onSectionChange, panelScroll, contentProps, ...rootProps }) {
+function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraContent, title, initialId = "preferences", section, onSectionChange, panelScroll, contentProps, ...rootProps }) {
   useI18n();
   const sheet = useSheetViewport(rootProps.open !== false);
   return /* @__PURE__ */ jsxs42(Dialog, { ...rootProps, children: [
@@ -15266,7 +15274,7 @@ function SettingsDialog({ sections, themeMode, effectiveTheme, trigger, extraCon
         overlayClassName: "matter-settings-overlay",
         children: [
           /* @__PURE__ */ jsxs42(DialogHeader, { children: [
-            /* @__PURE__ */ jsx48(DialogTitle, { children: translate("files.settings") }),
+            /* @__PURE__ */ jsx48(DialogTitle, { children: title ?? translate("files.settings") }),
             /* @__PURE__ */ jsx48(DialogDescription, { children: translate("files.yourWorkspaceConnectedDeviceAndPersonalPreferences") })
           ] }),
           extraContent,
@@ -18913,6 +18921,8 @@ function ThreadWorkspaceLayout({
   settingsContent,
   globalSettingsContent,
   settingsSections,
+  settingsExtraContent,
+  settingsTitle,
   restrictedNavigation = false,
   scopedSettings = false,
   workspaceLabels = {},
@@ -19263,7 +19273,8 @@ function ThreadWorkspaceLayout({
               children: /* @__PURE__ */ jsx57(Settings, { "data-icon": "settings", className: "h-4 w-4" })
             }
           ),
-          extraContent: canUpdateThemeMode && !settingsSections ? /* @__PURE__ */ jsx57("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs50("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
+          title: settingsTitle,
+          extraContent: settingsSections && settingsExtraContent ? settingsExtraContent(() => changeSettingsOpen(false)) : canUpdateThemeMode && !settingsSections ? /* @__PURE__ */ jsx57("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs50("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
             /* @__PURE__ */ jsxs50("div", { className: "min-w-0", children: [
               /* @__PURE__ */ jsx57("p", { className: "font-medium text-[var(--theme-fg)]", children: translate("files.appearance") }),
               /* @__PURE__ */ jsxs50("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
@@ -31953,6 +31964,8 @@ function ThreadDetailSurface({
   settingsContent,
   globalSettingsContent,
   settingsSections,
+  settingsExtraContent,
+  settingsTitle,
   renderRailSettings,
   settingsDialogOpen,
   onSettingsDialogOpenChange,
@@ -32206,6 +32219,8 @@ ${pageMark}` : pageMark } : composerProps,
       settingsContent,
       globalSettingsContent,
       settingsSections,
+      settingsExtraContent,
+      settingsTitle,
       renderRailSettings,
       ...settingsDialogOpen !== void 0 ? { settingsDialogOpen } : {},
       ...onSettingsDialogOpenChange ? { onSettingsDialogOpenChange } : {},

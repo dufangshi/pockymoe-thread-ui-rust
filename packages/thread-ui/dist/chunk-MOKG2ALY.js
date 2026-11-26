@@ -6,6 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
+<<<<<<< HEAD:packages/thread-ui/dist/chunk-HYKJ7YFG.js
 <<<<<<< HEAD:packages/thread-ui/dist/chunk-M3NWHISK.js
 <<<<<<<< HEAD:packages/thread-ui/dist/chunk-SHS2CKRU.js
 } from "./chunk-R2LITDNV.js";
@@ -15,6 +16,9 @@ import {
 =======
 } from "./chunk-QQRECI3Q.js";
 >>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu):packages/thread-ui/dist/chunk-HYKJ7YFG.js
+=======
+} from "./chunk-3MN5ZQZP.js";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/chunk-MOKG2ALY.js
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {

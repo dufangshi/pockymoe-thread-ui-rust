@@ -12,6 +12,7 @@ import {
   useI18n
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 } from "./chunk-R2LITDNV.js";
 =======
 } from "./chunk-PV62C22N.js";
@@ -19,6 +20,9 @@ import {
 =======
 } from "./chunk-QQRECI3Q.js";
 >>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
+=======
+} from "./chunk-3MN5ZQZP.js";
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
 import "./chunk-7O5E2ZHX.js";
 
 // src/plugins/builtin-plugin-modules.tsx

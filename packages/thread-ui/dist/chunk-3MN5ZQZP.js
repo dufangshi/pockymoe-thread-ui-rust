@@ -1436,13 +1436,9 @@ var tourEn = {
   "tour.chapter.more": "Automation & notifications",
   "tour.chapter.moreHint": "Schedules, subagents, alerts",
   "tour.devices.relayAdd.title": "Add a device",
-  "tour.devices.relayAdd.body": "Each computer that runs agents gets its own device token. Click Add device to open the form.",
   "tour.devices.relayAddDesktop.body": "Click Add device; in the window that opens, name the device and create a token to get a macOS/Linux and a Windows command. Run it on that computer to connect it. Close the window and the tour goes on. The tutorial never creates tokens for you.",
-  "tour.devices.relayForm.title": "Create a token, run the command",
-  "tour.devices.relayForm.body": "Name the device and click Create token. You then get a macOS/Linux and a Windows command; run it on that computer to connect its Supervisor. The tutorial never creates tokens for you.",
-  "tour.devices.relayForm.prereq": "Click Add device to open the form.",
   "tour.devices.relayList.title": "Your devices",
-  "tour.devices.relayList.body": "Connected devices are listed here: a solid dot means online, Open goes to its workspaces, and \u22EF renames, shares or isolates it. Its Settings\u2026 hold the setup commands and the token. No device yet? The tour continues on a sample device.",
+  "tour.devices.relayList.body": "Connected devices are listed here: a solid dot means online, the arrow opens its workspaces, and \u22EF renames, shares or isolates it. Its name opens the device's own page, whose Settings tab holds the setup commands, the token and everything else about it. No device yet? The tour continues on a sample device.",
   "tour.devices.sample.title": "The sample device",
   "tour.devices.sample.body": "This Sample device exists only for the tutorial: its workspaces, threads, terminal and files are demo data, and changes stay in this page. Your own devices work exactly the same way.",
   "tour.devices.local.title": "Local mode: this computer is the device",
@@ -2958,7 +2954,6 @@ var devicesEn = {
   "devices.threadsByMe": "Threads by me",
   "devices.latestDeviceStatusCouldNotBeRefreshed": "Latest device status could not be refreshed:",
   "devices.retryingAutomatically": " Retrying automatically.",
-  "devices.yourRelaySupervisorsAndTheirCurrentAvailability": "Your relay supervisors and their current availability.",
   "devices.close": "Close",
   "devices.addDevice": "Add device",
   "devices.activity": "Activity",
@@ -3211,8 +3206,6 @@ var devicesEn = {
   "devices.manageViewPath": "View path",
   "devices.manageRemove": "Remove\u2026",
   "devices.manageOffline": "The device is offline. This is available once it is back online.",
-  "devices.settingsTitle": "Device settings",
-  "devices.settingsDescription": "Its Supervisor version and its connection to the relay.",
   "devices.settingsConnection": "Connection",
   "devices.settingsConnectionHint": "The setup command installs or updates Pockymoe on the device and connects it to your account with its token.",
   "devices.settingsToken": "Token",
@@ -3222,7 +3215,17 @@ var devicesEn = {
   "devices.jobFailed": "Last {{value1}} failed: {{value2}}",
   "devices.jobRolledBack": "Last {{value1}} failed; previous service restored. {{value2}}",
   "devices.jobRollbackFailed": "Last {{value1}} and recovery failed: {{value2}}",
-  "devices.removing": "Removing\u2026"
+  "devices.removing": "Removing\u2026",
+  // The device switcher and the device page (issue #115).
+  "devices.switcherMenu": "Switch device",
+  "devices.switcherLabel": "Switch device, current: {{device}}, {{state}}",
+  "devices.switcherLabelAll": "Switch device, current: {{device}}",
+  "devices.sharedMark": "Shared",
+  "devices.sharedBy": "shared by {{owner}}",
+  "devices.manageThisDevice": "Manage this device\u2026",
+  "devices.settingsGeneral": "General",
+  "devices.settingsName": "Name",
+  "devices.settingsGeneralDescription": "Its name, its connection to the relay and its isolation."
 };
 
 // src/i18n/files.en.ts
@@ -4491,8 +4494,14 @@ var settingsEn = {
   "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.",
   "settings.deviceScope": "Device these settings apply to",
   "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.",
+<<<<<<< HEAD:packages/thread-ui/dist/chunk-QQRECI3Q.js
   "settings.deviceScopeNone": "No device to manage yet."
 >>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/chunk-PV62C22N.js
+=======
+  "settings.deviceScopeNone": "No device to manage yet.",
+  // The settings window names the device settings that left it for the device page (issue #115).
+  "settings.deviceSettingsLink": "Device settings \xB7 {{device}}"
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/chunk-3MN5ZQZP.js
 };
 
 // src/i18n/sharing.en.ts
@@ -5214,7 +5223,6 @@ var workbenchEn = {
   "workbench.relaySetup": "Relay Setup",
   "workbench.relayAdmin": "Relay Admin",
   "workbench.account": "Account",
-  "workbench.devicesAndSharedSessions": "Devices and shared threads",
   "workbench.settings": "Settings",
   "workbench.newWorkspace": "New Workspace",
   "workbench.threads": "Threads",
@@ -5701,7 +5709,10 @@ var en = {
   "desktopDevices.renameFailed": "Could not save the device name.",
   "desktopDevices.statistics": "Usage statistics",
   "desktopDevices.timeRange": "Statistics time range",
-  "desktopDevices.statsDevice": "Statistics device",
+  "desktopDevices.statsScope": "Statistics scope",
+  "desktopDevices.devicePage": "Device page",
+  "desktopDevices.tabOverview": "Overview",
+  "desktopDevices.tabSettings": "Settings",
   "desktopDevices.sevenDays": "7 days",
   "desktopDevices.thirtyDays": "30 days",
   "desktopDevices.dateBasis": "{{timeZone}} \xB7 by turn start date",
@@ -6836,13 +6847,9 @@ var tourZhCN = {
   "tour.chapter.more": "\u81EA\u52A8\u5316\u4E0E\u901A\u77E5",
   "tour.chapter.moreHint": "\u8BA1\u5212\u3001\u5B50\u667A\u80FD\u4F53\u3001\u63D0\u9192",
   "tour.devices.relayAdd.title": "\u6DFB\u52A0\u8BBE\u5907",
-  "tour.devices.relayAdd.body": "\u6BCF\u53F0\u8FD0\u884C Agent \u7684\u7535\u8111\u90FD\u6709\u81EA\u5DF1\u7684\u8BBE\u5907\u4EE4\u724C\u3002\u70B9\u51FB\u300C\u6DFB\u52A0\u8BBE\u5907\u300D\u6253\u5F00\u8868\u5355\u3002",
   "tour.devices.relayAddDesktop.body": "\u70B9\u51FB\u300C\u6DFB\u52A0\u8BBE\u5907\u300D\uFF0C\u5728\u5F39\u51FA\u7684\u7A97\u53E3\u91CC\u586B\u5199\u8BBE\u5907\u540D\u79F0\u5E76\u521B\u5EFA\u4EE4\u724C\uFF0C\u4F1A\u5F97\u5230 macOS/Linux \u4E0E Windows \u5B89\u88C5\u547D\u4EE4\uFF1B\u5728\u90A3\u53F0\u7535\u8111\u4E0A\u8FD0\u884C\u5373\u53EF\u63A5\u5165\u3002\u5173\u95ED\u7A97\u53E3\u540E\u6559\u7A0B\u7EE7\u7EED\u3002\u6559\u7A0B\u4E0D\u4F1A\u66FF\u4F60\u521B\u5EFA\u4EE4\u724C\u3002",
-  "tour.devices.relayForm.title": "\u521B\u5EFA\u4EE4\u724C\uFF0C\u8FD0\u884C\u5B89\u88C5\u547D\u4EE4",
-  "tour.devices.relayForm.body": "\u586B\u5199\u8BBE\u5907\u540D\u79F0\u5E76\u70B9\u51FB\u300C\u521B\u5EFA\u4EE4\u724C\u300D\uFF0C\u4F1A\u5F97\u5230 macOS/Linux \u4E0E Windows \u5B89\u88C5\u547D\u4EE4\uFF1B\u5728\u90A3\u53F0\u7535\u8111\u4E0A\u8FD0\u884C\u5373\u53EF\u63A5\u5165\u3002\u6559\u7A0B\u4E0D\u4F1A\u66FF\u4F60\u521B\u5EFA\u4EE4\u724C\u3002",
-  "tour.devices.relayForm.prereq": "\u5148\u70B9\u51FB\u300C\u6DFB\u52A0\u8BBE\u5907\u300D\u6253\u5F00\u8868\u5355\u3002",
   "tour.devices.relayList.title": "\u4F60\u7684\u8BBE\u5907",
-  "tour.devices.relayList.body": "\u63A5\u5165\u540E\u8BBE\u5907\u5217\u5728\u8FD9\u91CC\uFF1A\u5B9E\u5FC3\u5706\u70B9\u8868\u793A\u5728\u7EBF\uFF0C\u300C\u6253\u5F00\u300D\u8FDB\u5165\u5B83\u7684\u5DE5\u4F5C\u533A\uFF0C\u22EF \u53EF\u91CD\u547D\u540D\u3001\u5171\u4EAB\u6216\u9694\u79BB\uFF0C\u300C\u8BBE\u7F6E\u2026\u300D\u91CC\u6709\u5B89\u88C5\u547D\u4EE4\u548C\u4EE4\u724C\u3002\u8FD8\u6CA1\u6709\u8BBE\u5907\u4E5F\u6CA1\u5173\u7CFB\uFF0C\u63A5\u4E0B\u6765\u7528\u4E00\u53F0\u6837\u4F8B\u8BBE\u5907\u6F14\u793A\u3002",
+  "tour.devices.relayList.body": "\u63A5\u5165\u540E\u8BBE\u5907\u5217\u5728\u8FD9\u91CC\uFF1A\u5B9E\u5FC3\u5706\u70B9\u8868\u793A\u5728\u7EBF\uFF0C\u7BAD\u5934\u8FDB\u5165\u5B83\u7684\u5DE5\u4F5C\u533A\uFF0C\u22EF \u53EF\u91CD\u547D\u540D\u3001\u5171\u4EAB\u6216\u9694\u79BB\u3002\u70B9\u8BBE\u5907\u540D\u8FDB\u5165\u8BBE\u5907\u9875\uFF0C\u5B83\u7684\u300C\u8BBE\u7F6E\u300D\u6807\u7B7E\u91CC\u6709\u5B89\u88C5\u547D\u4EE4\u3001\u4EE4\u724C\u548C\u8FD9\u53F0\u8BBE\u5907\u7684\u5176\u4ED6\u8BBE\u7F6E\u3002\u8FD8\u6CA1\u6709\u8BBE\u5907\u4E5F\u6CA1\u5173\u7CFB\uFF0C\u63A5\u4E0B\u6765\u7528\u4E00\u53F0\u6837\u4F8B\u8BBE\u5907\u6F14\u793A\u3002",
   "tour.devices.sample.title": "\u6837\u4F8B\u8BBE\u5907",
   "tour.devices.sample.body": "\u8FD9\u53F0\u300C\u6837\u4F8B\u8BBE\u5907\u300D\u53EA\u4E3A\u6559\u7A0B\u5B58\u5728\uFF1A\u5DE5\u4F5C\u533A\u3001\u5BF9\u8BDD\u3001\u7EC8\u7AEF\u548C\u6587\u4EF6\u90FD\u662F\u6F14\u793A\u6570\u636E\uFF0C\u6539\u52A8\u53EA\u7559\u5728\u8FD9\u4E2A\u9875\u9762\u91CC\u3002\u4F60\u81EA\u5DF1\u7684\u8BBE\u5907\u7528\u8D77\u6765\u4E00\u6A21\u4E00\u6837\u3002",
   "tour.devices.local.title": "\u672C\u5730\u6A21\u5F0F\uFF1A\u8FD9\u53F0\u7535\u8111\u5C31\u662F\u8BBE\u5907",
@@ -8358,7 +8365,6 @@ var devicesZhCN = {
   "devices.threadsByMe": "\u6211\u5171\u4EAB\u7684\u7EBF\u7A0B",
   "devices.latestDeviceStatusCouldNotBeRefreshed": "\u65E0\u6CD5\u5237\u65B0\u6700\u65B0\u8BBE\u5907\u72B6\u6001\uFF1A",
   "devices.retryingAutomatically": " \u6B63\u5728\u81EA\u52A8\u91CD\u8BD5\u3002",
-  "devices.yourRelaySupervisorsAndTheirCurrentAvailability": "\u4F60\u7684 Relay Supervisor \u53CA\u5176\u5F53\u524D\u53EF\u7528\u72B6\u6001\u3002",
   "devices.close": "\u5173\u95ED",
   "devices.addDevice": "\u6DFB\u52A0\u8BBE\u5907",
   "devices.activity": "\u6D3B\u52A8",
@@ -8611,8 +8617,6 @@ var devicesZhCN = {
   "devices.manageViewPath": "\u67E5\u770B\u8DEF\u5F84",
   "devices.manageRemove": "\u79FB\u9664\u2026",
   "devices.manageOffline": "\u8BBE\u5907\u79BB\u7EBF\uFF0C\u4E0A\u7EBF\u540E\u53EF\u7528\u3002",
-  "devices.settingsTitle": "\u8BBE\u5907\u8BBE\u7F6E",
-  "devices.settingsDescription": "\u8FD9\u53F0\u8BBE\u5907\u7684 Supervisor \u7248\u672C\uFF0C\u4EE5\u53CA\u5B83\u4E0E Relay \u7684\u8FDE\u63A5\u3002",
   "devices.settingsConnection": "\u8FDE\u63A5",
   "devices.settingsConnectionHint": "\u8BBE\u7F6E\u547D\u4EE4\u4F1A\u5728\u8BBE\u5907\u4E0A\u5B89\u88C5\u6216\u66F4\u65B0 Pockymoe\uFF0C\u5E76\u7528\u4EE4\u724C\u628A\u5B83\u8FDE\u5230\u4F60\u7684\u8D26\u53F7\u3002",
   "devices.settingsToken": "\u4EE4\u724C",
@@ -8622,7 +8626,17 @@ var devicesZhCN = {
   "devices.jobFailed": "\u4E0A\u6B21{{value1}}\u5931\u8D25\uFF1A{{value2}}",
   "devices.jobRolledBack": "\u4E0A\u6B21{{value1}}\u5931\u8D25\uFF0C\u5DF2\u6062\u590D\u4E4B\u524D\u7684\u670D\u52A1\u3002{{value2}}",
   "devices.jobRollbackFailed": "\u4E0A\u6B21{{value1}}\u548C\u6062\u590D\u90FD\u5931\u8D25\u4E86\uFF1A{{value2}}",
-  "devices.removing": "\u6B63\u5728\u79FB\u9664\u2026"
+  "devices.removing": "\u6B63\u5728\u79FB\u9664\u2026",
+  // The device switcher and the device page (issue #115).
+  "devices.switcherMenu": "\u5207\u6362\u8BBE\u5907",
+  "devices.switcherLabel": "\u5207\u6362\u8BBE\u5907\uFF0C\u5F53\u524D\uFF1A{{device}}\uFF0C{{state}}",
+  "devices.switcherLabelAll": "\u5207\u6362\u8BBE\u5907\uFF0C\u5F53\u524D\uFF1A{{device}}",
+  "devices.sharedMark": "\u5171\u4EAB",
+  "devices.sharedBy": "{{owner}} \u5171\u4EAB",
+  "devices.manageThisDevice": "\u7BA1\u7406\u6B64\u8BBE\u5907\u2026",
+  "devices.settingsGeneral": "\u901A\u7528",
+  "devices.settingsName": "\u540D\u79F0",
+  "devices.settingsGeneralDescription": "\u540D\u79F0\u3001\u4E0E Relay \u7684\u8FDE\u63A5\uFF0C\u4EE5\u53CA\u9694\u79BB\u3002"
 };
 
 // src/i18n/files.zh-CN.ts
@@ -9891,8 +9905,14 @@ var settingsZhCN = {
   "settings.savedInThisBrowserShortcut": "\u4FDD\u5B58\u5728\u6B64\u6D4F\u89C8\u5668\uFF1B\u767B\u5F55 Relay \u540E\u53EF\u4FDD\u5B58\u5230\u8D26\u53F7\u5E76\u5728\u8BBE\u5907\u95F4\u540C\u6B65\u3002Mac \u4E0A\u4E5F\u53EF\u7528 Command \u4EE3\u66FF Ctrl\u3002",
   "settings.deviceScope": "\u8FD9\u4E9B\u8BBE\u7F6E\u4F5C\u7528\u7684\u8BBE\u5907",
   "settings.deviceScopeChoose": "\u8FD9\u4E9B\u8BBE\u7F6E\u5C5E\u4E8E\u67D0\u4E00\u53F0\u8BBE\u5907\u3002\u8BF7\u9009\u62E9\u8981\u7BA1\u7406\u7684\u8BBE\u5907\u3002",
+<<<<<<< HEAD:packages/thread-ui/dist/chunk-QQRECI3Q.js
   "settings.deviceScopeNone": "\u8FD8\u6CA1\u6709\u53EF\u7BA1\u7406\u7684\u8BBE\u5907\u3002"
 >>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/chunk-PV62C22N.js
+=======
+  "settings.deviceScopeNone": "\u8FD8\u6CA1\u6709\u53EF\u7BA1\u7406\u7684\u8BBE\u5907\u3002",
+  // The settings window names the device settings that left it for the device page (issue #115).
+  "settings.deviceSettingsLink": "\u8BBE\u5907\u8BBE\u7F6E \xB7 {{device}}"
+>>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/chunk-3MN5ZQZP.js
 };
 
 // src/i18n/sharing.zh-CN.ts
@@ -10614,7 +10634,6 @@ var workbenchZhCN = {
   "workbench.relaySetup": "Relay \u8BBE\u7F6E",
   "workbench.relayAdmin": "Relay \u7BA1\u7406\u5458",
   "workbench.account": "\u8D26\u53F7",
-  "workbench.devicesAndSharedSessions": "\u8BBE\u5907\u4E0E\u5171\u4EAB\u7EBF\u7A0B",
   "workbench.settings": "\u8BBE\u7F6E",
   "workbench.newWorkspace": "\u65B0\u5EFA\u5DE5\u4F5C\u533A",
   "workbench.threads": "\u7EBF\u7A0B",
@@ -11063,7 +11082,7 @@ var zhCN = {
   "desktopDevices.openDeviceWorkspaces": "\u6253\u5F00 {{device}} \u7684\u5DE5\u4F5C\u533A",
   "desktopDevices.devices": "\u8BBE\u5907",
   "desktopDevices.device": "\u8BBE\u5907",
-  "desktopDevices.allDevices": "\u5168\u90E8\u8BBE\u5907",
+  "desktopDevices.allDevices": "\u6240\u6709\u8BBE\u5907",
   "desktopDevices.deviceDetails": "\u8BBE\u5907\u8BE6\u60C5",
   "desktopDevices.overview": "\u8BBE\u5907\u603B\u89C8",
   "desktopDevices.intro": "\u6240\u6709\u8BBE\u5907\uFF0C\u4E00\u5904\u638C\u63E1",
@@ -11071,7 +11090,7 @@ var zhCN = {
   "desktopDevices.deviceCount": "{{online}} \u53F0\u5728\u7EBF \xB7 {{total}} \u53F0\u8BBE\u5907",
   "desktopDevices.refresh": "\u5237\u65B0",
   "desktopDevices.deviceMissing": "\u627E\u4E0D\u5230\u8FD9\u53F0\u8BBE\u5907",
-  "desktopDevices.backToDevices": "\u8FD4\u56DE\u5168\u90E8\u8BBE\u5907",
+  "desktopDevices.backToDevices": "\u8FD4\u56DE\u6240\u6709\u8BBE\u5907",
   "desktopDevices.noDevices": "\u8FD8\u6CA1\u6709\u8BBE\u5907",
   "desktopDevices.noDevicesHint": "\u8FDE\u63A5\u8BBE\u5907\u540E\uFF0C\u5728\u8FD9\u91CC\u67E5\u770B\u8FD0\u884C\u72B6\u6001\u548C\u4F7F\u7528\u7EDF\u8BA1\u3002",
   "desktopDevices.online": "\u5728\u7EBF",
@@ -11101,7 +11120,10 @@ var zhCN = {
   "desktopDevices.renameFailed": "\u65E0\u6CD5\u4FDD\u5B58\u8BBE\u5907\u540D\u79F0\u3002",
   "desktopDevices.statistics": "\u4F7F\u7528\u7EDF\u8BA1",
   "desktopDevices.timeRange": "\u7EDF\u8BA1\u65F6\u95F4\u8303\u56F4",
-  "desktopDevices.statsDevice": "\u7EDF\u8BA1\u8BBE\u5907",
+  "desktopDevices.statsScope": "\u7EDF\u8BA1\u8303\u56F4",
+  "desktopDevices.devicePage": "\u8BBE\u5907\u9875",
+  "desktopDevices.tabOverview": "\u6982\u89C8",
+  "desktopDevices.tabSettings": "\u8BBE\u7F6E",
   "desktopDevices.sevenDays": "7 \u5929",
   "desktopDevices.thirtyDays": "30 \u5929",
   "desktopDevices.dateBasis": "{{timeZone}} \xB7 \u6309\u8F6E\u6B21\u5F00\u59CB\u65E5\u671F",

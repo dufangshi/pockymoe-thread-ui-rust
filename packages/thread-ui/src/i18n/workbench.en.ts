@@ -387,7 +387,6 @@ export const workbenchEn = {
   "workbench.relaySetup": "Relay Setup",
   "workbench.relayAdmin": "Relay Admin",
   "workbench.account": "Account",
-  "workbench.devicesAndSharedSessions": "Devices and shared threads",
   "workbench.settings": "Settings",
   "workbench.newWorkspace": "New Workspace",
   "workbench.threads": "Threads",

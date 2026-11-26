@@ -1,7 +1,8 @@
 export const chatEn = {
+  "chat.handoffDetails": "Handoff details",
   "chat.handoffTurnCount": { one: "{{count}} turn handed over", other: "{{count}} turns handed over" },
   "chat.handoffSettingsReset": "Plan, sandbox, fast mode and reasoning effort reset; approval mode retained.",
-  "chat.switchedHarness": "Switched from {{from}} to {{to}}",
+  "chat.switchedHarness": "{{from}} → {{to}}",
   "chat.turnNotificationOn": "Notify you when this turn ends",
   "chat.turnNotificationOff": "Subscribe to this turn",
 

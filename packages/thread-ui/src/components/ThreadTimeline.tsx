@@ -124,6 +124,7 @@ export interface ThreadTimelineProps {
     detail: ThreadHistoryItemDetailDto;
   }) => void;
   adapter?: ThreadTimelineAdapter | undefined;
+  describeHandoffModel?: ((agentId: string, model: string) => string | undefined) | undefined;
   autoCollapseCompletedTurns?: boolean;
 }
 
@@ -273,6 +274,7 @@ function ThreadTimelineComponent({
   onSelectHistoryItemDetail,
   adapter,
   autoCollapseCompletedTurns,
+  describeHandoffModel,
 }: ThreadTimelineProps) {
   const { locale: i18nLocale } = useI18n();
   const turns = useMemo(() => withDeliveredSteers(loadedTurns, pendingSteers), [loadedTurns, pendingSteers]);
@@ -1043,7 +1045,7 @@ function ThreadTimelineComponent({
                       onRespondToRequest={onRespondToRequest ?? undefined}
                     />
                   ) : null}
-                  <HarnessSwitchDivider turn={turn} {...(visibleTurns[visibleIndex - 1] ? {previous:visibleTurns[visibleIndex - 1]} : {})} />
+                  <HarnessSwitchDivider describeModel={describeHandoffModel} turn={turn} {...(visibleTurns[visibleIndex - 1] ? {previous:visibleTurns[visibleIndex - 1]} : {})} />
                   <TranscriptAgentProvider agent={transcriptAgentFor(turn)}>
                     {peerWorkForTurn(turn) && !continuations.length ? renderPeerWork(turn) : renderWorkTurn(turn, visibleIndex, continuations)}
                   </TranscriptAgentProvider>

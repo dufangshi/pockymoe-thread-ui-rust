@@ -757,4 +757,12 @@
   .thread-relation-back::before { content: ''; position: absolute; inset: -2px -7px -14px; }
 }
 
-.thread-harness-switch { margin: 1rem 0; padding: .5rem; border-block: 1px solid var(--theme-border); color: var(--theme-fg-muted); text-align: center; font-size: .75rem; overflow-wrap: anywhere; }
+.thread-harness-switch { display: flex; align-items: center; justify-content: center; gap: .25rem; margin: .75rem 0; padding: .25rem 0; border-block: 1px solid var(--theme-border); color: var(--theme-fg-muted); font-size: .75rem; }
+.thread-harness-switch-label { display: flex; align-items: center; justify-content: center; gap: .3rem; min-width: 0; white-space: nowrap; }
+.thread-harness-switch-label > .middle-name { min-width: 0; flex: 0 1 auto; }
+.thread-harness-switch-count { flex: none; }
+.thread-harness-switch-info { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 28px; height: 28px; border-radius: 4px; color: inherit; }
+.thread-harness-switch-info:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 1px; }
+@media (hover: hover) { .thread-harness-switch-info:hover { background: var(--theme-hover); } }
+.thread-harness-switch-tip { font-size: .75rem; line-height: 1.5; overflow-wrap: anywhere; }
+.thread-harness-switch-tip > div + div { margin-top: .25rem; }

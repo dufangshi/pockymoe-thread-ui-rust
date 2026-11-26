@@ -128,6 +128,46 @@ interface SelectProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'val
 declare function Select({ value, defaultValue, onValueChange, options, children, name, required, placeholder, className, disabled, form, onKeyDown, onClick, ...buttonProps }: SelectProps): react.JSX.Element;
 
 /**
+ * Keyboard shortcuts by platform (docs/ui-principles.md §19, in the Pockymoe
+ * repository). "Mod" is ⌘ on Apple keyboards and Ctrl everywhere else: on a
+ * Mac, Ctrl with a letter is a text-editing or terminal key (Ctrl+F moves the
+ * caret, Ctrl+K kills the line) and must reach the field untouched.
+ */
+/** What a key or pointer event says about its modifiers. */
+interface ShortcutModifiers {
+    metaKey?: boolean;
+    ctrlKey?: boolean;
+}
+/**
+ * The desktop client reports its operating system through the host bridge
+ * (`capabilities.platform`); that answer wins over the browser's. `null`
+ * returns to asking the browser.
+ */
+declare function setHostPlatform(platform: string | null | undefined): void;
+/** macOS, and iOS/iPadOS with a hardware keyboard: the platforms whose command key is ⌘. */
+declare function isMacPlatform(): boolean;
+/**
+ * The platform's command modifier, and not the other platform's: ⌘ without
+ * Ctrl on a Mac, Ctrl without ⌘ elsewhere. The caller checks the key, Alt and
+ * Shift.
+ */
+declare function matchesModKey(event: ShortcutModifiers): boolean;
+/**
+ * The composer's send modifier. The one binding that takes Ctrl or ⌘ on every
+ * platform: Ctrl+Enter has no other meaning in a text field on a Mac, and the
+ * send setting follows the account across machines
+ * (docs/account-composer-shortcuts.md). Labels still name the platform's key.
+ */
+declare function matchesSendModKey(event: ShortcutModifiers): boolean;
+/**
+ * A shortcut as this platform writes it: `Mod+F` is ⌘F on a Mac and Ctrl+F
+ * elsewhere, `Mod+Shift+Enter` is ⇧⌘Enter and Ctrl+Shift+Enter. Modifiers are
+ * `Mod`, `Ctrl`, `Alt` and `Shift`; the last part is the key, written as it
+ * should be shown (a single letter is capitalized).
+ */
+declare function formatShortcut(shortcut: string): string;
+
+/**
  * The keyboard of every app menu (see docs/ui-principles.md §3): focus goes to
  * the first item when it opens; ↑/↓ move and wrap, Home/End jump; Esc closes it
  * and returns focus to the trigger; Tab closes it and moves on.
@@ -1445,4 +1485,4 @@ declare const ImageDiagnosisProvider: react.Provider<ImageFailureDiagnoser | und
  * Electron's rendering gate is separate from visibility so activity stays live. */
 declare function useVisibleClock(enabled: boolean, interval?: number, element?: Element | null): number;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, type ComposerUploadProgressState, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, DEFAULT_THREAD_TITLE, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, ImageDiagnosisProvider, ImageFallbackProvider, ImageRecoveryProvider, LongTextDialog, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, PersistentWorkbenchNavigation, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchInspector, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, approveWorkspaceDocumentUnloadOnce, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, displayThreadTitle, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatReasoningEffortLabel, formatShortTimestamp, getDirtyWorkspaceDocumentCount, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useSheetViewport, useThemeFeature, useVisibleClock, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, type ComposerUploadProgressState, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, DEFAULT_THREAD_TITLE, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, ImageDiagnosisProvider, ImageFallbackProvider, ImageRecoveryProvider, LongTextDialog, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, PersistentWorkbenchNavigation, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, type ShortcutModifiers, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchInspector, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, approveWorkspaceDocumentUnloadOnce, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, displayThreadTitle, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatReasoningEffortLabel, formatShortTimestamp, formatShortcut, getDirtyWorkspaceDocumentCount, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isMacPlatform, isStaleBuildError, isThemeFeature, matchesModKey, matchesSendModKey, navigationStatusLabel, openFilesPatch, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval, setHostPlatform, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useSheetViewport, useThemeFeature, useVisibleClock, useWorkbenchPresentation };

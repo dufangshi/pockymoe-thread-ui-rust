@@ -266,13 +266,15 @@ export const settingsEn = {
   'settings.savedToAccount': 'Saved to your account and applied across devices and browsers.',
   'settings.messageShortcuts': 'Message shortcuts',
   'settings.savedToYourAccountAndAppliedAcross':
-    'Saved to your account and applied across devices and browsers. On Mac, Command also works in place of Ctrl.',
-  'settings.ctrlEnterToSend': 'Ctrl+Enter to send',
+    'Saved to your account and applied across devices and browsers. {{keys}}',
+  'settings.ctrlEnterToSend': '{{shortcut}} to send',
+  'settings.sendKeysOnMac': 'Ctrl works in place of ⌘ too.',
+  'settings.sendKeysElsewhere': 'On a Mac, ⌘ takes the place of Ctrl.',
   'settings.enterInsertsANewLineCtrlShift':
-    'Enter inserts a new line. Ctrl+Shift+Enter sends directly as steer.',
+    'Enter inserts a new line. {{steer}} sends directly as steer.',
   'settings.enterToSend': 'Enter to send',
   'settings.shiftEnterInsertsANewLineCtrl':
-    'Shift+Enter inserts a new line. Ctrl+Enter sends directly as steer.',
+    '{{newline}} inserts a new line. {{steer}} sends directly as steer.',
   'settings.saving': 'Saving...',
   'settings.loading': 'Loading...',
   'settings.signInThroughRelayToChangeYour':
@@ -688,5 +690,5 @@ export const settingsEn = {
   "settings.runManual": "Manual",
   "settings.runCompleted": "Done",
   "settings.runFailed": "Failed",
-  "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.",
+  "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}",
 } as const;

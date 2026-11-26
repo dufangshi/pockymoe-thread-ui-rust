@@ -242,13 +242,15 @@ export const settingsZhCN = {
   'settings.savedToAccount': '保存到账号，在设备和浏览器间同步。',
   'settings.messageShortcuts': '消息快捷键',
   'settings.savedToYourAccountAndAppliedAcross':
-    '保存到账号并在设备和浏览器间同步。Mac 上也可用 Command 代替 Ctrl。',
-  'settings.ctrlEnterToSend': 'Ctrl+Enter 发送',
+    '保存到账号并在设备和浏览器间同步。{{keys}}',
+  'settings.ctrlEnterToSend': '{{shortcut}} 发送',
+  'settings.sendKeysOnMac': '也可用 Ctrl 代替 ⌘。',
+  'settings.sendKeysElsewhere': 'Mac 上用 ⌘ 代替 Ctrl。',
   'settings.enterInsertsANewLineCtrlShift':
-    'Enter 换行。Ctrl+Shift+Enter 立即插话。',
+    'Enter 换行。{{steer}} 立即插话。',
   'settings.enterToSend': 'Enter 发送',
   'settings.shiftEnterInsertsANewLineCtrl':
-    'Shift+Enter 换行。Ctrl+Enter 立即插话。',
+    '{{newline}} 换行。{{steer}} 立即插话。',
   'settings.saving': '正在保存…',
   'settings.loading': '正在加载…',
   'settings.signInThroughRelayToChangeYour':
@@ -645,5 +647,5 @@ export const settingsZhCN = {
   "settings.runManual": "手动",
   "settings.runCompleted": "完成",
   "settings.runFailed": "失败",
-  "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。Mac 上也可用 Command 代替 Ctrl。",
+  "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。{{keys}}",
 } as const;

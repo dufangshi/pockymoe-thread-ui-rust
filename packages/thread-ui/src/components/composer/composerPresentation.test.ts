@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
+
+import { setHostPlatform } from '../shortcuts';
 
 import {
   authStatusLabel,
@@ -34,6 +36,29 @@ function hook(overrides: Partial<AgentHookDto> = {}): AgentHookDto {
     ...overrides,
   };
 }
+
+describe('send key hint', () => {
+  afterEach(() => setHostPlatform(null));
+  const hint = (sendShortcut: 'ctrlEnter' | 'enter', turnRunning = false) => buildComposerControlState({
+    goalComposeMode: false, goalBusy: false, threadConnected: true, busy: false, isShellView: false,
+    settingsBusy: false, supportedEffortCount: 0, fastMode: false, sendShortcut, turnRunning,
+  }).promptPlaceholderHint;
+
+  it('names Ctrl on Windows and Linux', () => {
+    setHostPlatform('win32');
+    expect(hint('ctrlEnter')).toBe(' · Ctrl+Enter to send');
+    expect(hint('ctrlEnter', true)).toBe(', Ctrl+Enter to queue · Ctrl+Shift+Enter to steer');
+    expect(hint('enter', true)).toBe(', Enter to queue · Ctrl+Enter to steer');
+  });
+
+  it('names ⌘ on a Mac', () => {
+    setHostPlatform('darwin');
+    expect(hint('ctrlEnter')).toBe(' · ⌘Enter to send');
+    expect(hint('ctrlEnter', true)).toBe(', ⌘Enter to queue · ⇧⌘Enter to steer');
+    expect(hint('enter', true)).toBe(', Enter to queue · ⌘Enter to steer');
+    expect(hint('enter')).toBe(' · Enter to send');
+  });
+});
 
 describe('composer presentation helpers', () => {
   it('formats toolbox and management labels', () => {

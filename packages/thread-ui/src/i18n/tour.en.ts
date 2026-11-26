@@ -105,7 +105,7 @@ export const tourEn = {
   "tour.threads.search.body": "Search this conversation's history; scroll up for the full transcript.",
 
   "tour.terminal.open.title": "Open the terminal",
-  "tour.terminal.open.body": "The bottom panel runs shells in this thread's workspace. Shortcut: Ctrl+`.",
+  "tour.terminal.open.body": "The bottom panel runs shells in this thread's workspace. Shortcut: {{terminalShortcut}}.",
   "tour.terminal.openMobile.body": "Opens the terminal for this thread's workspace. On a phone it takes the lower part of the screen.",
   "tour.terminal.needsPanel": "Open the terminal with the highlighted button.",
   "tour.terminal.type.title": "Type a command",

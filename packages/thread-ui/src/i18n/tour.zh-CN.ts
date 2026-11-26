@@ -105,7 +105,7 @@ export const tourZhCN = {
   "tour.threads.search.body": "在当前对话的历史中搜索，向上滚动查看完整记录。",
 
   "tour.terminal.open.title": "打开终端",
-  "tour.terminal.open.body": "底部面板在当前对话的工作区里运行 Shell。快捷键 Ctrl+`。",
+  "tour.terminal.open.body": "底部面板在当前对话的工作区里运行 Shell。快捷键 {{terminalShortcut}}。",
   "tour.terminal.openMobile.body": "打开当前对话工作区的终端；手机上它占据屏幕下半部分。",
   "tour.terminal.needsPanel": "先用高亮的按钮打开终端。",
   "tour.terminal.type.title": "直接输入命令",

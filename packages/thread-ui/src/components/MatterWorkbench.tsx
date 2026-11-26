@@ -43,6 +43,7 @@ import type { WorkbenchPaneSwitch } from './workbench/paneSwitch';
 import { ComposerSubscriptionUsage, visibleSubscriptionWindows } from './composer/ComposerSubscriptionUsage';
 import type { AgentSubscriptionUsageDto } from '@pockymoe/shared';
 import { useAppShellNav } from '../app-shell/AppShellNavContext';
+import { formatShortcut, matchesModKey } from './shortcuts';
 
 
 const SIDEBAR_SECTIONS_KEY = 'pockymoe.sidebar-sections.v1';
@@ -563,14 +564,15 @@ export function MatterWorkbench({
     window.addEventListener('keydown', toggle, true);
     return () => window.removeEventListener('keydown', toggle, true);
   }, [o.terminalEnabled, navigationFrame]);
-  // Ctrl/⌘+F opens the conversation search instead of the browser's find; a
-  // terminal or code editor keeps its own find.
+  // Mod+F (⌘F on a Mac, Ctrl+F elsewhere; §19) opens the conversation search
+  // instead of the browser's find; a terminal, a code editor and the file tree
+  // (its own filter) keep theirs. On a Mac, Ctrl+F stays the caret key.
   const searchKey = useRef({ open: o.onSearch, available: !o.emptyWorkspace, searchOpen: Boolean(o.searchOpen) });
   searchKey.current = { open: o.onSearch, available: !o.emptyWorkspace, searchOpen: Boolean(o.searchOpen) };
   useEffect(() => {
     if (navigationFrame) return;
     const find = (event: KeyboardEvent) => {
-      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || event.key.toLowerCase() !== 'f') return;
+      if (!matchesModKey(event) || event.altKey || event.shiftKey || event.key.toLowerCase() !== 'f') return;
       const target = event.target instanceof Element ? event.target : null;
       if (target?.closest('.xterm, .monaco-editor, .cm-editor, [data-native-find]')) return;
       const { open, available, searchOpen } = searchKey.current;
@@ -983,7 +985,7 @@ export function MatterWorkbench({
             disabled={!o.terminalEnabled}
             aria-label={translate("workbench.terminal")}
             aria-pressed={o.activeView === 'shell'}
-            title={`${translate("workbench.terminal")} (Ctrl+\`)`}
+            title={`${translate("workbench.terminal")} (${formatShortcut('Ctrl+`')})`}
             onClick={() => o.onViewChange('shell')}
           >
             <Terminal data-icon="terminal" />
@@ -1208,7 +1210,7 @@ export function MatterWorkbench({
         {!mobile && <div className={`matter-tabs-search ${o.searchOpen ? 'is-open' : ''}`}>{o.search ?? <button
           className="matter-search-trigger"
           aria-label={translate("workbench.searchConversation")}
-          title={`${translate("workbench.searchConversation")} (Ctrl+F)`}
+          title={`${translate("workbench.searchConversation")} (${formatShortcut('Mod+F')})`}
           disabled={o.emptyWorkspace}
           onClick={o.onSearch}
         >

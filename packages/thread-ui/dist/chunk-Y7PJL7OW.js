@@ -5,7 +5,7 @@ import {
 import {
   translate,
   useI18n
-} from "./chunk-Z5L7CHPD.js";
+} from "./chunk-R2LITDNV.js";
 import {
   KeyCode,
   KeyMod,

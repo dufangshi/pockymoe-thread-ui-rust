@@ -50,3 +50,9 @@ describe('prompt quotes', () => {
     expect(input.prompt.endsWith('Compare [FILE a.txt] with [QUOTE 1]')).toBe(true);
   });
 });
+
+it('round trips file review context and comments through the same quote format', () => {
+  const quote = { text: 'const a = 1;', from: 'user' as const, turn: null, turnId: null, itemId: null, path: 'src/a & "b".ts', startLine: 3, endLine: 5, comment: 'Please simplify\nthis <tag>.' };
+  const sent = composeQuotedPrompt('Review [QUOTE 1]', new Map([['[QUOTE 1]', quote]]));
+  expect(parseQuotedPrompt(sent)?.quotes.get(1)).toEqual(quote);
+});

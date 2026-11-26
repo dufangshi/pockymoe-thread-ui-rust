@@ -363,8 +363,6 @@ function ThreadTimelineComponent({
     startIndex,
     visibleTurnAbsoluteOffset,
     hiddenCount,
-    loadedHiddenCount,
-    unloadedHiddenCount,
     showLoadAll,
     handleLoadEarlierClick,
     handleLoadAllClick,
@@ -1044,6 +1042,7 @@ function ThreadTimelineComponent({
                     />
                   ) : null}
                   {peerWorkForTurn(turn) && !continuations.length ? renderPeerWork(turn) : renderWorkTurn(turn, visibleIndex, continuations)}
+                  {turn.status !== 'inProgress' && adapter?.renderTurnChanges?.(turn.id)}
                   {continuations.map(child => <div key={`peer-requests:${child.id}`}>
                     {(activityNoteAnchors.beforeTurnId.get(child.id)?.length ?? 0) > 0 ? <ActivityNoteSection
                       notes={activityNoteAnchors.beforeTurnId.get(child.id) ?? []} onOpenThread={onOpenThread} onOpenLinkedThread={openLinkedThread} /> : null}
@@ -1092,7 +1091,7 @@ function ThreadTimelineComponent({
                   ) : null}
                   {(() => {
                     const rowLiveOutput = liveOutputAttachedToOptimisticTurn ? liveOutput : '';
-                    let rowLiveActivityAt = latestTimestamp(
+                    const rowLiveActivityAt = latestTimestamp(
                       backendProgress?.turnId === optimisticTurn.id ? backendProgress.receivedAt : null,
                       liveItemsTargetTurnId === optimisticTurn.id
                         ? liveItems?.updatedAt

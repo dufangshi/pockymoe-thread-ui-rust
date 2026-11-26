@@ -15,7 +15,6 @@ const shellSettings = vi.hoisted(() => ({ showReasoningSummaries: true }));
 vi.mock('../app-shell/AppShellNavContext', () => ({ useAppShellNav: () => shellSettings }));
 import {
   formatLongTimestamp,
-  formatShortTimestamp,
 } from './threadPresentation';
 
 let root: Root | null = null;
@@ -1725,4 +1724,18 @@ describe('an ended turn that recorded nothing', () => {
     expect(element.querySelector('.thread-graph-turn-empty-note')?.textContent).toContain('Nothing was recorded in this turn.');
     expect(element.querySelector('.thread-turn-failure-message')?.textContent).toContain('Supervisor connection ended');
   });
+});
+
+it('renders turn changes and offers Edit from here on the starting user message', () => {
+  setLocale('en', false);
+  const edit = vi.fn(), open = vi.fn();
+  const node = render(<ThreadTimeline liveOutput="" turns={[completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Fix parser' }, { id: 'reply', kind: 'agentMessage', text: 'Done' }])]} adapter={{ onEditTurn: edit, renderTurnChanges: turnId => <button onClick={() => open(turnId)}>1 file +2 −1</button> }} />);
+  const button = Array.from(node.querySelectorAll('button')).find(button => button.getAttribute('aria-label') === 'Edit from here');
+  expect(button).toBeTruthy();
+  flushSync(() => button!.click());
+  expect(edit).toHaveBeenCalledWith('turn-1');
+  const chip = Array.from(node.querySelectorAll('button')).find(button => button.textContent === '1 file +2 −1');
+  expect(chip).toBeTruthy();
+  flushSync(() => chip!.click());
+  expect(open).toHaveBeenCalledWith('turn-1');
 });

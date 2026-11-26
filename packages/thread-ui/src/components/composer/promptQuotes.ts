@@ -19,6 +19,10 @@ export interface PromptQuote {
   /** The passage as it read when quoted (at most QUOTE_LIMIT characters). */
   text: string;
   from: 'assistant' | 'user';
+  path?: string;
+  startLine?: number;
+  endLine?: number;
+  comment?: string;
   /** The turn's number as the conversation shows it, when known. */
   turn: number | null;
   turnId: string | null;
@@ -44,8 +48,8 @@ export function clipQuote(text: string) {
 
 const escapeBody = (text: string) => text.replace(/<\/(quote|pockymoe-quotes)/gi, '<\\/$1');
 const unescapeBody = (text: string) => text.replace(/<\\\/(quote|pockymoe-quotes)/gi, '</$1');
-const escapeAttribute = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-const unescapeAttribute = (value: string) => value.replace(/&lt;/g, '<').replace(/&quot;/g, '"').replace(/&amp;/g, '&');
+const escapeAttribute = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const unescapeAttribute = (value: string) => value.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&quot;/g, '"').replace(/&amp;/g, '&');
 
 /**
  * The prompt as sent: quotes numbered in the order the body refers to them (a
@@ -67,6 +71,8 @@ export function composeQuotedPrompt(body: string, quotes: Map<string, PromptQuot
     const attributes = [
       `id="${index + 1}"`,
       `from="${quote.from}"`,
+      ...(quote.path ? [`path="${escapeAttribute(quote.path)}"`, `start="${quote.startLine ?? 1}"`, `end="${quote.endLine ?? quote.startLine ?? 1}"`] : []),
+      ...(quote.comment ? [`comment="${escapeAttribute(quote.comment.replace(/\n/g, '&#10;'))}"`] : []),
       ...(quote.turn ? [`turn="${quote.turn}"`] : []),
       ...(quote.turnId && quote.itemId ? [`ref="${escapeAttribute(`${quote.turnId}/${quote.itemId}`)}"`] : []),
     ];
@@ -90,6 +96,8 @@ export function parseQuotedPrompt(text: string): { quotes: Map<number, PromptQuo
     const turn = Number(attributes.get('turn'));
     quotes.set(id, {
       text: unescapeBody(match[2]!),
+      ...(attributes.has('path') ? { path: attributes.get('path')!, startLine: Number(attributes.get('start')), endLine: Number(attributes.get('end')) } : {}),
+      ...(attributes.has('comment') ? { comment: attributes.get('comment')!.replace(/&#10;/g, '\n') } : {}),
       from: attributes.get('from') === 'user' ? 'user' : 'assistant',
       turn: Number.isInteger(turn) && turn > 0 ? turn : null,
       turnId: turnId || null,

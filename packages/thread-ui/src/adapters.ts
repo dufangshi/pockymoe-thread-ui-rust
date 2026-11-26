@@ -1,3 +1,4 @@
+import type { QuoteScope } from './components/quotes/QuoteScope';
 import type {
   ShellEventEnvelope,
   ShellSessionDto,
@@ -34,6 +35,8 @@ export interface ThreadLinkInfo {
 export type DescribeThread = (threadId: string) => ThreadLinkInfo | null | undefined;
 
 export interface ThreadTimelineAdapter {
+  onEditTurn?: (turnId: string) => void;
+  renderTurnChanges?: (turnId: string) => ReactNode;
   resolveWorkspacePath?: (path: string) => Promise<boolean>;
   workspaceRootPath?: string | undefined;
   getImageAssetUrl?: (input: {
@@ -221,6 +224,9 @@ export interface ThreadShellAdapter {
 }
 
 export interface ThreadDetailUiAdapter {
+  editTurn?: (turnId: string) => void;
+  renderTurnChanges?: (turnId: string) => ReactNode;
+  onQuoteScope?: (scope: QuoteScope | null) => void;
   openThread(threadId: string): void;
   /** Forks at a finished turn of the open thread; see ThreadTimelineAdapter.onForkTurn. */
   forkTurn?: (turnId: string) => Promise<void>;

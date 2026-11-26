@@ -432,6 +432,7 @@ export function GraphChatThreadChatPanel({
     insert: (quote) => { if (!quoteSink.current) return false; quoteSink.current(quote); return true; },
     preview: (quote) => setLensQuote(quote),
   }), []);
+  useEffect(() => { adapter.onQuoteScope?.(quoteScope); return () => adapter.onQuoteScope?.(null); }, [adapter.onQuoteScope, quoteScope]);
   const turnsRef = useRef(detail);
   turnsRef.current = detail;
   const turnNumber = useCallback((turnId: string) => {

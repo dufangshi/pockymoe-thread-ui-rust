@@ -37,12 +37,12 @@ export function peerWorkForTurn(turn: Pick<ThreadTurnDto, 'items'>): ThreadPeerW
 
 // A real user request is a boundary. A continuation whose parent is not loaded
 // stays visible as its own task until pagination brings that parent into view.
-export function groupPeerWorkTurns(turns: ThreadTurnDto[]) {
+export function groupPeerWorkTurns(turns: ThreadTurnDto[], breakAfter: ReadonlySet<string> = new Set()) {
   const groups: Array<{ turn: ThreadTurnDto; continuations: ThreadTurnDto[]; index: number }> = [];
   for (const [index, turn] of turns.entries()) {
     const context = peerWorkForTurn(turn);
     const parent = groups.at(-1);
-    if (context && parent?.turn.id === context.taskTurnId) parent.continuations.push(turn);
+    if (context && parent?.turn.id === context.taskTurnId && !breakAfter.has(turns[index - 1]?.id ?? '')) parent.continuations.push(turn);
     else groups.push({ turn, continuations: [], index });
   }
   return groups;

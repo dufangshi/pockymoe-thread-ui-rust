@@ -54,8 +54,11 @@ import { ThreadLinkContext } from './graph-chat/PromptEnvelope';
 import { ScrollAnchorContext } from './timeline/scrollAnchor';
 import { storySegments } from './timeline/activity';
 
+const EMPTY_HARNESS_SWITCHES: ThreadHistoryItemDto[] = [];
+
 export interface ThreadTimelineProps {
   threadId?: string | undefined;
+  harnessSwitches?: ThreadHistoryItemDto[] | undefined;
   turns: ThreadTurnDto[];
   totalTurnCount?: number;
   pendingRequests?: ThreadActionRequestDto[];
@@ -273,6 +276,7 @@ function ThreadTimelineComponent({
   onSelectArtifact,
   onSelectHistoryItemDetail,
   adapter,
+  harnessSwitches = EMPTY_HARNESS_SWITCHES,
   autoCollapseCompletedTurns,
   describeHandoffModel,
 }: ThreadTimelineProps) {
@@ -335,9 +339,9 @@ function ThreadTimelineComponent({
   useEffect(() => {
     if (!searchTarget || openedSearchKeyRef.current === searchTarget.key || !turns.some(turn => turn.id === searchTarget.turnId)) return;
     openedSearchKeyRef.current = searchTarget.key;
-    const parent = groupPeerWorkTurns(turns).find(group => group.continuations.some(turn => turn.id === searchTarget.turnId));
+    const parent = groupPeerWorkTurns(turns, new Set(harnessSwitches.map(entry => entry.afterTurnId).filter((id): id is string => Boolean(id)))).find(group => group.continuations.some(turn => turn.id === searchTarget.turnId));
     setCollapsedTurnOverrides(current => ({ ...current, [searchTarget.turnId]: false, ...(parent ? { [parent.turn.id]: false } : {}) }));
-  }, [searchTarget, turns, setCollapsedTurnOverrides]);
+  }, [searchTarget, turns, harnessSwitches, setCollapsedTurnOverrides]);
   const {
     expandedText,
     openExpandedText: handleOpenExpandedText,
@@ -380,6 +384,7 @@ function ThreadTimelineComponent({
     bottomSpacer,
     onTailVisibilityChange,
     contentRevisionInputs: [
+      harnessSwitches,
       turns,
       pendingRequests,
       pendingSteers,
@@ -822,7 +827,7 @@ function ThreadTimelineComponent({
     pendingPreviousNavigationRef.current = false;
     navigateToTurn(target);
   }, [previousTurnScrollRequestKey, nextTurnScrollRequestKey, findTurn, scrollContainerRef, hiddenCount, loadingEarlier, handleLoadEarlierClick, navigateToTurn]);
-  const peerGroups = groupPeerWorkTurns(visibleTurns);
+  const peerGroups = groupPeerWorkTurns(visibleTurns, new Set(harnessSwitches.map(entry => entry.afterTurnId).filter((id): id is string => Boolean(id))));
   const renderPeerWork = (turn: ThreadTurnDto, omitAgentId?: string) => {
     // Hydrate the wake envelope without freezing live status or billing at
     // the time its details were opened.
@@ -1008,7 +1013,7 @@ function ThreadTimelineComponent({
             </div>
           )}
 
-          {turns.length === 0 && !liveOutput && !optimisticTurn && (
+          {turns.length === 0 && harnessSwitches.length === 0 && !liveOutput && !optimisticTurn && (
             // The same centered empty state as an unselected workspace.
             <div className="thread-graph-empty-state is-new-thread px-3 py-8 text-sm sm:px-5" role="status">
               <MessageSquare aria-hidden="true" />
@@ -1017,7 +1022,7 @@ function ThreadTimelineComponent({
             </div>
           )}
 
-          {(visibleTurns.length > 0 ||
+          {(harnessSwitches.length > 0 || visibleTurns.length > 0 ||
             optimisticTurn ||
             activityNoteAnchors.leading.length > 0 ||
             activityNoteAnchors.trailing.length > 0) && (
@@ -1029,6 +1034,7 @@ function ThreadTimelineComponent({
                   onOpenLinkedThread={openLinkedThread}
                 />
               ) : null}
+              {harnessSwitches.filter(entry => !entry.afterTurnId && startIndex === 0 && effectiveTotalTurnCount <= turns.length).map(entry => <HarnessSwitchDivider key={entry.id} entry={entry} turn={{id:entry.id,items:[],status:'completed',startedAt:null,error:null}} describeModel={describeHandoffModel} />)}
               {peerGroups.map(({ turn, index: visibleIndex, continuations }) => (
                 <div key={turn.id} data-timeline-turn data-turn-id={turn.id}>
                   {(activityNoteAnchors.beforeTurnId.get(turn.id)?.length ?? 0) > 0 ? (
@@ -1045,10 +1051,11 @@ function ThreadTimelineComponent({
                       onRespondToRequest={onRespondToRequest ?? undefined}
                     />
                   ) : null}
-                  <HarnessSwitchDivider describeModel={describeHandoffModel} turn={turn} {...(visibleTurns[visibleIndex - 1] ? {previous:visibleTurns[visibleIndex - 1]} : {})} />
+                  {!harnessSwitches.some(entry => entry.afterTurnId === (visibleTurns[visibleIndex - 1]?.id ?? null)) && <HarnessSwitchDivider describeModel={describeHandoffModel} turn={turn} {...(visibleTurns[visibleIndex - 1] ? {previous:visibleTurns[visibleIndex - 1]} : {})} />}
                   <TranscriptAgentProvider agent={transcriptAgentFor(turn)}>
                     {peerWorkForTurn(turn) && !continuations.length ? renderPeerWork(turn) : renderWorkTurn(turn, visibleIndex, continuations)}
                   </TranscriptAgentProvider>
+                  {harnessSwitches.filter(entry => entry.afterTurnId === turn.id || continuations.some(child => child.id === entry.afterTurnId)).map(entry => <HarnessSwitchDivider key={entry.id} entry={entry} turn={turn} describeModel={describeHandoffModel} />)}
                   {turn.status !== 'inProgress' && adapter?.renderTurnChanges?.(turn.id)}
                   {continuations.map(child => <div key={`peer-requests:${child.id}`}>
                     {(activityNoteAnchors.beforeTurnId.get(child.id)?.length ?? 0) > 0 ? <ActivityNoteSection

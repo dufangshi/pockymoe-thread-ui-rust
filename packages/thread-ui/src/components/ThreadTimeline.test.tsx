@@ -1739,3 +1739,43 @@ it('renders turn changes and offers Edit from here on the starting user message'
   flushSync(() => chip!.click());
   expect(open).toHaveBeenCalledWith('turn-1');
 });
+
+describe('standalone harness switch entries', () => {
+  const entries = [
+    { id: 'switch-1', kind: 'harnessSwitch' as const, text: '', afterTurnId: 'turn-1', harnessSwitch: { fromAgentId: 'codex', agentId: 'claude', turns: 1 } },
+    { id: 'switch-2', kind: 'harnessSwitch' as const, text: '', afterTurnId: 'turn-1', harnessSwitch: { fromAgentId: 'claude', agentId: 'codex', turns: 0 } },
+  ];
+  it('shows every idle switch immediately after its turn, without a following prompt', () => {
+    const el = render(<ThreadTimeline turns={[completedTurn([])]} harnessSwitches={entries} liveOutput="" />);
+    expect(el.querySelectorAll('.thread-harness-switch')).toHaveLength(2);
+    expect(el.querySelector('[data-turn-id="turn-1"]')?.textContent).toContain('Codex→Claude');
+    expect(el.textContent).toContain('Claude→Codex');
+  });
+  it('shows switches before the first prompt', () => {
+    const el = render(<ThreadTimeline turns={[]} harnessSwitches={entries.map(entry => ({ ...entry, afterTurnId: null }))} liveOutput="" />);
+    expect(el.querySelectorAll('.thread-harness-switch')).toHaveLength(2);
+  });
+  it('does not infer a duplicate divider when the next prompt uses another agent', () => {
+    const el = render(<ThreadTimeline turns={[{ ...completedTurn([]), agentId: 'codex' }, { ...completedTurn([]), id: 'turn-2', agentId: 'claude' }]} harnessSwitches={[entries[0]!]} liveOutput="" />);
+    expect(el.querySelectorAll('.thread-harness-switch')).toHaveLength(1);
+  });
+  it('keeps a switch after grouped peer work visible', () => {
+    const task = { ...completedTurn([]), id: 'task' };
+    const wake = { ...completedTurn([{ id: 'wake:user', kind: 'userMessage' as const, text: '[Pockymoe wake]', peerWork: { taskTurnId: 'task', messages: [{id:'peer',kind:'result' as const,name:'Reviewer',subject:'Ready'}] } }]), id: 'wake' };
+    const el = render(<ThreadTimeline turns={[task,wake]} harnessSwitches={[{...entries[0]!,afterTurnId:'wake'}]} liveOutput="" />);
+    expect(el.querySelectorAll('.thread-harness-switch')).toHaveLength(1);
+  });
+  it('does not move pre-prompt switches above a page of newer turns', () => {
+    const el = render(<ThreadTimeline turns={[completedTurn([])]} totalTurnCount={100} harnessSwitches={entries.map(entry => ({ ...entry, afterTurnId: null }))} liveOutput="" />);
+    expect(el.querySelectorAll('.thread-harness-switch')).toHaveLength(0);
+  });
+
+  it('keeps a switch between a task and its peer continuation in chronological order', () => {
+    const task = { ...completedTurn([]), id: 'task' };
+    const wake = { ...completedTurn([{ id: 'wake:user', kind: 'userMessage' as const, text: '[Pockymoe wake]', peerWork: { taskTurnId: 'task', messages: [{id:'peer',kind:'result' as const,name:'Reviewer',subject:'Ready'}] } }]), id: 'wake' };
+    const el = render(<ThreadTimeline turns={[task,wake]} harnessSwitches={[{...entries[0]!,afterTurnId:'task'}]} liveOutput="" />);
+    expect(el.querySelector('[data-turn-id="task"] .thread-harness-switch')).not.toBeNull();
+    expect(el.querySelector('[data-turn-id="wake"]')).not.toBeNull();
+  });
+
+});

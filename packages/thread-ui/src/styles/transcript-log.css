@@ -213,7 +213,8 @@
   border-top: 1px dashed var(--tlog-rule);
 }
 
-.tlog-run-body {
+.tlog-run-body,
+.tlog-run-live {
   display: flex;
   flex-direction: column;
   margin: 2px 0 6px 6px;
@@ -433,7 +434,7 @@
      for screen readers and on the file list it opens). */
   .thread-ui-shell .thread-graph-worked-summary .tlog-files-toggle > .tlog-files-full { display: none; }
   .thread-ui-shell .thread-graph-worked-summary .tlog-files-toggle > .tlog-files-compact { display: inline; font-variant-numeric: tabular-nums; }
-  .tlog-run-body { margin-left: 4px; padding-left: 10px; }
+  .tlog-run-body, .tlog-run-live { margin-left: 4px; padding-left: 10px; }
   .tlog-detail { margin-left: 0; }
 }
 

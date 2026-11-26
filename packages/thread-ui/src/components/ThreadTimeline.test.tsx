@@ -232,9 +232,9 @@ describe('ThreadTimeline', () => {
     const props = { liveOutput: '', autoCollapseCompletedTurns: true, onLoadTurnDetail: load };
     const element = render(<ThreadTimeline {...props} threadRunning activeTurnId={turn.id} turns={[turn]} liveItems={{ turnId: turn.id, items }} />);
     expect(element.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded')).toBe('true');
-    // While the turn works, the running command stays out of any fold.
-    expect(element.querySelector('.tlog-run-head')).toBeNull();
-    expect([...element.querySelectorAll('.tlog-single')].map(node => node.textContent)).toEqual([
+    // While the turn works, the running command is the last row of the open run.
+    expect(element.querySelector('.tlog-run-head')?.getAttribute('aria-expanded')).toBe('true');
+    expect([...element.querySelectorAll('.tlog-run-body .tlog-row')].map(node => node.textContent)).toEqual([
       expect.stringContaining('first-command'), expect.stringContaining('second-command')]);
     const finished: ThreadTurnDto = { ...turn, status: 'completed', hasDeferredItems: deferred, deferredItemCount: deferred ? 2 : 0,
       items: [...turn.items, { id: 'final', kind: 'agentMessage', text: 'Finished', responsePhase: 'final' }] };
@@ -1408,18 +1408,20 @@ describe('ThreadTimeline', () => {
       { id: 'reason-2', kind: 'reasoning', text: 'Reviewing the new result.' },
     ];
     flushSync(() => root?.render(timeline(nextItems)));
-    // Narration followed the run, so it folds; the commands still running stay
-    // out of it, each on its own line.
-    expect(activityToggle()?.getAttribute('aria-expanded')).toBe('false');
-    expect([...element.querySelectorAll('.tlog-single .tlog-row[data-kind="commandExecution"]')].map(row => row.textContent))
-      .toEqual([expect.stringContaining('git status'), expect.stringContaining('pnpm test')]);
+    // Running commands do not split the run: it is still the one being worked
+    // in, so it stays open with every row in place, and the opened row too.
+    expect(element.querySelectorAll('.tlog-run-head')).toHaveLength(1);
+    expect(activityToggle()?.getAttribute('aria-expanded')).toBe('true');
+    expect(commandToggle()?.getAttribute('aria-expanded')).toBe('true');
     expect(element.textContent).toContain('Reviewing the new result.');
-    // Opened again, it shows its work.
+
+    // Folded by the reader, the commands still running stay in sight under its head.
     flushSync(() => activityToggle()?.click());
-    expect(element.textContent).toContain('Inspecting the first issue.');
+    expect(activityToggle()?.getAttribute('aria-expanded')).toBe('false');
+    expect([...element.querySelectorAll('.tlog-run-live .tlog-row[data-kind="commandExecution"]')].map(row => row.textContent))
+      .toEqual([expect.stringContaining('git status'), expect.stringContaining('pnpm test')]);
 
     // The reader's choice holds as more work arrives.
-    flushSync(() => activityToggle()?.click());
     flushSync(() => root?.render(timeline([
       ...nextItems,
       { id: 'reason-3', kind: 'reasoning', text: 'Preparing the next step.' },
@@ -1427,10 +1429,37 @@ describe('ThreadTimeline', () => {
     expect(activityToggle()?.getAttribute('aria-expanded')).toBe('false');
     flushSync(() => activityToggle()?.click());
     expect(activityToggle()?.getAttribute('aria-expanded')).toBe('true');
+    expect(element.querySelector('.tlog-run-live')).toBeNull();
     expect(element.querySelectorAll('.tlog-row[data-kind="commandExecution"]')).toHaveLength(3);
   });
 
-  it('folds only finished commands while a turn works, and shows a running command once', () => {
+  it('keeps the live run the same size as one operation finishes and the next starts', () => {
+    const turn: ThreadTurnDto = { ...completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Check' }]), status: 'inProgress' };
+    const command = (n: number, status: string): ThreadTurnDto['items'][number] =>
+      ({ id: `c${n}`, kind: 'commandExecution', text: `step ${n}`, status });
+    const read = (n: number, status: string): ThreadTurnDto['items'][number] =>
+      ({ id: `r${n}`, kind: 'fileRead', text: `file-${n}.ts`, status });
+    const view = (items: ThreadTurnDto['items']) =>
+      <ThreadTimeline liveOutput="" threadRunning activeTurnId={turn.id} turns={[turn]} liveItems={{ turnId: turn.id, items }} />;
+    const rows = () => [...element.querySelectorAll('.tlog-run-body > .tlog-row')].map(row => row.textContent);
+    const done = Array.from({ length: 9 }, (_, index) => command(index + 1, 'completed'));
+    const element = render(view([...done, command(10, 'running')]));
+    const before = rows();
+    expect(before).toHaveLength(8);
+    expect(element.querySelector('.tlog-single')).toBeNull();
+    // Step 10 finishes and 11 starts: one row in, one out; nothing else moves.
+    flushSync(() => root?.render(view([...done, command(10, 'completed'), command(11, 'running')])));
+    expect(rows()).toHaveLength(8);
+    expect(rows().at(-1)).toContain('step 11');
+    expect(element.querySelector('.tlog-single')).toBeNull();
+    // Reads that finish one after another stay one row each while the run is live.
+    flushSync(() => root?.render(view([read(1, 'completed'), read(2, 'completed'), read(3, 'running')])));
+    expect(rows()).toHaveLength(3);
+    flushSync(() => root?.render(view([read(1, 'completed'), read(2, 'completed'), read(3, 'completed'), command(1, 'running')])));
+    expect(rows()).toHaveLength(4);
+  });
+
+  it('keeps a running command in the run it belongs to, and shows it once', () => {
     const turn: ThreadTurnDto = { ...completedTurn([{ id: 'prompt', kind: 'userMessage', text: 'Deploy' }]), status: 'inProgress' };
     const items: ThreadTurnDto['items'] = [
       { id: 'ok', kind: 'commandExecution', text: 'systemctl is-active relay', status: 'completed' },
@@ -1441,11 +1470,16 @@ describe('ThreadTimeline', () => {
     ];
     const element = render(<ThreadTimeline liveOutput="" threadRunning activeTurnId={turn.id} turns={[turn]} liveItems={{ turnId: turn.id, items }} />);
     const run = element.querySelector('.tlog-run')!;
-    expect(run.querySelector('.tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('2 commands');
-    expect(run.textContent).not.toContain('git pull');
-    // The fold being worked in stays open beside the command still running.
+    expect(run.querySelector('.tlog-count[data-kind=commands]')?.getAttribute('aria-label')).toBe('3 commands');
+    // The run being worked in stays open; the running command is its last row,
+    // so finishing it changes its mark and moves nothing.
     expect(run.querySelector('.tlog-run-head')?.getAttribute('aria-expanded')).toBe('true');
-    expect([...element.querySelectorAll('.tlog-single')].map(node => node.textContent)).toEqual([expect.stringContaining('git pull')]);
+    expect([...run.querySelectorAll('.tlog-run-body .tlog-row')].map(node => node.textContent)).toEqual([
+      expect.stringContaining('systemctl'), expect.stringContaining('ssh relay'), expect.stringContaining('git pull')]);
+    expect(element.querySelector('.tlog-single')).toBeNull();
+    // One running mark: on the row, not again on the head.
+    expect(run.querySelectorAll('.tlog-spinner')).toHaveLength(1);
+    expect(run.querySelector('.tlog-run-head .tlog-spinner')).toBeNull();
   });
 
   it('shows file paths directly without opening a summary or details pane', () => {

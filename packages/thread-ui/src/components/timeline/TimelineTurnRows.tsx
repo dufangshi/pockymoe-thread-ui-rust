@@ -1244,7 +1244,7 @@ function TimelineHistoryEntries({
             : renderItem(block.item, block.key);
         }
         // The run a working turn is in stays open; once narration or another run follows, it folds.
-        // Operations still running sit just after it, outside it, and keep it current.
+        // Its running operations are its last rows (see logBlocks).
         const live = autoOpenLatestToolDetails && blocks.slice(index + 1).every((later) =>
           later.kind === 'item' && isLogItem(later.item) && logStatus(later.item.status) === 'running');
         const next = blocks[index + 1];
@@ -1342,14 +1342,16 @@ function logBlocks(entries: TimelineHistoryEntry[], working = false): LogBlock[]
     };
     for (const item of flattenHistoryEntries([entry])) {
       const running = working && isLogItem(item) && logStatus(item.status) === 'running';
-      if (isLogItem(item) && !running) run.push(item);
-      else if (running) {
+      if (running) {
         const same = `${item.kind}\u0000${item.text}`;
         if (runningShown.has(same)) continue;
         runningShown.add(same);
-        flush();
-        blocks.push({ kind: 'item', key: item.id, item });
-      } else {
+      }
+      // A running operation is the last row of its run from the start, so
+      // finishing it changes its mark, not where it is: moving it into the run
+      // then shifted everything on screen at every step.
+      if (isLogItem(item)) run.push(item);
+      else {
         flush();
         blocks.push({ kind: 'item', key: item.id, item });
       }

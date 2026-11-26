@@ -439,7 +439,10 @@ type RowBlock =
   | { kind: 'reads'; items: ThreadHistoryItemDto[] }
   | { kind: 'wakes'; items: ThreadHistoryItemDto[] };
 
-function rowBlocks(items: ThreadHistoryItemDto[]): RowBlock[] {
+/** Rows of a run. A live run never merges rows: a read or wake that finished
+    would fold the rows above it into one, and the transcript would jump. */
+function rowBlocks(items: ThreadHistoryItemDto[], live = false): RowBlock[] {
+  if (live) return items.map((item) => ({ kind: 'item', item }));
   const blocks: RowBlock[] = [];
   let index = 0;
   while (index < items.length) {
@@ -532,7 +535,7 @@ export const LogRun = memo(function LogRun({
     ...(wakes ? [{ key: 'wakes', count: wakes, text: translate('chat.logWakes', { count: wakes }) }] : [])];
   const running = items.some((item) => rowStatus(item) === 'running');
   const duration = itemsDuration(items);
-  const blocks = useMemo(() => rowBlocks(items), [items]);
+  const blocks = useMemo(() => rowBlocks(items, live), [items, live]);
   // Only the run being worked on shows its edits; finished runs keep them folded.
   const openDiffs = useMemo(() => new Set(live ? items.filter(opensDiff).slice(0, OPEN_DIFFS).map((item) => item.id) : []), [items, live]);
   const [revealed, setRevealed] = useState(false);
@@ -551,9 +554,14 @@ export const LogRun = memo(function LogRun({
           {parts.length ? <Parts parts={parts} /> : translate('chat.operationCount', { count: items.length })}
           {duration && !running ? <span className="tlog-part is-time"><span className="tlog-sep" aria-hidden="true">·</span>{compactDuration(duration)}</span> : null}
         </span>
-        {running ? <span className="tlog-spinner" role="img" aria-label={translate('chat.logRunning')} /> : null}
+        {/* A live run's running rows carry the mark themselves, open or folded. */}
+        {running && !live ? <span className="tlog-spinner" role="img" aria-label={translate('chat.logRunning')} /> : null}
         <span className="tlog-rule" aria-hidden="true" />
       </button>
+      {/* Folded by the reader while it works: what is still running stays in sight. */}
+      {!expanded && running ? <div className="tlog-run-live">
+        {items.filter((item) => rowStatus(item) === 'running').map((item) => <LogRow key={item.id} item={item} />)}
+      </div> : null}
       <Collapse open={expanded}>
         <div className="tlog-run-body">
           {live ? more : null}

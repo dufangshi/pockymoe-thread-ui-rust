@@ -37,6 +37,7 @@ import { SlashIcon } from './composerPresentation';
 import {
   ComposerForkPanel,
   ComposerForkTurnsPanel,
+  type ComposerForkAgentChoice,
 } from './ComposerForkPanels';
 import { ComposerHooksPanel } from './ComposerHooksPanel';
 import { ComposerGoalsPanel } from './ComposerGoalsPanel';
@@ -128,6 +129,7 @@ export function ComposerSlashToolboxMenu({
   availableToolboxItems,
   planModeAvailable,
   forkFromTurnAvailable,
+  forkAgents,
   displayedCollaborationMode,
   settingsBusy,
   busy,
@@ -215,6 +217,8 @@ export function ComposerSlashToolboxMenu({
   availableToolboxItems: AgentBackendToolboxItemSchemaDto[];
   planModeAvailable: boolean;
   forkFromTurnAvailable: boolean;
+  /** The fork panel's agent row, when forks can go to another agent. */
+  forkAgents?: ComposerForkAgentChoice | null | undefined;
   displayedCollaborationMode: CollaborationModeDto;
   settingsBusy: boolean;
   busy: boolean;
@@ -494,6 +498,7 @@ export function ComposerSlashToolboxMenu({
                   busy={busy}
                   forkBusy={forkBusy}
                   forkFromTurnAvailable={forkFromTurnAvailable}
+                  forkAgents={forkAgents}
                   composerMenuItemClassName={menuItemClassName}
                   onForkLatest={onForkLatest}
                   onSelectForkTurnPanel={() => {

@@ -88,6 +88,7 @@ import { useComposerAttachments } from './composer/useComposerAttachments';
 import { useAttachmentPreviewUrls } from './composer/useAttachmentPreviewUrls';
 import { useComposerDraft } from './composer/useComposerDraft';
 import { useComposerForkActions } from './composer/useComposerForkActions';
+import type { ComposerModelPickerSource } from './composer/modelPicker/modelPickerLogic';
 import { useComposerGoal } from './composer/useComposerGoal';
 import { useComposerHookConfig } from './composer/useComposerHookConfig';
 import { useComposerMcpConfig } from './composer/useComposerMcpConfig';
@@ -172,6 +173,8 @@ export interface ThreadComposerProps {
   onOpenSkills?: () => Promise<void> | void;
   onOpenMcp?: () => Promise<void> | void;
   onOpenHarness?: (composerFocusOwner?: string) => Promise<void> | void;
+  /** Model facts and, for an owner, moving the thread to another agent (picker and fork panel). */
+  modelPicker?: ComposerModelPickerSource | undefined;
   onOpenHooks?: () => Promise<void> | void;
   onCreateHook?: (input: CreateThreadHookInput) => Promise<void> | void;
   onUpdateHook?: (input: UpdateThreadHookInput) => Promise<void> | void;
@@ -290,6 +293,7 @@ export function ThreadComposer({
   onOpenMcp,
   onOpenHooks,
   onOpenHarness,
+  modelPicker,
   onCreateHook,
   onUpdateHook,
   onTrustHook,
@@ -340,13 +344,16 @@ export function ThreadComposer({
   const [sendFailure, setSendFailure] = useState<{ delivery?: 'steer' } | null>(null);
   useEffect(() => { if (!error) setSendFailure(null); }, [error]);
   const [mcpPanelMode, setMcpPanelMode] = useState<McpPanelMode>('list');
+  const switching = modelPicker?.switching;
+  const crossAgentFork = Boolean(switching?.fork && switching.agents.length > 1);
   const slashCapabilities = useMemo(
     () => ({
       fast: capabilities?.controls.performanceMode ?? false,
       compact: capabilities?.turns.compact ?? false,
       goal: capabilities?.controls.goals ?? false,
-      fork: Boolean(capabilities?.branching.fork && onForkLatest),
-      forkFromTurn: Boolean((capabilities?.branching.forkAt ?? capabilities?.branching.resumeAt) && onForkTurn && onOpenForkTurns),
+      // A fork into another agent needs no native fork (docs/harness-switching.md).
+      fork: Boolean(capabilities?.branching.fork && onForkLatest) || crossAgentFork,
+      forkFromTurn: Boolean((capabilities?.branching.forkAt ?? capabilities?.branching.resumeAt) && onForkTurn && onOpenForkTurns) || (crossAgentFork && Boolean(onOpenForkTurns)),
       skills: capabilities?.management.skills ?? false,
       mcp: capabilities?.management.mcpStatus ?? false,
       hooks: capabilities?.management.hooks ?? false,
@@ -362,6 +369,7 @@ export function ThreadComposer({
     }),
     [
       capabilities,
+      crossAgentFork,
       onForkLatest,
       onForkTurn,
       onOpenForkTurns,
@@ -418,12 +426,21 @@ export function ThreadComposer({
     onUpdateSettings,
     closeMenu: () => setOpenMenu(null),
   });
-  const { forkBusy, forkError, forkLatest, forkTurn } = useComposerForkActions({
+  const nativeFork = Boolean(capabilities?.branching.fork && onForkLatest);
+  const { forkBusy, forkError, forkLatest, forkTurn, forkAgentId, setForkAgentId } = useComposerForkActions({
     slashPanelView,
     onForkLatest,
     onForkTurn,
+    switching,
+    nativeFork,
     closeMenu: () => setOpenMenu(null),
   });
+  const forkAgents = switching && crossAgentFork && forkAgentId ? {
+    agents: switching.agents.filter((entry) => nativeFork || entry.id !== switching.currentAgentId),
+    value: forkAgentId,
+    currentAgentId: switching.currentAgentId,
+    onChange: setForkAgentId,
+  } : null;
   const {
     hooksPanelMode,
     hookScope,
@@ -1093,6 +1110,8 @@ export function ThreadComposer({
     contextInspector,
     onCompact,
     ...(onOpenHarness ? { onOpenHarness: () => { void onOpenHarness(menuRef.current?.dataset.composerFocusOwner); } } : {}),
+    modelPicker,
+    forkAgents,
     reasoningEffort,
     supportedEfforts,
     displayedCollaborationMode,

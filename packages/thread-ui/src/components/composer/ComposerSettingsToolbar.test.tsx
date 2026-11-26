@@ -203,12 +203,12 @@ describe('ComposerSettingsToolbar', () => {
     [false, 'Applies from the next turn'],
   ])('says when a model chosen during a turn takes effect (live switch: %s)', (liveModelSwitch, note) => {
     renderToolbar({ initialOpenMenu: 'model', queueing: true, liveModelSwitch });
-    expect(document.querySelector('.composer-model-menu-note')?.textContent).toBe(note);
+    expect(document.querySelector('.model-picker-applies')?.textContent).toBe(note);
   });
 
   it('says nothing about timing while no turn runs', () => {
     renderToolbar({ initialOpenMenu: 'model', liveModelSwitch: true });
-    expect(document.querySelector('.composer-model-menu-note')).toBeNull();
+    expect(document.querySelector('.model-picker-applies')).toBeNull();
   });
 
   it('shows the send intent in every theme; Plum Pocket adds the mascot, chevron and a paper plane', () => {

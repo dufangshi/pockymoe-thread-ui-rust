@@ -8,8 +8,7 @@ import type {
   ThreadContextUsageDto,
 } from '@pockymoe/shared';
 import { ChevronRight, Loader2, X } from 'lucide-react';
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { createPortal } from 'react-dom';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useVisibleClock } from '../../visibleClock';
 
 import { getLocale, translate, useI18n } from '../../i18n';
@@ -17,8 +16,8 @@ import { ErrorMark } from '../copy/ErrorMark';
 import { MiddleName } from '../copy/MiddleName';
 import { PathChip } from '../copy/PathChip';
 import { useModalFocus } from '../menu/useModalFocus';
-import { shellThemeProps } from '../themeHooks';
 import { ComposerMenuSurface } from './ComposerMenuSurface';
+import { ComposerSheet, useIsPhone } from './ComposerSheet';
 import { ContextStats, ContextSwitch, ContextTrend, useContextSteps } from './ContextInsights';
 import {
   arrangeContextCategories,
@@ -55,14 +54,6 @@ type LoadState = {
   response: ThreadContextInspectionDto | null;
   error: string | null;
 };
-
-const PHONE = '(max-width: 639px)';
-function subscribePhone(onChange: () => void) {
-  const query = window.matchMedia?.(PHONE);
-  query?.addEventListener('change', onChange);
-  return () => query?.removeEventListener('change', onChange);
-}
-const useIsPhone = () => useSyncExternalStore(subscribePhone, () => Boolean(window.matchMedia?.(PHONE).matches), () => false);
 
 function ContextBar({ segments, reservedEnd = [], window, tick, mini = false, label }: {
   segments: ContextSegment[];
@@ -336,24 +327,10 @@ function ContextPanelSurface({ phone, label, subtitle, tabs, trigger, onClose, f
       </ComposerMenuSurface>
     );
   }
-  // Rendered at the page's root (docs/ui-principles.md §4). The hidden marker keeps
-  // what the composer does while one of its menus is open: it stays unfolded and
-  // this control keeps its place to return focus to.
-  const theme = shellThemeProps(trigger);
   return (
-    <>
-      <span hidden data-composer-menu-surface="true" />
-      {createPortal(
-        <div className={`thread-ui-shell thread-context-sheet-layer ${theme.themeClass}`.trim()} data-composer-menu-surface="true"
-          data-theme-effective={theme['data-theme-effective']} data-theme-mode={theme['data-theme-mode']}>
-          <button type="button" className="thread-context-scrim" aria-label={translate('chat.contextClose')} onClick={onClose} />
-          <section className="thread-context-surface is-sheet" role="dialog" aria-modal="true" aria-label={label}>
-            {panel}
-          </section>
-        </div>,
-        document.body,
-      )}
-    </>
+    <ComposerSheet label={label} closeLabel={translate('chat.contextClose')} trigger={trigger} onClose={onClose}>
+      {panel}
+    </ComposerSheet>
   );
 }
 

@@ -167,4 +167,39 @@ describe('useComposerForkActions', () => {
     await actionPromise;
     harness.unmount();
   });
+
+  it('forks into the agent chosen in the fork panel, and only there', async () => {
+    const onForkLatest = vi.fn();
+    const onForkTurn = vi.fn();
+    const fork = vi.fn(async () => {});
+    const switching = {
+      currentAgentId: 'codex',
+      agents: [{ id: 'codex', name: 'Codex' }, { id: 'claude', name: 'Claude Agent' }],
+      loadModels: vi.fn(), preview: vi.fn(), switchTo: vi.fn(), fork,
+    };
+    const harness = renderHookHarness({ slashPanelView: 'fork', onForkLatest, onForkTurn, switching });
+    expect(latestResult?.forkAgentId).toBe('codex');
+    await runForkAction(() => latestResult?.forkLatest());
+    expect(onForkLatest).toHaveBeenCalledTimes(1);
+
+    flushSync(() => latestResult?.setForkAgentId('claude'));
+    expect(latestResult?.forkAgentId).toBe('claude');
+    await runForkAction(() => latestResult?.forkLatest());
+    expect(fork).toHaveBeenLastCalledWith({ agentId: 'claude', turnId: null });
+    await runForkAction(() => latestResult?.forkTurn('turn-2'));
+    expect(fork).toHaveBeenLastCalledWith({ agentId: 'claude', turnId: 'turn-2' });
+    expect(onForkLatest).toHaveBeenCalledTimes(1);
+    expect(onForkTurn).not.toHaveBeenCalled();
+
+    // Leaving the fork panels forgets the choice.
+    harness.rerender({ slashPanelView: 'root' });
+    await flushEffects();
+    expect(latestResult?.forkAgentId).toBe('codex');
+
+    // Without a native fork, the current agent is not offered.
+    harness.rerender({ slashPanelView: 'fork', nativeFork: false });
+    await flushEffects();
+    expect(latestResult?.forkAgentId).toBe('claude');
+    harness.unmount();
+  });
 });

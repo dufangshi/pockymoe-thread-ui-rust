@@ -11,6 +11,7 @@ import './styles/phone-dock.css';
 import './styles/composer-compact.css';
 import './styles/composer-reasoning.css';
 import './styles/composer-context.css';
+import './styles/composer-model-picker.css';
 import './styles/mermaid-diagrams.css';
 import './styles/plugin-reports.css';
 import './styles/terminal-panel.css';
@@ -60,6 +61,14 @@ export {
   type ComposerSendShortcut,
 } from './components/ThreadComposer';
 export type { ThreadContextInspector } from './components/composer/ComposerContextControl';
+export {
+  modelFactsFromCatalog,
+  type ComposerModelPickerSource,
+  type ComposerModelSwitching,
+  type HandoffSummary,
+  type ModelFacts,
+  type ModelPickerAgent,
+} from './components/composer/modelPicker/modelPickerLogic';
 export { TokenUsageCost, type TokenUsageCostProps } from './components/timeline/TokenUsageCost';
 export {
   ThreadCards,

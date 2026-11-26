@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowUpRight, ChevronRight, ChevronUp, Folder, List, Monitor
 import { translate, useI18n } from '../../i18n';
 import { buildThreadMap, inScope, heatLevel, indexMap, threadWeight, type MapNode, type ThreadMapThread } from './model';
 import { AgeGlyph, AgentChip, formatRunTime, threadDetails, ThreadTile } from './ThreadTile';
+import { useAgentArt } from '../AgentChip';
 import { Select } from '../Select';
 import { StatusMark } from '../StatusMark';
 import { formatCompactUsd } from '../timeline/tokenFormatting';
@@ -175,18 +176,7 @@ export function ThreadMap({ devices, currentKey, hours = 24, heading, actions, o
     return () => observer.disconnect();
   }, []);
   // Read once per agent after structural/theme changes, never per tile on hover.
-  useLayoutEffect(() => {
-    const paint = () => {
-      const chips = [...(canvas.current?.querySelectorAll<HTMLElement>('.thread-map-agent') ?? [])];
-      const art = new Map<string, boolean>();
-      for (const chip of chips) if (!art.has(chip.dataset.agent!)) art.set(chip.dataset.agent!, getComputedStyle(chip).getPropertyValue('--theme-agent-avatar').includes('url('));
-      for (const chip of chips) chip.toggleAttribute('data-art', art.get(chip.dataset.agent!) ?? false);
-    };
-    paint();
-    const observer = new MutationObserver(paint);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme-preset', 'data-theme-effective'] });
-    return () => observer.disconnect();
-  }, [root, focusId, openGroups, size.width, size.height]);
+  useAgentArt(canvas, [root, focusId, openGroups, size.width, size.height]);
 
   useEffect(() => {
     if (stableLayout && focusInside.current && !canvas.current?.contains(document.activeElement)) { focusInside.current = false; thaw(); }

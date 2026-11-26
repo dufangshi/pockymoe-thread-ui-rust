@@ -4174,6 +4174,10 @@ declare const en: {
     readonly "chat.forkInto": "Fork into";
     readonly "chat.modelPickerResumeCurrent": "Resumes its session · nothing new to hand over";
     readonly "chat.modelPickerNoHistory": "No history to hand over yet";
+    readonly "chat.mcpFailed": "Failed";
+    readonly "chat.mcpNeedsAuth": "Sign-in needed";
+    readonly "chat.mcpPending": "Starting";
+    readonly "chat.mcpDisabled": "Off";
     readonly "auth.ui.signInTitle": "Sign in";
     readonly "auth.ui.registerTitle": "Create your account";
     readonly "auth.ui.or": "or";
@@ -9706,6 +9710,10 @@ declare const zhCN: {
     "chat.forkInto": "分叉到";
     "chat.modelPickerResumeCurrent": "恢复它的会话 · 没有新内容要交接";
     "chat.modelPickerNoHistory": "还没有要交接的历史";
+    "chat.mcpFailed": "启动失败";
+    "chat.mcpNeedsAuth": "需登录";
+    "chat.mcpPending": "启动中";
+    "chat.mcpDisabled": "已关闭";
     "auth.ui.signInTitle": "登录";
     "auth.ui.registerTitle": "创建账号";
     "auth.ui.or": "或";
@@ -15260,6 +15268,10 @@ declare const resources: {
         readonly "chat.forkInto": "Fork into";
         readonly "chat.modelPickerResumeCurrent": "Resumes its session · nothing new to hand over";
         readonly "chat.modelPickerNoHistory": "No history to hand over yet";
+        readonly "chat.mcpFailed": "Failed";
+        readonly "chat.mcpNeedsAuth": "Sign-in needed";
+        readonly "chat.mcpPending": "Starting";
+        readonly "chat.mcpDisabled": "Off";
         readonly "auth.ui.signInTitle": "Sign in";
         readonly "auth.ui.registerTitle": "Create your account";
         readonly "auth.ui.or": "or";
@@ -20791,6 +20803,10 @@ declare const resources: {
         "chat.forkInto": "分叉到";
         "chat.modelPickerResumeCurrent": "恢复它的会话 · 没有新内容要交接";
         "chat.modelPickerNoHistory": "还没有要交接的历史";
+        "chat.mcpFailed": "启动失败";
+        "chat.mcpNeedsAuth": "需登录";
+        "chat.mcpPending": "启动中";
+        "chat.mcpDisabled": "已关闭";
         "auth.ui.signInTitle": "登录";
         "auth.ui.registerTitle": "创建账号";
         "auth.ui.or": "或";

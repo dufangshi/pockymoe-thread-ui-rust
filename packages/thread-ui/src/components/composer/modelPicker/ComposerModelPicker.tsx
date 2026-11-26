@@ -81,6 +81,8 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
   }, []);
 
   const searching = query.trim().length > 0;
+  // A short list of one agent's models needs no search (docs/model-settings.md).
+  const showSearch = agents.length > 1 || visiblePickerModels(props.modelOptions, props.model).length > 8;
   const currentModels = useMemo(() => visiblePickerModels(props.modelOptions, props.model), [props.modelOptions, props.model]);
   const modelsOf = useCallback((agentId: string): Load<ModelOptionDto[]> | undefined => {
     if (!switching || agentId === currentAgentId) return { status: 'ready', data: currentModels };
@@ -391,7 +393,7 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
     </div>
   ) : (
     <div className="model-picker-column">
-      <label className="model-picker-search-box">
+      {showSearch ? <label className="model-picker-search-box">
         <Search aria-hidden="true" />
         <input
           ref={searchRef}
@@ -411,7 +413,7 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
             if (query && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) event.stopPropagation();
           }}
         />
-      </label>
+      </label> : null}
       <div className="model-picker-list" data-facts={showFacts || undefined}>
         {!searching ? listHead(viewAgent) : null}
         {list}
@@ -489,7 +491,7 @@ function PhonePicker({ onClose, root, children }: { onClose: () => void; root: R
   // The keyboard stays down until the search is tapped: focus starts on the current model.
   useModalFocus(root, true, onClose, '.model-picker-row[aria-checked="true"]');
   return (
-    <ComposerSheet label={translate('chat.model')} closeLabel={translate('chat.modelPickerClose')} trigger={trigger.current} onClose={onClose} className="model-picker-sheet">
+    <ComposerSheet label={translate('chat.model')} closeLabel={translate('chat.modelPickerClose')} trigger={trigger.current} onClose={onClose} className="model-picker-sheet composer-model-menu">
       {children}
     </ComposerSheet>
   );

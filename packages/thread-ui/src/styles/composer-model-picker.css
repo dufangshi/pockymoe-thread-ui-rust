@@ -85,6 +85,7 @@
 
 /* ── Search and list ──────────────────────────────────────────────────────── */
 .model-picker-column { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; min-height: 0; }
+.model-picker-column > .model-picker-list:first-child { padding-top: 4px; }
 .model-picker-search-box {
   display: flex;
   flex: none;
@@ -145,8 +146,8 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  min-height: 26px;
-  padding: 6px 8px 3px;
+  min-height: 22px;
+  padding: 4px 8px 2px;
   background: var(--theme-panel);
   color: var(--theme-fg-muted);
   font-size: 10.5px;

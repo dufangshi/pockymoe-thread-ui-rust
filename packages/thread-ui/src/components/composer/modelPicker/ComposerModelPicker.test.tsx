@@ -94,6 +94,8 @@ describe('ComposerModelPicker', () => {
   it('without switching shows only the current models, with no rail', async () => {
     await render();
     expect(document.querySelector('.model-picker-rail')).toBeNull();
+    // A short list of one agent's models needs no search.
+    expect(document.querySelector('.model-picker-search')).toBeNull();
     expect(rowNames()).toEqual(['6.1 Sol', '5.6 Luna']);
     expect(rows()[0]!.getAttribute('aria-checked')).toBe('true');
     expect(document.querySelector('.composer-reasoning')).not.toBeNull();

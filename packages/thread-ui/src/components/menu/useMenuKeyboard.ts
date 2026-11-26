@@ -17,6 +17,9 @@ export function useMenuKeyboard(menuRef: RefObject<HTMLElement | null>, open: bo
     const items = () => [...menu.querySelectorAll<HTMLElement>(itemSelector)];
     items()[0]?.focus({ preventScroll: true });
     const key = (event: KeyboardEvent) => {
+      // A slider among the items owns Home and End (its lowest and highest
+      // value), as it owns left and right.
+      if ((event.key === 'Home' || event.key === 'End') && (event.target as HTMLElement | null)?.getAttribute?.('role') === 'slider') return;
       const list = items();
       const index = list.indexOf(document.activeElement as HTMLElement);
       // A slider among the items (the composer's effort) keeps left and right;

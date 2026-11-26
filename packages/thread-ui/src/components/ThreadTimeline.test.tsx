@@ -407,9 +407,12 @@ describe('ThreadTimeline', () => {
     flushSync(() => toggle.click());
     await vi.waitFor(() => expect(el.textContent).toContain('Full question: does the registration remain valid tomorrow?'));
     expect(load).toHaveBeenCalledExactlyOnceWith('first');
-    expect(el.querySelector('.thread-peer-work-operations')?.textContent).toContain('verify-session');
-    expect(el.querySelector('.thread-peer-work-operations')?.textContent).not.toContain('Reply for first');
-    expect(el.querySelector('.thread-peer-wake-reply')?.textContent).toBe('Reply for first');
+    // Opened, the wake shows its reply in its work, after what led to it, and not again below.
+    const operations = el.querySelector('.thread-peer-work-operations')?.textContent ?? '';
+    expect(operations.indexOf('verify-session')).toBeGreaterThanOrEqual(0);
+    expect(operations.indexOf('Reply for first')).toBeGreaterThan(operations.indexOf('verify-session'));
+    expect(el.querySelector('.thread-peer-wake-reply')).toBeNull();
+    expect(el.textContent?.split('Reply for first')).toHaveLength(2);
     expect(el.querySelectorAll('[data-role="user"]')).toHaveLength(1);
     flushSync(() => toggle.click());
     flushSync(() => toggle.click());
@@ -474,13 +477,45 @@ describe('ThreadTimeline', () => {
       expect.stringContaining('How is it going?'), expect.stringContaining('Is it released?'),
     ]);
     expect(el.textContent).not.toContain('[Pockymoe wake');
-    // The wake opened: its work shows, the steers are not repeated inside it.
+    // The wake opened: each steer is in its work where it was sent, before the
+    // work it asked for, marked as added while it worked; nothing below repeats it.
     flushSync(() => (group.querySelector('.thread-peer-work-toggle') as HTMLButtonElement).click());
-    expect(group.querySelector('.thread-peer-work-operations')?.textContent).toContain('Checking why CI did not start');
-    expect(group.querySelector('.thread-peer-work-operations')?.textContent).not.toContain('How is it going?');
+    const operations = group.querySelector('.thread-peer-work-operations')?.textContent ?? '';
+    const order = ['Merging the branches', 'How is it going?', 'Checking why CI did not start', 'Is it released?'].map(text => operations.indexOf(text));
+    expect(order.every(index => index >= 0)).toBe(true);
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+    expect(group.querySelectorAll('.thread-peer-wake-prompt')).toHaveLength(0);
+    expect(group.querySelectorAll('.thread-peer-work-operations [data-role="user"] .thread-added-prompt')).toHaveLength(2);
     expect(el.textContent?.split('How is it going?')).toHaveLength(2);
     expect(el.textContent?.split('Is it released?')).toHaveLength(2);
     expect(el.textContent).not.toContain('[Pockymoe wake');
+  });
+
+  it('shows a running task\'s latest wake reply once, in the wake after the steer that preceded it', () => {
+    const task = {...completedTurn([{id:'user',kind:'userMessage',text:'Delegate and merge'}]),id:'task'} as ThreadTurnDto;
+    const wake: ThreadTurnDto = {...completedTurn([
+      {id:'wake:user',kind:'userMessage',origin:'system',text:'[Pockymoe wake]',createdAt:'2026-11-26T18:10:00Z',
+        peerWork:{taskTurnId:'task',messages:[{id:'d',kind:'result',name:'switch-ui',subject:'idle',text:'Done.'}]}},
+      {id:'w1',kind:'agentMessage',text:'Pushing the shared UI next.',responsePhase:'commentary',createdAt:'2026-11-26T18:13:00Z'},
+      {id:'steer',kind:'userMessage',origin:'user',text:'Merge it and release',createdAt:'2026-11-26T18:14:00Z'},
+      {id:'push',kind:'commandExecution',text:'git push origin HEAD:main',status:'completed',createdAt:'2026-11-26T18:14:30Z'},
+      {id:'w2',kind:'agentMessage',text:'Shared UI pushed; pinning it now.',responsePhase:'commentary',createdAt:'2026-11-26T18:15:00Z'},
+    ]),id:'wake',status:'inProgress'};
+    const el = render(<ThreadTimeline turns={[task,wake]} liveOutput="" threadRunning activeTurnId="wake" />);
+    if (el.querySelector('.thread-worked-toggle')?.getAttribute('aria-expanded') === 'false') flushSync(() => el.querySelector<HTMLButtonElement>('.thread-worked-toggle')!.click());
+    const group = el.querySelector('.thread-peer-work')!;
+    // Folded wake: the steer, then the reply, below its line.
+    expect([...group.querySelectorAll(':scope > .thread-peer-wake-prompt, :scope > .thread-peer-wake-reply')].map(node => node.className)).toEqual([
+      'thread-peer-wake-prompt', 'thread-peer-wake-reply']);
+    expect(el.textContent?.split('Shared UI pushed; pinning it now.')).toHaveLength(2);
+    // Opened: both in its work, in the order they happened, and nowhere else.
+    flushSync(() => group.querySelector<HTMLButtonElement>('.thread-peer-work-toggle')!.click());
+    const operations = group.querySelector('.thread-peer-work-operations')?.textContent ?? '';
+    const order = ['Pushing the shared UI next.', 'Merge it and release', 'git push origin HEAD:main', 'Shared UI pushed; pinning it now.'].map(text => operations.indexOf(text));
+    expect(order.every(index => index >= 0)).toBe(true);
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+    expect(el.textContent?.split('Shared UI pushed; pinning it now.')).toHaveLength(2);
+    expect(el.textContent?.split('Merge it and release')).toHaveLength(2);
   });
 
   it('keeps the latest peer progress and final outside the task fold without exposing old replies', () => {

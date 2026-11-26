@@ -645,7 +645,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   );
   // The first prompt started the turn; any later one was added while it worked.
   const prompts = preparedItems.filter(item => item.kind === 'userMessage');
-  const firstPromptId = prompts[0]?.id;
+  // A wake turn was started by the wake prompt (hidden): every prompt shown in
+  // it was added while it worked and carries that mark.
+  const firstPromptId = nestedPeerWork ? mergedItems.find(isWakeEnvelope)?.id ?? '' : prompts[0]?.id;
   // A completed turn's last reply is where a fork from this turn ends.
   const forkReplyId = turn.status === 'completed'
     ? preparedItems.findLast(item => item.kind === 'agentMessage' && item.text.trim())?.id ?? null
@@ -1117,7 +1119,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       body={canToggleWorkedSummary ? collapsedSummaryNode : turnBody}
       collapsed={effectiveCollapsed}
       collapsedBody={collapsedSummaryNode}
-      error={(failedWith && firstPromptId) || recordedNothing || interruptedMark || !turn.error ? null : describeTurnError(turn.error).message}
+      error={(failedWith && firstPromptId && !nestedPeerWork) || recordedNothing || interruptedMark || !turn.error ? null : describeTurnError(turn.error).message}
       errorDetail={turn.error ? describeTurnError(turn.error).detail : null}
       head={headNode}
       headerStatus={<TurnStatusBar turn={turn} />}

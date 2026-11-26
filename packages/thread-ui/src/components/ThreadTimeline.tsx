@@ -839,11 +839,13 @@ function ThreadTimelineComponent({
     // is already the task's closing answer below the wakes: not twice.
     const rowLiveItems = liveItemsTargetTurnId === turn.id ? liveItems?.items : null;
     const reply = peerWorkPreview(peerTurn, rowLiveItems);
-    const outsideReply = reply && reply.id !== omitAgentId ? reply : null;
-    // The reader's own prompts in a wake turn (steers sent while it worked) stand
-    // outside the fold with the reply, so a folded wake never hides them; the
-    // fold leaves them out, and the wake prompt the system wrote is never shown.
-    const prompts = wakeAddedPrompts(peerTurn, rowLiveItems);
+    // Folded, the wake still shows the reader's own prompts (steers sent while it
+    // worked) and the agent's latest reply below its line, in time order. Opened,
+    // both are in its work where they happened, like prompts added to a turn: a
+    // steer reads before the work it asked for, not after all of it. The wake
+    // prompt the system wrote is never shown.
+    const outsideReply = !expanded && reply && reply.id !== omitAgentId ? reply : null;
+    const prompts = expanded ? [] : wakeAddedPrompts(peerTurn, rowLiveItems);
     const envelopeId = peerTurn.items.find(isWakeEnvelope)?.id ?? '';
     return <PeerWorkGroup key={turn.id} turn={peerTurn} context={context} expanded={expanded}
       loading={loadingTurnDetailIds.has(turn.id)} error={turnDetailErrors[turn.id]}
@@ -909,7 +911,11 @@ function ThreadTimelineComponent({
     const latestContinuation = continuations.at(-1);
     const preview = latestContinuation ? peerWorkPreview(latestContinuation, liveItemsTargetTurnId === latestContinuation.id ? liveItems?.items : null) : null;
     const continuationSteps = continuations.reduce((sum, continuation) => sum + 1 + countTurnSteps(continuation, continuation.items), 0);
-    const continuationContent = continuations.length ? continuations.map(continuation => renderPeerWork(continuation, preview?.id)) : undefined;
+    // A finished task shows its last wake's answer below the wakes, folded or
+    // open, so that wake leaves it out. While it works, the task shows that
+    // answer only folded (when the wakes are hidden): the wake keeps it.
+    const closingAnswerId = latestContinuation && isTerminalTurnStatus(latestContinuation.status) ? preview?.id : undefined;
+    const continuationContent = continuations.length ? continuations.map(continuation => renderPeerWork(continuation, closingAnswerId)) : undefined;
     if (latestContinuation) {
       displayTurn = aggregatePeerWorkTurn(displayTurn, continuations);
       rowLiveActivityAt = latestTimestamp(rowLiveActivityAt, backendProgress?.turnId === latestContinuation.id ? backendProgress.receivedAt : null,

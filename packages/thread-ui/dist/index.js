@@ -25181,7 +25181,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
     [activeForRendering, mergedItems, showReasoningSummaries, nestedPeerWork, omitAgentId, omitItemIds, failedWith]
   );
   const prompts = preparedItems.filter((item) => item.kind === "userMessage");
-  const firstPromptId = prompts[0]?.id;
+  const firstPromptId = nestedPeerWork ? mergedItems.find(isWakeEnvelope)?.id ?? "" : prompts[0]?.id;
   const forkReplyId = turn.status === "completed" ? preparedItems.findLast((item) => item.kind === "agentMessage" && item.text.trim())?.id ?? null : null;
   const promptContext = useMemo14(
     () => firstPromptId || forkReplyId ? { firstPromptId: firstPromptId ?? "", error: failedWith, turnId: turn.id, forkReplyId } : null,
@@ -25632,7 +25632,7 @@ var ThreadTurnRow = memo7(function ThreadTurnRow2({
       body: canToggleWorkedSummary ? collapsedSummaryNode : turnBody,
       collapsed: effectiveCollapsed,
       collapsedBody: collapsedSummaryNode,
-      error: failedWith && firstPromptId || recordedNothing || interruptedMark || !turn.error ? null : describeTurnError(turn.error).message,
+      error: failedWith && firstPromptId && !nestedPeerWork || recordedNothing || interruptedMark || !turn.error ? null : describeTurnError(turn.error).message,
       errorDetail: turn.error ? describeTurnError(turn.error).detail : null,
       head: headNode,
       headerStatus: /* @__PURE__ */ jsx87(TurnStatusBar, { turn }),
@@ -27051,8 +27051,8 @@ function ThreadTimelineComponent({
     const expanded = collapsedTurnOverrides[turn.id] === false;
     const rowLiveItems = liveItemsTargetTurnId === turn.id ? liveItems?.items : null;
     const reply = peerWorkPreview(peerTurn, rowLiveItems);
-    const outsideReply = reply && reply.id !== omitAgentId ? reply : null;
-    const prompts = wakeAddedPrompts(peerTurn, rowLiveItems);
+    const outsideReply = !expanded && reply && reply.id !== omitAgentId ? reply : null;
+    const prompts = expanded ? [] : wakeAddedPrompts(peerTurn, rowLiveItems);
     const envelopeId = peerTurn.items.find(isWakeEnvelope)?.id ?? "";
     return /* @__PURE__ */ jsxs77(
       PeerWorkGroup,
@@ -27126,7 +27126,8 @@ function ThreadTimelineComponent({
     const latestContinuation = continuations.at(-1);
     const preview = latestContinuation ? peerWorkPreview(latestContinuation, liveItemsTargetTurnId === latestContinuation.id ? liveItems?.items : null) : null;
     const continuationSteps = continuations.reduce((sum2, continuation) => sum2 + 1 + countTurnSteps(continuation, continuation.items), 0);
-    const continuationContent = continuations.length ? continuations.map((continuation) => renderPeerWork(continuation, preview?.id)) : void 0;
+    const closingAnswerId = latestContinuation && isTerminalTurnStatus2(latestContinuation.status) ? preview?.id : void 0;
+    const continuationContent = continuations.length ? continuations.map((continuation) => renderPeerWork(continuation, closingAnswerId)) : void 0;
     if (latestContinuation) {
       displayTurn = aggregatePeerWorkTurn(displayTurn, continuations);
       rowLiveActivityAt = latestTimestamp(

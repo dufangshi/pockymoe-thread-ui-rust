@@ -3,7 +3,7 @@ import type { ThreadMcpServersDto } from '@pockymoe/shared';
 
 import { ErrorMark } from '../copy/ErrorMark';
 import { PathChip } from '../copy/PathChip';
-import { authStatusLabel } from './composerPresentation';
+import { mcpServerChip } from './composerPresentation';
 import type { McpPanelMode, SlashPanelState } from './types';
 
 interface ComposerMcpPanelProps {
@@ -224,24 +224,43 @@ export function ComposerMcpPanel({
       ) : null}
       {mcpPanelMode === 'list' && mcpState.data?.servers.length ? (
         <div className="space-y-2">
-          {mcpState.data.servers.map((server) => (
+          {mcpState.data.servers.map((server) => {
+            const chip = mcpServerChip(server);
+            return (
             <div
               key={server.name}
               className="rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="break-all text-sm font-medium text-stone-100">
+                  <p className="text-sm font-medium text-stone-100 [overflow-wrap:anywhere]">
                     {server.name}
                   </p>
                   <p className="mt-0.5 text-xs text-stone-400">
-                    {server.tools.length} {translate("chat.tools")} {server.resourceCount}{' '}
-                    {translate("chat.resources")} {server.resourceTemplateCount} {translate("chat.templates")}</p>
+                    {[
+                      `${server.tools.length} ${translate("chat.tools")}`,
+                      server.resourceCount === null ? null : `${server.resourceCount} ${translate("chat.resources")}`,
+                      server.resourceTemplateCount === null
+                        ? null
+                        : `${server.resourceTemplateCount} ${translate("chat.templates")}`,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </p>
                 </div>
-                <span className="shrink-0 whitespace-nowrap rounded-full border border-stone-700 px-2 py-1 text-[10px] text-stone-300">
-                  {authStatusLabel(server.authStatus)}
+                <span
+                  className={`shrink-0 whitespace-nowrap rounded-full border px-2 py-1 text-[10px] ${
+                    chip.warning ? 'ui-status-warning' : 'border-stone-700 text-stone-300'
+                  }`}
+                >
+                  {chip.label}
                 </span>
               </div>
+              {server.status === 'failed' && server.error ? (
+                <p className="mt-1 line-clamp-2 break-all text-xs text-stone-500" title={server.error}>
+                  {server.error}
+                </p>
+              ) : null}
               {server.tools.length > 0 ? (
                 <p className="mt-2 line-clamp-2 text-xs text-stone-500">
                   {server.tools
@@ -251,7 +270,8 @@ export function ComposerMcpPanel({
                 </p>
               ) : null}
             </div>
-          ))}
+            );
+          })}
         </div>
       ) : null}
       {mcpPanelMode === 'list' &&

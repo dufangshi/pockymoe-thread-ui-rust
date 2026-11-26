@@ -287,6 +287,25 @@ export function ClipboardIcon() {
   );
 }
 
+/** The chip for a server: its live state when it is not working, else how
+ * it signs in. Only harnesses that report state send `status`. */
+export function mcpServerChip(
+  server: ThreadMcpServersDto['servers'][number],
+): { label: string; warning: boolean } {
+  switch (server.status) {
+    case 'failed':
+      return { label: translate("chat.mcpFailed"), warning: true };
+    case 'needsAuth':
+      return { label: translate("chat.mcpNeedsAuth"), warning: true };
+    case 'pending':
+      return { label: translate("chat.mcpPending"), warning: false };
+    case 'disabled':
+      return { label: translate("chat.mcpDisabled"), warning: false };
+    default:
+      return { label: authStatusLabel(server.authStatus), warning: false };
+  }
+}
+
 export function authStatusLabel(
   value: ThreadMcpServersDto['servers'][number]['authStatus'],
 ) {

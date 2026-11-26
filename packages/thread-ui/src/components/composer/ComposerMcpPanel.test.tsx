@@ -113,13 +113,43 @@ describe('ComposerMcpPanel', () => {
     );
 
     expect(view.textContent).toContain('docs');
-    expect(view.textContent).toContain('1 tools');
+    expect(view.textContent).toContain('1 tools · 2 resources · 1 templates');
     expect(view.textContent).toContain('Search Docs');
     expect(view.textContent).toContain('Public');
 
     panelButtons(view)[0]?.click();
     expect(onSetMcpPanelMode).toHaveBeenCalledWith('add');
     expect(onClearMcpConfigStatus).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows a live failure and leaves out counts the harness does not report', () => {
+    const view = renderNode(
+      <ComposerMcpPanel
+        {...baseProps({
+          mcpConfigEditing: false,
+          mcpState: {
+            status: 'ready',
+            error: null,
+            data: {
+              servers: [
+                { name: 'tickets', tools: [], resourceCount: null, resourceTemplateCount: null, authStatus: 'unsupported', status: 'failed', error: 'spawn ENOENT' },
+                { name: 'calendar', tools: [], resourceCount: null, resourceTemplateCount: null, authStatus: 'notLoggedIn', status: 'needsAuth' },
+                { name: 'docs', tools: [{ name: 'read', title: null, description: null }], resourceCount: null, resourceTemplateCount: null, authStatus: 'oAuth', status: 'connected' },
+              ],
+            },
+          },
+        })}
+      />,
+    );
+    const text = view.textContent ?? '';
+    expect(text).toContain('Failed');
+    expect(text).toContain('spawn ENOENT');
+    expect(text).toContain('Sign-in needed');
+    expect(text).toContain('OAuth');
+    expect(text).not.toContain('resources');
+    expect(text).toContain('0 tools');
+    expect(text).not.toContain('tools ·');
+    expect(view.querySelectorAll('.ui-status-warning')).toHaveLength(2);
   });
 
   it('renders add choices and prepares raw MCP mode', () => {

@@ -319,6 +319,7 @@ export const workbenchZhCN = {
   "workbench.addWorkspace": "添加工作区",
   "workbench.theRequestedWorkspaceIsUnavailableChooseAnother": "所请求的工作区不可用，请选择其他工作区继续。",
   "workbench.agent": "智能体",
+  "workbench.acpAgentGroup": "ACP 智能体",
   "workbench.installing": "正在安装…",
   "workbench.installAdapter": "安装适配器",
   "workbench.model": "模型",

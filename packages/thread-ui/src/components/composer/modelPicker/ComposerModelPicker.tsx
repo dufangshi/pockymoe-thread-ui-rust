@@ -6,7 +6,7 @@ import { AgentChip, useAgentArt } from '../../AgentChip';
 import { CopyButton } from '../../copy/CopyButton';
 import { ErrorMark } from '../../copy/ErrorMark';
 import { useModalFocus } from '../../menu/useModalFocus';
-import { themeAgentKey, themeAgentName } from '../../themeAgent';
+import { isAcpAgentKey, themeAgentKey, themeAgentName } from '../../themeAgent';
 import { formatCompactTokenCount } from '../../timeline/tokenFormatting';
 import { ComposerMenuSurface } from '../ComposerMenuSurface';
 import { ComposerReasoningSlider } from '../ComposerReasoningSlider';
@@ -441,6 +441,8 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
           onClick={() => { setQuery(''); changeView(agent.id); }}
         >
           <AgentChip agent={themeAgentKey(agent.id)} />
+          {/* ACP Codex keeps the Codex mark; the tag tells it from native Codex. */}
+          {isAcpAgentKey(agent.id) ? <span className="model-picker-agent-protocol" aria-hidden="true">ACP</span> : null}
         </button>
       ))}
     </div>

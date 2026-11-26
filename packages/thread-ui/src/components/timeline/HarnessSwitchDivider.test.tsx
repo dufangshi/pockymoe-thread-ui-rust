@@ -14,6 +14,14 @@ describe('harness switch divider',()=>{
  it('keeps unknown model names rather than inventing catalog labels',()=>{
   expect(renderToStaticMarkup(<HarnessSwitchDivider turn={turn}/>)).toContain('Codex · gpt-6.1-sol → Claude · haiku');
  });
+ it('names the ACP side of a native ↔ ACP switch and counts no handover',()=>{
+  const protocolTurn={...turn,agentId:'codex',model:'gpt-6.1-sol',items:[{id:'prompt',kind:'userMessage',text:'continue',harnessSwitch:{fromAgentId:'codex',fromModel:'gpt-6.1-sol',fromHarnessProtocol:'native',agentId:'codex',model:'gpt-6.1-sol',harnessProtocol:'acp',turns:3}}]} as ThreadTurnDto;
+  const seen:string[]=[];
+  const html=renderToStaticMarkup(<HarnessSwitchDivider turn={protocolTurn} describeModel={(agent)=>{seen.push(agent);return undefined;}}/>);
+  expect(html).toContain('Codex · gpt-6.1-sol → ACP · Codex · gpt-6.1-sol');
+  expect(html).not.toContain('handed over');
+  expect(seen).toEqual(['codex','acp:codex']);
+ });
  it('does not label unchanged agents as a switch',()=>{
   expect(renderToStaticMarkup(<HarnessSwitchDivider turn={{...turn,items:[]}} previous={{...turn,items:[]}}/>)).toBe('');
  });

@@ -798,6 +798,7 @@ declare const en: {
     readonly "workbench.addWorkspace": "Add workspace";
     readonly "workbench.theRequestedWorkspaceIsUnavailableChooseAnother": "The requested workspace is unavailable. Choose another workspace to continue.";
     readonly "workbench.agent": "Agent";
+    readonly "workbench.acpAgentGroup": "ACP agent";
     readonly "workbench.installing": "Installing...";
     readonly "workbench.installAdapter": "Install adapter";
     readonly "workbench.model": "Model";
@@ -6334,6 +6335,7 @@ declare const zhCN: {
     "workbench.addWorkspace": "添加工作区";
     "workbench.theRequestedWorkspaceIsUnavailableChooseAnother": "所请求的工作区不可用，请选择其他工作区继续。";
     "workbench.agent": "智能体";
+    "workbench.acpAgentGroup": "ACP 智能体";
     "workbench.installing": "正在安装…";
     "workbench.installAdapter": "安装适配器";
     "workbench.model": "模型";
@@ -11892,6 +11894,7 @@ declare const resources: {
         readonly "workbench.addWorkspace": "Add workspace";
         readonly "workbench.theRequestedWorkspaceIsUnavailableChooseAnother": "The requested workspace is unavailable. Choose another workspace to continue.";
         readonly "workbench.agent": "Agent";
+        readonly "workbench.acpAgentGroup": "ACP agent";
         readonly "workbench.installing": "Installing...";
         readonly "workbench.installAdapter": "Install adapter";
         readonly "workbench.model": "Model";
@@ -17427,6 +17430,7 @@ declare const resources: {
         "workbench.addWorkspace": "添加工作区";
         "workbench.theRequestedWorkspaceIsUnavailableChooseAnother": "所请求的工作区不可用，请选择其他工作区继续。";
         "workbench.agent": "智能体";
+        "workbench.acpAgentGroup": "ACP 智能体";
         "workbench.installing": "正在安装…";
         "workbench.installAdapter": "安装适配器";
         "workbench.model": "模型";

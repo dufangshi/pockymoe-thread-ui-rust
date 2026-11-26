@@ -319,6 +319,7 @@ export const workbenchEn = {
   "workbench.addWorkspace": "Add workspace",
   "workbench.theRequestedWorkspaceIsUnavailableChooseAnother": "The requested workspace is unavailable. Choose another workspace to continue.",
   "workbench.agent": "Agent",
+  "workbench.acpAgentGroup": "ACP agent",
   "workbench.installing": "Installing...",
   "workbench.installAdapter": "Install adapter",
   "workbench.model": "Model",

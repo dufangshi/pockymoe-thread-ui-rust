@@ -32,6 +32,7 @@ export function QuoteCard({ quote, n, actions }: { quote: PromptQuote; n: number
           {translate('chat.quoteMoreLines', { count: hiddenLines })}
         </button>
       ) : null}
+      {quote.comment && <p className="quote-card-comment">{quote.comment}</p>}
       {actions ? <div className="attachment-card-actions quote-card-actions">{actions}</div> : null}
     </div>
   );

@@ -206,3 +206,6 @@ export { PersistentWorkbenchNavigation } from "./components/MatterWorkbench";
 export { useVisibleClock } from './visibleClock';
 
 import './styles/request-animations.css';
+
+export type { PromptQuote } from './components/composer/promptQuotes';
+export type { QuoteScope } from './components/quotes/QuoteScope';

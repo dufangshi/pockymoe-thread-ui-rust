@@ -37,7 +37,6 @@ import {
   type ThreadTimelineProps,
 } from "./components/ThreadTimeline";
 import {
-  ThreadComposer,
   type ThreadComposerProps,
 } from "./components/ThreadComposer";
 import {
@@ -377,10 +376,14 @@ export function ThreadDetailSurface({
         : {}),
       ...(loadTurnDetail ? { onLoadTurnDetail: loadTurnDetail } : {}),
       ...(cancelPendingSteer ? { cancelPendingSteer } : {}),
+      ...(adapter.editTurn ? { onEditTurn: adapter.editTurn } : {}),
+      ...(adapter.renderTurnChanges ? { renderTurnChanges: adapter.renderTurnChanges } : {}),
       ...(adapter.forkTurn ? { onForkTurn: adapter.forkTurn } : {}),
       onRetryPrompt: (prompt: string) => adapter.sendPrompt({ prompt }),
     }),
     [
+      adapter.editTurn,
+      adapter.renderTurnChanges,
       adapter.forkTurn,
       adapter.sendPrompt,
       resolveWorkspacePath,

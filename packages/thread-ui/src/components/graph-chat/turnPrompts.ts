@@ -44,3 +44,8 @@ export function echoesFailure(error: string, text: string) {
   const reply = text.trim();
   return reply.length >= 8 && (error.includes(reply) || failureMessage(error).includes(reply));
 }
+
+export function useEditTurn(itemId: string) {
+  const turn = useContext(TurnPromptContext);
+  return turn?.firstPromptId === itemId ? turn.turnId : undefined;
+}

@@ -32,6 +32,7 @@ export function useQuoteSink(insert: (quote: PromptQuote) => void) {
 
 /** Who a quote is from and where, e.g. "Agent · turn 12". */
 export function quoteSource(quote: PromptQuote) {
+  if (quote.path) return `${quote.path}:${quote.startLine ?? 1}–${quote.endLine ?? quote.startLine ?? 1}`;
   const who = translate(quote.from === 'user' ? 'chat.quoteFromYou' : 'chat.quoteFromAgent');
   return quote.turn ? `${who} · ${translate('chat.quoteTurn', { turn: quote.turn })}` : who;
 }

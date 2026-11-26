@@ -10,23 +10,7 @@ import {
   formatNumber,
   translate,
   useI18n
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-} from "./chunk-R2LITDNV.js";
-=======
-} from "./chunk-PV62C22N.js";
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
-} from "./chunk-QQRECI3Q.js";
->>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
-=======
-} from "./chunk-3MN5ZQZP.js";
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
-} from "./chunk-PGKFLZWD.js";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
+} from "./chunk-Z2VPGCZD.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/plugins/builtin-plugin-modules.tsx

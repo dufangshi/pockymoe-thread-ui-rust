@@ -1,22 +1,6 @@
 import {
   useI18n
-<<<<<<< HEAD:packages/thread-ui/dist/GraphVisualization-ICKTUXVX.js
-<<<<<<< HEAD:packages/thread-ui/dist/GraphVisualization-HZKN6IKU.js
-<<<<<<< HEAD:packages/thread-ui/dist/GraphVisualization-GFZOGOSV.js
-<<<<<<<< HEAD:packages/thread-ui/dist/GraphVisualization-CCRHFTCE.js
-} from "./chunk-R2LITDNV.js";
-========
-} from "./chunk-PV62C22N.js";
->>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/GraphVisualization-GFZOGOSV.js
-=======
-} from "./chunk-QQRECI3Q.js";
->>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu):packages/thread-ui/dist/GraphVisualization-HZKN6IKU.js
-=======
-} from "./chunk-3MN5ZQZP.js";
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings):packages/thread-ui/dist/GraphVisualization-ICKTUXVX.js
-=======
-} from "./chunk-PGKFLZWD.js";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle):packages/thread-ui/dist/GraphVisualization-HJCYVFWW.js
+} from "./chunk-Z2VPGCZD.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/graph-chat/GraphVisualization.tsx

@@ -6,11 +6,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-<<<<<<<< HEAD:packages/thread-ui/dist/chunk-SHS2CKRU.js
-} from "./chunk-R2LITDNV.js";
-========
-} from "./chunk-PV62C22N.js";
->>>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on):packages/thread-ui/dist/chunk-M3NWHISK.js
+} from "./chunk-Z2VPGCZD.js";
 
 // src/components/shell/terminalClipboard.ts
 async function copyText(text) {

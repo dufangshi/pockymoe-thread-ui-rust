@@ -2100,22 +2100,12 @@ declare const en: {
     readonly "settings.runManual": "Manual";
     readonly "settings.runCompleted": "Done";
     readonly "settings.runFailed": "Failed";
-<<<<<<< HEAD
     readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}";
-=======
-    readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.";
     readonly "settings.deviceScope": "Device these settings apply to";
     readonly "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.";
     readonly "settings.deviceScopeNone": "No device to manage yet.";
-<<<<<<< HEAD
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
     readonly "settings.deviceSettingsLink": "Device settings · {{device}}";
-<<<<<<< HEAD
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
     readonly "settings.windowDescriptionRelay": "This browser and your account: preferences, notifications and plugins. A device's settings are on its own page.";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
     readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
     readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
     readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -7611,22 +7601,12 @@ declare const zhCN: {
     "settings.runManual": "手动";
     "settings.runCompleted": "完成";
     "settings.runFailed": "失败";
-<<<<<<< HEAD
     "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。{{keys}}";
-=======
-    "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。Mac 上也可用 Command 代替 Ctrl。";
     "settings.deviceScope": "这些设置作用的设备";
     "settings.deviceScopeChoose": "这些设置属于某一台设备。请选择要管理的设备。";
     "settings.deviceScopeNone": "还没有可管理的设备。";
-<<<<<<< HEAD
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
     "settings.deviceSettingsLink": "设备设置 · {{device}}";
-<<<<<<< HEAD
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
     "settings.windowDescriptionRelay": "这个浏览器和你的账号：偏好、通知与插件。设备的设置在它的设备页。";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
     "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
     "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
     "files.pluginUnsupportedPlatform": "此平台不支持终端。";
@@ -13144,22 +13124,12 @@ declare const resources: {
         readonly "settings.runManual": "Manual";
         readonly "settings.runCompleted": "Done";
         readonly "settings.runFailed": "Failed";
-<<<<<<< HEAD
         readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. {{keys}}";
-=======
-        readonly "settings.savedInThisBrowserShortcut": "Saved in this browser; sign in through Relay to keep it on your account across devices. On a Mac, Command works in place of Ctrl.";
         readonly "settings.deviceScope": "Device these settings apply to";
         readonly "settings.deviceScopeChoose": "These settings belong to one device. Choose the device to manage.";
         readonly "settings.deviceScopeNone": "No device to manage yet.";
-<<<<<<< HEAD
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
         readonly "settings.deviceSettingsLink": "Device settings · {{device}}";
-<<<<<<< HEAD
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
         readonly "settings.windowDescriptionRelay": "This browser and your account: preferences, notifications and plugins. A device's settings are on its own page.";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
         readonly "files.colorModeShowing": "Choose the color mode for this browser. Currently showing {{value1}}.";
         readonly "files.pluginHarnessMissing": "Install DeepSeek Harness (dsh) on this device to use this plugin.";
         readonly "files.pluginUnsupportedPlatform": "Terminal is unavailable on this platform.";
@@ -18654,22 +18624,12 @@ declare const resources: {
         "settings.runManual": "手动";
         "settings.runCompleted": "完成";
         "settings.runFailed": "失败";
-<<<<<<< HEAD
         "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。{{keys}}";
-=======
-        "settings.savedInThisBrowserShortcut": "保存在此浏览器；登录 Relay 后可保存到账号并在设备间同步。Mac 上也可用 Command 代替 Ctrl。";
         "settings.deviceScope": "这些设置作用的设备";
         "settings.deviceScopeChoose": "这些设置属于某一台设备。请选择要管理的设备。";
         "settings.deviceScopeNone": "还没有可管理的设备。";
-<<<<<<< HEAD
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
         "settings.deviceSettingsLink": "设备设置 · {{device}}";
-<<<<<<< HEAD
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
         "settings.windowDescriptionRelay": "这个浏览器和你的账号：偏好、通知与插件。设备的设置在它的设备页。";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
         "files.colorModeShowing": "选择此浏览器的颜色模式。当前显示为{{value1}}。";
         "files.pluginHarnessMissing": "在这台设备上安装 DeepSeek Harness（dsh）后才能使用此插件。";
         "files.pluginUnsupportedPlatform": "此平台不支持终端。";

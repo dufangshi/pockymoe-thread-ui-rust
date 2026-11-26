@@ -59,23 +59,7 @@ import {
   useLongPress,
   useModalFocus,
   useTabScrollEdges
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-} from "./chunk-SHS2CKRU.js";
-=======
-} from "./chunk-M3NWHISK.js";
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
-} from "./chunk-HYKJ7YFG.js";
->>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
-=======
-} from "./chunk-MOKG2ALY.js";
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
-} from "./chunk-H3ELB2EG.js";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
+} from "./chunk-42B3CTAE.js";
 import {
   THEME_FEATURES,
   cssHexVariable,
@@ -112,23 +96,7 @@ import {
   useExclusiveSecondary,
   useI18n,
   useMenuKeyboard
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-} from "./chunk-R2LITDNV.js";
-=======
-} from "./chunk-PV62C22N.js";
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
-} from "./chunk-QQRECI3Q.js";
->>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
-=======
-} from "./chunk-3MN5ZQZP.js";
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
-} from "./chunk-PGKFLZWD.js";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
+} from "./chunk-Z2VPGCZD.js";
 import {
   styleInject
 } from "./chunk-7O5E2ZHX.js";

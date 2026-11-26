@@ -55,23 +55,7 @@ import {
   useTabScrollEdges,
   workspaceRelativeFocusPath,
   workspaceTreeNodeToGraphNode
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-} from "./chunk-SHS2CKRU.js";
-=======
-} from "./chunk-M3NWHISK.js";
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
-} from "./chunk-HYKJ7YFG.js";
->>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
-=======
-} from "./chunk-MOKG2ALY.js";
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
-} from "./chunk-H3ELB2EG.js";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
+} from "./chunk-42B3CTAE.js";
 import {
   shellThemeProps,
   surfaceBehind,
@@ -87,23 +71,7 @@ import {
   translate,
   useI18n,
   useMenuKeyboard
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-} from "./chunk-R2LITDNV.js";
-=======
-} from "./chunk-PV62C22N.js";
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
-} from "./chunk-QQRECI3Q.js";
->>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
-=======
-} from "./chunk-3MN5ZQZP.js";
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
-} from "./chunk-PGKFLZWD.js";
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
+} from "./chunk-Z2VPGCZD.js";
 import "./chunk-7O5E2ZHX.js";
 
 // src/components/ThreadGraphWorkspacePanel.tsx
@@ -4376,23 +4344,7 @@ function WorkspaceFileTabs({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import { Fragment as Fragment5, jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
 var GraphWorkspaceMonacoEditor = lazy(
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  () => import("./GraphWorkspaceMonacoEditor-GIBOXW74.js")
-=======
-  () => import("./GraphWorkspaceMonacoEditor-7E3YO5HZ.js")
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
-  () => import("./GraphWorkspaceMonacoEditor-NCF2X2M4.js")
->>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
-=======
-  () => import("./GraphWorkspaceMonacoEditor-KR7GE2FQ.js")
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
-  () => import("./GraphWorkspaceMonacoEditor-R44W75BH.js")
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
+  () => import("./GraphWorkspaceMonacoEditor-SZMFO2XN.js")
 );
 var isHostFilePath = (path) => path.startsWith("/") || /^[a-z]:[\\/]/i.test(path);
 function documentFacts(snapshot, state) {
@@ -4521,23 +4473,7 @@ function translateReadOnly(reason) {
   const key = `files.safeReason.${reason}`;
   return Object.hasOwn(en, key) ? translate(key) : reason;
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-ARO5AYSM.js"));
-=======
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-HLHCHLMM.js"));
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-3HWU7ITO.js"));
->>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
-=======
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-ILWP45QN.js"));
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
-var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-5MS4I325.js"));
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
+var WorkspaceDocumentDiff = lazy(() => import("./GraphWorkspaceMonacoDiff-IQA5YVAF.js"));
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
@@ -5912,23 +5848,7 @@ function GraphWorkspaceExplorer({
 
 // src/components/ThreadGraphWorkspacePanel.tsx
 import { jsx as jsx21, jsxs as jsxs16 } from "react/jsx-runtime";
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-var GraphVisualization = lazy2(() => import("./GraphVisualization-CCRHFTCE.js").then((module) => ({ default: module.GraphVisualization })));
-=======
-var GraphVisualization = lazy2(() => import("./GraphVisualization-GFZOGOSV.js").then((module) => ({ default: module.GraphVisualization })));
->>>>>>> 8faa2c6 (Settings strings: name the device the device-level settings act on)
-=======
-var GraphVisualization = lazy2(() => import("./GraphVisualization-HZKN6IKU.js").then((module) => ({ default: module.GraphVisualization })));
->>>>>>> a2f0950 (Device and workspace strings for one management model; horizontal dots on the map's device menu)
-=======
-var GraphVisualization = lazy2(() => import("./GraphVisualization-ICKTUXVX.js").then((module) => ({ default: module.GraphVisualization })));
->>>>>>> 3623aaa (Device center: a settings window that names its device, and its strings)
-=======
-var GraphVisualization = lazy2(() => import("./GraphVisualization-HJCYVFWW.js").then((module) => ({ default: module.GraphVisualization })));
->>>>>>> 366eab9 (Settings window: the owner may say what it holds in its subtitle)
+var GraphVisualization = lazy2(() => import("./GraphVisualization-KA3STU6V.js").then((module) => ({ default: module.GraphVisualization })));
 var DEFAULT_WORKSPACE_FEATURES = {
   workspace: true,
   toolUsage: false,

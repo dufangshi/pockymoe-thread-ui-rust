@@ -39,6 +39,7 @@ function useMenuKeyboard(menuRef, open, onClose, itemSelector = '[role^="menuite
     const items = () => [...menu.querySelectorAll(itemSelector)];
     items()[0]?.focus({ preventScroll: true });
     const key = (event) => {
+      if ((event.key === "Home" || event.key === "End") && event.target?.getAttribute?.("role") === "slider") return;
       const list = items();
       const index = list.indexOf(document.activeElement);
       const move = (to) => {
@@ -2744,7 +2745,33 @@ var chatEn = {
   "chat.uploadFileOf": "file {{value1}} of {{value2}}",
   "chat.uploadStarting": "Starting the upload\u2026",
   "chat.uploadWaitingToSend": "Sends when uploaded:",
-  "chat.sendUnavailableLabel": "{{value1}}: {{value2}}"
+  "chat.sendUnavailableLabel": "{{value1}}: {{value2}}",
+  "chat.modelPickerSearch": "Search models",
+  "chat.modelPickerAgents": "Agents",
+  "chat.modelPickerCurrent": "current",
+  "chat.modelPickerContext": "Context",
+  "chat.modelPickerPrice": "$/1M in \xB7 out",
+  "chat.modelPickerContextValue": "{{value}} context",
+  "chat.modelPickerPriceValue": "{{input}} in, {{output}} out per million tokens",
+  "chat.modelPickerLoading": "Loading models\u2026",
+  "chat.modelPickerEmpty": "No models match",
+  "chat.modelPickerLoadFailed": "Models did not load",
+  "chat.modelPickerHandoff": { one: "Hands over {{count}} turn", other: "Hands over {{count}} turns" },
+  "chat.modelPickerResume": { one: "Resumes its session \xB7 {{count}} new turn", other: "Resumes its session \xB7 {{count}} new turns" },
+  "chat.modelPickerHandoffChecking": "Counting history\u2026",
+  "chat.modelPickerHandoffFailed": "History could not be counted",
+  "chat.modelPickerPreview": "Preview",
+  "chat.modelPickerPreviewTitle": "History for {{agent}}",
+  "chat.modelPickerBack": "Back to models",
+  "chat.modelPickerResets": "Resets plan, sandbox, fast mode and effort",
+  "chat.modelPickerStopsTurn": "Stops the running turn first",
+  "chat.modelPickerStopAndSwitch": "Stop and switch",
+  "chat.modelPickerSwitchTo": "Switch to {{agent}} \xB7 {{model}}",
+  "chat.modelPickerSwitchFailed": "Did not switch",
+  "chat.modelPickerClose": "Close model picker",
+  "chat.forkInto": "Fork into",
+  "chat.modelPickerResumeCurrent": "Resumes its session \xB7 nothing new to hand over",
+  "chat.modelPickerNoHistory": "No history to hand over yet"
 };
 
 // src/i18n/common.en.ts
@@ -8142,7 +8169,33 @@ var chatZhCN = {
   "chat.uploadFileOf": "\u7B2C {{value1}} \u4E2A\uFF0C\u5171 {{value2}} \u4E2A",
   "chat.uploadStarting": "\u6B63\u5728\u5F00\u59CB\u4E0A\u4F20\u2026",
   "chat.uploadWaitingToSend": "\u4E0A\u4F20\u5B8C\u6210\u540E\u81EA\u52A8\u53D1\u9001\uFF1A",
-  "chat.sendUnavailableLabel": "{{value1}}\uFF1A{{value2}}"
+  "chat.sendUnavailableLabel": "{{value1}}\uFF1A{{value2}}",
+  "chat.modelPickerSearch": "\u641C\u7D22\u6A21\u578B",
+  "chat.modelPickerAgents": "\u667A\u80FD\u4F53",
+  "chat.modelPickerCurrent": "\u5F53\u524D",
+  "chat.modelPickerContext": "\u4E0A\u4E0B\u6587",
+  "chat.modelPickerPrice": "\u6BCF\u767E\u4E07 \u5165 \xB7 \u51FA",
+  "chat.modelPickerContextValue": "\u4E0A\u4E0B\u6587 {{value}}",
+  "chat.modelPickerPriceValue": "\u6BCF\u767E\u4E07 tokens \u8F93\u5165 {{input}}\uFF0C\u8F93\u51FA {{output}}",
+  "chat.modelPickerLoading": "\u6B63\u5728\u8BFB\u53D6\u6A21\u578B\u2026",
+  "chat.modelPickerEmpty": "\u6CA1\u6709\u5339\u914D\u7684\u6A21\u578B",
+  "chat.modelPickerLoadFailed": "\u6A21\u578B\u6CA1\u6709\u8BFB\u5230",
+  "chat.modelPickerHandoff": { one: "\u4EA4\u63A5 {{count}} \u8F6E\u5386\u53F2", other: "\u4EA4\u63A5 {{count}} \u8F6E\u5386\u53F2" },
+  "chat.modelPickerResume": { one: "\u6062\u590D\u5B83\u7684\u4F1A\u8BDD \xB7 \u65B0\u589E {{count}} \u8F6E", other: "\u6062\u590D\u5B83\u7684\u4F1A\u8BDD \xB7 \u65B0\u589E {{count}} \u8F6E" },
+  "chat.modelPickerHandoffChecking": "\u6B63\u5728\u7EDF\u8BA1\u5386\u53F2\u2026",
+  "chat.modelPickerHandoffFailed": "\u5386\u53F2\u6CA1\u6709\u7EDF\u8BA1\u51FA\u6765",
+  "chat.modelPickerPreview": "\u9884\u89C8",
+  "chat.modelPickerPreviewTitle": "\u4EA4\u7ED9 {{agent}} \u7684\u5386\u53F2",
+  "chat.modelPickerBack": "\u8FD4\u56DE\u6A21\u578B\u5217\u8868",
+  "chat.modelPickerResets": "\u8BA1\u5212\u3001\u6C99\u7BB1\u3001\u5FEB\u901F\u6A21\u5F0F\u548C\u63A8\u7406\u5F3A\u5EA6\u4F1A\u91CD\u7F6E",
+  "chat.modelPickerStopsTurn": "\u4F1A\u5148\u505C\u6B62\u6B63\u5728\u8FD0\u884C\u7684\u8FD9\u4E00\u8F6E",
+  "chat.modelPickerStopAndSwitch": "\u505C\u6B62\u5E76\u5207\u6362",
+  "chat.modelPickerSwitchTo": "\u5207\u6362\u5230 {{agent}} \xB7 {{model}}",
+  "chat.modelPickerSwitchFailed": "\u6CA1\u6709\u5207\u6362",
+  "chat.modelPickerClose": "\u5173\u95ED\u6A21\u578B\u9009\u62E9",
+  "chat.forkInto": "\u5206\u53C9\u5230",
+  "chat.modelPickerResumeCurrent": "\u6062\u590D\u5B83\u7684\u4F1A\u8BDD \xB7 \u6CA1\u6709\u65B0\u5185\u5BB9\u8981\u4EA4\u63A5",
+  "chat.modelPickerNoHistory": "\u8FD8\u6CA1\u6709\u8981\u4EA4\u63A5\u7684\u5386\u53F2"
 };
 
 // src/i18n/common.zh-CN.ts

@@ -1,6 +1,7 @@
 import * as react from 'react';
 import { ButtonHTMLAttributes, ReactNode, RefObject, TouchEvent, MouseEvent, Dispatch, SetStateAction, Component, ErrorInfo, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes, ComponentProps, CSSProperties } from 'react';
-import { ReasoningEffortDto, ContextInspectionDetailDto, ThreadContextInspectionDto, ThreadContextStepsDto, CollaborationModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadPendingWakeDto, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
+import * as _pockymoe_shared from '@pockymoe/shared';
+import { ReasoningEffortDto, ContextInspectionDetailDto, ThreadContextInspectionDto, ThreadContextStepsDto, ModelOptionDto, CollaborationModeDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, AgentSubscriptionUsageDto, UpdateThreadSettingsInput, ThreadPendingWakeDto, ThreadTurnTokenBreakdownDto, ThreadTurnPriceEstimateDto, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadHistoryItemDto, ThreadActionRequestDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadTranscriptInput, ThreadDetailDto, PluginDto, ImportPluginInput } from '@pockymoe/shared';
 import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, S as SettingsSection, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures, g as SettingsPanels, h as ThreadWorkspaceAdapter } from './workspace-panel-4xn6Hbh9.js';
 export { D as DescribeThread, i as PluginContext, j as PluginProvider, k as PluginProviderAdapter, l as PromptQuote, Q as QuoteScope, m as SendPromptInput, n as ShellSocketConnection, o as ShellSocketHandlers, p as ThreadImageAssetVariant, q as ThreadLinkInfo, W as WorkspaceDocumentSaveInput, r as WorkspaceDocumentSnapshot, s as WorkspaceSaveReceipt, t as WorkspaceTab, u as createDefaultPluginContextValue, v as mergePluginState } from './workspace-panel-4xn6Hbh9.js';
 import { P as PluginActionOutputContext, T as ThreadPluginAdapter } from './plugin-types-gLBkjCue.js';
@@ -201,6 +202,68 @@ interface ThreadContextInspector {
     openSettings?: (() => void) | undefined;
 }
 
+/** An agent the model picker can show: its id on the device and its name. */
+interface ModelPickerAgent {
+    id: string;
+    name: string;
+}
+/** Facts a row shows beside a model's name, all optional. */
+interface ModelFacts {
+    contextWindow?: number | undefined;
+    inputUsdPerMillion?: number | undefined;
+    outputUsdPerMillion?: number | undefined;
+}
+/** What a switch would hand to the new agent (the device's harness preview). */
+interface HandoffSummary {
+    turns: number;
+    omittedTurns?: number | undefined;
+    estimatedTokens: number;
+    resumesSession: boolean;
+    text: string;
+}
+interface ModelSwitchTarget {
+    agentId: string;
+    model: string;
+    reasoningEffort: ReasoningEffortDto | null;
+}
+/** Moves a thread to another agent from the composer's model picker. */
+interface ComposerModelSwitching {
+    currentAgentId: string;
+    /** Agents ready on the device, the current one included. */
+    agents: ModelPickerAgent[];
+    loadModels: (agentId: string) => Promise<ModelOptionDto[]>;
+    preview: (target: {
+        agentId: string;
+        model: string | null;
+    }) => Promise<HandoffSummary>;
+    /** `stop` interrupts the running turn and waits for it before switching. */
+    switchTo: (target: ModelSwitchTarget & {
+        stop: boolean;
+    }) => Promise<void>;
+    /** Forks the thread into a new one on another agent, through `turnId` or the latest turn. */
+    fork?: ((target: {
+        agentId: string;
+        turnId: string | null;
+    }) => Promise<void>) | undefined;
+}
+/** What the host gives the composer's model picker beyond the current models. */
+interface ComposerModelPickerSource {
+    facts?: ((model: ModelOptionDto) => ModelFacts | null) | undefined;
+    /** Present only when this reader may change the thread's agent. */
+    switching?: ComposerModelSwitching | undefined;
+}
+type PriceRates = {
+    inputUsdPerMillion?: unknown;
+    outputUsdPerMillion?: unknown;
+    contextWindowTokens?: unknown;
+    aliases?: unknown;
+    unpriced?: unknown;
+};
+/** A model's facts from a pricing catalog (`GET api/config/model-pricing`), by id then name. */
+declare function modelFactsFromCatalog(catalog: {
+    models?: Record<string, PriceRates>;
+} | null | undefined, model: Pick<ModelOptionDto, 'model' | 'displayName'>): ModelFacts | null;
+
 type ThreadComposerAttachmentPicker = (input: {
     kind: PromptAttachmentKindDto;
     appendAttachments: (files: FileList | null, kind?: PromptAttachmentKindDto) => boolean;
@@ -262,6 +325,8 @@ interface ThreadComposerProps {
     onOpenSkills?: () => Promise<void> | void;
     onOpenMcp?: () => Promise<void> | void;
     onOpenHarness?: (composerFocusOwner?: string) => Promise<void> | void;
+    /** Model facts and, for an owner, moving the thread to another agent (picker and fork panel). */
+    modelPicker?: ComposerModelPickerSource | undefined;
     onOpenHooks?: () => Promise<void> | void;
     onCreateHook?: (input: CreateThreadHookInput) => Promise<void> | void;
     onUpdateHook?: (input: UpdateThreadHookInput) => Promise<void> | void;
@@ -309,7 +374,7 @@ interface ThreadComposerProps {
     onCancelPendingPrompt?: (pendingPromptId: string) => Promise<void> | void;
     pendingWakes?: ThreadPendingWakeDto[];
 }
-declare function ThreadComposer({ activeView, sendShortcut, edgeToEdgeMobile, busy, settingsBusy, compactBusy, uploadProgress, onCancelUpload, error, model, agentLabel, reasoningEffort, fastMode, collaborationMode, modelOptions, contextUsage, contextInspector, capabilities, toolboxItems, hookCommandTemplates, mcpConfigFormat, followTail, threadConnected, shellAvailable, disabled, disabledPlaceholder, sendUnavailableReason, shellControlState, draftPrompt, draftAttachments, onPickAttachment, skillsState, mcpState, hooksState, goalState, goalHistory, forkTurnOptionsState, onDraftChange, onSubmit, onInterrupt, onCompact, onOpenSkills, onOpenMcp, onOpenHooks, onOpenHarness, onCreateHook, onUpdateHook, onTrustHook, onUntrustHook, onOpenGoal, onPrepareGoalSubmit, onUpdateGoal, onOpenForkTurns, onForkLatest, onForkTurn, onReadProviderConfig, onWriteProviderConfig, onToggleFollow, canJumpToPreviousTurn, onJumpToPreviousTurn, canJumpToNextTurn, onJumpToNextTurn, subscriptionUsage, onUpdateSettings, onModelMenuOpen, onToggleView, onShellCopy, onShellControl, canInterrupt, pendingPrompts, onSteerPendingPrompt, onCancelPendingPrompt, pendingWakes, }: ThreadComposerProps): react.JSX.Element;
+declare function ThreadComposer({ activeView, sendShortcut, edgeToEdgeMobile, busy, settingsBusy, compactBusy, uploadProgress, onCancelUpload, error, model, agentLabel, reasoningEffort, fastMode, collaborationMode, modelOptions, contextUsage, contextInspector, capabilities, toolboxItems, hookCommandTemplates, mcpConfigFormat, followTail, threadConnected, shellAvailable, disabled, disabledPlaceholder, sendUnavailableReason, shellControlState, draftPrompt, draftAttachments, onPickAttachment, skillsState, mcpState, hooksState, goalState, goalHistory, forkTurnOptionsState, onDraftChange, onSubmit, onInterrupt, onCompact, onOpenSkills, onOpenMcp, onOpenHooks, onOpenHarness, modelPicker, onCreateHook, onUpdateHook, onTrustHook, onUntrustHook, onOpenGoal, onPrepareGoalSubmit, onUpdateGoal, onOpenForkTurns, onForkLatest, onForkTurn, onReadProviderConfig, onWriteProviderConfig, onToggleFollow, canJumpToPreviousTurn, onJumpToPreviousTurn, canJumpToNextTurn, onJumpToNextTurn, subscriptionUsage, onUpdateSettings, onModelMenuOpen, onToggleView, onShellCopy, onShellControl, canInterrupt, pendingPrompts, onSteerPendingPrompt, onCancelPendingPrompt, pendingWakes, }: ThreadComposerProps): react.JSX.Element;
 
 interface TokenUsageCostProps {
     usage?: ThreadTurnTokenBreakdownDto | null;
@@ -706,6 +771,7 @@ type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
 
 interface ThreadTimelineProps {
     threadId?: string | undefined;
+    harnessSwitches?: ThreadHistoryItemDto[] | undefined;
     turns: ThreadTurnDto[];
     totalTurnCount?: number;
     pendingRequests?: ThreadActionRequestDto[];
@@ -783,7 +849,7 @@ interface ThreadTimelineProps {
     describeHandoffModel?: ((agentId: string, model: string) => string | undefined) | undefined;
     autoCollapseCompletedTurns?: boolean;
 }
-declare function ThreadTimelineComponent({ threadId, turns: loadedTurns, totalTurnCount, pendingRequests, activeTurnId, threadRunning, backgroundAgentCount, renderTurnNotification, pendingSteers, livePlan, liveItems, backendProgress, respondingRequestId, onRespondToRequest, liveOutput, scrollRequestKey, searchTarget, previousTurnScrollRequestKey, nextTurnScrollRequestKey, bottomSpacer, className, onTailVisibilityChange, onPreviousTurnAvailabilityChange, onNextTurnAvailabilityChange, loadingEarlier, onLoadEarlier, ephemeralUserNote, answeredRequestNotes, activityNotes, optimisticSteers, optimisticTurn, onLoadHistoryItemDetail, onLoadTurnDetail, onOpenThread, onSelectArtifact, onSelectHistoryItemDetail, adapter, autoCollapseCompletedTurns, describeHandoffModel, }: ThreadTimelineProps): react.JSX.Element;
+declare function ThreadTimelineComponent({ threadId, turns: loadedTurns, totalTurnCount, pendingRequests, activeTurnId, threadRunning, backgroundAgentCount, renderTurnNotification, pendingSteers, livePlan, liveItems, backendProgress, respondingRequestId, onRespondToRequest, liveOutput, scrollRequestKey, searchTarget, previousTurnScrollRequestKey, nextTurnScrollRequestKey, bottomSpacer, className, onTailVisibilityChange, onPreviousTurnAvailabilityChange, onNextTurnAvailabilityChange, loadingEarlier, onLoadEarlier, ephemeralUserNote, answeredRequestNotes, activityNotes, optimisticSteers, optimisticTurn, onLoadHistoryItemDetail, onLoadTurnDetail, onOpenThread, onSelectArtifact, onSelectHistoryItemDetail, adapter, harnessSwitches, autoCollapseCompletedTurns, describeHandoffModel, }: ThreadTimelineProps): react.JSX.Element;
 declare const ThreadTimeline: react.MemoExoticComponent<typeof ThreadTimelineComponent>;
 
 interface ThreadShellControlState {
@@ -974,8 +1040,8 @@ declare function formatLongTimestamp(value: string | null): string;
 declare function threadStatusLabel(status: ThreadDto['status']): string;
 declare function threadStatusClassName(status: ThreadDto['status']): "ui-status-neutral" | "ui-status-info" | "ui-status-warning" | "ui-status-danger";
 declare function turnStatusLabel(status: ThreadTurnDto['status'] | 'sending'): string;
-declare function historyItemAccentClassName(kind: ThreadHistoryItemDto['kind']): "ui-status-neutral" | "timeline-kind-user" | "timeline-kind-agent" | "timeline-kind-action" | "timeline-kind-command" | "timeline-kind-search" | "timeline-kind-file-read" | "timeline-kind-reasoning" | "timeline-kind-agent-tool" | "timeline-kind-skill-tool" | "timeline-kind-plan" | "timeline-kind-file";
-declare function historyItemLabel(kind: ThreadHistoryItemDto['kind']): string;
+declare function historyItemAccentClassName(kind: ThreadHistoryItemDto['kind']): "ui-status-neutral" | "timeline-kind-user" | "timeline-kind-agent" | "timeline-kind-action" | "timeline-kind-command" | "timeline-kind-search" | "timeline-kind-file-read" | "timeline-kind-reasoning" | "timeline-kind-agent-tool" | "timeline-kind-skill-tool" | "timeline-kind-plan" | "timeline-kind-file" | undefined;
+declare function historyItemLabel(kind: ThreadHistoryItemDto['kind']): string | undefined;
 
 declare function hasLikelyMarkdownSyntax(text: string): boolean;
 
@@ -1280,6 +1346,7 @@ interface PublicTranscriptMessage {
     createdAt?: string | null;
 }
 interface PublicTranscriptTurn {
+    id?: string;
     messages: PublicTranscriptMessage[];
     startedAt?: string | null;
     completedAt?: string | null;
@@ -1289,6 +1356,7 @@ interface PublicTranscriptTurn {
     priceEstimate?: ThreadTurnDto['priceEstimate'];
 }
 interface PublicTranscriptSnapshot {
+    harnessSwitches?: _pockymoe_shared.ThreadHistoryItemDto[];
     title: string;
     createdAt: string;
     turnCount: number;
@@ -1446,4 +1514,4 @@ declare const ImageDiagnosisProvider: react.Provider<ImageFailureDiagnoser | und
  * Electron's rendering gate is separate from visibility so activity stays live. */
 declare function useVisibleClock(enabled: boolean, interval?: number, element?: Element | null): number;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerSendShortcut, type ComposerUploadProgressState, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, DEFAULT_THREAD_TITLE, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, ImageDiagnosisProvider, ImageFallbackProvider, ImageRecoveryProvider, LongTextDialog, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, PathChip, PersistentWorkbenchNavigation, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchInspector, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, approveWorkspaceDocumentUnloadOnce, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, displayThreadTitle, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatReasoningEffortLabel, formatShortTimestamp, getDirtyWorkspaceDocumentCount, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, navigationStatusLabel, openFilesPatch, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useSheetViewport, useThemeFeature, useVisibleClock, useWorkbenchPresentation };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ComposerModelPickerSource, type ComposerModelSwitching, type ComposerSendShortcut, type ComposerUploadProgressState, ConfirmDialog, ConversationSearchExcerpt, type ConversationSearchScope, ConversationSearchScopePicker, CopyButton, type CreateThreadShareInput, DEFAULT_THREAD_TITLE, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, ErrorMark, ExportTranscriptDialog, GraphChatThreadChatPanel, type HandoffSummary, ImageDiagnosisProvider, ImageFallbackProvider, ImageRecoveryProvider, LongTextDialog, type MapDeviceExtras, type MapDeviceMenuItem, type MapScope, MatterWorkbench, type MatterWorkbenchOptions, MemoizedThreadGraphWorkspacePanel, MiddleName, type ModelFacts, type ModelPickerAgent, PathChip, PersistentWorkbenchNavigation, type PhoneHand, PhoneHandChoice, PluginActionOutput, PluginActionOutputContext, PluginContextValue, PluginSettingsButton, PromptAttachmentUpload, PublicTranscript, type PublicTranscriptSnapshot, type ReferenceMode, RenderErrorBoundary, RenderErrorFallback, Select, type SelectOption, type SelectProps, SettingsDialog, SettingsPanels, SettingsSection, StatusMark, THEME_AGENT_KEY_PATTERN, THEME_FEATURES, type ThemeFeature, type ThemeMode, ThreadActionsDialog, type ThreadActionsDialogProps, ThreadCards, ThreadComposer, type ThreadComposerProps, type ThreadContextInspector, ThreadDetailSurface, type ThreadDetailSurfaceProps, ThreadDetailUiAdapter, ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, ThreadGraphWorkspacePanelProps, ThreadLoadingIndicator, ThreadMap, type ThreadMapDevice, ThreadMapDialog, type ThreadMapPrice, type ThreadMapProps, type ThreadMapThread, type ThreadMapWorkspace, type ThreadMenuContext, ThreadPluginAdapter, ThreadPluginScope, ThreadPluginsControl, type ThreadShareScope, type ThreadShareSummary, ThreadShellAdapter, ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, ThreadTimelineAdapter, type ThreadTimelineProps, ThreadWorkspaceAdapter, ThreadWorkspaceLayout, TokenUsageCost, type TokenUsageCostProps, TurnNotificationButton, type WorkbenchInspector, type WorkbenchNotification, type WorkbenchPanelsOptions, type WorkbenchPresentation, type WorkbenchThread, type WorkbenchToolPanel, type WorkbenchToolPanelControls, approveWorkspaceDocumentUnloadOnce, closeFilesPatch, confirmAsync, confirmWorkspaceDocumentLeave, copyText, createWorkspacePathResolver, displayThreadTitle, documentThemeFeatures, formatFileSize, formatLongTimestamp, formatReasoningEffortLabel, formatShortTimestamp, getDirtyWorkspaceDocumentCount, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, isStaleBuildError, isThemeFeature, modelFactsFromCatalog, navigationStatusLabel, openFilesPatch, prepareWorkspaceDocumentUnloadApproval, revokeWorkspaceDocumentUnloadApproval, splitShown, themeAgentKey, themeAgentName, threadStatusClassName, threadStatusLabel, threadThemeAgentKey, transcriptSnapshot, turnStatusLabel, useAppShellNav, useCopy, useDevicePlugins, useLongPress, useMenuKeyboard, useModalFocus, usePlugins, useSheetViewport, useThemeFeature, useVisibleClock, useWorkbenchPresentation };

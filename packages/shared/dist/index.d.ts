@@ -414,6 +414,7 @@ interface MessageSenderDto {
     name?: string | null;
 }
 interface ThreadHistoryItemDto {
+    afterTurnId?: string | null;
     harnessSwitch?: {
         fromAgentId?: string;
         fromModel?: string;
@@ -431,7 +432,7 @@ interface ThreadHistoryItemDto {
     /** Set on prompts that someone other than the device owner sent. */
     sender?: MessageSenderDto | null;
     id: string;
-    kind: 'userMessage' | 'agentMessage' | 'artifact' | 'image' | 'plan' | 'contextCompaction' | 'reasoning' | 'commandExecution' | 'webSearch' | 'fileRead' | 'fileChange' | 'hook' | 'agentToolCall' | 'skillToolCall' | 'toolCall' | 'other';
+    kind: 'harnessSwitch' | 'userMessage' | 'agentMessage' | 'artifact' | 'image' | 'plan' | 'contextCompaction' | 'reasoning' | 'commandExecution' | 'webSearch' | 'fileRead' | 'fileChange' | 'hook' | 'agentToolCall' | 'skillToolCall' | 'toolCall' | 'other';
     text: string;
     previewText?: string;
     detailText?: string | null;
@@ -938,6 +939,7 @@ interface ThreadLiveItemsDto {
     updatedAt: string;
 }
 interface ThreadDetailDto {
+    harnessSwitches?: ThreadHistoryItemDto[];
     thread: ThreadDto;
     workspace: WorkspaceDto;
     workspacePathStatus: 'present' | 'missing';

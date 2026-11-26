@@ -202,7 +202,7 @@ export { createWorkspacePathResolver } from './components/workspacePathLinks';
 export { GraphChatThreadChatPanel } from './components/graph-chat/GraphChatThreadChatPanel';
 
 export { THEME_FEATURES, isThemeFeature, useThemeFeature, documentThemeFeatures, type ThemeFeature } from './components/themeHooks';
-export { THEME_AGENT_KEY_PATTERN, themeAgentKey, themeAgentName, threadThemeAgentKey } from './components/themeAgent';
+export { THEME_AGENT_KEY_PATTERN, agentDisplayName, agentKeyBase, agentKeyOf, isAcpAgentKey, themeAgentKey, themeAgentName, threadAgentKey, threadThemeAgentKey, type HarnessProtocol } from './components/themeAgent';
 export { ThreadLoadingIndicator } from './components/ThreadLoadingIndicator';
 
 export { TurnNotificationButton } from './components/timeline/TurnNotificationButton';

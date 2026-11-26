@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Info } from 'lucide-react';
 import type { ThreadTurnDto } from '@pockymoe/shared';
 import { translate, useI18n } from '../../i18n';
-import { themeAgentName } from '../themeAgent';
+import { agentKeyOf, themeAgentName } from '../themeAgent';
 import { MiddleName } from '../copy/MiddleName';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../graph-ui/Tooltip';
 
@@ -12,13 +12,17 @@ export function HarnessSwitchDivider({ turn, previous, describeModel, entry }: {
   const [open, setOpen] = useState(false);
   const openAtPointerDown = useRef(false);
   const change = entry?.harnessSwitch ?? turn.items.find(item => item.harnessSwitch)?.harnessSwitch;
-  const from = change?.fromAgentId ?? previous?.agentId;
-  const to = change?.agentId ?? turn.agentId;
+  // Agent keys: a switch between native and ACP Codex names its side "ACP · Codex".
+  const fromId = change?.fromAgentId ?? previous?.agentId;
+  const toId = change?.agentId ?? turn.agentId;
+  const from = fromId ? agentKeyOf(fromId, change?.fromHarnessProtocol) : null;
+  const to = toId ? agentKeyOf(toId, change?.harnessProtocol) : null;
   if (!from || !to || (!change && from === to)) return null;
   const label = (agent: string, model?: string | null) => [themeAgentName(agent), model ? describeModel?.(agent, model) || model : null].filter(Boolean).join(' · ');
   const fromLabel = label(from, change?.fromModel ?? previous?.model);
   const toLabel = label(to, change?.model ?? turn.model);
-  const count = change ? translate('chat.handoffTurnCount', { count: change.turns }) : null;
+  // Native ↔ ACP of one agent keeps its session: nothing is handed over to count.
+  const count = change && fromId !== toId ? translate('chat.handoffTurnCount', { count: change.turns }) : null;
   const fullLabel = [translate('chat.switchedHarness', { from: fromLabel, to: toLabel }), count].filter(Boolean).join(' · ');
   return <div className="thread-harness-switch">
     <span className="thread-harness-switch-label" role="separator" aria-label={fullLabel}>

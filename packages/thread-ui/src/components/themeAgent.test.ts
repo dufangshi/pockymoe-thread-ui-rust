@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { THEME_AGENT_KEY_PATTERN, themeAgentKey, themeAgentName, threadThemeAgentKey } from './themeAgent';
+import { THEME_AGENT_KEY_PATTERN, agentDisplayName, agentKeyOf, themeAgentKey, themeAgentName, threadAgentKey, threadThemeAgentKey } from './themeAgent';
 
 describe('themeAgentKey', () => {
   it('maps ids, providers and harness labels of one family to the same key', () => {
@@ -29,5 +29,28 @@ describe('themeAgentKey', () => {
     expect(threadThemeAgentKey({ provider: 'acp' })).toBeUndefined();
     expect(themeAgentName('claude-code')).toBe('Claude');
     expect(themeAgentName('my-agent')).toBe('My Agent');
+  });
+});
+
+describe('agent keys', () => {
+  it('keys ACP Codex and Claude threads apart from their native default', () => {
+    expect(threadAgentKey({ provider: 'acp', agentId: 'codex', harnessProtocol: 'acp' })).toBe('acp:codex');
+    expect(threadAgentKey({ provider: 'acp', agentId: 'claude', harnessProtocol: 'native' })).toBe('claude');
+    // Older runtimes send no protocol; ACP-only agents never have one.
+    expect(threadAgentKey({ provider: 'acp', agentId: 'codex' })).toBe('codex');
+    expect(threadAgentKey({ provider: 'acp', agentId: 'opencode' })).toBe('opencode');
+    expect(threadAgentKey({ provider: 'claude', agentId: null })).toBe('claude');
+    expect(threadAgentKey({ provider: 'acp' })).toBeNull();
+    expect(agentKeyOf('acp:codex', 'acp')).toBe('acp:codex');
+  });
+
+  it('names an ACP variant "ACP · <agent>" and keeps the agent\'s art', () => {
+    expect(agentDisplayName('acp:codex', 'Codex')).toBe('ACP · Codex');
+    expect(agentDisplayName('acp:claude', 'Claude Code')).toBe('ACP · Claude Code');
+    expect(agentDisplayName('claude', 'Claude Code')).toBe('Claude Code');
+    expect(agentDisplayName('opencode')).toBe('OpenCode');
+    expect(themeAgentName('acp:codex')).toBe('ACP · Codex');
+    expect(themeAgentKey('acp:claude')).toBe('claude');
+    expect(themeAgentKey('acp:my-agent')).toBe('my-agent');
   });
 });

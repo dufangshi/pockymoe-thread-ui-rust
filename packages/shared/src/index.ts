@@ -465,10 +465,16 @@ export interface ThreadContextUsageDto {
   details?: ContextInspectionSnapshotDto | null;
 }
 
+/** How a Codex or Claude thread talks to its harness: the native protocol or the ACP adapter. */
+export type HarnessProtocolDto = 'native' | 'acp';
+
 export interface ThreadDto {
   id: string;
   workspaceId: string;
   provider: AgentBackendIdDto;
+  agentId?: string | null;
+  /** `native` or `acp` for an agent with a native runtime (Codex, Claude); absent otherwise. */
+  harnessProtocol?: HarnessProtocolDto;
   providerSessionId: string | null;
   source: ThreadSourceDto;
   title: string;
@@ -519,7 +525,7 @@ export interface MessageSenderDto {
 
 export interface ThreadHistoryItemDto {
   afterTurnId?: string | null;
-  harnessSwitch?: { fromAgentId?: string; fromModel?: string; agentId?: string; model?: string; turns: number };
+  harnessSwitch?: { fromAgentId?: string; fromModel?: string; fromHarnessProtocol?: HarnessProtocolDto; agentId?: string; model?: string; harnessProtocol?: HarnessProtocolDto; turns: number };
   /** Set when storage cleanup removed this command's output or this edit's diff. */
   outputPrunedAt?: string | null;
   outputPrunedBytes?: number | null;

@@ -101,6 +101,19 @@ describe('ComposerModelPicker', () => {
     expect(document.querySelector('.composer-reasoning')).not.toBeNull();
   });
 
+  it('lists ACP Codex next to native Codex with its mark tagged and switches by agent key', async () => {
+    const source = switching({ agents: [{ id: 'codex', name: 'Codex' }, { id: 'acp:codex', name: 'ACP · Codex' }] });
+    await render({ source: { switching: source } });
+    const acp = tab('ACP · Codex');
+    expect(acp.querySelector('.thread-map-agent')?.getAttribute('data-agent')).toBe('codex');
+    expect(acp.querySelector('.model-picker-agent-protocol')?.textContent).toBe('ACP');
+    expect(tab('Codex').querySelector('.model-picker-agent-protocol')).toBeNull();
+    await click(acp);
+    await settle();
+    expect(source.loadModels).toHaveBeenCalledWith('acp:codex');
+    expect(document.querySelector('.model-picker-head-name')?.textContent).toBe('ACP · Codex');
+  });
+
   it('applies a model of the same agent with its default effort', async () => {
     const props = await render({ source: { switching: switching() } });
     await click(rows()[1]!);

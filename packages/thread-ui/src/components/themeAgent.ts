@@ -35,7 +35,8 @@ export const THEME_AGENT_KEY_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 /** The theme agent key for a thread's agent id, provider or harness label;
  *  undefined for nothing or the bare `acp` provider. */
 export function themeAgentKey(value: string | null | undefined): string | undefined {
-  const normalized = (value ?? '').trim().toLowerCase();
+  // An ACP variant (`acp:codex`) keeps its agent's art.
+  const normalized = (value ?? '').trim().toLowerCase().replace(/^acp:/, '');
   if (!normalized || normalized === 'acp') return undefined;
   const family = AGENT_FAMILIES.find(([, matches]) => matches(normalized));
   if (family) return family[0];
@@ -48,8 +49,46 @@ export function threadThemeAgentKey(thread: { provider?: string | null; agentId?
   return themeAgentKey(thread.agentId || thread.provider);
 }
 
-/** Display name for an agent: the family name, else the raw id in title case. */
-export function themeAgentName(raw: string, key = themeAgentKey(raw)) {
+/** Display name for an agent: the family name, else the raw id in title case.
+ *  An ACP variant's key (`acp:codex`) is named as one: "ACP · Codex". */
+export function themeAgentName(raw: string, key = themeAgentKey(raw)): string {
+  if (isAcpAgentKey(raw)) return agentDisplayName(raw, themeAgentName(agentKeyBase(raw), key));
   if (key && AGENT_NAMES[key]) return AGENT_NAMES[key];
   return raw.trim().toLowerCase().replace(/(^|[-_ ])(\w)/g, (_, gap: string, letter: string) => `${gap ? ' ' : ''}${letter.toUpperCase()}`);
+}
+
+/* Agent keys. Codex and Claude run natively by default; a thread created under the
+   ACP agent runs them through their ACP adapter instead and is keyed `acp:codex` /
+   `acp:claude`. Every client passes the key where it passes an agent id (thread
+   creation, models, harness switch and fork); `agentId` itself stays `codex`. */
+const ACP_AGENT_PREFIX = 'acp:';
+export type HarnessProtocol = 'native' | 'acp';
+
+/** The key of an agent id run over a protocol: `acp:codex` for ACP Codex, else the id. */
+export function agentKeyOf(agentId: string, protocol?: HarnessProtocol | null) {
+  return protocol === 'acp' && !isAcpAgentKey(agentId) ? `${ACP_AGENT_PREFIX}${agentId}` : agentId;
+}
+
+/** A thread's agent key: its agent id (else a legacy Codex/Claude provider) over its protocol. */
+export function threadAgentKey(thread: { provider?: string | null; agentId?: string | null; harnessProtocol?: HarnessProtocol | null }): string | null {
+  const agentId = thread.agentId || (thread.provider === 'codex' || thread.provider === 'claude' ? thread.provider : null);
+  return agentId ? agentKeyOf(agentId, thread.harnessProtocol) : null;
+}
+
+/** True for an ACP variant of an agent that also runs natively (`acp:codex`). */
+export function isAcpAgentKey(key: string | null | undefined): boolean {
+  return Boolean(key?.startsWith(ACP_AGENT_PREFIX));
+}
+
+/** The agent id behind a key: `codex` for `acp:codex`. */
+export function agentKeyBase(key: string) {
+  return isAcpAgentKey(key) ? key.slice(ACP_AGENT_PREFIX.length) : key;
+}
+
+/** The one label rule for naming an agent by its key: the agent's own name (`name`,
+ *  else its family name), prefixed "ACP · " for an ACP variant. Native and ACP-only
+ *  agents keep their name unchanged. */
+export function agentDisplayName(key: string, name?: string | null): string {
+  const base = name?.trim() || themeAgentName(agentKeyBase(key));
+  return isAcpAgentKey(key) ? `ACP · ${base}` : base;
 }

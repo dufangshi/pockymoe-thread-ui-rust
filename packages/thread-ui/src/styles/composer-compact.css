@@ -174,9 +174,16 @@
   display: block; margin-top: 3px; padding: 0; border: 0; background: none; color: var(--theme-fg-muted, #a1a1aa);
   font: inherit; font-size: 11px; font-variant-numeric: tabular-nums; text-align: left; cursor: pointer;
 }
-.thread-subscription-usage-detail-reset:active { color: var(--theme-fg, inherit); text-decoration: underline dotted; text-underline-offset: 2px; }
+/* On phones the details render inside the workbench top bar, whose icon-button
+   rule (30px inline-flex, chrome colour) would squeeze the reset text into a
+   narrow column and tint it like a toolbar icon. */
+:root .thread-ui-shell .thread-subscription-usage-details .thread-subscription-usage-detail-reset {
+  display: block; width: auto; height: auto; border-radius: 0; flex-shrink: 1; justify-content: normal;
+  color: var(--theme-fg-muted, #a1a1aa);
+}
+:root .thread-ui-shell .thread-subscription-usage-details .thread-subscription-usage-detail-reset:active { color: var(--theme-fg, inherit); text-decoration: underline dotted; text-underline-offset: 2px; }
 @media (hover: hover) {
-  .thread-subscription-usage-detail-reset:hover { color: var(--theme-fg, inherit); text-decoration: underline dotted; text-underline-offset: 2px; }
+  :root .thread-ui-shell .thread-subscription-usage-details .thread-subscription-usage-detail-reset:hover { color: var(--theme-fg, inherit); text-decoration: underline dotted; text-underline-offset: 2px; }
 }
 .thread-subscription-usage-detail-freshness { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--theme-border, #3f3f46); color: var(--theme-fg-muted, #a1a1aa); font-size: 10px; }
 

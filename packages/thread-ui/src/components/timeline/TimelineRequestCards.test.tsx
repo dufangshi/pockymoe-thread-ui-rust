@@ -157,3 +157,90 @@ describe("PendingRequestCard custom answers", () => {
     });
   });
 });
+
+/** Each source's request as the Supervisor sends it (crates/runtime/src). */
+const permissionQuestion = (header: string, question: string, labels: string[]) => ({
+  id: "permission", header, question, isOther: false, isSecret: false,
+  options: labels.map((label) => ({ label, description: "" })),
+});
+const request = (
+  kind: ThreadActionRequestDto["kind"],
+  questions: ThreadActionRequestDto["questions"],
+  title = "Run the focused regression checks?",
+): ThreadActionRequestDto => ({
+  id: "req-1", kind, title, description: title, turnId: "turn-1", itemId: null,
+  createdAt: "2026-11-26T00:00:00Z", questions,
+});
+
+function renderRequest(value: ThreadActionRequestDto, { viewer = false } = {}) {
+  const onRespond = vi.fn();
+  container = document.createElement("div");
+  document.body.append(container);
+  root = createRoot(container);
+  flushSync(() => {
+    root?.render(<PendingRequestCard request={value} onRespond={viewer ? undefined : onRespond} />);
+  });
+  const buttons = () => Array.from(container!.querySelectorAll("button"));
+  const button = (label: string) => buttons().find((entry) => entry.textContent === label);
+  return { view: container, onRespond, buttons, button };
+}
+
+describe("PendingRequestCard answers every request shape", () => {
+  it.each([
+    ["the fake fixture (no questions)", request("permissionRequest", [])],
+    ["ACP without options", request("permissionRequest", [permissionQuestion("Permission", "Run cargo test", [])])],
+    ["native Codex with an empty availableDecisions", request("permissionRequest", [permissionQuestion("Permission", "rm -rf build", [])])],
+    ["a plan decision without options", request("planDecision", [])],
+  ])("offers Approve and Deny for %s", (_name, value) => {
+    const { view, onRespond, button } = renderRequest(value);
+    expect(view.querySelector("input")).toBeNull();
+    expect(button("Submit")).toBeUndefined();
+    flushSync(() => button("Approve")?.click());
+    expect(onRespond).toHaveBeenLastCalledWith("req-1", { allow: true });
+    flushSync(() => button("Deny")?.click());
+    expect(onRespond).toHaveBeenLastCalledWith("req-1", { allow: false });
+  });
+
+  it.each([
+    ["native Codex command", ["Yes, proceed", "Yes, and don't ask again for this command", "No, continue without running it", "No, and tell Codex what to do differently"]],
+    ["native Codex plan review", ["Implement", "Revise"]],
+    ["native Claude tool", ["Yes", "Yes, and don't ask again for Bash(cargo test:*)", "No"]],
+    ["native Claude plan exit", ["Yes, manually approve edits", "Yes, and auto-accept edits", "No, keep planning"]],
+    ["ACP Claude", ["Allow", "Always Allow", "Reject"]],
+  ])("sends the chosen %s option, with no extra Approve/Deny", (_name, labels) => {
+    const { onRespond, button, buttons } = renderRequest(
+      request("permissionRequest", [permissionQuestion("Permission", "Run cargo test", labels)]),
+    );
+    expect(buttons().map((entry) => entry.textContent)).toEqual(labels);
+    flushSync(() => button(labels.at(-1)!)?.click());
+    expect(onRespond).toHaveBeenCalledWith("req-1", {
+      answers: { permission: { answers: [labels.at(-1)] } },
+    });
+  });
+
+  it("submits or declines a question without fields", () => {
+    const { onRespond, button } = renderRequest(request("requestUserInput", [], "Continue?"));
+    expect(button("Submit")?.disabled).toBe(false);
+    flushSync(() => button("Submit")?.click());
+    expect(onRespond).toHaveBeenLastCalledWith("req-1", { answers: {} });
+    flushSync(() => button("Decline")?.click());
+    expect(onRespond).toHaveBeenLastCalledWith("req-1", { allow: false });
+  });
+
+  it("can decline a question before choosing an answer", () => {
+    const { onRespond, button } = renderRequest(request("requestUserInput", [{
+      id: "environment", header: "Environment", question: "Which rollout environment?",
+      isOther: false, isSecret: false,
+      options: [{ label: "Staging", description: "" }, { label: "Preview", description: "" }],
+    }]));
+    expect(button("Submit")?.disabled).toBe(true);
+    flushSync(() => button("Decline")?.click());
+    expect(onRespond).toHaveBeenCalledWith("req-1", { allow: false });
+  });
+
+  it("greys every action out for a viewer who cannot answer", () => {
+    const { buttons } = renderRequest(request("permissionRequest", []), { viewer: true });
+    expect(buttons().length).toBe(2);
+    expect(buttons().every((entry) => entry.disabled)).toBe(true);
+  });
+});

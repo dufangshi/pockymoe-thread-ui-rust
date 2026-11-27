@@ -33,7 +33,18 @@ export function PendingRequestCard({
   >(null);
   const primaryQuestion = request.questions[0] ?? null;
   const OTHER_SENTINEL = '__other__';
+  const ALLOW_SENTINEL = '__allow__';
+  const DENY_SENTINEL = '__deny__';
   const isPermissionRequest = request.kind === 'permissionRequest';
+  const isDecision = request.kind === 'planDecision' || isPermissionRequest;
+  // A decision without choices (the fake fixture, an ACP request that lists no
+  // options) still needs a way out: a bare allow/deny, as the desktop shell
+  // sends, lets the Supervisor pick the source's own first allow/reject option.
+  const bareDecision =
+    isDecision &&
+    !request.questions.some((question) => (question.options?.length ?? 0) > 0);
+  // A viewer who cannot answer sees the actions, greyed out.
+  const disabled = busy || !onRespond;
   const cardTitle =
     request.kind === 'planDecision'
       ? translate("chat.plan")
@@ -65,6 +76,11 @@ export function PendingRequestCard({
         },
       },
     });
+  }
+
+  function respondWithAllow(allow: boolean) {
+    setSelectedPlanDecision(allow ? ALLOW_SENTINEL : DENY_SENTINEL);
+    void onRespond?.(request.id, { allow });
   }
 
   function currentAnswerForQuestion(
@@ -157,7 +173,7 @@ export function PendingRequestCard({
             <p className="timeline-primary-text mt-1 text-[13px] leading-5 sm:text-sm">
               {question.question}
             </p>
-            {(request.kind === 'planDecision' || isPermissionRequest) &&
+            {isDecision &&
             question.options &&
             question.options.length > 0 ? (
               <div className="mt-3 flex flex-wrap gap-2">
@@ -172,7 +188,7 @@ export function PendingRequestCard({
                     <button
                       key={option.label}
                       type="button"
-                      disabled={busy}
+                      disabled={disabled}
                       onClick={() => respondWithSingleAnswer(option.label)}
                       className={`relative rounded-2xl border px-2.5 py-1.5 pr-6 text-[12px] leading-4 transition sm:text-[13px] ${
                         isReject
@@ -212,7 +228,7 @@ export function PendingRequestCard({
                       <button
                         key={option.label}
                         type="button"
-                        disabled={busy}
+                        disabled={disabled}
                         onClick={() =>
                           question.multiSelect
                             ? toggleMultiSelectAnswer(question.id, option.label)
@@ -249,7 +265,7 @@ export function PendingRequestCard({
                       return (
                         <button
                           type="button"
-                          disabled={busy}
+                          disabled={disabled}
                           onClick={() =>
                             question.multiSelect
                               ? toggleMultiSelectAnswer(
@@ -297,7 +313,7 @@ export function PendingRequestCard({
                     ) : null;
                   })()}
               </>
-            ) : (
+            ) : isDecision ? null : (
               <input
                 aria-label={question.header}
                 value={answers[question.id] ?? ''}
@@ -313,17 +329,53 @@ export function PendingRequestCard({
           </div>
         ))}
       </div>
-      {request.kind !== 'planDecision' && !isPermissionRequest && (
-        <div className="mt-3 flex justify-end">
+      {bareDecision ? (
+        <div className="timeline-request-actions mt-3 flex justify-end gap-2">
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => respondWithAllow(false)}
+            className="min-h-11 rounded-full border border-stone-700 px-4 py-2 text-sm font-medium text-stone-300 transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-9"
+          >
+            {busy && selectedPlanDecision === DENY_SENTINEL
+              ? translate("chat.submitting")
+              : translate("chat.denyRequest")}
+          </button>
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => respondWithAllow(true)}
+            className="ui-action-info min-h-11 rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-9"
+          >
+            {busy && selectedPlanDecision === ALLOW_SENTINEL
+              ? translate("chat.submitting")
+              : translate("chat.approveRequest")}
+          </button>
+        </div>
+      ) : !isDecision ? (
+        <div className="timeline-request-actions mt-3 flex justify-end gap-2">
+          {/* Every question can be declined: ACP and native Codex get an empty
+              or cancelled answer, native Claude a refusal. */}
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => respondWithAllow(false)}
+            className="min-h-11 rounded-full border border-stone-700 px-4 py-2 text-sm font-medium text-stone-300 transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-9"
+          >
+            {busy && selectedPlanDecision === DENY_SENTINEL
+              ? translate("chat.submitting")
+              : translate("chat.declineRequest")}
+          </button>
           <button
             type="button"
             disabled={
-              busy ||
+              disabled ||
               request.questions.some(
                 (question) => !currentAnswerForQuestion(question),
               )
             }
-            onClick={() =>
+            onClick={() => {
+              setSelectedPlanDecision(null);
               void onRespond?.(request.id, {
                 answers: Object.fromEntries(
                   request.questions.map((question) => [
@@ -333,14 +385,16 @@ export function PendingRequestCard({
                     },
                   ]),
                 ),
-              })
-            }
-            className="ui-action-info rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed"
+              });
+            }}
+            className="ui-action-info min-h-11 rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-9"
           >
-            {busy ? translate("chat.submitting") : translate("chat.submit")}
+            {busy && selectedPlanDecision !== DENY_SENTINEL
+              ? translate("chat.submitting")
+              : translate("chat.submit")}
           </button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

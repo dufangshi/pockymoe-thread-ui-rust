@@ -10,7 +10,7 @@ import { isAcpAgentKey, themeAgentKey, themeAgentName } from '../../themeAgent';
 import { formatCompactTokenCount } from '../../timeline/tokenFormatting';
 import { ComposerMenuSurface } from '../ComposerMenuSurface';
 import { ComposerSheet, useIsPhone } from '../ComposerSheet';
-import { EffortChips } from './EffortChips';
+import { EffortSlider } from './EffortSlider';
 import {
   adjacentPickerAgent,
   defaultPickerModel,
@@ -35,7 +35,7 @@ const message = (error: unknown) => (error instanceof Error ? error.message : St
 
 /* Rows, the search, the effort thumb and the foot's buttons, in reading order.
    The agent rail is not in the arrow order: ←/→ move between agents. */
-const ITEMS = '.model-picker-search, .model-picker-row:not([disabled]), .model-picker-effort-chip[aria-checked="true"]:not([disabled]), .model-picker-action:not([disabled])';
+const ITEMS = '.model-picker-search, .model-picker-row:not([disabled]), .model-picker-effort-thumb:not([data-disabled]), .model-picker-action:not([disabled])';
 
 export interface ComposerModelPickerProps {
   model: string | null | undefined;
@@ -391,7 +391,7 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
     : undefined;
   const effort = searching ? null : crossView ? (
     targetOption && targetOption.supportedReasoningEfforts.length > 0 ? (
-      <EffortChips
+      <EffortSlider
         key={`${view}\u0000${targetOption.model}`}
         efforts={targetOption.supportedReasoningEfforts}
         value={effortFor(targetOption)}
@@ -401,7 +401,7 @@ export function ComposerModelPicker(props: ComposerModelPickerProps) {
       />
     ) : null
   ) : props.supportedEfforts.length > 0 ? (
-    <EffortChips
+    <EffortSlider
       key={props.model ?? ''}
       efforts={props.supportedEfforts}
       value={props.reasoningEffort}

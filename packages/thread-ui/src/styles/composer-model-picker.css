@@ -295,45 +295,92 @@
 
 /* ── Foot: the handoff note, effort, Stop and switch ─────────────────────── */
 .model-picker-foot { flex: none; padding: 0 6px 6px; border-top: 1px solid var(--theme-border); }
-/* Effort: the model's levels as one row of chips, the chosen one in its colour. */
-.model-picker-effort { display: flex; align-items: center; gap: 8px; padding: 6px 4px 2px; }
-.model-picker-effort-label { flex: none; color: var(--theme-fg-muted); font-size: 11px; }
-.model-picker-effort-chips {
+/* Effort: one compact slider row, "Effort · high" and a slim track with a tick
+   per level; the fill runs from the start to the thumb in the effort accent.
+   The look is a set of tokens, so a theme (or a heavier variant: an 8px groove
+   with notch ticks and a filled 16px thumb) changes only these. */
+.model-picker-effort {
+  --effort-accent: var(--theme-accent-solid);
+  --thumb: 14px;
+  --effort-track-height: 3px;
+  --effort-track-bg: color-mix(in oklab, var(--theme-fg) 14%, transparent);
+  --effort-track-shadow: none;
+  --effort-fill: var(--effort-accent);
+  --effort-tick-width: 3px;
+  --effort-tick-height: 3px;
+  --effort-tick-radius: 50%;
+  --effort-tick-bg: color-mix(in oklab, var(--theme-fg) 32%, transparent);
+  --effort-tick-on-bg: color-mix(in oklab, var(--theme-panel) 75%, transparent);
+  --effort-thumb-bg: var(--theme-panel);
+  --effort-thumb-ring: var(--effort-accent);
+  --effort-thumb-radius: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  padding: 2px 4px;
+}
+.model-picker-effort-label { flex: none; min-width: 7.4rem; color: var(--theme-fg-muted); font-size: 11px; white-space: nowrap; }
+.model-picker-effort-value { color: var(--theme-fg); font-weight: 600; }
+.model-picker-effort-slider {
+  position: relative;
   display: flex;
   flex: 1 1 auto;
+  align-items: center;
   min-width: 0;
-  gap: 2px;
-  padding: 2px;
-  border-radius: 8px;
-  background: color-mix(in oklab, var(--theme-fg) 6%, transparent);
-}
-.model-picker-effort-chip {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  height: 24px;
-  padding: 0 4px;
-  overflow: hidden;
-  border-radius: 6px;
-  color: var(--theme-fg-muted);
-  font-size: 11px;
-  line-height: 24px;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  height: 28px;
+  touch-action: none;
+  user-select: none;
   cursor: pointer;
 }
-@media (hover: hover) {
-  .model-picker-effort-chip:hover:not(:disabled) { color: var(--theme-fg); }
+.model-picker-effort-slider[data-disabled] { cursor: default; opacity: 0.5; }
+/* Track and ticks are inset by half a thumb: the thumb's centre then sits on
+   each tick at every level (Radix keeps the thumb inside the root). */
+.model-picker-effort-track {
+  position: relative;
+  flex: 1 1 auto;
+  height: var(--effort-track-height);
+  margin: 0 calc(var(--thumb) / 2);
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--effort-track-bg);
+  box-shadow: var(--effort-track-shadow);
 }
-.model-picker-effort-chip[aria-checked='true'] {
-  background: color-mix(in srgb, var(--effort-color) 18%, var(--theme-panel));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--effort-color) 50%, transparent);
-  color: color-mix(in oklab, var(--effort-color) 55%, var(--theme-fg));
-  font-weight: 600;
+.model-picker-effort-range { position: absolute; height: 100%; border-radius: inherit; background: var(--effort-fill); transition: right 140ms ease; }
+.model-picker-effort-ticks { position: absolute; top: 50%; right: calc(var(--thumb) / 2); left: calc(var(--thumb) / 2); height: 0; pointer-events: none; }
+.model-picker-effort-ticks > i {
+  position: absolute;
+  width: var(--effort-tick-width);
+  height: var(--effort-tick-height);
+  margin: calc(var(--effort-tick-height) / -2) 0 0 calc(var(--effort-tick-width) / -2);
+  border-radius: var(--effort-tick-radius);
+  background: var(--effort-tick-bg);
 }
-.model-picker-effort-chip:disabled { cursor: not-allowed; opacity: 0.55; }
-.model-picker-effort-chip:focus-visible { outline: 2px solid var(--theme-accent-solid); outline-offset: 1px; }
+.model-picker-effort-ticks > i[data-on] { background: var(--effort-tick-on-bg); }
+/* Blocks: the Terminal pack's segmented track; hidden elsewhere. */
+.model-picker-effort-blocks { display: none; }
+.model-picker-effort-slider > span:has(> .model-picker-effort-thumb) { transition: left 140ms ease; }
+.model-picker-effort-thumb {
+  position: relative;
+  display: block;
+  width: var(--thumb);
+  height: var(--thumb);
+  border-radius: var(--effort-thumb-radius);
+  background: var(--effort-thumb-bg);
+  box-shadow: 0 0 0 2px var(--effort-thumb-ring), 0 1px 3px rgb(0 0 0 / 22%);
+  outline: none;
+  transition: box-shadow 120ms ease, transform 120ms ease;
+}
+/* A 44px touch target around the small thumb. */
+.model-picker-effort-thumb::before { content: ''; position: absolute; inset: calc((var(--thumb) - 44px) / 2); }
+.model-picker-effort-thumb:focus-visible { box-shadow: 0 0 0 2px var(--effort-thumb-ring), 0 0 0 5px color-mix(in srgb, var(--effort-accent) 30%, transparent); }
+.model-picker-effort-slider:active .model-picker-effort-thumb { transform: scale(1.12); }
+@media (prefers-reduced-motion: reduce) {
+  .model-picker-effort-range,
+  .model-picker-effort-slider > span:has(> .model-picker-effort-thumb),
+  .model-picker-effort-thumb { transition: none; }
+}
+
 .model-picker-note { display: grid; gap: 3px; padding: 8px 4px 4px; }
 .model-picker-note p { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin: 0; }
 .model-picker-note-line { color: var(--theme-fg); }
@@ -393,9 +440,9 @@
 .model-picker[data-phone] .model-picker-agent-tab .thread-map-agent { width: 26px; height: 26px; font-size: 11px; }
 .model-picker[data-phone] .model-picker-search-box { height: 40px; }
 .model-picker[data-phone] .model-picker-settings { width: 40px; height: 40px; }
-.model-picker[data-phone] .model-picker-effort { padding: 8px 2px 4px; }
-.model-picker[data-phone] .model-picker-effort-chip { height: 36px; padding: 0 1px; font-size: 11.5px; line-height: 36px; }
-.model-picker[data-phone] .model-picker-effort-label { font-size: 11px; }
+.model-picker[data-phone] .model-picker-effort { min-height: 44px; padding: 4px 2px; }
+.model-picker[data-phone] .model-picker-effort-slider { height: 44px; }
+.model-picker[data-phone] .model-picker-effort-label { font-size: 12px; }
 .thread-ui-shell .model-picker[data-phone] .model-picker-search { font-size: 16px; }
 .model-picker[data-phone] .model-picker-list { height: auto; max-height: none; min-height: 12rem; }
 .model-picker[data-phone] .model-picker-row { min-height: 44px; font-size: 13px; }

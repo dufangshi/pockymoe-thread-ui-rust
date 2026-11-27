@@ -310,9 +310,9 @@ describe('ComposerSettingsToolbar', () => {
       model: 'gpt-5-mini',
       reasoningEffort: 'minimal',
     });
-    // The level names are one row of chips; the arrows step a level at a time.
-    const chip = view.querySelector<HTMLElement>('.model-picker-effort-chip[aria-checked="true"]')!;
-    act(() => { chip.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); });
+    // The effort slider steps a level at a time from the keyboard.
+    const thumb = view.querySelector<HTMLElement>('.model-picker-effort-thumb')!;
+    act(() => { thumb.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); });
     expect(onUpdateSettings).toHaveBeenCalledWith({ reasoningEffort: 'low' });
     expect(buttonByText(view, 'Plan')).toBeUndefined();
   });

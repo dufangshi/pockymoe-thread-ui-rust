@@ -82,6 +82,8 @@ const settle = () => act(async () => { await new Promise((resolve) => setTimeout
 const rows = () => [...document.querySelectorAll<HTMLButtonElement>('.model-picker-row')];
 const rowNames = () => rows().map((row) => row.querySelector('.model-picker-row-name')?.textContent);
 const tab = (name: string) => [...document.querySelectorAll<HTMLButtonElement>('.model-picker-agent-tab')].find((button) => button.title === name)!;
+const thumb = () => document.querySelector<HTMLElement>('.model-picker-effort-thumb')!;
+const key = (element: Element, name: string) => act(async () => { element.dispatchEvent(new KeyboardEvent('keydown', { key: name, bubbles: true })); });
 const click = (element: Element) => act(async () => { (element as HTMLElement).click(); });
 
 beforeEach(() => {
@@ -103,9 +105,10 @@ describe('ComposerModelPicker', () => {
     expect(document.querySelector('.model-picker-rail')).toBeNull();
     expect(rowNames()).toEqual(['6.1 Sol', '5.6 Luna']);
     expect(rows()[0]!.getAttribute('aria-checked')).toBe('true');
-    // Effort is one row of chips, the current level chosen.
-    expect([...document.querySelectorAll('.model-picker-effort-chip')].map((chip) => [chip.textContent, chip.getAttribute('aria-checked')]))
-      .toEqual([['low', 'true'], ['high', 'false']]);
+    // Effort is one compact slider row: the level beside the label, a tick per level.
+    expect(document.querySelector('.model-picker-effort-label')!.textContent).toBe('Effort · low');
+    expect(document.querySelectorAll('.model-picker-effort-ticks > i')).toHaveLength(2);
+    expect(thumb().getAttribute('aria-valuetext')).toBe('low');
   });
 
   it('lists ACP Codex next to native Codex with its mark tagged and switches by agent key', async () => {
@@ -152,7 +155,7 @@ describe('ComposerModelPicker', () => {
     expect(note).toContain('Hands over 3 turns');
     expect(note).toContain('Resets plan, sandbox, fast mode and effort');
     // The target model's levels, its default chosen.
-    expect(document.querySelector('.model-picker-effort-chip[aria-checked="true"]')!.textContent).toBe('high');
+    expect(thumb().getAttribute('aria-valuetext')).toBe('high');
     expect(rows()[1]!.getAttribute('aria-label')).toBe('Switch to Claude Agent · Haiku 5.5');
     await click(rows()[1]!);
     await settle();
@@ -302,18 +305,18 @@ describe('ComposerModelPicker', () => {
     await render({ source: { switching: source } });
     await click(tab('Claude Agent'));
     await settle();
-    await click([...document.querySelectorAll('.model-picker-effort-chip')].find((chip) => chip.textContent === 'low')!);
-    expect(document.querySelector('.model-picker-effort-chip[aria-checked="true"]')!.textContent).toBe('low');
+    await key(thumb(), 'Home');
+    expect(thumb().getAttribute('aria-valuetext')).toBe('low');
     await click(rows()[0]!);
     await settle();
     expect(source.switchTo).toHaveBeenCalledWith({ agentId: 'claude', model: 'opus', reasoningEffort: 'low', stop: false });
   });
 
-  it('changes the current effort with the arrow keys on its chips', async () => {
+  it('changes the current effort with the arrow keys on its slider', async () => {
     const props = await render();
-    const chip = document.querySelector<HTMLButtonElement>('.model-picker-effort-chip[aria-checked="true"]')!;
-    await act(async () => { chip.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); });
+    await key(thumb(), 'ArrowRight');
     expect(props.onUpdateSettings).toHaveBeenCalledWith({ reasoningEffort: 'high' });
+    expect(document.querySelector('.model-picker-effort-label')!.textContent).toBe('Effort · high');
   });
 
   it('keeps the column header out of the scrolling list', async () => {

@@ -6,7 +6,7 @@ import { useLayoutEffect, type DependencyList, type RefObject } from 'react';
 
 /** Monograms for agents a theme gives no art. */
 const MONOGRAMS: Record<string, string> = {
-  claude: 'Cl', codex: 'Cx', copilot: 'Co', cursor: 'Cu', deepseek: 'DS', gemini: 'Ge', grok: 'Gk', kimi: 'Ki', opencode: 'OC', qwen: 'Qw',
+  antigravity: 'AG', claude: 'Cl', codex: 'Cx', copilot: 'Co', cursor: 'Cu', deepseek: 'DS', gemini: 'Ge', grok: 'Gk', kimi: 'Ki', opencode: 'OC', qwen: 'Qw',
 };
 export const agentMonogram = (agent: string) => MONOGRAMS[agent] ?? agent.replace(/[^a-z0-9]/gi, '').slice(0, 2).replace(/^./, c => c.toUpperCase());
 

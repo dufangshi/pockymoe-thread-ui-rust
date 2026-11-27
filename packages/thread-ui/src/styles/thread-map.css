@@ -638,6 +638,7 @@
 .thread-map-agent[data-agent='claude'] { --thread-map-agent: #c96442; }
 .thread-map-agent[data-agent='codex'] { --thread-map-agent: #0f8a69; }
 .thread-map-agent[data-agent='gemini'] { --thread-map-agent: #3b78e7; }
+.thread-map-agent[data-agent='antigravity'] { --thread-map-agent: #1a73e8; }
 .thread-map-agent[data-agent='deepseek'] { --thread-map-agent: #4d6bfe; }
 .thread-map-agent[data-agent='copilot'] { --thread-map-agent: #8250df; }
 .thread-map-agent[data-agent='opencode'] { --thread-map-agent: #475569; }

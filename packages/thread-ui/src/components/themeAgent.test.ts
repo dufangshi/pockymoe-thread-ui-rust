@@ -8,6 +8,7 @@ describe('themeAgentKey', () => {
     for (const value of ['deepseek', 'DeepSeek Harness', 'dsh']) expect(themeAgentKey(value)).toBe('deepseek');
     expect(themeAgentKey('GitHub Copilot CLI')).toBe('copilot');
     expect(themeAgentKey('Gemini CLI')).toBe('gemini');
+    for (const value of ['antigravity', 'Google Antigravity', 'agy']) expect(themeAgentKey(value)).toBe('antigravity');
     expect(themeAgentKey('Grok Build')).toBe('grok');
     expect(themeAgentKey('OpenCode')).toBe('opencode');
     expect(themeAgentKey('cursor-agent')).toBe('cursor');
@@ -28,6 +29,7 @@ describe('themeAgentKey', () => {
     expect(threadThemeAgentKey({ provider: 'claude', agentId: null })).toBe('claude');
     expect(threadThemeAgentKey({ provider: 'acp' })).toBeUndefined();
     expect(themeAgentName('claude-code')).toBe('Claude');
+    expect(themeAgentName('antigravity')).toBe('Antigravity');
     expect(themeAgentName('my-agent')).toBe('My Agent');
   });
 });

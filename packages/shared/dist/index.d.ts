@@ -1104,9 +1104,18 @@ interface ResumeThreadInput {
 interface ThreadActionRequestAnswerDto {
     answers: string[];
 }
-interface RespondThreadActionRequestInput {
+/**
+ * The reply to a pending request: the chosen answers, or a bare allow/deny for
+ * a request that offers no choices (the Supervisor then picks the source's own
+ * first allow or reject option, or declines a question).
+ */
+type RespondThreadActionRequestInput = {
     answers: Record<string, ThreadActionRequestAnswerDto>;
-}
+    allow?: undefined;
+} | {
+    allow: boolean;
+    answers?: undefined;
+};
 interface ThreadEventPayloadMap {
     'thread.updated': {
         status?: ThreadStatusDto | string | null;

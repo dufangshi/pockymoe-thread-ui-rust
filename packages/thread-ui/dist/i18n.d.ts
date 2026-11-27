@@ -3893,6 +3893,9 @@ declare const en: {
     readonly "chat.fileChange_cf4620": "File Change";
     readonly "chat.other": "Other";
     readonly "chat.permissionRequired": "Permission required";
+    readonly "chat.approveRequest": "Approve";
+    readonly "chat.denyRequest": "Deny";
+    readonly "chat.declineRequest": "Decline";
     readonly "chat.answerRequired": "Answer Required";
     readonly "chat.fork": "Fork";
     readonly "chat.forkSource": "Fork source";
@@ -9454,6 +9457,9 @@ declare const zhCN: {
     "chat.fileChange_cf4620": "文件更改";
     "chat.other": "其他";
     "chat.permissionRequired": "需要权限";
+    "chat.approveRequest": "批准";
+    "chat.denyRequest": "拒绝";
+    "chat.declineRequest": "不回答";
     "chat.answerRequired": "需要回答";
     "chat.fork": "分叉";
     "chat.forkSource": "分叉来源";
@@ -15037,6 +15043,9 @@ declare const resources: {
         readonly "chat.fileChange_cf4620": "File Change";
         readonly "chat.other": "Other";
         readonly "chat.permissionRequired": "Permission required";
+        readonly "chat.approveRequest": "Approve";
+        readonly "chat.denyRequest": "Deny";
+        readonly "chat.declineRequest": "Decline";
         readonly "chat.answerRequired": "Answer Required";
         readonly "chat.fork": "Fork";
         readonly "chat.forkSource": "Fork source";
@@ -20597,6 +20606,9 @@ declare const resources: {
         "chat.fileChange_cf4620": "文件更改";
         "chat.other": "其他";
         "chat.permissionRequired": "需要权限";
+        "chat.approveRequest": "批准";
+        "chat.denyRequest": "拒绝";
+        "chat.declineRequest": "不回答";
         "chat.answerRequired": "需要回答";
         "chat.fork": "分叉";
         "chat.forkSource": "分叉来源";

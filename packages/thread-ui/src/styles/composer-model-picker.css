@@ -296,16 +296,18 @@
 /* ── Foot: the handoff note, effort, Stop and switch ─────────────────────── */
 .model-picker-foot { flex: none; padding: 0 6px 6px; border-top: 1px solid var(--theme-border); }
 /* Effort: one compact slider row, "Effort · high" and a slim track with a tick
-   per level; the fill runs from the start to the thumb in the effort accent.
-   The look is a set of tokens, so a theme (or a heavier variant: an 8px groove
-   with notch ticks and a filled 16px thumb) changes only these. */
+   per level. The accent is the level's colour on the effort scale (the same one
+   the composer's effort label uses), and the fill passes through each level's
+   colour up to it, so the slider warms as the level rises. The look is a set of
+   tokens, so a theme (or a heavier variant: an 8px groove with notch ticks and a
+   filled 16px thumb) changes only these. */
 .model-picker-effort {
-  --effort-accent: var(--theme-accent-solid);
+  --effort-accent: var(--effort-color, var(--theme-accent-solid));
   --thumb: 14px;
   --effort-track-height: 3px;
   --effort-track-bg: color-mix(in oklab, var(--theme-fg) 14%, transparent);
   --effort-track-shadow: none;
-  --effort-fill: var(--effort-accent);
+  --effort-fill: var(--effort-scale, var(--effort-accent));
   --effort-tick-width: 3px;
   --effort-tick-height: 3px;
   --effort-tick-radius: 50%;
@@ -321,7 +323,12 @@
   padding: 2px 4px;
 }
 .model-picker-effort-label { flex: none; min-width: 7.4rem; color: var(--theme-fg-muted); font-size: 11px; white-space: nowrap; }
-.model-picker-effort-value { color: var(--theme-fg); font-weight: 600; }
+.model-picker-effort-value { color: var(--effort-accent); font-weight: 600; transition: color 140ms ease; }
+/* On a light page the bright scale is darkened enough to read as text and to ring the thumb. */
+:root[data-theme-effective='light'] .model-picker-effort {
+  --effort-accent: color-mix(in oklab, var(--effort-color, var(--theme-accent-solid)) 82%, black);
+}
+:root[data-theme-effective='light'] .model-picker-effort-value { color: color-mix(in oklab, var(--effort-color, var(--theme-fg)) 68%, black); }
 .model-picker-effort-slider {
   position: relative;
   display: flex;

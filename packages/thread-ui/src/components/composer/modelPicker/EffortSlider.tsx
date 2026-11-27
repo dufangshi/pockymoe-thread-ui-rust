@@ -43,7 +43,15 @@ export function EffortSlider({ efforts, value, defaultEffort, disabled, onChange
       className="model-picker-effort"
       data-effort={option.reasoningEffort}
       data-levels={options.length}
-      style={{ '--effort-color': reasoningEffortColor(option.reasoningEffort, index, options.length) } as CSSProperties}
+      style={{
+        // The slider takes the level's colour from the effort scale; its fill passes
+        // through every level's colour up to it, so a higher level reads hotter.
+        '--effort-color': reasoningEffortColor(option.reasoningEffort, index, options.length),
+        '--effort-scale': `linear-gradient(90deg, ${options.slice(0, index + 1)
+          .map((entry, at) => reasoningEffortColor(entry.reasoningEffort, at, options.length))
+          .concat(index === 0 ? [reasoningEffortColor(option.reasoningEffort, 0, options.length)] : [])
+          .join(', ')})`,
+      } as CSSProperties}
     >
       <span className="model-picker-effort-label">
         {translate('chat.effort')}
@@ -71,7 +79,13 @@ export function EffortSlider({ efforts, value, defaultEffort, disabled, onChange
           ))}
         </span>
         <span className="model-picker-effort-blocks" aria-hidden="true">
-          {options.slice(1).map((entry, at) => <i key={entry.reasoningEffort} data-on={at < index || undefined} />)}
+          {options.slice(1).map((entry, at) => (
+            <i
+              key={entry.reasoningEffort}
+              data-on={at < index || undefined}
+              style={{ '--block-color': reasoningEffortColor(entry.reasoningEffort, at + 1, options.length) } as CSSProperties}
+            />
+          ))}
         </span>
         <Slider.Thumb
           className="model-picker-effort-thumb"
